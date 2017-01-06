@@ -1,0 +1,11 @@
+[
+    {
+        "modid": "gts",
+        "name": "Global Trading Station",
+        "version": "${version}",
+        "description": "A Sponge Representation of the Global Trading Station",
+        "authorList": [
+            "NickImpact"
+        ]
+    }
+]
