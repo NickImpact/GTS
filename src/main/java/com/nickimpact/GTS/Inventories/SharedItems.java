@@ -128,13 +128,13 @@ class SharedItems {
             ItemStack button = ItemStack.builder()
                     .itemType(type.get())
                     .build();
-            button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Inventories.Shared.Last Menu"));
+            button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Last Menu"));
             return button;
         } else {
             ItemStack button = ItemStack.builder()
                     .itemType(ItemTypes.REDSTONE_BLOCK)
                     .build();
-            button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Inventories.Shared.Last Menu"));
+            button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Last Menu"));
             return button;
         }
     }
