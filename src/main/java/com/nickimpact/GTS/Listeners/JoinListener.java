@@ -40,10 +40,5 @@ public class JoinListener {
                 GTS.getInstance().getLogger().error("The UUID (" + event.getTargetEntity().getUniqueId() + ") was not found in the player list..");
             }
         }).delay(5, TimeUnit.SECONDS).submit(GTS.getInstance());
-
-
-        EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityByName("Vulpix", NBTHandler.getWorld());
-        pokemon.setForm(1);
-        pokemon.setSpecialTexture(2);
     }
 }
