@@ -24,13 +24,10 @@ public class UpdateLotsTask {
 
     public void setupUpdateTask(){
         Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).execute(() -> {
-            List<Lot> lots = GTS.getInstance().getSql().getAllLots();
-            if (lots.size() > 0) {
-                for (Lot lot : lots) {
-                    if(!GTS.getInstance().getSql().isExpired(lot.getLotID())) {
-                        if (GTS.getInstance().getSql().getEnd(lot.getLotID()).after(Date.from(Instant.now()))) continue;
-                        this.endMarket(lot);
-                    }
+            for (Lot lot : GTS.getInstance().getSql().getAllLots()) {
+                if(!GTS.getInstance().getSql().isExpired(lot.getLotID())) {
+                    if (GTS.getInstance().getSql().getEnd(lot.getLotID()).after(Date.from(Instant.now()))) continue;
+                    this.endMarket(lot);
                 }
             }
         }).submit(GTS.getInstance());

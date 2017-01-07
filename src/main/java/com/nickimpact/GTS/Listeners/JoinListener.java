@@ -26,9 +26,7 @@ public class JoinListener {
         Sponge.getScheduler().createTaskBuilder().execute(() -> {
             final Optional<Player> player = Sponge.getServer().getPlayer(event.getTargetEntity().getUniqueId());
             if(player.isPresent()) {
-                final List<Lot> lots = GTS.getInstance().getSql().getPlayerLots(event.getTargetEntity().getUniqueId());
-
-                for(Lot lot : lots){
+                for(Lot lot : GTS.getInstance().getSql().getPlayerLots(player.get().getUniqueId())){
                     if(GTS.getInstance().getSql().isExpired(lot.getLotID())){
                         LotUtils.givePlayerPokemon(player.get(), GTS.getInstance().getSql().getLot(lot.getLotID()).getItem(), lot);
                         GTS.getInstance().getSql().deleteLot(lot.getLotID());
