@@ -89,7 +89,7 @@ public class LotUtils {
         // Add the GTS Listing to the Database
         int placement = GTS.getInstance().getSql().getPlacement();
 
-        Lot lot = new Lot(placement, player.getName(), NBTHandler.pokemonToNBT(pokemon).toString(), pokeItem, price);
+        Lot lot = new Lot(placement, player.getUniqueId(), NBTHandler.pokemonToNBT(pokemon).toString(), pokeItem, price);
         Gson gson = new Gson();
         GTS.getInstance().getSql().addLot(player.getUniqueId(), gson.toJson(lot));
 
@@ -127,12 +127,12 @@ public class LotUtils {
                         Sponge.getServer().getPlayer(lot.getOwner()).get().sendMessage(MessageConfig.getMessage("GTS.Purchase.Success.Owner", lot.getItem().getPokemon(lot).getName(), p.getName()));
                     }
 
-                    Optional<UniqueAccount> ownerAccount = GTS.getInstance().getEconomy().getOrCreateAccount(Sponge.getServer().getPlayer(lot.getOwner()).get().getUniqueId());
+                    Optional<UniqueAccount> ownerAccount = GTS.getInstance().getEconomy().getOrCreateAccount(lot.getOwner());
                     if(ownerAccount.isPresent()){
                         UniqueAccount owner = ownerAccount.get();
                         owner.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.of(NamedCause.source(GTS.getInstance())));
                     } else {
-                        GTS.getInstance().getLogger().error("Player '" + lot.getOwner() + "' was unable to receive $" + price.intValue() + " from the GTS");
+                        GTS.getInstance().getLogger().error("Player '" + Sponge.getServer().getPlayer(lot.getOwner()).get().getName() + "' was unable to receive $" + price.intValue() + " from the GTS");
                     }
 
                     EntityPixelmon pokemon = lot.getItem().getPokemon(lot);

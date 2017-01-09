@@ -45,7 +45,7 @@ public class UpdateLotsTask {
                 storage.get().addToParty(item.getPokemon(lot));
                 GTS.getInstance().getSql().deleteLot(lot.getLotID());
             } else {
-                GTS.getInstance().getLogger().error("An error occurred on ending " + lot.getOwner() + "'s listing");
+                GTS.getInstance().getLogger().error("An error occurred on ending " + Sponge.getServer().getPlayer(lot.getOwner()).get().getName() + "'s listing");
             }
         }
     }
