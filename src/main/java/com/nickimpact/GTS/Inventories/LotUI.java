@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.Inventories;
 
+import com.google.common.collect.Lists;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.Utils.Lot;
@@ -133,7 +134,7 @@ public class LotUI {
 
     public static void handleClickEvent(ClickInventoryEvent event, Player p) {
         event.setCancelled(true);
-        if(!(event instanceof ClickInventoryEvent.Shift)) {
+        if(!(event instanceof ClickInventoryEvent.Shift) && !(event instanceof ClickInventoryEvent.Drop)) {
             if (event.getTransactions().size() != 0) {
                 int slot = ((SlotAdapter) event.getTransactions().get(0).getSlot()).slotNumber;
                 if(slot == 12 || slot == 16) {
@@ -200,5 +201,33 @@ public class LotUI {
 
     public static void handleCloseEvent(Player p) {
 
+    }
+
+    public static Lot getCurrLot(Player p){
+        if(lots.containsKey(p)){
+            return lots.get(p);
+        }
+        return null;
+    }
+
+    public static boolean getCurrSearch(Player p){
+        if(isSearching.containsKey(p)){
+            return isSearching.get(p);
+        }
+        return false;
+    }
+
+    public static boolean getIsAdmin(Player p){
+        if(isAdmin.containsKey(p)){
+            return isAdmin.get(p);
+        }
+        return false;
+    }
+
+    public static List<String> getPokemon(Player p){
+        if(tokens.containsKey(p)){
+            return tokens.get(p);
+        }
+        return Lists.newArrayList();
     }
 }

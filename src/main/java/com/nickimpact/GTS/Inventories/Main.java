@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.Inventories;
 
+import com.google.common.collect.Lists;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.Utils.Lot;
@@ -174,5 +175,26 @@ public class Main {
         playerSearch.remove(p);
         playerPage.remove(p);
         playerTokens.remove(p);
+    }
+
+    public static int getCurrPage(Player p){
+        if(playerPage.containsKey(p)){
+            return playerPage.get(p);
+        }
+        return 1;
+    }
+
+    public static boolean getCurrSearch(Player p){
+        if(playerSearch.containsKey(p)){
+            return playerSearch.get(p);
+        }
+        return false;
+    }
+
+    public static List<String> getPokemon(Player p){
+        if(playerTokens.containsKey(p)){
+            return playerTokens.get(p);
+        }
+        return Lists.newArrayList();
     }
 }

@@ -111,7 +111,6 @@ public class LotUtils {
             return;
         }
         if (!GTS.getInstance().getSql().isExpired(lot.getLotID())) {
-            GTS.getInstance().getSql().deleteLot(id);
             BigDecimal price = new BigDecimal(lot.getPrice());
             try {
                 Optional<UniqueAccount> account = GTS.getInstance().getEconomy().getOrCreateAccount(p.getUniqueId());
@@ -123,6 +122,7 @@ public class LotUtils {
                     }
                     acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.source(GTS.getInstance()).build());
                     p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Success.Buyer", lot.getItem().getPokemon(lot).getName(), price.intValue()));
+                    GTS.getInstance().getSql().deleteLot(id);
                     if (Sponge.getServer().getPlayer(lot.getOwner()).isPresent()) {
                         Sponge.getServer().getPlayer(lot.getOwner()).get().sendMessage(MessageConfig.getMessage("GTS.Purchase.Success.Owner", lot.getItem().getPokemon(lot).getName(), p.getName()));
                     }

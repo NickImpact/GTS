@@ -72,7 +72,7 @@ public class Admin {
 
     public static void handleClickEvent(ClickInventoryEvent e, @Root Player p){
         e.setCancelled(true);
-        if(!(e instanceof ClickInventoryEvent.Shift)) {
+        if(!(e instanceof ClickInventoryEvent.Shift) && !(e instanceof ClickInventoryEvent.Drop)) {
             if (e.getTransactions().size() != 0) {
                 int slot = ((SlotAdapter) e.getTransactions().get(0).getSlot()).slotNumber;
                 if (slot < 54) {
@@ -121,5 +121,12 @@ public class Admin {
 
     public static void handleCloseEvent(Player p) {
 
+    }
+
+    public static int getCurrPage(Player p){
+        if(pages.containsKey(p)){
+            return pages.get(p);
+        }
+        return 1;
     }
 }
