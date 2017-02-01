@@ -12,6 +12,7 @@ import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.DropItemEvent;
 import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.item.inventory.Container;
+import org.spongepowered.api.item.inventory.InventoryArchetypes;
 import org.spongepowered.common.item.inventory.custom.CustomInventory;
 
 import java.util.Optional;
@@ -23,14 +24,16 @@ public class InventoryListener {
 
     @Listener
     public void onClickEvent(ClickInventoryEvent event, @Root Player p){
-        if(event.getTargetInventory().getName().get().contains("GTS | Page") || event.getTargetInventory().getName().get().equalsIgnoreCase("GTS | Search")){
-            Main.handleClickEvent(event, p);
-        } else if(event.getTargetInventory().getName().get().equalsIgnoreCase("GTS | Confirm")){
-            LotUI.handleClickEvent(event, p);
-        } else if(event.getTargetInventory().getName().get().equalsIgnoreCase("GTS | Admin")){
-            Admin.handleClickEvent(event, p);
-        } else if(event.getTargetInventory().getName().get().equalsIgnoreCase("GTS | Your Listings")){
-            PlayerListings.handleClickEvent(event, p);
+        if(event.getTargetInventory().getArchetype().equals(InventoryArchetypes.CHEST) || event.getTargetInventory().getArchetype().equals(InventoryArchetypes.DOUBLE_CHEST)) {
+            if (event.getTargetInventory().getName().get().contains("GTS | Page") || event.getTargetInventory().getName().get().equalsIgnoreCase("GTS | Search")) {
+                Main.handleClickEvent(event, p);
+            } else if (event.getTargetInventory().getName().get().equalsIgnoreCase("GTS | Confirm")) {
+                LotUI.handleClickEvent(event, p);
+            } else if (event.getTargetInventory().getName().get().equalsIgnoreCase("GTS | Admin")) {
+                Admin.handleClickEvent(event, p);
+            } else if (event.getTargetInventory().getName().get().equalsIgnoreCase("GTS | Your Listings")) {
+                PlayerListings.handleClickEvent(event, p);
+            }
         }
     }
 
@@ -40,16 +43,12 @@ public class InventoryListener {
         if (inv.isPresent()) {
             if (p.getOpenInventory().get().getName().get().contains("GTS | Page") || p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Search")) {
                 event.setCancelled(true);
-                Main.showGUI(p, Main.getCurrPage(p), Main.getCurrSearch(p), Main.getPokemon(p));
             } else if (p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Confirm")) {
                 event.setCancelled(true);
-                LotUI.showGUI(p, LotUI.getCurrLot(p), LotUI.getCurrSearch(p), LotUI.getPokemon(p), LotUI.getIsAdmin(p));
             } else if (p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Admin")) {
                 event.setCancelled(true);
-                Admin.showGUI(p, Admin.getCurrPage(p));
             } else if (p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Your Listings")) {
                 event.setCancelled(true);
-                PlayerListings.showGUI(p, PlayerListings.getCurrPage(p), PlayerListings.getCurrSearch(p), PlayerListings.getPokemon(p));
             }
         }
     }
