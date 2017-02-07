@@ -6,7 +6,9 @@ import com.nickimpact.GTS.Configuration.Config;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.Listeners.InventoryListener;
 import com.nickimpact.GTS.Listeners.JoinListener;
-import com.nickimpact.GTS.Utils.MySQLProvider;
+import com.nickimpact.GTS.Storage.H2Provider;
+import com.nickimpact.GTS.Storage.MySQLProvider;
+import com.nickimpact.GTS.Storage.SQLDatabase;
 import com.nickimpact.GTS.Utils.UpdateLotsTask;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -50,7 +52,7 @@ public class GTS {
     private MessageConfig messageConfig;
 
     private static GTS plugin;
-    private MySQLProvider mySql;
+    private SQLDatabase sql;
 
     private EconomyService economy;
 
@@ -85,6 +87,16 @@ public class GTS {
         }
 
         if(enabled) {
+            this.config = new Config();
+            if(config.getDatabaseType().equalsIgnoreCase("H2")){
+                this.sql = new H2Provider();
+            } else if(config.getDatabaseType().equalsIgnoreCase("MySQL")){
+                this.sql = new MySQLProvider();
+            } else {
+                logger.error(Text.of(TextColors.RED, "Invalid database type passed, defaulting to H2..").toString());
+                this.sql = new H2Provider();
+            }
+            this.sql.createTable();
             Sponge.getCommandManager().register(this, CommandSpec.builder()
                     .permission("gts.use")
                     .executor(new GTSCommand())
@@ -121,10 +133,7 @@ public class GTS {
                     .build(), "gts");
             getLogger().info("    - Commands injected into registry");
 
-            this.config = new Config();
             messageConfig = new MessageConfig();
-
-            this.mySql = new MySQLProvider();
 
             Sponge.getEventManager().registerListeners(this, new JoinListener());
             Sponge.getEventManager().registerListeners(this, new InventoryListener());
@@ -167,7 +176,7 @@ public class GTS {
         if(enabled) {
             getLogger().info("Thanks for using " + NAME + " (" + VERSION + ")");
             try {
-                mySql.shutdown();
+                sql.shutdown();
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -180,8 +189,8 @@ public class GTS {
         return this.logger;
     }
 
-    public MySQLProvider getSql(){
-        return this.mySql;
+    public SQLDatabase getSql(){
+        return this.sql;
     }
 
     public static GTS getInstance(){

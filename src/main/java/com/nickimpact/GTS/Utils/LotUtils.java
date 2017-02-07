@@ -86,7 +86,7 @@ public class LotUtils {
         // Create the values to be used by the GTS Listing
         PokemonItem pokeItem = new PokemonItem(NBTHandler.getPokemon(nbt), player.getName(), price);
 
-        // Add the GTS Listing to the Database
+        // Add the GTS Listing to the SQLDatabase
         int placement = GTS.getInstance().getSql().getPlacement();
 
         Lot lot = new Lot(placement, player.getUniqueId(), NBTHandler.pokemonToNBT(pokemon).toString(), pokeItem, price);

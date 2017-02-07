@@ -26,11 +26,12 @@ public class Config {
     private static ConfigurationLoader<CommentedConfigurationNode> loader;
     private static CommentedConfigurationNode main;
 
-    private String mysqlHost;
-    private String mysqlDatabase;
-    private int mysqlPort;
-    private String mysqlUser;
-    private String mysqlPassword;
+    private String databaseType;
+    private String host;
+    private String db;
+    private int port;
+    private String user;
+    private String password;
 
     private int maxPokemon;
     private int time;
@@ -64,13 +65,14 @@ public class Config {
             CommentedConfigurationNode node = main.getNode("Settings");
             node.setComment("Alter these settings to control the GTS");
 
-            CommentedConfigurationNode mysql = node.getNode("MySQL");
-            mysql.setComment("Database connection settings for the MySQL database");
-            mysqlHost = mysql.getNode("Host").getString("localhost");
-            mysqlDatabase = mysql.getNode("Database").getString("gts");
-            mysqlPort = mysql.getNode("Port").getInt(3306);
-            mysqlUser = mysql.getNode("User").getString("username");
-            mysqlPassword = mysql.getNode("Password").getString("password");
+            ConfigurationNode database = node.getNode("SQLDatabase");
+            databaseType = database.getNode("Type").getString("H2");
+            ConfigurationNode connect = database.getNode("Connection Info");
+            host = connect.getNode("Host").getString("localhost");
+            db = connect.getNode("SQLDatabase").getString("daycare");
+            port = connect.getNode("Port").getInt(3306);
+            user = connect.getNode("User").getString("username");
+            password = connect.getNode("Password").getString("password");
 
             CommentedConfigurationNode max = node.getNode("Max Pokemon");
             max.setComment("Set how many pokemon a player is limited to listing, -1 for no cap");
@@ -118,24 +120,28 @@ public class Config {
         }
     }
 
-    public String getMysqlHost() {
-        return mysqlHost;
+    public String getDatabaseType() {
+        return databaseType;
     }
 
-    public String getMysqlDatabase() {
-        return mysqlDatabase;
+    public String getHost() {
+        return host;
     }
 
-    public int getMysqlPort() {
-        return mysqlPort;
+    public String getDatabase() {
+        return db;
     }
 
-    public String getMysqlUser() {
-        return mysqlUser;
+    public int getPort() {
+        return port;
     }
 
-    public String getMysqlPassword() {
-        return mysqlPassword;
+    public String getUser() {
+        return user;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public int getMaxPokemon() {

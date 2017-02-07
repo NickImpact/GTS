@@ -1,24 +1,20 @@
-package com.nickimpact.GTS.Utils;
+package com.nickimpact.GTS.Storage;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ListMultimap;
 import com.google.gson.Gson;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
+import com.nickimpact.GTS.Utils.Lot;
+import com.nickimpact.GTS.Utils.LotUtils;
 import com.nickimpact.nbthandler.NBTHandler;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.common.util.Constants;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.text.Text;
-import scala.collection.mutable.MultiMap;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,87 +22,41 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * ============================================================================*
  * |            Project Name: GTS (Sponge)
  * |                  Author: Nick (NickImpact)
- * |        Package Location: com.nickimpact.GTS.Utils
+ * |        Package Location: com.nickimpact.GTS.Storage
  * |
- * |   Date of File Creation: 1/1/2017
- * |   Time of File Creation: 4:45 PM
+ * |   Date of File Creation: 2/7/2017
+ * |   Time of File Creation: 1:12 AM
  * =============================================================================
  */
-public class MySQLProvider {
+public abstract class SQLDatabase {
 
-    private HikariDataSource hikari;
-    private String dbName;
-
-    public MySQLProvider() {
-        try {
-            init();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void init() throws Exception {
-        HikariConfig config = new HikariConfig();
-
-        String address = GTS.getInstance().getConfig().getMysqlHost();
-        int port = GTS.getInstance().getConfig().getMysqlPort();
-
-        this.dbName = GTS.getInstance().getConfig().getMysqlDatabase();
-        String username = GTS.getInstance().getConfig().getMysqlUser();
-        String password = GTS.getInstance().getConfig().getMysqlPassword();
-
-        config.setMaximumPoolSize(10);
-
-        config.setPoolName("GTS");
-        config.setDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
-        config.addDataSourceProperty("serverName", address);
-        config.addDataSourceProperty("port", port);
-        config.addDataSourceProperty("databaseName", dbName);
-        config.addDataSourceProperty("user", username);
-        config.addDataSourceProperty("password", password);
-        config.addDataSourceProperty("cachePrepStmts", true);
-        config.addDataSourceProperty("prepStmtCacheSize", 250);
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", 2048);
-        config.addDataSourceProperty("useServerPrepStmts", true);
-        config.addDataSourceProperty("cacheCallableStmts", true);
-        config.addDataSourceProperty("alwaysSendSetIsolation", false);
-        config.addDataSourceProperty("cacheServerConfiguration", true);
-        config.addDataSourceProperty("elideSetAutoCommits", true);
-        config.addDataSourceProperty("useLocalSessionState", true);
-        config.setConnectionTimeout(TimeUnit.SECONDS.toMillis(10)); // 10000
-        config.setLeakDetectionThreshold(TimeUnit.SECONDS.toMillis(5)); // 5000
-        config.setValidationTimeout(TimeUnit.SECONDS.toMillis(3)); // 3000
-        config.setInitializationFailFast(true);
-        config.setConnectionTestQuery("/* GTS ping */ SELECT 1");
-
-        hikari = new HikariDataSource(config);
-        createTable();
-    }
+    abstract void init() throws Exception;
+    abstract HikariDataSource getHikari();
+    abstract String getDbName();
 
     public void shutdown() throws Exception {
-        if (hikari != null) {
-            hikari.close();
+        if (getHikari() != null) {
+            getHikari().close();
         }
     }
 
     public Connection getConnection() throws SQLException {
-        return hikari.getConnection();
+        return getHikari().getConnection();
     }
 
-    private void createTable() {
+    public void createTable() {
         try{
             try(Connection connection = this.getConnection()) {
                 if (connection == null || connection.isClosed()) {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try (PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `" + dbName + "` (ID INTEGER, Ends MEDIUMTEXT, Expired TINYINT(1), uuid CHAR(36), Lot MEDIUMTEXT);")) {
+                try (PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `" + getDbName() + "` (ID INTEGER, Ends MEDIUMTEXT, Expired TINYINT(1), uuid CHAR(36), Lot MEDIUMTEXT);")) {
                     statement.executeUpdate();
                     statement.close();
                 }
@@ -123,7 +73,7 @@ public class MySQLProvider {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try (PreparedStatement statement = connection.prepareStatement("TRUNCATE TABLE `" + dbName + "`")) {
+                try (PreparedStatement statement = connection.prepareStatement("TRUNCATE TABLE `" + getDbName() + "`")) {
                     statement.executeUpdate();
                     statement.close();
                 }
@@ -141,7 +91,7 @@ public class MySQLProvider {
                         throw new IllegalStateException("SQL connection is null");
                     }
 
-                    try (PreparedStatement ps = connection.prepareStatement("SELECT uuid, Lot FROM `" + dbName + "` WHERE uuid='" + uuid + "'")) {
+                    try (PreparedStatement ps = connection.prepareStatement("SELECT uuid, Lot FROM `" + getDbName() + "` WHERE uuid='" + uuid + "'")) {
                         ResultSet result = ps.executeQuery();
                         int total = 0;
                         while (result.next()) {
@@ -171,7 +121,7 @@ public class MySQLProvider {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try (PreparedStatement ps = connection.prepareStatement("SELECT ID FROM `" + dbName + "` ORDER BY ID ASC")) {
+                try (PreparedStatement ps = connection.prepareStatement("SELECT ID FROM `" + getDbName() + "` ORDER BY ID ASC")) {
                     ResultSet result = ps.executeQuery();
 
                     int placement = 1;
@@ -208,7 +158,7 @@ public class MySQLProvider {
                 if(connection == null || connection.isClosed()){
                     throw new IllegalStateException("SQL connection is null");
                 }
-                try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `" + dbName + "`(ID, Ends, Expired, uuid, Lot) VALUES (?, ?, ?, ?, ?)")) {
+                try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `" + getDbName() + "`(ID, Ends, Expired, uuid, Lot) VALUES (?, ?, ?, ?, ?)")) {
                     statement.setInt(1, getPlacement());
                     statement.setString(2, Instant.now().plusSeconds(GTS.getInstance().getConfig().getLotTime() * 60).toString());
                     statement.setBoolean(3, false);
@@ -236,7 +186,7 @@ public class MySQLProvider {
                 if (connection == null || connection.isClosed()) {
                     throw new IllegalStateException("SQL connection is null");
                 }
-                try (PreparedStatement ps = connection.prepareStatement("SELECT Lot FROM `" + dbName + "` WHERE ID='" + id + "'")) {
+                try (PreparedStatement ps = connection.prepareStatement("SELECT Lot FROM `" + getDbName() + "` WHERE ID='" + id + "'")) {
                     ResultSet result = ps.executeQuery();
                     if (result.next()) {
                         return (Lot) LotUtils.lotFromJson(result.getString("Lot"));
@@ -251,7 +201,7 @@ public class MySQLProvider {
     }
 
     /**
-     * Deletes a {@link Lot} from the Database
+     * Deletes a {@link Lot} from the SQLDatabase
      *
      * @param id The proposed Lot ID
      */
@@ -262,7 +212,7 @@ public class MySQLProvider {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try(PreparedStatement query = connection.prepareStatement("DELETE FROM `" + dbName + "` WHERE ID='" + id + "'")){
+                try(PreparedStatement query = connection.prepareStatement("DELETE FROM `" + getDbName() + "` WHERE ID='" + id + "'")){
                     query.executeUpdate();
                     query.close();
                 }
@@ -282,7 +232,7 @@ public class MySQLProvider {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try (PreparedStatement query = connection.prepareStatement("SELECT Lot FROM `" + dbName + "`")) {
+                try (PreparedStatement query = connection.prepareStatement("SELECT Lot FROM `" + getDbName() + "`")) {
                     ResultSet results = query.executeQuery();
                     while (results.next()) {
                         Lot lot = (Lot) LotUtils.lotFromJson(results.getString("Lot"));
@@ -310,7 +260,7 @@ public class MySQLProvider {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try (PreparedStatement query = connection.prepareStatement("SELECT uuid, Lot FROM `" + dbName + "`")) {
+                try (PreparedStatement query = connection.prepareStatement("SELECT uuid, Lot FROM `" + getDbName() + "`")) {
                     ResultSet results = query.executeQuery();
                     while (results.next()) {
                         UUID uuid = UUID.fromString(results.getString("uuid"));
@@ -321,7 +271,7 @@ public class MySQLProvider {
                             storage.get().addToParty(pokemon);
                             storage.get().sendUpdatedList();
                             Gson gson = new Gson();
-                            try(PreparedStatement ps = connection.prepareStatement("DELETE FROM `" + dbName + "` WHERE Lot='" + gson.toJson(lot) + "'")){
+                            try(PreparedStatement ps = connection.prepareStatement("DELETE FROM `" + getDbName() + "` WHERE Lot='" + gson.toJson(lot) + "'")){
                                 ps.executeUpdate();
                                 ps.close();
                             }
@@ -352,7 +302,7 @@ public class MySQLProvider {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try(PreparedStatement ps = connection.prepareStatement("SELECT Lot FROM `" + dbName + "` WHERE uuid='" + uuid + "'")) {
+                try(PreparedStatement ps = connection.prepareStatement("SELECT Lot FROM `" + getDbName() + "` WHERE uuid='" + uuid + "'")) {
                     ResultSet results = ps.executeQuery();
                     while (results.next()) {
                         lots.add((Lot) LotUtils.lotFromJson(results.getString("Lot")));
@@ -376,7 +326,7 @@ public class MySQLProvider {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try (PreparedStatement query = connection.prepareStatement("UPDATE `" + dbName + "` SET Expired='" + 1 + "' WHERE ID='" + id + "'")) {
+                try (PreparedStatement query = connection.prepareStatement("UPDATE `" + getDbName() + "` SET Expired='" + 1 + "' WHERE ID='" + id + "'")) {
                     query.executeUpdate();
                     query.close();
                 }
@@ -395,7 +345,7 @@ public class MySQLProvider {
                 }
 
                 Date date = null;
-                try (PreparedStatement ps = connection.prepareStatement("SELECT Ends FROM `" + dbName + "` WHERE ID='" + id + "'")) {
+                try (PreparedStatement ps = connection.prepareStatement("SELECT Ends FROM `" + getDbName() + "` WHERE ID='" + id + "'")) {
                     ResultSet result = ps.executeQuery();
                     if (result.next()) {
                         date = Date.from(Instant.parse(result.getString("Ends")));
@@ -420,7 +370,7 @@ public class MySQLProvider {
                 }
 
                 boolean expired = false;
-                try (PreparedStatement ps = connection.prepareStatement("SELECT Expired FROM `" + dbName + "` WHERE ID='" + id + "'")) {
+                try (PreparedStatement ps = connection.prepareStatement("SELECT Expired FROM `" + getDbName() + "` WHERE ID='" + id + "'")) {
                     ResultSet result = ps.executeQuery();
                     if (result.next()) {
                         expired = result.getBoolean("Expired");
