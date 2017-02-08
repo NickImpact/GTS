@@ -59,16 +59,16 @@ public class H2Provider extends SQLDatabase {
         // H2 Driver Jar doesn't exist, let's download one
         URL url = new URL(Dependency.H2_DRIVER.getUrl());
 
-        GTS.getInstance().getLogger().info("H2 Dependency '" + name + "' not found, attempting to download it..");
+        GTS.getInstance().getLogger().info("    H2 Dependency '" + name + "' not found, attempting to download it..");
         try(InputStream in = url.openStream()){
             Files.copy(in, file.toPath());
         }
 
         if(!file.exists()){
-            throw new IllegalStateException("File not present. - " + file.toString());
+            throw new IllegalStateException("    File not present. - " + file.toString());
         }
 
-        GTS.getInstance().getLogger().info("H2 Dependency successfully downloaded!");
+        GTS.getInstance().getLogger().info("    H2 Dependency successfully downloaded!");
         return file;
     }
 
