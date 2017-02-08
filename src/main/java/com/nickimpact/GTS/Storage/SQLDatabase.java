@@ -45,7 +45,7 @@ public abstract class SQLDatabase {
         }
     }
 
-    public Connection getConnection() throws SQLException {
+    private Connection getConnection() throws SQLException {
         return getHikari().getConnection();
     }
 

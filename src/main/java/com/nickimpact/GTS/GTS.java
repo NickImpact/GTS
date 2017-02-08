@@ -123,7 +123,7 @@ public class GTS {
                             .build(), "clear")
                     .child(CommandSpec.builder()
                             .executor(new EditCommand())
-                            .permission("gts.admim")
+                            .permission("gts.admin")
                             .description(Text.of("Edit listings in the GTS"))
                             .build(), "edit")
                     .child(CommandSpec.builder()
