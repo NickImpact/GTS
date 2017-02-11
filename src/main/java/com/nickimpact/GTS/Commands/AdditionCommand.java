@@ -22,6 +22,9 @@ public class AdditionCommand implements CommandExecutor {
                 throw new CommandException(Text.of(TextColors.RED, "Error ", TextColors.GRAY, "| ", TextColors.WHITE, "You must specify a number between 1 - 6"));
             }
             Integer price = args.<Integer>getOne("price").get();
+            if(price < 1){
+                throw new CommandException(Text.of(TextColors.RED, "Price can not be lower than $1.."));
+            }
             LotUtils.addPokemonToMarket((Player)src, slot, price);
             return CommandResult.success();
         }

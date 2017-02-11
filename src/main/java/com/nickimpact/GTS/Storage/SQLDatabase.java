@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.Storage;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
@@ -250,7 +251,7 @@ public abstract class SQLDatabase {
             e.printStackTrace();
         }
 
-        return null;
+        return Lists.newArrayList();
     }
 
     public boolean returnLots() {

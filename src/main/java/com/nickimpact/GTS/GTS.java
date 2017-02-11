@@ -97,6 +97,7 @@ public class GTS {
                 this.sql = new H2Provider();
             }
             this.sql.createTable();
+
             Sponge.getCommandManager().register(this, CommandSpec.builder()
                     .permission("gts.use")
                     .executor(new GTSCommand())
