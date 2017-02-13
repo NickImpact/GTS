@@ -41,14 +41,16 @@ public class InventoryListener {
     public void onDropEvent(DropItemEvent event, @Root Player p) {
         Optional<Container> inv = p.getOpenInventory();
         if (inv.isPresent()) {
-            if (p.getOpenInventory().get().getName().get().contains("GTS | Page") || p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Search")) {
-                event.setCancelled(true);
-            } else if (p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Confirm")) {
-                event.setCancelled(true);
-            } else if (p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Admin")) {
-                event.setCancelled(true);
-            } else if (p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Your Listings")) {
-                event.setCancelled(true);
+            if(inv.get().getArchetype().equals(InventoryArchetypes.CHEST) || inv.get().getArchetype().equals(InventoryArchetypes.DOUBLE_CHEST)) {
+                if (p.getOpenInventory().get().getName().get().contains("GTS | Page") || p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Search")) {
+                    event.setCancelled(true);
+                } else if (p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Confirm")) {
+                    event.setCancelled(true);
+                } else if (p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Admin")) {
+                    event.setCancelled(true);
+                } else if (p.getOpenInventory().get().getName().get().equalsIgnoreCase("GTS | Your Listings")) {
+                    event.setCancelled(true);
+                }
             }
         }
     }
