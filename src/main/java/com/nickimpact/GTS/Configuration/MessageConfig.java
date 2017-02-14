@@ -79,6 +79,9 @@ public class MessageConfig {
             error.getNode("Expired").getString("&c&lGTS &7| Unfortunately, it appears that lot has expired..");
             error.getNode("Not Enough").getString("&c&lGTS &7| You don't have enough money to afford this listing..");
 
+            ConfigurationNode failed = purchase.getNode("Failed");
+            failed.getString("&c&lGTS &7| It seems that lot has been recently purchased.. sorry!");
+
             ConfigurationNode remove = gts.getNode("Remove");
             remove.getNode("Success").getString("&a&lGTS &7| Your &e{0} &7has been removed from the GTS");
             remove.getNode("Failed").getString("&c&lGTS &7| Your &e{0} &7has been purchased already!");
