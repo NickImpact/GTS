@@ -40,6 +40,7 @@ public class Config {
     private double taxRate;
 
     private List<String> blocked;
+    private String currencySymbol;
 
     public Config(){
         this.loadConfig();
@@ -80,6 +81,8 @@ public class Config {
             CommentedConfigurationNode lotTime = node.getNode("Lot Time");
             lotTime.setComment("Set how long a lot should be (In Minutes)");
             time = lotTime.getInt(10);
+
+            currencySymbol = node.getNode("Currency Symbol").getString("$");
 
             CommentedConfigurationNode tax = node.getNode("Tax");
             tax.setComment("Control the taxing of GTS listings");
@@ -168,5 +171,9 @@ public class Config {
             }
         }
         return validBlocks;
+    }
+
+    public String getCurrencySymbol(){
+        return this.currencySymbol;
     }
 }

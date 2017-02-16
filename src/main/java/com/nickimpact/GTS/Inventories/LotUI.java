@@ -146,7 +146,6 @@ public class LotUI {
                                     if (event instanceof ClickInventoryEvent.Secondary) {
                                         p.sendMessage(MessageConfig.getMessage("GTS.Remove.Admin.Delete", lots.get(p).getItem().getName()));
                                         GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
-
                                     } else if (event instanceof ClickInventoryEvent.Primary) {
                                         p.sendMessage(MessageConfig.getMessage("GTS.Remove.Admin.Remove", lots.get(p).getItem().getName()));
                                         Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());

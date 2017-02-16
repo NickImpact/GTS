@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.Utils;
 
+import com.nickimpact.GTS.GTS;
 import com.nickimpact.nbthandler.NBTHandler;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
@@ -199,6 +200,7 @@ public class PokemonItem {
         if (this.isEgg) {
             data.add(Text.of(TextColors.GRAY, "Lot ID: ", TextColors.YELLOW, id));
             data.add(Text.of(TextColors.GRAY, "Owner: ", TextColors.YELLOW, this.owner));
+            data.add(Text.of(TextColors.GREEN, "Click on this slot for more info"));
             data.add(Text.EMPTY);
             data.add(Text.of(TextColors.GRAY, "Ability: ", TextColors.YELLOW, "???"));
             data.add(Text.of(TextColors.GRAY, "Nature: ", TextColors.YELLOW, "???"));
@@ -206,7 +208,7 @@ public class PokemonItem {
             data.add(Text.of(TextColors.GRAY, "Gender: ", TextColors.YELLOW, "???"));
             data.add(Text.of(TextColors.GRAY, "Size: ", TextColors.YELLOW, "???"));
             data.add(Text.EMPTY);
-            data.add(Text.of(TextColors.GRAY, "Cost: $", TextColors.YELLOW, this.cost));
+            data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, GTS.getInstance().getConfig().getCurrencySymbol() + this.cost));
             data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(end.toInstant().toEpochMilli() - Instant.now().toEpochMilli())));
         } else {
             data.add(Text.of(TextColors.GRAY, "Lot ID: ", TextColors.YELLOW, id));
@@ -215,6 +217,7 @@ public class PokemonItem {
                 data.add(Text.EMPTY);
                 data.add(Text.join(Text.of(TextColors.GRAY, "Nickname: ", TextColors.YELLOW), TextSerializers.LEGACY_FORMATTING_CODE.deserialize(this.nickname)));
             }
+            data.add(Text.of(TextColors.GREEN, "Click on this slot for more info"));
             data.add(Text.EMPTY);
             data.add(Text.of(TextColors.GRAY, "Ability: ", TextColors.YELLOW, this.ability));
             data.add(Text.of(TextColors.GRAY, "Nature: ", TextColors.YELLOW, this.nature));
@@ -227,7 +230,7 @@ public class PokemonItem {
                 data.add(Text.of(TextColors.GRAY, "Clones: ", TextColors.YELLOW, this.clones + " times"));
             }
             data.add(Text.EMPTY);
-            data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, "$" + this.cost));
+            data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, GTS.getInstance().getConfig().getCurrencySymbol() + this.cost));
             data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(end.toInstant().toEpochMilli() - Instant.now().toEpochMilli())));
         }
 
