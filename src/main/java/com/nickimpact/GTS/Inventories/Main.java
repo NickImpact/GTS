@@ -94,15 +94,16 @@ public class Main {
                         x++;
                     }
                 }
-                if(x == 0 && y == 0){
-                    return false;
-                }
             } else {
                 Lot lot = lots.get(index);
                 PokemonItem item = lot.getItem();
                 inv.query(new SlotPos(x, y)).offer(item.getItem(lot.getLotID(), GTS.getInstance().getSql().getEnd(lot.getLotID())));
                 x++;
             }
+        }
+
+        if(x == 0 && y == 0 && search){
+            return false;
         }
 
         return true;
