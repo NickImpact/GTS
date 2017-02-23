@@ -102,7 +102,7 @@ public class PlayerListings {
                                 p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Expired"));
                             } else {
                                 Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                                    LotUI.showGUI(p, lot, false, Lists.newArrayList(), true);
+                                    LotUI.showGUI(p, lot, false, Lists.newArrayList(), false);
                                     pages.remove(p);
                                 }).delayTicks(1).submit(GTS.getInstance());
                             }
