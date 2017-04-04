@@ -6,7 +6,6 @@ import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.Utils.Lot;
 import com.nickimpact.GTS.Utils.LotUtils;
-import com.nickimpact.nbthandler.NBTHandler;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
@@ -15,6 +14,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
 
 import java.sql.Connection;
@@ -268,7 +268,7 @@ public abstract class SQLDatabase {
                         Lot lot = (Lot) LotUtils.lotFromJson(results.getString("Lot"));
                         Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), uuid);
                         if(storage.isPresent()){
-                            EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(JsonToNBT.getTagFromJson(lot.getNBT()), NBTHandler.getWorld());
+                            EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(JsonToNBT.getTagFromJson(lot.getNBT()), (World)Sponge.getServer().getPlayer(uuid).get().getWorld());
                             storage.get().addToParty(pokemon);
                             storage.get().sendUpdatedList();
                             Gson gson = new Gson();

@@ -1,15 +1,16 @@
 package com.nickimpact.GTS.Utils;
 
 import com.nickimpact.GTS.GTS;
-import com.nickimpact.nbthandler.NBTHandler;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import net.minecraft.nbt.*;
+import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -75,11 +76,11 @@ public class PokemonItem {
         this.cost = cost;
 
         this.id = pokemon.baseStats.nationalPokedexNumber;
-        this.form = NBTHandler.pokemonToNBT(pokemon).getInteger(NbtKeys.FORM);
+        this.form = pokemon.getEntityData().getInteger(NbtKeys.FORM);
         this.name = pokemon.getPokemonName();
         this.nickname = pokemon.getNickname();
         this.ability = pokemon.getAbility().getName();
-        this.heldItem = NBTHandler.getHeldItemName(pokemon);
+        this.heldItem = pokemon.getItemHeld() != null ? pokemon.getItemHeld().getHeldItemType().name() : "Nothing";
         this.m1 = pokemon.getMoveset().get(0) != null ? pokemon.getMoveset().get(0).baseAttack.getLocalizedName() : "Empty";
         this.m2 = pokemon.getMoveset().get(1) != null ? pokemon.getMoveset().get(1).baseAttack.getLocalizedName() : "Empty";
         this.m3 = pokemon.getMoveset().get(2) != null ? pokemon.getMoveset().get(2).baseAttack.getLocalizedName() : "Empty";
@@ -105,9 +106,9 @@ public class PokemonItem {
         this.id1 = pokemon.getPokemonId()[0];
         this.id2 = pokemon.getPokemonId()[1];
 
-        NBTTagCompound nbt = NBTHandler.pokemonToNBT(pokemon);
+        NBTTagCompound nbt = pokemon.getEntityData();
         if (pokemon.getName().equalsIgnoreCase("Mew")) {
-            this.clones = NBTHandler.getShort(nbt, "NumCloned");
+            this.clones = nbt.getShort("NumCloned");
         }
     }
 
@@ -164,9 +165,9 @@ public class PokemonItem {
         }
     }
 
-    public EntityPixelmon getPokemon(Lot lot) {
+    public EntityPixelmon getPokemon(Lot lot, Player p) {
         try {
-            return (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(JsonToNBT.getTagFromJson(lot.getNBT()), NBTHandler.getWorld());
+            return (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(JsonToNBT.getTagFromJson(lot.getNBT()), (World)p.getWorld());
         } catch (NBTException e) {
             e.printStackTrace();
         }

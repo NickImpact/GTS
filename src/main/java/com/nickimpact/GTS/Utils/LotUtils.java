@@ -3,23 +3,20 @@ package com.nickimpact.GTS.Utils;
 import com.google.gson.Gson;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
-import com.nickimpact.nbthandler.NBTHandler;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
-import com.pixelmonmod.pixelmon.storage.PlayerNotLoadedException;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
-import org.spongepowered.api.service.economy.account.Account;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.world.World;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -58,7 +55,7 @@ public class LotUtils {
             return;
         }
 
-        EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(nbt, NBTHandler.getWorld());
+        EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(nbt, (World)player.getWorld());
         for(String s : GTS.getInstance().getConfig().getBlocked()){
             if(pokemon.getName().equalsIgnoreCase(s)){
                 player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Invalid", pokemon.getName()));
@@ -84,12 +81,12 @@ public class LotUtils {
         }
 
         // Create the values to be used by the GTS Listing
-        PokemonItem pokeItem = new PokemonItem(NBTHandler.getPokemon(nbt), player.getName(), price);
+        PokemonItem pokeItem = new PokemonItem(pokemon, player.getName(), price);
 
         // Add the GTS Listing to the SQLDatabase
         int placement = GTS.getInstance().getSql().getPlacement();
 
-        Lot lot = new Lot(placement, player.getUniqueId(), NBTHandler.pokemonToNBT(pokemon).toString(), pokeItem, price);
+        Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, price);
         Gson gson = new Gson();
         GTS.getInstance().getSql().addLot(player.getUniqueId(), gson.toJson(lot));
 
@@ -121,10 +118,10 @@ public class LotUtils {
                         return;
                     }
                     acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.source(GTS.getInstance()).build());
-                    p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Success.Buyer", lot.getItem().getPokemon(lot).getName(), price.intValue()));
+                    p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Success.Buyer", lot.getItem().getPokemon(lot, p).getName(), price.intValue()));
                     GTS.getInstance().getSql().deleteLot(id);
                     if (Sponge.getServer().getPlayer(lot.getOwner()).isPresent()) {
-                        Sponge.getServer().getPlayer(lot.getOwner()).get().sendMessage(MessageConfig.getMessage("GTS.Purchase.Success.Owner", lot.getItem().getPokemon(lot).getName(), p.getName()));
+                        Sponge.getServer().getPlayer(lot.getOwner()).get().sendMessage(MessageConfig.getMessage("GTS.Purchase.Success.Owner", lot.getItem().getPokemon(lot, p).getName(), p.getName()));
                     }
 
                     Optional<UniqueAccount> ownerAccount = GTS.getInstance().getEconomy().getOrCreateAccount(lot.getOwner());
@@ -135,7 +132,7 @@ public class LotUtils {
                         GTS.getInstance().getLogger().error("Player '" + Sponge.getServer().getPlayer(lot.getOwner()).get().getName() + "' was unable to receive $" + price.intValue() + " from the GTS");
                     }
 
-                    EntityPixelmon pokemon = lot.getItem().getPokemon(lot);
+                    EntityPixelmon pokemon = lot.getItem().getPokemon(lot, p);
                     Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                     if(storage.isPresent()){
                         storage.get().addToParty(pokemon);
@@ -157,7 +154,7 @@ public class LotUtils {
     public static void givePlayerPokemon(Player player, PokemonItem item, Lot lot){
         Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), player.getUniqueId());
         if(storage.isPresent()){
-            storage.get().addToParty(item.getPokemon(lot));
+            storage.get().addToParty(item.getPokemon(lot, player));
         } else {
             GTS.getInstance().getLogger().error("Player " + player.getName() + " was unable to receive a " + item.getName() + " from GTS");
         }

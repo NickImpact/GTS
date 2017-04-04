@@ -5,9 +5,7 @@ import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.Utils.Lot;
 import com.nickimpact.GTS.Utils.LotUtils;
-import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
-import com.pixelmonmod.pixelmon.storage.PlayerNotLoadedException;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.api.Sponge;
@@ -43,10 +41,7 @@ public class LotUI {
     private static HashMap<Player, Boolean> isAdmin = new HashMap<>();
 
     public static void showGUI(Player p, Lot lot, boolean search, List<String> pokemon, boolean admin) {
-        Inventory inv = Inventory.builder().of(InventoryArchetypes.CHEST)
-                .property("inventorytitle",
-                        (InventoryTitle.of(Text.of("GTS | Confirm"))))
-                .build(GTS.getInstance());
+        Inventory inv = registerInventory(p);
 
         lots.put(p, lot);
         isSearching.put(p, search);
@@ -132,70 +127,76 @@ public class LotUI {
         return button;
     }
 
-    public static void handleClickEvent(ClickInventoryEvent event, Player p) {
-        event.setCancelled(true);
-        if(!(event instanceof ClickInventoryEvent.Shift) && !(event instanceof ClickInventoryEvent.Drop)) {
-            if (event.getTransactions().size() != 0) {
-                int slot = ((SlotAdapter) event.getTransactions().get(0).getSlot()).slotNumber;
-                if(slot == 12 || slot == 16) {
-                    if (slot == 12) {
-                        boolean admin = isAdmin.get(p);
-                        if (event.getCursorTransaction().getFinal().getType().equals(ItemTypes.ANVIL)) {
-                            if (admin) {
-                                if (GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null) {
-                                    if (event instanceof ClickInventoryEvent.Secondary) {
-                                        p.sendMessage(MessageConfig.getMessage("GTS.Remove.Admin.Delete", lots.get(p).getItem().getName()));
-                                        GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
-                                    } else if (event instanceof ClickInventoryEvent.Primary) {
-                                        p.sendMessage(MessageConfig.getMessage("GTS.Remove.Admin.Remove", lots.get(p).getItem().getName()));
-                                        Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
-                                        if(storage.isPresent()) {
-                                            storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p)));
-                                            storage.get().sendUpdatedList();
+    private static Inventory registerInventory(Player p) {
+        return Inventory.builder().of(InventoryArchetypes.CHEST)
+                .property("inventorytitle",
+                        (InventoryTitle.of(Text.of("GTS | Confirm"))))
+                .listener(ClickInventoryEvent.class, event -> {
+                    event.setCancelled(true);
+                    if(!(event instanceof ClickInventoryEvent.Shift) && !(event instanceof ClickInventoryEvent.Drop)) {
+                        if (event.getTransactions().size() != 0) {
+                            int slot = ((SlotAdapter) event.getTransactions().get(0).getSlot()).slotNumber;
+                            if(slot == 12 || slot == 16) {
+                                if (slot == 12) {
+                                    boolean admin = isAdmin.get(p);
+                                    if (event.getCursorTransaction().getFinal().getType().equals(ItemTypes.ANVIL)) {
+                                        if (admin) {
+                                            if (GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null) {
+                                                if (event instanceof ClickInventoryEvent.Secondary) {
+                                                    p.sendMessage(MessageConfig.getMessage("GTS.Remove.Admin.Delete", lots.get(p).getItem().getName()));
+                                                    GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
+                                                } else if (event instanceof ClickInventoryEvent.Primary) {
+                                                    p.sendMessage(MessageConfig.getMessage("GTS.Remove.Admin.Remove", lots.get(p).getItem().getName()));
+                                                    Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
+                                                    if(storage.isPresent()) {
+                                                        storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p), p));
+                                                        storage.get().sendUpdatedList();
+                                                    } else {
+                                                        GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
+                                                    }
+                                                    GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
+                                                }
+                                            } else {
+                                                p.sendMessage(MessageConfig.getMessage("GTS.Remove.Failed", lots.get(p).getItem().getName()));
+                                            }
                                         } else {
-                                            GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
+                                            if (GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null) {
+                                                p.sendMessage(MessageConfig.getMessage("GTS.Remove.Success", lots.get(p).getItem().getName()));
+                                                Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
+                                                if(storage.isPresent()) {
+                                                    storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p), p));
+                                                    storage.get().sendUpdatedList();
+                                                } else {
+                                                    GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
+                                                }
+                                                GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
+                                            }
                                         }
-                                        GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
-                                    }
-                                } else {
-                                    p.sendMessage(MessageConfig.getMessage("GTS.Remove.Failed", lots.get(p).getItem().getName()));
-                                }
-                            } else {
-                                if (GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null) {
-                                    p.sendMessage(MessageConfig.getMessage("GTS.Remove.Success", lots.get(p).getItem().getName()));
-                                    Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
-                                    if(storage.isPresent()) {
-                                        storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p)));
-                                        storage.get().sendUpdatedList();
                                     } else {
-                                        GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
+                                        if(GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null){
+                                            LotUtils.buyLot(p, lots.get(p).getLotID());
+                                        } else {
+                                            p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Failed", lots.get(p).getItem().getName()));
+                                        }
                                     }
-                                    GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
+
+                                    Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                                        if(isAdmin.get(p)){
+                                            Admin.showGUI(p, 1);
+                                        } else {
+                                            Main.showGUI(p, 1, isSearching.get(p), tokens.get(p));
+                                        }
+                                    }).delayTicks(1).submit(GTS.getInstance());
+                                } else {
+                                    Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                                        Main.showGUI(p, 1, isSearching.get(p), tokens.get(p));
+                                    }).delayTicks(1).submit(GTS.getInstance());
                                 }
-                            }
-                        } else {
-                            if(GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null){
-                                LotUtils.buyLot(p, lots.get(p).getLotID());
-                            } else {
-                                p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Failed", lots.get(p).getItem().getName()));
                             }
                         }
-
-                        Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                            if(isAdmin.get(p)){
-                                Admin.showGUI(p, 1);
-                            } else {
-                                Main.showGUI(p, 1, isSearching.get(p), tokens.get(p));
-                            }
-                        }).delayTicks(1).submit(GTS.getInstance());
-                    } else {
-                        Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                            Main.showGUI(p, 1, isSearching.get(p), tokens.get(p));
-                        }).delayTicks(1).submit(GTS.getInstance());
                     }
-                }
-            }
-        }
+                })
+                .build(GTS.getInstance());
     }
 
     public static void handleCloseEvent(Player p) {

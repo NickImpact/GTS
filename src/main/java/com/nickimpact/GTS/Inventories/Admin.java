@@ -31,10 +31,7 @@ public class Admin {
     private static HashMap<Player, Integer> pages = new HashMap<>();
 
     public static void showGUI(Player p, int page){
-        Inventory inv = Inventory.builder().of(InventoryArchetypes.DOUBLE_CHEST)
-                .property("inventorytitle",
-                        (InventoryTitle.of(Text.of("GTS | Admin"))))
-                .build(GTS.getInstance());
+        Inventory inv = registerInventory(p);
         pages.put(p, page);
         setupGUI(inv, page);
         p.openInventory(inv, Cause.of(NamedCause.source(GTS.getInstance())));
@@ -70,53 +67,59 @@ public class Admin {
         }
     }
 
-    public static void handleClickEvent(ClickInventoryEvent e, @Root Player p){
-        e.setCancelled(true);
-        if(!(e instanceof ClickInventoryEvent.Shift) && !(e instanceof ClickInventoryEvent.Drop)) {
-            if (e.getTransactions().size() != 0) {
-                int slot = ((SlotAdapter) e.getTransactions().get(0).getSlot()).slotNumber;
-                if (slot < 54) {
-                    if(slot % 9 < 7) {
-                        if (!e.getCursorTransaction().getFinal().getType().equals(ItemTypes.NONE)) {
-                            String lotID = e.getCursorTransaction().getFinal().get(Keys.ITEM_LORE).get().get(0).toPlain();
-                            Lot lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
+    public static Inventory registerInventory(Player p){
+        return Inventory.builder().of(InventoryArchetypes.DOUBLE_CHEST)
+            .property("inventorytitle",
+                    (InventoryTitle.of(Text.of("GTS | Admin"))))
+            .listener(ClickInventoryEvent.class, e -> {
+                e.setCancelled(true);
+                if(!(e instanceof ClickInventoryEvent.Shift) && !(e instanceof ClickInventoryEvent.Drop)) {
+                    if (e.getTransactions().size() != 0) {
+                        int slot = ((SlotAdapter) e.getTransactions().get(0).getSlot()).slotNumber;
+                        if (slot < 54) {
+                            if(slot % 9 < 7) {
+                                if (!e.getCursorTransaction().getFinal().getType().equals(ItemTypes.NONE)) {
+                                    String lotID = e.getCursorTransaction().getFinal().get(Keys.ITEM_LORE).get().get(0).toPlain();
+                                    Lot lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
 
-                            if (lot == null) {
-                                p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Already Sold"));
-                            } else if (GTS.getInstance().getSql().isExpired(lot.getLotID())) {
-                                p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Expired"));
+                                    if (lot == null) {
+                                        p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Already Sold"));
+                                    } else if (GTS.getInstance().getSql().isExpired(lot.getLotID())) {
+                                        p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Expired"));
+                                    } else {
+                                        Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                                            LotUI.showGUI(p, lot, false, Lists.newArrayList(), true);
+                                            pages.remove(p);
+                                        }).delayTicks(1).submit(GTS.getInstance());
+                                    }
+                                }
                             } else {
                                 Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                                    LotUI.showGUI(p, lot, false, Lists.newArrayList(), true);
-                                    pages.remove(p);
+                                    if(slot == 8 || slot == 17) {
+                                        int size = GTS.getInstance().getSql().getAllLots().size();
+                                        if (slot == 8) {
+                                            if (pages.get(p) < size / 42 + 1) {
+                                                showGUI(p, pages.get(p) + 1);
+                                            } else {
+                                                showGUI(p, 1);
+                                            }
+                                        } else {
+                                            if (pages.get(p) > 1) {
+                                                showGUI(p, pages.get(p) - 1);
+                                            } else {
+                                                showGUI(p, size / 42 + 1);
+                                            }
+                                        }
+                                    } else if(slot == 35){
+                                        showGUI(p, pages.get(p));
+                                    }
                                 }).delayTicks(1).submit(GTS.getInstance());
                             }
                         }
-                    } else {
-                        Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                            if(slot == 8 || slot == 17) {
-                                int size = GTS.getInstance().getSql().getAllLots().size();
-                                if (slot == 8) {
-                                    if (pages.get(p) < size / 42 + 1) {
-                                        showGUI(p, pages.get(p) + 1);
-                                    } else {
-                                        showGUI(p, 1);
-                                    }
-                                } else {
-                                    if (pages.get(p) > 1) {
-                                        showGUI(p, pages.get(p) - 1);
-                                    } else {
-                                        showGUI(p, size / 42 + 1);
-                                    }
-                                }
-                            } else if(slot == 35){
-                                showGUI(p, pages.get(p));
-                            }
-                        }).delayTicks(1).submit(GTS.getInstance());
                     }
                 }
-            }
-        }
+            })
+        .build(GTS.getInstance());
     }
 
     public static void handleCloseEvent(Player p) {

@@ -42,7 +42,7 @@ public class UpdateLotsTask {
             player.get().sendMessage(MessageConfig.getMessage("GTS.Remove.Expired", lot.getItem().getName()));
             Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), Sponge.getServer().getPlayer(item.getOwner()).get().getUniqueId());
             if(storage.isPresent()) {
-                storage.get().addToParty(item.getPokemon(lot));
+                storage.get().addToParty(item.getPokemon(lot, player.get()));
                 GTS.getInstance().getSql().deleteLot(lot.getLotID());
             } else {
                 GTS.getInstance().getLogger().error("An error occurred on ending " + Sponge.getServer().getPlayer(lot.getOwner()).get().getName() + "'s listing");

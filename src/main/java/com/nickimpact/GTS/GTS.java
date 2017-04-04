@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import com.nickimpact.GTS.Commands.*;
 import com.nickimpact.GTS.Configuration.Config;
 import com.nickimpact.GTS.Configuration.MessageConfig;
-import com.nickimpact.GTS.Listeners.InventoryListener;
 import com.nickimpact.GTS.Listeners.JoinListener;
 import com.nickimpact.GTS.Storage.H2Provider;
 import com.nickimpact.GTS.Storage.MySQLProvider;
@@ -78,14 +77,6 @@ public class GTS {
             enabled = false;
         }
 
-        if(!Sponge.getPluginManager().isLoaded("nbthandler")){
-            getLogger().error(Text.of(TextColors.RED, "Sponge was unable to detect the NBTHandler..").toPlain());
-            getLogger().error(Text.of(TextColors.RED, "  Please ensure you have that installed, and that").toPlain());
-            getLogger().error(Text.of(TextColors.RED, "  it enabled correctly!").toPlain());
-            getLogger().info("");
-            enabled = false;
-        }
-
         if(enabled) {
             this.config = new Config();
             if(config.getDatabaseType().equalsIgnoreCase("H2")){
@@ -137,7 +128,6 @@ public class GTS {
             messageConfig = new MessageConfig();
 
             Sponge.getEventManager().registerListeners(this, new JoinListener());
-            Sponge.getEventManager().registerListeners(this, new InventoryListener());
             getLogger().info("    - Listeners registered into system");
             getLogger().info("");
             getLogger().info("GTS has successfully enabled, and is ready for service");
