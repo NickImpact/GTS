@@ -1,6 +1,7 @@
 package com.nickimpact.GTS.Commands;
 
 import com.google.common.collect.Lists;
+import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.Inventories.Main;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -19,7 +20,7 @@ public class GTSCommand implements CommandExecutor {
         if(!(src instanceof Player)){
             throw new CommandException(Text.of("Only players can open the GTS listings!"));
         }
-        Main.showGUI((Player)src, 1, false, Lists.newArrayList());
+        Main.showGUI((Player)src, 1, false, GTS.getInstance().getSql().getAllLots());
 
         return CommandResult.success();
     }

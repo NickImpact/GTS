@@ -24,7 +24,7 @@ public class JoinListener {
             if(player.isPresent()) {
                 for(Lot lot : GTS.getInstance().getSql().getPlayerLots(player.get().getUniqueId())){
                     if(GTS.getInstance().getSql().isExpired(lot.getLotID())){
-                        LotUtils.givePlayerPokemon(player.get(), GTS.getInstance().getSql().getLot(lot.getLotID()).getItem(), lot);
+                        LotUtils.givePlayerPokemon(player.get(), lot);
                         GTS.getInstance().getSql().deleteLot(lot.getLotID());
                         player.get().sendMessage(MessageConfig.getMessage("GTS.Remove.Expired", lot.getItem().getName()));
                     }

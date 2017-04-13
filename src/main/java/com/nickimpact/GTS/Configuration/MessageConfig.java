@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -153,5 +154,44 @@ public class MessageConfig {
             return Text.of(TextColors.RED, "A missing message setup was detected for path: ", TextColors.YELLOW, "Messages." + path);
         }
         return TextSerializers.FORMATTING_CODE.deserialize(MessageFormat.format(message, replacements));
+    }
+
+    private static Text replaceOptions(String original, HashMap<String, Object> replacements){
+        for(String key : replacements.keySet()){
+            switch(key){
+                case "%player%":
+                    original = original.replaceAll("player", (String)replacements.get("%player%"));
+                    break;
+                case "%event%":
+                    original = original.replaceAll("%event%", (String)replacements.get("%event%"));
+                    break;
+                case "%booster%":
+                    original = original.replaceAll("%booster%", (String)replacements.get("%booster%"));
+                    break;
+                case "%lure%":
+                    original = original.replaceAll("%lure%", (String)replacements.get("%lure%"));
+                    break;
+                case "%status%":
+                    original = original.replaceAll("%status%", (String)replacements.get("%status%"));
+                    break;
+                case "%message%":
+                    original = original.replaceAll("%message%", (String)replacements.get("%message%"));
+                    break;
+                case "%multiplier%":
+                    original = original.replaceAll("%multiplier%", (String)replacements.get("%multiplier%"));
+                    break;
+                case "%time%":
+                    original = original.replaceAll("%time%", (String)replacements.get("%time%"));
+                    break;
+                case "%remaining_boosters%":
+                    original = original.replaceAll("%remaining_boosters%", replacements.get("%remaining_boosters%").toString());
+                    break;
+                case "%location%":
+                    original = original.replaceAll("%location%", replacements.get("%location%").toString());
+                    break;
+            }
+        }
+
+        return TextSerializers.FORMATTING_CODE.deserialize(original);
     }
 }

@@ -63,7 +63,7 @@ public class Admin {
 
             Lot lot = lots.get(index);
             PokemonItem item = lot.getItem();
-            inv.query(new SlotPos(x, y)).offer(item.getItem(lot.getLotID(), GTS.getInstance().getSql().getEnd(lot.getLotID())));
+            inv.query(new SlotPos(x, y)).offer(item.getItem(lot));
         }
     }
 

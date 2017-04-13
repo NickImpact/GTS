@@ -2,6 +2,7 @@ package com.nickimpact.GTS.Inventories;
 
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
+import com.nickimpact.GTS.Utils.Lot;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.RepresentedPlayerData;
@@ -81,15 +82,15 @@ class SharedItems {
         return dummy;
     }
 
-    static ItemStack search(List<String> pokemon){
+    static ItemStack search(List<Lot> pokemon){
         ItemStack dummy = ItemStack.builder()
                 .itemType(ItemTypes.MAP)
                 .build();
         dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Search For.Title"));
         List<Text> lore = new ArrayList<>();
         if(pokemon != null) {
-            for (String s : pokemon) {
-                lore.add(MessageConfig.getMessage("Menus.Search For.Lore Format", s));
+            for (Lot lot : pokemon) {
+                lore.add(MessageConfig.getMessage("Menus.Search For.Lore Format", lot.getItem().getName()));
             }
             dummy.offer(Keys.ITEM_LORE, lore);
         }

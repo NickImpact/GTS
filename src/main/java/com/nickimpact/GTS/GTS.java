@@ -88,21 +88,15 @@ public class GTS {
                 this.sql = new H2Provider();
             }
             this.sql.createTable();
+            this.sql.updateTables();
 
             Sponge.getCommandManager().register(this, CommandSpec.builder()
                     .permission("gts.use")
                     .executor(new GTSCommand())
                     .description(Text.of("Opens the GUI displaying all GTS listings"))
-                    .child(CommandSpec.builder()
-                            .executor(new AdditionCommand())
-                            .arguments(GenericArguments.integer(Text.of("slot")), GenericArguments.integer(Text.of("price")))
-                            .description(Text.of("Add a pokemon to the GTS based on your party slots"))
-                            .build(), "add")
-                    .child(CommandSpec.builder()
-                            .executor(new SearchCommand())
-                            .arguments(GenericArguments.remainingJoinedStrings(Text.of("pokemon")))
-                            .description(Text.of("Search for a pokemon within the GTS"))
-                            .build(), "search")
+                    .child(AdditionCommand.registerCommand(), "add")
+                    .child(SearchCommand.registerCommand(), "search")
+                    .child(AuctionCommand.registerCommand(), "auc")
                     .child(CommandSpec.builder()
                             .executor(new ReloadCommand())
                             .permission("gts.admin")

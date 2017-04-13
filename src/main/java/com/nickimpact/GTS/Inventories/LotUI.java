@@ -37,10 +37,10 @@ public class LotUI {
 
     private static HashMap<Player, Lot> lots = new HashMap<>();
     private static HashMap<Player, Boolean> isSearching = new HashMap<>();
-    private static HashMap<Player, List<String>> tokens = new HashMap<>();
+    private static HashMap<Player, List<Lot>> tokens = new HashMap<>();
     private static HashMap<Player, Boolean> isAdmin = new HashMap<>();
 
-    public static void showGUI(Player p, Lot lot, boolean search, List<String> pokemon, boolean admin) {
+    public static void showGUI(Player p, Lot lot, boolean search, List<Lot> pokemon, boolean admin) {
         Inventory inv = registerInventory(p);
 
         lots.put(p, lot);
@@ -70,19 +70,25 @@ public class LotUI {
             inv.query(new SlotPos(x, y)).offer(SharedItems.border("Black"));
         }
 
-        inv.query(new SlotPos(1, 1)).offer(lot.getItem().getItem(lot.getLotID(), GTS.getInstance().getSql().getEnd(lot.getLotID())));
+        inv.query(new SlotPos(1, 1)).offer(lot.getItem().getItem(lot));
         if(admin){
             inv.query(new SlotPos(3, 1)).offer(removeListing(true));
-         } else {
+        } else {
             Optional<Player> player = Sponge.getServer().getPlayer(lot.getOwner());
             if(player.isPresent()){
                 if(p.getUniqueId().equals(player.get().getUniqueId())){
                     inv.query(new SlotPos(3, 1)).offer(removeListing(false));
                 } else {
-                    inv.query(new SlotPos(3, 1)).offer(confirmListing());
+                    if(lot.isAuction())
+                        inv.query(new SlotPos(3, 1)).offer(confirmBid());
+                    else
+                        inv.query(new SlotPos(3, 1)).offer(confirmListing());
                 }
             } else {
-                inv.query(new SlotPos(3, 1)).offer(confirmListing());
+                if(lot.isAuction())
+                    inv.query(new SlotPos(3, 1)).offer(confirmBid());
+                else
+                    inv.query(new SlotPos(3, 1)).offer(confirmListing());
             }
         }
         inv.query(new SlotPos(5, 1)).offer(lot.getItem().setStats());
@@ -103,6 +109,16 @@ public class LotUI {
 
             button.offer(Keys.ITEM_LORE, lore);
         }
+
+        return button;
+    }
+
+    private static ItemStack confirmBid(){
+        ItemStack button = ItemStack.builder()
+                .itemType(ItemTypes.DYE)
+                .build();
+        button.offer(Keys.DYE_COLOR, DyeColors.GREEN);
+        button.offer(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, "Bid for this Pokemon"));
 
         return button;
     }
@@ -173,8 +189,15 @@ public class LotUI {
                                             }
                                         }
                                     } else {
-                                        if(GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null){
-                                            LotUtils.buyLot(p, lots.get(p).getLotID());
+                                        Lot lot = GTS.getInstance().getSql().getLot(lots.get(p).getLotID());
+                                        if(lot != null){
+                                            if(lot.isAuction())
+                                                LotUtils.bid(p, lot);
+                                            else
+                                                if(lot.isPokemon())
+                                                    LotUtils.trade(p, lot);
+                                                else
+                                                    LotUtils.buyLot(p, lot);
                                         } else {
                                             p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Failed", lots.get(p).getItem().getName()));
                                         }
@@ -184,13 +207,13 @@ public class LotUI {
                                         if(isAdmin.get(p)){
                                             Admin.showGUI(p, 1);
                                         } else {
-                                            Main.showGUI(p, 1, isSearching.get(p), tokens.get(p));
+                                            p.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
                                         }
                                     }).delayTicks(1).submit(GTS.getInstance());
                                 } else {
-                                    Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                                        Main.showGUI(p, 1, isSearching.get(p), tokens.get(p));
-                                    }).delayTicks(1).submit(GTS.getInstance());
+                                    Sponge.getScheduler().createTaskBuilder().execute(() ->
+                                        p.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())))
+                                    ).delayTicks(1).submit(GTS.getInstance());
                                 }
                             }
                         }
@@ -224,7 +247,7 @@ public class LotUI {
         return false;
     }
 
-    public static List<String> getPokemon(Player p){
+    public static List<Lot> getPokemon(Player p){
         if(tokens.containsKey(p)){
             return tokens.get(p);
         }

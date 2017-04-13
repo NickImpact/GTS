@@ -26,69 +26,100 @@ import java.util.Optional;
  */
 public class LotUtils {
 
-    public static Object lotFromJson(String s){
-        Gson gson = new Gson();
-        return gson.fromJson(s, Lot.class);
+    public static Lot lotFromJson(String s) {
+        return new Gson().fromJson(s, Lot.class);
     }
 
-    public static void addPokemonToMarket(Player player, int slot, int price){
+    public static void addPokemonStatic(Player player, int slot, int price, boolean expires, long time) {
+        addPokemonToMarket(1, player, slot, price, expires, time);
+    }
+
+    public static void addPokemonAuc(Player player, int slot, int startPrice, int increment, long time) {
+        addPokemonToMarket(2, player, slot, startPrice, increment, time);
+    }
+
+    public static void addPokemon4Pokemon(Player player, int slot, String pokemon, boolean expires, long time){
+        addPokemonToMarket(3, player, slot, pokemon, expires, time);
+    }
+
+    private static void addPokemonToMarket(int mode, Player player, int slot, Object... options){
         if (GTS.getInstance().getSql().hasTooMany(player.getUniqueId())) {
             player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Exceed Max", GTS.getInstance().getConfig().getMaxPokemon()));
             return;
         }
 
-        Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), player.getUniqueId());
-        if(storage.isPresent()) {
-            if (storage.get().count() <= 1) {
-                player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Last Pokemon"));
+        Optional<PlayerStorage> storage = getStorage(player);
+        if(!storage.isPresent()) {
+            player.sendMessage(Text.of(TextColors.RED, "Your party info couldn't be found..."));
+            return;
+        }
+
+        NBTTagCompound nbt = getNbt(player, slot, storage.get());
+        if(nbt == null) {
+            player.sendMessage(Text.of(TextColors.RED, "The nbt info of slot " + slot + "couldn't be found..."));
+            return;
+        }
+
+        EntityPixelmon pokemon = getPokemon(player, nbt);
+        if(pokemon == null) {
+            player.sendMessage(Text.of(TextColors.RED, "The pokemon couldn't be forged..."));
+            return;
+        }
+
+        // Do checking
+        if(mode == 1){
+            int price = (Integer)options[0];
+            boolean expires = (Boolean)options[1];
+            long time = (Long)options[2];
+
+            if (!handleTax(player, price)){
+                player.sendMessage(Text.of(TextColors.RED, "Unable to afford taxes..."));
                 return;
             }
+
+            PokemonItem pokeItem = new PokemonItem(pokemon, player.getName(), price);
+
+            int placement = GTS.getInstance().getSql().getPlacement();
+
+            Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, price, expires);
+            GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), expires, time);
+
+            Sponge.getServer().getBroadcastChannel().send(MessageConfig.getMessage("GTS.Addition.Broadcast.Static", player.getName(), pokemon.getName()));
+        } else if(mode == 2) {
+            int stPrice = (Integer) options[0];
+            int increment = (Integer) options[1];
+            long time = (Long) options[2];
+
+            if (!handleTax(player, stPrice)){
+                player.sendMessage(Text.of(TextColors.RED, "Unable to afford taxes..."));
+                return;
+            }
+
+            PokemonItem pokeItem = new PokemonItem(pokemon, player.getName(), stPrice, increment);
+
+            int placement = GTS.getInstance().getSql().getPlacement();
+
+            Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, stPrice, false, true, null, stPrice, increment);
+            GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), true, time);
+
+            Sponge.getServer().getBroadcastChannel().send(MessageConfig.getMessage("GTS.Addition.Broadcast.Auction", player.getName(), pokemon.getName()));
         } else {
-            return;
-        }
+            String poke = (String)options[0];
+            boolean expires = (Boolean)options[1];
+            long time = (Long)options[2];
 
-        // Fetch the nbt components at the specific slot, and create them into a pokemon
-        NBTTagCompound[] party = storage.get().getList();
-        NBTTagCompound nbt = party[slot];
-        if (nbt == null) {
-            player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Empty Slot", slot + 1));
-            return;
-        }
-
-        EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(nbt, (World)player.getWorld());
-        for(String s : GTS.getInstance().getConfig().getBlocked()){
-            if(pokemon.getName().equalsIgnoreCase(s)){
-                player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Invalid", pokemon.getName()));
+            if(!handleTax(player, GTS.getInstance().getConfig().pokeTax())){
+                player.sendMessage(Text.of(TextColors.RED, "Unable to afford taxes..."));
                 return;
             }
+
+            PokemonItem pokeItem = new PokemonItem(pokemon, player.getName(), poke);
+
+            int placement = GTS.getInstance().getSql().getPlacement();
+            Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, true, poke);
+            GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), expires, time);
+            Sponge.getServer().getBroadcastChannel().send(MessageConfig.getMessage("GTS.Addition.Broadcast.Pokemon", player.getName(), pokemon.getName()));
         }
-
-        // Handle taxing the player, if it is enabled
-        BigDecimal tax = new BigDecimal((double)price * GTS.getInstance().getConfig().getTaxRate());
-        if(GTS.getInstance().getConfig().isTaxEnabled()) {
-            Optional<UniqueAccount> account = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId());
-            if(account.isPresent()) {
-                UniqueAccount acc = account.get();
-                if(acc.getBalance(GTS.getInstance().getEconomy().getDefaultCurrency()).compareTo(tax) < 0) {
-                    player.sendMessage(MessageConfig.getMessage("Pricing.Tax.Error.Not Enough", tax));
-                    return;
-                }
-                acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), tax, Cause.source(GTS.getInstance()).build());
-                player.sendMessage(MessageConfig.getMessage("Pricing.Tax.Success.Paid", tax));
-            } else {
-                GTS.getInstance().getLogger().error(Text.of(TextColors.RED, "Account for UUID (" + player.getUniqueId() + ") was not found").toPlain());
-            }
-        }
-
-        // Create the values to be used by the GTS Listing
-        PokemonItem pokeItem = new PokemonItem(pokemon, player.getName(), price);
-
-        // Add the GTS Listing to the SQLDatabase
-        int placement = GTS.getInstance().getSql().getPlacement();
-
-        Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, price);
-        Gson gson = new Gson();
-        GTS.getInstance().getSql().addLot(player.getUniqueId(), gson.toJson(lot));
 
         // Remove the pokemon from the client
         storage.get().recallAllPokemon();
@@ -99,9 +130,7 @@ public class LotUtils {
         player.sendMessage(MessageConfig.getMessage("GTS.Addition.Success.Added", pokemon.getPokemonName()));
     }
 
-    public static void buyLot(Player p, int id) {
-
-        Lot lot = GTS.getInstance().getSql().getLot(id);
+    public static void buyLot(Player p, Lot lot) {
 
         if (lot == null) {
             p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Already Sold"));
@@ -119,7 +148,7 @@ public class LotUtils {
                     }
                     acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.source(GTS.getInstance()).build());
                     p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Success.Buyer", lot.getItem().getPokemon(lot, p).getName(), price.intValue()));
-                    GTS.getInstance().getSql().deleteLot(id);
+                    GTS.getInstance().getSql().deleteLot(lot.getLotID());
                     if (Sponge.getServer().getPlayer(lot.getOwner()).isPresent()) {
                         Sponge.getServer().getPlayer(lot.getOwner()).get().sendMessage(MessageConfig.getMessage("GTS.Purchase.Success.Owner", lot.getItem().getPokemon(lot, p).getName(), p.getName()));
                     }
@@ -151,13 +180,100 @@ public class LotUtils {
         }
     }
 
-    public static void givePlayerPokemon(Player player, PokemonItem item, Lot lot){
+    public static void bid(Player player, Lot lot){
+        if(lot.getHighBidder() != null){
+            if(player.getUniqueId().equals(lot.getHighBidder())){
+                player.sendMessage(Text.of(TextColors.RED, "You must wait till someone outbids you to bid again..."));
+                return;
+            }
+
+            Optional<Player> p = Sponge.getServer().getPlayer(lot.getHighBidder());
+            if(p.isPresent()){
+                if(p.get().isOnline()){
+                    p.get().sendMessage(MessageConfig.getMessage("GTS.Auction.Outbid", player.getName(), lot.getItem().getName()));
+                }
+            }
+        }
+
+        for(Player p : lot.getAucListeners())
+            if(!p.getUniqueId().equals(lot.getHighBidder()))
+                p.sendMessage(MessageConfig.getMessage("GTS.Auction.Placed-Bid", player.getName(), lot.getItem().getName()));
+
+        lot.setStPrice(lot.getStPrice() + lot.getIncrement());
+        lot.setHighBidder(player.getUniqueId());
+        GTS.getInstance().getSql().updateEntry(lot);
+    }
+
+    public static void trade(Player player, Lot lot){
+        GTS.getInstance().getSql().deleteLot(lot.getLotID());
+        givePlayerPokemon(player, lot);
+        player.sendMessage(MessageConfig.getMessage("GTS.Trade.Recipient.Receive-Poke", lot.getItem().getName()));
+
+        Sponge.getServer().getPlayer(lot.getOwner()).ifPresent(o ->
+                o.sendMessage(MessageConfig.getMessage("GTS.Trade.Owner.Receive-Poke", lot.getPokeWanted())));
+    }
+
+    public static void givePlayerPokemon(Player player, Lot lot){
         Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), player.getUniqueId());
         if(storage.isPresent()){
-            storage.get().addToParty(item.getPokemon(lot, player));
+            storage.get().addToParty(lot.getItem().getPokemon(lot, player));
         } else {
-            GTS.getInstance().getLogger().error("Player " + player.getName() + " was unable to receive a " + item.getName() + " from GTS");
+            GTS.getInstance().getLogger().error("Player " + player.getName() + " was unable to receive a " + lot.getItem().getName() + " from GTS");
         }
+    }
+
+    private static Optional<PlayerStorage> getStorage(Player player){
+        Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), player.getUniqueId());
+        if(storage.isPresent())
+            if (storage.get().count() <= 1) {
+                player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Last Pokemon"));
+                return Optional.empty();
+            }
+
+        return storage;
+    }
+
+    private static NBTTagCompound getNbt(Player player, int slot, PlayerStorage ps){
+        NBTTagCompound[] party = ps.getList();
+        NBTTagCompound nbt = party[slot];
+        if (nbt == null) {
+            player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Empty Slot", slot + 1));
+            return null;
+        }
+
+        return nbt;
+    }
+
+    private static EntityPixelmon getPokemon(Player player, NBTTagCompound nbt){
+        EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(nbt, (World)player.getWorld());
+        for(String s : GTS.getInstance().getConfig().getBlocked()){
+            if(pokemon.getName().equalsIgnoreCase(s)){
+                player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Invalid", pokemon.getName()));
+                return null;
+            }
+        }
+
+        return pokemon;
+    }
+
+    private static boolean handleTax(Player player, int price){
+        BigDecimal tax = new BigDecimal((double)price * GTS.getInstance().getConfig().getTaxRate());
+        if(GTS.getInstance().getConfig().isTaxEnabled()) {
+            Optional<UniqueAccount> account = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId());
+            if(account.isPresent()) {
+                UniqueAccount acc = account.get();
+                if(acc.getBalance(GTS.getInstance().getEconomy().getDefaultCurrency()).compareTo(tax) < 0) {
+                    player.sendMessage(MessageConfig.getMessage("Pricing.Tax.Error.Not Enough", tax));
+                    return false;
+                }
+                acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), tax, Cause.source(GTS.getInstance()).build());
+                player.sendMessage(MessageConfig.getMessage("Pricing.Tax.Success.Paid", tax));
+            } else {
+                GTS.getInstance().getLogger().error(Text.of(TextColors.RED, "Account for UUID (" + player.getUniqueId() + ") was not found").toPlain());
+                return false;
+            }
+        }
+        return true;
     }
 
     static String getTime(long timeEnd) {

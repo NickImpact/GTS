@@ -17,12 +17,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.Instant;
 import java.util.*;
+import java.util.Date;
 
 /**
  * ============================================================================*
@@ -57,12 +55,35 @@ public abstract class SQLDatabase {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try (PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `" + getDbName() + "` (ID INTEGER, Ends MEDIUMTEXT, Expired TINYINT(1), uuid CHAR(36), Lot MEDIUMTEXT);")) {
+                try (PreparedStatement statement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS `" + getDbName() + "` (ID INTEGER, Ends MEDIUMTEXT, Expired TINYINT(1), uuid CHAR(36), Lot MEDIUMTEXT, DoesExpire TINYINT(1));")) {
                     statement.executeUpdate();
                     statement.close();
                 }
             }
         } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void updateTables(){
+        try {
+            try (Connection connection = this.getConnection()) {
+                if (connection == null || connection.isClosed()) {
+                    throw new IllegalStateException("SQL connection is null");
+                }
+
+                try(PreparedStatement st = connection.prepareStatement("SELECT DoesExpire FROM `" + getDbName() + "`")){
+                    ResultSet rs = st.executeQuery();
+                    ResultSetMetaData md = rs.getMetaData();
+                    if (md.getColumnCount() == 0) {
+                        try (PreparedStatement statement = connection.prepareStatement("ALTER TABLE `" + getDbName() + "` ADD DoesExpire TINYINT(1);")) {
+                            statement.executeUpdate();
+                            statement.close();
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -146,6 +167,32 @@ public abstract class SQLDatabase {
         return -1;
     }
 
+    public boolean canExpire(int id){
+        try {
+            try(Connection connection = this.getConnection()) {
+                if (connection == null || connection.isClosed()) {
+                    throw new IllegalStateException("SQL connection is null");
+                }
+
+                boolean canExpire = false;
+                try (PreparedStatement ps = connection.prepareStatement("SELECT DoesExpire FROM `" + getDbName() + "` WHERE ID='" + id + "'")) {
+                    ResultSet result = ps.executeQuery();
+                    if (result.next()) {
+                        canExpire = result.getBoolean("Does_Expire");
+                    }
+                    result.close();
+                    ps.close();
+
+                    return canExpire;
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     /**
      * This function adds a new lot to the database for the specified uuid.
      *
@@ -153,18 +200,19 @@ public abstract class SQLDatabase {
      * @param lot A representation of the market listing
      */
 
-    public void addLot(UUID uuid, String lot) {
+    public void addLot(UUID uuid, String lot, boolean canExpire, long expires) {
         try {
             try(Connection connection = getConnection()){
                 if(connection == null || connection.isClosed()){
                     throw new IllegalStateException("SQL connection is null");
                 }
-                try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `" + getDbName() + "`(ID, Ends, Expired, uuid, Lot) VALUES (?, ?, ?, ?, ?)")) {
+                try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `" + getDbName() + "`(ID, Ends, Expired, uuid, Lot, DoesExpire) VALUES (?, ?, ?, ?, ?, ?)")) {
                     statement.setInt(1, getPlacement());
-                    statement.setString(2, Instant.now().plusSeconds(GTS.getInstance().getConfig().getLotTime() * 60).toString());
+                    statement.setString(2, Instant.now().plusSeconds(expires).toString());
                     statement.setBoolean(3, false);
                     statement.setString(4, uuid.toString());
                     statement.setString(5, lot);
+                    statement.setBoolean(6, canExpire);
                     statement.executeUpdate();
                     statement.close();
                 }
@@ -190,7 +238,7 @@ public abstract class SQLDatabase {
                 try (PreparedStatement ps = connection.prepareStatement("SELECT Lot FROM `" + getDbName() + "` WHERE ID='" + id + "'")) {
                     ResultSet result = ps.executeQuery();
                     if (result.next()) {
-                        return (Lot) LotUtils.lotFromJson(result.getString("Lot"));
+                        return LotUtils.lotFromJson(result.getString("Lot"));
                     }
                 }
             }
@@ -236,7 +284,7 @@ public abstract class SQLDatabase {
                 try (PreparedStatement query = connection.prepareStatement("SELECT Lot FROM `" + getDbName() + "`")) {
                     ResultSet results = query.executeQuery();
                     while (results.next()) {
-                        Lot lot = (Lot) LotUtils.lotFromJson(results.getString("Lot"));
+                        Lot lot = LotUtils.lotFromJson(results.getString("Lot"));
                         if (!isExpired(lot.getLotID())) {
                             lots.add(lot);
                         }
@@ -265,7 +313,7 @@ public abstract class SQLDatabase {
                     ResultSet results = query.executeQuery();
                     while (results.next()) {
                         UUID uuid = UUID.fromString(results.getString("uuid"));
-                        Lot lot = (Lot) LotUtils.lotFromJson(results.getString("Lot"));
+                        Lot lot = LotUtils.lotFromJson(results.getString("Lot"));
                         Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), uuid);
                         if(storage.isPresent()){
                             EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(JsonToNBT.getTagFromJson(lot.getNBT()), (World)Sponge.getServer().getPlayer(uuid).get().getWorld());
@@ -306,7 +354,7 @@ public abstract class SQLDatabase {
                 try(PreparedStatement ps = connection.prepareStatement("SELECT Lot FROM `" + getDbName() + "` WHERE uuid='" + uuid + "'")) {
                     ResultSet results = ps.executeQuery();
                     while (results.next()) {
-                        lots.add((Lot) LotUtils.lotFromJson(results.getString("Lot")));
+                        lots.add(LotUtils.lotFromJson(results.getString("Lot")));
                     }
                     results.close();
                     ps.close();
@@ -320,7 +368,25 @@ public abstract class SQLDatabase {
         return null;
     }
 
-    public void updateEntry(int id) {
+    public void updateEntry(Lot lot){
+        try {
+            try(Connection connection = this.getConnection()) {
+                if (connection == null || connection.isClosed()) {
+                    throw new IllegalStateException("SQL connection is null");
+                }
+
+                try (PreparedStatement query = connection.prepareStatement("UPDATE `" + getDbName() + "` SET Lot='" + new Gson().toJson(lot) + "' WHERE ID='" + lot.getLotID() + "'")) {
+                    query.executeUpdate();
+                    query.close();
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setExpired(int id) {
         try {
             try(Connection connection = this.getConnection()) {
                 if (connection == null || connection.isClosed()) {

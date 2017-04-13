@@ -34,13 +34,15 @@ public class Config {
     private String password;
 
     private int maxPokemon;
-    private int time;
+    private long time;
 
     private boolean taxEnabled;
     private double taxRate;
 
     private List<String> blocked;
     private String currencySymbol;
+    private int increment;
+    private long aucTime;
 
     public Config(){
         this.loadConfig();
@@ -80,7 +82,7 @@ public class Config {
             maxPokemon = max.getInt(3);
             CommentedConfigurationNode lotTime = node.getNode("Lot Time");
             lotTime.setComment("Set how long a lot should be (In Minutes)");
-            time = lotTime.getInt(10);
+            time = lotTime.getInt(60) * 60;
 
             currencySymbol = node.getNode("Currency Symbol").getString("$");
 
@@ -151,7 +153,7 @@ public class Config {
         return maxPokemon;
     }
 
-    public int getLotTime() {
+    public long getLotTime() {
         return time;
     }
 
@@ -175,5 +177,18 @@ public class Config {
 
     public String getCurrencySymbol(){
         return this.currencySymbol;
+    }
+
+    public int getIncrement() {
+        return increment;
+    }
+
+    public int pokeTax() {
+
+        return 0;
+    }
+
+    public long getAucTime() {
+        return aucTime;
     }
 }

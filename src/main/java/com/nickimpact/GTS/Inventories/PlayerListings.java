@@ -30,9 +30,9 @@ public class PlayerListings {
 
     private static HashMap<Player, Integer> pages = new HashMap<>();
     private static HashMap<Player, Boolean> search = new HashMap<>();
-    private static HashMap<Player, List<String>> tokens = new HashMap<>();
+    private static HashMap<Player, List<Lot>> tokens = new HashMap<>();
 
-    public static void showGUI(Player p, int page, boolean searching, List<String> pokemon){
+    public static void showGUI(Player p, int page, boolean searching, List<Lot> pokemon){
         Inventory inv = registerInventory(p);
         pages.put(p, page);
         search.put(p, searching);
@@ -76,7 +76,7 @@ public class PlayerListings {
 
             Lot lot = lots.get(index);
             PokemonItem item = lot.getItem();
-            inv.query(new SlotPos(x, y)).offer(item.getItem(lot.getLotID(), GTS.getInstance().getSql().getEnd(lot.getLotID())));
+            inv.query(new SlotPos(x, y)).offer(item.getItem(lot));
         }
 
         return true;
@@ -157,7 +157,7 @@ public class PlayerListings {
         return false;
     }
 
-    public static List<String> getPokemon(Player p){
+    public static List<Lot> getPokemon(Player p){
         if(tokens.containsKey(p)){
             return tokens.get(p);
         }

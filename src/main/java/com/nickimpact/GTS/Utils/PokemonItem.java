@@ -38,6 +38,8 @@ import java.util.Optional;
 public class PokemonItem {
     private String owner;
     private int cost;
+    private int startPrice;
+    private int increment;
 
     private int id;
     private int form;
@@ -71,9 +73,22 @@ public class PokemonItem {
     private boolean isEgg;
     private String heldItem = "Nothing";
 
-    public PokemonItem(EntityPixelmon pokemon, String owner, int cost) {
+    public PokemonItem(EntityPixelmon pokemon, String owner, Object... options) {
         this.owner = owner;
-        this.cost = cost;
+
+        if(options.length == 1 && options[0] instanceof Integer) {
+            this.cost = (Integer) options[0];
+            this.startPrice = -1;
+            this.increment = -1;
+        } else if(options.length == 2) {
+            this.cost = -1;
+            this.startPrice = (Integer) options[0];
+            this.increment = (Integer) options[1];
+        } else {
+            this.cost = -1;
+            this.startPrice = -1;
+            this.increment = -1;
+        }
 
         this.id = pokemon.baseStats.nationalPokedexNumber;
         this.form = pokemon.getEntityData().getInteger(NbtKeys.FORM);
@@ -152,15 +167,15 @@ public class PokemonItem {
         return String.valueOf(intPower) + " | " + strTypes[intTypeIndex];
     }
 
-    public ItemStack getItem(int id, Date date) {
+    public ItemStack getItem(Lot lot) {
         if(this.isEgg){
             ItemStack item = ItemStack.builder().itemType(ItemTypes.EGG).build();
-            this.setItemData(item, id, date);
+            this.setItemData(item, lot.getLotID(), lot);
             return item;
         } else {
             net.minecraft.item.ItemStack nativeItem = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
             ItemStack item = setPicture(nativeItem);
-            this.setItemData(item, id, date);
+            this.setItemData(item, lot.getLotID(), lot);
             return item;
         }
     }
@@ -186,7 +201,7 @@ public class PokemonItem {
         return ItemStackUtil.fromNative(item);
     }
 
-    private void setItemData(ItemStack item, int id, Date end) {
+    private void setItemData(ItemStack item, int id, Lot lot) {
         if (!this.isEgg) {
             if (this.shiny) {
                 item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.AQUA, this.name + " ", TextColors.GRAY, "| ", TextColors.YELLOW, "Lvl " + this.lvl + " ", TextColors.GRAY, "(", TextColors.GOLD, "Shiny", TextColors.GRAY, ")"));
@@ -209,8 +224,23 @@ public class PokemonItem {
             data.add(Text.of(TextColors.GRAY, "Gender: ", TextColors.YELLOW, "???"));
             data.add(Text.of(TextColors.GRAY, "Size: ", TextColors.YELLOW, "???"));
             data.add(Text.EMPTY);
-            data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, GTS.getInstance().getConfig().getCurrencySymbol() + this.cost));
-            data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(end.toInstant().toEpochMilli() - Instant.now().toEpochMilli())));
+
+            if(this.cost != -1 && this.startPrice == -1)
+                data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, GTS.getInstance().getConfig().getCurrencySymbol() + this.cost));
+            else if(this.cost == -1 && this.startPrice != -1) {
+                data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getConfig().getCurrencySymbol() + this.startPrice));
+                data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getConfig().getCurrencySymbol() + this.increment));
+                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getHighBidder() != null ? Sponge.getServer()
+                        .getPlayer(lot.getHighBidder()).get().getName() : "N/A"));
+            } else {
+                data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getPokeWanted()));
+            }
+
+            if(!lot.canExpire())
+                data.add(Text.of(TextColors.GRAY, "Expires: ", TextColors.YELLOW, "Never"));
+            else
+                data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(GTS.getInstance().getSql()
+                    .getEnd(lot.getLotID()).toInstant().toEpochMilli() - Instant.now().toEpochMilli())));
         } else {
             data.add(Text.of(TextColors.GRAY, "Lot ID: ", TextColors.YELLOW, id));
             data.add(Text.of(TextColors.GRAY, "Owner: ", TextColors.YELLOW, this.owner));
@@ -231,8 +261,21 @@ public class PokemonItem {
                 data.add(Text.of(TextColors.GRAY, "Clones: ", TextColors.YELLOW, this.clones + " times"));
             }
             data.add(Text.EMPTY);
-            data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, GTS.getInstance().getConfig().getCurrencySymbol() + this.cost));
-            data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(end.toInstant().toEpochMilli() - Instant.now().toEpochMilli())));
+            if(this.cost != -1 && this.startPrice == -1)
+                data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, GTS.getInstance().getConfig().getCurrencySymbol() + this.cost));
+            else if(this.cost == -1 && this.startPrice != -1) {
+                data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getConfig().getCurrencySymbol() + this.startPrice));
+                data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getConfig().getCurrencySymbol() + this.increment));
+                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getHighBidder() != null ? Sponge.getServer()
+                        .getPlayer(lot.getHighBidder()).get().getName() : "N/A"));
+            } else {
+                data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getPokeWanted()));
+            }
+            if(!lot.canExpire())
+                data.add(Text.of(TextColors.GRAY, "Expires: ", TextColors.YELLOW, "Never"));
+            else
+                data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(GTS.getInstance().getSql()
+                        .getEnd(lot.getLotID()).toInstant().toEpochMilli() - Instant.now().toEpochMilli())));
         }
 
         item.offer(Keys.ITEM_LORE, data);
@@ -306,4 +349,13 @@ public class PokemonItem {
     public void setPrice(int price){
         this.cost = price;
     }
+
+    public void setStPrice(int stPrice){
+        this.startPrice = stPrice;
+    }
+
+    public void setIncrement(int increment){
+        this.increment = increment;
+    }
+
 }

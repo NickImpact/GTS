@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.Inventories;
 
+import com.google.common.collect.Lists;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.Utils.Lot;
@@ -30,15 +31,15 @@ public class Main {
 
     private static HashMap<Player, Integer> playerPage = new HashMap<>();
     private static HashMap<Player, Boolean> playerSearch = new HashMap<>();
-    private static HashMap<Player, List<String>> playerTokens = new HashMap<>();
+    private static HashMap<Player, List<Lot>> playerTokens = new HashMap<>();
     private static HashMap<Player, Integer> playerMax = new HashMap<>();
 
-    public static void showGUI(Player p, int page, boolean search, List<String> pokemon){
+    public static void showGUI(Player p, int page, boolean search, List<Lot> pokemon){
         playerPage.put(p, page);
         playerMax.put(p, GTS.getInstance().getSql().getAllLots().size() / 28 + 1);
-
         playerSearch.put(p, search);
         playerTokens.put(p, pokemon);
+
         Inventory inv = registerInventory(p, page, search);
         boolean open = setupGUI(inv, p, page, search, pokemon);
         if(open){
@@ -48,9 +49,8 @@ public class Main {
         }
     }
 
-    private static boolean setupGUI(Inventory inv, Player p, int page, boolean search, List<String> pokemon) {
+    private static boolean setupGUI(Inventory inv, Player p, int page, boolean search, List<Lot> lots) {
         int index = (page - 1) * 28;
-        List<Lot> lots = GTS.getInstance().getSql().getAllLots();
 
         int x;
         int y;
@@ -68,7 +68,7 @@ public class Main {
         inv.query(new SlotPos(0,5)).offer(SharedItems.playerIcon(p));
         inv.query(new SlotPos(1,5)).offer(SharedItems.border("Green"));
         inv.query(new SlotPos(2,5)).offer(SharedItems.balance(p));
-        inv.query(new SlotPos(4,5)).offer(SharedItems.search(pokemon));
+        inv.query(new SlotPos(4,5)).offer(SharedItems.search(search ? lots : Lists.newArrayList()));
         inv.query(new SlotPos(6,5)).offer(SharedItems.listings());
 
         for(x = 0, y = 0; y < 4; index++){
@@ -81,17 +81,13 @@ public class Main {
             }
             if (search) {
                 Lot lot = lots.get(index);
-                for(String poke : pokemon){
-                    if(lot.getItem().getName().equalsIgnoreCase(poke)){
-                        PokemonItem item = lot.getItem();
-                        inv.query(new SlotPos(x, y)).offer(item.getItem(lot.getLotID(), GTS.getInstance().getSql().getEnd(lot.getLotID())));
-                        x++;
-                    }
-                }
+                PokemonItem item = lot.getItem();
+                inv.query(new SlotPos(x, y)).offer(item.getItem(lot));
+                x++;
             } else {
                 Lot lot = lots.get(index);
                 PokemonItem item = lot.getItem();
-                inv.query(new SlotPos(x, y)).offer(item.getItem(lot.getLotID(), GTS.getInstance().getSql().getEnd(lot.getLotID())));
+                inv.query(new SlotPos(x, y)).offer(item.getItem(lot));
                 x++;
             }
         }
@@ -129,10 +125,6 @@ public class Main {
                                     } else {
                                         Sponge.getScheduler().createTaskBuilder().execute(() -> {
                                             LotUI.showGUI(p, lot, playerSearch.get(p), playerTokens.get(p), false);
-                                            playerPage.remove(p);
-                                            playerMax.remove(p);
-                                            playerSearch.remove(p);
-                                            playerTokens.remove(p);
                                         }).delayTicks(1).submit(GTS.getInstance());
                                     }
                                 }
@@ -158,10 +150,6 @@ public class Main {
                                     } else {
                                         // Player Listings
                                         PlayerListings.showGUI(p, 1, playerSearch.get(p), playerTokens.get(p));
-                                        playerMax.remove(p);
-                                        playerSearch.remove(p);
-                                        playerPage.remove(p);
-                                        playerTokens.remove(p);
                                     }
                                 }).delayTicks(1).submit(GTS.getInstance());
                             }
@@ -170,33 +158,5 @@ public class Main {
                 }
             })
         .build(GTS.getInstance());
-    }
-
-    public static void handleCloseEvent(@Root Player p){
-        playerMax.remove(p);
-        playerSearch.remove(p);
-        playerPage.remove(p);
-        playerTokens.remove(p);
-    }
-
-    public static int getCurrPage(Player p){
-        if(playerPage.containsKey(p)){
-            return playerPage.get(p);
-        }
-        return 1;
-    }
-
-    public static boolean getCurrSearch(Player p){
-        if(playerSearch.containsKey(p)){
-            return playerSearch.get(p);
-        }
-        return false;
-    }
-
-    public static List<String> getPokemon(Player p){
-        if(playerTokens.containsKey(p)){
-            return playerTokens.get(p);
-        }
-        return new ArrayList<>();
     }
 }
