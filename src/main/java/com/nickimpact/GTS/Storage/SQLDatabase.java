@@ -302,44 +302,29 @@ public abstract class SQLDatabase {
         return Lists.newArrayList();
     }
 
-    public boolean returnLots() {
+    public int clearLots() {
+        int slots = 0;
         try{
             try(Connection connection = getConnection()) {
                 if (connection == null || connection.isClosed()) {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try (PreparedStatement query = connection.prepareStatement("SELECT uuid, Lot FROM `" + getDbName() + "`")) {
+                try (PreparedStatement query = connection.prepareStatement("SELECT * FROM `" + getDbName() + "`")) {
                     ResultSet results = query.executeQuery();
-                    while (results.next()) {
-                        UUID uuid = UUID.fromString(results.getString("uuid"));
-                        Lot lot = LotUtils.lotFromJson(results.getString("Lot"));
-                        Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), uuid);
-                        if(storage.isPresent()){
-                            EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(JsonToNBT.getTagFromJson(lot.getNBT()), (World)Sponge.getServer().getPlayer(uuid).get().getWorld());
-                            storage.get().addToParty(pokemon);
-                            storage.get().sendUpdatedList();
-                            Gson gson = new Gson();
-                            try(PreparedStatement ps = connection.prepareStatement("DELETE FROM `" + getDbName() + "` WHERE Lot='" + gson.toJson(lot) + "'")){
-                                ps.executeUpdate();
-                                ps.close();
-                            }
-                        }
-                    }
+                    slots = results.getFetchSize();
+                    clearTable();
+
                     results.close();
                     query.close();
-                    Sponge.getServer().getBroadcastChannel().send(MessageConfig.getMessage("Admin.Clear", null));
-                } catch (NBTException e) {
-                    e.printStackTrace();
                 }
             }
 
-            return true;
         } catch(SQLException e){
             e.printStackTrace();
         }
 
-        return false;
+        return slots;
     }
 
     public List<Lot> getPlayerLots(UUID uuid){

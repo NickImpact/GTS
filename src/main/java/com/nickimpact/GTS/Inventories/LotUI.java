@@ -163,11 +163,11 @@ public class LotUI {
                                         if (admin) {
                                             if (GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null) {
                                                 if (event instanceof ClickInventoryEvent.Secondary) {
-                                                    for(Text text : MessageConfig.getMessages("GTS.Remove.Admin.Delete", textOptions))
+                                                    for(Text text : MessageConfig.getMessages("Administrative.LotUI.Delete", textOptions))
                                                         p.sendMessage(text);
                                                     GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
                                                 } else if (event instanceof ClickInventoryEvent.Primary) {
-                                                    for(Text text : MessageConfig.getMessages("GTS.Remove.Admin.Remove", textOptions))
+                                                    for(Text text : MessageConfig.getMessages("Administrative.LotUI.Remove", textOptions))
                                                         p.sendMessage(text);
                                                     Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                                                     if(storage.isPresent()) {
@@ -179,12 +179,12 @@ public class LotUI {
                                                     GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
                                                 }
                                             } else {
-                                                for(Text text : MessageConfig.getMessages("GTS.Remove.Failed", textOptions))
+                                                for(Text text : MessageConfig.getMessages("Generic.Remove.Failed", textOptions))
                                                     p.sendMessage(text);
                                             }
                                         } else {
                                             if (GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null) {
-                                                for(Text text : MessageConfig.getMessages("GTS.Remove.Success", textOptions))
+                                                for(Text text : MessageConfig.getMessages("Generic.Remove.Success", textOptions))
                                                     p.sendMessage(text);
                                                 Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                                                 if(storage.isPresent()) {
@@ -207,7 +207,7 @@ public class LotUI {
                                                 else
                                                     LotUtils.buyLot(p, lot);
                                         } else {
-                                            for(Text text : MessageConfig.getMessages("GTS.Purchase.Failed", textOptions))
+                                            for(Text text : MessageConfig.getMessages("Generic.Purchase.Failed", textOptions))
                                                 p.sendMessage(text);
                                         }
                                     }
@@ -229,37 +229,5 @@ public class LotUI {
                     }
                 })
                 .build(GTS.getInstance());
-    }
-
-    public static void handleCloseEvent(Player p) {
-
-    }
-
-    public static Lot getCurrLot(Player p){
-        if(lots.containsKey(p)){
-            return lots.get(p);
-        }
-        return null;
-    }
-
-    public static boolean getCurrSearch(Player p){
-        if(isSearching.containsKey(p)){
-            return isSearching.get(p);
-        }
-        return false;
-    }
-
-    public static boolean getIsAdmin(Player p){
-        if(isAdmin.containsKey(p)){
-            return isAdmin.get(p);
-        }
-        return false;
-    }
-
-    public static List<Lot> getPokemon(Player p){
-        if(tokens.containsKey(p)){
-            return tokens.get(p);
-        }
-        return Lists.newArrayList();
     }
 }

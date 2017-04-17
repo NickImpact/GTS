@@ -1,8 +1,8 @@
 package com.nickimpact.GTS.Commands;
 
+import com.google.common.collect.Maps;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
-import com.nickimpact.GTS.Utils.Lot;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -10,7 +10,8 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.text.Text;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Optional;
 
 /**
  * Created by Nick on 12/15/2016.
@@ -18,9 +19,12 @@ import java.util.List;
 public class ClearCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-        GTS.getInstance().getSql().returnLots();
+        int cleared = GTS.getInstance().getSql().clearLots();
 
-        src.sendMessage(MessageConfig.getMessage("Admin.Clear", null));
+        HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+        textOptions.put("cleared", Optional.of(cleared));
+        for(Text text : MessageConfig.getMessages("Administrative.Clear", null))
+            src.sendMessage(text);
         return CommandResult.success();
     }
 }

@@ -11,19 +11,17 @@ import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextFormat;
 import org.spongepowered.api.text.serializer.TextSerializers;
-import org.spongepowered.common.text.SpongeTexts;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -31,7 +29,6 @@ import java.util.regex.Pattern;
  */
 public class MessageConfig {
 
-    private static Path configFile;
     private static ConfigurationLoader<CommentedConfigurationNode> loader;
     private static CommentedConfigurationNode main;
 
@@ -40,7 +37,7 @@ public class MessageConfig {
     }
 
     private void loadConfig(){
-        configFile = Paths.get(GTS.getInstance().getConfigDir() + "/messages.conf");
+        Path configFile = Paths.get(GTS.getInstance().getConfigDir() + "/messages.conf");
         loader = HoconConfigurationLoader.builder().setPath(configFile).build();
 
         try{
@@ -56,81 +53,170 @@ public class MessageConfig {
                 main = loader.load(ConfigurationOptions.defaults().setShouldCopyDefaults(true));
             }
 
-            CommentedConfigurationNode node = main.getNode("Messages");
-            node.setComment("These control the messages sent by GTS");
+            CommentedConfigurationNode generic = main.getNode("Generic");
+            CommentedConfigurationNode admin = main.getNode("Administrative");
+            CommentedConfigurationNode auctions = main.getNode("Auctions");
+            CommentedConfigurationNode pricing = main.getNode("Pricing");
+            CommentedConfigurationNode menus = main.getNode("UI Items");
 
-            CommentedConfigurationNode gts = node.getNode("GTS");
-            gts.setComment("These nodes are for many of the main functions in the GTS");
+            // Generic Settings
+            generic.setComment("\n" +
+                    "+-------------------------------------------------------------------+ #\n" +
+                    "|                         Generic Messages                          | #\n" +
+                    "+-------------------------------------------------------------------+ #");
 
-            ConfigurationNode addition = gts.getNode("Addition");
-            ConfigurationNode success = addition.getNode("Success");
-            success.getNode("Added").getString("&a&lGTS &7| &e{0} &7has been successfully deposited into the GTS");
+            // Addition Messages:
+            generic.getNode("Addition", "Broadcast", "Normal").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &c{{player}} &7has added a &a{{ability}} {{IV%}} {{shiny:s}}{{pokemon}} &7to the GTS for &a{{curr_symbol}}{{price}}&7!"
+            ));
 
-            ConfigurationNode error = addition.getNode("Error");
-            error.getNode("Exceed Max").getString("&c&lGTS &7| Sorry, but you already have {0} pokemon in the GTS..");
-            error.getNode("Last Pokemon").getString("&c&lGTS &7| You can't deposit your last pokemon..");
-            error.getNode("Empty Slot").getString("&c&lGTS &7| Unfortunately, it appears slot &e{0} &7is empty..");
-            error.getNode("Invalid").getString("&c&lGTS &7| Unfortunately, &e{0} &7has been blacklisted from the GTS..");
+            generic.getNode("Addition", "Broadcast", "Pokemon").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &c{{player}} &7has added a &a{{ability}} {{IV%}} {{shiny:s}}{{pokemon}} &7to the GTS and is asking for a &a{{pokemon_looked_for}}&7!"
+            ));
 
-            ConfigurationNode display = gts.getNode("Display");
-            error = display.getNode("Error");
-            error.getNode("Empty").getString("&c&lGTS &7| No listings were detected in the system..");
+            generic.getNode("Addition", "Success").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &7Your &e{{pokemon}} &7has been added to the listings!"
+            ));
 
-            ConfigurationNode purchase = gts.getNode("Purchase");
-            success = purchase.getNode("Success");
-            success.getNode("Owner").getString("&a&lGTS &7| Your &e{0} &7was just purchased by &3{1}");
-            success.getNode("Buyer").getString("&a&lGTS &7| You successfully purchased the &e{0} &7for &c${1}");
+            generic.getNode("Addition", "Error", "Empty Slot").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Sorry, but it appears slot &e{{slot}} &7is actually empty..."
+            ));
 
-            error = purchase.getNode("Error");
-            error.getNode("Already Sold").getString("&c&lGTS &7| Unfortunately, it appears that lot has sold already..");
-            error.getNode("Expired").getString("&c&lGTS &7| Unfortunately, it appears that lot has expired..");
-            error.getNode("Not Enough").getString("&c&lGTS &7| You don't have enough money to afford this listing..");
+            generic.getNode("Addition", "Error", "Exceed Max").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Unfortunately, you already have max number, &e{{max_pokemon}} pokemon&7, in the GTS..."
+            ));
 
-            ConfigurationNode failed = purchase.getNode("Failed");
-            failed.getString("&c&lGTS &7| It seems that lot has been recently purchased.. sorry!");
+            generic.getNode("Addition", "Error", "Invalid Pokemon").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Sorry, but &e{{pokemon}} &7has been blacklisted from the GTS..."
+            ));
 
-            ConfigurationNode remove = gts.getNode("Remove");
-            remove.getNode("Success").getString("&a&lGTS &7| Your &e{0} &7has been removed from the GTS");
-            remove.getNode("Failed").getString("&c&lGTS &7| Your &e{0} &7has been purchased already!");
-            remove.getNode("Expired").getString("&c&lGTS &7| Your market ended, so your &e{0} &7was returned!");
+            generic.getNode("Addition", "Error", "Last Pokemon").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Woah now, you can't deposit the last pokemon in your party..."
+            ));
 
-            ConfigurationNode admin = remove.getNode("Admin");
-            admin.getNode("Delete").getString("&a&lGTS &7| The &e{0} &7has been removed and deleted!");
-            admin.getNode("Remove").getString("&a&lGTS &7| The &e{0} &7has been removed from the GTS!");
+            generic.getNode("Search", "Error", "Not Found").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Unfortunately, we couldn't find any listings matching your search criteria..."
+            ));
 
-            ConfigurationNode search = gts.getNode("Search");
-            error = search.getNode("Error");
-            error.getNode("Not Found").getString("&c&lGTS &7| Unfortunately, your search returned no results..");
+            generic.getNode("Remove", "Expired").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Your market ended, so your &e{{pokemon}} &7has been returned!"
+            ));
 
-            CommentedConfigurationNode menus = node.getNode("Menus");
-            menus.setComment("Used in item displays in the main menus");
+            generic.getNode("Remove", "Failed").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Well shoot, it appears your &e{{pokemon}} &7has already been purchased..."
+            ));
+
+            generic.getNode("Remove", "Success").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &7Your &e{{pokemon}} &7has successfully been returned to your possession!"
+            ));
+
+            generic.getNode("Purchase", "Success", "Buyer").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &7You successfully purchased that &e{{pokemon}} &7for &c{{price}}&7!"
+            ));
+
+            generic.getNode("Purchase", "Success", "Seller").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &7Your &e{{pokemon}} was purchased for &c{{price}}&7!"
+            ));
+
+            generic.getNode("Purchase", "Error", "Already Sold").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Unfortunately, it appears that listing has been sold..."
+            ));
+
+            generic.getNode("Purchase", "Error", "Expired").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Unfortunately, that lot has recently expired..."
+            ));
+
+            generic.getNode("Purchase", "Error", "Not Enough").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Unfortunately, it appears you don't have enough to afford this listing...",
+                    "&c&lGTS &e\u00BB &7In order to afford it, you need &e{{money_diff}}"
+            ));
+
+            generic.getNode("Purchase", "Failed").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Unfortunately, it appears that lot was recently purchased..."
+            ));
+
+            // Admin Settings
+            admin.setComment(
+                    "+-------------------------------------------------------------------+ #\n" +
+                    "|                          Admin Messages                           | #\n" +
+                    "+-------------------------------------------------------------------+ #");
+
+            admin.getNode("Clear").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &7You cleared &e{{lots}} &7lots from the GTS listings!"
+            ));
+            admin.getNode("Reload").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &7The configuration has been reloaded!"
+            ));
+
+            admin.getNode("LotUI", "Remove").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &7You have removed the &e{{pokemon}} &7from the listings!"
+            ));
+
+            admin.getNode("LotUI", "Delete").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &7You have removed and deleted the &e{{pokemon}} &7entirely!"
+            ));
+
+
+            // Auction Settings
+            auctions.setComment("\n" +
+                    "+-------------------------------------------------------------------+ #\n" +
+                    "|                        Auction Messages                           | #\n" +
+                    "+-------------------------------------------------------------------+ #");
+
+            auctions.getNode("Broadcast").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &c{{player}} &7has started an auction for a &a{{ability}} {{IV%}} {{shiny:s}}{{pokemon}}&7!",
+                    "&a&lGTS &e\u00BB &7Starting Price: &e{{curr_symbol}}{{start_price}}",
+                    "&a&lGTS &e\u00BB &7Increment: &e{{curr_symbol}}{{increment}}",
+                    "&a&lGTS &e\u00BB &7Duration: &e{{expires}}"
+            ));
+
+            auctions.getNode("Award").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &c{{player}} &7has won the auction for the &e{{pokemon}} &7by bidding &e{{curr_symbol}}{{price}}&7!"
+            ));
+
+            auctions.getNode("Outbid").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Your bid on the &e{{pokemon}} &7has been surpassed by &c{{player}}&7!"
+            ));
+
+            auctions.getNode("Placed Bid").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &7You have bid a price of &c{{price}} &7on the &e{{pokemon}}&7!"
+            ));
+
+            auctions.getNode("Current Bidder").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7You are currently the highest bidder for this &e{{pokemon}}&7!"
+            ));
+
+            // Pricing Messages
+            pricing.setComment("\n" +
+                    "+-------------------------------------------------------------------+ #\n" +
+                    "|                        Pricing Messages                           | #\n" +
+                    "+-------------------------------------------------------------------+ #");
+
+            pricing.getNode("Tax", "Error", "Not Enough").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Sorry, but you were unable to afford the tax of &e{{tax}}&7!"
+            ));
+
+            pricing.getNode("Tax", "Success", "Paid").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &e{{tax}} &7in taxes has been collected from your listing!"
+            ));
+
+            menus.setComment("\n" +
+                    "+-------------------------------------------------------------------+ #\n" +
+                    "|                        UI Item Messages                           | #\n" +
+                    "+-------------------------------------------------------------------+ #");
+
+            menus.getNode("Balance Icon").getString("&7Balance (&a{{curr_symbol}}{{balance}}&7)");
+            menus.getNode("Last Menu").getString("&cLast Menu");
             menus.getNode("Page Up").getString("&aNext Page");
             menus.getNode("Page Down").getString("&cLast Page");
-            menus.getNode("Refresh List").getString("&eRefresh Listings");
-            menus.getNode("Balance Icon").getString("&7Balance &7(&a${0}&7)");
-
-            ConfigurationNode searchFor = menus.getNode("Search For");
-            searchFor.getNode("Title").getString("&aSearching for:");
-            searchFor.getNode("Lore Format").getString("  &7- &3{0}");
             menus.getNode("Player Icon").getString("&7Player Info");
             menus.getNode("Player Listings").getString("&aYour Listings");
-            menus.getNode("Last Menu").getString("&cExit GTS");
-
-            CommentedConfigurationNode pricing = node.getNode("Pricing");
-            ConfigurationNode tax = pricing.getNode("Tax");
-            success = tax.getNode("Success");
-            success.getNode("Paid").getString("&a&lGTS &7| You paid ${0} in taxes for your GTS listing");
-
-            error = tax.getNode("Error");
-            error.getNode("Not Enough").getString("&c&lGTS &7| You're unable to afford the tax of ${0}..");
-
-            CommentedConfigurationNode admin2 = node.getNode("Admin");
-            admin2.setComment("Basic return messages for admin specific functions in the plugin");
-            admin2.getNode("Reload").getString("&a&lGTS &7| Configuration successfully reloaded!");
-            admin2.getNode("Clear").getString("&a&lGTS &7| All listings have been returned to their owners!");
+            menus.getNode("Refresh List").getString("&eRefresh Listings");
+            menus.getNode("Search For", "Lore Format").getString("  &7- &3{{pokemon}}");
+            menus.getNode("Search For", "Title").getString("&aSearching for:");
 
             loader.save(main);
-        } catch (IOException e) {
+        } catch (IOException|ObjectMappingException e) {
             GTS.getInstance().getLogger().error("    - An error occurred in the message config initialization");
             e.printStackTrace();
             return;
@@ -146,16 +232,11 @@ public class MessageConfig {
         }
     }
 
-    public void reload(){
-        try {
-            main = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static Text getMessage(String path, HashMap<String, Optional<Object>> replacements) {
-        String message = main.getNode((Object[]) ("Messages." + path).split("\\.")).getString();
+        String message = main.getNode((Object[]) path.split("\\.")).getString();
+        if (message == null) {
+            return Text.of(TextColors.RED, "A missing message setup was detected for path: ", TextColors.YELLOW, "Messages." + path);
+        }
 
         if (replacements != null)
             return replaceOptions(message, replacements);
@@ -166,7 +247,7 @@ public class MessageConfig {
     public static List<Text> getMessages(String path, HashMap<String, Optional<Object>> replacements) {
         try {
             List<Text> translated = Lists.newArrayList();
-            List<String> messages = main.getNode((Object[]) ("Messages." + path).split("\\.")).getList(TypeToken.of(String.class));
+            List<String> messages = main.getNode((Object[]) path.split("\\.")).getList(TypeToken.of(String.class));
             if (messages == null) {
                 translated.add(Text.of(TextColors.RED, "A missing message setup was detected for path: ", TextColors.YELLOW, "Messages." + path));
                 return translated;
@@ -187,16 +268,17 @@ public class MessageConfig {
     }
 
     private static Text replaceOptions(String original, HashMap<String, Optional<Object>> replacements){
-        String translated = "";
+        String translated = original;
+
         for(Tokens token : Tokens.values()){
-            if((original.contains("{{" + token.getToken() + "}}") || original.contains("{{" + token.getToken() + ":s}}")) && replacements.containsKey(token.getToken())) {
-                if (original.contains("{{" + token.getToken() + "}}"))
-                    translated = original.replaceAll(Pattern.quote("{{" + token.getToken() + "}}"), (String) replacements.get(token.getToken()).orElse("{{" + token.getToken() + "}}"));
-                else {
+            if((translated.contains("{{" + token.getToken() + "}}") || translated.contains("{{" + token.getToken() + ":s}}")) && replacements.containsKey(token.getToken())) {
+                if (original.contains("{{" + token.getToken() + "}}")) {
+                    translated = translated.replaceAll(Pattern.quote("{{" + token.getToken() + "}}"), Matcher.quoteReplacement("" + replacements.get(token.getToken()).orElse("{{" + token.getToken() + "}}")));
+                } else {
                     if (replacements.get(token.getToken()).isPresent())
-                        translated = original.replaceAll(Pattern.quote("{{" + token.getToken() + "}}"), replacements.get(token.getToken()).get() + " ");
+                        translated = translated.replaceAll(Pattern.quote("{{" + token.getToken() + ":s}}"), Matcher.quoteReplacement(replacements.get(token.getToken()).get() + " "));
                     else
-                        translated = original.replaceAll(Pattern.quote("{{" + token.getToken() + "}}"), "");
+                        translated = translated.replaceAll(Pattern.quote("{{" + token.getToken() + ":s}}"), "");
                 }
             }
         }

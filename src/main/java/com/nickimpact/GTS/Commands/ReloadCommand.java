@@ -16,9 +16,9 @@ public class ReloadCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         GTS.getInstance().getConfig().reload();
-        GTS.getInstance().getMessageConfig().reload();
 
-        src.sendMessage(MessageConfig.getMessage("Admin.Reload", null));
+        for(Text text : MessageConfig.getMessages("Administrative.Reload", null))
+            src.sendMessage(text);
         return CommandResult.success();
     }
 }

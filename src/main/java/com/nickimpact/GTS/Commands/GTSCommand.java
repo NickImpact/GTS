@@ -1,6 +1,5 @@
 package com.nickimpact.GTS.Commands;
 
-import com.google.common.collect.Lists;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.Inventories.Main;
 import org.spongepowered.api.command.CommandException;

@@ -33,7 +33,7 @@ public class JoinListener {
                         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
                         textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
 
-                        player.get().sendMessage(MessageConfig.getMessage("GTS.Remove.Expired", textOptions));
+                        player.get().sendMessage(MessageConfig.getMessage("Generic.Remove.Expired", textOptions));
                     }
                 }
             } else {

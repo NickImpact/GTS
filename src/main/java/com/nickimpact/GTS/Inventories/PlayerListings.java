@@ -39,12 +39,6 @@ public class PlayerListings {
         tokens.put(p, pokemon);
         if(setupGUI(inv, p, page)){
             p.openInventory(inv, Cause.of(NamedCause.source(GTS.getInstance())));
-        } else {
-            for(Text text : MessageConfig.getMessages("GTS.Display.Error.Empty", null))
-                p.sendMessage(text);
-            Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                Main.showGUI(p, 1, searching, pokemon);
-            }).delayTicks(1).submit(GTS.getInstance());
         }
     }
 
@@ -52,7 +46,7 @@ public class PlayerListings {
         int index = (page - 1) * 42;
         List<Lot> lots = GTS.getInstance().getSql().getPlayerLots(p.getUniqueId());
         if(lots.size() == 0){
-            return false;
+            return true;
         }
 
         int x;
@@ -99,10 +93,10 @@ public class PlayerListings {
                                         Lot lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
 
                                         if (lot == null) {
-                                            for(Text text : MessageConfig.getMessages("GTS.Purchase.Error.Already Sold", null))
+                                            for(Text text : MessageConfig.getMessages("Generic.Purchase.Error.Already Sold", null))
                                                 p.sendMessage(text);
                                         } else if (GTS.getInstance().getSql().isExpired(lot.getLotID())) {
-                                            for(Text text : MessageConfig.getMessages("GTS.Purchase.Error.Expired", null))
+                                            for(Text text : MessageConfig.getMessages("Generic.Purchase.Error.Expired", null))
                                                 p.sendMessage(text);
                                         } else {
                                             Sponge.getScheduler().createTaskBuilder().execute(() -> {
