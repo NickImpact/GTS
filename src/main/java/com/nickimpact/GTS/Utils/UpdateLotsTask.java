@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.Utils;
 
+import com.google.common.collect.Maps;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
@@ -17,6 +18,7 @@ import org.spongepowered.api.text.format.TextStyles;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -51,7 +53,10 @@ public class UpdateLotsTask {
         if (!player.isPresent()) {
             GTS.getInstance().getSql().setExpired(lot.getLotID());
         } else {
-            player.get().sendMessage(MessageConfig.getMessage("GTS.Remove.Expired", lot.getItem().getName()));
+            HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+            textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+
+            player.get().sendMessage(MessageConfig.getMessage("GTS.Remove.Expired", textOptions));
             Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), Sponge.getServer().getPlayer(item.getOwner()).get().getUniqueId());
             if(storage.isPresent()) {
                 storage.get().addToParty(item.getPokemon(lot, player.get()));
@@ -67,7 +72,13 @@ public class UpdateLotsTask {
             PokemonItem item = lot.getItem();
             Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), lot.getHighBidder());
             if(storage.isPresent()){
-                Sponge.getServer().getBroadcastChannel().send(MessageConfig.getMessage("GTS.Auction.Award", player, item.getPokemon(lot, player).getName()));
+                HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+                textOptions.put("player", Optional.of(player.getName()));
+                textOptions.put("pokemon", Optional.of(item.getName()));
+                textOptions.put("price", Optional.of(lot.getStPrice()));
+
+                for(Text text : MessageConfig.getMessages("GTS.Auction.Award", textOptions))
+                    Sponge.getServer().getBroadcastChannel().send(text);
                 storage.get().addToParty(item.getPokemon(lot, player));
                 GTS.getInstance().getSql().deleteLot(lot.getLotID());
             } else {

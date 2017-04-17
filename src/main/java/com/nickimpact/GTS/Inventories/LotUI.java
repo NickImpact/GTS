@@ -1,6 +1,7 @@
 package com.nickimpact.GTS.Inventories;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.Utils.Lot;
@@ -154,15 +155,20 @@ public class LotUI {
                             int slot = ((SlotAdapter) event.getTransactions().get(0).getSlot()).slotNumber;
                             if(slot == 12 || slot == 16) {
                                 if (slot == 12) {
+                                    HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+                                    textOptions.put("pokemon", Optional.of(lots.get(p).getItem().getName()));
+
                                     boolean admin = isAdmin.get(p);
                                     if (event.getCursorTransaction().getFinal().getType().equals(ItemTypes.ANVIL)) {
                                         if (admin) {
                                             if (GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null) {
                                                 if (event instanceof ClickInventoryEvent.Secondary) {
-                                                    p.sendMessage(MessageConfig.getMessage("GTS.Remove.Admin.Delete", lots.get(p).getItem().getName()));
+                                                    for(Text text : MessageConfig.getMessages("GTS.Remove.Admin.Delete", textOptions))
+                                                        p.sendMessage(text);
                                                     GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
                                                 } else if (event instanceof ClickInventoryEvent.Primary) {
-                                                    p.sendMessage(MessageConfig.getMessage("GTS.Remove.Admin.Remove", lots.get(p).getItem().getName()));
+                                                    for(Text text : MessageConfig.getMessages("GTS.Remove.Admin.Remove", textOptions))
+                                                        p.sendMessage(text);
                                                     Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                                                     if(storage.isPresent()) {
                                                         storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p), p));
@@ -173,11 +179,13 @@ public class LotUI {
                                                     GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
                                                 }
                                             } else {
-                                                p.sendMessage(MessageConfig.getMessage("GTS.Remove.Failed", lots.get(p).getItem().getName()));
+                                                for(Text text : MessageConfig.getMessages("GTS.Remove.Failed", textOptions))
+                                                    p.sendMessage(text);
                                             }
                                         } else {
                                             if (GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null) {
-                                                p.sendMessage(MessageConfig.getMessage("GTS.Remove.Success", lots.get(p).getItem().getName()));
+                                                for(Text text : MessageConfig.getMessages("GTS.Remove.Success", textOptions))
+                                                    p.sendMessage(text);
                                                 Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                                                 if(storage.isPresent()) {
                                                     storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p), p));
@@ -199,7 +207,8 @@ public class LotUI {
                                                 else
                                                     LotUtils.buyLot(p, lot);
                                         } else {
-                                            p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Failed", lots.get(p).getItem().getName()));
+                                            for(Text text : MessageConfig.getMessages("GTS.Purchase.Failed", textOptions))
+                                                p.sendMessage(text);
                                         }
                                     }
 

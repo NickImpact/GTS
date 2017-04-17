@@ -328,7 +328,7 @@ public abstract class SQLDatabase {
                     }
                     results.close();
                     query.close();
-                    Sponge.getServer().getBroadcastChannel().send(MessageConfig.getMessage("Admin.Clear"));
+                    Sponge.getServer().getBroadcastChannel().send(MessageConfig.getMessage("Admin.Clear", null));
                 } catch (NBTException e) {
                     e.printStackTrace();
                 }

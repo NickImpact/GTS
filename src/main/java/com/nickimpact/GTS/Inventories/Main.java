@@ -45,7 +45,8 @@ public class Main {
         if(open){
             p.openInventory(inv, Cause.of(NamedCause.source(GTS.getInstance())));
         } else {
-            p.sendMessage(MessageConfig.getMessage("GTS.Search.Error.Not Found"));
+            for(Text text : MessageConfig.getMessages("GTS.Search.Error.Not Found", null))
+                p.sendMessage(text);
         }
     }
 
@@ -119,9 +120,11 @@ public class Main {
                                     Lot lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
 
                                     if (lot == null) {
-                                        p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Already Sold"));
+                                        for(Text text : MessageConfig.getMessages("GTS.Purchase.Error.Already Sold", null))
+                                            p.sendMessage(text);
                                     } else if (GTS.getInstance().getSql().isExpired(lot.getLotID())) {
-                                        p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Expired"));
+                                        for(Text text : MessageConfig.getMessages("GTS.Purchase.Error.Expired", null))
+                                            p.sendMessage(text);
                                     } else {
                                         Sponge.getScheduler().createTaskBuilder().execute(() -> {
                                             LotUI.showGUI(p, lot, playerSearch.get(p), playerTokens.get(p), false);

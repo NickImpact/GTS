@@ -8,6 +8,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.text.Text;
 
 import java.util.List;
 
@@ -18,7 +19,8 @@ public class ClearCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         GTS.getInstance().getSql().returnLots();
-        src.sendMessage(MessageConfig.getMessage("Admin.Clear"));
+
+        src.sendMessage(MessageConfig.getMessage("Admin.Clear", null));
         return CommandResult.success();
     }
 }

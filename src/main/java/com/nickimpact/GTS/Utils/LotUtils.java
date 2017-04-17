@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.Utils;
 
+import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
@@ -19,6 +20,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.Optional;
 
 /**
@@ -43,26 +46,28 @@ public class LotUtils {
     }
 
     private static void addPokemonToMarket(int mode, Player player, int slot, Object... options){
+        HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+
         if (GTS.getInstance().getSql().hasTooMany(player.getUniqueId())) {
-            player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Exceed Max", GTS.getInstance().getConfig().getMaxPokemon()));
+            textOptions.put("max_pokemon", Optional.of(GTS.getInstance().getConfig().getMaxPokemon()));
+            for(Text text : MessageConfig.getMessages("GTS.Addition.Error.Exceed Max", textOptions))
+                player.sendMessage(text);
+
             return;
         }
 
         Optional<PlayerStorage> storage = getStorage(player);
         if(!storage.isPresent()) {
-            player.sendMessage(Text.of(TextColors.RED, "Your party info couldn't be found..."));
             return;
         }
 
         NBTTagCompound nbt = getNbt(player, slot, storage.get());
         if(nbt == null) {
-            player.sendMessage(Text.of(TextColors.RED, "The nbt info of slot " + slot + "couldn't be found..."));
             return;
         }
 
         EntityPixelmon pokemon = getPokemon(player, nbt);
         if(pokemon == null) {
-            player.sendMessage(Text.of(TextColors.RED, "The pokemon couldn't be forged..."));
             return;
         }
 
@@ -84,7 +89,13 @@ public class LotUtils {
             Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, price, expires);
             GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), expires, time);
 
-            Sponge.getServer().getBroadcastChannel().send(MessageConfig.getMessage("GTS.Addition.Broadcast.Static", player.getName(), pokemon.getName()));
+            textOptions.put("player", Optional.of(player.getName()));
+            textOptions.put("lot_type", Optional.of("static"));
+            textOptions.put("price", Optional.of(price));
+            textOptions.putAll(getInfo(pokemon));
+
+            for(Text text : MessageConfig.getMessages("GTS.Addition.Broadcast.Static", textOptions))
+                Sponge.getServer().getBroadcastChannel().send(text);
         } else if(mode == 2) {
             int stPrice = (Integer) options[0];
             int increment = (Integer) options[1];
@@ -102,7 +113,14 @@ public class LotUtils {
             Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, stPrice, false, true, null, stPrice, increment);
             GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), true, time);
 
-            Sponge.getServer().getBroadcastChannel().send(MessageConfig.getMessage("GTS.Addition.Broadcast.Auction", player.getName(), pokemon.getName()));
+            textOptions.put("player", Optional.of(player.getName()));
+            textOptions.put("lot_type", Optional.of("Auction"));
+            textOptions.put("start_price", Optional.of(stPrice));
+            textOptions.put("increment", Optional.of(increment));
+            textOptions.putAll(getInfo(pokemon));
+
+            for(Text text : MessageConfig.getMessages("GTS.Addition.Broadcast.Auction", textOptions))
+                Sponge.getServer().getBroadcastChannel().send(text);
         } else {
             String poke = (String)options[0];
             boolean expires = (Boolean)options[1];
@@ -118,7 +136,14 @@ public class LotUtils {
             int placement = GTS.getInstance().getSql().getPlacement();
             Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, true, poke);
             GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), expires, time);
-            Sponge.getServer().getBroadcastChannel().send(MessageConfig.getMessage("GTS.Addition.Broadcast.Pokemon", player.getName(), pokemon.getName()));
+
+            textOptions.put("player", Optional.of(player.getName()));
+            textOptions.put("lot_type", Optional.of("pokemon"));
+            textOptions.put("pokemon_looked-for", Optional.of(poke));
+            textOptions.putAll(getInfo(pokemon));
+
+            for(Text text : MessageConfig.getMessages("GTS.Addition.Broadcast.Pokemon", textOptions))
+                Sponge.getServer().getBroadcastChannel().send(text);
         }
 
         // Remove the pokemon from the client
@@ -127,13 +152,17 @@ public class LotUtils {
         storage.get().sendUpdatedList();
 
         // Print Success Message
-        player.sendMessage(MessageConfig.getMessage("GTS.Addition.Success.Added", pokemon.getPokemonName()));
+        textOptions.put("pokemon", Optional.of(pokemon.getName()));
+
+        for(Text text : MessageConfig.getMessages("GTS.Addition.Success.Added", textOptions))
+            player.sendMessage(text);
     }
 
     public static void buyLot(Player p, Lot lot) {
-
+        HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
         if (lot == null) {
-            p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Already Sold"));
+            for(Text text : MessageConfig.getMessages("GTS.Purchase.Error.Already Sold", null))
+                p.sendMessage(text);
             return;
         }
         if (!GTS.getInstance().getSql().isExpired(lot.getLotID())) {
@@ -143,14 +172,26 @@ public class LotUtils {
                 if(account.isPresent()) {
                     UniqueAccount acc = account.get();
                     if(acc.getBalance(GTS.getInstance().getEconomy().getDefaultCurrency()).intValue() < price.intValue()){
-                        p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Not Enough"));
+                        for(Text text : MessageConfig.getMessages("GTS.Purchase.Error.Not Enough", null))
+                            p.sendMessage(text);
                         return;
                     }
                     acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.source(GTS.getInstance()).build());
-                    p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Success.Buyer", lot.getItem().getPokemon(lot, p).getName(), price.intValue()));
+
+                    textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+                    textOptions.put("price", Optional.of(price.intValue()));
+                    textOptions.put("seller", Optional.of(Sponge.getServer().getPlayer(lot.getOwner()).get().getName()));
+                    for(Text text : MessageConfig.getMessages("GTS.Purchase.Success.Buyer", textOptions))
+                        p.sendMessage(text);
+
                     GTS.getInstance().getSql().deleteLot(lot.getLotID());
-                    if (Sponge.getServer().getPlayer(lot.getOwner()).isPresent()) {
-                        Sponge.getServer().getPlayer(lot.getOwner()).get().sendMessage(MessageConfig.getMessage("GTS.Purchase.Success.Owner", lot.getItem().getPokemon(lot, p).getName(), p.getName()));
+                    if (Sponge.getServer().getPlayer(lot.getOwner()).get().isOnline()) {
+                        textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+                        textOptions.put("price", Optional.of(price.intValue()));
+                        textOptions.put("buyer", Optional.of(p.getName()));
+
+                        for(Text text : MessageConfig.getMessages("GTS.Purchase.Success.Seller", textOptions))
+                            Sponge.getServer().getPlayer(lot.getOwner()).get().sendMessage(text);
                     }
 
                     Optional<UniqueAccount> ownerAccount = GTS.getInstance().getEconomy().getOrCreateAccount(lot.getOwner());
@@ -176,11 +217,14 @@ public class LotUtils {
                 exc.printStackTrace();
             }
         } else {
-            p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Expired"));
+            for(Text text : MessageConfig.getMessages("GTS.Purchase.Error.Expired", null))
+                p.sendMessage(text);
         }
     }
 
     public static void bid(Player player, Lot lot){
+        HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+
         if(lot.getHighBidder() != null){
             if(player.getUniqueId().equals(lot.getHighBidder())){
                 player.sendMessage(Text.of(TextColors.RED, "You must wait till someone outbids you to bid again..."));
@@ -190,14 +234,23 @@ public class LotUtils {
             Optional<Player> p = Sponge.getServer().getPlayer(lot.getHighBidder());
             if(p.isPresent()){
                 if(p.get().isOnline()){
-                    p.get().sendMessage(MessageConfig.getMessage("GTS.Auction.Outbid", player.getName(), lot.getItem().getName()));
+                    textOptions.put("player", Optional.of(player.getName()));
+                    textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+
+                    for(Text text : MessageConfig.getMessages("GTS.Auction.Outbid", textOptions))
+                        p.get().sendMessage(text);
                 }
             }
         }
 
         for(Player p : lot.getAucListeners())
-            if(!p.getUniqueId().equals(lot.getHighBidder()))
-                p.sendMessage(MessageConfig.getMessage("GTS.Auction.Placed-Bid", player.getName(), lot.getItem().getName()));
+            if(!p.getUniqueId().equals(lot.getHighBidder())) {
+                textOptions.put("player", Optional.of(player.getName()));
+                textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+
+                for(Text text : MessageConfig.getMessages("GTS.Auction.Placed-Bid", textOptions))
+                    p.sendMessage(text);
+            }
 
         lot.setStPrice(lot.getStPrice() + lot.getIncrement());
         lot.setHighBidder(player.getUniqueId());
@@ -207,10 +260,19 @@ public class LotUtils {
     public static void trade(Player player, Lot lot){
         GTS.getInstance().getSql().deleteLot(lot.getLotID());
         givePlayerPokemon(player, lot);
-        player.sendMessage(MessageConfig.getMessage("GTS.Trade.Recipient.Receive-Poke", lot.getItem().getName()));
 
-        Sponge.getServer().getPlayer(lot.getOwner()).ifPresent(o ->
-                o.sendMessage(MessageConfig.getMessage("GTS.Trade.Owner.Receive-Poke", lot.getPokeWanted())));
+        HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+        textOptions.put("pokemon", Optional.of(lot.getPokeWanted()));
+        for(Text text : MessageConfig.getMessages("GTS.Trade.Recipient.Receive-Poke", textOptions))
+            player.sendMessage(text);
+
+        textOptions.clear();
+        Sponge.getServer().getPlayer(lot.getOwner()).ifPresent(o -> {
+            textOptions.put("pokemon", Optional.of(lot.getPokeWanted()));
+
+            for(Text text : MessageConfig.getMessages("GTS.Trade.Owner.Receive-Poke", textOptions))
+                o.sendMessage(text);
+        });
     }
 
     public static void givePlayerPokemon(Player player, Lot lot){
@@ -226,7 +288,8 @@ public class LotUtils {
         Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), player.getUniqueId());
         if(storage.isPresent())
             if (storage.get().count() <= 1) {
-                player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Last Pokemon"));
+                for(Text text : MessageConfig.getMessages("GTS.Addition.Error.Last Pokemon", null))
+                    player.sendMessage(text);
                 return Optional.empty();
             }
 
@@ -237,7 +300,11 @@ public class LotUtils {
         NBTTagCompound[] party = ps.getList();
         NBTTagCompound nbt = party[slot];
         if (nbt == null) {
-            player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Empty Slot", slot + 1));
+            HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+            textOptions.put("slot", Optional.of(slot + 1));
+
+            for(Text text : MessageConfig.getMessages("GTS.Addition.Error.Empty Slot", textOptions))
+                player.sendMessage(text);
             return null;
         }
 
@@ -248,7 +315,11 @@ public class LotUtils {
         EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(nbt, (World)player.getWorld());
         for(String s : GTS.getInstance().getConfig().getBlocked()){
             if(pokemon.getName().equalsIgnoreCase(s)){
-                player.sendMessage(MessageConfig.getMessage("GTS.Addition.Error.Invalid", pokemon.getName()));
+                HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+                textOptions.put("pokemon", Optional.of(pokemon.getName()));
+
+                for(Text text : MessageConfig.getMessages("GTS.Addition.Error.Invalid", textOptions))
+                    player.sendMessage(text);
                 return null;
             }
         }
@@ -261,19 +332,63 @@ public class LotUtils {
         if(GTS.getInstance().getConfig().isTaxEnabled()) {
             Optional<UniqueAccount> account = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId());
             if(account.isPresent()) {
+                HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+                textOptions.put("tax", Optional.of(tax));
+
                 UniqueAccount acc = account.get();
                 if(acc.getBalance(GTS.getInstance().getEconomy().getDefaultCurrency()).compareTo(tax) < 0) {
-                    player.sendMessage(MessageConfig.getMessage("Pricing.Tax.Error.Not Enough", tax));
+                    for(Text text : MessageConfig.getMessages("Pricing.Tax.Error.Not Enough", textOptions))
+                        player.sendMessage(text);
                     return false;
                 }
                 acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), tax, Cause.source(GTS.getInstance()).build());
-                player.sendMessage(MessageConfig.getMessage("Pricing.Tax.Success.Paid", tax));
+                for(Text text : MessageConfig.getMessages("Pricing.Tax.Success.Paid", textOptions))
+                    player.sendMessage(text);
             } else {
                 GTS.getInstance().getLogger().error(Text.of(TextColors.RED, "Account for UUID (" + player.getUniqueId() + ") was not found").toPlain());
                 return false;
             }
         }
         return true;
+    }
+
+    private static HashMap<String, Optional<Object>> getInfo(EntityPixelmon pokemon){
+        HashMap<String, Optional<Object>> info = Maps.newHashMap();
+        info.put("ability", Optional.of(pokemon.getLvl().getLevel()));
+        info.put("nature", Optional.of(pokemon.getNature().name()));
+        info.put("gender", Optional.of(pokemon.gender.name()));
+        info.put("growth", Optional.of(pokemon.getGrowth().name()));
+        info.put("shiny", pokemon.getIsShiny() ? Optional.of("Shiny") : Optional.empty());
+        info.put("level", Optional.of(pokemon.getLvl().getLevel()));
+        info.put("form", Optional.of(pokemon.getForm()));
+        info.put("halloween", pokemon.getSpecialTexture() == 2 ? Optional.of("halloween textured") : Optional.empty());
+        info.put("roasted", pokemon.getSpecialTexture() == 1 ? Optional.of("roast textured") : Optional.empty());
+
+        DecimalFormat df = new DecimalFormat("#0.##");
+        int totalEvs = pokemon.stats.EVs.HP + pokemon.stats.EVs.Attack + pokemon.stats.EVs.Defence + pokemon.stats.EVs.SpecialAttack +
+                pokemon.stats.EVs.SpecialDefence + pokemon.stats.EVs.Speed;
+        int totalIVs = pokemon.stats.IVs.HP + pokemon.stats.IVs.Attack + pokemon.stats.IVs.Defence + pokemon.stats.IVs.SpAtt +
+                pokemon.stats.IVs.SpDef + pokemon.stats.IVs.Speed;
+
+        info.put("EV%", Optional.of(df.format(totalEvs / 510.0)));
+        info.put("evtotal", Optional.of(totalEvs));
+        info.put("evhp", Optional.of(pokemon.stats.EVs.HP));
+        info.put("evatk", Optional.of(pokemon.stats.EVs.Attack));
+        info.put("evdef", Optional.of(pokemon.stats.EVs.Defence));
+        info.put("evspatk", Optional.of(pokemon.stats.EVs.SpecialAttack));
+        info.put("evspdef", Optional.of(pokemon.stats.EVs.SpecialDefence));
+        info.put("evspeed", Optional.of(pokemon.stats.EVs.Speed));
+
+        info.put("IV%", Optional.of(df.format(totalIVs / 186.0)));
+        info.put("ivtotal", Optional.of(totalIVs));
+        info.put("ivhp", Optional.of(pokemon.stats.IVs.HP));
+        info.put("ivatk", Optional.of(pokemon.stats.IVs.Attack));
+        info.put("ivdef", Optional.of(pokemon.stats.IVs.Defence));
+        info.put("ivspatk", Optional.of(pokemon.stats.IVs.SpAtt));
+        info.put("ivspdef", Optional.of(pokemon.stats.IVs.SpDef));
+        info.put("ivspeed", Optional.of(pokemon.stats.IVs.Speed));
+
+        return info;
     }
 
     static String getTime(long timeEnd) {

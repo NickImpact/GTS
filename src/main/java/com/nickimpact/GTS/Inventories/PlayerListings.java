@@ -40,7 +40,8 @@ public class PlayerListings {
         if(setupGUI(inv, p, page)){
             p.openInventory(inv, Cause.of(NamedCause.source(GTS.getInstance())));
         } else {
-            p.sendMessage(MessageConfig.getMessage("GTS.Display.Error.Empty"));
+            for(Text text : MessageConfig.getMessages("GTS.Display.Error.Empty", null))
+                p.sendMessage(text);
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
                 Main.showGUI(p, 1, searching, pokemon);
             }).delayTicks(1).submit(GTS.getInstance());
@@ -98,9 +99,11 @@ public class PlayerListings {
                                         Lot lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
 
                                         if (lot == null) {
-                                            p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Already Sold"));
+                                            for(Text text : MessageConfig.getMessages("GTS.Purchase.Error.Already Sold", null))
+                                                p.sendMessage(text);
                                         } else if (GTS.getInstance().getSql().isExpired(lot.getLotID())) {
-                                            p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Expired"));
+                                            for(Text text : MessageConfig.getMessages("GTS.Purchase.Error.Expired", null))
+                                                p.sendMessage(text);
                                         } else {
                                             Sponge.getScheduler().createTaskBuilder().execute(() -> {
                                                 LotUI.showGUI(p, lot, false, Lists.newArrayList(), false);

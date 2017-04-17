@@ -1,11 +1,14 @@
 package com.nickimpact.GTS.Configuration;
 
+import com.google.common.collect.Lists;
+import com.google.common.reflect.TypeToken;
 import com.nickimpact.GTS.GTS;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.format.TextFormat;
@@ -18,7 +21,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Created by Nick on 12/15/2016.
@@ -148,50 +154,53 @@ public class MessageConfig {
         }
     }
 
-    public static Text getMessage(String path, Object... replacements){
-        String message = main.getNode((Object[])("Messages." + path).split("\\.")).getString();
-        if(message == null){
-            return Text.of(TextColors.RED, "A missing message setup was detected for path: ", TextColors.YELLOW, "Messages." + path);
-        }
-        return TextSerializers.FORMATTING_CODE.deserialize(MessageFormat.format(message, replacements));
+    public static Text getMessage(String path, HashMap<String, Optional<Object>> replacements) {
+        String message = main.getNode((Object[]) ("Messages." + path).split("\\.")).getString();
+
+        if (replacements != null)
+            return replaceOptions(message, replacements);
+        else
+            return TextSerializers.FORMATTING_CODE.deserialize(message);
     }
 
-    private static Text replaceOptions(String original, HashMap<String, Object> replacements){
-        for(String key : replacements.keySet()){
-            switch(key){
-                case "%player%":
-                    original = original.replaceAll("player", (String)replacements.get("%player%"));
-                    break;
-                case "%event%":
-                    original = original.replaceAll("%event%", (String)replacements.get("%event%"));
-                    break;
-                case "%booster%":
-                    original = original.replaceAll("%booster%", (String)replacements.get("%booster%"));
-                    break;
-                case "%lure%":
-                    original = original.replaceAll("%lure%", (String)replacements.get("%lure%"));
-                    break;
-                case "%status%":
-                    original = original.replaceAll("%status%", (String)replacements.get("%status%"));
-                    break;
-                case "%message%":
-                    original = original.replaceAll("%message%", (String)replacements.get("%message%"));
-                    break;
-                case "%multiplier%":
-                    original = original.replaceAll("%multiplier%", (String)replacements.get("%multiplier%"));
-                    break;
-                case "%time%":
-                    original = original.replaceAll("%time%", (String)replacements.get("%time%"));
-                    break;
-                case "%remaining_boosters%":
-                    original = original.replaceAll("%remaining_boosters%", replacements.get("%remaining_boosters%").toString());
-                    break;
-                case "%location%":
-                    original = original.replaceAll("%location%", replacements.get("%location%").toString());
-                    break;
+    public static List<Text> getMessages(String path, HashMap<String, Optional<Object>> replacements) {
+        try {
+            List<Text> translated = Lists.newArrayList();
+            List<String> messages = main.getNode((Object[]) ("Messages." + path).split("\\.")).getList(TypeToken.of(String.class));
+            if (messages == null) {
+                translated.add(Text.of(TextColors.RED, "A missing message setup was detected for path: ", TextColors.YELLOW, "Messages." + path));
+                return translated;
+            }
+            for(String message : messages) {
+                if (replacements != null)
+                    translated.add(replaceOptions(message, replacements));
+                else
+                    translated.add(TextSerializers.FORMATTING_CODE.deserialize(message));
+            }
+
+            return translated;
+        } catch (ObjectMappingException e) {
+            e.printStackTrace();
+        }
+
+        return Lists.newArrayList();
+    }
+
+    private static Text replaceOptions(String original, HashMap<String, Optional<Object>> replacements){
+        String translated = "";
+        for(Tokens token : Tokens.values()){
+            if((original.contains("{{" + token.getToken() + "}}") || original.contains("{{" + token.getToken() + ":s}}")) && replacements.containsKey(token.getToken())) {
+                if (original.contains("{{" + token.getToken() + "}}"))
+                    translated = original.replaceAll(Pattern.quote("{{" + token.getToken() + "}}"), (String) replacements.get(token.getToken()).orElse("{{" + token.getToken() + "}}"));
+                else {
+                    if (replacements.get(token.getToken()).isPresent())
+                        translated = original.replaceAll(Pattern.quote("{{" + token.getToken() + "}}"), replacements.get(token.getToken()).get() + " ");
+                    else
+                        translated = original.replaceAll(Pattern.quote("{{" + token.getToken() + "}}"), "");
+                }
             }
         }
 
-        return TextSerializers.FORMATTING_CODE.deserialize(original);
+        return TextSerializers.FORMATTING_CODE.deserialize(translated);
     }
 }

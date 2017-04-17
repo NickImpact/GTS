@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.Inventories;
 
+import com.google.common.collect.Maps;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.Utils.Lot;
@@ -17,6 +18,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +26,8 @@ import java.util.Optional;
  * Created by Nick on 12/15/2016.
  */
 class SharedItems {
+
+    private static HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
 
     static ItemStack border(String color){
         ItemStack border = ItemStack.builder()
@@ -47,7 +51,7 @@ class SharedItems {
         ItemStack button = ItemStack.builder()
                 .itemType(ItemTypes.DYE)
                 .build();
-        button.offer(Keys.DISPLAY_NAME, up ? MessageConfig.getMessage("Menus.Page Up") : MessageConfig.getMessage("Menus.Page Down"));
+        button.offer(Keys.DISPLAY_NAME, up ? MessageConfig.getMessage("Menus.Page Up", null) : MessageConfig.getMessage("Menus.Page Down", null));
         if(up) {
             button.offer(Keys.DYE_COLOR, DyeColors.GREEN);
         } else {
@@ -60,7 +64,7 @@ class SharedItems {
         ItemStack button = ItemStack.builder()
                 .itemType(ItemTypes.BOOK)
                 .build();
-        button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Refresh List"));
+        button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Refresh List", null));
         button.offer(Keys.DYE_COLOR, DyeColors.YELLOW);
         return button;
     }
@@ -69,15 +73,21 @@ class SharedItems {
         ItemStack dummy = ItemStack.builder()
                 .itemType(ItemTypes.GOLD_INGOT)
                 .build();
+
+        textOptions.clear();
+
         if(GTS.getInstance().getEconomy() == null){
-            dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Balance Icon", 0));
+            textOptions.put("balance", Optional.of(0));
+            dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Balance Icon", textOptions));
             return dummy;
         }
         Optional<UniqueAccount> acc = GTS.getInstance().getEconomy().getOrCreateAccount(p.getUniqueId());
         if(acc.isPresent()) {
-            dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Balance Icon", acc.get().getBalance(GTS.getInstance().getEconomy().getDefaultCurrency())));
+            textOptions.put("balance", Optional.of(acc.get().getBalance(GTS.getInstance().getEconomy().getDefaultCurrency())));
+            dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Balance Icon", textOptions));
         } else {
-            dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Balance Icon", 0));
+            textOptions.put("balance", Optional.of(0));
+            dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Balance Icon", textOptions));
         }
         return dummy;
     }
@@ -86,11 +96,15 @@ class SharedItems {
         ItemStack dummy = ItemStack.builder()
                 .itemType(ItemTypes.MAP)
                 .build();
-        dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Search For.Title"));
+        dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Search For.Title", null));
         List<Text> lore = new ArrayList<>();
         if(pokemon != null) {
+            textOptions.clear();
             for (Lot lot : pokemon) {
-                lore.add(MessageConfig.getMessage("Menus.Search For.Lore Format", lot.getItem().getName()));
+                if(lore.stream().noneMatch(p -> p.toString().contains(lot.getItem().getName()))) {
+                    textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+                    lore.add(MessageConfig.getMessage("Menus.Search For.Lore Format", textOptions));
+                }
             }
             dummy.offer(Keys.ITEM_LORE, lore);
         }
@@ -101,7 +115,10 @@ class SharedItems {
         ItemStack dummy = ItemStack.builder()
                 .itemType(ItemTypes.SKULL)
                 .build();
-        dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Player Icon", p.getName()));
+
+        textOptions.clear();
+        textOptions.put("player", Optional.of(p.getName()));
+        dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Player Icon", textOptions));
         dummy.offer(Keys.SKULL_TYPE, SkullTypes.PLAYER);
 
         RepresentedPlayerData skinData = Sponge.getGame().getDataManager().getManipulatorBuilder(RepresentedPlayerData.class).get().create();
@@ -114,7 +131,7 @@ class SharedItems {
         ItemStack button = ItemStack.builder()
                 .itemType(ItemTypes.WRITTEN_BOOK)
                 .build();
-        button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Player Listings"));
+        button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Player Listings", null));
         return button;
     }
 
@@ -124,13 +141,13 @@ class SharedItems {
             ItemStack button = ItemStack.builder()
                     .itemType(type.get())
                     .build();
-            button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Last Menu"));
+            button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Last Menu", null));
             return button;
         } else {
             ItemStack button = ItemStack.builder()
                     .itemType(ItemTypes.REDSTONE_BLOCK)
                     .build();
-            button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Last Menu"));
+            button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("Menus.Last Menu", null));
             return button;
         }
     }

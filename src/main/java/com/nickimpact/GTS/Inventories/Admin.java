@@ -83,9 +83,11 @@ public class Admin {
                                     Lot lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
 
                                     if (lot == null) {
-                                        p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Already Sold"));
+                                        for(Text text : MessageConfig.getMessages("GTS.Purchase.Error.Already Sold", null))
+                                            p.sendMessage(text);
                                     } else if (GTS.getInstance().getSql().isExpired(lot.getLotID())) {
-                                        p.sendMessage(MessageConfig.getMessage("GTS.Purchase.Error.Expired"));
+                                        for(Text text : MessageConfig.getMessages("GTS.Purchase.Error.Expired", null))
+                                            p.sendMessage(text);
                                     } else {
                                         Sponge.getScheduler().createTaskBuilder().execute(() -> {
                                             LotUI.showGUI(p, lot, false, Lists.newArrayList(), true);
@@ -120,16 +122,5 @@ public class Admin {
                 }
             })
         .build(GTS.getInstance());
-    }
-
-    public static void handleCloseEvent(Player p) {
-
-    }
-
-    public static int getCurrPage(Player p){
-        if(pages.containsKey(p)){
-            return pages.get(p);
-        }
-        return 1;
     }
 }

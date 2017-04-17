@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.Listeners;
 
+import com.google.common.collect.Maps;
 import com.nickimpact.GTS.Configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.Utils.Lot;
@@ -9,6 +10,8 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +29,11 @@ public class JoinListener {
                     if(GTS.getInstance().getSql().isExpired(lot.getLotID())){
                         LotUtils.givePlayerPokemon(player.get(), lot);
                         GTS.getInstance().getSql().deleteLot(lot.getLotID());
-                        player.get().sendMessage(MessageConfig.getMessage("GTS.Remove.Expired", lot.getItem().getName()));
+
+                        HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+                        textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+
+                        player.get().sendMessage(MessageConfig.getMessage("GTS.Remove.Expired", textOptions));
                     }
                 }
             } else {
