@@ -1,17 +1,16 @@
 package com.nickimpact.GTS;
 
 import com.google.inject.Inject;
-import com.nickimpact.GTS.Commands.*;
-import com.nickimpact.GTS.Configuration.Config;
-import com.nickimpact.GTS.Configuration.MessageConfig;
-import com.nickimpact.GTS.Listeners.JoinListener;
-import com.nickimpact.GTS.Storage.H2Provider;
-import com.nickimpact.GTS.Storage.MySQLProvider;
-import com.nickimpact.GTS.Storage.SQLDatabase;
-import com.nickimpact.GTS.Utils.UpdateLotsTask;
+import com.nickimpact.GTS.commands.*;
+import com.nickimpact.GTS.configuration.Config;
+import com.nickimpact.GTS.configuration.MessageConfig;
+import com.nickimpact.GTS.listeners.JoinListener;
+import com.nickimpact.GTS.storage.H2Provider;
+import com.nickimpact.GTS.storage.MySQLProvider;
+import com.nickimpact.GTS.storage.SQLDatabase;
+import com.nickimpact.GTS.utils.UpdateLotsTask;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
@@ -80,14 +79,14 @@ public class GTS {
         if(enabled) {
             this.config = new Config();
             if(config.getDatabaseType().equalsIgnoreCase("H2")){
-                this.sql = new H2Provider();
+                this.sql = new H2Provider(GTS.getInstance().getConfig().getMainTable(), GTS.getInstance().getConfig().getLogTable());
             } else if(config.getDatabaseType().equalsIgnoreCase("MySQL")){
-                this.sql = new MySQLProvider();
+                this.sql = new MySQLProvider(GTS.getInstance().getConfig().getMainTable(), GTS.getInstance().getConfig().getLogTable());
             } else {
                 logger.error(Text.of(TextColors.RED, "Invalid database type passed, defaulting to H2..").toString());
-                this.sql = new H2Provider();
+                this.sql = new H2Provider(GTS.getInstance().getConfig().getMainTable(), GTS.getInstance().getConfig().getLogTable());
             }
-            this.sql.createTable();
+            this.sql.createTables();
             this.sql.updateTables();
 
             Sponge.getCommandManager().register(this, CommandSpec.builder()
@@ -97,6 +96,7 @@ public class GTS {
                     .child(AdditionCommand.registerCommand(), "add")
                     .child(SearchCommand.registerCommand(), "search")
                     .child(AuctionCommand.registerCommand(), "auc")
+                    .child(LogCmd.registerCommand(), "logs")
                     .child(CommandSpec.builder()
                             .executor(new ReloadCommand())
                             .permission("gts.admin")
@@ -117,12 +117,12 @@ public class GTS {
                             .description(Text.of("Receive help info on GTS"))
                             .build(), "help")
                     .build(), "gts");
-            getLogger().info("    - Commands injected into registry");
+            getLogger().info("    - commands injected into registry");
 
             messageConfig = new MessageConfig();
 
             Sponge.getEventManager().registerListeners(this, new JoinListener());
-            getLogger().info("    - Listeners registered into system");
+            getLogger().info("    - listeners registered into system");
             getLogger().info("");
             getLogger().info("GTS has successfully enabled, and is ready for service");
             getLogger().info("Let the GTS experience, commence!");
