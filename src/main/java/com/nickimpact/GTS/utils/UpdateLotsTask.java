@@ -1,8 +1,10 @@
 package com.nickimpact.GTS.utils;
 
 import com.google.common.collect.Maps;
+import com.mysql.jdbc.log.LogUtils;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
+import com.nickimpact.GTS.logging.Log;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import net.minecraft.server.MinecraftServer;
@@ -28,17 +30,19 @@ public class UpdateLotsTask {
     public void setupUpdateTask(){
         Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).execute(() -> {
             for (Lot lot : GTS.getInstance().getSql().getAllLots()) {
-                if(!GTS.getInstance().getSql().isExpired(lot.getLotID())) {
-                    if (GTS.getInstance().getSql().getEnd(lot.getLotID()).after(Date.from(Instant.now()))) continue;
+                if(lot.canExpire()) {
+                    if (!GTS.getInstance().getSql().isExpired(lot.getLotID())) {
+                        if (GTS.getInstance().getSql().getEnd(lot.getLotID()).after(Date.from(Instant.now()))) continue;
 
-                    if(lot.isAuction())
-                        if(lot.getHighBidder() == null)
+                        if (lot.isAuction())
+                            if (lot.getHighBidder() == null)
+                                this.endMarket(lot);
+                            else {
+                                this.awardPokemon(Sponge.getServer().getPlayer(lot.getHighBidder()).orElse(null), lot);
+                            }
+                        else
                             this.endMarket(lot);
-                        else {
-                            this.awardPokemon(Sponge.getServer().getPlayer(lot.getHighBidder()).orElse(null), lot);
-                        }
-                    else
-                        this.endMarket(lot);
+                    }
                 }
             }
         }).submit(GTS.getInstance());
@@ -53,7 +57,11 @@ public class UpdateLotsTask {
             HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
             textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
 
-            player.get().sendMessage(MessageConfig.getMessage("Generic.Remove.Expired", textOptions));
+            for(Text text : MessageConfig.getMessages("Generic.Remove.Expired", textOptions))
+                player.get().sendMessage(text);
+
+            Log log = LotUtils.forgeLog(Sponge.getServer().getPlayer(lot.getOwner()).get(), "Expires", textOptions);
+            GTS.getInstance().getSql().appendLog(log);
             Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), Sponge.getServer().getPlayer(item.getOwner()).get().getUniqueId());
             if(storage.isPresent()) {
                 storage.get().addToParty(item.getPokemon(lot, player.get()));
@@ -72,6 +80,7 @@ public class UpdateLotsTask {
                 HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
                 textOptions.put("player", Optional.of(player.getName()));
                 textOptions.put("pokemon", Optional.of(item.getName()));
+                textOptions.put("curr_symbol", Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain()));
                 textOptions.put("price", Optional.of(lot.getStPrice()));
 
                 BigDecimal price = new BigDecimal(lot.getStPrice());
@@ -83,6 +92,23 @@ public class UpdateLotsTask {
                             player.sendMessage(text);
                         return;
                     }
+
+                    // Owner Log Info
+                    HashMap<String, Optional<Object>> tOptsOwner = Maps.newHashMap();
+                    tOptsOwner.put("player", Optional.of(player.getName()));
+                    tOptsOwner.put("price", Optional.of(price));
+                    textOptions.put("curr_symbol", Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain()));
+                    tOptsOwner.put("pokemon", Optional.of(item.getName()));
+                    Log log = LotUtils.forgeLog(Sponge.getServer().getPlayer(lot.getOwner()).get(), "Auction-Seller", tOptsOwner);
+                    GTS.getInstance().getSql().appendLog(log);
+
+                    // Winner Log Info
+                    HashMap<String, Optional<Object>> tOptsWinner = Maps.newHashMap();
+                    tOptsWinner.putAll(textOptions);
+                    tOptsWinner.put("player", Optional.of(Sponge.getServer().getPlayer(lot.getOwner()).get().getName()));
+                    Log log2 = LotUtils.forgeLog(Sponge.getServer().getPlayer(lot.getOwner()).get(), "Auction-Winner", tOptsOwner);
+                    GTS.getInstance().getSql().appendLog(log2);
+
                     acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.source(GTS.getInstance()).build());
 
                     for (Text text : MessageConfig.getMessages("Auctions.Award", textOptions))

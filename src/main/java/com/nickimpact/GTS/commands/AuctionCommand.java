@@ -22,6 +22,8 @@ public class AuctionCommand implements CommandExecutor{
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         if(src instanceof Player) {
+            Optional<String> note = args.getOne("note");
+
             Integer slot = args.<Integer>getOne("slot").get() - 1;
             if (slot < 0 || slot > 5) {
                 throw new CommandException(Text.of(TextColors.RED, "Error ", TextColors.GRAY, "| ", TextColors.WHITE, "You must specify a number between 1 - 6"));
@@ -37,9 +39,15 @@ public class AuctionCommand implements CommandExecutor{
 
             Optional<Long> time = args.getOne("expires");
             if(time.isPresent())
-                LotUtils.addPokemonAuc((Player)src, slot, price, increment, time.get());
+                if(note.isPresent())
+                    LotUtils.addPokemonAuc((Player)src, slot, note.get(), price, increment, time.get());
+                else
+                    LotUtils.addPokemonAuc((Player)src, slot, "", price, increment, time.get());
             else
-                LotUtils.addPokemonAuc((Player)src, slot, price, increment, GTS.getInstance().getConfig().getAucTime());
+                if(note.isPresent())
+                    LotUtils.addPokemonAuc((Player)src, slot, note.get(), price, increment, GTS.getInstance().getConfig().getAucTime());
+                else
+                    LotUtils.addPokemonAuc((Player)src, slot, "", price, increment, GTS.getInstance().getConfig().getAucTime());
 
             return CommandResult.success();
         }
@@ -52,7 +60,8 @@ public class AuctionCommand implements CommandExecutor{
                 .arguments(GenericArguments.integer(Text.of("slot")),
                         GenericArguments.integer(Text.of("price")),
                         GenericArguments.integer(Text.of("increment")),
-                        GenericArguments.optionalWeak(GenericArguments.longNum(Text.of("expires"))))
+                        GenericArguments.optionalWeak(GenericArguments.longNum(Text.of("expires"))),
+                        GenericArguments.optionalWeak(GenericArguments.remainingJoinedStrings(Text.of("note"))))
                 .description(Text.of("Add a pokemon to the GTS"))
                 .build();
     }

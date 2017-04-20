@@ -3,6 +3,7 @@ package com.nickimpact.GTS.guis;
 import com.google.common.collect.Maps;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
+import com.nickimpact.GTS.logging.Log;
 import com.nickimpact.GTS.utils.Lot;
 import com.nickimpact.GTS.utils.LotUtils;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
@@ -168,6 +169,10 @@ public class LotUI {
                                                 } else if (event instanceof ClickInventoryEvent.Primary) {
                                                     for(Text text : MessageConfig.getMessages("Administrative.LotUI.Remove", textOptions))
                                                         p.sendMessage(text);
+
+                                                    textOptions.putAll(LotUtils.getInfo(lots.get(p).getItem().getPokemon(lots.get(p), p)));
+                                                    Log log = LotUtils.forgeLog(Sponge.getServer().getPlayer(lots.get(p).getOwner()).get(), "Removal", textOptions);
+                                                    GTS.getInstance().getSql().appendLog(log);
                                                     Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                                                     if(storage.isPresent()) {
                                                         storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p), p));
@@ -193,6 +198,9 @@ public class LotUI {
                                                     GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
                                                 }
                                                 GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
+                                                textOptions.putAll(LotUtils.getInfo(lots.get(p).getItem().getPokemon(lots.get(p), p)));
+                                                Log log = LotUtils.forgeLog(p, "Removal", textOptions);
+                                                GTS.getInstance().getSql().appendLog(log);
                                             }
                                         }
                                     } else {

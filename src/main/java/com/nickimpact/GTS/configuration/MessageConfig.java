@@ -65,11 +65,15 @@ public class MessageConfig {
 
             // Addition Messages:
             generic.getNode("Addition", "Broadcast", "Normal").getList(TypeToken.of(String.class), Lists.newArrayList(
-                    "&a&lGTS &e\u00BB &c{{player}} &7has added a &a{{ability}} {{IV%}} {{shiny:s}}{{pokemon}} &7to the GTS for &a{{curr_symbol}}{{price}}&7!"
+                    "&a&lGTS &e\u00BB &c{{player}} &7has added a &a{{ability}} {{IV%}} IV {{shiny:s}}{{pokemon}} &7to the GTS for &a{{curr_symbol}}{{price}}&7!"
             ));
 
             generic.getNode("Addition", "Broadcast", "Pokemon").getList(TypeToken.of(String.class), Lists.newArrayList(
-                    "&a&lGTS &e\u00BB &c{{player}} &7has added a &a{{ability}} {{IV%}} {{shiny:s}}{{pokemon}} &7to the GTS and is asking for a &a{{poke_looked_for}}&7!"
+                    "&a&lGTS &e\u00BB &c{{player}} &7has added a &a{{ability}} {{IV%}} IV {{shiny:s}}{{pokemon}} &7to the GTS and is asking for a &a{{poke_looked_for}}&7!"
+            ));
+
+            generic.getNode("Addition", "Broadcast", "Egg").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &c{{player}} &7has added a &amysterious egg &7to the GTS and is asking for a &a{{poke_looked_for}}&7!"
             ));
 
             generic.getNode("Addition", "Success").getList(TypeToken.of(String.class), Lists.newArrayList(
@@ -138,7 +142,7 @@ public class MessageConfig {
             ));
 
             generic.getNode("Trade", "Recipient", "Receive-Poke").getList(TypeToken.of(String.class), Lists.newArrayList(
-                    "&a&lGTS &e\u00BB &7You have received a &e{{poke_looked_for}} &7from &a{{player}} &7in return for your &a{{pokemon}}&7!"
+                    "&a&lGTS &e\u00BB &7You have received a &e{{pokemon}} &7from &a{{player}} &7in return for your &a{{poke_looked_for}}&7!"
             ));
 
             // Admin Settings
@@ -162,6 +166,10 @@ public class MessageConfig {
                     "&a&lGTS &e\u00BB &7You have removed and deleted the &e{{pokemon}} &7entirely!"
             ));
 
+            admin.getNode("Clear-Logs").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &7You have purged the logs for &e{{player}}&7!"
+            ));
+
 
             // Auction Settings
             auctions.setComment("\n" +
@@ -169,8 +177,15 @@ public class MessageConfig {
                     "|                        Auction Messages                           | #\n" +
                     "+-------------------------------------------------------------------+ #");
 
-            auctions.getNode("Broadcast").getList(TypeToken.of(String.class), Lists.newArrayList(
-                    "&a&lGTS &e\u00BB &c{{player}} &7has started an auction for a &a{{ability}} {{IV%}} {{shiny:s}}{{pokemon}}&7!",
+            auctions.getNode("Broadcast", "Pokemon").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &c{{player}} &7has started an auction for a &a{{ability}} {{IV%}} IV {{shiny:s}}{{pokemon}}&7!",
+                    "&a&lGTS &e\u00BB &7Starting Price: &e{{curr_symbol}}{{start_price}}",
+                    "&a&lGTS &e\u00BB &7Increment: &e{{curr_symbol}}{{increment}}",
+                    "&a&lGTS &e\u00BB &7Duration: &e{{expires}}"
+            ));
+
+            auctions.getNode("Broadcast", "Egg").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &c{{player}} &7has started an auction for a &amysterious egg&7!",
                     "&a&lGTS &e\u00BB &7Starting Price: &e{{curr_symbol}}{{start_price}}",
                     "&a&lGTS &e\u00BB &7Increment: &e{{curr_symbol}}{{increment}}",
                     "&a&lGTS &e\u00BB &7Duration: &e{{expires}}"

@@ -151,7 +151,11 @@ public abstract class SQLDatabase {
 
                     int placement = 1;
                     while (result.next()) {
-                        ++placement;
+                        if (placement == result.getInt("ID")) {
+                            placement++;
+                        } else {
+                            break;
+                        }
                     }
                     result.close();
                     ps.close();
@@ -542,6 +546,23 @@ public abstract class SQLDatabase {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void purgeLogs(UUID uuid){
+        try {
+            try(Connection connection = getConnection()) {
+                if (connection == null || connection.isClosed()) {
+                    throw new IllegalStateException("SQL connection is null");
+                }
+                try (PreparedStatement ps = connection.prepareStatement("DELETE FROM `" + logTable + "` WHERE uuid='" + uuid + "'")) {
+                    ps.executeUpdate();
+                    ps.close();
+                }
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public Log getEarliestLog(UUID uuid){

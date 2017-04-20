@@ -22,6 +22,7 @@ public class Log {
         this.date = date;
         this.action = action;
         this.actor = actor;
+        this.log = "";
     }
 
     public int getId() {
@@ -51,16 +52,95 @@ public class Log {
     public static List<String> additionLog(){
         return Lists.newArrayList(
                 "Pokemon:",
-                "Name: {{pokemon}}",
-                "Nickname: {{nickname}}",
-                "Level: {{level}}",
-                "Shiny: {{shiny_tf}}",
-                "Ability: {{ability}}",
-                "Nature: {{nature}}",
-                "Gender: {{gender}}",
-                "Growth: {{growth}}",
-                "EV%: {{EV%}}",
-                "IV%: {{IV%}}"
+                "  Name: {{pokemon}}",
+                "  Nickname: {{nickname}}",
+                "  Level: {{level}}",
+                "  Shiny: {{shiny_tf}}",
+                "  Ability: {{ability}}",
+                "  Nature: {{nature}}",
+                "  Gender: {{gender}}",
+                "  Growth: {{growth}}",
+                "  EV%: {{EV%}}",
+                "  IV%: {{IV%}}"
         );
+    }
+
+    public static List<String> expiresLog(){
+        return Lists.newArrayList(
+                "Pokemon:",
+                "  Name: {{pokemon}}",
+                "  Nickname: {{nickname}}",
+                "  Level: {{level}}",
+                "  Shiny: {{shiny_tf}}",
+                "  Ability: {{ability}}",
+                "  Nature: {{nature}}",
+                "  Gender: {{gender}}",
+                "  Growth: {{growth}}",
+                "  EV%: {{EV%}}",
+                "  IV%: {{IV%}}"
+        );
+    }
+
+    public static List<String> removalLog(){
+        return Lists.newArrayList(
+                "Pokemon:",
+                "  Name: {{pokemon}}",
+                "  Nickname: {{nickname}}",
+                "  Level: {{level}}",
+                "  Shiny: {{shiny_tf}}",
+                "  Ability: {{ability}}",
+                "  Nature: {{nature}}",
+                "  Gender: {{gender}}",
+                "  Growth: {{growth}}",
+                "  EV%: {{EV%}}",
+                "  IV%: {{IV%}}"
+        );
+    }
+
+    public static List<String> purchaseLog(int person){
+        if(person == 1)
+            return Lists.newArrayList(
+                    "Buyer: {{buyer}}",
+                    "Money Earned: {{curr_symbol}}{{price}}",
+                    "Pokemon Sold: {{pokemon}}"
+
+            );
+        else
+            return Lists.newArrayList(
+                    "Seller: {{seller}}",
+                    "Money Spent: {{curr_symbol}}{{price}}",
+                    "Pokemon Received: {{pokemon}}"
+            );
+    }
+
+    public static List<String> auctionLog(int person){
+        if(person == 1)
+            return Lists.newArrayList(
+                "Winner: {{buyer}}",
+                "Money Earned: {{curr_symbol}}{{price}}",
+                "Pokemon Sold: {{pokemon}}"
+
+            );
+        else
+            return Lists.newArrayList(
+                "Seller: {{seller}}",
+                "Money Spent: {{curr_symbol}}{{price}}",
+                "Pokemon Received: {{pokemon}}"
+            );
+    }
+
+    public static List<String> tradeLog(int person){
+        if(person == 1)
+            return Lists.newArrayList(
+                "Partner: {{player}}",
+                "Traded: {{pokemon}}",
+                "Received: {{poke_looked_for}}"
+            );
+        else
+            return Lists.newArrayList(
+                "Partner: {{player}}",
+                "Traded: {{poke_looked_for}}",
+                "Received: {{pokemon}}"
+            );
     }
 }

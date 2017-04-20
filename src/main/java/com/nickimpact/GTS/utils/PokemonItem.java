@@ -246,6 +246,31 @@ public class PokemonItem {
                 data.add(Text.join(Text.of(TextColors.GRAY, "Nickname: ", TextColors.YELLOW), TextSerializers.LEGACY_FORMATTING_CODE.deserialize(this.nickname)));
             }
             data.add(Text.of(TextColors.GREEN, "Click on this slot for more info"));
+            if(lot.getNote() != null && !lot.getNote().equals("")){
+                if(lot.getNote().length() > 16){
+                    String[] note = lot.getNote().split(" ");
+                    String line = "";
+
+                    int index = 0;
+                    while(line.length() < 17){
+                        line += note[index] + " ";
+                        index++;
+                    }
+                    data.add(Text.of(TextColors.GRAY, "Note: ", TextColors.YELLOW, line));
+                    while(index < note.length){
+                        line = "";
+                        while(line.length() < 17){
+                            if(index == note.length) break;
+
+                            line += note[index] + " ";
+                            index++;
+                        }
+                        data.add(Text.of(TextColors.GRAY, "      ", TextColors.YELLOW, line));
+                    }
+                } else {
+                    data.add(Text.of(TextColors.GRAY, "Note: ", TextColors.YELLOW, lot.getNote()));
+                }
+            }
             data.add(Text.EMPTY);
             data.add(Text.of(TextColors.GRAY, "Ability: ", TextColors.YELLOW, this.ability));
             data.add(Text.of(TextColors.GRAY, "Nature: ", TextColors.YELLOW, this.nature));

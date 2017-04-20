@@ -23,6 +23,8 @@ public class AdditionCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         if(src instanceof Player){
+            Optional<String> note = args.getOne("note");
+
             Integer slot = args.<Integer>getOne("slot").get() - 1;
             if(slot < 0 || slot > 5){
                 throw new CommandException(Text.of(TextColors.RED, "Error ", TextColors.GRAY, "| ", TextColors.WHITE, "You must specify a number between 1 - 6"));
@@ -42,12 +44,19 @@ public class AdditionCommand implements CommandExecutor {
                     throw new CommandException(Text.of(TextColors.RED, "That requested pokemon doesn't exist!"));
 
             // We need a flag to state an entry can never expire
-            if(args.hasAny("ne") || args.hasAny("never-expires")){
+            if(args.hasAny("n") || args.hasAny("never-expires")){
+                GTS.getInstance().getLogger().info("Never expiring flag detected");
                 if(price.isPresent())
-                    LotUtils.addPokemonStatic((Player)src, slot, price.get(), false, 0);
+                    if(note.isPresent())
+                        LotUtils.addPokemonStatic((Player)src, slot, note.get(), price.get(), false, 0);
+                    else
+                        LotUtils.addPokemonStatic((Player)src, slot, "", price.get(), false, 0);
                 else
                     if(poke != null && poke.isPresent())
-                        LotUtils.addPokemon4Pokemon((Player) src, slot, poke.get(), false, 0);
+                        if(note.isPresent())
+                            LotUtils.addPokemon4Pokemon((Player) src, slot, note.get(), poke.get(), false, 0);
+                        else
+                            LotUtils.addPokemon4Pokemon((Player) src, slot, "", poke.get(), false, 0);
                     else
                         throw new CommandException(Text.of(TextColors.RED, "Not enough arguments!"));
 
@@ -61,16 +70,28 @@ public class AdditionCommand implements CommandExecutor {
                     throw new CommandException(Text.of(TextColors.RED, "Expiration can't be lower than 1 second!"));
                 }
                 if(price.isPresent())
-                    LotUtils.addPokemonStatic((Player) src, slot, price.get(), true, customExpires.get());
+                    if(note.isPresent())
+                        LotUtils.addPokemonStatic((Player) src, slot, note.get(), price.get(), true, customExpires.get());
+                    else
+                        LotUtils.addPokemonStatic((Player) src, slot, "", price.get(), true, customExpires.get());
                 else
                     if(poke != null && poke.isPresent())
-                        LotUtils.addPokemon4Pokemon((Player) src, slot, poke.get(), true, customExpires.get());
+                        if(note.isPresent())
+                            LotUtils.addPokemon4Pokemon((Player) src, slot, note.get(), poke.get(), true, customExpires.get());
+                        else
+                            LotUtils.addPokemon4Pokemon((Player) src, slot, "", poke.get(), true, customExpires.get());
             } else {
                 if(price.isPresent())
-                    LotUtils.addPokemonStatic((Player) src, slot, price.get(), true, GTS.getInstance().getConfig().getLotTime());
+                    if(note.isPresent())
+                        LotUtils.addPokemonStatic((Player) src, slot, note.get(), price.get(), true, GTS.getInstance().getConfig().getLotTime());
+                    else
+                        LotUtils.addPokemonStatic((Player) src, slot, "", price.get(), true, GTS.getInstance().getConfig().getLotTime());
                 else
                     if(poke != null && poke.isPresent())
-                        LotUtils.addPokemon4Pokemon((Player) src, slot, poke.get(), true, GTS.getInstance().getConfig().getLotTime());
+                        if(note.isPresent())
+                            LotUtils.addPokemon4Pokemon((Player) src, slot, note.get(), poke.get(), true, GTS.getInstance().getConfig().getLotTime());
+                        else
+                            LotUtils.addPokemon4Pokemon((Player) src, slot, "", poke.get(), true, GTS.getInstance().getConfig().getLotTime());
                     else
                         throw new CommandException(Text.of("Invalid pokemon addition"));
             }
@@ -84,12 +105,13 @@ public class AdditionCommand implements CommandExecutor {
         return CommandSpec.builder()
                 .executor(new AdditionCommand())
                 .arguments(GenericArguments.flags()
-                                .flag("ne", "-never-expires")
+                                .flag("n", "-never-expires")
                                 .valueFlag(GenericArguments.string(Text.of("pokemon")), "-poke", "-pokemon")
                                 .buildWith(GenericArguments.none()),
                         GenericArguments.integer(Text.of("slot")),
                         GenericArguments.optionalWeak(GenericArguments.integer(Text.of("price"))),
-                        GenericArguments.optionalWeak(GenericArguments.longNum(Text.of("expires"))))
+                        GenericArguments.optionalWeak(GenericArguments.longNum(Text.of("expires"))),
+                        GenericArguments.optionalWeak(GenericArguments.remainingJoinedStrings(Text.of("note"))))
                 .description(Text.of("Add a pokemon to the GTS"))
                 .build();
     }

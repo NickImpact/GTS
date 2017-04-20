@@ -22,6 +22,7 @@ public enum Tokens {
     Slot("slot"),
     Cleared("cleared"),
     MoneyDiff("money_diff"),
+    Note("note"),
 
     // Pokemon Info
     Pokemon("pokemon"),

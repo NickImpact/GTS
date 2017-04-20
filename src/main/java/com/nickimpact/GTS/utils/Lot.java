@@ -31,11 +31,13 @@ public class Lot {
     private boolean pokemon = false;
     private String pokeWanted = "";
 
-    public Lot(int lotID, UUID owner, String nbt, PokemonItem item, int price, boolean expires){
-        this(lotID, owner, nbt, item, price, expires, false, null, -1, -1);
+    private String note = "";
+
+    public Lot(int lotID, UUID owner, String nbt, PokemonItem item, int price, boolean expires, String note){
+        this(lotID, owner, nbt, item, price, expires, false, null, -1, -1, note);
     }
 
-    public Lot(int lotID, UUID owner, String nbt, PokemonItem item, int price, boolean expires, boolean auction, UUID highBidder, int stPrice, int increment){
+    public Lot(int lotID, UUID owner, String nbt, PokemonItem item, int price, boolean expires, boolean auction, UUID highBidder, int stPrice, int increment, String note){
         this.lotID = lotID;
         this.owner = owner;
         this.nbt = nbt.replace("CustomName:\"\"", "CustomName:").replace("Nickname:\"\"", "Nickname:");
@@ -46,15 +48,17 @@ public class Lot {
         this.highBidder = highBidder;
         this.stPrice = stPrice;
         this.increment = increment;
+        this.note = note;
     }
 
-    public Lot(int lotID, UUID owner, String nbt, PokemonItem item, boolean pokemon, String pokeWanted){
+    public Lot(int lotID, UUID owner, String nbt, PokemonItem item, boolean pokemon, String pokeWanted, String note){
         this.lotID = lotID;
         this.owner = owner;
         this.nbt = nbt.replace("CustomName:\"\"", "CustomName:").replace("Nickname:\"\"", "Nickname:");
         this.pkItem = item;
         this.pokemon = pokemon;
         this.pokeWanted = pokeWanted;
+        this.note = note;
     }
 
     public int getPrice(){
@@ -123,5 +127,13 @@ public class Lot {
 
     public boolean canExpire() {
         return expires;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 }

@@ -1,6 +1,5 @@
 package com.nickimpact.GTS.utils;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.nickimpact.GTS.configuration.MessageConfig;
@@ -26,7 +25,6 @@ import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -38,19 +36,19 @@ public class LotUtils {
         return new Gson().fromJson(s, Lot.class);
     }
 
-    public static void addPokemonStatic(Player player, int slot, int price, boolean expires, long time) {
-        addPokemonToMarket(1, player, slot, price, expires, time);
+    public static void addPokemonStatic(Player player, int slot, String note, int price, boolean expires, long time) {
+        addPokemonToMarket(1, player, slot, note, price, expires, time);
     }
 
-    public static void addPokemonAuc(Player player, int slot, int startPrice, int increment, long time) {
-        addPokemonToMarket(2, player, slot, startPrice, increment, time);
+    public static void addPokemonAuc(Player player, int slot, String note, int startPrice, int increment, long time) {
+        addPokemonToMarket(2, player, slot, note, startPrice, increment, time);
     }
 
-    public static void addPokemon4Pokemon(Player player, int slot, String pokemon, boolean expires, long time){
-        addPokemonToMarket(3, player, slot, pokemon, expires, time);
+    public static void addPokemon4Pokemon(Player player, int slot, String note, String pokemon, boolean expires, long time){
+        addPokemonToMarket(3, player, slot, note, pokemon, expires, time);
     }
 
-    private static void addPokemonToMarket(int mode, Player player, int slot, Object... options){
+    private static void addPokemonToMarket(int mode, Player player, int slot, String note, Object... options){
         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
 
         if (GTS.getInstance().getSql().hasTooMany(player.getUniqueId())) {
@@ -77,12 +75,12 @@ public class LotUtils {
         }
 
         // Do checking
-        if(mode == 1){
-            int price = (Integer)options[0];
-            boolean expires = (Boolean)options[1];
-            long time = (Long)options[2];
+        if(mode == 1) {
+            int price = (Integer) options[0];
+            boolean expires = (Boolean) options[1];
+            long time = (Long) options[2];
 
-            if (!handleTax(player, price)){
+            if (!handleTax(player, price)) {
                 return;
             }
 
@@ -90,7 +88,7 @@ public class LotUtils {
 
             int placement = GTS.getInstance().getSql().getPlacement(1);
 
-            Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, price, expires);
+            Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, price, expires, note);
             GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), expires, time);
 
             textOptions.put("player", Optional.of(player.getName()));
@@ -101,11 +99,16 @@ public class LotUtils {
             textOptions.put("expires", expires ? Optional.of("Never") : Optional.of(getTime(time * 1000)));
             textOptions.putAll(getInfo(pokemon));
 
+            if (!pokemon.isEgg){
+                for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Normal", textOptions))
+                    Sponge.getServer().getBroadcastChannel().send(text);
+            } else {
+                for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Egg", textOptions))
+                    Sponge.getServer().getBroadcastChannel().send(text);
+            }
+
             Log log = forgeLog(player, "Addition", textOptions);
             GTS.getInstance().getSql().appendLog(log);
-
-            for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Normal", textOptions))
-                Sponge.getServer().getBroadcastChannel().send(text);
         } else if(mode == 2) {
             int stPrice = (Integer) options[0];
             int increment = (Integer) options[1];
@@ -119,7 +122,7 @@ public class LotUtils {
 
             int placement = GTS.getInstance().getSql().getPlacement(1);
 
-            Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, stPrice, true, true, null, stPrice, increment);
+            Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, stPrice, true, true, null, stPrice, increment, note);
             GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), true, time);
 
             textOptions.put("player", Optional.of(player.getName()));
@@ -131,8 +134,17 @@ public class LotUtils {
             textOptions.put("expires", Optional.of(getTime(time * 1000)));
             textOptions.putAll(getInfo(pokemon));
 
-            for(Text text : MessageConfig.getMessages("Auctions.Broadcast", textOptions))
-                Sponge.getServer().getBroadcastChannel().send(text);
+            if(!pokemon.isEgg) {
+                for (Text text : MessageConfig.getMessages("Auctions.Broadcast.Pokemon", textOptions))
+                    Sponge.getServer().getBroadcastChannel().send(text);
+            } else {
+                for (Text text : MessageConfig.getMessages("Auctions.Broadcast.Egg", textOptions))
+                    Sponge.getServer().getBroadcastChannel().send(text);
+            }
+
+            textOptions.put("pokemon", Optional.of(pokemon.getName()));
+            Log log = forgeLog(player, "Addition", textOptions);
+            GTS.getInstance().getSql().appendLog(log);
         } else {
             String poke = (String)options[0];
             boolean expires = (Boolean)options[1];
@@ -145,7 +157,7 @@ public class LotUtils {
             PokemonItem pokeItem = new PokemonItem(pokemon, player.getName(), poke);
 
             int placement = GTS.getInstance().getSql().getPlacement(1);
-            Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, true, poke);
+            Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, true, poke, note);
             GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), expires, time);
 
             textOptions.put("player", Optional.of(player.getName()));
@@ -155,8 +167,17 @@ public class LotUtils {
             textOptions.put("expires", expires ? Optional.of("Never") : Optional.of(getTime(time * 1000)));
             textOptions.putAll(getInfo(pokemon));
 
-            for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Pokemon", textOptions))
-                Sponge.getServer().getBroadcastChannel().send(text);
+            if(!pokemon.isEgg) {
+                for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Pokemon", textOptions))
+                    Sponge.getServer().getBroadcastChannel().send(text);
+            } else {
+                for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Egg", textOptions))
+                    Sponge.getServer().getBroadcastChannel().send(text);
+            }
+
+            textOptions.put("pokemon", Optional.of(pokemon.getName()));
+            Log log = forgeLog(player, "Addition", textOptions);
+            GTS.getInstance().getSql().appendLog(log);
         }
 
         // Remove the pokemon from the client
@@ -165,6 +186,7 @@ public class LotUtils {
         storage.get().sendUpdatedList();
 
         // Print Success Message
+        textOptions.put("pokemon", Optional.of(pokemon.isEgg ? "Mystery Egg" : pokemon.getName()));
         for(Text text : MessageConfig.getMessages("Generic.Addition.Success", textOptions))
             player.sendMessage(text);
     }
@@ -198,6 +220,12 @@ public class LotUtils {
                     for(Text text : MessageConfig.getMessages("Generic.Purchase.Success.Buyer", textOptions))
                         p.sendMessage(text);
 
+                    textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+                    Log log = forgeLog(p, "Purchase-Recipient", textOptions);
+                    GTS.getInstance().getSql().appendLog(log);
+
+                    textOptions.clear();
+
                     GTS.getInstance().getSql().deleteLot(lot.getLotID());
                     if (Sponge.getServer().getPlayer(lot.getOwner()).get().isOnline()) {
                         textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
@@ -207,6 +235,9 @@ public class LotUtils {
 
                         for(Text text : MessageConfig.getMessages("Generic.Purchase.Success.Seller", textOptions))
                             Sponge.getServer().getPlayer(lot.getOwner()).get().sendMessage(text);
+
+                        Log log2 = forgeLog(p, "Purchase-Owner", textOptions);
+                        GTS.getInstance().getSql().appendLog(log2);
                     }
 
                     Optional<UniqueAccount> ownerAccount = GTS.getInstance().getEconomy().getOrCreateAccount(lot.getOwner());
@@ -294,14 +325,15 @@ public class LotUtils {
         textOptions.put("poke_looked_for", Optional.of(lot.getPokeWanted()));
         textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
         textOptions.put("player", Optional.of(player.getName()));
+        Log log = forgeLog(player, "Trade", textOptions);
+        GTS.getInstance().getSql().appendLog(log);
         for(Text text : MessageConfig.getMessages("Generic.Trade.Recipient.Receive-Poke", textOptions))
             player.sendMessage(text);
 
-        textOptions.clear();
         Sponge.getServer().getPlayer(lot.getOwner()).ifPresent(o -> {
-            textOptions.put("poke_looked_for", Optional.of(lot.getPokeWanted()));
-            textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
-            textOptions.put("player", Optional.of(player.getName()));
+            Log log2 = forgeLog(player, "Trade", textOptions);
+            GTS.getInstance().getSql().appendLog(log2);
+
             for(Text text : MessageConfig.getMessages("Generic.Trade.Owner.Receive-Poke", textOptions))
                 o.sendMessage(text);
         });
@@ -385,7 +417,7 @@ public class LotUtils {
         return true;
     }
 
-    private static HashMap<String, Optional<Object>> getInfo(EntityPixelmon pokemon){
+    public static HashMap<String, Optional<Object>> getInfo(EntityPixelmon pokemon){
         HashMap<String, Optional<Object>> info = Maps.newHashMap();
         info.put("nickname", Optional.of(pokemon.getNickname()));
         info.put("ability", Optional.of(pokemon.getAbility().getName()));
@@ -405,7 +437,7 @@ public class LotUtils {
         int totalIVs = pokemon.stats.IVs.HP + pokemon.stats.IVs.Attack + pokemon.stats.IVs.Defence + pokemon.stats.IVs.SpAtt +
                 pokemon.stats.IVs.SpDef + pokemon.stats.IVs.Speed;
 
-        info.put("EV%", Optional.of(df.format(totalEvs / 510.0 * 100) + "% EV"));
+        info.put("EV%", Optional.of(df.format(totalEvs / 510.0 * 100) + "%"));
         info.put("evtotal", Optional.of(totalEvs));
         info.put("evhp", Optional.of(pokemon.stats.EVs.HP));
         info.put("evatk", Optional.of(pokemon.stats.EVs.Attack));
@@ -414,7 +446,7 @@ public class LotUtils {
         info.put("evspdef", Optional.of(pokemon.stats.EVs.SpecialDefence));
         info.put("evspeed", Optional.of(pokemon.stats.EVs.Speed));
 
-        info.put("IV%", Optional.of(df.format(totalIVs / 186.0 * 100) + "% IV"));
+        info.put("IV%", Optional.of(df.format(totalIVs / 186.0 * 100) + "%"));
         info.put("ivtotal", Optional.of(totalIVs));
         info.put("ivhp", Optional.of(pokemon.stats.IVs.HP));
         info.put("ivatk", Optional.of(pokemon.stats.IVs.Attack));
@@ -455,14 +487,55 @@ public class LotUtils {
         return time;
     }
 
-    private static Log forgeLog(Player player, String action, HashMap<String, Optional<Object>> replacements){
+    public static Log forgeLog(Player player, String action, HashMap<String, Optional<Object>> replacements){
         Log log = new Log(GTS.getInstance().getSql().getPlacement(2), Date.from(Instant.now()),
                 player.getUniqueId(), action);
 
-        Log.additionLog().forEach(l -> {
-            l = MessageConfig.replaceOptions(l, replacements).toPlain();
-            log.setLog(log.getLog() + l + " | ");
-        });
+        if(action.equals("Addition"))
+            Log.additionLog().forEach(l -> {
+                l = MessageConfig.replaceOptions(l, replacements).toPlain();
+                log.setLog(log.getLog() + l + " | ");
+            });
+        else if(action.equals("Expired"))
+            Log.expiresLog().forEach(l -> {
+                l = MessageConfig.replaceOptions(l, replacements).toPlain();
+                log.setLog(log.getLog() + l + " | ");
+            });
+        else if(action.equals("Removal"))
+            Log.removalLog().forEach(l -> {
+                l = MessageConfig.replaceOptions(l, replacements).toPlain();
+                log.setLog(log.getLog() + l + " | ");
+            });
+        else if(action.equals("Purchase-Seller"))
+            Log.purchaseLog(1).forEach(l -> {
+                l = MessageConfig.replaceOptions(l, replacements).toPlain();
+                log.setLog(log.getLog() + l + " | ");
+            });
+        else if(action.equals("Purchase-Recipient"))
+            Log.purchaseLog(2).forEach(l -> {
+                l = MessageConfig.replaceOptions(l, replacements).toPlain();
+                log.setLog(log.getLog() + l + " | ");
+            });
+        else if(action.equals("Auction-Seller"))
+            Log.auctionLog(1).forEach(l -> {
+                l = MessageConfig.replaceOptions(l, replacements).toPlain();
+                log.setLog(log.getLog() + l + " | ");
+            });
+        else if(action.equals("Auction-Winner"))
+            Log.auctionLog(2).forEach(l -> {
+                l = MessageConfig.replaceOptions(l, replacements).toPlain();
+                log.setLog(log.getLog() + l + " | ");
+            });
+        else if(action.equals("Trade-Owner"))
+            Log.tradeLog(1).forEach(l -> {
+                l = MessageConfig.replaceOptions(l, replacements).toPlain();
+                log.setLog(log.getLog() + l + " | ");
+            });
+        else if(action.equals("Trade-Recipient"))
+            Log.tradeLog(2).forEach(l -> {
+                l = MessageConfig.replaceOptions(l, replacements).toPlain();
+                log.setLog(log.getLog() + l + " | ");
+            });
 
         return log;
     }
