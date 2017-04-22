@@ -75,14 +75,12 @@ public abstract class SQLDatabase {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try(PreparedStatement st = connection.prepareStatement("SELECT DoesExpire FROM `" + mainTable + "`")){
-                    ResultSet rs = st.executeQuery();
-                    ResultSetMetaData md = rs.getMetaData();
-                    if (md.getColumnCount() == 0) {
-                        try (PreparedStatement statement = connection.prepareStatement("ALTER TABLE `" + mainTable + "` ADD DoesExpire TINYINT(1);")) {
-                            statement.executeUpdate();
-                            statement.close();
-                        }
+                DatabaseMetaData dbmd = connection.getMetaData();
+                ResultSet rs = dbmd.getColumns(null, null, this.mainTable.toUpperCase(), "DoesExpire".toUpperCase());
+                if(!rs.next()){
+                    try(PreparedStatement ps = connection.prepareStatement("ALTER TABLE `" + mainTable + "` ADD DoesExpire MEDIUMTEXT NOT NULL DEFAULT(1);")) {
+                        ps.executeUpdate();
+                        ps.close();
                     }
                 }
             }
