@@ -1,7 +1,6 @@
 package com.nickimpact.GTS.utils;
 
 import com.google.common.collect.Lists;
-import com.pixelmonmod.pixelmon.pokedex.Pokedex;
 import org.spongepowered.api.entity.living.player.Player;
 
 import java.util.List;
