@@ -34,9 +34,9 @@ import java.util.List;
 
 public class PokemonItem {
     private String owner;
-    private int cost;
-    private int startPrice;
-    private int increment;
+    private int cost = -1;
+    private int startPrice = -1;
+    private int increment = -1;
 
     private int id;
     private int form;
@@ -75,16 +75,16 @@ public class PokemonItem {
 
         if(options.length == 1 && options[0] instanceof Integer) {
             this.cost = (Integer) options[0];
-            this.startPrice = -1;
-            this.increment = -1;
+            this.startPrice = 0;
+            this.increment = 0;
         } else if(options.length == 2) {
-            this.cost = -1;
+            this.cost = 0;
             this.startPrice = (Integer) options[0];
             this.increment = (Integer) options[1];
         } else {
-            this.cost = -1;
-            this.startPrice = -1;
-            this.increment = -1;
+            this.cost = 0;
+            this.startPrice = 0;
+            this.increment = 0;
         }
 
         this.id = pokemon.baseStats.nationalPokedexNumber;
@@ -222,9 +222,9 @@ public class PokemonItem {
             data.add(Text.of(TextColors.GRAY, "Size: ", TextColors.YELLOW, "???"));
             data.add(Text.EMPTY);
 
-            if(this.cost != -1 && this.startPrice == -1)
+            if(this.cost > 0 && this.startPrice <= 0)
                 data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.cost));
-            else if(this.cost == -1 && this.startPrice != -1) {
+            else if(this.cost <= 0 && this.startPrice > 0) {
                 data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.startPrice));
                 data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.increment));
                 data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getHighBidder() != null ? Sponge.getServer()
@@ -233,7 +233,7 @@ public class PokemonItem {
                 data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getPokeWanted()));
             }
 
-            if(!lot.canExpire())
+            if(!lot.canExpire() && lot.getPokeWanted() != null)
                 data.add(Text.of(TextColors.GRAY, "Expires: ", TextColors.YELLOW, "Never"));
             else
                 data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(GTS.getInstance().getSql()
@@ -283,9 +283,9 @@ public class PokemonItem {
                 data.add(Text.of(TextColors.GRAY, "Clones: ", TextColors.YELLOW, this.clones + " times"));
             }
             data.add(Text.EMPTY);
-            if(this.cost != -1 && this.startPrice == -1)
+            if(this.cost > 0 && this.startPrice <= 0)
                 data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.cost));
-            else if(this.cost == -1 && this.startPrice != -1) {
+            else if(this.cost <= 0 && this.startPrice > 0) {
                 data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.startPrice));
                 data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.increment));
                 data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getHighBidder() != null ? Sponge.getServer()
@@ -293,7 +293,7 @@ public class PokemonItem {
             } else {
                 data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getPokeWanted()));
             }
-            if(!lot.canExpire())
+            if(!lot.canExpire() && lot.getPokeWanted() != null)
                 data.add(Text.of(TextColors.GRAY, "Expires: ", TextColors.YELLOW, "Never"));
             else
                 data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(GTS.getInstance().getSql()

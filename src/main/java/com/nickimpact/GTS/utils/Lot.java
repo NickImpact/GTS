@@ -33,6 +33,24 @@ public class Lot {
 
     private String note = "";
 
+    // Legacy Constructor
+    public Lot(int lotID, UUID owner, String nbt, PokemonItem item, int price){
+        this.lotID = lotID;
+        this.owner = owner;
+        this.nbt = nbt.replace("CustomName:\"\"", "CustomName:").replace("Nickname:\"\"", "Nickname:");
+        this.pkItem = item;
+        this.price = price;
+
+        // Initialize new values
+        this.expires = true;
+        this.auction = false;
+        this.highBidder = null;
+        this.stPrice = -1;
+        this.increment = -1;
+        this.pokeWanted = "None";
+        this.note = null;
+    }
+
     public Lot(int lotID, UUID owner, String nbt, PokemonItem item, int price, boolean expires, String note){
         this(lotID, owner, nbt, item, price, expires, false, null, -1, -1, note);
     }

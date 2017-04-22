@@ -30,7 +30,7 @@ public class UpdateLotsTask {
     public void setupUpdateTask(){
         Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).execute(() -> {
             for (Lot lot : GTS.getInstance().getSql().getAllLots()) {
-                if(lot.canExpire()) {
+                if(lot.canExpire() || (!lot.canExpire() && lot.getPokeWanted() == null)) {
                     if (!GTS.getInstance().getSql().isExpired(lot.getLotID())) {
                         if (GTS.getInstance().getSql().getEnd(lot.getLotID()).after(Date.from(Instant.now()))) continue;
 
