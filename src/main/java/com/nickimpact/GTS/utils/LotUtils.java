@@ -103,7 +103,7 @@ public class LotUtils {
                 for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Normal", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             } else {
-                for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Egg", textOptions))
+                for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Normal.Egg", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             }
 
@@ -138,7 +138,7 @@ public class LotUtils {
                 for (Text text : MessageConfig.getMessages("Auctions.Broadcast.Pokemon", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             } else {
-                for (Text text : MessageConfig.getMessages("Auctions.Broadcast.Egg", textOptions))
+                for (Text text : MessageConfig.getMessages("Auctions.Broadcast.Pokemon.Egg", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             }
 
@@ -216,7 +216,7 @@ public class LotUtils {
                     textOptions.put("pokemon", lot.getItem().getPokemon(lot, p).isEgg ? Optional.of("Mystery Egg") : Optional.of(lot.getItem().getName()));
                     textOptions.put("curr_symbol", Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain()));
                     textOptions.put("price", Optional.of(price));
-                    textOptions.put("seller", Optional.of(Sponge.getServer().getPlayer(lot.getOwner()).get().getName()));
+                    textOptions.put("seller", Optional.of(Sponge.getServer().getGameProfileManager().getCache().getById(lot.getOwner()).get().getName()));
                     for(Text text : MessageConfig.getMessages("Generic.Purchase.Success.Buyer", textOptions))
                         p.sendMessage(text);
 
@@ -227,7 +227,7 @@ public class LotUtils {
                     textOptions.clear();
 
                     GTS.getInstance().getSql().deleteLot(lot.getLotID());
-                    if (Sponge.getServer().getPlayer(lot.getOwner()).get().isOnline()) {
+                    if (Sponge.getServer().getPlayer(lot.getOwner()).isPresent()) {
                         textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
                         textOptions.put("curr_symbol", Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain()));
                         textOptions.put("price", Optional.of(price));

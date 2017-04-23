@@ -126,7 +126,7 @@ public class SearchCommand implements CommandExecutor {
                             .valueFlag(GenericArguments.integer(Text.of("ivSpDef")), "-ivSpDef")
                             .valueFlag(GenericArguments.integer(Text.of("ivSpeed")), "-ivSpeed")
                         .valueFlag(GenericArguments.integer(Text.of("form")), "-f", "-form")
-                        .valueFlag(GenericArguments.integer(Text.of("shiny")), "s", "shiny")
+                        .valueFlag(GenericArguments.integer(Text.of("shiny")), "s", "-shiny")
                         .valueFlag(GenericArguments.integer(Text.of("friendship")), "-friendship")
                         .flag("-st", "-specialTexture")
                             .flag("-halloween", "-zombie")
