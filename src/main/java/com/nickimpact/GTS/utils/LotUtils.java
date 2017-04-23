@@ -103,7 +103,7 @@ public class LotUtils {
                 for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Normal", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             } else {
-                for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Normal.Egg", textOptions))
+                for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Egg.Normal", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             }
 
@@ -138,7 +138,7 @@ public class LotUtils {
                 for (Text text : MessageConfig.getMessages("Auctions.Broadcast.Pokemon", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             } else {
-                for (Text text : MessageConfig.getMessages("Auctions.Broadcast.Pokemon.Egg", textOptions))
+                for (Text text : MessageConfig.getMessages("Auctions.Broadcast.Egg.Pokemon", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             }
 
