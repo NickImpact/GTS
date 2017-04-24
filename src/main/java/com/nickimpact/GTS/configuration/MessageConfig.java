@@ -68,11 +68,15 @@ public class MessageConfig {
                     "&a&lGTS &e\u00BB &c{{player}} &7has added a &a{{ability}} {{IV%}} IV {{shiny:s}}{{pokemon}} &7to the GTS for &a{{curr_symbol}}{{price}}&7!"
             ));
 
+            generic.getNode("Addition", "Broadcast", "Egg", "Normal").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &c{{player}} &7has added a &amysterious egg &7to the GTS for &a{{curr_symbol}}{{price}}&7!"
+            ));
+
             generic.getNode("Addition", "Broadcast", "Pokemon").getList(TypeToken.of(String.class), Lists.newArrayList(
                     "&a&lGTS &e\u00BB &c{{player}} &7has added a &a{{ability}} {{IV%}} IV {{shiny:s}}{{pokemon}} &7to the GTS and is asking for a &a{{poke_looked_for}}&7!"
             ));
 
-            generic.getNode("Addition", "Broadcast", "Egg").getList(TypeToken.of(String.class), Lists.newArrayList(
+            generic.getNode("Addition", "Broadcast", "Egg", "Pokemon").getList(TypeToken.of(String.class), Lists.newArrayList(
                     "&a&lGTS &e\u00BB &c{{player}} &7has added a &amysterious egg &7to the GTS and is asking for a &a{{poke_looked_for}}&7!"
             ));
 
