@@ -20,11 +20,3 @@ build
 # other
 eclipse
 run
-
-gradlew
-*.bat
-*.jar
-*.properties
-*.png
-*.gif
-

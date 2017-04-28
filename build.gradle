@@ -26,7 +26,7 @@ compileJava {
 }
 
 minecraft {
-    version = "1.10.2-12.18.2.2171"
+    version = "1.10.2-12.18.3.2281"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -43,6 +43,12 @@ repositories {
     maven {
         name = 'sponge'
         url = 'http://repo.spongepowered.org/maven'
+    }
+    ivy {
+        url "http://download.nodecdn.net/containers/pixelmon"
+        layout "pattern", {
+            artifact "[organisation]/[artifact]-[revision].[ext]"
+        }
     }
 }
 
@@ -68,9 +74,9 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    compile 'org.spongepowered:spongeapi:5.2.0-SNAPSHOT:shaded'
-    compile 'org.spongepowered:spongeforge:1.10.2-2221-5.1.0-BETA-2147'
+    compile 'org.spongepowered:spongeforge:1.10.2-2281-5.2.0-BETA-2274'
     compile "org.projectlombok:lombok:1.16.10"
+    deobfProvided 'core:Pixelmon:1.10.2-5.0.3-universal'
 	compile group: 'com.zaxxer', name: 'HikariCP', version: '2.5.1'
 }
 
