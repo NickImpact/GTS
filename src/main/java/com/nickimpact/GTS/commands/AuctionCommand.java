@@ -56,6 +56,7 @@ public class AuctionCommand implements CommandExecutor{
 
     public static CommandSpec registerCommand(){
         return CommandSpec.builder()
+                .permission("gts.use")
                 .executor(new AuctionCommand())
                 .arguments(GenericArguments.integer(Text.of("slot")),
                         GenericArguments.integer(Text.of("price")),

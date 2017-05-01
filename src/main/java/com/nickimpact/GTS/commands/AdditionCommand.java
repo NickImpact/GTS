@@ -103,6 +103,7 @@ public class AdditionCommand implements CommandExecutor {
     public static CommandSpec registerCommand(){
 
         return CommandSpec.builder()
+                .permission("gts.use")
                 .executor(new AdditionCommand())
                 .arguments(GenericArguments.flags()
                                 .flag("n", "-never-expires")

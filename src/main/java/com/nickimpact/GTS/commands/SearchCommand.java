@@ -101,6 +101,7 @@ public class SearchCommand implements CommandExecutor {
     public static CommandSpec registerCommand(){
 
         return CommandSpec.builder()
+                .permission("gts.use")
                 .executor(new SearchCommand())
                 .arguments(GenericArguments.flags()
                         .valueFlag(GenericArguments.string(Text.of("growth")), "-size", "-growth")
@@ -147,7 +148,7 @@ public class SearchCommand implements CommandExecutor {
         List<Lot> lots = GTS.getInstance().getSql().getAllLots();
         List<Lot> validListings = Lists.newArrayList();
         for(Lot lot : lots){
-            EntityPixelmon poke = lot.getItem().getPokemon(lot, Sponge.getServer().getPlayer(lot.getOwner()).get());
+            EntityPixelmon poke = lot.getItem().getPokemon(lot);
             boolean addLot = true;
             if(pokemon.size() == 0 || pokemon.stream().anyMatch(p -> p.equalsIgnoreCase(poke.getName()))) {
                 for (String flag : flags) {
