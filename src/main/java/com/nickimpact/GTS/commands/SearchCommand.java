@@ -101,7 +101,7 @@ public class SearchCommand implements CommandExecutor {
     public static CommandSpec registerCommand(){
 
         return CommandSpec.builder()
-                .permission("gts.use")
+                .permission("gts.command.search")
                 .executor(new SearchCommand())
                 .arguments(GenericArguments.flags()
                         .valueFlag(GenericArguments.string(Text.of("growth")), "-size", "-growth")

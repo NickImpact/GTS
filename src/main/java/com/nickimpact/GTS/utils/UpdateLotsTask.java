@@ -103,13 +103,13 @@ public class UpdateLotsTask {
                     tOptsOwner.put("price", Optional.of(price));
                     textOptions.put("curr_symbol", Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain()));
                     tOptsOwner.put("pokemon", Optional.of(item.getName()));
-                    Log log = LotUtils.forgeLog(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get(), "Auction-Seller", tOptsOwner);
+                    Log log = LotUtils.forgeLog(user, "Auction-Seller", tOptsOwner);
                     GTS.getInstance().getSql().appendLog(log);
 
                     // Winner Log Info
                     HashMap<String, Optional<Object>> tOptsWinner = Maps.newHashMap();
                     tOptsWinner.putAll(textOptions);
-                    tOptsWinner.put("player", Optional.of(Sponge.getServer().getPlayer(lot.getOwner()).get().getName()));
+                    tOptsWinner.put("player", Optional.of(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName()));
                     Log log2 = LotUtils.forgeLog(Sponge.getServer().getPlayer(lot.getOwner()).get(), "Auction-Winner", tOptsOwner);
                     GTS.getInstance().getSql().appendLog(log2);
 

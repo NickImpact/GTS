@@ -44,8 +44,7 @@ public class AdditionCommand implements CommandExecutor {
                     throw new CommandException(Text.of(TextColors.RED, "That requested pokemon doesn't exist!"));
 
             // We need a flag to state an entry can never expire
-            if(args.hasAny("n") || args.hasAny("never-expires")){
-                GTS.getInstance().getLogger().info("Never expiring flag detected");
+            if((args.hasAny("n") || args.hasAny("never-expires")) && src.hasPermission("gts.command.add.never-expire")){
                 if(price.isPresent())
                     if(note.isPresent())
                         LotUtils.addPokemonStatic((Player)src, slot, note.get(), price.get(), false, 0);
@@ -61,6 +60,8 @@ public class AdditionCommand implements CommandExecutor {
                         throw new CommandException(Text.of(TextColors.RED, "Not enough arguments!"));
 
                 return CommandResult.success();
+            } else if((args.hasAny("n") || args.hasAny("never-expires")) && !src.hasPermission("gts.command.add.never-expire")){
+                throw new CommandException(Text.of("You don't have the permission to mark listings as never-expiring!"));
             }
 
             // Fetch the custom time for a listing, if it exists
@@ -103,7 +104,7 @@ public class AdditionCommand implements CommandExecutor {
     public static CommandSpec registerCommand(){
 
         return CommandSpec.builder()
-                .permission("gts.use")
+                .permission("gts.command.add")
                 .executor(new AdditionCommand())
                 .arguments(GenericArguments.flags()
                                 .flag("n", "-never-expires")
