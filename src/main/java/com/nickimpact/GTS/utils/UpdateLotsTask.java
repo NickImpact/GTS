@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.utils;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mysql.jdbc.log.LogUtils;
 import com.nickimpact.GTS.configuration.MessageConfig;
@@ -21,6 +22,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -28,6 +30,17 @@ import java.util.concurrent.TimeUnit;
  * Created by Nick on 12/15/2016.
  */
 public class UpdateLotsTask {
+
+    public List<Lot> updateLots(){
+        Sponge.getScheduler().createTaskBuilder().execute(() -> {
+
+        })
+        .async()
+        .interval(1, TimeUnit.MINUTES)
+        .submit(GTS.getInstance());
+
+        return Lists.newArrayList();
+    }
 
     public void setupUpdateTask(){
         Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).execute(() -> {
