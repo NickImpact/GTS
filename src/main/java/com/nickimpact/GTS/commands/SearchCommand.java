@@ -7,6 +7,7 @@ import com.nickimpact.GTS.utils.Lot;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.AbilityBase;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.enums.EnumEggGroup;
 import com.pixelmonmod.pixelmon.enums.EnumGrowth;
@@ -26,6 +27,7 @@ import org.spongepowered.api.text.Text;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Nick on 12/15/2016.
@@ -101,6 +103,7 @@ public class SearchCommand implements CommandExecutor {
     public static CommandSpec registerCommand(){
 
         return CommandSpec.builder()
+                .permission("gts.command.search")
                 .executor(new SearchCommand())
                 .arguments(GenericArguments.flags()
                         .valueFlag(GenericArguments.string(Text.of("growth")), "-size", "-growth")
@@ -126,7 +129,7 @@ public class SearchCommand implements CommandExecutor {
                             .valueFlag(GenericArguments.integer(Text.of("ivSpDef")), "-ivSpDef")
                             .valueFlag(GenericArguments.integer(Text.of("ivSpeed")), "-ivSpeed")
                         .valueFlag(GenericArguments.integer(Text.of("form")), "-f", "-form")
-                        .valueFlag(GenericArguments.integer(Text.of("shiny")), "s", "-shiny")
+                        .flag("s", "-shiny")
                         .valueFlag(GenericArguments.integer(Text.of("friendship")), "-friendship")
                         .flag("-st", "-specialTexture")
                             .flag("-halloween", "-zombie")
@@ -147,7 +150,7 @@ public class SearchCommand implements CommandExecutor {
         List<Lot> lots = GTS.getInstance().getSql().getAllLots();
         List<Lot> validListings = Lists.newArrayList();
         for(Lot lot : lots){
-            EntityPixelmon poke = lot.getItem().getPokemon(lot, Sponge.getServer().getPlayer(lot.getOwner()).get());
+            EntityPixelmon poke = lot.getItem().getPokemon(lot);
             boolean addLot = true;
             if(pokemon.size() == 0 || pokemon.stream().anyMatch(p -> p.equalsIgnoreCase(poke.getName()))) {
                 for (String flag : flags) {
@@ -160,15 +163,14 @@ public class SearchCommand implements CommandExecutor {
                         case "ab":
                         case "ability":
                             String ability = args.<String>getOne(flag).get();
-                            try {
-                                Class.forName("com.pixelmonmod.pixelmon.entities.pixelmon.abilities." + ability);
-                            } catch (ClassNotFoundException e) {
-                                throw new CommandException(Text.of("That passed ability doesn't exist..."));
+                            Optional<AbilityBase> ab = AbilityBase.getAbility(ability);
+                            if(ab.isPresent()){
+                                if (!poke.getAbility().getName().equalsIgnoreCase(ability))
+                                    addLot = false;
+                                break;
                             }
 
-                            if (!poke.getAbility().getLocalizedName().equalsIgnoreCase(ability))
-                                addLot = false;
-                            break;
+                            throw new CommandException(Text.of());
                         case "size":
                         case "growth":
                             String growth = args.<String>getOne(flag).get();
@@ -227,7 +229,7 @@ public class SearchCommand implements CommandExecutor {
                             if(evHp < 0 || evHp > 255)
                                 throw new CommandException(Text.of("EVs must be between 0-255..."));
 
-                            if (poke.stats.EVs.HP < evHp)
+                            if (poke.stats.EVs.HP != evHp)
                                 addLot = false;
                             break;
                         case "evAtk":
@@ -235,7 +237,7 @@ public class SearchCommand implements CommandExecutor {
                             if(evAtk < 0 || evAtk > 255)
                                 throw new CommandException(Text.of("EVs must be between 0-255..."));
 
-                            if (poke.stats.EVs.Attack < evAtk)
+                            if (poke.stats.EVs.Attack != evAtk)
                                 addLot = false;
                             break;
                         case "evDef":
@@ -243,7 +245,7 @@ public class SearchCommand implements CommandExecutor {
                             if(evDef < 0 || evDef > 255)
                                 throw new CommandException(Text.of("EVs must be between 0-255..."));
 
-                            if (poke.stats.EVs.Defence < evDef)
+                            if (poke.stats.EVs.Defence != evDef)
                                 addLot = false;
                             break;
                         case "evSpAtk":
@@ -251,7 +253,7 @@ public class SearchCommand implements CommandExecutor {
                             if(evSpAtk < 0 || evSpAtk > 255)
                                 throw new CommandException(Text.of("EVs must be between 0-255..."));
 
-                            if (poke.stats.EVs.SpecialAttack < evSpAtk)
+                            if (poke.stats.EVs.SpecialAttack != evSpAtk)
                                 addLot = false;
                             break;
                         case "evSpDef":
@@ -259,7 +261,7 @@ public class SearchCommand implements CommandExecutor {
                             if(evSpDef < 0 || evSpDef > 255)
                                 throw new CommandException(Text.of("EVs must be between 0-255..."));
 
-                            if (poke.stats.EVs.SpecialDefence < evSpDef)
+                            if (poke.stats.EVs.SpecialDefence != evSpDef)
                                 addLot = false;
                             break;
                         case "evSpeed":
@@ -267,7 +269,7 @@ public class SearchCommand implements CommandExecutor {
                             if(evSpeed < 0 || evSpeed > 255)
                                 throw new CommandException(Text.of("EVs must be between 0-255..."));
 
-                            if (poke.stats.EVs.Speed < evSpeed)
+                            if (poke.stats.EVs.Speed != evSpeed)
                                 addLot = false;
                             break;
                         case "ivHP":
@@ -275,7 +277,7 @@ public class SearchCommand implements CommandExecutor {
                             if(ivHp < 0 || ivHp > 31)
                                 throw new CommandException(Text.of("IVs must be between 0-31..."));
 
-                            if (poke.stats.IVs.HP < ivHp)
+                            if (poke.stats.IVs.HP != ivHp)
                                 addLot = false;
                             break;
                         case "ivAtk":
@@ -283,7 +285,7 @@ public class SearchCommand implements CommandExecutor {
                             if(ivAtk < 0 || ivAtk > 31)
                                 throw new CommandException(Text.of("IVs must be between 0-31..."));
 
-                            if (poke.stats.IVs.Attack < ivAtk)
+                            if (poke.stats.IVs.Attack != ivAtk)
                                 addLot = false;
                             break;
                         case "ivDef":
@@ -291,7 +293,7 @@ public class SearchCommand implements CommandExecutor {
                             if(ivDef < 0 || ivDef > 31)
                                 throw new CommandException(Text.of("IVs must be between 0-31..."));
 
-                            if (poke.stats.IVs.Defence < ivDef)
+                            if (poke.stats.IVs.Defence != ivDef)
                                 addLot = false;
                             break;
                         case "ivSpAtk":
@@ -299,7 +301,7 @@ public class SearchCommand implements CommandExecutor {
                             if(ivSpAtk < 0 || ivSpAtk > 31)
                                 throw new CommandException(Text.of("IVs must be between 0-31..."));
 
-                            if (poke.stats.IVs.SpAtt < ivSpAtk)
+                            if (poke.stats.IVs.SpAtt != ivSpAtk)
                                 addLot = false;
                             break;
                         case "ivSpDef":
@@ -307,7 +309,7 @@ public class SearchCommand implements CommandExecutor {
                             if(ivSpDef < 0 || ivSpDef > 31)
                                 throw new CommandException(Text.of("IVs must be between 0-31..."));
 
-                            if (poke.stats.IVs.SpDef < ivSpDef)
+                            if (poke.stats.IVs.SpDef != ivSpDef)
                                 addLot = false;
                             break;
                         case "ivSpeed":
@@ -315,7 +317,7 @@ public class SearchCommand implements CommandExecutor {
                             if(ivSpeed < 0 || ivSpeed > 31)
                                 throw new CommandException(Text.of("IVs must be between 0-31..."));
 
-                            if (poke.stats.IVs.SpDef < ivSpeed)
+                            if (poke.stats.IVs.SpDef != ivSpeed)
                                 addLot = false;
                             break;
                         case "friendship":

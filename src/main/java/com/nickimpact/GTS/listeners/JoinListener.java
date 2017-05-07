@@ -26,7 +26,7 @@ public class JoinListener {
             if(player.isPresent()) {
                 for(Lot lot : GTS.getInstance().getSql().getPlayerLots(player.get().getUniqueId())){
                     if(GTS.getInstance().getSql().isExpired(lot.getLotID())){
-                        LotUtils.givePlayerPokemon(player.get(), lot);
+                        LotUtils.givePlayerPokemon(player.get().getUniqueId(), lot);
                         GTS.getInstance().getSql().deleteLot(lot.getLotID());
 
                         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();

@@ -170,12 +170,12 @@ public class LotUI {
                                                     for(Text text : MessageConfig.getMessages("Administrative.LotUI.Remove", textOptions))
                                                         p.sendMessage(text);
 
-                                                    textOptions.putAll(LotUtils.getInfo(lots.get(p).getItem().getPokemon(lots.get(p), p)));
+                                                    textOptions.putAll(LotUtils.getInfo(lots.get(p).getItem().getPokemon(lots.get(p))));
                                                     Log log = LotUtils.forgeLog(Sponge.getServer().getPlayer(lots.get(p).getOwner()).get(), "Removal", textOptions);
                                                     GTS.getInstance().getSql().appendLog(log);
                                                     Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                                                     if(storage.isPresent()) {
-                                                        storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p), p));
+                                                        storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p)));
                                                         storage.get().sendUpdatedList();
                                                     } else {
                                                         GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
@@ -192,13 +192,13 @@ public class LotUI {
                                                     p.sendMessage(text);
                                                 Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                                                 if(storage.isPresent()) {
-                                                    storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p), p));
+                                                    storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p)));
                                                     storage.get().sendUpdatedList();
                                                 } else {
                                                     GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
                                                 }
                                                 GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
-                                                textOptions.putAll(LotUtils.getInfo(lots.get(p).getItem().getPokemon(lots.get(p), p)));
+                                                textOptions.putAll(LotUtils.getInfo(lots.get(p).getItem().getPokemon(lots.get(p))));
                                                 Log log = LotUtils.forgeLog(p, "Removal", textOptions);
                                                 GTS.getInstance().getSql().appendLog(log);
                                             }

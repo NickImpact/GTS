@@ -8,11 +8,14 @@ import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import net.minecraft.nbt.*;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -177,9 +180,9 @@ public class PokemonItem {
         }
     }
 
-    public EntityPixelmon getPokemon(Lot lot, Player p) {
+    public EntityPixelmon getPokemon(Lot lot) {
         try {
-            return (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(JsonToNBT.getTagFromJson(lot.getNBT()), (World)p.getWorld());
+            return (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(JsonToNBT.getTagFromJson(lot.getNBT()), FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
         } catch (NBTException e) {
             e.printStackTrace();
         }
@@ -227,8 +230,9 @@ public class PokemonItem {
             else if(this.cost <= 0 && this.startPrice > 0) {
                 data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.startPrice));
                 data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.increment));
-                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getHighBidder() != null ? Sponge.getServer()
-                        .getPlayer(lot.getHighBidder()).get().getName() : "N/A"));
+                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getHighBidder() != null ?
+                        Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName()
+                        : "N/A"));
             } else {
                 data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getPokeWanted()));
             }
@@ -288,8 +292,9 @@ public class PokemonItem {
             else if(this.cost <= 0 && this.startPrice > 0) {
                 data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.startPrice));
                 data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.increment));
-                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getHighBidder() != null ? Sponge.getServer()
-                        .getPlayer(lot.getHighBidder()).get().getName() : "N/A"));
+                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getHighBidder() != null ?
+                        Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName()
+                        : "N/A"));
             } else {
                 data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getPokeWanted()));
             }

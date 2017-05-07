@@ -107,6 +107,7 @@ public class LogCmd implements CommandExecutor {
 
     public static CommandSpec registerCommand(){
         return CommandSpec.builder()
+                .permission("gts.admin.command.log")
                 .child(CommandSpec.builder()
                     .executor(new LogCmd())
                     .arguments(

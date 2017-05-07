@@ -7,16 +7,20 @@ import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.logging.Log;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -26,6 +30,7 @@ import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Created by Nick on 12/15/2016.
@@ -213,10 +218,10 @@ public class LotUtils {
                     }
                     acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.source(GTS.getInstance()).build());
 
-                    textOptions.put("pokemon", lot.getItem().getPokemon(lot, p).isEgg ? Optional.of("Mystery Egg") : Optional.of(lot.getItem().getName()));
+                    textOptions.put("pokemon", lot.getItem().getPokemon(lot).isEgg ? Optional.of("Mystery Egg") : Optional.of(lot.getItem().getName()));
                     textOptions.put("curr_symbol", Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain()));
                     textOptions.put("price", Optional.of(price));
-                    textOptions.put("seller", Optional.of(Sponge.getServer().getGameProfileManager().getCache().getById(lot.getOwner()).get().getName()));
+                    textOptions.put("seller", Optional.of(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName()));
                     for(Text text : MessageConfig.getMessages("Generic.Purchase.Success.Buyer", textOptions))
                         p.sendMessage(text);
 
@@ -245,10 +250,10 @@ public class LotUtils {
                         UniqueAccount owner = ownerAccount.get();
                         owner.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.of(NamedCause.source(GTS.getInstance())));
                     } else {
-                        GTS.getInstance().getLogger().error("Player '" + Sponge.getServer().getPlayer(lot.getOwner()).get().getName() + "' was unable to receive $" + price.intValue() + " from the GTS");
+                        GTS.getInstance().getLogger().error("Player '" + Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName() + "' was unable to receive $" + price.intValue() + " from the GTS");
                     }
 
-                    EntityPixelmon pokemon = lot.getItem().getPokemon(lot, p);
+                    EntityPixelmon pokemon = lot.getItem().getPokemon(lot);
                     Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                     if(storage.isPresent()){
                         storage.get().addToParty(pokemon);
@@ -319,7 +324,8 @@ public class LotUtils {
 
     public static void trade(Player player, Lot lot){
         GTS.getInstance().getSql().deleteLot(lot.getLotID());
-        givePlayerPokemon(player, lot);
+        givePlayerPokemon(player.getUniqueId(), lot);
+        giveTradePokemon(lot.getOwner(), lot);
 
         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
         textOptions.put("poke_looked_for", Optional.of(lot.getPokeWanted()));
@@ -339,13 +345,36 @@ public class LotUtils {
         });
     }
 
-    public static void givePlayerPokemon(Player player, Lot lot){
-        Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), player.getUniqueId());
+    public static void givePlayerPokemon(UUID uuid, Lot lot){
+        Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), uuid);
         if(storage.isPresent()){
-            storage.get().addToParty(lot.getItem().getPokemon(lot, player));
+            storage.get().addToParty(lot.getItem().getPokemon(lot));
         } else {
-            GTS.getInstance().getLogger().error("Player " + player.getName() + " was unable to receive a " + lot.getItem().getName() + " from GTS");
+            GTS.getInstance().getLogger().error("UUID (" + uuid + ") was unable to receive a " + lot.getItem().getName() + " from GTS");
         }
+    }
+
+    private static void giveTradePokemon(UUID recipient, Lot lot){
+        Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), recipient);
+        storage.ifPresent(s -> {
+            int index = 0;
+            for(NBTTagCompound nbt : s.partyPokemon){
+                if(nbt != null) {
+                    if (nbt.getString(NbtKeys.NAME).equalsIgnoreCase(lot.getPokeWanted())) {
+                        final EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(nbt, FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
+                        final int rIndex = index;
+                        PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), lot.getOwner()).ifPresent(o -> {
+                            o.addToParty(pokemon);
+                            o.sendUpdatedList();
+                            s.removeFromPartyPlayer(rIndex);
+                            s.sendUpdatedList();
+                        });
+                    }
+                    index++;
+                }
+            }
+        });
+
     }
 
     private static Optional<PlayerStorage> getStorage(Player player){
@@ -487,7 +516,7 @@ public class LotUtils {
         return time;
     }
 
-    public static Log forgeLog(Player player, String action, HashMap<String, Optional<Object>> replacements){
+    public static Log forgeLog(User player, String action, HashMap<String, Optional<Object>> replacements){
         Log log = new Log(GTS.getInstance().getSql().getPlacement(2), Date.from(Instant.now()),
                 player.getUniqueId(), action);
 
