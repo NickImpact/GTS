@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.utils.Lot;
+import com.nickimpact.GTS.utils.LotCache;
 import com.nickimpact.GTS.utils.PokemonItem;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -38,7 +39,7 @@ public class Admin {
 
     private static void setupGUI(Inventory inv, int page) {
         int index = (page - 1) * 42;
-        List<Lot> lots = GTS.getInstance().getSql().getAllLots();
+        List<LotCache> lots = GTS.getInstance().getLots();
 
         int x;
         int y;
@@ -60,9 +61,9 @@ public class Admin {
                 y++;
             }
 
-            Lot lot = lots.get(index);
+            Lot lot = lots.get(index).getLot();
             PokemonItem item = lot.getItem();
-            inv.query(new SlotPos(x, y)).offer(item.getItem(lot));
+            inv.query(new SlotPos(x, y)).offer(item.getItem(lots.get(index)));
         }
     }
 
@@ -79,12 +80,12 @@ public class Admin {
                             if(slot % 9 < 7) {
                                 if (!e.getCursorTransaction().getFinal().getType().equals(ItemTypes.NONE)) {
                                     String lotID = e.getCursorTransaction().getFinal().get(Keys.ITEM_LORE).get().get(0).toPlain();
-                                    Lot lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
+                                    LotCache lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
 
                                     if (lot == null) {
                                         for(Text text : MessageConfig.getMessages("Generic.Purchase.Error.Already Sold", null))
                                             p.sendMessage(text);
-                                    } else if (GTS.getInstance().getSql().isExpired(lot.getLotID())) {
+                                    } else if (GTS.getInstance().getSql().isExpired(lot.getLot().getLotID())) {
                                         for(Text text : MessageConfig.getMessages("Generic.Purchase.Error.Expired", null))
                                             p.sendMessage(text);
                                     } else {
@@ -97,7 +98,7 @@ public class Admin {
                             } else {
                                 Sponge.getScheduler().createTaskBuilder().execute(() -> {
                                     if(slot == 8 || slot == 17) {
-                                        int size = GTS.getInstance().getSql().getAllLots().size();
+                                        int size = GTS.getInstance().getLots().size();
                                         if (slot == 8) {
                                             if (pages.get(p) < size / 42 + 1) {
                                                 showGUI(p, pages.get(p) + 1);

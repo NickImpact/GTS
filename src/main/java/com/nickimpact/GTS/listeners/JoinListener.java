@@ -3,7 +3,7 @@ package com.nickimpact.GTS.listeners;
 import com.google.common.collect.Maps;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
-import com.nickimpact.GTS.utils.Lot;
+import com.nickimpact.GTS.utils.LotCache;
 import com.nickimpact.GTS.utils.LotUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -24,13 +24,13 @@ public class JoinListener {
         Sponge.getScheduler().createTaskBuilder().execute(() -> {
             final Optional<Player> player = Sponge.getServer().getPlayer(event.getTargetEntity().getUniqueId());
             if(player.isPresent()) {
-                for(Lot lot : GTS.getInstance().getSql().getPlayerLots(player.get().getUniqueId())){
-                    if(GTS.getInstance().getSql().isExpired(lot.getLotID())){
-                        LotUtils.givePlayerPokemon(player.get().getUniqueId(), lot);
-                        GTS.getInstance().getSql().deleteLot(lot.getLotID());
+                for(LotCache lot : GTS.getInstance().getSql().getPlayerLots(player.get().getUniqueId())){
+                    if(lot.isExpired()){
+                        LotUtils.givePlayerPokemon(player.get().getUniqueId(), lot.getLot());
+                        GTS.getInstance().getLots().remove(lot);
 
                         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
-                        textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+                        textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
 
                         player.get().sendMessage(MessageConfig.getMessage("Generic.Remove.Expired", textOptions));
                     }

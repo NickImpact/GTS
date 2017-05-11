@@ -1,25 +1,18 @@
 package com.nickimpact.GTS.commands;
 
-import com.nickimpact.GTS.GTS;
-import com.nickimpact.GTS.guis.Main;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.spec.CommandExecutor;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
 
 /**
- * Created by Nick on 12/15/2016.
+ * Created by nickd on 5/10/2017.
  */
-public class GTSCommand implements CommandExecutor {
+public class IgnoreCmd implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-        if(!(src instanceof Player)){
-            throw new CommandException(Text.of("Only players can open the GTS listings!"));
-        }
-        Main.showGUI((Player)src, 1, false, GTS.getInstance().getLots());
+
 
         return CommandResult.success();
     }

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.utils.Lot;
+import com.nickimpact.GTS.utils.LotCache;
 import com.nickimpact.GTS.utils.PokemonItem;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -29,9 +30,9 @@ public class PlayerListings {
 
     private static HashMap<Player, Integer> pages = new HashMap<>();
     private static HashMap<Player, Boolean> search = new HashMap<>();
-    private static HashMap<Player, List<Lot>> tokens = new HashMap<>();
+    private static HashMap<Player, List<LotCache>> tokens = new HashMap<>();
 
-    public static void showGUI(Player p, int page, boolean searching, List<Lot> pokemon){
+    public static void showGUI(Player p, int page, boolean searching, List<LotCache> pokemon){
         Inventory inv = registerInventory(p);
         pages.put(p, page);
         search.put(p, searching);
@@ -43,7 +44,7 @@ public class PlayerListings {
 
     private static boolean setupGUI(Inventory inv, Player p, int page){
         int index = (page - 1) * 42;
-        List<Lot> lots = GTS.getInstance().getSql().getPlayerLots(p.getUniqueId());
+        List<LotCache> lots = GTS.getInstance().getSql().getPlayerLots(p.getUniqueId());
         if(lots.size() == 0){
             return true;
         }
@@ -68,9 +69,9 @@ public class PlayerListings {
                 y++;
             }
 
-            Lot lot = lots.get(index);
+            Lot lot = lots.get(index).getLot();
             PokemonItem item = lot.getItem();
-            inv.query(new SlotPos(x, y)).offer(item.getItem(lot));
+            inv.query(new SlotPos(x, y)).offer(item.getItem(lots.get(index)));
         }
 
         return true;
@@ -89,12 +90,12 @@ public class PlayerListings {
                                 if (slot % 9 < 7) {
                                     if (!e.getCursorTransaction().getFinal().getType().equals(ItemTypes.NONE)) {
                                         String lotID = e.getCursorTransaction().getFinal().get(Keys.ITEM_LORE).get().get(0).toPlain();
-                                        Lot lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
+                                        LotCache lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
 
                                         if (lot == null) {
                                             for(Text text : MessageConfig.getMessages("Generic.Purchase.Error.Already Sold", null))
                                                 p.sendMessage(text);
-                                        } else if (GTS.getInstance().getSql().isExpired(lot.getLotID())) {
+                                        } else if (GTS.getInstance().getSql().isExpired(lot.getLot().getLotID())) {
                                             for(Text text : MessageConfig.getMessages("Generic.Purchase.Error.Expired", null))
                                                 p.sendMessage(text);
                                         } else {
@@ -107,7 +108,7 @@ public class PlayerListings {
                                 } else {
                                     Sponge.getScheduler().createTaskBuilder().execute(() -> {
                                         if(slot == 8 || slot == 17) {
-                                            int size = GTS.getInstance().getSql().getAllLots().size();
+                                            int size = GTS.getInstance().getLots().size();
                                             if (slot == 8) {
                                                 if (pages.get(p) < size / 42 + 1) {
                                                     showGUI(p, pages.get(p) + 1, search.get(p), tokens.get(p));
@@ -153,7 +154,7 @@ public class PlayerListings {
         return false;
     }
 
-    public static List<Lot> getPokemon(Player p){
+    public static List<LotCache> getPokemon(Player p){
         if(tokens.containsKey(p)){
             return tokens.get(p);
         }

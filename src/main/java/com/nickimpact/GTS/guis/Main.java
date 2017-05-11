@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.utils.Lot;
+import com.nickimpact.GTS.utils.LotCache;
 import com.nickimpact.GTS.utils.PokemonItem;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -29,12 +30,12 @@ public class Main {
 
     private static HashMap<Player, Integer> playerPage = new HashMap<>();
     private static HashMap<Player, Boolean> playerSearch = new HashMap<>();
-    private static HashMap<Player, List<Lot>> playerTokens = new HashMap<>();
+    private static HashMap<Player, List<LotCache>> playerTokens = new HashMap<>();
     private static HashMap<Player, Integer> playerMax = new HashMap<>();
 
-    public static void showGUI(Player p, int page, boolean search, List<Lot> pokemon){
+    public static void showGUI(Player p, int page, boolean search, final List<LotCache> pokemon){
         playerPage.put(p, page);
-        playerMax.put(p, GTS.getInstance().getSql().getAllLots().size() / 28 + 1);
+        playerMax.put(p, GTS.getInstance().getLots().size() / 28 + 1);
         playerSearch.put(p, search);
         playerTokens.put(p, pokemon);
 
@@ -48,7 +49,7 @@ public class Main {
         }
     }
 
-    private static boolean setupGUI(Inventory inv, Player p, int page, boolean search, List<Lot> lots) {
+    private static boolean setupGUI(Inventory inv, Player p, int page, boolean search, List<LotCache> lots) {
         int index = (page - 1) * 28;
 
         int x;
@@ -79,14 +80,14 @@ public class Main {
                 y++;
             }
             if (search) {
-                Lot lot = lots.get(index);
+                Lot lot = lots.get(index).getLot();
                 PokemonItem item = lot.getItem();
-                inv.query(new SlotPos(x, y)).offer(item.getItem(lot));
+                inv.query(new SlotPos(x, y)).offer(item.getItem(lots.get(index)));
                 x++;
             } else {
-                Lot lot = lots.get(index);
+                Lot lot = lots.get(index).getLot();
                 PokemonItem item = lot.getItem();
-                inv.query(new SlotPos(x, y)).offer(item.getItem(lot));
+                inv.query(new SlotPos(x, y)).offer(item.getItem(lots.get(index)));
                 x++;
             }
         }
@@ -115,12 +116,12 @@ public class Main {
                                     // Lot data
 
                                     String lotID = e.getCursorTransaction().getFinal().get(Keys.ITEM_LORE).get().get(0).toPlain();
-                                    Lot lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
+                                    LotCache lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
 
                                     if (lot == null) {
                                         for(Text text : MessageConfig.getMessages("Generic.Purchase.Error.Already Sold", null))
                                             p.sendMessage(text);
-                                    } else if (GTS.getInstance().getSql().isExpired(lot.getLotID())) {
+                                    } else if (GTS.getInstance().getSql().isExpired(lot.getLot().getLotID())) {
                                         for(Text text : MessageConfig.getMessages("Generic.Purchase.Error.Expired", null))
                                             p.sendMessage(text);
                                     } else {
@@ -147,7 +148,7 @@ public class Main {
                                         }
                                     } else if (slot == 35) {
                                         // Refresh Listings
-                                        showGUI(p, playerPage.get(p), playerSearch.get(p), playerSearch.get(p) ? playerTokens.get(p) : GTS.getInstance().getSql().getAllLots());
+                                        showGUI(p, playerPage.get(p), playerSearch.get(p), playerSearch.get(p) ? playerTokens.get(p) : GTS.getInstance().getLots());
                                     } else {
                                         // Player Listings
                                         PlayerListings.showGUI(p, 1, playerSearch.get(p), playerTokens.get(p));

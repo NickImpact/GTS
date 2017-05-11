@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.logging.Log;
 import com.nickimpact.GTS.utils.Lot;
+import com.nickimpact.GTS.utils.LotCache;
 import com.nickimpact.GTS.utils.LotUtils;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -201,7 +202,7 @@ public abstract class SQLDatabase {
      * @param lot A representation of the market listing
      */
 
-    public void addLot(UUID uuid, String lot, boolean canExpire, long expires) {
+    public synchronized void addLot(UUID uuid, String lot, boolean canExpire, long expires) {
         try {
             try(Connection connection = getConnection()){
                 if(connection == null || connection.isClosed()){
@@ -230,16 +231,20 @@ public abstract class SQLDatabase {
      * @param id The proposed Lot ID
      * @return A representation of the Lot in the database. If we return null, we didn't find the lot at all.
      */
-    public Lot getLot(int id){
+    public synchronized LotCache getLot(int id){
         try {
             try(Connection connection = getConnection()) {
                 if (connection == null || connection.isClosed()) {
                     throw new IllegalStateException("SQL connection is null");
                 }
-                try (PreparedStatement ps = connection.prepareStatement("SELECT Lot FROM `" + mainTable + "` WHERE ID='" + id + "'")) {
+                try (PreparedStatement ps = connection.prepareStatement("SELECT Lot, Ends, Expired FROM `" + mainTable + "` WHERE ID='" + id + "'")) {
                     ResultSet result = ps.executeQuery();
                     if (result.next()) {
-                        return LotUtils.lotFromJson(result.getString("Lot"));
+                        Lot lot = LotUtils.lotFromJson(result.getString("Lot"));
+                        boolean expired = result.getBoolean("Expired");
+                        Date date = Date.from(Instant.parse(result.getString("Ends")));
+
+                        return new LotCache(lot, expired, date);
                     }
                 }
             }
@@ -255,7 +260,7 @@ public abstract class SQLDatabase {
      *
      * @param id The proposed Lot ID
      */
-    public void deleteLot(int id){
+    public synchronized void deleteLot(int id){
         try {
             try(Connection connection = getConnection()) {
                 if (connection == null || connection.isClosed()) {
@@ -273,8 +278,8 @@ public abstract class SQLDatabase {
         }
     }
 
-    public List<Lot> getAllLots() {
-        List<Lot> lots = new ArrayList<>();
+    public synchronized List<LotCache> getAllLots() {
+        List<LotCache> lots = new ArrayList<>();
 
         try{
             try(Connection connection = getConnection()) {
@@ -282,13 +287,14 @@ public abstract class SQLDatabase {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try (PreparedStatement query = connection.prepareStatement("SELECT Lot FROM `" + mainTable + "`")) {
+                try (PreparedStatement query = connection.prepareStatement("SELECT Lot, Ends, Expired FROM `" + mainTable + "`")) {
                     ResultSet results = query.executeQuery();
                     while (results.next()) {
                         Lot lot = LotUtils.lotFromJson(results.getString("Lot"));
-                        if (!isExpired(lot.getLotID())) {
-                            lots.add(lot);
-                        }
+                        boolean expired = results.getBoolean("Expired");
+                        Date date = Date.from(Instant.parse(results.getString("Ends")));
+
+                        lots.add(new LotCache(lot, expired, date));
                     }
                     results.close();
                     query.close();
@@ -303,7 +309,7 @@ public abstract class SQLDatabase {
         return Lists.newArrayList();
     }
 
-    public int clearLots() {
+    public synchronized int clearLots() {
         int slots = 0;
         try{
             try(Connection connection = getConnection()) {
@@ -328,8 +334,8 @@ public abstract class SQLDatabase {
         return slots;
     }
 
-    public List<Lot> getPlayerLots(UUID uuid){
-        List<Lot> lots = new ArrayList<>();
+    public synchronized List<LotCache> getPlayerLots(UUID uuid){
+        List<LotCache> lots = new ArrayList<>();
 
         try{
             try(Connection connection = this.getConnection()) {
@@ -337,10 +343,13 @@ public abstract class SQLDatabase {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try(PreparedStatement ps = connection.prepareStatement("SELECT Lot FROM `" + mainTable + "` WHERE uuid='" + uuid + "'")) {
+                try(PreparedStatement ps = connection.prepareStatement("SELECT Lot, Ends, Expired FROM `" + mainTable + "` WHERE uuid='" + uuid + "'")) {
                     ResultSet results = ps.executeQuery();
                     while (results.next()) {
-                        lots.add(LotUtils.lotFromJson(results.getString("Lot")));
+                        Lot lot = LotUtils.lotFromJson(results.getString("Lot"));
+                        boolean expired = results.getBoolean("Expired");
+                        Date date = Date.from(Instant.parse(results.getString("Ends")));
+                        lots.add(new LotCache(lot, expired, date));
                     }
                     results.close();
                     ps.close();
@@ -412,7 +421,7 @@ public abstract class SQLDatabase {
         catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return Date.from(Instant.now());
     }
 
     public boolean isExpired(int id) {

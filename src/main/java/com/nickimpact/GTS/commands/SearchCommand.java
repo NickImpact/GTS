@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.guis.Main;
 import com.nickimpact.GTS.utils.Lot;
+import com.nickimpact.GTS.utils.LotCache;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -40,14 +41,14 @@ public class SearchCommand implements CommandExecutor {
                 List<String> flags;
                 if((flags = getFlags(args)).size() > 0){
                     List<String> pokemon = Lists.newArrayList(args.getOne("pokemons").get().toString().split(" "));
-                    List<Lot> validPokemon = forgeValidSearch(args, flags, pokemon);
+                    List<LotCache> validPokemon = forgeValidSearch(args, flags, pokemon);
                     Main.showGUI((Player) src, 1, true, validPokemon);
                     return CommandResult.success();
                 } else {
                     List<String> pokemon = Lists.newArrayList(args.getOne("pokemons").get().toString().split(" "));
-                    List<Lot> validPokemon = Lists.newArrayList();
-                    for(Lot lot : GTS.getInstance().getSql().getAllLots()){
-                        String name = lot.getItem().getName();
+                    List<LotCache> validPokemon = Lists.newArrayList();
+                    for(LotCache lot : GTS.getInstance().getLots()){
+                        String name = lot.getLot().getItem().getName();
                         for(String poke : pokemon){
                             if(poke.equalsIgnoreCase(name)) validPokemon.add(lot);
                         }
@@ -146,11 +147,11 @@ public class SearchCommand implements CommandExecutor {
                 .build();
     }
 
-    private static List<Lot> forgeValidSearch(CommandContext args, List<String> flags, List<String> pokemon) throws CommandException{
-        List<Lot> lots = GTS.getInstance().getSql().getAllLots();
-        List<Lot> validListings = Lists.newArrayList();
-        for(Lot lot : lots){
-            EntityPixelmon poke = lot.getItem().getPokemon(lot);
+    private static List<LotCache> forgeValidSearch(CommandContext args, List<String> flags, List<String> pokemon) throws CommandException{
+        List<LotCache> lots = GTS.getInstance().getLots();
+        List<LotCache> validListings = Lists.newArrayList();
+        for(LotCache lot : lots){
+            EntityPixelmon poke = lot.getLot().getItem().getPokemon(lot.getLot());
             boolean addLot = true;
             if(pokemon.size() == 0 || pokemon.stream().anyMatch(p -> p.equalsIgnoreCase(poke.getName()))) {
                 for (String flag : flags) {
@@ -373,7 +374,7 @@ public class SearchCommand implements CommandExecutor {
                             if(minPrice < 0)
                                 throw new CommandException(Text.of("Min Price must be a positive number!"));
 
-                            if (lot.getPrice() < minPrice)
+                            if (lot.getLot().getPrice() < minPrice)
                                 addLot = false;
                             break;
                         case "maxPrice":
@@ -381,11 +382,11 @@ public class SearchCommand implements CommandExecutor {
                             if(maxPrice < 0)
                                 throw new CommandException(Text.of("Max Price must be a positive number!"));
 
-                            if (lot.getPrice() > maxPrice)
+                            if (lot.getLot().getPrice() > maxPrice)
                                 addLot = false;
                             break;
                         case "seller":
-                            if (!lot.getItem().getOwner().equalsIgnoreCase(args.<String>getOne(flag).get()))
+                            if (!lot.getLot().getItem().getOwner().equalsIgnoreCase(args.<String>getOne(flag).get()))
                                 addLot = false;
                             break;
                         case "he":
@@ -400,15 +401,15 @@ public class SearchCommand implements CommandExecutor {
                             break;
                         case "auc":
                         case "auction":
-                            if(!lot.isAuction())
+                            if(!lot.getLot().isAuction())
                                 addLot = false;
                             break;
                         case "cash":
-                            if(lot.isAuction() || lot.isPokemon())
+                            if(lot.getLot().isAuction() || lot.getLot().isPokemon())
                                 addLot = false;
                             break;
                         case "pokemon":
-                            if(lot.isAuction() || !lot.isPokemon())
+                            if(lot.getLot().isAuction() || !lot.getLot().isPokemon())
                                 addLot = false;
                             break;
                     }

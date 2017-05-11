@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.utils.Lot;
+import com.nickimpact.GTS.utils.LotCache;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.RepresentedPlayerData;
@@ -93,7 +94,7 @@ class SharedItems {
         return dummy;
     }
 
-    static ItemStack search(List<Lot> pokemon){
+    static ItemStack search(final List<LotCache> pokemon){
         ItemStack dummy = ItemStack.builder()
                 .itemType(ItemTypes.MAP)
                 .build();
@@ -101,9 +102,9 @@ class SharedItems {
         List<Text> lore = new ArrayList<>();
         if(pokemon != null) {
             textOptions.clear();
-            for (Lot lot : pokemon) {
-                if(lore.stream().noneMatch(p -> p.toString().contains(lot.getItem().getName()))) {
-                    textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+            for (LotCache lots : pokemon) {
+                if(lore.stream().noneMatch(p -> p.toString().contains(lots.getLot().getItem().getName()))) {
+                    textOptions.put("pokemon", Optional.of(lots.getLot().getItem().getName()));
                     lore.add(MessageConfig.getMessage("UI.Items.Search For.Lore Format", textOptions));
                 }
             }
