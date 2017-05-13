@@ -164,9 +164,17 @@ public class LotUI {
                                         if (admin) {
                                             if (lots.get(p).getLot() != null) {
                                                 if (event instanceof ClickInventoryEvent.Secondary) {
-                                                    for(Text text : MessageConfig.getMessages("Administrative.LotUI.Delete", textOptions))
+                                                    for (Text text : MessageConfig.getMessages("Administrative.LotUI.Delete", textOptions))
                                                         p.sendMessage(text);
-                                                    GTS.getInstance().getLots().remove(lots.get(p));
+
+                                                    for (LotCache lot : GTS.getInstance().getLots()){
+                                                        if (lot.getLot().getLotID() == lots.get(p).getLot().getLotID()) {
+                                                            GTS.getInstance().getLots().remove(lot);
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    LotUtils.deleteLot(lots.get(p).getLot().getLotID());
                                                 } else if (event instanceof ClickInventoryEvent.Primary) {
                                                     for(Text text : MessageConfig.getMessages("Administrative.LotUI.Remove", textOptions))
                                                         p.sendMessage(text);
@@ -181,7 +189,14 @@ public class LotUI {
                                                     } else {
                                                         GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
                                                     }
-                                                    GTS.getInstance().getLots().remove(lots.get(p));
+                                                    for (LotCache lot : GTS.getInstance().getLots()){
+                                                        if (lot.getLot().getLotID() == lots.get(p).getLot().getLotID()) {
+                                                            GTS.getInstance().getLots().remove(lot);
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    LotUtils.deleteLot(lots.get(p).getLot().getLotID());
                                                 }
                                             } else {
                                                 for(Text text : MessageConfig.getMessages("Generic.Remove.Failed", textOptions))
@@ -198,14 +213,22 @@ public class LotUI {
                                                 } else {
                                                     GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
                                                 }
-                                                GTS.getInstance().getLots().remove(lots.get(p));
+
+                                                for (LotCache lot : GTS.getInstance().getLots()){
+                                                    if (lot.getLot().getLotID() == lots.get(p).getLot().getLotID()) {
+                                                        GTS.getInstance().getLots().remove(lot);
+                                                        break;
+                                                    }
+                                                }
+
+                                                LotUtils.deleteLot(lots.get(p).getLot().getLotID());
                                                 textOptions.putAll(LotUtils.getInfo(lots.get(p).getLot().getItem().getPokemon(lots.get(p).getLot())));
                                                 Log log = LotUtils.forgeLog(p, "Removal", textOptions);
                                                 GTS.getInstance().getSql().appendLog(log);
                                             }
                                         }
                                     } else {
-                                        LotCache lot = GTS.getInstance().getSql().getLot(lots.get(p).getLot().getLotID());
+                                        LotCache lot = GTS.getInstance().getLots().stream().filter(l -> l.getLot().getLotID() == lots.get(p).getLot().getLotID()).findAny().orElse(null);
                                         if(lot != null){
                                             if(lot.getLot().isAuction())
                                                 LotUtils.bid(p, lot.getLot());

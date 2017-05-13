@@ -26,6 +26,10 @@ public class LotCache {
         return expired;
     }
 
+    public void setIsExpired(boolean expired){
+        this.expired = expired;
+    }
+
     public Date getDate() {
         return date;
     }

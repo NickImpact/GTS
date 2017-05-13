@@ -1,6 +1,5 @@
 package com.nickimpact.GTS;
 
-import com.nickimpact.GTS.storage.Dependency;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -18,17 +17,21 @@ public class GTSInfo {
     public static final String ID = "gts";
 
     public static final String NAME = "GTS";
-    public static final String VERSION = "2.1.4";
+    public static final String VERSION = "2.2.0-SNAPSHOT";
     public static final String DESCRIPTION = "A Sponge Representation of the Global Trading Station";
 
-    public static final Text PREFIX = Text.of(TextColors.YELLOW, "GTS ", TextColors.GRAY, "\u00bb ", TextColors.RESET);
+    public static final Text PREFIX = Text.of(TextColors.YELLOW, "GTS ", TextColors.GRAY, "\u00bb ", TextColors.DARK_AQUA);
     public static final Text ERROR_PREFIX = Text.of(
             TextColors.RED, "GTS ", TextColors.GRAY, "(", TextColors.RED, "Error", TextColors.GRAY, ") ",
-            TextColors.RESET
+            TextColors.DARK_RED
+    );
+    public static final Text DEBUG_PREFIX = Text.of(
+            TextColors.YELLOW, "GTS ", TextColors.GRAY, "(", TextColors.RED, "Debug", TextColors.GRAY, ") ",
+            TextColors.DARK_AQUA
     );
 
     public enum Dependencies {
-        Pixelmon("Pixelmon", "5.0.2+");
+        Pixelmon("pixelmon", "5.0.2+");
 
         private String dependency;
         private String version;

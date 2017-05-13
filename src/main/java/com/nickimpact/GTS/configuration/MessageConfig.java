@@ -253,11 +253,8 @@ public class MessageConfig {
         } catch (IOException|ObjectMappingException e) {
             GTS.getInstance().getLogger().error("    - An error occurred in the message config initialization");
             e.printStackTrace();
-            return;
         }
-        GTS.getInstance().getConsole().sendMessage(Text.of(
-                GTSInfo.PREFIX, TextColors.DARK_AQUA, "Message configuration loaded"
-        ));    }
+    }
 
     public static void saveConfig(){
         try{

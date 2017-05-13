@@ -47,6 +47,21 @@ public abstract class SQLDatabase {
         return getHikari().getConnection();
     }
 
+    public PreparedStatement prepareStatement(String sql){
+        try {
+            try (Connection connection = this.getConnection()) {
+                if (connection == null || connection.isClosed()) {
+                    throw new IllegalStateException("SQL connection is null");
+                }
+
+                return connection.prepareStatement(sql);
+            }
+        } catch(SQLException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void createTables() {
         try{
             try(Connection connection = this.getConnection()) {
@@ -90,7 +105,7 @@ public abstract class SQLDatabase {
         }
     }
 
-    public void clearTable(){
+    private synchronized void clearTable(){
         try{
             try(Connection connection = this.getConnection()) {
                 if (connection == null || connection.isClosed()) {
@@ -101,6 +116,8 @@ public abstract class SQLDatabase {
                     statement.executeUpdate();
                     statement.close();
                 }
+
+                GTS.getInstance().getLots().clear();
             }
         } catch (SQLException e){
             e.printStackTrace();
@@ -138,37 +155,6 @@ public abstract class SQLDatabase {
         return false;
     }
 
-    public int getPlacement(int table){
-        try {
-            try(Connection connection = this.getConnection()) {
-                if (connection == null || connection.isClosed()) {
-                    throw new IllegalStateException("SQL connection is null");
-                }
-
-                try (PreparedStatement ps = connection.prepareStatement("SELECT ID FROM `" + (table == 1 ? mainTable : logTable) + "` ORDER BY ID ASC")) {
-                    ResultSet result = ps.executeQuery();
-
-                    int placement = 1;
-                    while (result.next()) {
-                        if (placement == result.getInt("ID")) {
-                            placement++;
-                        } else {
-                            break;
-                        }
-                    }
-                    result.close();
-                    ps.close();
-
-                    return placement;
-                }
-            }
-        } catch(SQLException e){
-            e.printStackTrace();
-        }
-
-        return -1;
-    }
-
     public boolean canExpire(int id){
         try {
             try(Connection connection = this.getConnection()) {
@@ -195,14 +181,14 @@ public abstract class SQLDatabase {
         return false;
     }
 
+    /*
     /**
      * This function adds a new lot to the database for the specified uuid.
      *
      * @param uuid A uuid of the user we will deposit the pokemon into
      * @param lot A representation of the market listing
      */
-
-    public synchronized void addLot(UUID uuid, String lot, boolean canExpire, long expires) {
+    /*public synchronized void addLot(UUID uuid, String lot, boolean canExpire, long expires) {
         try {
             try(Connection connection = getConnection()){
                 if(connection == null || connection.isClosed()){
@@ -217,13 +203,15 @@ public abstract class SQLDatabase {
                     statement.setBoolean(6, canExpire);
                     statement.executeUpdate();
                     statement.close();
+
+
                 }
             }
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     /**
      * Retrieves a {@link Lot} from the database
@@ -274,6 +262,44 @@ public abstract class SQLDatabase {
             }
         }
         catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+    public synchronized void execute(String sql, String... options){
+        try{
+            PreparedStatement ps = prepareStatement(sql);
+            for(int i = 1; i <= options.length; i++){
+                ps.setString(i, options[i]);
+            }
+            ps.execute();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+    }*/
+
+    /**
+     * Using a list of commands, we will edit the entire database on the fly
+     * with just this one call. We will add, replace, and delete anything
+     * we need to here.
+     *
+     * @param sqlCmds The representative commands to be processed
+     */
+    public synchronized void updateLots(List<String> sqlCmds){
+        try {
+            try(Connection connection = getConnection()){
+                if(connection == null || connection.isClosed())
+                    throw new IllegalStateException("SQL connection is null");
+
+                Statement statement = connection.createStatement();
+                for(String cmd : sqlCmds) {
+                    statement.addBatch(cmd);
+                }
+
+                statement.executeBatch();
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

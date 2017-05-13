@@ -116,7 +116,13 @@ public class Main {
                                     // Lot data
 
                                     String lotID = e.getCursorTransaction().getFinal().get(Keys.ITEM_LORE).get().get(0).toPlain();
-                                    LotCache lot = GTS.getInstance().getSql().getLot(Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2)));
+                                    LotCache lot = null;
+                                    for(LotCache lc : GTS.getInstance().getLots()) {
+                                        if (lc.getLot().getLotID() == Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2))) {
+                                            lot = lc;
+                                            break;
+                                        }
+                                    }
 
                                     if (lot == null) {
                                         for(Text text : MessageConfig.getMessages("Generic.Purchase.Error.Already Sold", null))
@@ -125,8 +131,9 @@ public class Main {
                                         for(Text text : MessageConfig.getMessages("Generic.Purchase.Error.Expired", null))
                                             p.sendMessage(text);
                                     } else {
+                                        final LotCache l = lot;
                                         Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                                            LotUI.showGUI(p, lot, playerSearch.get(p), playerTokens.get(p), false);
+                                            LotUI.showGUI(p, l, playerSearch.get(p), playerTokens.get(p), false);
                                         }).delayTicks(1).submit(GTS.getInstance());
                                     }
                                 }

@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.utils;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.GTS.GTSInfo;
 import com.nickimpact.GTS.configuration.MessageConfig;
@@ -22,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -30,41 +32,51 @@ import java.util.concurrent.TimeUnit;
  */
 public class UpdateLotsTask {
 
-    public void saveTask(){
-        Sponge.getScheduler().createTaskBuilder().execute(
-            LotUtils::saveLotsToDB
-        )
+    public static void saveTask(){
+        Sponge.getScheduler().createTaskBuilder().execute(() -> {
+            GTS.getInstance().getSql().updateLots(LotUtils.getSqlCmds());
+            LotUtils.getSqlCmds().clear();
+        })
         .interval(60, TimeUnit.SECONDS)
         .async()
         .submit(GTS.getInstance());
     }
 
-    public void setupUpdateTask(){
+    public static void setupUpdateTask(){
         Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).execute(() -> {
-            for (LotCache lots : GTS.getInstance().getLots()) {
+            GTS.getInstance().getConsole().sendMessage(Text.of(GTSInfo.DEBUG_PREFIX, "Cache size: " + GTS.getInstance().getLots().size()));
+            final List<LotCache> listings = Lists.newArrayList(GTS.getInstance().getLots());
+            for (LotCache lots : listings) {
+                GTS.getInstance().getConsole().sendMessage(Text.of(
+                        GTSInfo.DEBUG_PREFIX, "Lot ID: " + lots.getLot().getLotID()
+                ));
+                GTS.getInstance().getConsole().sendMessage(Text.of(
+                        GTSInfo.DEBUG_PREFIX, "  Expired: " + lots.isExpired()
+                ));
                 if(lots.getLot().canExpire() || (!lots.getLot().canExpire() && lots.getLot().getPokeWanted() == null)) {
                     if (!lots.isExpired()) {
                         if (lots.getDate().after(Date.from(Instant.now()))) continue;
 
                         if (lots.getLot().isAuction())
                             if (lots.getLot().getHighBidder() == null)
-                                this.endMarket(lots);
+                                endMarket(lots);
                             else {
-                                this.awardPokemon(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lots.getLot().getOwner()).orElse(null), lots.getLot());
+                                awardPokemon(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lots.getLot().getOwner()).orElse(null), lots.getLot());
                             }
                         else
-                            this.endMarket(lots);
+                            endMarket(lots);
                     }
                 }
             }
         }).submit(GTS.getInstance());
     }
 
-    private void endMarket(LotCache lot) {
+    private static void endMarket(LotCache lot) {
         PokemonItem item = lot.getLot().getItem();
         Optional<Player> player = Sponge.getServer().getPlayer(item.getOwner());
         if (!player.isPresent()) {
-            GTS.getInstance().getSql().setExpired(lot.getLot().getLotID());
+            lot.setIsExpired(true);
+            LotUtils.updateLot(lot.getLot().getLotID());
         } else {
             HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
             textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
@@ -78,6 +90,7 @@ public class UpdateLotsTask {
             if(storage.isPresent()) {
                 storage.get().addToParty(item.getPokemon(lot.getLot()));
                 GTS.getInstance().getLots().remove(lot);
+                LotUtils.deleteLot(lot.getLot().getLotID());
             } else {
                 GTS.getInstance().getConsole().sendMessage(Text.of(
                         GTSInfo.ERROR_PREFIX, TextColors.DARK_RED, "An error occurred on ending ",
@@ -87,7 +100,7 @@ public class UpdateLotsTask {
         }
     }
 
-    private void awardPokemon(User user, Lot lot){
+    private static void awardPokemon(User user, Lot lot){
         if(user != null) {
             PokemonItem item = lot.getItem();
             Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), lot.getHighBidder());

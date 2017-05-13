@@ -136,13 +136,9 @@ public class Config {
                     GTSInfo.ERROR_PREFIX, TextColors.RED, "Config initialization failed"
             ));
             e.printStackTrace();
-            return;
         } catch (ObjectMappingException e) {
             e.printStackTrace();
         }
-        GTS.getInstance().getConsole().sendMessage(Text.of(
-                GTSInfo.PREFIX, TextColors.DARK_AQUA, "Configuration loaded"
-        ));
     }
 
     public static void saveConfig(){

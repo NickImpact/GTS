@@ -28,6 +28,7 @@ public class JoinListener {
                     if(lot.isExpired()){
                         LotUtils.givePlayerPokemon(player.get().getUniqueId(), lot.getLot());
                         GTS.getInstance().getLots().remove(lot);
+                        LotUtils.deleteLot(lot.getLot().getLotID());
 
                         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
                         textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));

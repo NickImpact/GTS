@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.utils;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.nickimpact.GTS.configuration.MessageConfig;
@@ -11,6 +12,7 @@ import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
+import net.minecraft.command.CommandBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
@@ -27,9 +29,12 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,6 +42,13 @@ import java.util.UUID;
  * Created by Nick on 12/15/2016.
  */
 public class LotUtils {
+
+    private static List<String> sqlCmds = Lists.newArrayList();
+    private static int placement = 1;
+
+    public static List<String> getSqlCmds(){
+        return sqlCmds;
+    }
 
     public static Lot lotFromJson(String s) {
         return new Gson().fromJson(s, Lot.class);
@@ -54,39 +66,39 @@ public class LotUtils {
         addPokemonToMarket(3, player, slot, note, pokemon, expires, time);
     }
 
-    private static void addPokemonToMarket(int mode, Player player, int slot, String note, Object... options){
+    private static void addPokemonToMarket(int mode, Player player, int slot, String note, Object... options) {
         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
 
         if (GTS.getInstance().getSql().hasTooMany(player.getUniqueId())) {
             textOptions.put("max_pokemon", Optional.of(GTS.getInstance().getConfig().getMaxPokemon()));
-            for(Text text : MessageConfig.getMessages("Generic.Addition.Error.Exceed Max", textOptions))
+            for (Text text : MessageConfig.getMessages("Generic.Addition.Error.Exceed Max", textOptions))
                 player.sendMessage(text);
 
             return;
         }
 
         Optional<PlayerStorage> storage = getStorage(player);
-        if(!storage.isPresent()) {
+        if (!storage.isPresent()) {
             return;
         }
 
         NBTTagCompound nbt = getNbt(player, slot, storage.get());
-        if(nbt == null) {
+        if (nbt == null) {
             return;
         }
 
         EntityPixelmon pokemon = getPokemon(player, nbt);
-        if(pokemon == null) {
+        if (pokemon == null) {
             return;
         }
 
         // Do checking
-        if(mode == 1) {
+        if (mode == 1) {
             int price = (Integer) options[0];
             boolean expires = (Boolean) options[1];
             long time = (Long) options[2];
 
-            if(!checkPrice(player, pokemon, price)){
+            if (!checkPrice(player, pokemon, price)) {
                 return;
             }
 
@@ -96,10 +108,11 @@ public class LotUtils {
 
             PokemonItem pokeItem = new PokemonItem(pokemon, player.getName(), price);
 
-            int placement = GTS.getInstance().getSql().getPlacement(1);
+            int placement = getPlacement();
 
             Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, price, expires, note);
-            GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), expires, time);
+            addLot(player.getUniqueId(), new Gson().toJson(lot), false, time);
+            GTS.getInstance().getLots().add(new LotCache(lot, false, Date.from(Instant.now().plusSeconds(time))));
 
             textOptions.put("player", Optional.of(player.getName()));
             textOptions.put("pokemon", Optional.of(pokemon.getName()));
@@ -109,35 +122,36 @@ public class LotUtils {
             textOptions.put("expires", expires ? Optional.of("Never") : Optional.of(getTime(time * 1000)));
             textOptions.putAll(getInfo(pokemon));
 
-            if (!pokemon.isEgg){
-                for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Normal", textOptions))
+            if (!pokemon.isEgg) {
+                for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Normal", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             } else {
-                for(Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Egg.Normal", textOptions))
+                for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Egg.Normal", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             }
 
             Log log = forgeLog(player, "Addition", textOptions);
             GTS.getInstance().getSql().appendLog(log);
-        } else if(mode == 2) {
+        } else if (mode == 2) {
             int stPrice = (Integer) options[0];
             int increment = (Integer) options[1];
             long time = (Long) options[2];
 
-            if(!checkPrice(player, pokemon, stPrice)){
+            if (!checkPrice(player, pokemon, stPrice)) {
                 return;
             }
 
-            if (!handleTax(player, pokemon, stPrice)){
+            if (!handleTax(player, pokemon, stPrice)) {
                 return;
             }
 
             PokemonItem pokeItem = new PokemonItem(pokemon, player.getName(), stPrice, increment);
 
-            int placement = GTS.getInstance().getSql().getPlacement(1);
+            int placement = getPlacement();
 
             Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, stPrice, true, true, null, stPrice, increment, note);
-            GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), true, time);
+            addLot(player.getUniqueId(), new Gson().toJson(lot), false, time);
+            GTS.getInstance().getLots().add(new LotCache(lot, false, Date.from(Instant.now().plusSeconds(time))));
 
             textOptions.put("player", Optional.of(player.getName()));
             textOptions.put("pokemon", Optional.of(pokemon.getName()));
@@ -148,7 +162,7 @@ public class LotUtils {
             textOptions.put("expires", Optional.of(getTime(time * 1000)));
             textOptions.putAll(getInfo(pokemon));
 
-            if(!pokemon.isEgg) {
+            if (!pokemon.isEgg) {
                 for (Text text : MessageConfig.getMessages("Auctions.Broadcast.Pokemon", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             } else {
@@ -160,19 +174,20 @@ public class LotUtils {
             Log log = forgeLog(player, "Addition", textOptions);
             GTS.getInstance().getSql().appendLog(log);
         } else {
-            String poke = (String)options[0];
-            boolean expires = (Boolean)options[1];
-            long time = (Long)options[2];
+            String poke = (String) options[0];
+            boolean expires = (Boolean) options[1];
+            long time = (Long) options[2];
 
-            if(!handleTax(player, pokemon, GTS.getInstance().getConfig().pokeTax())){
+            if (!handleTax(player, pokemon, GTS.getInstance().getConfig().pokeTax())) {
                 return;
             }
 
             PokemonItem pokeItem = new PokemonItem(pokemon, player.getName(), poke);
 
-            int placement = GTS.getInstance().getSql().getPlacement(1);
+            int placement = getPlacement();
             Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, true, poke, note);
-            GTS.getInstance().getSql().addLot(player.getUniqueId(), new Gson().toJson(lot), expires, time);
+            addLot(player.getUniqueId(), new Gson().toJson(lot), false, time);
+            GTS.getInstance().getLots().add(new LotCache(lot, false, Date.from(Instant.now().plusSeconds(time))));
 
             textOptions.put("player", Optional.of(player.getName()));
             textOptions.put("pokemon", Optional.of(pokemon.getName()));
@@ -181,7 +196,7 @@ public class LotUtils {
             textOptions.put("expires", expires ? Optional.of("Never") : Optional.of(getTime(time * 1000)));
             textOptions.putAll(getInfo(pokemon));
 
-            if(!pokemon.isEgg) {
+            if (!pokemon.isEgg) {
                 for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Pokemon", textOptions))
                     Sponge.getServer().getBroadcastChannel().send(text);
             } else {
@@ -194,6 +209,7 @@ public class LotUtils {
             GTS.getInstance().getSql().appendLog(log);
         }
 
+        ++placement;
         // Remove the pokemon from the client
         storage.get().recallAllPokemon();
         storage.get().removeFromPartyPlayer(slot);
@@ -201,7 +217,7 @@ public class LotUtils {
 
         // Print Success Message
         textOptions.put("pokemon", Optional.of(pokemon.isEgg ? "Mystery Egg" : pokemon.getName()));
-        for(Text text : MessageConfig.getMessages("Generic.Addition.Success", textOptions))
+        for (Text text : MessageConfig.getMessages("Generic.Addition.Success", textOptions))
             player.sendMessage(text);
     }
 
@@ -228,6 +244,8 @@ public class LotUtils {
                     acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.source(GTS.getInstance()).build());
 
                     GTS.getInstance().getLots().remove(lot);
+                    LotUtils.deleteLot(lot.getLot().getLotID());
+
                     EntityPixelmon pokemon = lot.getLot().getItem().getPokemon(lot.getLot());
                     Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                     if(storage.isPresent()){
@@ -333,6 +351,7 @@ public class LotUtils {
 
     public static void trade(Player player, LotCache lot){
         GTS.getInstance().getLots().remove(lot);
+        LotUtils.deleteLot(lot.getLot().getLotID());
         givePlayerPokemon(player.getUniqueId(), lot.getLot());
         giveTradePokemon(lot.getLot());
 
@@ -430,7 +449,7 @@ public class LotUtils {
     }
 
     private static boolean checkPrice(Player player, EntityPixelmon pokemon, int price) {
-        int priceOpt = -1;
+        int priceOpt;
 
         if(EnumPokemon.legendaries.contains(pokemon.getName())){
             priceOpt = 1;
@@ -538,8 +557,52 @@ public class LotUtils {
         return info;
     }
 
-    public static void saveLotsToDB(){
+    public static int getPlacement() {
+        return placement;
+    }
 
+    public static void setPlacement(int placement) {
+        LotUtils.placement = placement;
+    }
+
+    public enum Commands {
+
+        Add("INSERT INTO `" + GTS.getInstance().getConfig().getMainTable() + "` (ID, Ends, Expired, uuid, Lot, DoesExpire) VALUES ({{id}}, '{{Ends}}', {{Expired}}, '{{UUID}}', '{{Lot}}', {{Can Expire}})"),
+        Update("UPDATE `" + GTS.getInstance().getConfig().getMainTable() + "` SET Expired=1 WHERE ID={{id}}"),
+        Delete("DELETE FROM `" + GTS.getInstance().getConfig().getMainTable() + "` WHERE ID={{id}}");
+
+        private String command;
+        private Commands(String command){
+            this.command = command;
+        }
+
+        public String getCommand(){
+            return this.command;
+        }
+    }
+
+    public static synchronized void addLot(UUID uuid, String json, boolean expired, long time){
+        String cmd = Commands.Add.getCommand();
+
+        cmd = cmd.replace("{{id}}", String.valueOf(getPlacement()));
+        cmd = cmd.replace("{{Ends}}", Instant.now().plusSeconds(time).toString());
+        cmd = cmd.replace("{{Expired}}", String.valueOf(false));
+        cmd = cmd.replace("{{UUID}}", uuid.toString());
+        cmd = cmd.replace("{{Lot}}", json);
+        cmd = cmd.replace("{{Can Expire}}", String.valueOf(expired));
+        sqlCmds.add(cmd);
+    }
+
+    public static synchronized void updateLot(int id){
+        String cmd = Commands.Update.getCommand();
+        cmd = cmd.replace("{{id}}", "" + id);
+        sqlCmds.add(cmd);
+    }
+
+    public static synchronized void deleteLot(int id){
+        String cmd = Commands.Delete.getCommand();
+        cmd = cmd.replace("{{id}}", "" + id);
+        sqlCmds.add(cmd);
     }
 
     static String getTime(long timeEnd) {
@@ -572,7 +635,7 @@ public class LotUtils {
     }
 
     public static Log forgeLog(User player, String action, HashMap<String, Optional<Object>> replacements){
-        Log log = new Log(GTS.getInstance().getSql().getPlacement(2), Date.from(Instant.now()),
+        Log log = new Log(getPlacement(), Date.from(Instant.now()),
                 player.getUniqueId(), action);
 
         if(action.equals("Addition"))

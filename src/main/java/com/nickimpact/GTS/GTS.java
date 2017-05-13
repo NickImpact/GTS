@@ -10,6 +10,7 @@ import com.nickimpact.GTS.storage.H2Provider;
 import com.nickimpact.GTS.storage.MySQLProvider;
 import com.nickimpact.GTS.storage.SQLDatabase;
 import com.nickimpact.GTS.utils.LotCache;
+import com.nickimpact.GTS.utils.LotUtils;
 import com.nickimpact.GTS.utils.UpdateLotsTask;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
@@ -50,7 +51,6 @@ public class GTS {
     private EconomyService economy;
 
     private List<LotCache> lots = Lists.newArrayList();
-
     private boolean enabled = true;
 
     @Listener
@@ -58,11 +58,14 @@ public class GTS {
         plugin = this;
 
         GTSInfo.startup();
+        getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Checking for dependencies..."));
         enabled = GTSInfo.dependencyCheck();
 
         if(enabled) {
+            getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Loading configuration..."));
             this.config = new Config();
-            messageConfig = new MessageConfig();
+            getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Loading message configuration..."));
+            this.messageConfig = new MessageConfig();
 
             getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Registering commands..."));
             Sponge.getCommandManager().register(this, CommandSpec.builder()
@@ -114,14 +117,25 @@ public class GTS {
             getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Caching listings..."));
             this.lots = this.sql.getAllLots();
 
+            int max = -1;
+            for(LotCache lot : this.lots){
+                if(lot.getLot().getLotID() > max){
+                    max = lot.getLot().getLotID();
+                }
+            }
+            LotUtils.setPlacement(max + 1);
+
             getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Successfully loaded"));
+        } else {
+            getConsole().sendMessage(Text.of(ERROR_PREFIX, Text.of(TextColors.DARK_RED, "All plugin functions will be disabled...")));
         }
     }
 
     @Listener
     public void onServerStart(GameStartedServerEvent e){
         if(enabled) {
-            new UpdateLotsTask().setupUpdateTask();
+            UpdateLotsTask.setupUpdateTask();
+            UpdateLotsTask.saveTask();
         }
     }
 
@@ -146,6 +160,7 @@ public class GTS {
         if(enabled) {
             getLogger().info("Thanks for using " + NAME + " (" + VERSION + ")");
             try {
+                sql.updateLots(LotUtils.getSqlCmds());
                 sql.shutdown();
             } catch (Exception e1) {
                 e1.printStackTrace();
