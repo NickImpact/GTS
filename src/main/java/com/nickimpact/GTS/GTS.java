@@ -17,6 +17,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -49,6 +50,8 @@ public class GTS {
     private SQLDatabase sql;
 
     private EconomyService economy;
+
+    private List<Player> ignoreList = Lists.newArrayList();
 
     private List<LotCache> lots = Lists.newArrayList();
     private boolean enabled = true;
@@ -206,8 +209,11 @@ public class GTS {
         return messageConfig;
     }
 
-
     public List<LotCache> getLots() {
         return lots;
+    }
+
+    public List<Player> getIgnoreList() {
+        return ignoreList;
     }
 }

@@ -95,7 +95,7 @@ public class PokemonItem {
         this.name = pokemon.getPokemonName();
         this.nickname = pokemon.getNickname();
         this.ability = pokemon.getAbility().getName();
-        this.heldItem = pokemon.getItemHeld() != null ? pokemon.getItemHeld().getHeldItemType().name() : "Nothing";
+        this.heldItem = pokemon.getItemHeld() != null ? pokemon.getItemHeld().getLocalizedName() : "Nothing";
         this.m1 = pokemon.getMoveset().get(0) != null ? pokemon.getMoveset().get(0).baseAttack.getLocalizedName() : "Empty";
         this.m2 = pokemon.getMoveset().get(1) != null ? pokemon.getMoveset().get(1).baseAttack.getLocalizedName() : "Empty";
         this.m3 = pokemon.getMoveset().get(2) != null ? pokemon.getMoveset().get(2).baseAttack.getLocalizedName() : "Empty";
@@ -183,10 +183,7 @@ public class PokemonItem {
 
     public EntityPixelmon getPokemon(Lot lot) {
         try {
-            EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(JsonToNBT.getTagFromJson(lot.getNBT()), FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
-            pokemon.deserializeNBT(JsonToNBT.getTagFromJson(lot.getNBT()));
-
-            return pokemon;
+            return (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(JsonToNBT.getTagFromJson(lot.getNBT()), FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
         } catch (NBTException e) {
             e.printStackTrace();
         }

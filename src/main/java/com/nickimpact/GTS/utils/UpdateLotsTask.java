@@ -44,27 +44,20 @@ public class UpdateLotsTask {
 
     public static void setupUpdateTask(){
         Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).execute(() -> {
-            GTS.getInstance().getConsole().sendMessage(Text.of(GTSInfo.DEBUG_PREFIX, "Cache size: " + GTS.getInstance().getLots().size()));
             final List<LotCache> listings = Lists.newArrayList(GTS.getInstance().getLots());
-            for (LotCache lots : listings) {
-                GTS.getInstance().getConsole().sendMessage(Text.of(
-                        GTSInfo.DEBUG_PREFIX, "Lot ID: " + lots.getLot().getLotID()
-                ));
-                GTS.getInstance().getConsole().sendMessage(Text.of(
-                        GTSInfo.DEBUG_PREFIX, "  Expired: " + lots.isExpired()
-                ));
-                if(lots.getLot().canExpire() || (!lots.getLot().canExpire() && lots.getLot().getPokeWanted() == null)) {
-                    if (!lots.isExpired()) {
-                        if (lots.getDate().after(Date.from(Instant.now()))) continue;
+            for (LotCache lot : listings) {
+                if(lot.getLot().canExpire() || (!lot.getLot().canExpire() && lot.getLot().getPokeWanted() == null)) {
+                    if (!lot.isExpired()) {
+                        if (lot.getDate().after(Date.from(Instant.now()))) continue;
 
-                        if (lots.getLot().isAuction())
-                            if (lots.getLot().getHighBidder() == null)
-                                endMarket(lots);
+                        if (lot.getLot().isAuction())
+                            if (lot.getLot().getHighBidder() == null)
+                                endMarket(lot);
                             else {
-                                awardPokemon(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lots.getLot().getOwner()).orElse(null), lots.getLot());
+                                awardPokemon(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getOwner()).orElse(null), lot.getLot());
                             }
                         else
-                            endMarket(lots);
+                            endMarket(lot);
                     }
                 }
             }
@@ -89,7 +82,13 @@ public class UpdateLotsTask {
             Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), lot.getLot().getOwner());
             if(storage.isPresent()) {
                 storage.get().addToParty(item.getPokemon(lot.getLot()));
-                GTS.getInstance().getLots().remove(lot);
+
+                for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
+                    if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lot.getLot().getLotID()) {
+                        GTS.getInstance().getLots().remove(i);
+                        break;
+                    }
+                }
                 LotUtils.deleteLot(lot.getLot().getLotID());
             } else {
                 GTS.getInstance().getConsole().sendMessage(Text.of(
@@ -151,7 +150,11 @@ public class UpdateLotsTask {
                         UniqueAccount owner = ownerAccount.get();
                         owner.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.of(NamedCause.source(GTS.getInstance())));
                     } else {
-                        GTS.getInstance().getLogger().error("Player '" + Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName() + "' was unable to receive $" + price.intValue() + " from the GTS");
+                        GTS.getInstance().getConsole().sendMessage(Text.of(
+                                GTSInfo.ERROR_PREFIX, TextColors.DARK_RED, "Player '", TextColors.YELLOW,
+                                Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName()
+                                        + "' listing was unable to receive $" + price.intValue() + " from the GTS")
+                        );
                     }
                 }
             } else {

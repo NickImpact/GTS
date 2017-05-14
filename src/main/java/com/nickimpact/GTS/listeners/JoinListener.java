@@ -27,7 +27,12 @@ public class JoinListener {
                 for(LotCache lot : GTS.getInstance().getSql().getPlayerLots(player.get().getUniqueId())){
                     if(lot.isExpired()){
                         LotUtils.givePlayerPokemon(player.get().getUniqueId(), lot.getLot());
-                        GTS.getInstance().getLots().remove(lot);
+                        for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
+                            if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lot.getLot().getLotID()) {
+                                GTS.getInstance().getLots().remove(i);
+                                break;
+                            }
+                        }
                         LotUtils.deleteLot(lot.getLot().getLotID());
 
                         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();

@@ -69,7 +69,7 @@ public class GTSInfo {
 
         GTS.getInstance().getConsole().sendMessage(Text.of(
                 "    ", TextColors.GREEN, "Version: ",
-                TextColors.AQUA, "v" + VERSION
+                TextColors.AQUA, VERSION
         ));
 
         GTS.getInstance().getConsole().sendMessage(Text.EMPTY);

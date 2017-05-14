@@ -167,9 +167,9 @@ public class LotUI {
                                                     for (Text text : MessageConfig.getMessages("Administrative.LotUI.Delete", textOptions))
                                                         p.sendMessage(text);
 
-                                                    for (LotCache lot : GTS.getInstance().getLots()){
-                                                        if (lot.getLot().getLotID() == lots.get(p).getLot().getLotID()) {
-                                                            GTS.getInstance().getLots().remove(lot);
+                                                    for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
+                                                        if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lots.get(p).getLot().getLotID()) {
+                                                            GTS.getInstance().getLots().remove(i);
                                                             break;
                                                         }
                                                     }
@@ -189,9 +189,9 @@ public class LotUI {
                                                     } else {
                                                         GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
                                                     }
-                                                    for (LotCache lot : GTS.getInstance().getLots()){
-                                                        if (lot.getLot().getLotID() == lots.get(p).getLot().getLotID()) {
-                                                            GTS.getInstance().getLots().remove(lot);
+                                                    for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
+                                                        if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lots.get(p).getLot().getLotID()) {
+                                                            GTS.getInstance().getLots().remove(i);
                                                             break;
                                                         }
                                                     }
@@ -214,9 +214,9 @@ public class LotUI {
                                                     GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
                                                 }
 
-                                                for (LotCache lot : GTS.getInstance().getLots()){
-                                                    if (lot.getLot().getLotID() == lots.get(p).getLot().getLotID()) {
-                                                        GTS.getInstance().getLots().remove(lot);
+                                                for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
+                                                    if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lots.get(p).getLot().getLotID()) {
+                                                        GTS.getInstance().getLots().remove(i);
                                                         break;
                                                     }
                                                 }
