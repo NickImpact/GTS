@@ -3,12 +3,15 @@ package com.nickimpact.GTS.configuration;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 import com.nickimpact.GTS.GTS;
+import com.nickimpact.GTS.GTSInfo;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -92,6 +95,15 @@ public class Config {
             general.getNode("Max-Pokemon").setComment("Set how many pokemon a player is limited to listing, -1 for no cap");
             general.getNode("Max-Pokemon").getInt(3);
 
+            general.getNode("Min-Prices").setComment("Use these values to enforce prices above the matching criteria");
+            general.getNode("Min-Prices", "Normal Pokemon").getInt(1000);
+            general.getNode("Min-Prices", "Shiny Pokemon").getInt(5000);
+            general.getNode("Min-Prices", "HAs").getInt(10000);
+            general.getNode("Min-Prices", "Per IV", "Price").getInt(5000);
+            general.getNode("Min-Prices", "Per IV", "Minimum").getInt(28);
+            general.getNode("Min-Prices", "Legendary Pokemon").getInt(50000);
+
+
             general.getNode("Lot-Time").setComment("Sets the default duration of a lot (In Minutes)");
             general.getNode("Lot-Time").getInt(60);
 
@@ -104,6 +116,21 @@ public class Config {
             general.getNode("Tax", "Enabled").getBoolean(false);
             general.getNode("Tax", "Percentage").getDouble(0.10);
 
+            general.getNode("Tax", "Stacking-Tax").setComment(
+                    "These values can be used to specify a higher tax\n" +
+                    "for specific criteria. Turning on the enabled option\n" +
+                    "in the stacking options will allow the legends and shiny\n" +
+                    "taxes to stack on top of each other."
+            );
+            general.getNode("Tax", "Stacking-Tax", "Enabled").getBoolean(false);
+            general.getNode("Tax", "Stacking-Tax", "Max Tax").getDouble(0.50);
+            general.getNode("Tax", "Stacking-Tax", "HAs").getDouble(0.20);
+            general.getNode("Tax", "Stacking-Tax", "IVs").getDouble(0.175);
+            general.getNode("Tax", "Stacking-Tax", "Shiny").getDouble(0.15);
+            general.getNode("Tax", "Stacking-Tax", "Legendary").getDouble(0.20);
+            general.getNode("Tax", "Pokemon Trade Tax").setComment("The value to start with when evaluating tax on pokemon 4 pokemon trades");
+            general.getNode("Tax", "Pokemon Trade Tax").getInt(500);
+
             List<String> blockedPokemon = new ArrayList<>();
             blockedPokemon.add("Blacklisted_Poke1");
             blockedPokemon.add("Blacklisted_Poke2");
@@ -111,14 +138,13 @@ public class Config {
 
             loader.save(main);
         } catch (IOException e) {
-            GTS.getInstance().getLogger().error("  An error occurred in config initialization");
+            GTS.getInstance().getConsole().sendMessage(Text.of(
+                    GTSInfo.ERROR_PREFIX, TextColors.RED, "Config initialization failed"
+            ));
             e.printStackTrace();
-            return;
         } catch (ObjectMappingException e) {
             e.printStackTrace();
         }
-        GTS.getInstance().getLogger().info("    - Config successfully initialized");
-
     }
 
     public static void saveConfig(){
@@ -180,11 +206,11 @@ public class Config {
     }
 
     public boolean isTaxEnabled() {
-        return main.getNode("General", "Taxes", "Enabled").getBoolean();
+        return main.getNode("General", "Tax", "Enabled").getBoolean();
     }
 
     public double getTaxRate() {
-        return main.getNode("General", "Taxes", "Percentage").getInt();
+        return main.getNode("General", "Tax", "Percentage").getInt();
     }
 
     public List<String> getBlocked() {
@@ -208,7 +234,43 @@ public class Config {
 
     public int pokeTax() {
 
-        return 0;
+        return main.getNode("General", "Tax", "Pokemon Trade Tax").getInt();
+    }
+
+    public int getShinyTax(){
+        return main.getNode("General", "Tax", "Stacking-Tax", "Shiny").getInt();
+    }
+
+    public int getLegendTax(){
+        return main.getNode("General", "Tax", "Stacking-Tax", "Legendary").getInt();
+    }
+
+    public boolean isStackTaxEnabled(){
+        return main.getNode("General", "Tax", "Stacking-Tax", "Enabled").getBoolean();
+    }
+
+    public int getMinPrice(){
+        return main.getNode("General", "Min-Prices", "Normal Pokemon").getInt();
+    }
+
+    public int getMinShinyPrice(){
+        return main.getNode("General", "Min-Prices", "Shiny Pokemon").getInt();
+    }
+
+    public int getMinLegendPrice(){
+        return main.getNode("General", "Min-Prices", "Legendary Pokemon").getInt();
+    }
+
+    public int getMinHAPrice(){
+        return main.getNode("General", "Min-Prices", "HAs").getInt();
+    }
+
+    public int getMinIVPrice(){
+        return main.getNode("General", "Min-Prices", "Per IV", "Price").getInt();
+    }
+
+    public int getMinIV(){
+        return main.getNode("General", "Min-Prices", "Per IV", "Minimum").getInt();
     }
 
     public long getAucTime() {

@@ -3,6 +3,7 @@ package com.nickimpact.GTS.configuration;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;
 import com.nickimpact.GTS.GTS;
+import com.nickimpact.GTS.GTSInfo;
 import ninja.leaping.configurate.ConfigurationOptions;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
@@ -218,11 +219,15 @@ public class MessageConfig {
                     "+-------------------------------------------------------------------+ #");
 
             pricing.getNode("Tax", "Error", "Not Enough").getList(TypeToken.of(String.class), Lists.newArrayList(
-                    "&c&lGTS &e\u00BB &7Sorry, but you were unable to afford the tax of &e{{tax}}&7!"
+                    "&c&lGTS &e\u00BB &7Sorry, but you were unable to afford the tax of &e{{curr_symbol}}{{tax}}&7!"
+            ));
+
+            pricing.getNode("MinPrice", "Error", "Not Enough").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Sorry, but that price is below the min price of &e{{curr_symbol}}{{price}}&7!"
             ));
 
             pricing.getNode("Tax", "Success", "Paid").getList(TypeToken.of(String.class), Lists.newArrayList(
-                    "&a&lGTS &e\u00BB &e{{tax}} &7in taxes has been collected from your listing!"
+                    "&a&lGTS &e\u00BB &e{{curr_symbol}}{{tax}} &7in taxes has been collected from your listing!"
             ));
 
             menus.setComment("\n" +
@@ -248,9 +253,7 @@ public class MessageConfig {
         } catch (IOException|ObjectMappingException e) {
             GTS.getInstance().getLogger().error("    - An error occurred in the message config initialization");
             e.printStackTrace();
-            return;
         }
-        GTS.getInstance().getLogger().info("    - Message Config successfully initialized");
     }
 
     public static void saveConfig(){

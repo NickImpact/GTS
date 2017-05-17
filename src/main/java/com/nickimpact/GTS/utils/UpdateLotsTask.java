@@ -2,7 +2,7 @@ package com.nickimpact.GTS.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mysql.jdbc.log.LogUtils;
+import com.nickimpact.GTS.GTSInfo;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.logging.Log;
@@ -17,6 +17,7 @@ import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -31,63 +32,74 @@ import java.util.concurrent.TimeUnit;
  */
 public class UpdateLotsTask {
 
-    public List<Lot> updateLots(){
+    public static void saveTask(){
         Sponge.getScheduler().createTaskBuilder().execute(() -> {
-
+            GTS.getInstance().getSql().updateLots(LotUtils.getSqlCmds());
+            LotUtils.getSqlCmds().clear();
         })
+        .interval(60, TimeUnit.SECONDS)
         .async()
-        .interval(1, TimeUnit.MINUTES)
         .submit(GTS.getInstance());
-
-        return Lists.newArrayList();
     }
 
-    public void setupUpdateTask(){
+    public static void setupUpdateTask(){
         Sponge.getScheduler().createTaskBuilder().interval(1, TimeUnit.SECONDS).execute(() -> {
-            for (Lot lot : GTS.getInstance().getSql().getAllLots()) {
-                if(lot.canExpire() || (!lot.canExpire() && lot.getPokeWanted() == null)) {
-                    if (!GTS.getInstance().getSql().isExpired(lot.getLotID())) {
-                        if (GTS.getInstance().getSql().getEnd(lot.getLotID()).after(Date.from(Instant.now()))) continue;
+            final List<LotCache> listings = Lists.newArrayList(GTS.getInstance().getLots());
+            for (LotCache lot : listings) {
+                if(lot.getLot().canExpire() || (!lot.getLot().canExpire() && lot.getLot().getPokeWanted() == null)) {
+                    if (!lot.isExpired()) {
+                        if (lot.getDate().after(Date.from(Instant.now()))) continue;
 
-                        if (lot.isAuction())
-                            if (lot.getHighBidder() == null)
-                                this.endMarket(lot);
+                        if (lot.getLot().isAuction())
+                            if (lot.getLot().getHighBidder() == null)
+                                endMarket(lot);
                             else {
-                                this.awardPokemon(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).orElse(null), lot);
+                                awardPokemon(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getOwner()).orElse(null), lot.getLot());
                             }
                         else
-                            this.endMarket(lot);
+                            endMarket(lot);
                     }
                 }
             }
         }).submit(GTS.getInstance());
     }
 
-    private void endMarket(Lot lot) {
-        PokemonItem item = lot.getItem();
+    private static void endMarket(LotCache lot) {
+        PokemonItem item = lot.getLot().getItem();
         Optional<Player> player = Sponge.getServer().getPlayer(item.getOwner());
         if (!player.isPresent()) {
-            GTS.getInstance().getSql().setExpired(lot.getLotID());
+            lot.setIsExpired(true);
+            LotUtils.updateLot(lot.getLot().getLotID());
         } else {
             HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
-            textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+            textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
 
             for(Text text : MessageConfig.getMessages("Generic.Remove.Expired", textOptions))
                 player.get().sendMessage(text);
 
-            Log log = LotUtils.forgeLog(Sponge.getServer().getPlayer(lot.getOwner()).get(), "Expires", textOptions);
+            Log log = LotUtils.forgeLog(Sponge.getServer().getPlayer(lot.getLot().getOwner()).get(), "Expires", textOptions);
             GTS.getInstance().getSql().appendLog(log);
-            Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), lot.getOwner());
+            Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), lot.getLot().getOwner());
             if(storage.isPresent()) {
-                storage.get().addToParty(item.getPokemon(lot));
-                GTS.getInstance().getSql().deleteLot(lot.getLotID());
+                storage.get().addToParty(item.getPokemon(lot.getLot()));
+
+                for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
+                    if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lot.getLot().getLotID()) {
+                        GTS.getInstance().getLots().remove(i);
+                        break;
+                    }
+                }
+                LotUtils.deleteLot(lot.getLot().getLotID());
             } else {
-                GTS.getInstance().getLogger().error("An error occurred on ending " + Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName() + "'s listing");
+                GTS.getInstance().getConsole().sendMessage(Text.of(
+                        GTSInfo.ERROR_PREFIX, TextColors.DARK_RED, "An error occurred on ending ",
+                        TextColors.YELLOW, Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getOwner()).get().getName() + "'s listing")
+                );
             }
         }
     }
 
-    private void awardPokemon(User user, Lot lot){
+    private static void awardPokemon(User user, Lot lot){
         if(user != null) {
             PokemonItem item = lot.getItem();
             Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), lot.getHighBidder());
@@ -129,7 +141,10 @@ public class UpdateLotsTask {
                     acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.source(GTS.getInstance()).build());
 
                     for (Text text : MessageConfig.getMessages("Auctions.Award", textOptions))
-                        Sponge.getServer().getBroadcastChannel().send(text);
+                        for (Player p : Sponge.getServer().getOnlinePlayers()) {
+                            if (!GTS.getInstance().getIgnoreList().contains(p.getUniqueId()))
+                                p.sendMessage(text);
+                        }
                     storage.get().addToParty(item.getPokemon(lot));
                     GTS.getInstance().getSql().deleteLot(lot.getLotID());
 
@@ -138,15 +153,22 @@ public class UpdateLotsTask {
                         UniqueAccount owner = ownerAccount.get();
                         owner.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.of(NamedCause.source(GTS.getInstance())));
                     } else {
-                        GTS.getInstance().getLogger().error("Player '" + Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName() + "' was unable to receive $" + price.intValue() + " from the GTS");
+                        GTS.getInstance().getConsole().sendMessage(Text.of(
+                                GTSInfo.ERROR_PREFIX, TextColors.DARK_RED, "Player '", TextColors.YELLOW,
+                                Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName()
+                                        + "' listing was unable to receive $" + price.intValue() + " from the GTS")
+                        );
                     }
                 }
             } else {
-                GTS.getInstance().getLogger().error("An error occurred when trying to award a pokemon to " + user.getName());
+                GTS.getInstance().getConsole().sendMessage(Text.of(
+                        GTSInfo.ERROR_PREFIX, TextColors.DARK_RED, "An error occurred when trying to award a pokemon to ", TextColors.YELLOW, user.getName())
+                );
             }
         } else {
-            GTS.getInstance().getLogger().error("A user could not be found (Auction Related)");
+            GTS.getInstance().getConsole().sendMessage(Text.of(
+                    GTSInfo.ERROR_PREFIX, TextColors.DARK_RED, "A user could not be found (Auction related)")
+            );
         }
-
     }
 }

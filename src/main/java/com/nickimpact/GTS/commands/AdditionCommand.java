@@ -44,7 +44,7 @@ public class AdditionCommand implements CommandExecutor {
                     throw new CommandException(Text.of(TextColors.RED, "That requested pokemon doesn't exist!"));
 
             // We need a flag to state an entry can never expire
-            if((args.hasAny("n") || args.hasAny("never-expires")) && src.hasPermission("gts.command.add.never-expire")){
+            if((args.hasAny("n") || args.hasAny("never-expires")) && src.hasPermission("gts.command.addition.never-expire")){
                 if(price.isPresent())
                     if(note.isPresent())
                         LotUtils.addPokemonStatic((Player)src, slot, note.get(), price.get(), false, 0);

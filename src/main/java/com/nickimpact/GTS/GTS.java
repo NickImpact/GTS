@@ -1,5 +1,6 @@
 package com.nickimpact.GTS;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.nickimpact.GTS.commands.*;
 import com.nickimpact.GTS.configuration.Config;
@@ -8,11 +9,16 @@ import com.nickimpact.GTS.listeners.JoinListener;
 import com.nickimpact.GTS.storage.H2Provider;
 import com.nickimpact.GTS.storage.MySQLProvider;
 import com.nickimpact.GTS.storage.SQLDatabase;
+import com.nickimpact.GTS.utils.LotCache;
+import com.nickimpact.GTS.utils.LotUtils;
 import com.nickimpact.GTS.utils.UpdateLotsTask;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
@@ -23,18 +29,11 @@ import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-
 import java.nio.file.Path;
+import java.util.List;
+import java.util.UUID;
 
 import static com.nickimpact.GTS.GTSInfo.*;
-
-/**----------------------------------------------------------------------------
- *   GTS (Sponge Edition)
- *   Developer: NickImpact
- *
- *
- *---------------------------------------------------------------------------*/
-
 
 @Plugin(id=ID, name=NAME, version=VERSION, description=DESCRIPTION)
 public class GTS {
@@ -54,41 +53,26 @@ public class GTS {
 
     private EconomyService economy;
 
+    private List<UUID> ignoreList = Lists.newArrayList();
+
+    private List<LotCache> lots = Lists.newArrayList();
     private boolean enabled = true;
 
     @Listener
     public void onInitialization(GameInitializationEvent e){
         plugin = this;
 
-        getLogger().info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-        getLogger().info("Thanks for using " + NAME + " (" + VERSION + ")");
-        getLogger().info("");
-        getLogger().info("Plugin developed by NickImpact (Nick)");
-        getLogger().info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
-        getLogger().info("Initializing plugin components...");
-        getLogger().info("");
-
-        if(!Sponge.getPluginManager().isLoaded("pixelmon")){
-            getLogger().error(Text.of(TextColors.RED, "Sponge was unable to detect Pixelmon..").toPlain());
-            getLogger().error(Text.of(TextColors.RED, "  Please ensure you have pixelmon installed, and that").toPlain());
-            getLogger().error(Text.of(TextColors.RED, "  it enabled correctly!").toPlain());
-            getLogger().info("");
-            enabled = false;
-        }
+        GTSInfo.startup();
+        getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Checking for dependencies..."));
+        enabled = GTSInfo.dependencyCheck();
 
         if(enabled) {
+            getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Loading configuration..."));
             this.config = new Config();
-            if(config.getDatabaseType().equalsIgnoreCase("H2")){
-                this.sql = new H2Provider(GTS.getInstance().getConfig().getMainTable(), GTS.getInstance().getConfig().getLogTable());
-            } else if(config.getDatabaseType().equalsIgnoreCase("MySQL")){
-                this.sql = new MySQLProvider(GTS.getInstance().getConfig().getMainTable(), GTS.getInstance().getConfig().getLogTable());
-            } else {
-                logger.error(Text.of(TextColors.RED, "Invalid database type passed, defaulting to H2..").toString());
-                this.sql = new H2Provider(GTS.getInstance().getConfig().getMainTable(), GTS.getInstance().getConfig().getLogTable());
-            }
-            this.sql.createTables();
-            this.sql.updateTables();
+            getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Loading message configuration..."));
+            this.messageConfig = new MessageConfig();
 
+            getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Registering commands..."));
             Sponge.getCommandManager().register(this, CommandSpec.builder()
                     .permission("gts.command.gts")
                     .executor(new GTSCommand())
@@ -97,6 +81,7 @@ public class GTS {
                     .child(SearchCommand.registerCommand(), "search")
                     .child(AuctionCommand.registerCommand(), "auc")
                     .child(LogCmd.registerCommand(), "logs")
+                    .child(IgnoreCmd.registerCommand(), "ignore")
                     .child(CommandSpec.builder()
                             .executor(new ReloadCommand())
                             .permission("gts.admin.command.reload")
@@ -118,26 +103,45 @@ public class GTS {
                             .description(Text.of("Receive help info on GTS"))
                             .build(), "help")
                     .build(), "gts");
-            getLogger().info("    - commands injected into registry");
 
-            messageConfig = new MessageConfig();
-
+            getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Registering listeners..."));
             Sponge.getEventManager().registerListeners(this, new JoinListener());
-            getLogger().info("    - listeners registered into system");
-            getLogger().info("");
-            getLogger().info("GTS has successfully enabled, and is ready for service");
-            getLogger().info("Let the GTS experience, commence!");
-            getLogger().info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+
+            getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Initializing storage provider..."));
+            if(config.getDatabaseType().equalsIgnoreCase("H2")){
+                this.sql = new H2Provider(GTS.getInstance().getConfig().getMainTable(), GTS.getInstance().getConfig().getLogTable());
+            } else if(config.getDatabaseType().equalsIgnoreCase("MySQL")){
+                this.sql = new MySQLProvider(GTS.getInstance().getConfig().getMainTable(), GTS.getInstance().getConfig().getLogTable());
+            } else {
+                getConsole().sendMessage(Text.of(ERROR_PREFIX, TextColors.RED, "Database type invalid, defaulting to H2"));
+
+                this.sql = new H2Provider(GTS.getInstance().getConfig().getMainTable(), GTS.getInstance().getConfig().getLogTable());
+            }
+            this.sql.createTables();
+            this.sql.updateTables();
+
+            getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Caching listings..."));
+            this.lots = this.sql.getAllLots();
+
+            int max = -1;
+            for(LotCache lot : this.lots){
+                if(lot.getLot().getLotID() > max){
+                    max = lot.getLot().getLotID();
+                }
+            }
+            LotUtils.setPlacement(max + 1);
+
+            getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Successfully loaded"));
         } else {
-            getLogger().error("All GTS functions will be suspended and unusable!");
-            getLogger().info("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=");
+            getConsole().sendMessage(Text.of(ERROR_PREFIX, Text.of(TextColors.DARK_RED, "All plugin functions will be disabled...")));
         }
     }
 
     @Listener
     public void onServerStart(GameStartedServerEvent e){
         if(enabled) {
-            new UpdateLotsTask().setupUpdateTask();
+            UpdateLotsTask.setupUpdateTask();
+            UpdateLotsTask.saveTask();
         }
     }
 
@@ -162,6 +166,7 @@ public class GTS {
         if(enabled) {
             getLogger().info("Thanks for using " + NAME + " (" + VERSION + ")");
             try {
+                sql.updateLots(LotUtils.getSqlCmds());
                 sql.shutdown();
             } catch (Exception e1) {
                 e1.printStackTrace();
@@ -173,6 +178,10 @@ public class GTS {
 
     public Logger getLogger(){
         return this.logger;
+    }
+
+    public ConsoleSource getConsole(){
+        return Sponge.getServer().getConsole();
     }
 
     public SQLDatabase getSql(){
@@ -201,5 +210,13 @@ public class GTS {
 
     public MessageConfig getMessageConfig() {
         return messageConfig;
+    }
+
+    public List<LotCache> getLots() {
+        return lots;
+    }
+
+    public List<UUID> getIgnoreList() {
+        return ignoreList;
     }
 }

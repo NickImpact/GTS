@@ -30,60 +30,58 @@ public class LogCmd implements CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         Optional<User> target = args.getOne("target");
         if(target.isPresent()){
-            Optional<Player> player = target.get().getPlayer();
-            player.ifPresent(pl -> {
-                if(args.hasAny("r") && !args.hasAny("e")){
-                    Log log = GTS.getInstance().getSql().getMostRecentLog(pl.getUniqueId());
+            if(args.hasAny("r") && !args.hasAny("e")){
+                Log log = GTS.getInstance().getSql().getMostRecentLog(target.get().getUniqueId());
 
 
-                } else if(!args.hasAny("r") && args.hasAny("e")){
-                    Log log = GTS.getInstance().getSql().getEarliestLog(pl.getUniqueId());
+            } else if(!args.hasAny("r") && args.hasAny("e")){
+                Log log = GTS.getInstance().getSql().getEarliestLog(target.get().getUniqueId());
 
-                } else if(args.hasAny("r") && args.hasAny("e")){
-                    Log recent = GTS.getInstance().getSql().getMostRecentLog(pl.getUniqueId());
-                    Log earliest = GTS.getInstance().getSql().getEarliestLog(pl.getUniqueId());
+            } else if(args.hasAny("r") && args.hasAny("e")){
+                Log recent = GTS.getInstance().getSql().getMostRecentLog(target.get().getUniqueId());
+                Log earliest = GTS.getInstance().getSql().getEarliestLog(target.get().getUniqueId());
 
-                } else {
-                    List<Log> logs = GTS.getInstance().getSql().getLogs(pl.getUniqueId());
-                    List<Text> lText = Lists.newArrayList();
+            } else {
+                List<Log> logs = GTS.getInstance().getSql().getLogs(target.get().getUniqueId());
+                List<Text> lText = Lists.newArrayList();
 
-                    SimpleDateFormat format = new SimpleDateFormat("E MM/dd/yy hh:mm:ss a");
-                    for(Log log : logs){
-                        List<String> info = Lists.newArrayList(log.getLog().split(Pattern.quote(" | ")));
-                        Text infoText = Text.of(TextColors.YELLOW, info.remove(0));
-                        for(String line : info){
-                            infoText = Text.of(infoText, "\n", TextColors.GRAY, line.substring(0, line.indexOf(":")) + ": ", TextColors.YELLOW, line.substring(line.indexOf(":") + 2));
-                        }
-
-                        Text text = Text.of(
-                                TextColors.GREEN, String.format(" %4d", log.getId()), TextColors.GRAY, ")   ",
-                                TextColors.GOLD, String.format("%18s", log.getAction()) + "   ",
-                                Text.builder().append(Text.of(TextColors.GRAY, "[", TextColors.YELLOW, "Log Info", TextColors.GRAY, "]"))
-                                              .onClick(TextActions.runCommand("/gts:gts logs list --log-id=" + log.getId()))
-                                              .onHover(TextActions.showText(infoText))
-                                .build(), "   ",
-                                TextColors.WHITE, format.format(log.getDate())
-                        );
-                        lText.add(text);
+                SimpleDateFormat format = new SimpleDateFormat("E MM/dd/yy hh:mm:ss a");
+                for(Log log : logs){
+                    List<String> info = Lists.newArrayList(log.getLog().split(Pattern.quote(" | ")));
+                    Text infoText = Text.of(TextColors.YELLOW, info.remove(0));
+                    for(String line : info){
+                        infoText = Text.of(infoText, "\n", TextColors.GRAY, line.substring(0, line.indexOf(":")) + ": ", TextColors.YELLOW, line.substring(line.indexOf(":") + 2));
                     }
 
-                    PaginationList.builder()
-                            .title(Text.of(TextColors.YELLOW, pl.getName() + "'s Logs", TextColors.WHITE))
-                            .header(Text.of(
-                                    TextColors.GREEN, "   ID   ",
-                                    TextColors.WHITE, "|        ",
-                                    TextColors.GREEN, "Action        ",
-                                    TextColors.WHITE, "|    ",
-                                    TextColors.GREEN, "Info    ",
-                                    TextColors.WHITE, "|          ",
-                                    TextColors.GREEN, "Date\n",
-                                    TextColors.WHITE, "-----------------------------------------------------"
-                                    )
-                            )
-                            .contents(lText)
-                            .sendTo(src);
+                    Text text = Text.of(
+                            TextColors.GREEN, String.format(" %4d", log.getId()), TextColors.GRAY, ")   ",
+                            TextColors.GOLD, String.format("%18s", log.getAction()) + "   ",
+                            Text.builder().append(Text.of(TextColors.GRAY, "[", TextColors.YELLOW, "Log Info", TextColors.GRAY, "]"))
+                                          .onClick(TextActions.runCommand("/gts:gts logs list --log-id=" + log.getId()))
+                                          .onHover(TextActions.showText(infoText))
+                            .build(), "   ",
+                            TextColors.WHITE, format.format(log.getDate())
+                    );
+                    lText.add(text);
                 }
-            });
+
+                PaginationList.builder()
+                        .title(Text.of(TextColors.YELLOW, target.get().getName() + "'s Logs", TextColors.WHITE))
+                        .header(Text.of(
+                                TextColors.GREEN, "   ID   ",
+                                TextColors.WHITE, "|        ",
+                                TextColors.GREEN, "Action        ",
+                                TextColors.WHITE, "|    ",
+                                TextColors.GREEN, "Info    ",
+                                TextColors.WHITE, "|          ",
+                                TextColors.GREEN, "Date\n",
+                                TextColors.WHITE, "-----------------------------------------------------"
+                                )
+                        )
+                        .contents(lText)
+                        .sendTo(src);
+            }
+
         } else {
             if(args.hasAny("log-id")){
                 int id = args.<Integer>getOne("log-id").get();

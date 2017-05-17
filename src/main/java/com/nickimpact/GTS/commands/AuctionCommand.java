@@ -30,7 +30,7 @@ public class AuctionCommand implements CommandExecutor{
             }
 
             Integer price = args.<Integer>getOne("price").get();
-            if(price < 0)
+            if(price < 1)
                 throw new CommandException(Text.of(TextColors.RED, "Starting price can not be lower than $0..."));
 
             Integer increment = args.<Integer>getOne("increment").get();

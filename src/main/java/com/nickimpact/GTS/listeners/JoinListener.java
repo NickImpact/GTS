@@ -1,9 +1,10 @@
 package com.nickimpact.GTS.listeners;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
-import com.nickimpact.GTS.utils.Lot;
+import com.nickimpact.GTS.utils.LotCache;
 import com.nickimpact.GTS.utils.LotUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -11,6 +12,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -24,13 +26,26 @@ public class JoinListener {
         Sponge.getScheduler().createTaskBuilder().execute(() -> {
             final Optional<Player> player = Sponge.getServer().getPlayer(event.getTargetEntity().getUniqueId());
             if(player.isPresent()) {
-                for(Lot lot : GTS.getInstance().getSql().getPlayerLots(player.get().getUniqueId())){
-                    if(GTS.getInstance().getSql().isExpired(lot.getLotID())){
-                        LotUtils.givePlayerPokemon(player.get().getUniqueId(), lot);
-                        GTS.getInstance().getSql().deleteLot(lot.getLotID());
+                List<LotCache> lots = Lists.newArrayList();
+                for(LotCache lot : GTS.getInstance().getLots()){
+                    if(lot.getLot().getOwner().equals(player.get().getUniqueId())){
+                        lots.add(lot);
+                    }
+                }
+
+                for(LotCache lot : lots){
+                    if(lot.isExpired()){
+                        LotUtils.givePlayerPokemon(player.get().getUniqueId(), lot.getLot());
+                        for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
+                            if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lot.getLot().getLotID()) {
+                                GTS.getInstance().getLots().remove(i);
+                                break;
+                            }
+                        }
+                        LotUtils.deleteLot(lot.getLot().getLotID());
 
                         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
-                        textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+                        textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
 
                         player.get().sendMessage(MessageConfig.getMessage("Generic.Remove.Expired", textOptions));
                     }

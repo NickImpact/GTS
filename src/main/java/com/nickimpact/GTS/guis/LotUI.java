@@ -5,6 +5,7 @@ import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.logging.Log;
 import com.nickimpact.GTS.utils.Lot;
+import com.nickimpact.GTS.utils.LotCache;
 import com.nickimpact.GTS.utils.LotUtils;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
@@ -36,12 +37,12 @@ import java.util.Optional;
  */
 public class LotUI {
 
-    private static HashMap<Player, Lot> lots = new HashMap<>();
+    private static HashMap<Player, LotCache> lots = new HashMap<>();
     private static HashMap<Player, Boolean> isSearching = new HashMap<>();
-    private static HashMap<Player, List<Lot>> tokens = new HashMap<>();
+    private static HashMap<Player, List<LotCache>> tokens = new HashMap<>();
     private static HashMap<Player, Boolean> isAdmin = new HashMap<>();
 
-    public static void showGUI(Player p, Lot lot, boolean search, List<Lot> pokemon, boolean admin) {
+    public static void showGUI(Player p, LotCache lot, boolean search, List<LotCache> pokemon, boolean admin) {
         Inventory inv = registerInventory(p);
 
         lots.put(p, lot);
@@ -53,7 +54,7 @@ public class LotUI {
         p.openInventory(inv, Cause.of(NamedCause.source(GTS.getInstance())));
     }
 
-    private static void setupGUI(Inventory inv, Player p, Lot lot, boolean admin) {
+    private static void setupGUI(Inventory inv, Player p, LotCache lot, boolean admin) {
 
         int x;
         int y;
@@ -71,28 +72,28 @@ public class LotUI {
             inv.query(new SlotPos(x, y)).offer(SharedItems.border("Black"));
         }
 
-        inv.query(new SlotPos(1, 1)).offer(lot.getItem().getItem(lot));
+        inv.query(new SlotPos(1, 1)).offer(lot.getLot().getItem().getItem(lot));
         if(admin){
             inv.query(new SlotPos(3, 1)).offer(removeListing(true));
         } else {
-            Optional<Player> player = Sponge.getServer().getPlayer(lot.getOwner());
+            Optional<Player> player = Sponge.getServer().getPlayer(lot.getLot().getOwner());
             if(player.isPresent()){
                 if(p.getUniqueId().equals(player.get().getUniqueId())){
                     inv.query(new SlotPos(3, 1)).offer(removeListing(false));
                 } else {
-                    if(lot.isAuction())
+                    if(lot.getLot().isAuction())
                         inv.query(new SlotPos(3, 1)).offer(confirmBid());
                     else
                         inv.query(new SlotPos(3, 1)).offer(confirmListing());
                 }
             } else {
-                if(lot.isAuction())
+                if(lot.getLot().isAuction())
                     inv.query(new SlotPos(3, 1)).offer(confirmBid());
                 else
                     inv.query(new SlotPos(3, 1)).offer(confirmListing());
             }
         }
-        inv.query(new SlotPos(5, 1)).offer(lot.getItem().setStats());
+        inv.query(new SlotPos(5, 1)).offer(lot.getLot().getItem().setStats());
         inv.query(new SlotPos(7, 1)).offer(cancel());
     }
 
@@ -156,60 +157,83 @@ public class LotUI {
                             if(slot == 12 || slot == 16) {
                                 if (slot == 12) {
                                     HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
-                                    textOptions.put("pokemon", Optional.of(lots.get(p).getItem().getName()));
+                                    textOptions.put("pokemon", Optional.of(lots.get(p).getLot().getItem().getName()));
 
                                     boolean admin = isAdmin.get(p);
                                     if (event.getCursorTransaction().getFinal().getType().equals(ItemTypes.ANVIL)) {
                                         if (admin) {
-                                            if (GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null) {
+                                            if (lots.get(p).getLot() != null) {
                                                 if (event instanceof ClickInventoryEvent.Secondary) {
-                                                    for(Text text : MessageConfig.getMessages("Administrative.LotUI.Delete", textOptions))
+                                                    for (Text text : MessageConfig.getMessages("Administrative.LotUI.Delete", textOptions))
                                                         p.sendMessage(text);
-                                                    GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
+
+                                                    for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
+                                                        if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lots.get(p).getLot().getLotID()) {
+                                                            GTS.getInstance().getLots().remove(i);
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    LotUtils.deleteLot(lots.get(p).getLot().getLotID());
                                                 } else if (event instanceof ClickInventoryEvent.Primary) {
                                                     for(Text text : MessageConfig.getMessages("Administrative.LotUI.Remove", textOptions))
                                                         p.sendMessage(text);
 
-                                                    textOptions.putAll(LotUtils.getInfo(lots.get(p).getItem().getPokemon(lots.get(p))));
-                                                    Log log = LotUtils.forgeLog(Sponge.getServer().getPlayer(lots.get(p).getOwner()).get(), "Removal", textOptions);
+                                                    textOptions.putAll(LotUtils.getInfo(lots.get(p).getLot().getItem().getPokemon(lots.get(p).getLot())));
+                                                    Log log = LotUtils.forgeLog(Sponge.getServer().getPlayer(lots.get(p).getLot().getOwner()).get(), "Removal", textOptions);
                                                     GTS.getInstance().getSql().appendLog(log);
                                                     Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                                                     if(storage.isPresent()) {
-                                                        storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p)));
+                                                        storage.get().addToParty(lots.get(p).getLot().getItem().getPokemon(lots.get(p).getLot()));
                                                         storage.get().sendUpdatedList();
                                                     } else {
                                                         GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
                                                     }
-                                                    GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
+                                                    for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
+                                                        if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lots.get(p).getLot().getLotID()) {
+                                                            GTS.getInstance().getLots().remove(i);
+                                                            break;
+                                                        }
+                                                    }
+
+                                                    LotUtils.deleteLot(lots.get(p).getLot().getLotID());
                                                 }
                                             } else {
                                                 for(Text text : MessageConfig.getMessages("Generic.Remove.Failed", textOptions))
                                                     p.sendMessage(text);
                                             }
                                         } else {
-                                            if (GTS.getInstance().getSql().getLot(lots.get(p).getLotID()) != null) {
+                                            if (lots.get(p).getLot() != null) {
                                                 for(Text text : MessageConfig.getMessages("Generic.Remove.Success", textOptions))
                                                     p.sendMessage(text);
                                                 Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                                                 if(storage.isPresent()) {
-                                                    storage.get().addToParty(lots.get(p).getItem().getPokemon(lots.get(p)));
+                                                    storage.get().addToParty(lots.get(p).getLot().getItem().getPokemon(lots.get(p).getLot()));
                                                     storage.get().sendUpdatedList();
                                                 } else {
                                                     GTS.getInstance().getLogger().error("Error occurred in Lot Confirmation for " + p.getName());
                                                 }
-                                                GTS.getInstance().getSql().deleteLot(lots.get(p).getLotID());
-                                                textOptions.putAll(LotUtils.getInfo(lots.get(p).getItem().getPokemon(lots.get(p))));
+
+                                                for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
+                                                    if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lots.get(p).getLot().getLotID()) {
+                                                        GTS.getInstance().getLots().remove(i);
+                                                        break;
+                                                    }
+                                                }
+
+                                                LotUtils.deleteLot(lots.get(p).getLot().getLotID());
+                                                textOptions.putAll(LotUtils.getInfo(lots.get(p).getLot().getItem().getPokemon(lots.get(p).getLot())));
                                                 Log log = LotUtils.forgeLog(p, "Removal", textOptions);
                                                 GTS.getInstance().getSql().appendLog(log);
                                             }
                                         }
                                     } else {
-                                        Lot lot = GTS.getInstance().getSql().getLot(lots.get(p).getLotID());
+                                        LotCache lot = GTS.getInstance().getLots().stream().filter(l -> l.getLot().getLotID() == lots.get(p).getLot().getLotID()).findAny().orElse(null);
                                         if(lot != null){
-                                            if(lot.isAuction())
-                                                LotUtils.bid(p, lot);
+                                            if(lot.getLot().isAuction())
+                                                LotUtils.bid(p, lot.getLot());
                                             else
-                                                if(lot.isPokemon())
+                                                if(lot.getLot().isPokemon())
                                                     LotUtils.trade(p, lot);
                                                 else
                                                     LotUtils.buyLot(p, lot);

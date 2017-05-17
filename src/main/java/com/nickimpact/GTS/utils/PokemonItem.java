@@ -95,7 +95,7 @@ public class PokemonItem {
         this.name = pokemon.getPokemonName();
         this.nickname = pokemon.getNickname();
         this.ability = pokemon.getAbility().getName();
-        this.heldItem = pokemon.getItemHeld() != null ? pokemon.getItemHeld().getHeldItemType().name() : "Nothing";
+        this.heldItem = pokemon.getItemHeld() != null ? pokemon.getItemHeld().getLocalizedName() : "Nothing";
         this.m1 = pokemon.getMoveset().get(0) != null ? pokemon.getMoveset().get(0).baseAttack.getLocalizedName() : "Empty";
         this.m2 = pokemon.getMoveset().get(1) != null ? pokemon.getMoveset().get(1).baseAttack.getLocalizedName() : "Empty";
         this.m3 = pokemon.getMoveset().get(2) != null ? pokemon.getMoveset().get(2).baseAttack.getLocalizedName() : "Empty";
@@ -125,6 +125,7 @@ public class PokemonItem {
         if (pokemon.getName().equalsIgnoreCase("Mew")) {
             this.clones = nbt.getShort("NumCloned");
         }
+
     }
 
     private String getHiddenPower() {
@@ -167,15 +168,15 @@ public class PokemonItem {
         return String.valueOf(intPower) + " | " + strTypes[intTypeIndex];
     }
 
-    public ItemStack getItem(Lot lot) {
+    public ItemStack getItem(LotCache lot) {
         if(this.isEgg){
             ItemStack item = ItemStack.builder().itemType(ItemTypes.EGG).build();
-            this.setItemData(item, lot.getLotID(), lot);
+            this.setItemData(item, lot.getLot().getLotID(), lot);
             return item;
         } else {
             net.minecraft.item.ItemStack nativeItem = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
             ItemStack item = setPicture(nativeItem);
-            this.setItemData(item, lot.getLotID(), lot);
+            this.setItemData(item, lot.getLot().getLotID(), lot);
             return item;
         }
     }
@@ -201,7 +202,7 @@ public class PokemonItem {
         return ItemStackUtil.fromNative(item);
     }
 
-    private void setItemData(ItemStack item, int id, Lot lot) {
+    private void setItemData(ItemStack item, int id, LotCache lot) {
         if (!this.isEgg) {
             if (this.shiny) {
                 item.offer(Keys.DISPLAY_NAME, Text.of(TextColors.AQUA, this.name + " ", TextColors.GRAY, "| ", TextColors.YELLOW, "Lvl " + this.lvl + " ", TextColors.GRAY, "(", TextColors.GOLD, "Shiny", TextColors.GRAY, ")"));
@@ -230,18 +231,19 @@ public class PokemonItem {
             else if(this.cost <= 0 && this.startPrice > 0) {
                 data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.startPrice));
                 data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.increment));
-                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getHighBidder() != null ?
-                        Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName()
+                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getLot().getHighBidder() != null ?
+                        Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getOwner()).get().getName()
                         : "N/A"));
             } else {
-                data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getPokeWanted()));
+                data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getLot().getPokeWanted()));
             }
 
-            if(!lot.canExpire() && lot.getPokeWanted() != null)
+            if(!lot.getLot().canExpire() && lot.getLot().getPokeWanted() != null)
                 data.add(Text.of(TextColors.GRAY, "Expires: ", TextColors.YELLOW, "Never"));
             else
-                data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(GTS.getInstance().getSql()
-                    .getEnd(lot.getLotID()).toInstant().toEpochMilli() - Instant.now().toEpochMilli())));
+                data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(
+                        lot.getDate().toInstant().toEpochMilli() - Instant.now().toEpochMilli()
+                )));
         } else {
             data.add(Text.of(TextColors.GRAY, "Lot ID: ", TextColors.YELLOW, id));
             data.add(Text.of(TextColors.GRAY, "Owner: ", TextColors.YELLOW, this.owner));
@@ -250,9 +252,9 @@ public class PokemonItem {
                 data.add(Text.join(Text.of(TextColors.GRAY, "Nickname: ", TextColors.YELLOW), TextSerializers.LEGACY_FORMATTING_CODE.deserialize(this.nickname)));
             }
             data.add(Text.of(TextColors.GREEN, "Click on this slot for more info"));
-            if(lot.getNote() != null && !lot.getNote().equals("")){
-                if(lot.getNote().length() > 16){
-                    String[] note = lot.getNote().split(" ");
+            if(lot.getLot().getNote() != null && !lot.getLot().getNote().equals("")){
+                if(lot.getLot().getNote().length() > 16){
+                    String[] note = lot.getLot().getNote().split(" ");
                     String line = "";
 
                     int index = 0;
@@ -272,7 +274,7 @@ public class PokemonItem {
                         data.add(Text.of(TextColors.GRAY, "      ", TextColors.YELLOW, line));
                     }
                 } else {
-                    data.add(Text.of(TextColors.GRAY, "Note: ", TextColors.YELLOW, lot.getNote()));
+                    data.add(Text.of(TextColors.GRAY, "Note: ", TextColors.YELLOW, lot.getLot().getNote()));
                 }
             }
             data.add(Text.EMPTY);
@@ -292,17 +294,18 @@ public class PokemonItem {
             else if(this.cost <= 0 && this.startPrice > 0) {
                 data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.startPrice));
                 data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.increment));
-                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getHighBidder() != null ?
-                        Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName()
+                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getLot().getHighBidder() != null ?
+                        Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getOwner()).get().getName()
                         : "N/A"));
             } else {
-                data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getPokeWanted()));
+                data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getLot().getPokeWanted()));
             }
-            if(!lot.canExpire() && lot.getPokeWanted() != null)
+            if(!lot.getLot().canExpire() && lot.getLot().getPokeWanted() != null)
                 data.add(Text.of(TextColors.GRAY, "Expires: ", TextColors.YELLOW, "Never"));
             else
-                data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(GTS.getInstance().getSql()
-                        .getEnd(lot.getLotID()).toInstant().toEpochMilli() - Instant.now().toEpochMilli())));
+                data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(
+                        lot.getDate().toInstant().toEpochMilli() - Instant.now().toEpochMilli()
+                )));
         }
 
         item.offer(Keys.ITEM_LORE, data);
