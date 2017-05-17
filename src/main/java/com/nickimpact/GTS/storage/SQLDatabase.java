@@ -304,9 +304,7 @@ public abstract class SQLDatabase {
         }
     }
 
-    public synchronized List<LotCache> getAllLots() {
-        List<LotCache> lots = new ArrayList<>();
-
+    public synchronized void getAllLots() {
         try{
             try(Connection connection = getConnection()) {
                 if (connection == null || connection.isClosed()) {
@@ -320,19 +318,20 @@ public abstract class SQLDatabase {
                         boolean expired = results.getBoolean("Expired");
                         Date date = Date.from(Instant.parse(results.getString("Ends")));
 
-                        lots.add(new LotCache(lot, expired, date));
+                        if(!expired) {
+                            GTS.getInstance().getLots().add(new LotCache(lot, false, date));
+                        } else {
+                            GTS.getInstance().getExpiredLots().add(new LotCache(lot, true, date));
+                        }
                     }
                     results.close();
                     query.close();
                 }
             }
 
-            return lots;
         } catch(SQLException e){
             e.printStackTrace();
         }
-
-        return Lists.newArrayList();
     }
 
     public synchronized int clearLots() {

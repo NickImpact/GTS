@@ -69,6 +69,13 @@ public class UpdateLotsTask {
         Optional<Player> player = Sponge.getServer().getPlayer(item.getOwner());
         if (!player.isPresent()) {
             lot.setIsExpired(true);
+            GTS.getInstance().getExpiredLots().add(lot);
+            for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
+                if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lot.getLot().getLotID()) {
+                    GTS.getInstance().getLots().remove(i);
+                    break;
+                }
+            }
             LotUtils.updateLot(lot.getLot().getLotID());
         } else {
             HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
