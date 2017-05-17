@@ -80,11 +80,13 @@ public class Main {
                 y++;
             }
             if (search) {
+                if(lots.get(index).isExpired()) continue;
                 Lot lot = lots.get(index).getLot();
                 PokemonItem item = lot.getItem();
                 inv.query(new SlotPos(x, y)).offer(item.getItem(lots.get(index)));
                 x++;
             } else {
+                if(lots.get(index).isExpired()) continue;
                 Lot lot = lots.get(index).getLot();
                 PokemonItem item = lot.getItem();
                 inv.query(new SlotPos(x, y)).offer(item.getItem(lots.get(index)));

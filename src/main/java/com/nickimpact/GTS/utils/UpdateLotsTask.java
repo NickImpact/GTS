@@ -141,7 +141,10 @@ public class UpdateLotsTask {
                     acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.source(GTS.getInstance()).build());
 
                     for (Text text : MessageConfig.getMessages("Auctions.Award", textOptions))
-                        Sponge.getServer().getBroadcastChannel().send(text);
+                        for (Player p : Sponge.getServer().getOnlinePlayers()) {
+                            if (!GTS.getInstance().getIgnoreList().contains(p.getUniqueId()))
+                                p.sendMessage(text);
+                        }
                     storage.get().addToParty(item.getPokemon(lot));
                     GTS.getInstance().getSql().deleteLot(lot.getLotID());
 

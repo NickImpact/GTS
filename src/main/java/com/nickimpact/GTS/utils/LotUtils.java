@@ -3,6 +3,7 @@ package com.nickimpact.GTS.utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
+import com.google.gson.stream.MalformedJsonException;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.logging.Log;
@@ -123,11 +124,19 @@ public class LotUtils {
             textOptions.putAll(getInfo(pokemon));
 
             if (!pokemon.isEgg) {
-                for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Normal", textOptions))
-                    Sponge.getServer().getBroadcastChannel().send(text);
+                for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Normal", textOptions)) {
+                    for (Player p : Sponge.getServer().getOnlinePlayers()) {
+                        if (!GTS.getInstance().getIgnoreList().contains(p.getUniqueId()))
+                            p.sendMessage(text);
+                    }
+                }
             } else {
-                for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Egg.Normal", textOptions))
-                    Sponge.getServer().getBroadcastChannel().send(text);
+                for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Egg.Normal", textOptions)) {
+                    for (Player p : Sponge.getServer().getOnlinePlayers()) {
+                        if (!GTS.getInstance().getIgnoreList().contains(p.getUniqueId()))
+                            p.sendMessage(text);
+                    }
+                }
             }
 
             Log log = forgeLog(player, "Addition", textOptions);
@@ -164,10 +173,16 @@ public class LotUtils {
 
             if (!pokemon.isEgg) {
                 for (Text text : MessageConfig.getMessages("Auctions.Broadcast.Pokemon", textOptions))
-                    Sponge.getServer().getBroadcastChannel().send(text);
+                    for (Player p : Sponge.getServer().getOnlinePlayers()) {
+                        if (!GTS.getInstance().getIgnoreList().contains(p.getUniqueId()))
+                            p.sendMessage(text);
+                    }
             } else {
                 for (Text text : MessageConfig.getMessages("Auctions.Broadcast.Egg.Pokemon", textOptions))
-                    Sponge.getServer().getBroadcastChannel().send(text);
+                    for (Player p : Sponge.getServer().getOnlinePlayers()) {
+                        if (!GTS.getInstance().getIgnoreList().contains(p.getUniqueId()))
+                            p.sendMessage(text);
+                    }
             }
 
             textOptions.put("pokemon", Optional.of(pokemon.getName()));
@@ -198,10 +213,16 @@ public class LotUtils {
 
             if (!pokemon.isEgg) {
                 for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Pokemon", textOptions))
-                    Sponge.getServer().getBroadcastChannel().send(text);
+                    for (Player p : Sponge.getServer().getOnlinePlayers()) {
+                        if (!GTS.getInstance().getIgnoreList().contains(p.getUniqueId()))
+                            p.sendMessage(text);
+                    }
             } else {
                 for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Egg", textOptions))
-                    Sponge.getServer().getBroadcastChannel().send(text);
+                    for (Player p : Sponge.getServer().getOnlinePlayers()) {
+                        if (!GTS.getInstance().getIgnoreList().contains(p.getUniqueId()))
+                            p.sendMessage(text);
+                    }
             }
 
             textOptions.put("pokemon", Optional.of(pokemon.getName()));
@@ -449,29 +470,66 @@ public class LotUtils {
     }
 
     private static boolean checkPrice(Player player, EntityPixelmon pokemon, int price) {
-        int priceOpt;
+        int ivPrice = 0;
+        for(int iv : pokemon.stats.IVs.getArray()){
+            if(iv >= GTS.getInstance().getConfig().getMinIV()){
+                ivPrice += GTS.getInstance().getConfig().getMinIVPrice();
+            }
+        }
 
-        if(EnumPokemon.legendaries.contains(pokemon.getName())){
-            priceOpt = 1;
-            if(price >= GTS.getInstance().getConfig().getMinLegendPrice())
+        int totalPrice;
+
+        if(pokemon.getAbilitySlot().equals(2)){
+            if(pokemon.getIsShiny() && EnumPokemon.legendaries.contains(pokemon.getName())){
+                totalPrice = GTS.getInstance().getConfig().getMinHAPrice() + ivPrice +
+                        GTS.getInstance().getConfig().getMinShinyPrice() + GTS.getInstance().getConfig().getMinLegendPrice();
+
+                if(price >= totalPrice){
+                    return true;
+                }
+            } else if (pokemon.getIsShiny()) {
+                totalPrice = GTS.getInstance().getConfig().getMinHAPrice() + ivPrice + GTS.getInstance().getConfig().getMinShinyPrice();
+
+                if(price >= totalPrice){
+                    return true;
+                }
+            } else {
+                totalPrice = GTS.getInstance().getConfig().getMinHAPrice() + ivPrice + GTS.getInstance().getConfig().getMinLegendPrice();
+
+                if(price >= totalPrice){
+                    return true;
+                }
+            }
+
+            if(price >= GTS.getInstance().getConfig().getMinHAPrice() + ivPrice){
+                return true;
+            }
+        }
+        else if(EnumPokemon.legendaries.contains(pokemon.getName())){
+            if(pokemon.getIsShiny()){
+                totalPrice = GTS.getInstance().getConfig().getMinLegendPrice() + ivPrice + GTS.getInstance().getConfig().getMinShinyPrice();
+                if(price >= totalPrice){
+                    return true;
+                }
+            }
+
+            totalPrice = GTS.getInstance().getConfig().getMinLegendPrice() + ivPrice;
+
+            if (price >= totalPrice)
                 return true;
         } else if(pokemon.getIsShiny()){
-            priceOpt = 2;
-            if(price >= GTS.getInstance().getConfig().getMinShinyPrice())
+            totalPrice = GTS.getInstance().getConfig().getMinShinyPrice() + ivPrice;
+            if(price >= totalPrice)
                 return true;
         } else {
-            priceOpt = 3;
-            if(price >= GTS.getInstance().getConfig().getMinPrice())
+            totalPrice = GTS.getInstance().getConfig().getMinPrice() + ivPrice;
+            if(price >= totalPrice)
                 return true;
         }
 
         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
         textOptions.put("curr_symbol", Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain()));
-        textOptions.put("price", Optional.of(
-                (priceOpt == 1 ? GTS.getInstance().getConfig().getMinLegendPrice() :
-                 priceOpt == 2 ? GTS.getInstance().getConfig().getMinShinyPrice() :
-                                 GTS.getInstance().getConfig().getMinPrice())
-        ));
+        textOptions.put("price", Optional.of(totalPrice));
 
         for(Text text : MessageConfig.getMessages("Pricing.MinPrice.Error.Not Enough", textOptions))
             player.sendMessage(text);
@@ -481,7 +539,7 @@ public class LotUtils {
     private static boolean handleTax(Player player, EntityPixelmon pokemon, int price){
 
         double t;
-        if(pokemon.getIsShiny() && EnumPokemon.legendaries.contains(pokemon.getName())){
+        if(pokemon.getIsShiny() && EnumPokemon.legendaries.contains(pokemon.getName()) && GTS.getInstance().getConfig().isStackTaxEnabled()){
             t = GTS.getInstance().getConfig().getShinyTax() + GTS.getInstance().getConfig().getLegendTax();
         } else if(EnumPokemon.legendaries.contains(pokemon.getName())){
             t = GTS.getInstance().getConfig().getLegendTax();

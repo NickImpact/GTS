@@ -12,6 +12,7 @@ import com.nickimpact.GTS.storage.SQLDatabase;
 import com.nickimpact.GTS.utils.LotCache;
 import com.nickimpact.GTS.utils.LotUtils;
 import com.nickimpact.GTS.utils.UpdateLotsTask;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.source.ConsoleSource;
@@ -30,6 +31,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 
 import static com.nickimpact.GTS.GTSInfo.*;
 
@@ -51,7 +53,7 @@ public class GTS {
 
     private EconomyService economy;
 
-    private List<Player> ignoreList = Lists.newArrayList();
+    private List<UUID> ignoreList = Lists.newArrayList();
 
     private List<LotCache> lots = Lists.newArrayList();
     private boolean enabled = true;
@@ -79,6 +81,7 @@ public class GTS {
                     .child(SearchCommand.registerCommand(), "search")
                     .child(AuctionCommand.registerCommand(), "auc")
                     .child(LogCmd.registerCommand(), "logs")
+                    .child(IgnoreCmd.registerCommand(), "ignore")
                     .child(CommandSpec.builder()
                             .executor(new ReloadCommand())
                             .permission("gts.admin.command.reload")
@@ -213,7 +216,7 @@ public class GTS {
         return lots;
     }
 
-    public List<Player> getIgnoreList() {
+    public List<UUID> getIgnoreList() {
         return ignoreList;
     }
 }

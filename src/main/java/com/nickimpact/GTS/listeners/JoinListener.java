@@ -1,5 +1,6 @@
 package com.nickimpact.GTS.listeners;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
@@ -11,6 +12,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +26,14 @@ public class JoinListener {
         Sponge.getScheduler().createTaskBuilder().execute(() -> {
             final Optional<Player> player = Sponge.getServer().getPlayer(event.getTargetEntity().getUniqueId());
             if(player.isPresent()) {
-                for(LotCache lot : GTS.getInstance().getSql().getPlayerLots(player.get().getUniqueId())){
+                List<LotCache> lots = Lists.newArrayList();
+                for(LotCache lot : GTS.getInstance().getLots()){
+                    if(lot.getLot().getOwner().equals(player.get().getUniqueId())){
+                        lots.add(lot);
+                    }
+                }
+
+                for(LotCache lot : lots){
                     if(lot.isExpired()){
                         LotUtils.givePlayerPokemon(player.get().getUniqueId(), lot.getLot());
                         for (int i = 0; i < GTS.getInstance().getLots().size(); i++){

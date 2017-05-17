@@ -96,9 +96,12 @@ public class Config {
             general.getNode("Max-Pokemon").getInt(3);
 
             general.getNode("Min-Prices").setComment("Use these values to enforce prices above the matching criteria");
-            general.getNode("Min-Prices", "Normal Pokemon").getInt(500);
-            general.getNode("Min-Prices", "Shiny Pokemon").getInt(750);
-            general.getNode("Min-Prices", "Legendary Pokemon").getInt(1000);
+            general.getNode("Min-Prices", "Normal Pokemon").getInt(1000);
+            general.getNode("Min-Prices", "Shiny Pokemon").getInt(5000);
+            general.getNode("Min-Prices", "HAs").getInt(10000);
+            general.getNode("Min-Prices", "Per IV", "Price").getInt(5000);
+            general.getNode("Min-Prices", "Per IV", "Minimum").getInt(28);
+            general.getNode("Min-Prices", "Legendary Pokemon").getInt(50000);
 
 
             general.getNode("Lot-Time").setComment("Sets the default duration of a lot (In Minutes)");
@@ -120,6 +123,9 @@ public class Config {
                     "taxes to stack on top of each other."
             );
             general.getNode("Tax", "Stacking-Tax", "Enabled").getBoolean(false);
+            general.getNode("Tax", "Stacking-Tax", "Max Tax").getDouble(0.50);
+            general.getNode("Tax", "Stacking-Tax", "HAs").getDouble(0.20);
+            general.getNode("Tax", "Stacking-Tax", "IVs").getDouble(0.175);
             general.getNode("Tax", "Stacking-Tax", "Shiny").getDouble(0.15);
             general.getNode("Tax", "Stacking-Tax", "Legendary").getDouble(0.20);
             general.getNode("Tax", "Pokemon Trade Tax").setComment("The value to start with when evaluating tax on pokemon 4 pokemon trades");
@@ -253,6 +259,18 @@ public class Config {
 
     public int getMinLegendPrice(){
         return main.getNode("General", "Min-Prices", "Legendary Pokemon").getInt();
+    }
+
+    public int getMinHAPrice(){
+        return main.getNode("General", "Min-Prices", "HAs").getInt();
+    }
+
+    public int getMinIVPrice(){
+        return main.getNode("General", "Min-Prices", "Per IV", "Price").getInt();
+    }
+
+    public int getMinIV(){
+        return main.getNode("General", "Min-Prices", "Per IV", "Minimum").getInt();
     }
 
     public long getAucTime() {

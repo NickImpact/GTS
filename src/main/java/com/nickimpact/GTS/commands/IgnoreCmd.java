@@ -5,7 +5,9 @@ import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandExecutor;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -23,35 +25,35 @@ public class IgnoreCmd implements CommandExecutor {
         if(src instanceof Player) {
             if(ignore.isPresent()){
                 if (ignore.get()) {
-                    if (GTS.getInstance().getIgnoreList().contains(src)) {
+                    if (GTS.getInstance().getIgnoreList().contains(((Player) src).getUniqueId())) {
                         throw new CommandException(Text.of("You are already ignoring GTS broadcasts"));
                     }
 
-                    GTS.getInstance().getIgnoreList().add((Player)src);
+                    GTS.getInstance().getIgnoreList().add(((Player) src).getUniqueId());
                     src.sendMessage(Text.of(
                             TextColors.GREEN, "GTS ", TextColors.GRAY, "\u00bb Ignore Status: ",
                             TextColors.GREEN, "True"
                     ));
                 } else {
-                    if(!GTS.getInstance().getIgnoreList().contains(src)){
+                    if(!GTS.getInstance().getIgnoreList().contains(((Player) src).getUniqueId())){
                         throw new CommandException(Text.of("You aren't viewing GTS broadcasts..."));
                     }
 
-                    GTS.getInstance().getIgnoreList().remove(src);
+                    GTS.getInstance().getIgnoreList().remove(((Player) src).getUniqueId());
                     src.sendMessage(Text.of(
                             TextColors.GREEN, "GTS ", TextColors.GRAY, "\u00bb Ignore Status: ",
                             TextColors.RED, "False"
                     ));
                 }
             } else {
-                if(GTS.getInstance().getIgnoreList().contains(src)){
-                    GTS.getInstance().getIgnoreList().remove(src);
+                if(GTS.getInstance().getIgnoreList().contains(((Player) src).getUniqueId())){
+                    GTS.getInstance().getIgnoreList().remove(((Player) src).getUniqueId());
                     src.sendMessage(Text.of(
                             TextColors.GREEN, "GTS ", TextColors.GRAY, "\u00bb Ignore Status: ",
                             TextColors.RED, "False"
                     ));
                 } else {
-                    GTS.getInstance().getIgnoreList().add((Player)src);
+                    GTS.getInstance().getIgnoreList().add(((Player) src).getUniqueId());
                     src.sendMessage(Text.of(
                             TextColors.GREEN, "GTS ", TextColors.GRAY, "\u00bb Ignore Status: ",
                             TextColors.GREEN, "True"
@@ -61,5 +63,16 @@ public class IgnoreCmd implements CommandExecutor {
         }
 
         return CommandResult.success();
+    }
+
+    public static CommandSpec registerCommand(){
+
+        return CommandSpec.builder()
+                .permission("gts.command.ignore")
+                .executor(new IgnoreCmd())
+                .arguments(
+                        GenericArguments.optionalWeak(GenericArguments.bool(Text.of("ignore"))))
+                .description(Text.of("Add a pokemon to the GTS"))
+                .build();
     }
 }
