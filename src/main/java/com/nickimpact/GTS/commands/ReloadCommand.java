@@ -15,7 +15,8 @@ import org.spongepowered.api.text.Text;
 public class ReloadCommand implements CommandExecutor {
     @Override
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-        GTS.getInstance().getConfig().reload();
+        GTS.getInstance().reloadConfig();
+        GTS.getInstance().reloadMessageConfig();
 
         for(Text text : MessageConfig.getMessages("Administrative.Reload", null))
             src.sendMessage(text);

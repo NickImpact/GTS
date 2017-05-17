@@ -56,6 +56,7 @@ public class GTS {
     private List<UUID> ignoreList = Lists.newArrayList();
 
     private List<LotCache> lots = Lists.newArrayList();
+    private List<LotCache> expiredLots = Lists.newArrayList();
     private boolean enabled = true;
 
     @Listener
@@ -121,7 +122,7 @@ public class GTS {
             this.sql.updateTables();
 
             getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Caching listings..."));
-            this.lots = this.sql.getAllLots();
+            this.sql.getAllLots();
 
             int max = -1;
             for(LotCache lot : this.lots){
@@ -148,8 +149,8 @@ public class GTS {
     @Listener
     public void onReload(GameReloadEvent e){
         if(enabled){
-            this.config = new Config();
-            this.messageConfig = new MessageConfig();
+            reloadConfig();
+            reloadMessageConfig();
             getLogger().info(Text.of(TextColors.YELLOW, "Configurations have been reloaded").toPlain());
         }
     }
@@ -164,15 +165,28 @@ public class GTS {
     @Listener
     public void onServerStop(GameStoppingEvent e){
         if(enabled) {
-            getLogger().info("Thanks for using " + NAME + " (" + VERSION + ")");
+            getConsole().sendMessage(Text.of(
+                    PREFIX, "Shutdown procedures initialized..."
+            ));
             try {
+                getConsole().sendMessage(Text.of(
+                        PREFIX, "Saving lot cache to storage provider..."
+                ));
                 sql.updateLots(LotUtils.getSqlCmds());
+                getConsole().sendMessage(Text.of(
+                        PREFIX, "Data stored, closing storage provider"
+                ));
                 sql.shutdown();
+                getConsole().sendMessage(Text.of(
+                        PREFIX, "Thank you for using GTS!"
+                ));
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
         } else {
-            getLogger().info(Text.of(TextColors.RED, "Remember to fix the issue that came about earlier on startup!").toPlain());
+            GTS.getInstance().getConsole().sendMessage(Text.of(
+                    ERROR_PREFIX, "Please ensure your startup issue has been resolved!"
+            ));
         }
     }
 
@@ -196,6 +210,10 @@ public class GTS {
         return config;
     }
 
+    public void reloadConfig() {
+        this.config = new Config();
+    }
+
     public Path getConfigDir(){
         return configDir;
     }
@@ -212,11 +230,19 @@ public class GTS {
         return messageConfig;
     }
 
+    public void reloadMessageConfig() {
+        this.messageConfig = new MessageConfig();
+    }
+
     public List<LotCache> getLots() {
         return lots;
     }
 
     public List<UUID> getIgnoreList() {
         return ignoreList;
+    }
+
+    public List<LotCache> getExpiredLots() {
+        return expiredLots;
     }
 }

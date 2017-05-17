@@ -1,6 +1,7 @@
 package com.nickimpact.GTS.guis;
 
 import com.google.common.collect.Lists;
+import com.nickimpact.GTS.GTSInfo;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.utils.Lot;
@@ -18,6 +19,7 @@ import org.spongepowered.api.item.inventory.InventoryArchetypes;
 import org.spongepowered.api.item.inventory.property.InventoryTitle;
 import org.spongepowered.api.item.inventory.property.SlotPos;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.common.item.inventory.adapter.impl.slots.SlotAdapter;
 
 import java.util.HashMap;
@@ -79,19 +81,11 @@ public class Main {
                 x = 0;
                 y++;
             }
-            if (search) {
-                if(lots.get(index).isExpired()) continue;
-                Lot lot = lots.get(index).getLot();
-                PokemonItem item = lot.getItem();
-                inv.query(new SlotPos(x, y)).offer(item.getItem(lots.get(index)));
-                x++;
-            } else {
-                if(lots.get(index).isExpired()) continue;
-                Lot lot = lots.get(index).getLot();
-                PokemonItem item = lot.getItem();
-                inv.query(new SlotPos(x, y)).offer(item.getItem(lots.get(index)));
-                x++;
-            }
+            if(lots.get(index).isExpired()) continue;
+            Lot lot = lots.get(index).getLot();
+            PokemonItem item = lot.getItem();
+            inv.query(new SlotPos(x, y)).offer(item.getItem(lots.get(index)));
+            x++;
         }
 
         if(x == 0 && y == 0 && search){
@@ -105,7 +99,7 @@ public class Main {
         return Inventory.builder().of(InventoryArchetypes.DOUBLE_CHEST)
             .property("inventorytitle",
                     (search ? InventoryTitle.of(Text.of("GTS | Search"))
-                            : InventoryTitle.of(Text.of("GTS | Page ", page, "/", playerMax.get(p)))))
+                            : InventoryTitle.of(Text.of("GTS | Page ", page, "/", GTS.getInstance().getLots().size() / 28 + 1))))
             .listener(ClickInventoryEvent.class, e -> {
                 e.setCancelled(true);
                 if(!(e instanceof ClickInventoryEvent.Shift)) {
