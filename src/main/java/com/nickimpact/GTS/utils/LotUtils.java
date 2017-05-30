@@ -3,7 +3,7 @@ package com.nickimpact.GTS.utils;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
-import com.google.gson.stream.MalformedJsonException;
+import com.google.gson.JsonSyntaxException;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.logging.Log;
@@ -13,7 +13,6 @@ import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
-import net.minecraft.command.CommandBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
@@ -30,8 +29,6 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
 import java.sql.Date;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.HashMap;
@@ -46,12 +43,13 @@ public class LotUtils {
 
     private static List<String> sqlCmds = Lists.newArrayList();
     private static int placement = 1;
+    private static int logPlacement = 1;
 
     public static List<String> getSqlCmds(){
         return sqlCmds;
     }
 
-    public static Lot lotFromJson(String s) {
+    public static Lot lotFromJson(String s) throws JsonSyntaxException {
         return new Gson().fromJson(s, Lot.class);
     }
 
@@ -70,7 +68,7 @@ public class LotUtils {
     private static void addPokemonToMarket(int mode, Player player, int slot, String note, Object... options) {
         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
 
-        if (GTS.getInstance().getSql().hasTooMany(player.getUniqueId())) {
+        if (hasMax(player.getUniqueId())) {
             textOptions.put("max_pokemon", Optional.of(GTS.getInstance().getConfig().getMaxPokemon()));
             for (Text text : MessageConfig.getMessages("Generic.Addition.Error.Exceed Max", textOptions))
                 player.sendMessage(text);
@@ -112,7 +110,17 @@ public class LotUtils {
             int placement = getPlacement();
 
             Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, price, expires, note);
-            addLot(player.getUniqueId(), new Gson().toJson(lot), false, time);
+
+            Gson gson = new Gson();
+            String json = gson.toJson(lot);
+
+            try {
+                gson.fromJson(json, Lot .class);
+            }catch(JsonSyntaxException e){
+                player.sendMessage(Text.of(TextColors.RED, "It appears your pokemon's info encountered an error, and has been prevented from being added to GTS..."));
+            }
+
+            addLot(player.getUniqueId(), gson.toJson(lot), false, time);
             GTS.getInstance().getLots().add(new LotCache(lot, false, Date.from(Instant.now().plusSeconds(time))));
 
             textOptions.put("player", Optional.of(player.getName()));
@@ -140,7 +148,7 @@ public class LotUtils {
             }
 
             Log log = forgeLog(player, "Addition", textOptions);
-            GTS.getInstance().getSql().appendLog(log);
+            addLog(player.getUniqueId(), log);
         } else if (mode == 2) {
             int stPrice = (Integer) options[0];
             int increment = (Integer) options[1];
@@ -159,6 +167,16 @@ public class LotUtils {
             int placement = getPlacement();
 
             Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, stPrice, true, true, null, stPrice, increment, note);
+
+            Gson gson = new Gson();
+            String json = gson.toJson(lot);
+
+            try {
+                gson.fromJson(json, Lot .class);
+            }catch(JsonSyntaxException e){
+                player.sendMessage(Text.of(TextColors.RED, "It appears your pokemon's info encountered an error, and has been prevented from being added to GTS..."));
+            }
+
             addLot(player.getUniqueId(), new Gson().toJson(lot), false, time);
             GTS.getInstance().getLots().add(new LotCache(lot, false, Date.from(Instant.now().plusSeconds(time))));
 
@@ -187,7 +205,7 @@ public class LotUtils {
 
             textOptions.put("pokemon", Optional.of(pokemon.getName()));
             Log log = forgeLog(player, "Addition", textOptions);
-            GTS.getInstance().getSql().appendLog(log);
+            addLog(player.getUniqueId(), log);
         } else {
             String poke = (String) options[0];
             boolean expires = (Boolean) options[1];
@@ -201,6 +219,16 @@ public class LotUtils {
 
             int placement = getPlacement();
             Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, true, poke, note);
+
+            Gson gson = new Gson();
+            String json = gson.toJson(lot);
+
+            try {
+                gson.fromJson(json, Lot .class);
+            }catch(JsonSyntaxException e){
+                player.sendMessage(Text.of(TextColors.RED, "It appears your pokemon's info encountered an error, and has been prevented from being added to GTS..."));
+            }
+
             addLot(player.getUniqueId(), new Gson().toJson(lot), false, time);
             GTS.getInstance().getLots().add(new LotCache(lot, false, Date.from(Instant.now().plusSeconds(time))));
 
@@ -227,7 +255,7 @@ public class LotUtils {
 
             textOptions.put("pokemon", Optional.of(pokemon.getName()));
             Log log = forgeLog(player, "Addition", textOptions);
-            GTS.getInstance().getSql().appendLog(log);
+            addLog(player.getUniqueId(), log);
         }
 
         ++placement;
@@ -242,6 +270,17 @@ public class LotUtils {
             player.sendMessage(text);
     }
 
+    private static boolean hasMax(UUID uuid) {
+        int total = 0;
+        for(LotCache lot : GTS.getInstance().getLots()){
+            if(lot.getLot().getOwner().equals(uuid)){
+                ++total;
+            }
+        }
+
+        return total >= GTS.getInstance().getConfig().getMaxPokemon();
+    }
+
     public static void buyLot(Player p, LotCache lot) {
         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
         if (lot == null) {
@@ -249,7 +288,7 @@ public class LotUtils {
                 p.sendMessage(text);
             return;
         }
-        if (!GTS.getInstance().getSql().isExpired(lot.getLot().getLotID())) {
+        if (!lot.isExpired()) {
             BigDecimal price = new BigDecimal(lot.getLot().getPrice());
             try {
                 Optional<UniqueAccount> account = GTS.getInstance().getEconomy().getOrCreateAccount(p.getUniqueId());
@@ -284,7 +323,7 @@ public class LotUtils {
 
                     textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
                     Log log = forgeLog(p, "Purchase-Recipient", textOptions);
-                    GTS.getInstance().getSql().appendLog(log);
+                    LotUtils.addLog(p.getUniqueId(), log);
 
                     textOptions.clear();
 
@@ -306,7 +345,7 @@ public class LotUtils {
                             Sponge.getServer().getPlayer(lot.getLot().getOwner()).get().sendMessage(text);
 
                         Log log2 = forgeLog(p, "Purchase-Owner", textOptions);
-                        GTS.getInstance().getSql().appendLog(log2);
+                        LotUtils.addLog(lot.getLot().getOwner(), log2);
                     }
                 } else {
                     GTS.getInstance().getLogger().error(Text.of(TextColors.RED, "Account for UUID (" + p.getUniqueId() + ") was not found").toPlain());
@@ -367,7 +406,7 @@ public class LotUtils {
 
         lot.setStPrice(lot.getStPrice() + lot.getIncrement());
         lot.setHighBidder(player.getUniqueId());
-        GTS.getInstance().getSql().updateEntry(lot);
+        LotUtils.updateLot(lot);
     }
 
     public static void trade(Player player, LotCache lot){
@@ -381,13 +420,13 @@ public class LotUtils {
         textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
         textOptions.put("player", Optional.of(player.getName()));
         Log log = forgeLog(player, "Trade", textOptions);
-        GTS.getInstance().getSql().appendLog(log);
+        addLog(player.getUniqueId(), log);
         for(Text text : MessageConfig.getMessages("Generic.Trade.Recipient.Receive-Poke", textOptions))
             player.sendMessage(text);
 
         Sponge.getServer().getPlayer(lot.getLot().getOwner()).ifPresent(o -> {
             Log log2 = forgeLog(player, "Trade", textOptions);
-            GTS.getInstance().getSql().appendLog(log2);
+            addLog(lot.getLot().getOwner(), log2);
 
             for(Text text : MessageConfig.getMessages("Generic.Trade.Owner.Receive-Poke", textOptions))
                 o.sendMessage(text);
@@ -623,11 +662,21 @@ public class LotUtils {
         LotUtils.placement = placement;
     }
 
+    public static int getLogPlacement() {
+        return logPlacement;
+    }
+
+    public static void setLogPlacement(int placement) {
+        LotUtils.logPlacement = placement;
+    }
+
     public enum Commands {
 
         Add("INSERT INTO `" + GTS.getInstance().getConfig().getMainTable() + "` (ID, Ends, Expired, uuid, Lot, DoesExpire) VALUES ({{id}}, '{{Ends}}', {{Expired}}, '{{UUID}}', '{{Lot}}', {{Can Expire}})"),
-        Update("UPDATE `" + GTS.getInstance().getConfig().getMainTable() + "` SET Expired=1 WHERE ID={{id}}"),
-        Delete("DELETE FROM `" + GTS.getInstance().getConfig().getMainTable() + "` WHERE ID={{id}}");
+        Update_Expired("UPDATE `" + GTS.getInstance().getConfig().getMainTable() + "` SET Expired=1 WHERE ID={{id}}"),
+        Update_Auction("UPDATE `" + GTS.getInstance().getConfig().getMainTable() + "` SET Lot='{{lot}}' WHERE ID={{id}}"),
+        Delete("DELETE FROM `" + GTS.getInstance().getConfig().getMainTable() + "` WHERE ID={{id}}"),
+        Logs_Add("INSERT INTO `" + GTS.getInstance().getConfig().getLogTable() + "`(ID, Date, uuid, Action, Log) VALUES ({{id}}, '{{Date}}', '{{UUID}}', '{{Action}}', '{{Log}}')");
 
         private String command;
         private Commands(String command){
@@ -651,9 +700,18 @@ public class LotUtils {
         sqlCmds.add(cmd);
     }
 
-    public static synchronized void updateLot(int id){
-        String cmd = Commands.Update.getCommand();
+    public static synchronized void setExpired(int id){
+        String cmd = Commands.Update_Expired.getCommand();
         cmd = cmd.replace("{{id}}", "" + id);
+        sqlCmds.add(cmd);
+    }
+
+    public static synchronized void updateLot(Lot lot){
+        String cmd = Commands.Update_Auction.getCommand();
+
+        cmd = cmd.replace("{{lot}}", new Gson().toJson(lot));
+        cmd = cmd.replace("{{id}}", String.valueOf(lot.getLotID()));
+
         sqlCmds.add(cmd);
     }
 
@@ -661,6 +719,21 @@ public class LotUtils {
         String cmd = Commands.Delete.getCommand();
         cmd = cmd.replace("{{id}}", "" + id);
         sqlCmds.add(cmd);
+    }
+
+    public static synchronized void addLog(UUID uuid, Log log){
+        String cmd = Commands.Logs_Add.getCommand();
+
+        cmd = cmd.replace("{{id}}", String.valueOf(log.getId()));
+        cmd = cmd.replace("{{Date}}", log.getDate().toInstant().toString());
+        cmd = cmd.replace("{{UUID}}", log.getActor().toString());
+        cmd = cmd.replace("{{Action}}", log.getAction());
+        cmd = cmd.replace("{{Log}}", log.getLog());
+
+        sqlCmds.add(cmd);
+
+        GTS.getInstance().getLogs().put(uuid, log);
+        logPlacement++;
     }
 
     static String getTime(long timeEnd) {
@@ -693,7 +766,7 @@ public class LotUtils {
     }
 
     public static Log forgeLog(User player, String action, HashMap<String, Optional<Object>> replacements){
-        Log log = new Log(getPlacement(), Date.from(Instant.now()),
+        Log log = new Log(getLogPlacement(), Date.from(Instant.now()),
                 player.getUniqueId(), action);
 
         if(action.equals("Addition"))

@@ -10,6 +10,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
+import org.spongepowered.api.text.Text;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,9 +36,9 @@ public class JoinListener {
 
                 for(LotCache lot : lots){
                     LotUtils.givePlayerPokemon(player.get().getUniqueId(), lot.getLot());
-                    for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
-                        if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lot.getLot().getLotID()) {
-                            GTS.getInstance().getLots().remove(i);
+                    for (int i = 0; i < GTS.getInstance().getExpiredLots().size(); i++){
+                        if (GTS.getInstance().getExpiredLots().get(i).getLot().getLotID() == lot.getLot().getLotID()) {
+                            GTS.getInstance().getExpiredLots().remove(i);
                             break;
                         }
                     }
@@ -46,7 +47,8 @@ public class JoinListener {
                     HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
                     textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
 
-                    player.get().sendMessage(MessageConfig.getMessage("Generic.Remove.Expired", textOptions));
+                    for(Text text : MessageConfig.getMessages("Generic.Remove.Expired", textOptions))
+                        player.get().sendMessage(text);
                 }
             } else {
                 GTS.getInstance().getLogger().error("Something went terribly wrong with the join listener!");

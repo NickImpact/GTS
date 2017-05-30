@@ -24,6 +24,7 @@ public class LogClearCmd implements CommandExecutor {
         Optional<User> user = args.getOne("target");
         user.ifPresent(u -> {
             GTS.getInstance().getSql().purgeLogs(u.getUniqueId());
+            GTS.getInstance().getLogs().removeAll(u.getUniqueId());
             GTS.getInstance().getLogger().info(Text.of(TextColors.RED, "All logs for the UUID (" + u.getUniqueId() + ") have been erased!").toPlain());
 
             HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();

@@ -21,32 +21,23 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.List;
 import java.util.Optional;
 
-public class PlayerListings extends InventoryBase {
+public class AdminUI extends InventoryBase {
 
-    private int page;
+    private int page = 1;
     private int maxPage;
 
-    public PlayerListings(Player player, int page) {
+    public AdminUI(int page) {
         super(6, Text.of(
-                TextColors.RED, "GTS", TextColors.DARK_GRAY, " \u00bb ",
-                TextColors.DARK_GREEN, "Your Listings"
+                TextColors.RED, "GTS", TextColors.DARK_GRAY, " \u00bb ", TextColors.DARK_GREEN, "Admin"
         ));
 
         this.page = page;
-
-        List<LotCache> valid = Lists.newArrayList();
-        GTS.getInstance().getLots().forEach(lot -> {
-            if(lot.getLot().getOwner().equals(player.getUniqueId()))
-                valid.add(lot);
-        });
-
-
-        this.maxPage = valid.size() % 42 == 0 && valid.size() / 42 != 0?
-                valid.size() / 42 :
-                valid.size() / 42 + 1;
+        this.maxPage = GTS.getInstance().getLots().size() % 42 == 0 && GTS.getInstance().getLots().size() / 42 != 0 ?
+                GTS.getInstance().getLots().size() / 42 :
+                GTS.getInstance().getLots().size() / 42 + 1;
 
         this.setupDesign();
-        this.setupListings(player);
+        this.setupListings();
     }
 
     private void setupDesign(){
@@ -56,9 +47,8 @@ public class PlayerListings extends InventoryBase {
 
         InventoryIcon nextPage = SharedItems.pageIcon(8, true, page, page < maxPage ? page + 1 : 1);
         nextPage.addListener(ClickInventoryEvent.class, e -> {
-            Player p = e.getCause().first(Player.class).get();
             Sponge.getScheduler().createTaskBuilder()
-                    .execute(() -> this.updatePage(p, true))
+                    .execute(() -> this.updatePage(true))
                     .delayTicks(1)
             .submit(GTS.getInstance());
         });
@@ -66,9 +56,8 @@ public class PlayerListings extends InventoryBase {
 
         InventoryIcon lastPage = SharedItems.pageIcon(17, false, page, page > 1 ? page - 1 : maxPage);
         nextPage.addListener(ClickInventoryEvent.class, e -> {
-            Player p = e.getCause().first(Player.class).get();
             Sponge.getScheduler().createTaskBuilder()
-                    .execute(() -> this.updatePage(p, false))
+                    .execute(() -> this.updatePage(true))
                     .delayTicks(1)
             .submit(GTS.getInstance());
         });
@@ -76,8 +65,7 @@ public class PlayerListings extends InventoryBase {
 
         InventoryIcon refreshIcon = SharedItems.refreshIcon(35);
         refreshIcon.addListener(ClickInventoryEvent.class, e -> {
-            Player p = e.getCause().first(Player.class).get();
-            this.setupListings(p);
+            this.setupListings();
             this.updateContents();
         });
         this.addIcon(refreshIcon);
@@ -95,14 +83,10 @@ public class PlayerListings extends InventoryBase {
         this.addIcon(lastMenuIcon);
     }
 
-    private void setupListings(Player player) {
+    private void setupListings() {
         int index = (this.page - 1) * 42;
 
-        List<LotCache> valid = Lists.newArrayList();
-        GTS.getInstance().getLots().forEach(lot -> {
-            if (lot.getLot().getOwner().equals(player.getUniqueId()))
-                valid.add(lot);
-        });
+        List<LotCache> lots = GTS.getInstance().getLots();
 
         for(int x = 0, y = 0; y < 6; index++){
             if(x == 7){
@@ -110,16 +94,16 @@ public class PlayerListings extends InventoryBase {
                 y++;
             }
 
-            if(index >= valid.size()) {
+            if(index >= lots.size()) {
                 this.getAllIcons().remove(x + (9 * y));
                 x++;
                 continue;
             }
 
-            if(valid.get(index).isExpired()) continue;
-            Lot lot = valid.get(index).getLot();
+            if(lots.get(index).isExpired()) continue;
+            Lot lot = lots.get(index).getLot();
             PokemonItem item = lot.getItem();
-            InventoryIcon pokemon = new InventoryIcon(x + (9 * y), item.getItem(valid.get(index)));
+            InventoryIcon pokemon = new InventoryIcon(x + (9 * y), item.getItem(lots.get(index)));
             pokemon.addListener(ClickInventoryEvent.class, e -> {
                 Player p = e.getCause().first(Player.class).get();
 
@@ -132,7 +116,7 @@ public class PlayerListings extends InventoryBase {
                     } else {
                         Sponge.getScheduler().createTaskBuilder().execute(() -> {
                             p.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
-                            p.openInventory(new LotUI(p, lotCache.get(), this.page, false, Lists.newArrayList(), Maps.newHashMap(), false).getInventory(),
+                            p.openInventory(new LotUI(p, lotCache.get(), this.page, false, Lists.newArrayList(), Maps.newHashMap(), true).getInventory(),
                                             Cause.of(NamedCause.source(GTS.getInstance())));
 
                         }).delayTicks(1).submit(GTS.getInstance());
@@ -149,7 +133,7 @@ public class PlayerListings extends InventoryBase {
      *
      * @param upOrDown True = Page Up, False = Page Down
      */
-    private void updatePage(Player player, boolean upOrDown) {
+    private void updatePage(boolean upOrDown) {
         if(upOrDown){
             if(this.page < maxPage)
                 ++this.page;
@@ -164,19 +148,18 @@ public class PlayerListings extends InventoryBase {
 
         InventoryIcon nextPage = SharedItems.pageIcon(8, true, page, page < maxPage ? page + 1 : 1);
         nextPage.addListener(ClickInventoryEvent.class, e -> {
-            Player p = e.getCause().first(Player.class).get();
-            updatePage(p, true);
+            updatePage(true);
         });
         this.addIcon(nextPage);
 
         InventoryIcon lastPage = SharedItems.pageIcon(17, false, page, page > 1 ? page - 1 : maxPage);
         nextPage.addListener(ClickInventoryEvent.class, e -> {
-            Player p = e.getCause().first(Player.class).get();
-            updatePage(p, false);
+            updatePage(false);
         });
         this.addIcon(lastPage);
 
-        this.setupListings(player);
+        this.setupListings();
         this.updateContents();
     }
+
 }

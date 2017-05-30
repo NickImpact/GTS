@@ -1,13 +1,15 @@
 package com.nickimpact.GTS.storage;
 
-import com.google.common.collect.Lists;
-import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.nickimpact.GTS.GTS;
+import com.nickimpact.GTS.GTSInfo;
 import com.nickimpact.GTS.logging.Log;
 import com.nickimpact.GTS.utils.Lot;
 import com.nickimpact.GTS.utils.LotCache;
 import com.nickimpact.GTS.utils.LotUtils;
 import com.zaxxer.hikari.HikariDataSource;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.sql.*;
 import java.time.Instant;
@@ -124,95 +126,6 @@ public abstract class SQLDatabase {
         }
     }
 
-    public boolean hasTooMany(UUID uuid){
-        if(GTS.getInstance().getConfig().getMaxPokemon() != -1) {
-            try {
-                try(Connection connection = this.getConnection()) {
-                    if (connection == null || connection.isClosed()) {
-                        throw new IllegalStateException("SQL connection is null");
-                    }
-
-                    try (PreparedStatement ps = connection.prepareStatement("SELECT uuid, Lot FROM `" + mainTable + "` WHERE uuid='" + uuid + "'")) {
-                        ResultSet result = ps.executeQuery();
-                        int total = 0;
-                        while (result.next()) {
-                            total++;
-                        }
-
-                        result.close();
-                        ps.close();
-
-                        if (total < GTS.getInstance().getConfig().getMaxPokemon()) {
-                            return false;
-                        }
-                    }
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    public boolean canExpire(int id){
-        try {
-            try(Connection connection = this.getConnection()) {
-                if (connection == null || connection.isClosed()) {
-                    throw new IllegalStateException("SQL connection is null");
-                }
-
-                boolean canExpire = false;
-                try (PreparedStatement ps = connection.prepareStatement("SELECT DoesExpire FROM `" + mainTable + "` WHERE ID='" + id + "'")) {
-                    ResultSet result = ps.executeQuery();
-                    if (result.next()) {
-                        canExpire = result.getBoolean("Does_Expire");
-                    }
-                    result.close();
-                    ps.close();
-
-                    return canExpire;
-                }
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    /*
-    /**
-     * This function adds a new lot to the database for the specified uuid.
-     *
-     * @param uuid A uuid of the user we will deposit the pokemon into
-     * @param lot A representation of the market listing
-     */
-    /*public synchronized void addLot(UUID uuid, String lot, boolean canExpire, long expires) {
-        try {
-            try(Connection connection = getConnection()){
-                if(connection == null || connection.isClosed()){
-                    throw new IllegalStateException("SQL connection is null");
-                }
-                try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `" + mainTable + "`(ID, Ends, Expired, uuid, Lot, DoesExpire) VALUES (?, ?, ?, ?, ?, ?)")) {
-                    statement.setInt(1, getPlacement(1));
-                    statement.setString(2, Instant.now().plusSeconds(expires).toString());
-                    statement.setBoolean(3, false);
-                    statement.setString(4, uuid.toString());
-                    statement.setString(5, lot);
-                    statement.setBoolean(6, canExpire);
-                    statement.executeUpdate();
-                    statement.close();
-
-
-                }
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }*/
-
     /**
      * Retrieves a {@link Lot} from the database
      *
@@ -243,29 +156,6 @@ public abstract class SQLDatabase {
         return null;
     }
 
-    /**
-     * Deletes a {@link Lot} from the SQLDatabase
-     *
-     * @param id The proposed Lot ID
-     */
-    public synchronized void deleteLot(int id){
-        try {
-            try(Connection connection = getConnection()) {
-                if (connection == null || connection.isClosed()) {
-                    throw new IllegalStateException("SQL connection is null");
-                }
-
-                try(PreparedStatement query = connection.prepareStatement("DELETE FROM `" + mainTable + "` WHERE ID='" + id + "'")){
-                    query.executeUpdate();
-                    query.close();
-                }
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     /*
     public synchronized void execute(String sql, String... options){
         try{
@@ -286,7 +176,7 @@ public abstract class SQLDatabase {
      *
      * @param sqlCmds The representative commands to be processed
      */
-    public synchronized void updateLots(List<String> sqlCmds){
+    public synchronized void updateDatabase(List<String> sqlCmds){
         try {
             try(Connection connection = getConnection()){
                 if(connection == null || connection.isClosed())
@@ -311,10 +201,26 @@ public abstract class SQLDatabase {
                     throw new IllegalStateException("SQL connection is null");
                 }
 
-                try (PreparedStatement query = connection.prepareStatement("SELECT Lot, Ends, Expired FROM `" + mainTable + "`")) {
+                try (PreparedStatement query = connection.prepareStatement("SELECT ID, Lot, Ends, Expired FROM `" + mainTable + "`")) {
                     ResultSet results = query.executeQuery();
                     while (results.next()) {
-                        Lot lot = LotUtils.lotFromJson(results.getString("Lot"));
+                        Lot lot;
+                        try {
+                            lot = LotUtils.lotFromJson(results.getString("Lot"));
+                        } catch (JsonSyntaxException e){
+                            GTS.getInstance().getConsole().sendMessage(Text.of(
+                                    GTSInfo.ERROR_PREFIX, TextColors.DARK_RED, "=== JSON Syntax Error ==="
+                            ));
+                            GTS.getInstance().getConsole().sendMessage(Text.of(
+                                    GTSInfo.ERROR_PREFIX, TextColors.RED, "Invalid lot JSON detected"
+                            ));
+                            GTS.getInstance().getConsole().sendMessage(Text.of(Text.EMPTY));
+                            GTS.getInstance().getConsole().sendMessage(Text.of(
+                                    GTSInfo.ERROR_PREFIX, TextColors.RED, "Lot ID: " + results.getInt("ID")
+                            ));
+
+                            continue;
+                        }
                         boolean expired = results.getBoolean("Expired");
                         Date date = Date.from(Instant.parse(results.getString("Ends")));
 
@@ -359,171 +265,32 @@ public abstract class SQLDatabase {
         return slots;
     }
 
-    public synchronized List<LotCache> getPlayerLots(UUID uuid){
-        List<LotCache> lots = new ArrayList<>();
-
-        try{
-            try(Connection connection = this.getConnection()) {
-                if (connection == null || connection.isClosed()) {
-                    throw new IllegalStateException("SQL connection is null");
-                }
-
-                try(PreparedStatement ps = connection.prepareStatement("SELECT Lot, Ends, Expired FROM `" + mainTable + "` WHERE uuid='" + uuid + "'")) {
-                    ResultSet results = ps.executeQuery();
-                    while (results.next()) {
-                        Lot lot = LotUtils.lotFromJson(results.getString("Lot"));
-                        boolean expired = results.getBoolean("Expired");
-                        Date date = Date.from(Instant.parse(results.getString("Ends")));
-                        lots.add(new LotCache(lot, expired, date));
-                    }
-                    results.close();
-                    ps.close();
-                }
-                return lots;
-            }
-        } catch(SQLException e){
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
-    public void updateEntry(Lot lot){
-        try {
-            try(Connection connection = this.getConnection()) {
-                if (connection == null || connection.isClosed()) {
-                    throw new IllegalStateException("SQL connection is null");
-                }
-
-                try (PreparedStatement query = connection.prepareStatement("UPDATE `" + mainTable + "` SET Lot='" + new Gson().toJson(lot) + "' WHERE ID='" + lot.getLotID() + "'")) {
-                    query.executeUpdate();
-                    query.close();
-                }
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void setExpired(int id) {
-        try {
-            try(Connection connection = this.getConnection()) {
-                if (connection == null || connection.isClosed()) {
-                    throw new IllegalStateException("SQL connection is null");
-                }
-
-                try (PreparedStatement query = connection.prepareStatement("UPDATE `" + mainTable + "` SET Expired='" + 1 + "' WHERE ID='" + id + "'")) {
-                    query.executeUpdate();
-                    query.close();
-                }
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public Date getEnd(int id){
-        try {
-            try(Connection connection = this.getConnection()) {
-                if (connection == null || connection.isClosed()) {
-                    throw new IllegalStateException("SQL connection is null");
-                }
-
-                Date date = null;
-                try (PreparedStatement ps = connection.prepareStatement("SELECT Ends FROM `" + mainTable + "` WHERE ID='" + id + "'")) {
-                    ResultSet result = ps.executeQuery();
-                    if (result.next()) {
-                        date = Date.from(Instant.parse(result.getString("Ends")));
-                    }
-                    result.close();
-                    ps.close();
-                    return date;
-                }
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return Date.from(Instant.now());
-    }
-
-    public boolean isExpired(int id) {
-        try {
-            try(Connection connection = this.getConnection()) {
-                if (connection == null || connection.isClosed()) {
-                    throw new IllegalStateException("SQL connection is null");
-                }
-
-                boolean expired = false;
-                try (PreparedStatement ps = connection.prepareStatement("SELECT Expired FROM `" + mainTable + "` WHERE ID='" + id + "'")) {
-                    ResultSet result = ps.executeQuery();
-                    if (result.next()) {
-                        expired = result.getBoolean("Expired");
-                    }
-                    result.close();
-                    ps.close();
-
-                    return expired;
-                }
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public void appendLog(Log log){
-        try {
-            try(Connection connection = getConnection()){
-                if(connection == null || connection.isClosed()){
-                    throw new IllegalStateException("SQL connection is null");
-                }
-                try(PreparedStatement statement = connection.prepareStatement("INSERT INTO `" + logTable + "`(ID, Date, uuid, Action, Log) VALUES (?, ?, ?, ?, ?)")) {
-                    statement.setInt(1, log.getId());
-                    statement.setString(2, log.getDate().toInstant().toString());
-                    statement.setString(3, log.getActor().toString());
-                    statement.setString(4, log.getAction());
-                    statement.setString(5, log.getLog());
-                    statement.executeUpdate();
-                    statement.close();
-                }
-            }
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public List<Log> getLogs(UUID uuid){
-        List<Log> logs = Lists.newArrayList();
+    public synchronized void getLogs(){
         try {
             try(Connection connection = getConnection()) {
                 if (connection == null || connection.isClosed()) {
                     throw new IllegalStateException("SQL connection is null");
                 }
-                try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM `" + logTable + "` WHERE uuid='" + uuid + "' ORDER BY ID ASC")) {
+                try (PreparedStatement ps = connection.prepareStatement("SELECT * FROM `" + logTable + "` ORDER BY ID ASC")) {
                     ResultSet result = ps.executeQuery();
                     while (result.next()) {
                         int lotID = result.getInt("ID");
                         Date date = Date.from(Instant.parse(result.getString("Date")));
+                        UUID uuid = UUID.fromString(result.getString("uuid"));
                         String action = result.getString("Action");
                         String logInfo = result.getString("Log");
 
                         Log log = new Log(lotID, date, uuid, action);
                         log.setLog(logInfo);
-                        logs.add(log);
+
+                        GTS.getInstance().getLogs().put(uuid, log);
                     }
-                    return logs;
                 }
             }
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
-        return logs;
     }
 
     public Log getMostRecentLog(UUID uuid){
