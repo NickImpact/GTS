@@ -113,8 +113,10 @@ public class BuilderBase extends InventoryBase {
             this.addIcon(SharedItems.forgeBorderIcon(x + (9 * y), DyeColors.BLACK));
         }
 
+        EntityPixelmon selection = (EntityPixelmon) PixelmonEntityList.createEntityByName(this.pokemon, (World) this.player.getWorld());
+
         this.addIcon(new InventoryIcon(18, ItemStack.builder().from(SharedItems.pokemonDisplay(
-                    (EntityPixelmon) PixelmonEntityList.createEntityByName(this.pokemon, (World) this.player.getWorld()), this.form)
+                    selection, this.form)
                 )
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
                         TextColors.YELLOW, TextStyles.BOLD, EnumPokemon.getFromNameAnyCase(this.pokemon).name()
@@ -126,6 +128,10 @@ public class BuilderBase extends InventoryBase {
         InventoryIcon confirm = SharedItems.confirmIcon(17);
         confirm.addListener(ClickInventoryEvent.class, e -> {
             // TODO - Add listing to market, close inventory
+
+            Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
+            }).delayTicks(1).submit(GTS.getInstance());
         });
         this.addIcon(confirm);
 
@@ -143,10 +149,10 @@ public class BuilderBase extends InventoryBase {
         this.addIcon(abilityIcon());
         this.addIcon(natureIcon());
         //this.addIcon(modifierIcon(15, "pixelmon:ever_stone", 0, "Natures", "nature"));
-        //this.addIcon(modifierIcon(20, "pixelmon:destiny_knot", 0, "EVs / IVs", "minimum EVs / IVs"));
-        //this.addIcon(modifierIcon(22, "pixelmon:rose_incense", 0, "Genders", "gender"));
-        //this.addIcon(modifierIcon(24, "minecraft:dye", 15, "Genders", "gender"));
-        //this.addIcon(modifierIcon(29, "minecraft:nether_star", 0, "Shininess", "shininess"));
+        this.addIcon(statsIcon());
+        this.addIcon(genderIcon(selection.gender != com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender.None));
+        this.addIcon(growthIcon());
+        this.addIcon(shinyIcon());
         //this.addIcon(modifierIcon(31, "minecraft:prismarine_crystals", 0, "Particles", "particle"));
         //this.addIcon(modifierIcon(33, "pixelmon:meteorite", 0, "Forms", "form"));
     }
@@ -155,7 +161,7 @@ public class BuilderBase extends InventoryBase {
         InventoryIcon icon = new InventoryIcon(11, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:rare_candy").orElse(ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
-                        TextColors.DARK_AQUA, TextStyles.BOLD, "Levels"
+                        TextColors.DARK_AQUA, TextStyles.BOLD, "Level"
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
                         Text.of(TextColors.GRAY, "Click here if you wish to"),
@@ -171,9 +177,7 @@ public class BuilderBase extends InventoryBase {
                 player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
 
                 player.openInventory(new Levels(this.player, this).getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
-            })
-            .delayTicks(1)
-            .submit(GTS.getInstance());
+            }).delayTicks(1).submit(GTS.getInstance());
         });
         return icon;
     }
@@ -182,7 +186,7 @@ public class BuilderBase extends InventoryBase {
         InventoryIcon icon = new InventoryIcon(13, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:ability_capsule").orElse(ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
-                        TextColors.DARK_AQUA, TextStyles.BOLD, "Abilities"
+                        TextColors.DARK_AQUA, TextStyles.BOLD, "Ability"
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
                         Text.of(TextColors.GRAY, "Click here if you wish to"),
@@ -198,9 +202,7 @@ public class BuilderBase extends InventoryBase {
                 player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
 
                 player.openInventory(new Ability(this.player, this).getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
-            })
-            .delayTicks(1)
-            .submit(GTS.getInstance());
+            }).delayTicks(1).submit(GTS.getInstance());
         });
         return icon;
     }
@@ -209,7 +211,7 @@ public class BuilderBase extends InventoryBase {
         InventoryIcon icon = new InventoryIcon(15, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:ever_stone").orElse(ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
-                        TextColors.DARK_AQUA, TextStyles.BOLD, "Natures"
+                        TextColors.DARK_AQUA, TextStyles.BOLD, "Nature"
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
                         Text.of(TextColors.GRAY, "Click here if you wish to"),
@@ -225,10 +227,135 @@ public class BuilderBase extends InventoryBase {
                 player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
 
                 player.openInventory(new Nature(this.player, this).getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
-            })
-            .delayTicks(1)
-            .submit(GTS.getInstance());
+            }).delayTicks(1).submit(GTS.getInstance());
         });
+        return icon;
+    }
+
+    InventoryIcon statsIcon(){
+        InventoryIcon icon = new InventoryIcon(20, ItemStack.builder()
+                .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:destiny_knot").orElse(ItemTypes.BARRIER))
+                .keyValue(Keys.DISPLAY_NAME, Text.of(
+                        TextColors.DARK_AQUA, TextStyles.BOLD, "EVs/IVs"
+                ))
+                .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+                        Text.of(TextColors.GRAY, "Click here if you wish to"),
+                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "EVs/IVs ", TextColors.GRAY, "requirement"),
+                        Text.of(TextColors.GRAY, "for your query"),
+                        Text.EMPTY,
+                        Text.of(TextColors.GRAY, "Query: "),
+                        Text.of("  ", TextColors.GRAY, "HP: ", TextColors.YELLOW, this.evs[0], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[0]),
+                        Text.of("  ", TextColors.GRAY, "Atk: ", TextColors.YELLOW, this.evs[1], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[1]),
+                        Text.of("  ", TextColors.GRAY, "Def: ", TextColors.YELLOW, this.evs[2], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[2]),
+                        Text.of("  ", TextColors.GRAY, "SpAtk: ", TextColors.YELLOW, this.evs[3], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[3]),
+                        Text.of("  ", TextColors.GRAY, "SpDef: ", TextColors.YELLOW, this.evs[4], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[4]),
+                        Text.of("  ", TextColors.GRAY, "Speed: ", TextColors.YELLOW, this.evs[5], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[5])
+                ))
+                .build()
+        );
+        icon.addListener(ClickInventoryEvent.class, e -> {
+            Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
+
+                player.openInventory(new Competitive(this.player, this).getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
+            }).delayTicks(1).submit(GTS.getInstance());
+        });
+        return icon;
+    }
+
+    InventoryIcon genderIcon(boolean valid){
+        InventoryIcon icon;
+
+        if(valid) {
+            icon = new InventoryIcon(22, ItemStack.builder()
+                    .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:rose_incense").orElse(
+                            ItemTypes.BARRIER))
+                    .keyValue(Keys.DISPLAY_NAME, Text.of(
+                            TextColors.DARK_AQUA, TextStyles.BOLD, "Gender"
+                    ))
+                    .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+                            Text.of(TextColors.GRAY, "Click here if you wish to"),
+                            Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "gender ", TextColors.GRAY,
+                                    "requirement"),
+                            Text.of(TextColors.GRAY, "for your query"),
+                            Text.EMPTY,
+                            Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW, this.gender)
+                    ))
+                    .build()
+            );
+            icon.addListener(ClickInventoryEvent.class, e -> {
+                Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                    player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
+
+                    player.openInventory(new Gender(this.player, this).getInventory(),
+                                         Cause.of(NamedCause.source(GTS.getInstance())));
+                }).delayTicks(1).submit(GTS.getInstance());
+            });
+        } else {
+            icon = new InventoryIcon(22, ItemStack.builder()
+                    .itemType(ItemTypes.BARRIER)
+                    .keyValue(Keys.DISPLAY_NAME, Text.of(
+                            TextColors.DARK_AQUA, TextStyles.BOLD, "Gender"
+                    ))
+                    .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+                            Text.of(TextColors.RED, "No possible genders...")
+                    ))
+                    .build()
+            );
+        }
+        return icon;
+    }
+
+    InventoryIcon growthIcon(){
+        InventoryIcon icon = new InventoryIcon(24, ItemStack.builder()
+                .itemType(ItemTypes.DYE)
+                .keyValue(Keys.DYE_COLOR, DyeColors.WHITE)
+                .keyValue(Keys.DISPLAY_NAME, Text.of(
+                        TextColors.DARK_AQUA, TextStyles.BOLD, "Growth"
+                ))
+                .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+                        Text.of(TextColors.GRAY, "Click here if you wish to"),
+                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "growth ", TextColors.GRAY, "requirement"),
+                        Text.of(TextColors.GRAY, "for your query"),
+                        Text.EMPTY,
+                        Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW, this.growth)
+                ))
+                .build()
+        );
+        icon.addListener(ClickInventoryEvent.class, e -> {
+            Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
+
+                player.openInventory(new Growth(this.player, this).getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
+            }).delayTicks(1).submit(GTS.getInstance());
+        });
+        return icon;
+    }
+
+    private InventoryIcon shinyIcon(){
+        InventoryIcon icon = new InventoryIcon(29, ItemStack.builder()
+                .itemType(ItemTypes.NETHER_STAR)
+                .keyValue(Keys.DISPLAY_NAME, Text.of(
+                        TextColors.DARK_AQUA, TextStyles.BOLD, "Shininess"
+                ))
+                .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+                        Text.of(TextColors.GRAY, "Click here if you wish to"),
+                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "shininess ", TextColors.GRAY, "requirement"),
+                        Text.of(TextColors.GRAY, "for your query"),
+                        Text.EMPTY,
+                        Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW, String.valueOf(this.shiny).replace('t', 'T').replace('f', 'F'))
+                ))
+                .build()
+        );
+        icon.addListener(ClickInventoryEvent.class, e -> {
+            this.shiny = !this.shiny;
+
+            Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                this.addIcon(shinyIcon());
+                this.updateContents();
+            }).delayTicks(1).submit(GTS.getInstance());
+        });
+
         return icon;
     }
 

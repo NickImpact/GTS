@@ -5,6 +5,7 @@ import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.guis.InventoryBase;
 import com.nickimpact.GTS.guis.InventoryIcon;
 import com.nickimpact.GTS.guis.SharedItems;
+import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
@@ -104,16 +105,22 @@ public class Levels extends InventoryBase{
                         Text.of(TextColors.GRAY, "Current: ", TextColors.YELLOW, this.currLevel),
                         Text.EMPTY,
                         Text.of(TextColors.GREEN, "Note:"),
-                        Text.of(TextColors.GRAY, "  Left Click: ", TextColors.GREEN, "+1"),
-                        Text.of(TextColors.GRAY, "  Left + Shift Click: ", TextColors.GREEN, "+10")
+                        Text.of(TextColors.GRAY,
+                                (this.currLevel + 1 <= PixelmonConfig.maxLevel ? TextStyles.NONE : TextStyles.STRIKETHROUGH),
+                                "  Left Click: ", TextColors.GREEN, "+1"),
+                        Text.of(TextColors.GRAY,
+                                (this.currLevel + 10 <= PixelmonConfig.maxLevel ? TextStyles.NONE : TextStyles.STRIKETHROUGH),
+                                "  Left + Shift Click: ", TextColors.GREEN, "+10")
                 ))
                 .build()
         );
         icon.addListener(ClickInventoryEvent.class, e -> {
             if(!(e instanceof ClickInventoryEvent.Shift)){
+                if(this.currLevel + 1 <= PixelmonConfig.maxLevel)
                 this.currLevel += 1;
             } else {
-                this.currLevel += 10;
+                if(this.currLevel + 10 <= PixelmonConfig.maxLevel)
+                    this.currLevel += 10;
             }
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -141,16 +148,22 @@ public class Levels extends InventoryBase{
                         Text.of(TextColors.GRAY, "Current: ", TextColors.YELLOW, this.currLevel),
                         Text.EMPTY,
                         Text.of(TextColors.GREEN, "Note:"),
-                        Text.of(TextColors.GRAY, "  Left Click: ", TextColors.RED, "-1"),
-                        Text.of(TextColors.GRAY, "  Left + Shift Click: ", TextColors.RED, "-10")
+                        Text.of(TextColors.GRAY,
+                                (this.currLevel - 1 >= 1 ? TextStyles.NONE : TextStyles.STRIKETHROUGH),
+                                "  Left Click: ", TextColors.RED, "-1"),
+                        Text.of(TextColors.GRAY,
+                                (this.currLevel - 10 >= 1 ? TextStyles.NONE : TextStyles.STRIKETHROUGH),
+                                "  Left + Shift Click: ", TextColors.RED, "-10")
                 ))
                 .build()
         );
         icon.addListener(ClickInventoryEvent.class, e -> {
-            if(!(e instanceof ClickInventoryEvent.Shift)){
-                this.currLevel -= 1;
+            if(!(e instanceof ClickInventoryEvent.Shift)) {
+                if (this.currLevel - 1 >= 1)
+                    this.currLevel -= 1;
             } else {
-                this.currLevel -= 10;
+                if (this.currLevel - 10 >= 1)
+                    this.currLevel -= 10;
             }
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
