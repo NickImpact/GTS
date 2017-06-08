@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import com.nickimpact.GTS.GTSInfo;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.logging.Log;
@@ -13,6 +14,7 @@ import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
@@ -31,10 +33,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.text.DecimalFormat;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by Nick on 12/15/2016.
@@ -61,7 +60,7 @@ public class LotUtils {
         addPokemonToMarket(2, player, slot, note, startPrice, increment, time);
     }
 
-    public static void addPokemon4Pokemon(Player player, int slot, String note, String pokemon, boolean expires, long time){
+    public static void addPokemon4Pokemon(Player player, int slot, String note, PokeRequest pokemon, boolean expires, long time){
         addPokemonToMarket(3, player, slot, note, pokemon, expires, time);
     }
 
@@ -207,7 +206,7 @@ public class LotUtils {
             Log log = forgeLog(player, "Addition", textOptions);
             addLog(player.getUniqueId(), log);
         } else {
-            String poke = (String) options[0];
+            PokeRequest poke = (PokeRequest)options[0];
             boolean expires = (Boolean) options[1];
             long time = (Long) options[2];
 
@@ -215,16 +214,16 @@ public class LotUtils {
                 return;
             }
 
-            PokemonItem pokeItem = new PokemonItem(pokemon, player.getName(), poke);
-
-            int placement = getPlacement();
-            Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, true, poke, note);
+            PokemonItem pokeItem = new PokemonItem(pokemon, player.getName());
 
             Gson gson = new Gson();
+            int placement = getPlacement();
+            Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, true, gson.toJson(poke), note);
+
             String json = gson.toJson(lot);
 
             try {
-                gson.fromJson(json, Lot .class);
+                gson.fromJson(json, Lot.class);
             }catch(JsonSyntaxException e){
                 player.sendMessage(Text.of(TextColors.RED, "It appears your pokemon's info encountered an error, and has been prevented from being added to GTS..."));
             }
@@ -235,7 +234,7 @@ public class LotUtils {
             textOptions.put("player", Optional.of(player.getName()));
             textOptions.put("pokemon", Optional.of(pokemon.getName()));
             textOptions.put("lot_type", Optional.of("pokemon"));
-            textOptions.put("poke_looked_for", Optional.of(poke));
+            textOptions.put("poke_looked_for", Optional.of(poke.getPokemon()));
             textOptions.put("expires", expires ? Optional.of("Never") : Optional.of(getTime(time * 1000)));
             textOptions.putAll(getInfo(pokemon));
 
@@ -246,7 +245,7 @@ public class LotUtils {
                             p.sendMessage(text);
                     }
             } else {
-                for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Egg", textOptions))
+                for (Text text : MessageConfig.getMessages("Generic.Addition.Broadcast.Egg.Pokemon", textOptions))
                     for (Player p : Sponge.getServer().getOnlinePlayers()) {
                         if (!GTS.getInstance().getIgnoreList().contains(p.getUniqueId()))
                             p.sendMessage(text);
@@ -409,28 +408,60 @@ public class LotUtils {
         LotUtils.updateLot(lot);
     }
 
-    public static void trade(Player player, LotCache lot){
-        GTS.getInstance().getLots().remove(lot);
-        LotUtils.deleteLot(lot.getLot().getLotID());
-        givePlayerPokemon(player.getUniqueId(), lot.getLot());
-        giveTradePokemon(lot.getLot());
+    public static void trade(Player player, LotCache lot, int slot){
+        Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorage((EntityPlayerMP)player);
+        Optional<PlayerStorage> owner = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), lot.getLot().getOwner());
+        if(storage.isPresent() && owner.isPresent()) {
+            EntityPixelmon pokemon = (EntityPixelmon)PixelmonEntityList.createEntityFromNBT(storage.get().partyPokemon[slot], (World)player.getWorld());
 
-        HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
-        textOptions.put("poke_looked_for", Optional.of(lot.getLot().getPokeWanted()));
-        textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
-        textOptions.put("player", Optional.of(player.getName()));
-        Log log = forgeLog(player, "Trade", textOptions);
-        addLog(player.getUniqueId(), log);
-        for(Text text : MessageConfig.getMessages("Generic.Trade.Recipient.Receive-Poke", textOptions))
-            player.sendMessage(text);
+            storage.get().removeFromPartyPlayer(slot);
+            storage.get().addToParty(lot.getLot().getItem().getPokemon(lot.getLot()));
+            storage.get().sendUpdatedList();
 
-        Sponge.getServer().getPlayer(lot.getLot().getOwner()).ifPresent(o -> {
-            Log log2 = forgeLog(player, "Trade", textOptions);
-            addLog(lot.getLot().getOwner(), log2);
+            for(Text text : MessageConfig.getMessages("Generic.Trade.Recipient.Recieve-Poke", Maps.newHashMap())){
+                player.sendMessage(text);
+            }
 
-            for(Text text : MessageConfig.getMessages("Generic.Trade.Owner.Receive-Poke", textOptions))
-                o.sendMessage(text);
-        });
+            owner.get().addToParty(pokemon);
+            if(!owner.get().isOffline()){
+                owner.get().sendUpdatedList();
+
+                for(Text text : MessageConfig.getMessages("Generic.Trade.Owner.Recieve-Poke", Maps.newHashMap())){
+                    player.sendMessage(text);
+                }
+            }
+
+            GTS.getInstance().getLots().remove(lot);
+            LotUtils.deleteLot(lot.getLot().getLotID());
+        }
+    }
+
+    public static boolean isValidTrade(PokeRequest pr, EntityPixelmon pokemon){
+        if (!pokemon.getName().equalsIgnoreCase(pr.getPokemon())) return false;
+
+        int[] evs = new int[]{pokemon.stats.EVs.HP, pokemon.stats.EVs.Attack, pokemon.stats.EVs.Defence,
+                pokemon.stats.EVs.SpecialAttack, pokemon.stats.EVs.SpecialDefence,
+                pokemon.stats.EVs.Speed};
+        int[] ivs = new int[]{pokemon.stats.IVs.HP, pokemon.stats.IVs.Attack, pokemon.stats.IVs.Defence,
+                pokemon.stats.IVs.SpAtt, pokemon.stats.IVs.SpDef,
+                pokemon.stats.IVs.Speed};
+
+        for(int i = 0; i < 6; i++){
+            if(evs[i] < pr.getEvs()[i]) return false;
+        }
+
+        for(int i = 0; i < 6; i++){
+            if(ivs[i] < pr.getIvs()[i]) return false;
+        }
+
+        return pokemon.getLvl().getLevel() >= pr.getLevel() &&
+                pokemon.getIsShiny() == pr.isShiny() &&
+                (pokemon.gender.name().equals(pr.getGender()) || pr.getGender().equals("N/A")) &&
+                (pokemon.getNature().name().equals(pr.getNature()) || pr.getNature().equals("N/A")) &&
+                (pokemon.getAbility().getName().equals(pr.getAbility()) || pr.getAbility().equals("N/A")) &&
+                (pokemon.getGrowth().name().equals(pr.getGrowth()) || pr.getGrowth().equals("N/A")) &&
+                (pokemon.getForm() == pr.getForm() || pokemon.getForm() == -1) &&
+                (pokemon.caughtBall.name().equals(pr.getPokeball()) || pr.getPokeball().equals("N/A"));
     }
 
     public static void givePlayerPokemon(UUID uuid, Lot lot){
@@ -440,29 +471,6 @@ public class LotUtils {
         } else {
             GTS.getInstance().getLogger().error("UUID (" + uuid + ") was unable to receive a " + lot.getItem().getName() + " from GTS");
         }
-    }
-
-    private static void giveTradePokemon(Lot lot){
-        Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), lot.getOwner());
-        storage.ifPresent(s -> {
-            int index = 0;
-            for(NBTTagCompound nbt : s.partyPokemon){
-                if(nbt != null) {
-                    if (nbt.getString(NbtKeys.NAME).equalsIgnoreCase(lot.getPokeWanted())) {
-                        final EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(nbt, FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
-                        final int rIndex = index;
-                        PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), lot.getOwner()).ifPresent(o -> {
-                            o.addToParty(pokemon);
-                            o.sendUpdatedList();
-                            s.removeFromPartyPlayer(rIndex);
-                            s.sendUpdatedList();
-                        });
-                    }
-                    index++;
-                }
-            }
-        });
-
     }
 
     private static Optional<PlayerStorage> getStorage(Player player){

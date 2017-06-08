@@ -57,15 +57,26 @@ public class SharedItems {
     }
 
     public static ItemStack pokemonDisplay(EntityPixelmon pokemon, int form){
-        pokemon.setForm(form);
-
         net.minecraft.item.ItemStack nativeItem = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
         NBTTagCompound nbt = new NBTTagCompound();
         String idValue = String.format("%03d", pokemon.baseStats.nationalPokedexNumber);
-        if (pokemon.getIsShiny()) {
-            nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.baseStats.pixelmonName, pokemon.getForm()));
+        if (pokemon.isEgg){
+            if (pokemon.getName().equalsIgnoreCase("Manaphy")){
+                nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/manaphy1");
+            } else if (pokemon.getName().equalsIgnoreCase("Togepi")){
+                nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/togepi1");
+            } else {
+                nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/egg1");
+            }
         } else {
-            nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.baseStats.pixelmonName, pokemon.getForm()));
+            if (pokemon.getIsShiny()) {
+                nbt.setString(NbtKeys.SPRITE_NAME,
+                              "pixelmon:sprites/shinypokemon/" + idValue + SpriteHelper.getSpriteExtra(
+                                      pokemon.baseStats.pixelmonName, form));
+            } else {
+                nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + SpriteHelper.getSpriteExtra(
+                        pokemon.baseStats.pixelmonName, form));
+            }
         }
         nativeItem.setTagCompound(nbt);
 

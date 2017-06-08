@@ -168,7 +168,7 @@ public class Nature extends InventoryBase {
                         TextColors.DARK_AQUA, TextStyles.BOLD, "Selected Nature"
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
-                        Text.of(TextColors.GRAY, "Current: " + this.nature)
+                        Text.of(TextColors.GRAY, "Current: ", TextColors.YELLOW, this.nature)
                 ))
                 .build()
         );

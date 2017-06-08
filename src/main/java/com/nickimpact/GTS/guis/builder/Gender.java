@@ -160,7 +160,7 @@ public class Gender extends InventoryBase {
                         TextColors.DARK_AQUA, TextStyles.BOLD, "Selected Gender"
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
-                        Text.of(TextColors.GRAY, "Current: " + this.gender)
+                        Text.of(TextColors.GRAY, "Current: ", TextColors.YELLOW, this.gender)
                 ))
                 .build()
         );

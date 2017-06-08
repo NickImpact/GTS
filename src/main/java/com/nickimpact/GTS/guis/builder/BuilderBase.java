@@ -6,10 +6,14 @@ import com.nickimpact.GTS.GTSInfo;
 import com.nickimpact.GTS.guis.InventoryBase;
 import com.nickimpact.GTS.guis.InventoryIcon;
 import com.nickimpact.GTS.guis.SharedItems;
+import com.nickimpact.GTS.guis.TradePartySelection;
+import com.nickimpact.GTS.utils.LotUtils;
+import com.nickimpact.GTS.utils.PokeRequest;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
+import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -31,18 +35,24 @@ import java.util.List;
 public class BuilderBase extends InventoryBase {
 
     private Player player;
-    protected String pokemon;
+
+    EntityPixelmon pokemon;
+    String name;
+    int slot;
+    String note;
+    boolean expires;
+    long time;
 
     int level = 1;
-    int form = 0;
+    int form = -1;
     int[] evs = new int[]{0, 0, 0, 0, 0, 0};
     int[] ivs = new int[]{0, 0, 0, 0, 0, 0};
     String ability = "N/A";
     String growth = "N/A";
     String nature = "N/A";
     String gender = "N/A";
-    String particle = "N/A";
-    boolean shiny = false;
+    String pokeball = "N/A";
+    private boolean shiny = false;
 
     private List<Text> lore = Lists.newArrayList(
             Text.of(TextColors.GRAY, "Please use the functions to the"),
@@ -54,52 +64,38 @@ public class BuilderBase extends InventoryBase {
             Text.of(TextColors.GRAY, "your request query.")
     );
 
-    public BuilderBase(Player player, String pokemon, HashMap<String, Object> specs) {
+    public BuilderBase(Player player,
+                       String name,
+                       HashMap<String, Object> specs,
+                       int slot,
+                       String note,
+                       boolean expires,
+                       long time) {
         super(5, Text.of(
                 TextColors.RED, "GTS", TextColors.DARK_GRAY, " \u00bb ", TextColors.DARK_GREEN, "Spec Designer"
         ));
 
         this.player = player;
-        this.pokemon = pokemon;
+        this.name = name;
+        this.pokemon = (EntityPixelmon) PixelmonEntityList.createEntityByName(this.name,
+                                                                              (World) this.player.getWorld());
+        this.slot = slot;
+        this.note = note;
+        this.expires = expires;
+        this.time = time;
+
         fillSpecs(specs);
-
-        List<Text> debug = Lists.newArrayList(
-                Text.of("Spec Designer (Phase 1):"),
-                Text.of("  Pokemon: " + this.pokemon),
-                Text.of("  Specs:"),
-                Text.of("    Level: " + this.level),
-                Text.of("    Ability: " + this.ability),
-                Text.of("    Growth: " + this.growth),
-                Text.of("    Nature: " + this.nature),
-                Text.of("    Gender: " + this.gender),
-                Text.of("    Shiny: " + this.shiny),
-                Text.of("    Particle: " + this.particle),
-                Text.of("    Form: " + this.form),
-                Text.of("    EVs/IVs:"),
-                Text.of("      HP: " + this.evs[0] + " | " + this.ivs[0]),
-                Text.of("      Atk: " + this.evs[1] + " | " + this.ivs[1]),
-                Text.of("      Def: " + this.evs[2] + " | " + this.ivs[2]),
-                Text.of("      SpAtk: " + this.evs[3] + " | " + this.ivs[3]),
-                Text.of("      SpDef: " + this.evs[4] + " | " + this.ivs[4]),
-                Text.of("      Speed: " + this.evs[5] + " | " + this.ivs[5])
-        );
-
-        for (Text text : debug) {
-            GTS.getInstance().getConsole().sendMessage(Text.of(
-                    GTSInfo.DEBUG_PREFIX, text
-            ));
-        }
 
         setupDesign();
     }
 
     private void setupDesign() {
         for (int x = 0, y = 0; y < 5; x++) {
-            if(x > 8){
+            if (x > 8) {
                 x = 0;
                 y += 4;
             }
-            if(y >= 5) break;
+            if (y >= 5) break;
 
             this.addIcon(SharedItems.forgeBorderIcon(x + (9 * y), DyeColors.BLACK));
         }
@@ -108,18 +104,16 @@ public class BuilderBase extends InventoryBase {
                 x = 1;
                 y++;
             }
-            if(y >= 4) break;
+            if (y >= 4) break;
 
             this.addIcon(SharedItems.forgeBorderIcon(x + (9 * y), DyeColors.BLACK));
         }
 
-        EntityPixelmon selection = (EntityPixelmon) PixelmonEntityList.createEntityByName(this.pokemon, (World) this.player.getWorld());
-
         this.addIcon(new InventoryIcon(18, ItemStack.builder().from(SharedItems.pokemonDisplay(
-                    selection, this.form)
-                )
+                pokemon, this.form)
+        )
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
-                        TextColors.YELLOW, TextStyles.BOLD, EnumPokemon.getFromNameAnyCase(this.pokemon).name()
+                        TextColors.YELLOW, TextStyles.BOLD, EnumPokemon.getFromNameAnyCase(this.name).name()
                 ))
                 .keyValue(Keys.ITEM_LORE, this.lore)
                 .build()
@@ -127,10 +121,12 @@ public class BuilderBase extends InventoryBase {
 
         InventoryIcon confirm = SharedItems.confirmIcon(17);
         confirm.addListener(ClickInventoryEvent.class, e -> {
-            // TODO - Add listing to market, close inventory
-
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
                 player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
+
+                PokeRequest pr = new PokeRequest(this.name, this.level, this.form, this.evs, this.ivs, this.shiny,
+                                                 this.pokeball, this.growth, this.gender, this.ability, this.nature);
+                LotUtils.addPokemon4Pokemon(this.player, this.slot, this.note, pr, this.expires, this.time);
             }).delayTicks(1).submit(GTS.getInstance());
         });
         this.addIcon(confirm);
@@ -140,24 +136,23 @@ public class BuilderBase extends InventoryBase {
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
                 this.player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
             })
-            .delayTicks(1)
-            .submit(GTS.getInstance());
+                    .delayTicks(1)
+                    .submit(GTS.getInstance());
         });
         this.addIcon(deny);
 
         this.addIcon(levelIcon());
         this.addIcon(abilityIcon());
         this.addIcon(natureIcon());
-        //this.addIcon(modifierIcon(15, "pixelmon:ever_stone", 0, "Natures", "nature"));
         this.addIcon(statsIcon());
-        this.addIcon(genderIcon(selection.gender != com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender.None));
+        this.addIcon(genderIcon(pokemon.gender != com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender.None));
         this.addIcon(growthIcon());
         this.addIcon(shinyIcon());
-        //this.addIcon(modifierIcon(31, "minecraft:prismarine_crystals", 0, "Particles", "particle"));
-        //this.addIcon(modifierIcon(33, "pixelmon:meteorite", 0, "Forms", "form"));
+        this.addIcon(pokeballIcon());
+        this.addIcon(formIcon());
     }
 
-    InventoryIcon levelIcon(){
+    InventoryIcon levelIcon() {
         InventoryIcon icon = new InventoryIcon(11, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:rare_candy").orElse(ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
@@ -168,7 +163,8 @@ public class BuilderBase extends InventoryBase {
                         Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "minimum level"),
                         Text.of(TextColors.GRAY, "requirement for your query"),
                         Text.EMPTY,
-                        Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW, (level < PixelmonConfig.maxLevel ? level + "+" : level))
+                        Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW,
+                                (level < PixelmonConfig.maxLevel ? level + "+" : level))
                 ))
                 .build()
         );
@@ -176,21 +172,24 @@ public class BuilderBase extends InventoryBase {
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
                 player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
 
-                player.openInventory(new Levels(this.player, this).getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
+                player.openInventory(new Levels(this.player, this).getInventory(),
+                                     Cause.of(NamedCause.source(GTS.getInstance())));
             }).delayTicks(1).submit(GTS.getInstance());
         });
         return icon;
     }
 
-    InventoryIcon abilityIcon(){
+    InventoryIcon abilityIcon() {
         InventoryIcon icon = new InventoryIcon(13, ItemStack.builder()
-                .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:ability_capsule").orElse(ItemTypes.BARRIER))
+                .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:ability_capsule").orElse(
+                        ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
                         TextColors.DARK_AQUA, TextStyles.BOLD, "Ability"
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
                         Text.of(TextColors.GRAY, "Click here if you wish to"),
-                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "ability ", TextColors.GRAY, "requirement"),
+                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "ability ", TextColors.GRAY,
+                                "requirement"),
                         Text.of(TextColors.GRAY, "for your query"),
                         Text.EMPTY,
                         Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW, this.ability)
@@ -201,13 +200,14 @@ public class BuilderBase extends InventoryBase {
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
                 player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
 
-                player.openInventory(new Ability(this.player, this).getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
+                player.openInventory(new Ability(this.player, this).getInventory(),
+                                     Cause.of(NamedCause.source(GTS.getInstance())));
             }).delayTicks(1).submit(GTS.getInstance());
         });
         return icon;
     }
 
-    InventoryIcon natureIcon(){
+    InventoryIcon natureIcon() {
         InventoryIcon icon = new InventoryIcon(15, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:ever_stone").orElse(ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
@@ -215,7 +215,8 @@ public class BuilderBase extends InventoryBase {
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
                         Text.of(TextColors.GRAY, "Click here if you wish to"),
-                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "nature ", TextColors.GRAY, "requirement"),
+                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "nature ", TextColors.GRAY,
+                                "requirement"),
                         Text.of(TextColors.GRAY, "for your query"),
                         Text.EMPTY,
                         Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW, this.nature)
@@ -226,30 +227,39 @@ public class BuilderBase extends InventoryBase {
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
                 player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
 
-                player.openInventory(new Nature(this.player, this).getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
+                player.openInventory(new Nature(this.player, this).getInventory(),
+                                     Cause.of(NamedCause.source(GTS.getInstance())));
             }).delayTicks(1).submit(GTS.getInstance());
         });
         return icon;
     }
 
-    InventoryIcon statsIcon(){
+    InventoryIcon statsIcon() {
         InventoryIcon icon = new InventoryIcon(20, ItemStack.builder()
-                .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:destiny_knot").orElse(ItemTypes.BARRIER))
+                .itemType(
+                        Sponge.getRegistry().getType(ItemType.class, "pixelmon:destiny_knot").orElse(ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
                         TextColors.DARK_AQUA, TextStyles.BOLD, "EVs/IVs"
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
                         Text.of(TextColors.GRAY, "Click here if you wish to"),
-                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "EVs/IVs ", TextColors.GRAY, "requirement"),
+                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "EVs/IVs ", TextColors.GRAY,
+                                "requirement"),
                         Text.of(TextColors.GRAY, "for your query"),
                         Text.EMPTY,
                         Text.of(TextColors.GRAY, "Query: "),
-                        Text.of("  ", TextColors.GRAY, "HP: ", TextColors.YELLOW, this.evs[0], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[0]),
-                        Text.of("  ", TextColors.GRAY, "Atk: ", TextColors.YELLOW, this.evs[1], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[1]),
-                        Text.of("  ", TextColors.GRAY, "Def: ", TextColors.YELLOW, this.evs[2], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[2]),
-                        Text.of("  ", TextColors.GRAY, "SpAtk: ", TextColors.YELLOW, this.evs[3], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[3]),
-                        Text.of("  ", TextColors.GRAY, "SpDef: ", TextColors.YELLOW, this.evs[4], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[4]),
-                        Text.of("  ", TextColors.GRAY, "Speed: ", TextColors.YELLOW, this.evs[5], TextColors.GRAY, "/", TextColors.YELLOW, this.ivs[5])
+                        Text.of("  ", TextColors.GRAY, "HP: ", TextColors.YELLOW, this.evs[0], TextColors.GRAY, "/",
+                                TextColors.YELLOW, this.ivs[0]),
+                        Text.of("  ", TextColors.GRAY, "Atk: ", TextColors.YELLOW, this.evs[1], TextColors.GRAY, "/",
+                                TextColors.YELLOW, this.ivs[1]),
+                        Text.of("  ", TextColors.GRAY, "Def: ", TextColors.YELLOW, this.evs[2], TextColors.GRAY, "/",
+                                TextColors.YELLOW, this.ivs[2]),
+                        Text.of("  ", TextColors.GRAY, "SpAtk: ", TextColors.YELLOW, this.evs[3], TextColors.GRAY, "/",
+                                TextColors.YELLOW, this.ivs[3]),
+                        Text.of("  ", TextColors.GRAY, "SpDef: ", TextColors.YELLOW, this.evs[4], TextColors.GRAY, "/",
+                                TextColors.YELLOW, this.ivs[4]),
+                        Text.of("  ", TextColors.GRAY, "Speed: ", TextColors.YELLOW, this.evs[5], TextColors.GRAY, "/",
+                                TextColors.YELLOW, this.ivs[5])
                 ))
                 .build()
         );
@@ -257,16 +267,17 @@ public class BuilderBase extends InventoryBase {
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
                 player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
 
-                player.openInventory(new Competitive(this.player, this).getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
+                player.openInventory(new Competitive(this.player, this).getInventory(),
+                                     Cause.of(NamedCause.source(GTS.getInstance())));
             }).delayTicks(1).submit(GTS.getInstance());
         });
         return icon;
     }
 
-    InventoryIcon genderIcon(boolean valid){
+    InventoryIcon genderIcon(boolean valid) {
         InventoryIcon icon;
 
-        if(valid) {
+        if (valid) {
             icon = new InventoryIcon(22, ItemStack.builder()
                     .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:rose_incense").orElse(
                             ItemTypes.BARRIER))
@@ -306,7 +317,7 @@ public class BuilderBase extends InventoryBase {
         return icon;
     }
 
-    InventoryIcon growthIcon(){
+    InventoryIcon growthIcon() {
         InventoryIcon icon = new InventoryIcon(24, ItemStack.builder()
                 .itemType(ItemTypes.DYE)
                 .keyValue(Keys.DYE_COLOR, DyeColors.WHITE)
@@ -315,7 +326,8 @@ public class BuilderBase extends InventoryBase {
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
                         Text.of(TextColors.GRAY, "Click here if you wish to"),
-                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "growth ", TextColors.GRAY, "requirement"),
+                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "growth ", TextColors.GRAY,
+                                "requirement"),
                         Text.of(TextColors.GRAY, "for your query"),
                         Text.EMPTY,
                         Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW, this.growth)
@@ -326,13 +338,14 @@ public class BuilderBase extends InventoryBase {
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
                 player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
 
-                player.openInventory(new Growth(this.player, this).getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
+                player.openInventory(new Growth(this.player, this).getInventory(),
+                                     Cause.of(NamedCause.source(GTS.getInstance())));
             }).delayTicks(1).submit(GTS.getInstance());
         });
         return icon;
     }
 
-    private InventoryIcon shinyIcon(){
+    private InventoryIcon shinyIcon() {
         InventoryIcon icon = new InventoryIcon(29, ItemStack.builder()
                 .itemType(ItemTypes.NETHER_STAR)
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
@@ -340,10 +353,12 @@ public class BuilderBase extends InventoryBase {
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
                         Text.of(TextColors.GRAY, "Click here if you wish to"),
-                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "shininess ", TextColors.GRAY, "requirement"),
+                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "shininess ", TextColors.GRAY,
+                                "requirement"),
                         Text.of(TextColors.GRAY, "for your query"),
                         Text.EMPTY,
-                        Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW, String.valueOf(this.shiny).replace('t', 'T').replace('f', 'F'))
+                        Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW,
+                                String.valueOf(this.shiny).replace('t', 'T').replace('f', 'F'))
                 ))
                 .build()
         );
@@ -357,6 +372,87 @@ public class BuilderBase extends InventoryBase {
         });
 
         return icon;
+    }
+
+    InventoryIcon pokeballIcon() {
+        InventoryIcon icon = new InventoryIcon(31, ItemStack.builder()
+                .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:poke_ball").orElse(ItemTypes.BARRIER))
+                .keyValue(Keys.DISPLAY_NAME, Text.of(
+                        TextColors.DARK_AQUA, TextStyles.BOLD, "Pokeball"
+                ))
+                .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+                        Text.of(TextColors.GRAY, "Click here if you wish to"),
+                        Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "pokeball ", TextColors.GRAY,
+                                "requirement"),
+                        Text.of(TextColors.GRAY, "for your query"),
+                        Text.EMPTY,
+                        Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW, (this.pokeball.equals("N/A") ?
+                                this.pokeball :
+                                this.pokeball.substring(0, this.pokeball.indexOf("Ball")) + " Ball")
+                        )
+                ))
+                .build()
+        );
+        icon.addListener(ClickInventoryEvent.class, e -> {
+            Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
+
+                player.openInventory(new Pokeball(this.player, this).getInventory(),
+                                     Cause.of(NamedCause.source(GTS.getInstance())));
+            }).delayTicks(1).submit(GTS.getInstance());
+        });
+        return icon;
+    }
+
+    InventoryIcon formIcon() {
+        InventoryIcon icon = new InventoryIcon(33, ItemStack.builder()
+                .itemType(this.pokemon.getNumForms() > 0 ?
+                        Sponge.getRegistry().getType(ItemType.class, "pixelmon:meteorite").orElse(ItemTypes.BARRIER) :
+                                  ItemTypes.BARRIER
+                )
+                .keyValue(Keys.DISPLAY_NAME, Text.of(
+                        TextColors.DARK_AQUA, TextStyles.BOLD, "Form"
+                ))
+                .keyValue(Keys.ITEM_LORE,
+                          this.pokemon.getNumForms() > 0 ?
+                                  Lists.newArrayList(
+                                          Text.of(TextColors.GRAY, "Click here if you wish to"),
+                                          Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "form ",
+                                                  TextColors.GRAY, "requirement"),
+                                          Text.of(TextColors.GRAY, "for your query"),
+                                          Text.EMPTY,
+                                          Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW,
+                                                  this.form == -1 ? "N/A" :
+                                                  capitalize(SpriteHelper.getSpriteExtra(this.name, this.form).substring(1))
+                                          )
+                                  ) :
+                                  Lists.newArrayList(
+                                          Text.of(TextColors.RED, "The pokemon has no forms")
+                                  )
+                )
+                .build()
+        );
+
+        if (this.pokemon.getNumForms() > 0)
+            icon.addListener(ClickInventoryEvent.class, e -> {
+                Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                    player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
+
+                    player.openInventory(new Form(this.player, this, getNumRows(this.pokemon)).getInventory(),
+                                         Cause.of(NamedCause.source(GTS.getInstance())));
+                }).delayTicks(1).submit(GTS.getInstance());
+            });
+        return icon;
+    }
+
+    String capitalize(final String line) {
+        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
+    }
+
+    private int getNumRows(EntityPixelmon pokemon) {
+        if (pokemon.getNumForms() > 0 && !pokemon.getName().equalsIgnoreCase("Unown")) return 5;
+
+        return 6;
     }
 
     private void fillSpecs(HashMap<String, Object> specs) {
@@ -422,9 +518,9 @@ public class BuilderBase extends InventoryBase {
                 case "shiny":
                     this.shiny = (Boolean) specs.get(key);
                     break;
-                case "p":
-                case "particle":
-                    this.particle = String.valueOf(specs.get(key));
+                case "pb":
+                case "pokeball":
+                    this.pokeball = String.valueOf(specs.get(key));
                     break;
                 case "ge":
                 case "gender":

@@ -40,7 +40,7 @@ public class Ability extends InventoryBase {
         this.player = player;
         this.base = base;
         this.ability = base.ability;
-        this.abilities = ((EntityPixelmon) PixelmonEntityList.createEntityByName(base.pokemon, (World)player.getWorld())).baseStats.abilities;
+        this.abilities = base.pokemon.baseStats.abilities;
 
         setupDisplay();
     }
@@ -210,7 +210,7 @@ public class Ability extends InventoryBase {
                         TextColors.DARK_AQUA, TextStyles.BOLD, "Selected Ability"
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
-                        Text.of(TextColors.GRAY, "Current: " + this.ability)
+                        Text.of(TextColors.GRAY, "Current: ", TextColors.YELLOW, this.ability)
                 ))
                 .keyValue(Keys.DYE_COLOR, color)
                 .build()

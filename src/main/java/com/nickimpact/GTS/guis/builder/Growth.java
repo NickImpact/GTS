@@ -179,7 +179,7 @@ public class Growth extends InventoryBase {
                         TextColors.DARK_AQUA, TextStyles.BOLD, "Selected Growth"
                 ))
                 .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
-                        Text.of(TextColors.GRAY, "Current: " + this.growth)
+                        Text.of(TextColors.GRAY, "Current: ", TextColors.YELLOW, this.growth)
                 ))
                 .build()
         );

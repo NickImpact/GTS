@@ -28,27 +28,54 @@ import java.util.Optional;
 
 public class LotUI extends InventoryBase {
 
+    private Player player;
     private LotCache lot;
+
+    private int slot;
     private int page;
     private boolean searching;
     private List<String> pokemon;
     private HashMap<String, Object> parameters;
     private boolean admin;
 
+    public LotUI(Player player, LotCache lot, boolean trade, int index){
+        super(3, Text.of(TextColors.RED, "GTS", TextColors.DARK_GRAY, " \u00bb ", TextColors.DARK_GREEN, "Confirm"));
+
+        this.player = player;
+        this.lot = lot;
+
+        if(trade){
+            this.slot = index;
+            this.page = 1;
+        } else {
+            this.slot = -1;
+            this.page = index;
+        }
+        this.searching = false;
+        this.pokemon = Lists.newArrayList();
+        this.parameters = Maps.newHashMap();
+        this.admin = false;
+
+        this.setupDesign();
+    }
+
     public LotUI(Player player, LotCache lot, int page, boolean searching, List<String> pokemon, HashMap<String, Object> parameters, boolean admin) {
         super(3, Text.of(TextColors.RED, "GTS", TextColors.DARK_GRAY, " \u00bb ", TextColors.DARK_GREEN, "Confirm"));
 
+        this.player = player;
         this.lot = lot;
+
+        this.slot = -1;
         this.page = page;
         this.searching = searching;
         this.pokemon = pokemon;
         this.parameters = parameters;
         this.admin = admin;
 
-        this.setupDesign(player);
+        this.setupDesign();
     }
 
-    private void setupDesign(Player player){
+    private void setupDesign(){
         // Initialize border design
         for(int x = 0, y = 0; y < 3; x++){
             if(x == 9 && y == 0){
@@ -178,8 +205,8 @@ public class LotUI extends InventoryBase {
                         if(lc.getLot().isAuction())
                             LotUtils.bid(p, lc.getLot());
                         else
-                        if(lc.getLot().isPokemon())
-                            LotUtils.trade(p, lc);
+                        if(lc.getLot().isTrade())
+                            LotUtils.trade(p, lc, this.slot);
                         else
                             LotUtils.buyLot(p, lc);
                     } else {

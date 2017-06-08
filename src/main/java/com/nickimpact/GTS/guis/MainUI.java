@@ -1,6 +1,7 @@
 package com.nickimpact.GTS.guis;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.guis.exceptions.SearchException;
@@ -31,11 +32,41 @@ import java.util.*;
 
 public class MainUI extends InventoryBase {
 
+    private Player player;
     private int page = 1;
     private int maxPage;
+
     private boolean searching;
     private List<String> pokemon;
     private HashMap<String, Object> parameters;
+
+    public MainUI(Player player, int page){
+        super(6, Text.of(
+                TextColors.RED, "GTS", TextColors.DARK_GRAY, " \u00bb ",
+                TextColors.DARK_GREEN, "Listings"
+        ));
+
+        this.player = player;
+        this.page = page;
+
+        this.searching = false;
+        this.pokemon = Lists.newArrayList();
+        this.parameters = Maps.newHashMap();
+
+        int size = GTS.getInstance().getLots().size();
+        this.maxPage = size % 28 == 0 && size / 28 != 0 ?
+                size / 28 :
+                size / 28 + 1;
+
+        this.setupDesign();
+
+        try {
+            this.setupListings();
+        }
+        catch(SearchException e){
+            player.sendMessage(e.getResult());
+        }
+    }
 
     public MainUI(Player player, int page, boolean searching, List<String> pokemon, HashMap<String, Object> parameters){
         super(6, Text.of(
@@ -43,7 +74,9 @@ public class MainUI extends InventoryBase {
                 TextColors.DARK_GREEN, "Listings"
         ));
 
+        this.player = player;
         this.page = page;
+
         this.searching = searching;
         this.pokemon = pokemon;
         this.parameters = parameters;
@@ -63,7 +96,7 @@ public class MainUI extends InventoryBase {
                 this.maxPage = 1;
             }
 
-        this.setupDesign(player);
+        this.setupDesign();
 
         try {
             this.setupListings();
@@ -76,10 +109,8 @@ public class MainUI extends InventoryBase {
     /**
      * Initializes base design to the UI, establishing borders and
      * other items
-     *
-     * @param player The player who opened the UI
      */
-    private void setupDesign(Player player) {
+    private void setupDesign() {
         for(int x = 7, y = 0; y <= 4; y++){
             this.addIcon(SharedItems.forgeBorderIcon(x + (9 * y), DyeColors.BLACK));
         }
@@ -182,9 +213,24 @@ public class MainUI extends InventoryBase {
                 } else {
                     Sponge.getScheduler().createTaskBuilder().execute(() -> {
                         p.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
-                        p.openInventory(new LotUI(p, lotCache.get(), this.page, this.searching, this.pokemon, this.parameters, false).getInventory(),
-                                        Cause.of(NamedCause.source(GTS.getInstance())));
 
+                        if(this.searching){
+                            p.openInventory(new LotUI(p, lotCache.get(), this.page, this.searching, this.pokemon, this.parameters, false).getInventory(),
+                                            Cause.of(NamedCause.source(GTS.getInstance())));
+                        } else {
+                            if(lotCache.get().getLot().isTrade()){
+                                if(!this.player.getUniqueId().equals(lotCache.get().getLot().getOwner())) {
+                                    p.openInventory(new TradePartySelection(this.player, lotCache.get()).getInventory(),
+                                                    Cause.of(NamedCause.source(GTS.getInstance())));
+                                } else {
+                                    p.openInventory(new LotUI(this.player, lotCache.get(), false, this.page).getInventory(),
+                                                    Cause.of(NamedCause.source(GTS.getInstance())));
+                                }
+                            } else {
+                                p.openInventory(new LotUI(p, lotCache.get(), false, this.page).getInventory(),
+                                                Cause.of(NamedCause.source(GTS.getInstance())));
+                            }
+                        }
                     }).delayTicks(1).submit(GTS.getInstance());
                 }
             });
@@ -505,11 +551,11 @@ public class MainUI extends InventoryBase {
                                 addLot = false;
                             break;
                         case "cash":
-                            if (lot.getLot().isAuction() || lot.getLot().isPokemon())
+                            if (lot.getLot().isAuction() || lot.getLot().isTrade())
                                 addLot = false;
                             break;
                         case "pokemon":
-                            if (lot.getLot().isAuction() || !lot.getLot().isPokemon())
+                            if (lot.getLot().isAuction() || !lot.getLot().isTrade())
                                 addLot = false;
                             break;
                     }

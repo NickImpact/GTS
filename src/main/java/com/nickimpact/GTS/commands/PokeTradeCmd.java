@@ -3,12 +3,16 @@ package com.nickimpact.GTS.commands;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.GTS.GTS;
+import com.nickimpact.GTS.GTSInfo;
+import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.guis.builder.BuilderBase;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.trait.BlockTrait;
+import org.spongepowered.api.block.trait.IntegerTraits;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -31,11 +35,12 @@ public class PokeTradeCmd implements CommandExecutor {
     public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
         if (GTS.getInstance().getConfig().cmdTradeEnabled()) {
             if (src instanceof Player) {
-                int slot = args.<Integer>getOne("slot").get();
+                int slot = args.<Integer>getOne("slot").get() - 1;
                 String pokemon = args.<String>getOne("pokemon").get();
+                String note = args.<String>getOne("note").orElse("");
                 HashMap<String, Object> specs = getSpecs(args);
 
-                if(slot < 1 && slot > 6)
+                if(slot < 0 && slot > 5)
                     throw new CommandException(Text.of("Invalid slot"));
 
                 if(!EnumPokemon.hasPokemonAnyCase(pokemon))
@@ -46,12 +51,19 @@ public class PokeTradeCmd implements CommandExecutor {
 
                 Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), player.getUniqueId());
                 if(storage.isPresent()){
-                    if(storage.get().partyPokemon[slot-1] == null)
-                        throw new CommandException(Text.of("It appears that slot is empty"));
+                    if(storage.get().partyPokemon[slot] == null) {
+                        HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
+                        textOptions.put("slot", Optional.of(slot + 1));
+
+                        for (Text text : MessageConfig.getMessages("Generic.Addition.Error.Empty Slot", textOptions))
+                            player.sendMessage(text);
+                    }
 
                 }
 
-                player.openInventory(new BuilderBase(player, pokemon, specs).getInventory(),
+                player.openInventory(new BuilderBase(player, pokemon, specs, slot, note, args.hasAny("-e"),
+                                                     args.<Long>getOne("time").orElse(GTS.getInstance().getConfig().getLotTime()))
+                                             .getInventory(),
                                      Cause.of(NamedCause.source(GTS.getInstance()))
                 );
             } else {
@@ -129,13 +141,16 @@ public class PokeTradeCmd implements CommandExecutor {
                                 .valueFlag(GenericArguments.integer(Text.of("ivSpeed")), "-ivSpeed")
                                 .valueFlag(GenericArguments.integer(Text.of("form")), "-f", "-form")
                                 .valueFlag(GenericArguments.string(Text.of("particle")), "p", "-particle")
+                                .valueFlag(GenericArguments.string(Text.of("note")), "-note")
                                 .flag("s", "-shiny")
                                 .flag("-st", "-specialTexture")
                                 .flag("-halloween", "-zombie")
                                 .flag("-roasted")
+                                .flag("e")
                                 .buildWith(GenericArguments.none()),
                         GenericArguments.integer(Text.of("slot")),
-                        GenericArguments.string(Text.of("pokemon"))
+                        GenericArguments.string(Text.of("pokemon")),
+                        GenericArguments.optionalWeak(GenericArguments.longNum(Text.of("time")))
                 )
                 .description(Text.of("Add a pokemon to the GTS"))
                 .build();

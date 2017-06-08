@@ -2,7 +2,6 @@ package com.nickimpact.GTS.guis.builder;
 
 import com.google.common.collect.Lists;
 import com.nickimpact.GTS.GTS;
-import com.nickimpact.GTS.GTSInfo;
 import com.nickimpact.GTS.guis.InventoryBase;
 import com.nickimpact.GTS.guis.InventoryIcon;
 import com.nickimpact.GTS.guis.SharedItems;

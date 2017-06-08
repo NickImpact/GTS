@@ -18,6 +18,7 @@ import com.nickimpact.GTS.utils.UpdateLotsTask;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.trait.BlockTrait;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;

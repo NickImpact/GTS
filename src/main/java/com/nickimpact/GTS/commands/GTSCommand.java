@@ -25,7 +25,7 @@ public class GTSCommand implements CommandExecutor {
         }
         //Main.showGUI((Player)src, 1, false, GTS.getInstance().getLots());
 
-        ((Player) src).openInventory(new MainUI((Player)src, 1, false, Lists.newArrayList(), Maps.newHashMap()).getInventory(),
+        ((Player) src).openInventory(new MainUI((Player)src, 1).getInventory(),
                                      Cause.of(NamedCause.source(GTS.getInstance())));
 
         return CommandResult.success();

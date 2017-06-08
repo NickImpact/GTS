@@ -2,6 +2,7 @@ package com.nickimpact.GTS.guis;
 
 import com.nickimpact.GTS.GTS;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
@@ -85,33 +86,36 @@ public class InventoryBase {
      *
      * @param rows The number of rows to draw
      */
-    public void drawBorder(int rows)
+    public void drawBorder(int rows, DyeColor color)
     {
-        GridInventory inventory = this.getInventory().query(GridInventory.class);
-        ItemStack pane = ItemStack.builder()
+        ItemStack border = ItemStack.builder()
                 .itemType(ItemTypes.STAINED_GLASS_PANE)
                 .keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.BLACK, ""))
-                .keyValue(Keys.DYE_COLOR, DyeColors.BLACK)
+                .keyValue(Keys.DYE_COLOR, color)
                 .build();
 
-        for (int y = 0; y < rows; y++) {
-            InventoryRow row = inventory.getRow(y).get();
-
-            //Top and bottom rows fill all the way
-            if (y == 0 || y == rows - 1) {
-                for (int x = 0; x < 9; x++) {
-                    row.getSlot(SlotIndex.of(x)).get().set(pane);
+        for (int y = 0; y < rows; y++)
+        {
+            if(y == 0 || y == rows - 1){
+                for(int x = 0; x < 9; x++){
+                    this.addIcon(new InventoryIcon(x + (9 * y), border));
                 }
             } else {
-                // Fill only the walls
-                row.getSlot(SlotIndex.of(0)).get().set(pane);
-                row.getSlot(SlotIndex.of(8)).get().set(pane);
+                this.addIcon(new InventoryIcon((9 * y), border));
+                this.addIcon(new InventoryIcon(8 + (9 * y), border));
             }
         }
 
         this.border = true;
     }
 
+    /**
+     * Attempts to ensure an item is within the drawn border,
+     * if one were drawn at all.
+     *
+     * @param slot The slot to check against
+     * @return True if within border or no border exists, false otherwise
+     */
     public boolean isInBorder(int slot){
         return !this.border || slot % 9 != 0 && slot % 9 != 8 && slot > 9 && slot < (size - 1) * 9;
     }
@@ -121,6 +125,11 @@ public class InventoryBase {
      * to their updated slot icons.
      */
     public void updateContents() {
+        this.icons.values().forEach(icon -> {
+            icon.getListeners().clear();
+            icon.getListeners().forEach((clazz, listener) -> this.builder.listener(clazz, listener));
+        });
+
         OrderedInventory orderedInventory = this.inventory.query(OrderedInventory.class);
         orderedInventory.clear();
         this.icons.forEach((index, inventoryIcon) -> {

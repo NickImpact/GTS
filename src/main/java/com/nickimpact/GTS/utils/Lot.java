@@ -103,7 +103,7 @@ public class Lot {
         return auction;
     }
 
-    public boolean isPokemon() {
+    public boolean isTrade() {
         return pokemon;
     }
 
