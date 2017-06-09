@@ -266,7 +266,7 @@ public class PokemonItem {
             data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.startPrice));
             data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.increment));
             data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getLot().getHighBidder() != null ?
-                    Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getOwner()).get().getName()
+                    Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getHighBidder()).get().getName()
                     : "N/A"));
         } else {
             data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, new Gson().fromJson(lot.getLot().getPokeWanted(), PokeRequest.class).getPokemon()));

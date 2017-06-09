@@ -137,6 +137,10 @@ public class UpdateLotsTask {
                             user.getPlayer().ifPresent(p -> {
                                 p.sendMessage(text);
                             });
+
+                        // TODO - Since the winner failed to have the amount of money needed to pay for the
+                        // TODO - listing, we need to give the pokemon back to the seller
+
                         return;
                     }
 

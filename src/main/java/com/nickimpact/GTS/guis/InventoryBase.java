@@ -121,15 +121,45 @@ public class InventoryBase {
     }
 
     /**
+     * Like its counterpart, this method will only update the
+     * specified slot positions, allowing for quicker operation
+     * and less flicker within the UI itself
+     *
+     * Note: Due to a limitation in the Sponge API, we can't dynamically attach
+     *       new listeners to slots on an update. If an item is to change in a
+     *       slot, the listener provided by that original icon will persist.
+     *       Really only use this setup if you are purely doing cosmetic changes,
+     *       or your click listeners are setup to dynamically detect the change
+     *       of the icon.
+     *
+     * @param slots The slot indexes to modify
+     */
+    public void updateContents(int... slots){
+        OrderedInventory orderedInventory = this.inventory.query(OrderedInventory.class);
+        orderedInventory.clear();
+        this.icons.forEach((index, inventoryIcon) -> {
+            for(int sl : slots){
+                if(sl == index){
+                    Slot slot = orderedInventory.getSlot(
+                            SlotIndex.of(index)).orElseThrow(() -> new IllegalArgumentException("Invalid index: " + index));
+                    slot.set(inventoryIcon.getDisplay());
+                }
+            }
+        });
+    }
+
+    /**
      * With the case of an open inventory, we will update all the inventory contents
      * to their updated slot icons.
+     *
+     * Note: Due to a limitation in the Sponge API, we can't dynamically attach
+     *       new listeners to slots on an update. If an item is to change in a
+     *       slot, the listener provided by that original icon will persist.
+     *       Really only use this setup if you are purely doing cosmetic changes,
+     *       or your click listeners are setup to dynamically detect the change
+     *       of the icon.
      */
     public void updateContents() {
-        this.icons.values().forEach(icon -> {
-            icon.getListeners().clear();
-            icon.getListeners().forEach((clazz, listener) -> this.builder.listener(clazz, listener));
-        });
-
         OrderedInventory orderedInventory = this.inventory.query(OrderedInventory.class);
         orderedInventory.clear();
         this.icons.forEach((index, inventoryIcon) -> {
