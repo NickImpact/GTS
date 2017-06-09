@@ -4,21 +4,18 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.nickimpact.GTS.GTSInfo;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.logging.Log;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
-import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
@@ -418,7 +415,12 @@ public class LotUtils {
             storage.get().addToParty(lot.getLot().getItem().getPokemon(lot.getLot()));
             storage.get().sendUpdatedList();
 
-            for(Text text : MessageConfig.getMessages("Generic.Trade.Recipient.Recieve-Poke", Maps.newHashMap())){
+            HashMap<String, Optional<Object>> variables = Maps.newHashMap();
+            variables.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
+            variables.put("player", Optional.of(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getOwner()).get().getName()));
+            variables.put("poke_looked_for", Optional.of(pokemon.getName()));
+
+            for(Text text : MessageConfig.getMessages("Generic.Trade.Recipient.Receive-Poke", variables)){
                 player.sendMessage(text);
             }
 
@@ -426,8 +428,12 @@ public class LotUtils {
             if(!owner.get().isOffline()){
                 owner.get().sendUpdatedList();
 
-                for(Text text : MessageConfig.getMessages("Generic.Trade.Owner.Recieve-Poke", Maps.newHashMap())){
-                    player.sendMessage(text);
+                variables.put("pokemon", Optional.of(pokemon.getName()));
+                variables.put("player", Optional.of(player.getName()));
+                variables.put("poke_looked_for", Optional.of(lot.getLot().getItem().getName()));
+
+                for(Text text : MessageConfig.getMessages("Generic.Trade.Owner.Receive-Poke", variables)){
+                    Sponge.getServer().getPlayer(lot.getLot().getOwner()).get().sendMessage(text);
                 }
             }
 
@@ -460,7 +466,7 @@ public class LotUtils {
                 (pokemon.getNature().name().equals(pr.getNature()) || pr.getNature().equals("N/A")) &&
                 (pokemon.getAbility().getName().equals(pr.getAbility()) || pr.getAbility().equals("N/A")) &&
                 (pokemon.getGrowth().name().equals(pr.getGrowth()) || pr.getGrowth().equals("N/A")) &&
-                (pokemon.getForm() == pr.getForm() || pokemon.getForm() == -1) &&
+                (pokemon.getForm() == pr.getForm() || pokemon.getForm() == -1 || pr.getForm() == -1) &&
                 (pokemon.caughtBall.name().equals(pr.getPokeball()) || pr.getPokeball().equals("N/A"));
     }
 
@@ -676,6 +682,10 @@ public class LotUtils {
 
     public static void setLogPlacement(int placement) {
         LotUtils.logPlacement = placement;
+    }
+
+    public static String capitalize(String line) {
+        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
     public enum Commands {

@@ -143,7 +143,7 @@ public class MessageConfig {
             ));
 
             generic.getNode("Trade", "Owner", "Receive-Poke").getList(TypeToken.of(String.class), Lists.newArrayList(
-                    "&a&lGTS &e\u00BB &7You have received a &e{{poke_looked_for}} &7from &a{{player}} &7in return for your &a{{pokemon}}&7!"
+                    "&a&lGTS &e\u00BB &7Your trade offer of your &e{{pokemon}}&7 was accepted by &a{{player}} &7for their &a{{poke_looked_for}}&7!"
             ));
 
             generic.getNode("Trade", "Recipient", "Receive-Poke").getList(TypeToken.of(String.class), Lists.newArrayList(

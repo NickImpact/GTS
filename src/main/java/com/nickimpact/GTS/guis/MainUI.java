@@ -220,7 +220,7 @@ public class MainUI extends InventoryBase {
                         } else {
                             if(lotCache.get().getLot().isTrade()){
                                 if(!this.player.getUniqueId().equals(lotCache.get().getLot().getOwner())) {
-                                    p.openInventory(new TradePartySelection(this.player, lotCache.get()).getInventory(),
+                                    p.openInventory(new TradePartySelection(this.player, lotCache.get(), this).getInventory(),
                                                     Cause.of(NamedCause.source(GTS.getInstance())));
                                 } else {
                                     p.openInventory(new LotUI(this.player, lotCache.get(), false, this.page).getInventory(),

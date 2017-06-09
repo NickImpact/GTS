@@ -97,7 +97,8 @@ public class PokemonItem {
         this.name = pokemon.getPokemonName();
         this.nickname = pokemon.getNickname();
         this.ability = pokemon.getAbility().getName();
-        this.heldItem = pokemon.getItemHeld() != null ? pokemon.getItemHeld().getLocalizedName() : "Nothing";
+        this.heldItem = pokemon.getItemHeld() != null && !pokemon.getItemHeld().getLocalizedName().equals("item..name")
+                ? pokemon.getItemHeld().getLocalizedName() : "Nothing";
         this.m1 = pokemon.getMoveset().get(0) != null ? pokemon.getMoveset().get(0).baseAttack.getLocalizedName() : "Empty";
         this.m2 = pokemon.getMoveset().get(1) != null ? pokemon.getMoveset().get(1).baseAttack.getLocalizedName() : "Empty";
         this.m3 = pokemon.getMoveset().get(2) != null ? pokemon.getMoveset().get(2).baseAttack.getLocalizedName() : "Empty";

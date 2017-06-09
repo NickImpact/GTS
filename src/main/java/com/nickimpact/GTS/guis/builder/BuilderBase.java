@@ -423,7 +423,7 @@ public class BuilderBase extends InventoryBase {
                                           Text.EMPTY,
                                           Text.of(TextColors.GRAY, "Query: ", TextColors.YELLOW,
                                                   this.form == -1 ? "N/A" :
-                                                  capitalize(SpriteHelper.getSpriteExtra(this.name, this.form).substring(1))
+                                                  LotUtils.capitalize(SpriteHelper.getSpriteExtra(this.name, this.form).substring(1))
                                           )
                                   ) :
                                   Lists.newArrayList(
@@ -443,10 +443,6 @@ public class BuilderBase extends InventoryBase {
                 }).delayTicks(1).submit(GTS.getInstance());
             });
         return icon;
-    }
-
-    String capitalize(final String line) {
-        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
     private int getNumRows(EntityPixelmon pokemon) {

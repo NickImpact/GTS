@@ -5,6 +5,7 @@ import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.guis.InventoryBase;
 import com.nickimpact.GTS.guis.InventoryIcon;
 import com.nickimpact.GTS.guis.SharedItems;
+import com.nickimpact.GTS.utils.LotUtils;
 import com.pixelmonmod.pixelmon.enums.forms.EnumUnown;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import org.spongepowered.api.Sponge;
@@ -110,7 +111,7 @@ public class Form extends InventoryBase {
         InventoryIcon icon = new InventoryIcon(slot, SharedItems.pokemonDisplay(base.pokemon, ordinal));
         icon.getDisplay().offer(Keys.DISPLAY_NAME, Text.of(
                 TextColors.DARK_AQUA, base.pokemon.getName(), TextColors.GRAY, " (", TextColors.YELLOW,
-                base.capitalize(SpriteHelper.getSpriteExtra(base.pokemon.getName(), ordinal).substring(1)), TextColors.GRAY, ")"
+                LotUtils.capitalize(SpriteHelper.getSpriteExtra(base.pokemon.getName(), ordinal).substring(1)), TextColors.GRAY, ")"
         ));
 
         if(ordinal == this.form){
@@ -150,7 +151,7 @@ public class Form extends InventoryBase {
         ));
         icon.getDisplay().offer(Keys.ITEM_LORE, Lists.newArrayList(
                 Text.of(TextColors.GRAY, "Current: ", TextColors.YELLOW,
-                        base.capitalize(SpriteHelper.getSpriteExtra(base.pokemon.getName(), this.form).substring(1))
+                        LotUtils.capitalize(SpriteHelper.getSpriteExtra(base.pokemon.getName(), this.form).substring(1))
                 )
         ));
 

@@ -51,12 +51,17 @@ public class PokeTradeCmd implements CommandExecutor {
 
                 Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), player.getUniqueId());
                 if(storage.isPresent()){
+                    if(storage.get().partyPokemon.length == 1){
+                        throw new CommandException(Text.of("You can't offer your last pokemon!"));
+                    }
                     if(storage.get().partyPokemon[slot] == null) {
                         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
                         textOptions.put("slot", Optional.of(slot + 1));
 
                         for (Text text : MessageConfig.getMessages("Generic.Addition.Error.Empty Slot", textOptions))
                             player.sendMessage(text);
+
+                        return CommandResult.empty();
                     }
 
                 }

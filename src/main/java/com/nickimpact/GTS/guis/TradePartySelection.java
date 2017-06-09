@@ -8,10 +8,12 @@ import com.nickimpact.GTS.guis.builder.BuilderBase;
 import com.nickimpact.GTS.utils.LotCache;
 import com.nickimpact.GTS.utils.LotUtils;
 import com.nickimpact.GTS.utils.PokeRequest;
+import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
+import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
@@ -27,6 +29,7 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
 
 public class TradePartySelection extends InventoryBase {
 
@@ -34,9 +37,11 @@ public class TradePartySelection extends InventoryBase {
     private LotCache lot;
     private PokeRequest pr;
 
+    private MainUI main;
+
     private PlayerStorage storage;
 
-    public TradePartySelection(Player player, LotCache lot) {
+    public TradePartySelection(Player player, LotCache lot, MainUI main) {
         super(5, Text.of(
                 TextColors.RED, "GTS", TextColors.DARK_GRAY, " \u00bb ", TextColors.DARK_GREEN, "Select Pokemon"
         ));
@@ -44,6 +49,8 @@ public class TradePartySelection extends InventoryBase {
         this.player = player;
         this.lot = lot;
         this.pr = new Gson().fromJson(lot.getLot().getPokeWanted(), PokeRequest.class);
+
+        this.main = main;
 
         this.storage = PixelmonStorage.pokeBallManager.getPlayerStorage((EntityPlayerMP)player).orElse(null);
         this.setupDesign();
@@ -58,7 +65,66 @@ public class TradePartySelection extends InventoryBase {
             this.addIcon(getPokemon(this.storage, i, index));
         }
 
+        this.addIcon(new InventoryIcon(11, lot.getLot().getItem().getItem(lot)));
+        this.addIcon(mapIcon());
+        InventoryIcon cancel = SharedItems.lastMenu(15);
+        cancel.addListener(ClickInventoryEvent.class, e -> {
+            Sponge.getScheduler().createTaskBuilder().execute(() -> {
+                player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
+                player.openInventory(this.main.getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
+            }).delayTicks(1).submit(GTS.getInstance());
+        });
+
+        this.addIcon(cancel);
+
         this.drawBorder(5, DyeColors.BLACK);
+    }
+
+    private InventoryIcon mapIcon() {
+        PokeRequest pr = new Gson().fromJson(lot.getLot().getPokeWanted(), PokeRequest.class);
+
+        return new InventoryIcon(13, ItemStack.builder()
+                .itemType(ItemTypes.FILLED_MAP)
+                .keyValue(Keys.DISPLAY_NAME, Text.of(
+                        TextColors.DARK_AQUA, TextStyles.BOLD, "Requested Info"
+                ))
+                .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+                        Text.of(TextColors.GRAY, "Pokemon: ", TextColors.GREEN, pr.getPokemon()),
+                        Text.of(TextColors.GRAY, "Level: ", TextColors.YELLOW,
+                                (pr.getLevel() < PixelmonConfig.maxLevel ? pr.getLevel() + "+" : pr.getLevel())
+                        ),
+                        Text.of(TextColors.GRAY, "Form: ", TextColors.YELLOW, getFormName(pr.getPokemon(), pr.getForm())),
+                        Text.of(TextColors.GRAY, "EVs: ", getFromArray(pr.getEvs())),
+                        Text.of(TextColors.GRAY, "IVs: ", getFromArray(pr.getIvs())),
+                        Text.of(TextColors.GRAY, "Shiny: ", TextColors.YELLOW, pr.isShiny() ? "Yes" : "No"),
+                        Text.of(TextColors.GRAY, "Growth: ", TextColors.YELLOW, pr.getGrowth()),
+                        Text.of(TextColors.GRAY, "Ability: ", TextColors.YELLOW, pr.getAbility()),
+                        Text.of(TextColors.GRAY, "Nature: ", TextColors.YELLOW, pr.getNature()),
+                        Text.of(TextColors.GRAY, "Pokeball: ", TextColors.YELLOW, pr.getPokeball())
+
+                        ))
+                .build()
+        );
+    }
+
+    private String getFormName(String pokemon, int form){
+        return form != -1 ?
+                LotUtils.capitalize(SpriteHelper.getSpriteExtra(pokemon, form).substring(1)) :
+                "N/A";
+    }
+
+    private Text getFromArray(int[] array){
+        Text result = Text.of(TextColors.YELLOW, array[0], TextColors.GRAY, "/");
+
+        for(int i = 1; i < array.length; i++){
+            if(i == array.length - 1){
+                result = Text.of(result, TextColors.YELLOW, array[i]);
+            } else {
+                result = Text.of(result, TextColors.YELLOW, array[i], TextColors.GRAY, "/");
+            }
+        }
+
+        return result;
     }
 
     private InventoryIcon getPokemon(PlayerStorage storage, int slot, int index){
