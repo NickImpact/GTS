@@ -360,24 +360,6 @@ public class LotUtils {
         HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
 
         if(lot.getHighBidder() != null){
-            if(player.getUniqueId().equals(lot.getHighBidder())){
-                textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
-                for(Text text : MessageConfig.getMessages("Auctions.Current Bidder", textOptions))
-                    player.sendMessage(text);
-                return;
-            }
-
-            BigDecimal price = new BigDecimal(lot.getStPrice());
-            Optional<UniqueAccount> account = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId());
-            if(account.isPresent()) {
-                UniqueAccount acc = account.get();
-                if (acc.getBalance(GTS.getInstance().getEconomy().getDefaultCurrency()).intValue() < price.intValue()) {
-                    for (Text text : MessageConfig.getMessages("Generic.Purchase.Error.Not Enough", null))
-                        player.sendMessage(text);
-                    return;
-                }
-            }
-
             Optional<Player> p = Sponge.getServer().getPlayer(lot.getHighBidder());
             if(p.isPresent()){
                 if(p.get().isOnline()){
@@ -390,14 +372,45 @@ public class LotUtils {
             }
         }
 
-        for(Player p : lot.getAucListeners())
-            if(!p.getUniqueId().equals(lot.getHighBidder())) {
-                textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
-                textOptions.put("curr_symbol", Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain()));
-                textOptions.put("price", Optional.of(lot.getStPrice() + lot.getIncrement()));
+        if(player.getUniqueId().equals(lot.getHighBidder())){
+            textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+            for(Text text : MessageConfig.getMessages("Auctions.Current Bidder", textOptions))
+                player.sendMessage(text);
+            return;
+        }
 
-                for(Text text : MessageConfig.getMessages("Auctions.Placed Bid", textOptions))
-                    p.sendMessage(text);
+        BigDecimal price = new BigDecimal(lot.getStPrice());
+        Optional<UniqueAccount> account = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId());
+        if(account.isPresent()) {
+            UniqueAccount acc = account.get();
+            if (acc.getBalance(GTS.getInstance().getEconomy().getDefaultCurrency()).intValue() < price.intValue()) {
+                textOptions.put("money_diff", Optional.of(price.intValue() - acc.getBalance(GTS.getInstance().getEconomy().getDefaultCurrency()).intValue()));
+                textOptions.put("curr_symbol", Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol()));
+
+                for (Text text : MessageConfig.getMessages("Generic.Purchase.Error.Not Enough", textOptions))
+                    player.sendMessage(text);
+                return;
+            }
+        }
+
+        textOptions.put("pokemon", Optional.of(lot.getItem().getName()));
+        textOptions.put("curr_symbol", Optional.of(
+                GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain()));
+        textOptions.put("price", Optional.of(lot.getStPrice() + lot.getIncrement()));
+
+        for(Text text : MessageConfig.getMessages("Auctions.Placed Bid", textOptions)){
+            player.sendMessage(text);
+        }
+
+        for(Player p : Sponge.getServer().getOnlinePlayers())
+            if(!GTS.getInstance().getIgnoreList().contains(p.getUniqueId()) && !p.getUniqueId().equals(player.getUniqueId())) {
+                if (!p.getUniqueId().equals(lot.getHighBidder())) {
+                    textOptions.put("player", Optional.of(player.getName()));
+                    textOptions.put("seller", Optional.of(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get().getName()));
+
+                    for (Text text : MessageConfig.getMessages("Auctions.Announce Bid", textOptions))
+                        p.sendMessage(text);
+                }
             }
 
         lot.setStPrice(lot.getStPrice() + lot.getIncrement());

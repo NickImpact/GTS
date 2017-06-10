@@ -99,10 +99,7 @@ public class PokeTradeCmd implements CommandExecutor {
                 "ge", "gender",
                 "na", "nature",
                 "f", "form",
-                "s", "shiny",
-                "p", "particle",
-                "st", "specialTexture", "halloween", "roasted", "zombie",
-                "he", "heldItem"
+                "s", "shiny"
         );
 
         List<String> foundFlags = Lists.newArrayList();
@@ -130,7 +127,6 @@ public class PokeTradeCmd implements CommandExecutor {
                                 .valueFlag(GenericArguments.string(Text.of("ball")), "-ba", "-ball")
                                 .valueFlag(GenericArguments.string(Text.of("gender")), "-ge", "-gender")
                                 .valueFlag(GenericArguments.string(Text.of("nature")), "-na", "-nature")
-                                .valueFlag(GenericArguments.string(Text.of("heldItem")), "-he", "-heldItem")
                                 .valueFlag(GenericArguments.integer(Text.of("level")), "-lvl", "-level")
                                 .valueFlag(GenericArguments.integer(Text.of("evHP")), "-evHP")
                                 .valueFlag(GenericArguments.integer(Text.of("evAtk")), "-evAtk")
@@ -145,12 +141,8 @@ public class PokeTradeCmd implements CommandExecutor {
                                 .valueFlag(GenericArguments.integer(Text.of("ivSpDef")), "-ivSpDef")
                                 .valueFlag(GenericArguments.integer(Text.of("ivSpeed")), "-ivSpeed")
                                 .valueFlag(GenericArguments.integer(Text.of("form")), "-f", "-form")
-                                .valueFlag(GenericArguments.string(Text.of("particle")), "p", "-particle")
                                 .valueFlag(GenericArguments.string(Text.of("note")), "-note")
                                 .flag("s", "-shiny")
-                                .flag("-st", "-specialTexture")
-                                .flag("-halloween", "-zombie")
-                                .flag("-roasted")
                                 .flag("e")
                                 .buildWith(GenericArguments.none()),
                         GenericArguments.integer(Text.of("slot")),

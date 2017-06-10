@@ -101,12 +101,6 @@ public class UpdateLotsTask {
                 currLots.stream().filter(l -> l.getLot().getLotID() == lot.getLot().getLotID())
                         .forEach(id -> GTS.getInstance().getLots().remove(lot)
                 );
-                /*for (int i = 0; i < GTS.getInstance().getLots().size(); i++){
-                    if (GTS.getInstance().getLots().get(i).getLot().getLotID() == lot.getLot().getLotID()) {
-                        GTS.getInstance().getLots().remove(i);
-                        break;
-                    }
-                }*/
                 LotUtils.deleteLot(lot.getLot().getLotID());
             } else {
                 GTS.getInstance().getConsole().sendMessage(Text.of(
@@ -138,8 +132,25 @@ public class UpdateLotsTask {
                                 p.sendMessage(text);
                             });
 
-                        // TODO - Since the winner failed to have the amount of money needed to pay for the
-                        // TODO - listing, we need to give the pokemon back to the seller
+                        Optional<PlayerStorage> owner = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), lot.getOwner());
+                        if(owner.isPresent()){
+                            owner.get().addToParty(item.getPokemon(lot));
+
+                            Player ownerPlayer = Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner())
+                                    .get().getPlayer().get();
+
+                            HashMap<String, Optional<Object>> options = Maps.newHashMap();
+                            options.put("player", Optional.of(item.getName()));
+                            for(Text text : MessageConfig.getMessages("Auctions.Return", options)){
+                                ownerPlayer.sendMessage(text);
+                            }
+                        }
+
+                        List<LotCache> currLots = Lists.newArrayList(GTS.getInstance().getLots());
+                        currLots.stream().filter(l -> l.getLot().getLotID() == lot.getLotID())
+                                .forEach(id -> GTS.getInstance().getLots().remove(id)
+                        );
+                        LotUtils.deleteLot(lot.getLotID());
 
                         return;
                     }
@@ -168,6 +179,11 @@ public class UpdateLotsTask {
                                 p.sendMessage(text);
                         }
                     storage.get().addToParty(item.getPokemon(lot));
+
+                    List<LotCache> currLots = Lists.newArrayList(GTS.getInstance().getLots());
+                    currLots.stream().filter(l -> l.getLot().getLotID() == lot.getLotID())
+                            .forEach(id -> GTS.getInstance().getLots().remove(id)
+                    );
                     LotUtils.deleteLot(lot.getLotID());
 
                     Optional<UniqueAccount> ownerAccount = GTS.getInstance().getEconomy().getOrCreateAccount(lot.getOwner());

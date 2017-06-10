@@ -3,7 +3,6 @@ package com.nickimpact.GTS.guis;
 import com.nickimpact.GTS.GTS;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColor;
-import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
@@ -12,8 +11,6 @@ import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.item.inventory.property.InventoryTitle;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
-import org.spongepowered.api.item.inventory.type.GridInventory;
-import org.spongepowered.api.item.inventory.type.InventoryRow;
 import org.spongepowered.api.item.inventory.type.OrderedInventory;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -136,7 +133,6 @@ public class InventoryBase {
      */
     public void updateContents(int... slots){
         OrderedInventory orderedInventory = this.inventory.query(OrderedInventory.class);
-        orderedInventory.clear();
         this.icons.forEach((index, inventoryIcon) -> {
             for(int sl : slots){
                 if(sl == index){

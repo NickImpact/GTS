@@ -1,9 +1,5 @@
 package com.nickimpact.GTS.utils;
 
-import com.google.common.collect.Lists;
-import org.spongepowered.api.entity.living.player.Player;
-
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,7 +20,6 @@ public class Lot {
 
     private boolean auction = false;
     private UUID highBidder = null;
-    private List<Player> aucListeners = Lists.newArrayList();
     private int stPrice;
     private int increment;
 
@@ -117,14 +112,6 @@ public class Lot {
 
     public void setHighBidder(UUID highBidder) {
         this.highBidder = highBidder;
-    }
-
-    public List<Player> getAucListeners() {
-        return aucListeners;
-    }
-
-    public void setAucListeners(List<Player> aucListeners) {
-        this.aucListeners = aucListeners;
     }
 
     public int getStPrice() {
