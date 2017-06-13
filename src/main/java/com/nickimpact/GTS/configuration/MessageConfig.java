@@ -143,7 +143,7 @@ public class MessageConfig {
             ));
 
             generic.getNode("Trade", "Owner", "Receive-Poke").getList(TypeToken.of(String.class), Lists.newArrayList(
-                    "&a&lGTS &e\u00BB &7You have received a &e{{poke_looked_for}} &7from &a{{player}} &7in return for your &a{{pokemon}}&7!"
+                    "&a&lGTS &e\u00BB &7Your trade offer of your &e{{pokemon}}&7 was accepted by &a{{player}} &7for their &a{{poke_looked_for}}&7!"
             ));
 
             generic.getNode("Trade", "Recipient", "Receive-Poke").getList(TypeToken.of(String.class), Lists.newArrayList(
@@ -208,8 +208,17 @@ public class MessageConfig {
                     "&a&lGTS &e\u00BB &7You have bid a price of &c{{curr_symbol}}{{price}} &7on the &e{{pokemon}}&7!"
             ));
 
+            auctions.getNode("Announce Bid").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&a&lGTS &e\u00BB &{{player}} has placed a bid with a price of &c{{curr_symbol}}{{price}} &7on &e{{seller}}'s {{pokemon}}&7!"
+            ));
+
             auctions.getNode("Current Bidder").getList(TypeToken.of(String.class), Lists.newArrayList(
                     "&c&lGTS &e\u00BB &7You are currently the highest bidder for this &e{{pokemon}}&7!"
+            ));
+
+            auctions.getNode("Return").getList(TypeToken.of(String.class), Lists.newArrayList(
+                    "&c&lGTS &e\u00BB &7Hmm, it appears the high bidder managed to not be able to afford their stated auction price...",
+                    "&c&lGTS &e\u00BB &7Therefore, your &e{{pokemon}}&7 has been returned!"
             ));
 
             // Pricing Messages

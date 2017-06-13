@@ -1,6 +1,8 @@
 package com.nickimpact.GTS.utils;
 
+import com.google.gson.Gson;
 import com.nickimpact.GTS.GTS;
+import com.nickimpact.GTS.GTSInfo;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -95,7 +97,8 @@ public class PokemonItem {
         this.name = pokemon.getPokemonName();
         this.nickname = pokemon.getNickname();
         this.ability = pokemon.getAbility().getName();
-        this.heldItem = pokemon.getItemHeld() != null ? pokemon.getItemHeld().getLocalizedName() : "Nothing";
+        this.heldItem = pokemon.getItemHeld() != null && !pokemon.getItemHeld().getLocalizedName().equals("item..name")
+                ? pokemon.getItemHeld().getLocalizedName() : "Nothing";
         this.m1 = pokemon.getMoveset().get(0) != null ? pokemon.getMoveset().get(0).baseAttack.getLocalizedName() : "Empty";
         this.m2 = pokemon.getMoveset().get(1) != null ? pokemon.getMoveset().get(1).baseAttack.getLocalizedName() : "Empty";
         this.m3 = pokemon.getMoveset().get(2) != null ? pokemon.getMoveset().get(2).baseAttack.getLocalizedName() : "Empty";
@@ -125,7 +128,6 @@ public class PokemonItem {
         if (pokemon.getName().equalsIgnoreCase("Mew")) {
             this.clones = nbt.getShort("NumCloned");
         }
-
     }
 
     private String getHiddenPower() {
@@ -214,99 +216,68 @@ public class PokemonItem {
         }
 
         List<Text> data = new ArrayList<>();
-        if (this.isEgg) {
-            data.add(Text.of(TextColors.GRAY, "Lot ID: ", TextColors.YELLOW, id));
-            data.add(Text.of(TextColors.GRAY, "Owner: ", TextColors.YELLOW, this.owner));
-            data.add(Text.of(TextColors.GREEN, "Click on this slot for more info"));
+        data.add(Text.of(TextColors.GRAY, "Lot ID: ", TextColors.YELLOW, id));
+        data.add(Text.of(TextColors.GRAY, "Owner: ", TextColors.YELLOW, this.owner));
+        if(!this.name.equals(this.nickname) && !this.isEgg) {
             data.add(Text.EMPTY);
-            data.add(Text.of(TextColors.GRAY, "Ability: ", TextColors.YELLOW, "???"));
-            data.add(Text.of(TextColors.GRAY, "Nature: ", TextColors.YELLOW, "???"));
-            data.add(Text.EMPTY);
-            data.add(Text.of(TextColors.GRAY, "Gender: ", TextColors.YELLOW, "???"));
-            data.add(Text.of(TextColors.GRAY, "Size: ", TextColors.YELLOW, "???"));
-            data.add(Text.EMPTY);
+            data.add(Text.join(Text.of(TextColors.GRAY, "Nickname: ", TextColors.YELLOW), TextSerializers.LEGACY_FORMATTING_CODE.deserialize(this.nickname)));
+        }
+        data.add(Text.of(TextColors.GREEN, "Click on this slot for more info"));
+        if(lot.getLot().getNote() != null && !lot.getLot().getNote().equals("")){
+            if(lot.getLot().getNote().length() > 16){
+                String[] note = lot.getLot().getNote().split(" ");
+                String line = "";
 
-            if(this.cost > 0 && this.startPrice <= 0)
-                data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.cost));
-            else if(this.cost <= 0 && this.startPrice > 0) {
-                data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.startPrice));
-                data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.increment));
-                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getLot().getHighBidder() != null ?
-                        Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getOwner()).get().getName()
-                        : "N/A"));
-            } else {
-                data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getLot().getPokeWanted()));
-            }
-
-            if(!lot.getLot().canExpire() && lot.getLot().getPokeWanted() != null)
-                data.add(Text.of(TextColors.GRAY, "Expires: ", TextColors.YELLOW, "Never"));
-            else
-                data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(
-                        lot.getDate().toInstant().toEpochMilli() - Instant.now().toEpochMilli()
-                )));
-        } else {
-            data.add(Text.of(TextColors.GRAY, "Lot ID: ", TextColors.YELLOW, id));
-            data.add(Text.of(TextColors.GRAY, "Owner: ", TextColors.YELLOW, this.owner));
-            if(!this.name.equals(this.nickname)) {
-                data.add(Text.EMPTY);
-                data.add(Text.join(Text.of(TextColors.GRAY, "Nickname: ", TextColors.YELLOW), TextSerializers.LEGACY_FORMATTING_CODE.deserialize(this.nickname)));
-            }
-            data.add(Text.of(TextColors.GREEN, "Click on this slot for more info"));
-            if(lot.getLot().getNote() != null && !lot.getLot().getNote().equals("")){
-                if(lot.getLot().getNote().length() > 16){
-                    String[] note = lot.getLot().getNote().split(" ");
-                    String line = "";
-
-                    int index = 0;
+                int index = 0;
+                while(line.length() < 17){
+                    line += note[index] + " ";
+                    index++;
+                }
+                data.add(Text.of(TextColors.GRAY, "Note: ", TextColors.YELLOW, line));
+                while(index < note.length){
+                    line = "";
                     while(line.length() < 17){
+                        if(index == note.length) break;
+
                         line += note[index] + " ";
                         index++;
                     }
-                    data.add(Text.of(TextColors.GRAY, "Note: ", TextColors.YELLOW, line));
-                    while(index < note.length){
-                        line = "";
-                        while(line.length() < 17){
-                            if(index == note.length) break;
-
-                            line += note[index] + " ";
-                            index++;
-                        }
-                        data.add(Text.of(TextColors.GRAY, "      ", TextColors.YELLOW, line));
-                    }
-                } else {
-                    data.add(Text.of(TextColors.GRAY, "Note: ", TextColors.YELLOW, lot.getLot().getNote()));
+                    data.add(Text.of(TextColors.GRAY, "      ", TextColors.YELLOW, line));
                 }
-            }
-            data.add(Text.EMPTY);
-            data.add(Text.of(TextColors.GRAY, "Ability: ", TextColors.YELLOW, this.ability));
-            data.add(Text.of(TextColors.GRAY, "Nature: ", TextColors.YELLOW, this.nature));
-            data.add(Text.EMPTY);
-            data.add(Text.of(TextColors.GRAY, "Holding: ", TextColors.YELLOW, this.heldItem));
-            data.add(Text.of(TextColors.GRAY, "Gender: ", TextColors.YELLOW, this.gender));
-            data.add(Text.of(TextColors.GRAY, "Size: ", TextColors.YELLOW, this.growth));
-            if(this.name.equalsIgnoreCase("Mew")){
-                data.add(Text.EMPTY);
-                data.add(Text.of(TextColors.GRAY, "Clones: ", TextColors.YELLOW, this.clones + " times"));
-            }
-            data.add(Text.EMPTY);
-            if(this.cost > 0 && this.startPrice <= 0)
-                data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.cost));
-            else if(this.cost <= 0 && this.startPrice > 0) {
-                data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.startPrice));
-                data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.increment));
-                data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getLot().getHighBidder() != null ?
-                        Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getOwner()).get().getName()
-                        : "N/A"));
             } else {
-                data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, lot.getLot().getPokeWanted()));
+                data.add(Text.of(TextColors.GRAY, "Note: ", TextColors.YELLOW, lot.getLot().getNote()));
             }
-            if(!lot.getLot().canExpire() && lot.getLot().getPokeWanted() != null)
-                data.add(Text.of(TextColors.GRAY, "Expires: ", TextColors.YELLOW, "Never"));
-            else
-                data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(
-                        lot.getDate().toInstant().toEpochMilli() - Instant.now().toEpochMilli()
-                )));
         }
+        data.add(Text.EMPTY);
+        data.add(Text.of(TextColors.GRAY, "Ability: ", TextColors.YELLOW, (this.isEgg ? "???" : this.ability)));
+        data.add(Text.of(TextColors.GRAY, "Nature: ", TextColors.YELLOW, (this.isEgg ? "???" : this.nature)));
+        data.add(Text.EMPTY);
+        data.add(Text.of(TextColors.GRAY, "Holding: ", TextColors.YELLOW, (this.isEgg ? "???" : this.heldItem)));
+        data.add(Text.of(TextColors.GRAY, "Gender: ", TextColors.YELLOW, (this.isEgg ? "???" : this.gender)));
+        data.add(Text.of(TextColors.GRAY, "Size: ", TextColors.YELLOW, (this.isEgg ? "???" : this.growth)));
+        if(this.name.equalsIgnoreCase("Mew") && !this.isEgg){
+            data.add(Text.EMPTY);
+            data.add(Text.of(TextColors.GRAY, "Clones: ", TextColors.YELLOW, this.clones + " times"));
+        }
+        data.add(Text.EMPTY);
+        if(this.cost > 0 && this.startPrice <= 0)
+            data.add(Text.of(TextColors.GRAY, "Cost: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.cost));
+        else if(this.cost <= 0 && this.startPrice > 0) {
+            data.add(Text.of(TextColors.GRAY, "Current Bid: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.startPrice));
+            data.add(Text.of(TextColors.GRAY, "Increment: ", TextColors.YELLOW, GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain() + this.increment));
+            data.add(Text.of(TextColors.GRAY, "High Bidder: ", TextColors.YELLOW, lot.getLot().getHighBidder() != null ?
+                    Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getHighBidder()).get().getName()
+                    : "N/A"));
+        } else {
+            data.add(Text.of(TextColors.GRAY, "Looking for: ", TextColors.YELLOW, new Gson().fromJson(lot.getLot().getPokeWanted(), PokeRequest.class).getPokemon()));
+        }
+        if(!lot.getLot().canExpire() && lot.getLot().getPokeWanted() != null)
+            data.add(Text.of(TextColors.GRAY, "Expires: ", TextColors.YELLOW, "Never"));
+        else
+            data.add(Text.of(TextColors.GRAY, "Time Left: ", TextColors.YELLOW, LotUtils.getTime(
+                    lot.getDate().toInstant().toEpochMilli() - Instant.now().toEpochMilli()
+            )));
+
 
         item.offer(Keys.ITEM_LORE, data);
     }

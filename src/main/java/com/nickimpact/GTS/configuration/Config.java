@@ -92,6 +92,10 @@ public class Config {
             storage.getNode("Tables", "Main").getString("GTS");
             storage.getNode("Tables", "Logs").getString("Logs");
 
+            general.getNode("Modules", "Trading").getBoolean(true);
+            general.getNode("Modules", "Auction").getBoolean(true);
+            general.getNode("Modules", "Price-Tag").getBoolean(true);
+
             general.getNode("Max-Pokemon").setComment("Set how many pokemon a player is limited to listing, -1 for no cap");
             general.getNode("Max-Pokemon").getInt(3);
 
@@ -189,7 +193,7 @@ public class Config {
     }
 
     public String getMainTable() {
-        return main.getNode("Storage", "Tables", "Main").getString();
+        return main.getNode("Storage", "Tables", "MainUI").getString();
     }
 
     public String getLogTable() {
@@ -275,5 +279,17 @@ public class Config {
 
     public long getAucTime() {
         return main.getNode("General", "Auctions", "Default-Time").getInt() * 60;
+    }
+
+    public boolean cmdPriceTagEnabled() {
+        return main.getNode("General", "Modules", "Price-Tag").getBoolean();
+    }
+
+    public boolean cmdAuctionEnabled() {
+        return main.getNode("General", "Modules", "Auction").getBoolean();
+    }
+
+    public boolean cmdTradeEnabled() {
+        return main.getNode("General", "Modules", "Trading").getBoolean();
     }
 }

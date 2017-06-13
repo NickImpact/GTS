@@ -20,7 +20,9 @@ import org.spongepowered.api.text.format.TextColors;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Created by nickd on 4/17/2017.
@@ -42,7 +44,14 @@ public class LogCmd implements CommandExecutor {
                 Log earliest = GTS.getInstance().getSql().getEarliestLog(target.get().getUniqueId());
 
             } else {
-                List<Log> logs = GTS.getInstance().getSql().getLogs(target.get().getUniqueId());
+                List<Log> logs = Lists.newArrayList();
+                for(UUID uuid : GTS.getInstance().getLogs().keySet()){
+                    if(uuid.equals(target.get().getUniqueId())){
+                        for(Log log : GTS.getInstance().getLogs().get(uuid))
+                            logs.add(log);
+                    }
+                }
+
                 List<Text> lText = Lists.newArrayList();
 
                 SimpleDateFormat format = new SimpleDateFormat("E MM/dd/yy hh:mm:ss a");

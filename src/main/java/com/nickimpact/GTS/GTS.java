@@ -1,11 +1,14 @@
 package com.nickimpact.GTS;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.nickimpact.GTS.commands.*;
 import com.nickimpact.GTS.configuration.Config;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.listeners.JoinListener;
+import com.nickimpact.GTS.logging.Log;
 import com.nickimpact.GTS.storage.H2Provider;
 import com.nickimpact.GTS.storage.MySQLProvider;
 import com.nickimpact.GTS.storage.SQLDatabase;
@@ -15,6 +18,7 @@ import com.nickimpact.GTS.utils.UpdateLotsTask;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.block.trait.BlockTrait;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
@@ -24,12 +28,15 @@ import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingEvent;
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -57,7 +64,11 @@ public class GTS {
 
     private List<LotCache> lots = Lists.newArrayList();
     private List<LotCache> expiredLots = Lists.newArrayList();
+    private ArrayListMultimap<UUID, Log> logs = ArrayListMultimap.create();
+
     private boolean enabled = true;
+
+    private Task saveTask;
 
     @Listener
     public void onInitialization(GameInitializationEvent e){
@@ -83,6 +94,7 @@ public class GTS {
                     .child(AuctionCommand.registerCommand(), "auc")
                     .child(LogCmd.registerCommand(), "logs")
                     .child(IgnoreCmd.registerCommand(), "ignore")
+                    .child(PokeTradeCmd.registerCommand(), "trade")
                     .child(CommandSpec.builder()
                             .executor(new ReloadCommand())
                             .permission("gts.admin.command.reload")
@@ -132,6 +144,16 @@ public class GTS {
             }
             LotUtils.setPlacement(max + 1);
 
+            getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Caching log info..."));
+            this.sql.getLogs();
+            max = -1;
+            for(Log log : this.logs.values()){
+                if(log.getId() > max){
+                    max = log.getId();
+                }
+            }
+            LotUtils.setLogPlacement(max + 1);
+
             getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Successfully loaded"));
         } else {
             getConsole().sendMessage(Text.of(ERROR_PREFIX, Text.of(TextColors.DARK_RED, "All plugin functions will be disabled...")));
@@ -142,7 +164,7 @@ public class GTS {
     public void onServerStart(GameStartedServerEvent e){
         if(enabled) {
             UpdateLotsTask.setupUpdateTask();
-            UpdateLotsTask.saveTask();
+            saveTask = UpdateLotsTask.saveTask();
         }
     }
 
@@ -163,7 +185,7 @@ public class GTS {
     }
 
     @Listener
-    public void onServerStop(GameStoppingEvent e){
+    public void onServerStop(GameStoppingServerEvent e){
         if(enabled) {
             getConsole().sendMessage(Text.of(
                     PREFIX, "Shutdown procedures initialized..."
@@ -172,10 +194,11 @@ public class GTS {
                 getConsole().sendMessage(Text.of(
                         PREFIX, "Saving lot cache to storage provider..."
                 ));
-                sql.updateLots(LotUtils.getSqlCmds());
+                sql.updateDatabase(LotUtils.getSqlCmds());
                 getConsole().sendMessage(Text.of(
                         PREFIX, "Data stored, closing storage provider"
                 ));
+                saveTask.cancel();
                 sql.shutdown();
                 getConsole().sendMessage(Text.of(
                         PREFIX, "Thank you for using GTS!"
@@ -244,5 +267,9 @@ public class GTS {
 
     public List<LotCache> getExpiredLots() {
         return expiredLots;
+    }
+
+    public ArrayListMultimap<UUID, Log> getLogs() {
+        return logs;
     }
 }

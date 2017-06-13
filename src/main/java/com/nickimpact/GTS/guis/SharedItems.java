@@ -1,77 +1,137 @@
 package com.nickimpact.GTS.guis;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
-import com.nickimpact.GTS.utils.Lot;
+import com.nickimpact.GTS.configuration.MessageConfig;
+import com.nickimpact.GTS.guis.InventoryIcon;
 import com.nickimpact.GTS.utils.LotCache;
+import com.pixelmonmod.pixelmon.config.PixelmonItems;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.enums.EnumPokemon;
+import com.pixelmonmod.pixelmon.storage.NbtKeys;
+import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
+import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.RepresentedPlayerData;
+import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.data.type.SkullTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.format.TextStyles;
+import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
-/**
- * Created by Nick on 12/15/2016.
- */
-class SharedItems {
+public class SharedItems {
 
     private static HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
 
-    static ItemStack border(String color){
-        ItemStack border = ItemStack.builder()
+    /**
+     * This method is used to create a border representation of an item
+     *
+     * @param slot The slot this border piece will be placed in
+     * @param color The dye color of the border piece
+     * @return An icon for an Inventory display
+     */
+    public static InventoryIcon forgeBorderIcon(int slot, DyeColor color){
+        return new InventoryIcon(slot, ItemStack.builder()
                 .itemType(ItemTypes.STAINED_GLASS_PANE)
-                .build();
-
-        border.offer(Keys.DISPLAY_NAME, Text.of(TextColors.BLACK, ""));
-        if(color.equalsIgnoreCase("black")) {
-            border.offer(Keys.DYE_COLOR, DyeColors.BLACK);
-        } else if(color.equalsIgnoreCase("red")){
-            border.offer(Keys.DYE_COLOR, DyeColors.RED);
-        } else if(color.equalsIgnoreCase("green")){
-            border.offer(Keys.DYE_COLOR, DyeColors.GREEN);
-        } else {
-            border.offer(Keys.DYE_COLOR, DyeColors.WHITE);
-        }
-        return border;
+                .quantity(1)
+                .keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.BLACK, ""))
+                .keyValue(Keys.DYE_COLOR, color)
+                .build()
+        );
     }
 
-    static ItemStack page(boolean up){
-        ItemStack button = ItemStack.builder()
+    public static ItemStack pokemonDisplay(EntityPixelmon pokemon, int form){
+        net.minecraft.item.ItemStack nativeItem = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
+        NBTTagCompound nbt = new NBTTagCompound();
+        String idValue = String.format("%03d", pokemon.baseStats.nationalPokedexNumber);
+        if (pokemon.isEgg){
+            if (pokemon.getName().equalsIgnoreCase("Manaphy")){
+                nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/manaphy1");
+            } else if (pokemon.getName().equalsIgnoreCase("Togepi")){
+                nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/togepi1");
+            } else {
+                nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/egg1");
+            }
+        } else {
+            if (pokemon.getIsShiny()) {
+                nbt.setString(NbtKeys.SPRITE_NAME,
+                              "pixelmon:sprites/shinypokemon/" + idValue + SpriteHelper.getSpriteExtra(
+                                      pokemon.baseStats.pixelmonName, form));
+            } else {
+                nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + SpriteHelper.getSpriteExtra(
+                        pokemon.baseStats.pixelmonName, form));
+            }
+        }
+        nativeItem.setTagCompound(nbt);
+
+        return ItemStackUtil.fromNative(nativeItem);
+    }
+
+    static InventoryIcon pageIcon(int slot, boolean nextOrLast, int curr, int next){
+        return new InventoryIcon(slot, ItemStack.builder()
                 .itemType(ItemTypes.DYE)
-                .build();
-        button.offer(Keys.DISPLAY_NAME, up ? MessageConfig.getMessage("UI.Items.Page Up", null) : MessageConfig.getMessage("UI.Items.Page Down", null));
-        if(up) {
-            button.offer(Keys.DYE_COLOR, DyeColors.GREEN);
-        } else {
-            button.offer(Keys.DYE_COLOR, DyeColors.RED);
-        }
-        return button;
+                .quantity(1)
+                .keyValue(Keys.DISPLAY_NAME, nextOrLast ? Text.of(
+                            TextColors.GREEN, "\u2192 ", MessageConfig.getMessage("UI.Items.Page Up", null),
+                            TextColors.GREEN, " \u2192"
+                    ) : Text.of(
+                            TextColors.RED, "\u2190 ", MessageConfig.getMessage("UI.Items.Page Down", null),
+                            TextColors.RED, " \u2190"
+                    )
+                )
+                .keyValue(Keys.DYE_COLOR, nextOrLast ? DyeColors.LIME : DyeColors.RED)
+                .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+                        Text.of(TextColors.GRAY, "Curr Page: ", TextColors.DARK_AQUA, curr),
+                        Text.of(TextColors.GRAY, "Next Page: ", TextColors.DARK_AQUA, next)
+                ))
+                .build()
+        );
     }
 
-    static ItemStack refreshList(){
-        ItemStack button = ItemStack.builder()
+    static InventoryIcon refreshIcon(int slot){
+        return new InventoryIcon(slot, ItemStack.builder()
                 .itemType(ItemTypes.BOOK)
-                .build();
-        button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Refresh List", null));
-        button.offer(Keys.DYE_COLOR, DyeColors.YELLOW);
-        return button;
+                .quantity(1)
+                .keyValue(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Refresh List", null))
+                .build()
+        );
     }
 
-    static ItemStack balance(Player p){
-        ItemStack dummy = ItemStack.builder()
+    static InventoryIcon playerIcon(int slot, Player player){
+        ItemStack icon = ItemStack.builder()
+                .itemType(ItemTypes.SKULL)
+                .build();
+
+        textOptions.clear();
+        textOptions.put("player", Optional.of(player.getName()));
+        icon.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Player Icon", textOptions));
+        icon.offer(Keys.SKULL_TYPE, SkullTypes.PLAYER);
+
+        RepresentedPlayerData skinData = Sponge.getGame().getDataManager().getManipulatorBuilder(RepresentedPlayerData.class).get().create();
+        skinData.set(Keys.REPRESENTED_PLAYER, player.getProfile());
+        icon.offer(skinData);
+
+        return new InventoryIcon(slot, icon);
+    }
+
+    static InventoryIcon balanceIcon(int slot, Player player){
+        ItemStack icon = ItemStack.builder()
                 .itemType(ItemTypes.GOLD_INGOT)
                 .build();
 
@@ -79,78 +139,90 @@ class SharedItems {
 
         if(GTS.getInstance().getEconomy() == null){
             textOptions.put("balance", Optional.of(0));
-            dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Balance Icon", textOptions));
-            return dummy;
+            icon.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Balance Icon", textOptions));
         }
-        Optional<UniqueAccount> acc = GTS.getInstance().getEconomy().getOrCreateAccount(p.getUniqueId());
+        Optional<UniqueAccount> acc = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId());
         if(acc.isPresent()) {
             textOptions.put("curr_symbol", Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().getSymbol().toPlain()));
             textOptions.put("balance", Optional.of(acc.get().getBalance(GTS.getInstance().getEconomy().getDefaultCurrency())));
-            dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Balance Icon", textOptions));
+            icon.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Balance Icon", textOptions));
         } else {
             textOptions.put("balance", Optional.of(0));
-            dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Balance Icon", textOptions));
+            icon.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Balance Icon", textOptions));
         }
-        return dummy;
+
+        return new InventoryIcon(slot, icon);
     }
 
-    static ItemStack search(final List<LotCache> pokemon){
+    static InventoryIcon searchIcon(int slot, final List<String> pokemon){
         ItemStack dummy = ItemStack.builder()
                 .itemType(ItemTypes.MAP)
                 .build();
         dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Search For.Title", null));
         List<Text> lore = new ArrayList<>();
-        if(pokemon != null) {
-            textOptions.clear();
-            for (LotCache lots : pokemon) {
-                if(lore.stream().noneMatch(p -> p.toString().contains(lots.getLot().getItem().getName()))) {
-                    textOptions.put("pokemon", Optional.of(lots.getLot().getItem().getName()));
-                    lore.add(MessageConfig.getMessage("UI.Items.Search For.Lore Format", textOptions));
-                }
-            }
-            dummy.offer(Keys.ITEM_LORE, lore);
-        }
-        return dummy;
-    }
-
-    static ItemStack playerIcon(Player p){
-        ItemStack dummy = ItemStack.builder()
-                .itemType(ItemTypes.SKULL)
-                .build();
-
         textOptions.clear();
-        textOptions.put("player", Optional.of(p.getName()));
-        dummy.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Player Icon", textOptions));
-        dummy.offer(Keys.SKULL_TYPE, SkullTypes.PLAYER);
-
-        RepresentedPlayerData skinData = Sponge.getGame().getDataManager().getManipulatorBuilder(RepresentedPlayerData.class).get().create();
-        skinData.set(Keys.REPRESENTED_PLAYER, p.getProfile());
-        dummy.offer(skinData);
-        return dummy;
-    }
-
-    static ItemStack listings(){
-        ItemStack button = ItemStack.builder()
-                .itemType(ItemTypes.WRITTEN_BOOK)
-                .build();
-        button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Player Listings", null));
-        return button;
-    }
-
-    static ItemStack lastMenu(){
-        Optional<ItemType> type = Sponge.getRegistry().getType(ItemType.class, "pixelmon:eject_button");
-        if(type.isPresent()){
-            ItemStack button = ItemStack.builder()
-                    .itemType(type.get())
-                    .build();
-            button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Last Menu", null));
-            return button;
-        } else {
-            ItemStack button = ItemStack.builder()
-                    .itemType(ItemTypes.REDSTONE_BLOCK)
-                    .build();
-            button.offer(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Last Menu", null));
-            return button;
+        for (String poke : pokemon) {
+            if(lore.stream().noneMatch(p -> p.toPlain().equalsIgnoreCase(EnumPokemon.getFromNameAnyCase(poke).name))) {
+                textOptions.put("pokemon", Optional.of(EnumPokemon.getFromNameAnyCase(poke).name));
+                lore.add(MessageConfig.getMessage("UI.Items.Search For.Lore Format", textOptions));
+            }
         }
+        dummy.offer(Keys.ITEM_LORE, lore);
+
+        return new InventoryIcon(slot, dummy);
+    }
+
+    static InventoryIcon playerListingsIcon(int slot){
+        return new InventoryIcon(slot, ItemStack.builder()
+                .itemType(ItemTypes.WRITTEN_BOOK)
+                .quantity(1)
+                .keyValue(Keys.DISPLAY_NAME, MessageConfig.getMessage("UI.Items.Player Listings", null))
+                .build()
+
+        );
+    }
+
+    public static InventoryIcon confirmIcon(int slot){
+        return new InventoryIcon(slot, ItemStack.builder()
+                .itemType(ItemTypes.DYE)
+                .quantity(1)
+                .keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, "Confirm Action"))
+                .keyValue(Keys.DYE_COLOR, DyeColors.LIME)
+                .build()
+        );
+    }
+
+    public static InventoryIcon denyIcon(int slot){
+        return new InventoryIcon(slot, ItemStack.builder()
+                .itemType(ItemTypes.DYE)
+                .quantity(1)
+                .keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Cancel Action"))
+                .keyValue(Keys.DYE_COLOR, DyeColors.RED)
+                .build()
+        );
+    }
+
+    static InventoryIcon lastMenu(int slot){
+        return new InventoryIcon(slot, ItemStack.builder()
+                .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:eject_button").get())
+                .quantity(1)
+                .keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Last Menu"))
+                .build()
+        );
+    }
+
+    public static InventoryIcon cancelIcon(int slot){
+        return new InventoryIcon(slot, ItemStack.builder()
+                .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:trash_can").orElse(ItemTypes.BARRIER))
+                .keyValue(Keys.DISPLAY_NAME, Text.of(
+                        TextColors.RED, TextStyles.BOLD, "Reset Option"
+                ))
+                .keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+                        Text.of(TextColors.GRAY, "Click here to reset the"),
+                        Text.of(TextColors.GRAY, "current query back to its"),
+                        Text.of(TextColors.GRAY, "default search option")
+                ))
+                .build()
+        );
     }
 }
