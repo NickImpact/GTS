@@ -1,5 +1,7 @@
 package com.nickimpact.GTS.utils;
 
+import net.minecraft.nbt.NBTTagCompound;
+
 import java.util.UUID;
 
 /**
@@ -29,10 +31,10 @@ public class Lot {
     private String note = "";
 
     // Legacy Constructor
-    public Lot(int lotID, UUID owner, String nbt, PokemonItem item, int price){
+    public Lot(int lotID, UUID owner, NBTTagCompound nbt, PokemonItem item, int price){
         this.lotID = lotID;
         this.owner = owner;
-        this.nbt = nbt.replace("CustomName:\"\"", "CustomName:").replace("Nickname:\"\"", "Nickname:");
+        this.nbt = GsonUtils.serialize(nbt);
         this.pkItem = item;
         this.price = price;
 
@@ -46,14 +48,14 @@ public class Lot {
         this.note = null;
     }
 
-    public Lot(int lotID, UUID owner, String nbt, PokemonItem item, int price, boolean expires, String note){
+    public Lot(int lotID, UUID owner, NBTTagCompound nbt, PokemonItem item, int price, boolean expires, String note){
         this(lotID, owner, nbt, item, price, expires, false, null, -1, -1, note);
     }
 
-    public Lot(int lotID, UUID owner, String nbt, PokemonItem item, int price, boolean expires, boolean auction, UUID highBidder, int stPrice, int increment, String note){
+    public Lot(int lotID, UUID owner, NBTTagCompound nbt, PokemonItem item, int price, boolean expires, boolean auction, UUID highBidder, int stPrice, int increment, String note){
         this.lotID = lotID;
         this.owner = owner;
-        this.nbt = nbt.replace("CustomName:\"\"", "CustomName:").replace("Nickname:\"\"", "Nickname:");
+        this.nbt = GsonUtils.serialize(nbt);
         this.pkItem = item;
         this.price = price;
         this.expires = expires;
@@ -64,10 +66,10 @@ public class Lot {
         this.note = note;
     }
 
-    public Lot(int lotID, UUID owner, String nbt, PokemonItem item, boolean pokemon, String pokeWanted, String note){
+    public Lot(int lotID, UUID owner, NBTTagCompound nbt, PokemonItem item, boolean pokemon, String pokeWanted, String note){
         this.lotID = lotID;
         this.owner = owner;
-        this.nbt = nbt.replace("CustomName:\"\"", "CustomName:").replace("Nickname:\"\"", "Nickname:");
+        this.nbt = GsonUtils.serialize(nbt);
         this.pkItem = item;
         this.pokemon = pokemon;
         this.pokeWanted = pokeWanted;

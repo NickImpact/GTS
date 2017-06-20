@@ -110,9 +110,13 @@ public class Config {
 
             general.getNode("Lot-Time").setComment("Sets the default duration of a lot (In Minutes)");
             general.getNode("Lot-Time").getInt(60);
+            general.getNode("Max-Lot-Time").setComment("The max duration of an auction in the GTS (In Minutes)");
+            general.getNode("Max-Lot-Time").getInt(720);
 
             general.getNode("Auctions", "Default-Time").setComment("The default duration of an auction in the GTS (In Minutes)");
             general.getNode("Auctions", "Default-Time").getInt(1);
+            general.getNode("Auctions", "Max-Time").setComment("The max duration of an auction in the GTS (In Minutes)");
+            general.getNode("Auctions", "Max-Time").getInt(5);
             general.getNode("Auctions", "Increment").setComment("The default amount to increase each bid by");
             general.getNode("Auctions", "Increment").getInt(50);
 
@@ -207,6 +211,14 @@ public class Config {
 
     public long getLotTime() {
         return main.getNode("General", "Lot-Time").getInt() * 60;
+    }
+
+    public long getMaxLotTime() {
+        return main.getNode("General", "Max-Lot-Time").getInt() * 60;
+    }
+
+    public long getMaxAucTime() {
+        return main.getNode("General", "Auctions", "Max-Time").getInt() * 60;
     }
 
     public boolean isTaxEnabled() {

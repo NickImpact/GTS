@@ -142,6 +142,12 @@ public class GTS {
                     max = lot.getLot().getLotID();
                 }
             }
+
+            for(LotCache lot : expiredLots){
+                if(lot.getLot().getLotID() > max){
+                    max = lot.getLot().getLotID();
+                }
+            }
             LotUtils.setPlacement(max + 1);
 
             getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Caching log info..."));

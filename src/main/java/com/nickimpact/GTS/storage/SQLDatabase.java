@@ -214,7 +214,6 @@ public abstract class SQLDatabase {
                             GTS.getInstance().getConsole().sendMessage(Text.of(
                                     GTSInfo.ERROR_PREFIX, TextColors.RED, "Invalid lot JSON detected"
                             ));
-                            GTS.getInstance().getConsole().sendMessage(Text.of(Text.EMPTY));
                             GTS.getInstance().getConsole().sendMessage(Text.of(
                                     GTSInfo.ERROR_PREFIX, TextColors.RED, "Lot ID: " + results.getInt("ID")
                             ));

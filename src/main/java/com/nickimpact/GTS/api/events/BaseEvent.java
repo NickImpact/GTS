@@ -1,4 +1,4 @@
-package com.nickimpact.GTS.events;
+package com.nickimpact.GTS.api.events;
 
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.cause.Cause;

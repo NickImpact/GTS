@@ -38,7 +38,7 @@ public class AdditionCommand implements CommandExecutor {
 
             // We need a flag to state an entry can never expire
             boolean expires = !args.hasAny("n") && !args.hasAny("never-expires");
-            if(!expires && !src.hasPermission("gts.command.addition.never-expire"))
+            if(!expires && !src.hasPermission("gts.command.add.never-expire"))
                 throw new CommandException(Text.of("Sorry, but you can't mark listings to not expire..."));
 
             // Fetch the custom time for a listing, if it exists
@@ -47,6 +47,8 @@ public class AdditionCommand implements CommandExecutor {
                 if(customExpires.get() < 0){
                     throw new CommandException(Text.of(TextColors.RED, "Expiration can't be lower than 1 second!"));
                 }
+                if(customExpires.get() > GTS.getInstance().getConfig().getMaxLotTime())
+                    throw new CommandException(Text.of(TextColors.RED, "That time exceeds the max time allowed..."));
             }
 
             LotUtils.addPokemonStatic((Player) src, slot, note.orElse(""), price.get(), expires, customExpires.orElse(

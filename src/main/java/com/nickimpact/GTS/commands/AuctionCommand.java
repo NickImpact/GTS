@@ -38,12 +38,15 @@ public class AuctionCommand implements CommandExecutor{
                 throw new CommandException(Text.of(TextColors.RED, "Increment can not be lower than $1..."));
 
             Optional<Long> time = args.getOne("expires");
-            if(time.isPresent())
-                if(note.isPresent())
-                    LotUtils.addPokemonAuc((Player)src, slot, note.get(), price, increment, time.get());
+            if(time.isPresent()) {
+                if (time.get() > GTS.getInstance().getConfig().getMaxAucTime())
+                    throw new CommandException(Text.of(TextColors.RED, "That time exceeds the max time allowed..."));
+
+                if (note.isPresent())
+                    LotUtils.addPokemonAuc((Player) src, slot, note.get(), price, increment, time.get());
                 else
-                    LotUtils.addPokemonAuc((Player)src, slot, "", price, increment, time.get());
-            else
+                    LotUtils.addPokemonAuc((Player) src, slot, "", price, increment, time.get());
+            } else
                 if(note.isPresent())
                     LotUtils.addPokemonAuc((Player)src, slot, note.get(), price, increment, GTS.getInstance().getConfig().getAucTime());
                 else
