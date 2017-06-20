@@ -1,4 +1,4 @@
-package com.nickimpact.GTS.events;
+package com.nickimpact.GTS.api.events;
 
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import org.spongepowered.api.entity.living.player.Player;

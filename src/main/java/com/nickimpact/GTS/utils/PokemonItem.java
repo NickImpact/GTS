@@ -1,6 +1,7 @@
 package com.nickimpact.GTS.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.nickimpact.GTS.GTS;
 import com.nickimpact.GTS.GTSInfo;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
@@ -185,9 +186,15 @@ public class PokemonItem {
 
     public EntityPixelmon getPokemon(Lot lot) {
         try {
-            return (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(JsonToNBT.getTagFromJson(lot.getNBT()), FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
-        } catch (NBTException e) {
-            e.printStackTrace();
+            return (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(GsonUtils.deserialize(lot.getNBT()), FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
+
+        } catch (JsonSyntaxException e) {
+            try {
+                NBTTagCompound nbt = JsonToNBT.getTagFromJson(lot.getNBT());
+                return (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(nbt, FMLCommonHandler.instance().getMinecraftServerInstance().getEntityWorld());
+            } catch (NBTException e1) {
+                e1.printStackTrace();
+            }
         }
         return null;
     }

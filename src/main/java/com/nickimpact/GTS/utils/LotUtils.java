@@ -6,13 +6,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nickimpact.GTS.configuration.MessageConfig;
 import com.nickimpact.GTS.GTS;
-import com.nickimpact.GTS.events.ListEvent;
-import com.nickimpact.GTS.events.PurchaseEvent;
-import com.nickimpact.GTS.events.TradeEvent;
+import com.nickimpact.GTS.api.events.ListEvent;
+import com.nickimpact.GTS.api.events.PurchaseEvent;
+import com.nickimpact.GTS.api.events.TradeEvent;
 import com.nickimpact.GTS.logging.Log;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.enums.ReceiveType;
-import com.pixelmonmod.pixelmon.api.events.PixelmonReceivedEvent;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
@@ -121,7 +118,7 @@ public class LotUtils {
 
                 int placement = getPlacement();
 
-                Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, price, expires, note);
+                Lot lot = new Lot(placement, player.getUniqueId(), nbt, pokeItem, price, expires, note);
 
                 Gson gson = new Gson();
                 String json = gson.toJson(lot);
@@ -180,7 +177,7 @@ public class LotUtils {
 
                 int placement = getPlacement();
 
-                Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, stPrice, true, true, null,
+                Lot lot = new Lot(placement, player.getUniqueId(), nbt, pokeItem, stPrice, true, true, null,
                                   stPrice, increment, note);
 
                 Gson gson = new Gson();
@@ -236,7 +233,7 @@ public class LotUtils {
 
                 Gson gson = new Gson();
                 int placement = getPlacement();
-                Lot lot = new Lot(placement, player.getUniqueId(), nbt.toString(), pokeItem, true, gson.toJson(poke),
+                Lot lot = new Lot(placement, player.getUniqueId(), nbt, pokeItem, true, gson.toJson(poke),
                                   note);
 
                 String json = gson.toJson(lot);
@@ -389,7 +386,7 @@ public class LotUtils {
                             for (Text text : MessageConfig.getMessages("Generic.Purchase.Success.Seller", textOptions))
                                 Sponge.getServer().getPlayer(lot.getLot().getOwner()).get().sendMessage(text);
 
-                            Log log2 = forgeLog(p, "Purchase-Owner", textOptions);
+                            Log log2 = forgeLog(p, "Purchase-Seller", textOptions);
                             LotUtils.addLog(lot.getLot().getOwner(), log2);
                         }
                     }
@@ -520,18 +517,14 @@ public class LotUtils {
                     variables.put("player", Optional.of(player.getName()));
                     variables.put("poke_looked_for", Optional.of(lot.getLot().getItem().getName()));
 
-                    Pixelmon.EVENT_BUS.post(new PixelmonReceivedEvent(
-                            (EntityPlayerMP) Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(
-                                    lot.getLot().getOwner()).get().getPlayer().get(), ReceiveType.Trade, pokemon));
-
                     for (Text text : MessageConfig.getMessages("Generic.Trade.Owner.Receive-Poke", variables)) {
                         Sponge.getServer().getPlayer(lot.getLot().getOwner()).get().sendMessage(text);
                     }
                 }
-            }
 
-            GTS.getInstance().getLots().remove(lot);
-            LotUtils.deleteLot(lot.getLot().getLotID());
+                GTS.getInstance().getLots().remove(lot);
+                LotUtils.deleteLot(lot.getLot().getLotID());
+            }
         }
     }
 
