@@ -613,58 +613,57 @@ public class LotUtils {
     }
 
     private static boolean checkPrice(Player player, EntityPixelmon pokemon, int price) {
-        int ivPrice = 0;
+        int totalPrice = 0;
         for (int iv : pokemon.stats.IVs.getArray()) {
             if (iv >= GTS.getInstance().getConfig().getMinIV()) {
-                ivPrice += GTS.getInstance().getConfig().getMinIVPrice();
+                totalPrice += GTS.getInstance().getConfig().getMinIVPrice();
             }
         }
 
-        int totalPrice;
-
         if (pokemon.getAbilitySlot().equals(2)) {
             if (pokemon.getIsShiny() && EnumPokemon.legendaries.contains(pokemon.getName())) {
-                totalPrice = GTS.getInstance().getConfig().getMinHAPrice() + ivPrice +
+                totalPrice = GTS.getInstance().getConfig().getMinHAPrice() +
                         GTS.getInstance().getConfig().getMinShinyPrice() + GTS.getInstance().getConfig().getMinLegendPrice();
 
                 if (price >= totalPrice) {
                     return true;
                 }
             } else if (pokemon.getIsShiny()) {
-                totalPrice = GTS.getInstance().getConfig().getMinHAPrice() + ivPrice + GTS.getInstance().getConfig().getMinShinyPrice();
+                totalPrice = GTS.getInstance().getConfig().getMinHAPrice() + GTS.getInstance().getConfig().getMinShinyPrice();
 
                 if (price >= totalPrice) {
                     return true;
                 }
             } else {
-                totalPrice = GTS.getInstance().getConfig().getMinHAPrice() + ivPrice + GTS.getInstance().getConfig().getMinLegendPrice();
+                totalPrice = GTS.getInstance().getConfig().getMinHAPrice() + GTS.getInstance().getConfig().getMinLegendPrice();
 
                 if (price >= totalPrice) {
                     return true;
                 }
             }
 
-            if (price >= GTS.getInstance().getConfig().getMinHAPrice() + ivPrice) {
+            totalPrice = GTS.getInstance().getConfig().getMinHAPrice();
+            if (price >= totalPrice) {
                 return true;
             }
         } else if (EnumPokemon.legendaries.contains(pokemon.getName())) {
             if (pokemon.getIsShiny()) {
-                totalPrice = GTS.getInstance().getConfig().getMinLegendPrice() + ivPrice + GTS.getInstance().getConfig().getMinShinyPrice();
+                totalPrice = GTS.getInstance().getConfig().getMinLegendPrice() + GTS.getInstance().getConfig().getMinShinyPrice();
                 if (price >= totalPrice) {
                     return true;
                 }
             }
 
-            totalPrice = GTS.getInstance().getConfig().getMinLegendPrice() + ivPrice;
+            totalPrice = GTS.getInstance().getConfig().getMinLegendPrice();
 
             if (price >= totalPrice)
                 return true;
         } else if (pokemon.getIsShiny()) {
-            totalPrice = GTS.getInstance().getConfig().getMinShinyPrice() + ivPrice;
+            totalPrice = GTS.getInstance().getConfig().getMinShinyPrice();
             if (price >= totalPrice)
                 return true;
         } else {
-            totalPrice = GTS.getInstance().getConfig().getMinPrice() + ivPrice;
+            totalPrice = GTS.getInstance().getConfig().getMinPrice();
             if (price >= totalPrice)
                 return true;
         }

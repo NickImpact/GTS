@@ -197,7 +197,7 @@ public class Config {
     }
 
     public String getMainTable() {
-        return main.getNode("Storage", "Tables", "MainUI").getString();
+        return main.getNode("Storage", "Tables", "Main").getString();
     }
 
     public String getLogTable() {

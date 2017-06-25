@@ -113,6 +113,9 @@ public class LotUI extends InventoryBase {
                 HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
                 textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
 
+                if(GTS.getInstance().getLots().stream().noneMatch(lot -> lot.getLot().getLotID() == this.lot.getLot().getLotID()))
+                    return;
+
                 if (e instanceof ClickInventoryEvent.Secondary) {
                     for (Text text : MessageConfig.getMessages("Administrative.LotUI.Delete", textOptions))
                         p.sendMessage(text);
@@ -166,6 +169,9 @@ public class LotUI extends InventoryBase {
                     HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
                     textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
 
+                    if(GTS.getInstance().getLots().stream().noneMatch(lot -> lot.getLot().getLotID() == this.lot.getLot().getLotID()))
+                        return;
+
                     for(Text text : MessageConfig.getMessages("Generic.Remove.Success", textOptions))
                         p.sendMessage(text);
                     Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
@@ -199,6 +205,9 @@ public class LotUI extends InventoryBase {
                     Player p = e.getCause().first(Player.class).get();
                     HashMap<String, Optional<Object>> textOptions = Maps.newHashMap();
                     textOptions.put("pokemon", Optional.of(lot.getLot().getItem().getName()));
+
+                    if(GTS.getInstance().getLots().stream().noneMatch(lot -> lot.getLot().getLotID() == this.lot.getLot().getLotID()))
+                        return;
 
                     LotCache lc = GTS.getInstance().getLots().stream().filter(l -> l.getLot().getLotID() == lot.getLot().getLotID()).findAny().orElse(null);
                     if(lc != null){
