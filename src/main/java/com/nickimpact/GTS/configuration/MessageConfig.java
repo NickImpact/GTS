@@ -209,7 +209,7 @@ public class MessageConfig {
             ));
 
             auctions.getNode("Announce Bid").getList(TypeToken.of(String.class), Lists.newArrayList(
-                    "&a&lGTS &e\u00BB &{{player}} has placed a bid with a price of &c{{curr_symbol}}{{price}} &7on &e{{seller}}'s {{pokemon}}&7!"
+                    "&a&lGTS &e\u00BB &e{{player}} &7has placed a bid with a price of &c{{curr_symbol}}{{price}} &7on &e{{seller}}'s {{pokemon}}&7!"
             ));
 
             auctions.getNode("Current Bidder").getList(TypeToken.of(String.class), Lists.newArrayList(
