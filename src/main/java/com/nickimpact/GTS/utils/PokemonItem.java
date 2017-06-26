@@ -94,7 +94,7 @@ public class PokemonItem {
         }
 
         this.id = pokemon.baseStats.nationalPokedexNumber;
-        this.form = pokemon.getEntityData().getInteger(NbtKeys.FORM);
+        this.form = pokemon.getForm();
         this.name = pokemon.getPokemonName();
         this.nickname = pokemon.getNickname();
         this.ability = pokemon.getAbility().getName();

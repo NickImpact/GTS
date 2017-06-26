@@ -205,8 +205,8 @@ public class MainUI extends InventoryBase {
             pokemon.addListener(ClickInventoryEvent.class, e -> {
                 Player p = e.getCause().first(Player.class).get();
 
-                String lotID = e.getCursorTransaction().getFinal().get(Keys.ITEM_LORE).get().get(0).toPlain();
-                Optional<LotCache> lotCache = GTS.getInstance().getLots().stream().filter(l -> l.getLot().getLotID() == Integer.valueOf(lotID.substring(lotID.indexOf(": ") + 2))).findFirst();
+                int lotID = lot.getLotID();
+                Optional<LotCache> lotCache = GTS.getInstance().getLots().stream().filter(l -> l.getLot().getLotID() == lotID).findFirst();
                 if(!lotCache.isPresent()){
                     for(Text text : MessageConfig.getMessages("Generic.Purchase.Error.Already Sold", null))
                         p.sendMessage(text);
