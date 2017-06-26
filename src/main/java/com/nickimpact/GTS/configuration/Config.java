@@ -72,7 +72,7 @@ public class Config {
 
             storage.setComment("\n" +
                     "+-------------------------------------------------------------------+ #\n" +
-                    "|                         storage Settings                          | #\n" +
+                    "|                         Storage Settings                          | #\n" +
                     "+-------------------------------------------------------------------+ #\n" +
                     "| Ahh, the storage options. With GTS, you can choose to store your  | #\n" +
                     "| data in a H2 or MySQL database. Simply specify which type of      | #\n" +
@@ -226,7 +226,7 @@ public class Config {
     }
 
     public double getTaxRate() {
-        return main.getNode("General", "Tax", "Percentage").getInt();
+        return main.getNode("General", "Tax", "Percentage").getDouble();
     }
 
     public List<String> getBlocked() {
