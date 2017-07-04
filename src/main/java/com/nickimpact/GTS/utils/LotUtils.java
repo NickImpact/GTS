@@ -711,13 +711,15 @@ public class LotUtils {
                              Cause.source(GTS.getInstance()).build());
                 for (Text text : MessageConfig.getMessages("Pricing.Tax.Success.Paid", textOptions))
                     player.sendMessage(text);
+
+                return true;
             } else {
                 GTS.getInstance().getLogger().error(Text.of(TextColors.RED,
                                                             "Account for UUID (" + player.getUniqueId() + ") was not found").toPlain());
                 return false;
             }
         }
-        return true;
+        return false;
     }
 
     public static HashMap<String, Optional<Object>> getInfo(EntityPixelmon pokemon) {
