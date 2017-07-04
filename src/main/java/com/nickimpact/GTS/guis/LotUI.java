@@ -19,6 +19,7 @@ import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -133,7 +134,7 @@ public class LotUI extends InventoryBase {
                         p.sendMessage(text);
 
                     textOptions.putAll(LotUtils.getInfo(lot.getLot().getItem().getPokemon(lot.getLot())));
-                    Log log = LotUtils.forgeLog(Sponge.getServer().getPlayer(lot.getLot().getOwner()).get(), "Removal", textOptions);
+                    Log log = LotUtils.forgeLog(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getLot().getOwner()).get(), "Removal", textOptions);
                     LotUtils.addLog(lot.getLot().getOwner(), log);
                     Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer) Sponge.getServer(), p.getUniqueId());
                     if(storage.isPresent()) {
