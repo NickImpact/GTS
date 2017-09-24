@@ -23,5 +23,4 @@ public enum Dependency {
     private final String url;
     private final String version;
     private final String testClass;
-
 }
