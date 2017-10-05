@@ -2,7 +2,6 @@ package com.nickimpact.GTS;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.nickimpact.GTS.commands.*;
 import com.nickimpact.GTS.configuration.Config;
@@ -15,28 +14,24 @@ import com.nickimpact.GTS.storage.SQLDatabase;
 import com.nickimpact.GTS.utils.LotCache;
 import com.nickimpact.GTS.utils.LotUtils;
 import com.nickimpact.GTS.utils.UpdateLotsTask;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.block.trait.BlockTrait;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.event.game.state.GameStoppingEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,6 +42,9 @@ public class GTS {
 
     @Inject
     private Logger logger;
+
+    @Inject
+    private PluginContainer pluginContainer;
 
     @Inject
     @ConfigDir(sharedRoot=false)
@@ -71,10 +69,11 @@ public class GTS {
     private Task saveTask;
 
     @Listener
-    public void onInitialization(GameInitializationEvent e){
+    public void onInitialization(GameInitializationEvent e) {
         plugin = this;
 
         GTSInfo.startup();
+
         getConsole().sendMessage(Text.of(PREFIX, TextColors.DARK_AQUA, "Checking for dependencies..."));
         enabled = GTSInfo.dependencyCheck();
 
@@ -277,5 +276,9 @@ public class GTS {
 
     public ArrayListMultimap<UUID, Log> getLogs() {
         return logs;
+    }
+
+    public PluginContainer getPluginContainer() {
+        return pluginContainer;
     }
 }

@@ -17,7 +17,4 @@ public abstract class BaseEvent extends AbstractEvent implements Cancellable {
     public void setCancelled(boolean cancelled) {
         this.cancelled = cancelled;
     }
-
-    @Override
-    public abstract Cause getCause();
 }

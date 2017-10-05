@@ -4,20 +4,16 @@ buildscript {
         maven { url = "http://files.minecraftforge.net/maven" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
     }
 }
 
-plugins {
-    id 'org.spongepowered.plugin' version '0.6'
-}
-
 apply plugin: 'net.minecraftforge.gradle.forge'
-//Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
+//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
-group 'com.nickimpact.GTS'
-version '1.10.2-2.4.3'
+group 'com.nickimpact'
+version '1.12.2-2.5.0'
 archivesBaseName = "GTS"
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
@@ -26,17 +22,12 @@ compileJava {
 }
 
 minecraft {
-    version = "1.10.2-12.18.3.2281"
+    version = "1.12.2-14.23.0.2486"
     runDir = "run"
-    
-    // the mappings can be changed at any time, and must be in the following format.
-    // snapshot_YYYYMMDD   snapshot are built nightly.
-    // stable_#            stables are built at the discretion of the MCP team.
-    // Use non-default mappings at your own risk. they may not always work.
-    // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "snapshot_20161111"
-    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+    mappings = "snapshot_20170919"
+    useDepAts = true
 }
+
 
 repositories {
     mavenCentral()
@@ -47,32 +38,14 @@ repositories {
 }
 
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // the 'provided' configuration is for optional dependencies that exist at compile-time but might not at runtime.
-    //provided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // the deobf configurations:  'deobfCompile' and 'deobfProvided' are the same as the normal compile and provided,
-    // except that these dependencies get remapped to your current MCP mappings
-    //deobfCompile 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-    //deobfProvided 'com.mod-buildcraft:buildcraft:6.0.8:dev'
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
-    compile 'org.spongepowered:spongeapi:5.2.0-SNAPSHOT:shaded'
-    compile 'org.spongepowered:spongeforge:1.10.2-2221-5.1.0-BETA-2147'
+    compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
     compile "org.projectlombok:lombok:1.16.10"
 	compile group: 'com.zaxxer', name: 'HikariCP', version: '2.5.1'
 }
+
+//Fix forges AT breaking everything because the AT checker is stupid
+[tasks.deobfMcMCP, tasks.deobfMcSRG].each { it.failOnAtError = false }
 
 processResources
 {
@@ -93,3 +66,6 @@ processResources
         exclude 'mcmod.info'
     }
 }
+
+//Fix forges AT breaking everything because the AT checker is stupid
+[tasks.deobfMcMCP, tasks.deobfMcSRG].each { it.failOnAtError = false }

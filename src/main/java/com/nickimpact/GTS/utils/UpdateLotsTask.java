@@ -13,7 +13,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.user.UserStorageService;
@@ -25,9 +25,6 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by Nick on 12/15/2016.
- */
 public class UpdateLotsTask {
 
     public static Task saveTask(){
@@ -171,7 +168,8 @@ public class UpdateLotsTask {
                     Log log2 = LotUtils.forgeLog(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(lot.getOwner()).get(), "Auction-Winner", tOptsOwner);
                     LotUtils.addLog(lot.getOwner(), log2);
 
-                    acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.source(GTS.getInstance()).build());
+                    acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.builder().append(
+                            GTS.getInstance()).build(EventContext.empty()));
 
                     for (Text text : MessageConfig.getMessages("Auctions.Award", textOptions))
                         for (Player p : Sponge.getServer().getOnlinePlayers()) {
@@ -189,7 +187,8 @@ public class UpdateLotsTask {
                     Optional<UniqueAccount> ownerAccount = GTS.getInstance().getEconomy().getOrCreateAccount(lot.getOwner());
                     if(ownerAccount.isPresent()){
                         UniqueAccount owner = ownerAccount.get();
-                        owner.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.of(NamedCause.source(GTS.getInstance())));
+                        owner.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(), price, Cause.builder().append(
+                                GTS.getInstance()).build(EventContext.empty()));
                     } else {
                         GTS.getInstance().getConsole().sendMessage(Text.of(
                                 GTSInfo.ERROR_PREFIX, TextColors.DARK_RED, "Player '", TextColors.YELLOW,

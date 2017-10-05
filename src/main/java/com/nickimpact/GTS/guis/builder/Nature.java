@@ -13,8 +13,6 @@ import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemType;
@@ -91,11 +89,11 @@ public class Nature extends InventoryBase {
             this.base.nature = nature;
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                this.player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
+                this.player.closeInventory();
 
                 this.base.addIcon(this.base.natureIcon());
                 this.base.updateContents();
-                this.player.openInventory(this.base.getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
+                this.player.openInventory(this.base.getInventory());
             }).delayTicks(1).submit(GTS.getInstance());
         });
         this.addIcon(back);

@@ -20,9 +20,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Nick on 12/10/2016.
- */
 public class Config {
 
     private static ConfigurationLoader<CommentedConfigurationNode> loader;

@@ -2,7 +2,6 @@ package com.nickimpact.GTS.guis.builder;
 
 import com.google.common.collect.Lists;
 import com.nickimpact.GTS.GTS;
-import com.nickimpact.GTS.GTSInfo;
 import com.nickimpact.GTS.guis.InventoryBase;
 import com.nickimpact.GTS.guis.InventoryIcon;
 import com.nickimpact.GTS.guis.SharedItems;
@@ -12,8 +11,6 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.meta.ItemEnchantment;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.Enchantments;
 import org.spongepowered.api.item.ItemType;
@@ -68,11 +65,11 @@ public class Pokeball extends InventoryBase {
             this.base.pokeball = pokeball;
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
-                this.player.closeInventory(Cause.of(NamedCause.source(GTS.getInstance())));
+                this.player.closeInventory();
 
                 this.base.addIcon(this.base.pokeballIcon());
                 this.base.updateContents();
-                this.player.openInventory(this.base.getInventory(), Cause.of(NamedCause.source(GTS.getInstance())));
+                this.player.openInventory(this.base.getInventory());
             }).delayTicks(1).submit(GTS.getInstance());
         });
         this.addIcon(back);

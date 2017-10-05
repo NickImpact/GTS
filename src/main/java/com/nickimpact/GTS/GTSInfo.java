@@ -17,7 +17,7 @@ public class GTSInfo {
     public static final String ID = "gts";
 
     public static final String NAME = "GTS";
-    public static final String VERSION = "2.4.3";
+    public static final String VERSION = "2.5.0";
     public static final String DESCRIPTION = "A Sponge Representation of the Global Trading Station";
 
     public static final Text PREFIX = Text.of(TextColors.YELLOW, "GTS ", TextColors.GRAY, "\u00bb ", TextColors.DARK_AQUA);
@@ -31,7 +31,7 @@ public class GTSInfo {
     );
 
     public enum Dependencies {
-        Pixelmon("pixelmon", "5.0.2+");
+        Pixelmon("pixelmon", "6.x.x");
 
         private String dependency;
         private String version;

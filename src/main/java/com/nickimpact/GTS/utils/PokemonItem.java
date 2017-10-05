@@ -3,19 +3,15 @@ package com.nickimpact.GTS.utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.nickimpact.GTS.GTS;
-import com.nickimpact.GTS.GTSInfo;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import net.minecraft.nbt.*;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.user.UserStorageService;
@@ -98,7 +94,7 @@ public class PokemonItem {
         this.name = pokemon.getPokemonName();
         this.nickname = pokemon.getNickname();
         this.ability = pokemon.getAbility().getName();
-        this.heldItem = pokemon.getItemHeld() != null && !pokemon.getItemHeld().getLocalizedName().equals("item..name")
+        this.heldItem = pokemon.getItemHeld().equals(net.minecraft.item.ItemStack.EMPTY)
                 ? pokemon.getItemHeld().getLocalizedName() : "Nothing";
         this.m1 = pokemon.getMoveset().get(0) != null ? pokemon.getMoveset().get(0).baseAttack.getLocalizedName() : "Empty";
         this.m2 = pokemon.getMoveset().get(1) != null ? pokemon.getMoveset().get(1).baseAttack.getLocalizedName() : "Empty";

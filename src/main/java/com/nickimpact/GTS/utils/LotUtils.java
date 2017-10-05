@@ -23,7 +23,8 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.NamedCause;
+import org.spongepowered.api.event.cause.EventContext;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
@@ -35,9 +36,6 @@ import java.text.DecimalFormat;
 import java.time.Instant;
 import java.util.*;
 
-/**
- * Created by Nick on 12/15/2016.
- */
 public class LotUtils {
 
     private static List<String> sqlCmds = Lists.newArrayList();
@@ -95,8 +93,16 @@ public class LotUtils {
             return;
         }
 
-        ListEvent listEvent = new ListEvent(player, pokemon, Cause.of(NamedCause.simulated(player),
-                                                                      NamedCause.source(GTS.getInstance())));
+        ListEvent listEvent = new ListEvent(
+                player,
+                pokemon,
+                Cause.of(
+                        EventContext.builder()
+                                .add(EventContextKeys.PLUGIN, GTS.getInstance().getPluginContainer())
+                                .add(EventContextKeys.PLAYER_SIMULATED, player.getProfile())
+                                .build(),
+                        GTS.getInstance())
+        );
         Sponge.getEventManager().post(listEvent);
         if (!listEvent.isCancelled()) {
 
@@ -126,8 +132,10 @@ public class LotUtils {
                 try {
                     gson.fromJson(json, Lot.class);
                 } catch (JsonSyntaxException e) {
-                    player.sendMessage(Text.of(TextColors.RED,
-                                               "It appears your pokemon's info encountered an error, and has been prevented from being added to GTS..."));
+                    player.sendMessage(Text.of(
+                            TextColors.RED, "It appears your pokemon's info encountered an error, and has been prevented from being added to GTS..."
+                    ));
+                    return;
                 }
 
                 addLot(player.getUniqueId(), gson.toJson(lot), false, time);
@@ -243,6 +251,7 @@ public class LotUtils {
                 } catch (JsonSyntaxException e) {
                     player.sendMessage(Text.of(TextColors.RED,
                                                "It appears your pokemon's info encountered an error, and has been prevented from being added to GTS..."));
+                    return;
                 }
 
                 addLot(player.getUniqueId(), new Gson().toJson(lot), false, time);
@@ -311,9 +320,15 @@ public class LotUtils {
                 Optional<UniqueAccount> account = GTS.getInstance().getEconomy().getOrCreateAccount(p.getUniqueId());
                 if (account.isPresent()) {
 
-                    PurchaseEvent purchase = new PurchaseEvent(p, price, Cause.of(NamedCause.simulated(p),
-                                                                                  NamedCause.source(
-                                                                                          GTS.getInstance())));
+                    PurchaseEvent purchase = new PurchaseEvent(
+                            p,
+                            price,
+                            Cause.of(
+                                    EventContext.builder()
+                                            .add(EventContextKeys.PLUGIN, GTS.getInstance().getPluginContainer())
+                                            .build(),
+                                    GTS.getInstance())
+                    );
                     Sponge.getEventManager().post(purchase);
                     if (!purchase.isCancelled()) {
 
@@ -331,7 +346,12 @@ public class LotUtils {
                             return;
                         }
                         acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), price,
-                                     Cause.source(GTS.getInstance()).build());
+                                     Cause.of(
+                                             EventContext.builder()
+                                                     .add(EventContextKeys.PLUGIN, GTS.getInstance().getPluginContainer())
+                                                     .build(),
+                                             GTS.getInstance())
+                        );
 
                         GTS.getInstance().getLots().remove(lot);
                         LotUtils.deleteLot(lot.getLot().getLotID());
@@ -368,7 +388,12 @@ public class LotUtils {
                         if (ownerAccount.isPresent()) {
                             UniqueAccount owner = ownerAccount.get();
                             owner.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(), price,
-                                          Cause.of(NamedCause.source(GTS.getInstance())));
+                                          Cause.of(
+                                                  EventContext.builder()
+                                                          .add(EventContextKeys.PLUGIN, GTS.getInstance().getPluginContainer())
+                                                          .build(),
+                                                  GTS.getInstance())
+                            );
                         } else {
                             GTS.getInstance().getLogger().error(
                                     "Player '" + Sponge.getServiceManager().provideUnchecked(
@@ -479,8 +504,14 @@ public class LotUtils {
             TradeEvent trade = new TradeEvent(player,
                                               Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(
                                                       lot.getLot().getOwner()).get(),
-                                              pokemon, Cause.of(NamedCause.simulated(player),
-                                                                NamedCause.source(GTS.getInstance())));
+                                              pokemon,
+                                              Cause.of(
+                                                      EventContext.builder()
+                                                              .add(EventContextKeys.PLUGIN, GTS.getInstance().getPluginContainer())
+                                                              .add(EventContextKeys.PLAYER_SIMULATED, player.getProfile())
+                                                              .build(),
+                                                      GTS.getInstance())
+                                              );
             Sponge.getEventManager().post(trade);
 
             TradeEvent toLister = new TradeEvent(
@@ -488,9 +519,13 @@ public class LotUtils {
                             lot.getLot().getOwner()).get(),
                     player,
                     received,
-                    Cause.of(NamedCause.simulated(
-                            Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(
-                                    lot.getLot().getOwner()).get())));
+                    Cause.of(
+                            EventContext.builder()
+                                    .add(EventContextKeys.PLUGIN, GTS.getInstance().getPluginContainer())
+                                    .add(EventContextKeys.PLAYER_SIMULATED, player.getProfile())
+                                    .build(),
+                            GTS.getInstance())
+            );
             Sponge.getEventManager().post(toLister);
 
             if (!trade.isCancelled() && !toLister.isCancelled()) {
@@ -708,7 +743,8 @@ public class LotUtils {
                     return false;
                 }
                 acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), tax,
-                             Cause.source(GTS.getInstance()).build());
+                             Cause.builder().append(
+                                     GTS.getInstance()).build(EventContext.empty()));
                 for (Text text : MessageConfig.getMessages("Pricing.Tax.Success.Paid", textOptions))
                     player.sendMessage(text);
 
@@ -719,7 +755,7 @@ public class LotUtils {
                 return false;
             }
         }
-        return false;
+        return true;
     }
 
     public static HashMap<String, Optional<Object>> getInfo(EntityPixelmon pokemon) {
