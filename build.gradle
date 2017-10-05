@@ -66,6 +66,3 @@ processResources
         exclude 'mcmod.info'
     }
 }
-
-//Fix forges AT breaking everything because the AT checker is stupid
-[tasks.deobfMcMCP, tasks.deobfMcSRG].each { it.failOnAtError = false }
