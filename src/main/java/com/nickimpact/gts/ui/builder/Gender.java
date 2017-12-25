@@ -3,7 +3,7 @@ package com.nickimpact.gts.ui.builder;
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.gui.InventoryBase;
-import com.nickimpact.gts.api.gui.InventoryIcon;
+import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -63,12 +63,12 @@ public class Gender extends InventoryBase {
         this.addIcon(genderIcon(true, this.gender.equalsIgnoreCase("male")));
         this.addIcon(genderIcon(false, this.gender.equalsIgnoreCase("female")));
 
-        InventoryIcon back = new InventoryIcon(17, ItemStack.builder()
+        Icon back = new Icon(17, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:eject_button").orElse(ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "\u2190 Return to Spec Designer \u2190"))
                 .build()
         );
-        back.addListener(ClickInventoryEvent.class, e -> {
+        back.addListener(clickable -> {
             this.base.gender = gender;
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -81,8 +81,8 @@ public class Gender extends InventoryBase {
         });
         this.addIcon(back);
 
-        InventoryIcon reset = SharedItems.cancelIcon(35);
-        reset.addListener(ClickInventoryEvent.class, e -> {
+        Icon reset = SharedItems.cancelIcon(35);
+        reset.addListener(clickable -> {
             if(this.gender.equals("N/A")) return;
 
             this.addIcon(genderIcon(true, false));
@@ -97,11 +97,11 @@ public class Gender extends InventoryBase {
         this.addIcon(reset);
     }
 
-    private InventoryIcon genderIcon(boolean male, boolean selected){
-        InventoryIcon icon;
+    private Icon genderIcon(boolean male, boolean selected){
+        Icon icon;
 
         if(male){
-            icon = new InventoryIcon(21, ItemStack.builder()
+            icon = new Icon(21, ItemStack.builder()
                     .itemType(ItemTypes.STAINED_HARDENED_CLAY)
                     .keyValue(Keys.DYE_COLOR, DyeColors.LIGHT_BLUE)
                     .keyValue(Keys.DISPLAY_NAME, Text.of(
@@ -114,7 +114,7 @@ public class Gender extends InventoryBase {
                     .build()
             );
         } else {
-            icon = new InventoryIcon(23, ItemStack.builder()
+            icon = new Icon(23, ItemStack.builder()
                     .itemType(ItemTypes.STAINED_HARDENED_CLAY)
                     .keyValue(Keys.DYE_COLOR, DyeColors.PINK)
                     .keyValue(Keys.DISPLAY_NAME, Text.of(
@@ -135,7 +135,7 @@ public class Gender extends InventoryBase {
             icon.getDisplay().offer(Keys.HIDE_ENCHANTMENTS, true);
         }
 
-        icon.addListener(ClickInventoryEvent.class, e -> {
+        icon.addListener(clickable -> {
             this.gender = (male ? "Male" : "Female");
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -149,8 +149,8 @@ public class Gender extends InventoryBase {
         return icon;
     }
 
-    private InventoryIcon selectedIcon(){
-        return new InventoryIcon(9, ItemStack.builder()
+    private Icon selectedIcon(){
+        return new Icon(9, ItemStack.builder()
                 .itemType(ItemTypes.STAINED_HARDENED_CLAY)
                 .keyValue(Keys.DYE_COLOR, this.gender.equals("Male") ? DyeColors.LIGHT_BLUE : this.gender.equals("Female") ? DyeColors.PINK : DyeColors.WHITE)
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
@@ -163,8 +163,8 @@ public class Gender extends InventoryBase {
         );
     }
 
-    private InventoryIcon mapInfo(){
-        return new InventoryIcon(27, ItemStack.builder()
+    private Icon mapInfo(){
+        return new Icon(27, ItemStack.builder()
                 .itemType(ItemTypes.FILLED_MAP)
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
                         TextColors.DARK_AQUA, TextStyles.BOLD, "GENDER Info"

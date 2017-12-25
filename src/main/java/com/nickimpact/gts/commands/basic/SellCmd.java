@@ -53,7 +53,7 @@ public class SellCmd extends SpongeSubCommand {
 					(Player)src,
 					new PokemonEntry((EntityPixelmon) PixelmonEntityList.createEntityFromNBT(PixelmonStorage.pokeBallManager.getPlayerStorage((EntityPlayerMP)src).get().partyPokemon[0], (World) Sponge.getServer().getWorld(Sponge.getServer().getDefaultWorldName()).get()), new MoneyPrice(500)),
 					true,
-					3600
+					103680
 			);
 
 			LotUtils.addToMarket((Player)src, listing);

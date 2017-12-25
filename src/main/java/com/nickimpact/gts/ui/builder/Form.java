@@ -3,7 +3,7 @@ package com.nickimpact.gts.ui.builder;
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.gui.InventoryBase;
-import com.nickimpact.gts.api.gui.InventoryIcon;
+import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import com.nickimpact.gts.utils.StringUtils;
 import com.pixelmonmod.pixelmon.enums.forms.EnumUnown;
@@ -105,8 +105,8 @@ public class Form extends InventoryBase {
         }
     }
 
-    private InventoryIcon formIcon(int slot, int ordinal, boolean unown){
-        InventoryIcon icon = new InventoryIcon(slot, SharedItems.pokemonDisplay(base.pokemon, ordinal));
+    private Icon formIcon(int slot, int ordinal, boolean unown){
+        Icon icon = new Icon(slot, SharedItems.pokemonDisplay(base.pokemon, ordinal));
         icon.getDisplay().offer(Keys.DISPLAY_NAME, Text.of(
 		        TextColors.DARK_AQUA, base.pokemon.getName(), TextColors.GRAY, " (", TextColors.YELLOW,
 		        StringUtils.capitalize(SpriteHelper.getSpriteExtra(base.pokemon.getName(), ordinal).substring(1)), TextColors.GRAY, ")"
@@ -120,7 +120,7 @@ public class Form extends InventoryBase {
             icon.getDisplay().offer(Keys.HIDE_ENCHANTMENTS, true);
         }
 
-        icon.addListener(ClickInventoryEvent.class, e -> {
+        icon.addListener(clickable -> {
 
             int oldForm = this.form;
             int oldSlot = this.slot;
@@ -142,8 +142,8 @@ public class Form extends InventoryBase {
         return icon;
     }
 
-    private InventoryIcon selectedIcon(int slot) {
-        InventoryIcon icon = new InventoryIcon(slot, SharedItems.pokemonDisplay(base.pokemon, this.form));
+    private Icon selectedIcon(int slot) {
+        Icon icon = new Icon(slot, SharedItems.pokemonDisplay(base.pokemon, this.form));
         icon.getDisplay().offer(Keys.DISPLAY_NAME, Text.of(
                 TextColors.DARK_AQUA, "Selected FORM"
         ));
@@ -156,8 +156,8 @@ public class Form extends InventoryBase {
         return icon;
     }
 
-    private InventoryIcon mapIcon(int slot) {
-        return new InventoryIcon(slot, ItemStack.builder()
+    private Icon mapIcon(int slot) {
+        return new Icon(slot, ItemStack.builder()
                 .itemType(ItemTypes.FILLED_MAP)
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
                         TextColors.DARK_AQUA, TextStyles.BOLD, "FORM Info"
@@ -171,13 +171,13 @@ public class Form extends InventoryBase {
         );
     }
 
-    private InventoryIcon backIcon(int slot){
-        InventoryIcon back = new InventoryIcon(slot, ItemStack.builder()
+    private Icon backIcon(int slot){
+        Icon back = new Icon(slot, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:eject_button").orElse(ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "\u2190 Return to Spec Designer \u2190"))
                 .build()
         );
-        back.addListener(ClickInventoryEvent.class, e -> {
+        back.addListener(clickable -> {
             this.base.form = form;
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -192,9 +192,9 @@ public class Form extends InventoryBase {
         return back;
     }
 
-    private InventoryIcon resetIcon(int slot, boolean unown){
-        InventoryIcon reset = SharedItems.cancelIcon(slot);
-        reset.addListener(ClickInventoryEvent.class, e -> {
+    private Icon resetIcon(int slot, boolean unown){
+        Icon reset = SharedItems.cancelIcon(slot);
+        reset.addListener(clickable -> {
             if(this.form == -1) return;
 
             int oldForm = this.form;

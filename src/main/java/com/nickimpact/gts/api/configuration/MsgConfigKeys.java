@@ -30,12 +30,12 @@ public class MsgConfigKeys {
 
 	));
 
-	// Item titles (Only one line)
-	public static final ConfigKey<String> UI_ITEMS_NEXT_PAGE = StringKey.of("ui.items.next-page", "&a\u2192 Next Page \u2192");
-	public static final ConfigKey<String> UI_ITEMS_LAST_PAGE = StringKey.of("ui.items.last-page", "&c\u2190 Last Page \u2190");
-	public static final ConfigKey<String> UI_ITEMS_REFRESH = StringKey.of("ui.items.refresh", "&eRefresh Listings");
-	public static final ConfigKey<String> UI_ITEMS_PLAYER_TITLE = StringKey.of("", "");
+	public static final ConfigKey<String> UI_ITEMS_NEXT_PAGE = StringKey.of("next-page", "&a\u2192 Next Page \u2192");
+	public static final ConfigKey<String> UI_ITEMS_LAST_PAGE = StringKey.of("last-page", "&c\u2190 Last Page \u2190");
+	public static final ConfigKey<String> UI_ITEMS_REFRESH = StringKey.of("refresh", "&eRefresh Listings");
+	public static final ConfigKey<String> UI_ITEMS_PLAYER_TITLE = StringKey.of("head.title", "&ePlayer Info");
+	public static final ConfigKey<List<String>> UI_ITEMS_PLAYER_LORE = ListKey.of("head.lore", Lists.newArrayList());
+	public static final ConfigKey<String> UI_ITEMS_SORT_TITLE = StringKey.of("sort.title", "&eSort Listings");
+	public static final ConfigKey<List<String>> UI_ITEMS_SORT_LORE = ListKey.of("sort.lore", Lists.newArrayList());
 
-	// Item Lore (multiline)
-	public static final ConfigKey<List<String>> UI_ITEMS_PLAYER_LORE = ListKey.of("", Lists.newArrayList());
 }

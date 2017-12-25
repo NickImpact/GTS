@@ -3,7 +3,7 @@ package com.nickimpact.gts.ui.builder;
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.gui.InventoryBase;
-import com.nickimpact.gts.api.gui.InventoryIcon;
+import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import com.pixelmonmod.pixelmon.enums.EnumGrowth;
 import org.spongepowered.api.Sponge;
@@ -78,12 +78,12 @@ public class Growth extends InventoryBase {
             }
         }
 
-        InventoryIcon back = new InventoryIcon(17, ItemStack.builder()
+        Icon back = new Icon(17, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:eject_button").orElse(ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "\u2190 Return to Spec Designer \u2190"))
                 .build()
         );
-        back.addListener(ClickInventoryEvent.class, e -> {
+        back.addListener(clickable -> {
             this.base.growth = growth;
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -96,8 +96,8 @@ public class Growth extends InventoryBase {
         });
         this.addIcon(back);
 
-        InventoryIcon reset = SharedItems.cancelIcon(35);
-        reset.addListener(ClickInventoryEvent.class, e -> {
+        Icon reset = SharedItems.cancelIcon(35);
+        reset.addListener(clickable -> {
             if(this.growth.equals("N/A")) return;
 
             for(int i = 11, in = 8, ord = 0; ord < 9; i += 2, ord++){
@@ -124,8 +124,8 @@ public class Growth extends InventoryBase {
         this.addIcon(reset);
     }
 
-    private InventoryIcon growthIcon(int slot, EnumGrowth growth, boolean selected) {
-        InventoryIcon icon = new InventoryIcon(slot, ItemStack.builder()
+    private Icon growthIcon(int slot, EnumGrowth growth, boolean selected) {
+        Icon icon = new Icon(slot, ItemStack.builder()
                 .itemType(ItemTypes.STAINED_HARDENED_CLAY)
                 .keyValue(Keys.DYE_COLOR, getColor(growth.name()))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
@@ -141,7 +141,7 @@ public class Growth extends InventoryBase {
             icon.getDisplay().offer(Keys.HIDE_ENCHANTMENTS, true);
         }
 
-        icon.addListener(ClickInventoryEvent.class, e -> {
+        icon.addListener(clickable -> {
             this.growth = growth.name();
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -167,8 +167,8 @@ public class Growth extends InventoryBase {
         return icon;
     }
 
-    private InventoryIcon selectedIcon(){
-        return new InventoryIcon(9, ItemStack.builder()
+    private Icon selectedIcon(){
+        return new Icon(9, ItemStack.builder()
                 .itemType(ItemTypes.STAINED_HARDENED_CLAY)
                 .keyValue(Keys.DYE_COLOR, getColor(this.growth))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
@@ -181,8 +181,8 @@ public class Growth extends InventoryBase {
         );
     }
 
-    private InventoryIcon mapInfo(){
-        return new InventoryIcon(27, ItemStack.builder()
+    private Icon mapInfo(){
+        return new Icon(27, ItemStack.builder()
                 .itemType(ItemTypes.FILLED_MAP)
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
                         TextColors.DARK_AQUA, TextStyles.BOLD, "GROWTH Info"

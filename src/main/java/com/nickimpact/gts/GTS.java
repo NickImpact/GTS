@@ -14,7 +14,8 @@ import com.nickimpact.gts.api.listings.pricing.*;
 import com.nickimpact.gts.commands.GTSBaseCmd;
 import com.nickimpact.gts.configuration.AbstractConfig;
 import com.nickimpact.gts.configuration.GTSConfigAdapter;
-import com.nickimpact.gts.entries.ItemEntry;
+import com.nickimpact.gts.entries.items.ItemAdapter;
+import com.nickimpact.gts.entries.items.ItemEntry;
 import com.nickimpact.gts.entries.pixelmon.PokemonEntry;
 import com.nickimpact.gts.internal.TextParsingUtils;
 import com.nickimpact.gts.api.text.Tokens;
@@ -31,6 +32,7 @@ import lombok.Getter;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -104,13 +106,14 @@ public class GTS {
 	private List<Log> logCache = Lists.newArrayList();
 
 	/** The observable instance that allows the UIs to detect updates */
-	private GuiUpdater updater;
+	private GuiUpdater updater = new GuiUpdater();
 
 	/** The JSON writing/reading object with pretty printing. */
 	public static final Gson prettyGson = new GsonBuilder()
 			.setPrettyPrinting()
 			.registerTypeAdapter(Entry.class, new EntryAdapter())
 			.registerTypeAdapter(Price.class, new PriceAdapter())
+			.registerTypeAdapter(DataContainer.class, new ItemAdapter())
 			.create();
 
 	/** Whether or not the plugin has passed preliminary checks */

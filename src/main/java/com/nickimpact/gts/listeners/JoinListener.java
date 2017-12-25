@@ -4,14 +4,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.listings.Listing;
-import com.nickimpact.gts.api.listings.pricing.MoneyPrice;
-import com.nickimpact.gts.entries.ItemEntry;
 import com.nickimpact.gts.utils.LotUtils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Map;
 import java.util.Optional;

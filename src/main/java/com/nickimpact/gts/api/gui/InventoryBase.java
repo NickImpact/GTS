@@ -1,10 +1,12 @@
 package com.nickimpact.gts.api.gui;
 
 import com.nickimpact.gts.GTS;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
+import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
@@ -14,7 +16,7 @@ import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.item.inventory.property.InventoryTitle;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.item.inventory.type.GridInventory;
-import org.spongepowered.api.item.inventory.type.OrderedInventory;
+import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -27,7 +29,7 @@ public class InventoryBase {
 	protected Player player;
 
 	private Inventory.Builder builder;
-	private Map<Integer, InventoryIcon> icons;
+	private Map<Integer, Icon> icons;
 	private Inventory inventory;
 
 	private int size;
@@ -41,7 +43,9 @@ public class InventoryBase {
 				.property(InventoryTitle.PROPERTY_NAME, InventoryTitle.of(title))
 				.property(InventoryDimension.PROPERTY_NAME, InventoryDimension.of(9, size))
 				.of(InventoryArchetypes.MENU_GRID)
-				.listener(ClickInventoryEvent.class, event -> event.setCancelled(true));
+				.listener(ClickInventoryEvent.class, this::processClick)
+				.listener(InteractInventoryEvent.Close.class, this::processClose)
+		;
 	}
 
 	/**
@@ -55,12 +59,32 @@ public class InventoryBase {
 		return this.builder;
 	}
 
+	private void processClick(ClickInventoryEvent event) {
+		event.setCancelled(true);
+		event.getCause().first(Player.class).ifPresent(player -> {
+			event.getTransactions().forEach(transaction -> {
+				transaction.getSlot().getProperty(SlotIndex.class, "slotindex").ifPresent(slot -> {
+					Icon icon = icons.get(slot.getValue());
+					if(icon != null) {
+						icon.process(new Clickable(player, event));
+					}
+				});
+			});
+		});
+	}
+
+	protected void processClose(InteractInventoryEvent.Close event) {
+		Sponge.getScheduler().getTasksByName("Main-" + player.getName()).forEach(
+				Task::cancel
+		);
+	}
+
 	/**
-	 * Adds a {@link InventoryIcon} display to the Mapped table of icons for the UI.
+	 * Adds a {@link Icon} display to the Mapped table of icons for the UI.
 	 *
 	 * @param icon The icon we are planning to display
 	 */
-	public void addIcon(InventoryIcon icon) {
+	public void addIcon(Icon icon) {
 		this.icons.put(icon.getSlot(), icon);
 	}
 
@@ -70,7 +94,7 @@ public class InventoryBase {
 	 * @param slot The slot index of an icon
 	 * @return An Optional value, either with an icon or empty when the slot has a null icon
 	 */
-	public Optional<InventoryIcon> getIcon(int slot) {
+	public Optional<Icon> getIcon(int slot) {
 		return Optional.ofNullable(this.icons.get(slot));
 	}
 
@@ -79,7 +103,7 @@ public class InventoryBase {
 	 *
 	 * @return A mapping of all icons with their assigned slot index
 	 */
-	public Map<Integer, InventoryIcon> getAllIcons(){
+	public Map<Integer, Icon> getAllIcons(){
 		return this.icons;
 	}
 
@@ -101,11 +125,11 @@ public class InventoryBase {
 		{
 			if(y == 0 || y == rows - 1){
 				for(int x = 0; x < 9; x++){
-					this.addIcon(new InventoryIcon(x + (9 * y), border));
+					this.addIcon(new Icon(x + (9 * y), border));
 				}
 			} else {
-				this.addIcon(new InventoryIcon((9 * y), border));
-				this.addIcon(new InventoryIcon(8 + (9 * y), border));
+				this.addIcon(new Icon((9 * y), border));
+				this.addIcon(new Icon(8 + (9 * y), border));
 			}
 		}
 
@@ -138,11 +162,11 @@ public class InventoryBase {
 	 * @param slots The slot indexes to modify
 	 */
 	public void updateContents(int... slots){
-		OrderedInventory orderedInventory = this.inventory.query(OrderedInventory.class);
+		GridInventory gridInventory = this.inventory.query(GridInventory.class);
 		this.icons.forEach((index, inventoryIcon) -> {
 			for(int sl : slots){
 				if(sl == index){
-					Slot slot = orderedInventory.getSlot(
+					Slot slot = gridInventory.getSlot(
 							SlotIndex.of(index)).orElseThrow(() -> new IllegalArgumentException("Invalid index: " + index));
 					slot.set(inventoryIcon.getDisplay());
 				}
@@ -193,7 +217,6 @@ public class InventoryBase {
 	 * assigned slots.
 	 */
 	private void buildInventory() {
-		this.icons.values().forEach(button -> button.getListeners().forEach((clazz, listener) -> this.builder.listener(clazz, listener)));
 		this.inventory = this.builder.build(GTS.getInstance());
 
 		GridInventory gridInventory = inventory.query(GridInventory.class);

@@ -5,10 +5,9 @@ import java.util.List;
 
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.gui.InventoryBase;
-import com.nickimpact.gts.api.gui.InventoryIcon;
+import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.trades.PokeRequest;
 import com.nickimpact.gts.ui.shared.SharedItems;
-import com.nickimpact.gts.utils.LotUtils;
 import com.nickimpact.gts.utils.StringUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -108,18 +107,18 @@ public class BuilderBase extends InventoryBase {
 			this.addIcon(SharedItems.forgeBorderIcon(x + (9 * y), DyeColors.BLACK));
 		}
 
-		this.addIcon(new InventoryIcon(18, ItemStack.builder().from(SharedItems.pokemonDisplay(
+		this.addIcon(new Icon(18, ItemStack.builder().from(SharedItems.pokemonDisplay(
 				pokemon, this.form)
 				)
-				.keyValue(Keys.DISPLAY_NAME, Text.of(
+				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.YELLOW, TextStyles.BOLD, EnumPokemon.getFromNameAnyCase(this.name).name()
 						))
-				.keyValue(Keys.ITEM_LORE, this.lore)
+				.add(Keys.ITEM_LORE, this.lore)
 				.build()
 				));
 
-		InventoryIcon confirm = SharedItems.confirmIcon(17);
-		confirm.addListener(ClickInventoryEvent.class, e -> {
+		Icon confirm = SharedItems.confirmIcon(17);
+		confirm.addListener(clickable -> {
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
 				player.closeInventory();
 
@@ -141,8 +140,8 @@ public class BuilderBase extends InventoryBase {
 		});
 		this.addIcon(confirm);
 
-		InventoryIcon deny = SharedItems.denyIcon(35);
-		deny.addListener(ClickInventoryEvent.class, e -> {
+		Icon deny = SharedItems.denyIcon(35);
+		deny.addListener(clickable -> {
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
 				this.player.closeInventory();
 			})
@@ -162,13 +161,13 @@ public class BuilderBase extends InventoryBase {
 		this.addIcon(formIcon());
 	}
 
-	InventoryIcon levelIcon() {
-		InventoryIcon icon = new InventoryIcon(11, ItemStack.builder()
+	Icon levelIcon() {
+		Icon icon = new Icon(11, ItemStack.builder()
 				.itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:rare_candy").orElse(ItemTypes.BARRIER))
-				.keyValue(Keys.DISPLAY_NAME, Text.of(
+				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.DARK_AQUA, TextStyles.BOLD, "LEVEL"
 						))
-				.keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+				.add(Keys.ITEM_LORE, Lists.newArrayList(
 						Text.of(TextColors.GRAY, "Click here if you wish to"),
 						Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "minimum level"),
 						Text.of(TextColors.GRAY, "requirement for your query"),
@@ -178,7 +177,7 @@ public class BuilderBase extends InventoryBase {
 						))
 				.build()
 				);
-		icon.addListener(ClickInventoryEvent.class, e -> {
+		icon.addListener(clickable -> {
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
 				player.closeInventory();
 
@@ -188,14 +187,14 @@ public class BuilderBase extends InventoryBase {
 		return icon;
 	}
 
-	InventoryIcon abilityIcon() {
-		InventoryIcon icon = new InventoryIcon(13, ItemStack.builder()
+	Icon abilityIcon() {
+		Icon icon = new Icon(13, ItemStack.builder()
 				.itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:ability_capsule").orElse(
 						ItemTypes.BARRIER))
-				.keyValue(Keys.DISPLAY_NAME, Text.of(
+				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.DARK_AQUA, TextStyles.BOLD, "ABILITY"
 						))
-				.keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+				.add(Keys.ITEM_LORE, Lists.newArrayList(
 						Text.of(TextColors.GRAY, "Click here if you wish to"),
 						Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "ability ", TextColors.GRAY,
 								"requirement"),
@@ -205,7 +204,7 @@ public class BuilderBase extends InventoryBase {
 						))
 				.build()
 				);
-		icon.addListener(ClickInventoryEvent.class, e -> {
+		icon.addListener(clickable -> {
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
 				player.closeInventory();
 
@@ -215,13 +214,13 @@ public class BuilderBase extends InventoryBase {
 		return icon;
 	}
 
-	InventoryIcon natureIcon() {
-		InventoryIcon icon = new InventoryIcon(15, ItemStack.builder()
+	Icon natureIcon() {
+		Icon icon = new Icon(15, ItemStack.builder()
 				.itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:ever_stone").orElse(ItemTypes.BARRIER))
-				.keyValue(Keys.DISPLAY_NAME, Text.of(
+				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.DARK_AQUA, TextStyles.BOLD, "NATURE"
 						))
-				.keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+				.add(Keys.ITEM_LORE, Lists.newArrayList(
 						Text.of(TextColors.GRAY, "Click here if you wish to"),
 						Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "nature ", TextColors.GRAY,
 								"requirement"),
@@ -231,7 +230,7 @@ public class BuilderBase extends InventoryBase {
 						))
 				.build()
 				);
-		icon.addListener(ClickInventoryEvent.class, e -> {
+		icon.addListener(clickable -> {
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
 				player.closeInventory();
 
@@ -241,14 +240,14 @@ public class BuilderBase extends InventoryBase {
 		return icon;
 	}
 
-	InventoryIcon statsIcon() {
-		InventoryIcon icon = new InventoryIcon(20, ItemStack.builder()
+	Icon statsIcon() {
+		Icon icon = new Icon(20, ItemStack.builder()
 				.itemType(
 						Sponge.getRegistry().getType(ItemType.class, "pixelmon:destiny_knot").orElse(ItemTypes.BARRIER))
-				.keyValue(Keys.DISPLAY_NAME, Text.of(
+				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.DARK_AQUA, TextStyles.BOLD, "EVs/IVs"
 						))
-				.keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+				.add(Keys.ITEM_LORE, Lists.newArrayList(
 						Text.of(TextColors.GRAY, "Click here if you wish to"),
 						Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "EVs/IVs ", TextColors.GRAY,
 								"requirement"),
@@ -270,7 +269,7 @@ public class BuilderBase extends InventoryBase {
 						))
 				.build()
 				);
-		icon.addListener(ClickInventoryEvent.class, e -> {
+		icon.addListener(clickable -> {
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
 				player.closeInventory();
 
@@ -280,17 +279,17 @@ public class BuilderBase extends InventoryBase {
 		return icon;
 	}
 
-	InventoryIcon genderIcon(boolean valid) {
-		InventoryIcon icon;
+	Icon genderIcon(boolean valid) {
+		Icon icon;
 
 		if (valid) {
-			icon = new InventoryIcon(22, ItemStack.builder()
+			icon = new Icon(22, ItemStack.builder()
 					.itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:rose_incense").orElse(
 							ItemTypes.BARRIER))
-					.keyValue(Keys.DISPLAY_NAME, Text.of(
+					.add(Keys.DISPLAY_NAME, Text.of(
 							TextColors.DARK_AQUA, TextStyles.BOLD, "GENDER"
 							))
-					.keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+					.add(Keys.ITEM_LORE, Lists.newArrayList(
 							Text.of(TextColors.GRAY, "Click here if you wish to"),
 							Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "gender ", TextColors.GRAY,
 									"requirement"),
@@ -300,7 +299,7 @@ public class BuilderBase extends InventoryBase {
 							))
 					.build()
 					);
-			icon.addListener(ClickInventoryEvent.class, e -> {
+			icon.addListener(clickable -> {
 				Sponge.getScheduler().createTaskBuilder().execute(() -> {
 					player.closeInventory();
 
@@ -308,12 +307,12 @@ public class BuilderBase extends InventoryBase {
 				}).delayTicks(1).submit(GTS.getInstance());
 			});
 		} else {
-			icon = new InventoryIcon(22, ItemStack.builder()
+			icon = new Icon(22, ItemStack.builder()
 					.itemType(ItemTypes.BARRIER)
-					.keyValue(Keys.DISPLAY_NAME, Text.of(
+					.add(Keys.DISPLAY_NAME, Text.of(
 							TextColors.DARK_AQUA, TextStyles.BOLD, "GENDER"
 							))
-					.keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+					.add(Keys.ITEM_LORE, Lists.newArrayList(
 							Text.of(TextColors.RED, "No possible genders...")
 							))
 					.build()
@@ -322,14 +321,14 @@ public class BuilderBase extends InventoryBase {
 		return icon;
 	}
 
-	InventoryIcon growthIcon() {
-		InventoryIcon icon = new InventoryIcon(24, ItemStack.builder()
+	Icon growthIcon() {
+		Icon icon = new Icon(24, ItemStack.builder()
 				.itemType(ItemTypes.DYE)
-				.keyValue(Keys.DYE_COLOR, DyeColors.WHITE)
-				.keyValue(Keys.DISPLAY_NAME, Text.of(
+				.add(Keys.DYE_COLOR, DyeColors.WHITE)
+				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.DARK_AQUA, TextStyles.BOLD, "GROWTH"
 						))
-				.keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+				.add(Keys.ITEM_LORE, Lists.newArrayList(
 						Text.of(TextColors.GRAY, "Click here if you wish to"),
 						Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "growth ", TextColors.GRAY,
 								"requirement"),
@@ -339,23 +338,21 @@ public class BuilderBase extends InventoryBase {
 						))
 				.build()
 				);
-		icon.addListener(ClickInventoryEvent.class, e -> {
-			Sponge.getScheduler().createTaskBuilder().execute(() -> {
-				player.closeInventory();
+		icon.addListener(clickable -> Sponge.getScheduler().createTaskBuilder().execute(() -> {
+			player.closeInventory();
 
-				player.openInventory(new Growth(this.player, this).getInventory());
-			}).delayTicks(1).submit(GTS.getInstance());
-		});
+			player.openInventory(new Growth(this.player, this).getInventory());
+		}).delayTicks(1).submit(GTS.getInstance()));
 		return icon;
 	}
 
-	private InventoryIcon shinyIcon() {
-		InventoryIcon icon = new InventoryIcon(29, ItemStack.builder()
+	private Icon shinyIcon() {
+		Icon icon = new Icon(29, ItemStack.builder()
 				.itemType(ItemTypes.NETHER_STAR)
-				.keyValue(Keys.DISPLAY_NAME, Text.of(
+				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.DARK_AQUA, TextStyles.BOLD, "Shininess"
 						))
-				.keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+				.add(Keys.ITEM_LORE, Lists.newArrayList(
 						Text.of(TextColors.GRAY, "Click here if you wish to"),
 						Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "shininess ", TextColors.GRAY,
 								"requirement"),
@@ -366,7 +363,7 @@ public class BuilderBase extends InventoryBase {
 						))
 				.build()
 				);
-		icon.addListener(ClickInventoryEvent.class, e -> {
+		icon.addListener(clickable -> {
 			this.shiny = !this.shiny;
 
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -378,13 +375,13 @@ public class BuilderBase extends InventoryBase {
 		return icon;
 	}
 
-	InventoryIcon pokeballIcon() {
-		InventoryIcon icon = new InventoryIcon(31, ItemStack.builder()
+	Icon pokeballIcon() {
+		Icon icon = new Icon(31, ItemStack.builder()
 				.itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:poke_ball").orElse(ItemTypes.BARRIER))
-				.keyValue(Keys.DISPLAY_NAME, Text.of(
+				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.DARK_AQUA, TextStyles.BOLD, "Pokeball"
 						))
-				.keyValue(Keys.ITEM_LORE, Lists.newArrayList(
+				.add(Keys.ITEM_LORE, Lists.newArrayList(
 						Text.of(TextColors.GRAY, "Click here if you wish to"),
 						Text.of(TextColors.GRAY, "modify the ", TextColors.YELLOW, "pokeball ", TextColors.GRAY,
 								"requirement"),
@@ -397,26 +394,24 @@ public class BuilderBase extends InventoryBase {
 						))
 				.build()
 				);
-		icon.addListener(ClickInventoryEvent.class, e -> {
-			Sponge.getScheduler().createTaskBuilder().execute(() -> {
-				player.closeInventory();
+		icon.addListener(clickable -> Sponge.getScheduler().createTaskBuilder().execute(() -> {
+			player.closeInventory();
 
-				player.openInventory(new Pokeball(this.player, this).getInventory());
-			}).delayTicks(1).submit(GTS.getInstance());
-		});
+			player.openInventory(new Pokeball(this.player, this).getInventory());
+		}).delayTicks(1).submit(GTS.getInstance()));
 		return icon;
 	}
 
-	InventoryIcon formIcon() {
-		InventoryIcon icon = new InventoryIcon(33, ItemStack.builder()
+	Icon formIcon() {
+		Icon icon = new Icon(33, ItemStack.builder()
 				.itemType(this.pokemon.getNumForms() > 0 ?
 						Sponge.getRegistry().getType(ItemType.class, "pixelmon:meteorite").orElse(ItemTypes.BARRIER) :
 							ItemTypes.BARRIER
 						)
-				.keyValue(Keys.DISPLAY_NAME, Text.of(
+				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.DARK_AQUA, TextStyles.BOLD, "FORM"
 						))
-				.keyValue(Keys.ITEM_LORE,
+				.add(Keys.ITEM_LORE,
 						this.pokemon.getNumForms() > 0 ?
 								Lists.newArrayList(
 										Text.of(TextColors.GRAY, "Click here if you wish to"),
@@ -437,13 +432,11 @@ public class BuilderBase extends InventoryBase {
 				);
 
 		if (this.pokemon.getNumForms() > 0)
-			icon.addListener(ClickInventoryEvent.class, e -> {
-				Sponge.getScheduler().createTaskBuilder().execute(() -> {
-					player.closeInventory();
+			icon.addListener(clickable -> Sponge.getScheduler().createTaskBuilder().execute(() -> {
+				player.closeInventory();
 
-					player.openInventory(new Form(this.player, this, getNumRows(this.pokemon)).getInventory());
-				}).delayTicks(1).submit(GTS.getInstance());
-			});
+				player.openInventory(new Form(this.player, this, getNumRows(this.pokemon)).getInventory());
+			}).delayTicks(1).submit(GTS.getInstance()));
 		return icon;
 	}
 

@@ -80,7 +80,7 @@ public abstract class Entry<T> {
 		List<Text> lore;
 
 		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("dummy", element);
+		variables.put("dummy", getElement());
 		variables.put("price", price);
 		variables.put("dummy2", listing);
 

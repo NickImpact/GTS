@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.configuration.MsgConfigKeys;
-import com.nickimpact.gts.api.gui.InventoryIcon;
+import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.utils.ItemUtils;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -41,8 +41,8 @@ public class SharedItems {
      * @param color The dye color of the border piece
      * @return An icon for an Inventory display
      */
-    public static InventoryIcon forgeBorderIcon(int slot, DyeColor color){
-        return new InventoryIcon(slot, ItemStack.builder()
+    public static Icon forgeBorderIcon(int slot, DyeColor color){
+        return new Icon(slot, ItemStack.builder()
                 .itemType(ItemTypes.STAINED_GLASS_PANE)
                 .quantity(1)
                 .add(Keys.DISPLAY_NAME, Text.of(TextColors.BLACK, ""))
@@ -78,8 +78,8 @@ public class SharedItems {
         return ItemStackUtil.fromNative(nativeItem);
     }
 
-    static InventoryIcon pageIcon(int slot, boolean nextOrLast, int curr, int next){
-        return new InventoryIcon(slot, ItemStack.builder()
+    static Icon pageIcon(int slot, boolean nextOrLast, int curr, int next){
+        return new Icon(slot, ItemStack.builder()
                 .itemType(ItemTypes.DYE)
                 .quantity(1)
                 .add(Keys.DISPLAY_NAME, nextOrLast ? Text.of(
@@ -99,7 +99,7 @@ public class SharedItems {
         );
     }
 
-    static InventoryIcon refreshIcon(Player player, int slot){
+    static Icon refreshIcon(Player player, int slot){
     	ItemStack.Builder ib = ItemStack.builder().itemType(ItemTypes.BOOK);
 	    try {
 	    	ib.add(Keys.DISPLAY_NAME, GTS.getInstance().getTextParsingUtils().parse(
@@ -112,10 +112,10 @@ public class SharedItems {
 		    ib.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Refresh Listings"));
 	    }
 
-	    return new InventoryIcon(slot, ib.build());
+	    return new Icon(slot, ib.build());
     }
 
-    static InventoryIcon playerIcon(Player player, int slot){
+    static Icon playerIcon(Player player, int slot){
     	Text title;
     	List<Text> lore;
     	try {
@@ -140,10 +140,10 @@ public class SharedItems {
 		    lore = Lists.newArrayList();
 	    }
 
-	    return new InventoryIcon(slot, ItemUtils.createSkull(player.getUniqueId(), title, lore));
+	    return new Icon(slot, ItemUtils.createSkull(player.getUniqueId(), title, lore));
     }
 
-    static InventoryIcon balanceIcon(int slot, Player player){
+    static Icon balanceIcon(int slot, Player player){
         ItemStack icon = ItemStack.builder()
                 .itemType(ItemTypes.GOLD_INGOT)
                 .build();
@@ -164,11 +164,11 @@ public class SharedItems {
             //icon.offer(Keys.DISPLAY_NAME, GTS.getInstance().getAPI().getMessage("UI.Items.Balance Icon", textOptions));
         }
 
-        return new InventoryIcon(slot, icon);
+        return new Icon(slot, icon);
     }
 
-    static InventoryIcon playerListingsIcon(int slot){
-        return new InventoryIcon(slot, ItemStack.builder()
+    static Icon playerListingsIcon(int slot){
+        return new Icon(slot, ItemStack.builder()
                 .itemType(ItemTypes.WRITTEN_BOOK)
                 .quantity(1)
                 //.add(Keys.DISPLAY_NAME, GTS.getInstance().getAPI().getMessage("UI.Items.Player Listings", null))
@@ -177,8 +177,8 @@ public class SharedItems {
         );
     }
 
-    public static InventoryIcon confirmIcon(int slot){
-        return new InventoryIcon(slot, ItemStack.builder()
+    public static Icon confirmIcon(int slot){
+        return new Icon(slot, ItemStack.builder()
                 .itemType(ItemTypes.DYE)
                 .quantity(1)
                 .add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, "Confirm Action"))
@@ -187,8 +187,8 @@ public class SharedItems {
         );
     }
 
-    public static InventoryIcon denyIcon(int slot){
-        return new InventoryIcon(slot, ItemStack.builder()
+    public static Icon denyIcon(int slot){
+        return new Icon(slot, ItemStack.builder()
                 .itemType(ItemTypes.DYE)
                 .quantity(1)
                 .add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Cancel Action"))
@@ -197,8 +197,8 @@ public class SharedItems {
         );
     }
 
-    static InventoryIcon lastMenu(int slot){
-        return new InventoryIcon(slot, ItemStack.builder()
+    static Icon lastMenu(int slot){
+        return new Icon(slot, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:eject_button").get())
                 .quantity(1)
                 .add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Last Menu"))
@@ -206,8 +206,8 @@ public class SharedItems {
         );
     }
 
-    public static InventoryIcon cancelIcon(int slot){
-        return new InventoryIcon(slot, ItemStack.builder()
+    public static Icon cancelIcon(int slot){
+        return new Icon(slot, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:trash_can").orElse(ItemTypes.BARRIER))
                 .add(Keys.DISPLAY_NAME, Text.of(
                         TextColors.RED, TextStyles.BOLD, "Reset Option"

@@ -3,7 +3,7 @@ package com.nickimpact.gts.ui.builder;
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.gui.InventoryBase;
-import com.nickimpact.gts.api.gui.InventoryIcon;
+import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import com.pixelmonmod.pixelmon.enums.items.EnumPokeballs;
 import org.spongepowered.api.Sponge;
@@ -55,13 +55,13 @@ public class Pokeball extends InventoryBase {
             slot++;
         }
 
-        InventoryIcon back = new InventoryIcon(14, ItemStack.builder()
+        Icon back = new Icon(14, ItemStack.builder()
                 .itemType(
                         Sponge.getRegistry().getType(ItemType.class, "pixelmon:eject_button").orElse(ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "\u2190 Return to Spec Designer \u2190"))
                 .build()
         );
-        back.addListener(ClickInventoryEvent.class, e -> {
+        back.addListener(clickable -> {
             this.base.pokeball = pokeball;
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -74,8 +74,8 @@ public class Pokeball extends InventoryBase {
         });
         this.addIcon(back);
 
-        InventoryIcon reset = SharedItems.cancelIcon(17);
-        reset.addListener(ClickInventoryEvent.class, e -> {
+        Icon reset = SharedItems.cancelIcon(17);
+        reset.addListener(clickable -> {
             if(this.pokeball.equals("N/A")) return;
 
             this.addIcon(pokeballIcon(EnumPokeballs.valueOf(this.pokeball).ordinal() + 27,
@@ -90,8 +90,8 @@ public class Pokeball extends InventoryBase {
         this.addIcon(reset);
     }
 
-    private InventoryIcon selectedIcon() {
-        return new InventoryIcon(9, ItemStack.builder()
+    private Icon selectedIcon() {
+        return new Icon(9, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class,
                                                        getItemName(this.pokeball)).orElse(ItemTypes.BARRIER)
                 )
@@ -109,8 +109,8 @@ public class Pokeball extends InventoryBase {
         );
     }
 
-    private InventoryIcon mapInfo() {
-        return new InventoryIcon(12, ItemStack.builder()
+    private Icon mapInfo() {
+        return new Icon(12, ItemStack.builder()
                 .itemType(ItemTypes.FILLED_MAP)
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
                         TextColors.DARK_AQUA, TextStyles.BOLD, "Pokeball Info"
@@ -124,8 +124,8 @@ public class Pokeball extends InventoryBase {
         );
     }
 
-    private InventoryIcon pokeballIcon(int slot, EnumPokeballs pokeball, boolean selected) {
-        InventoryIcon icon = new InventoryIcon(slot, ItemStack.builder()
+    private Icon pokeballIcon(int slot, EnumPokeballs pokeball, boolean selected) {
+        Icon icon = new Icon(slot, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class,
                                                        getItemName(pokeball.name()))
                                   .orElse(Sponge.getRegistry().getType(ItemType.class, "pixelmon:poke_ball").orElse(
@@ -149,7 +149,7 @@ public class Pokeball extends InventoryBase {
             icon.getDisplay().offer(Keys.HIDE_ENCHANTMENTS, true);
         }
 
-        icon.addListener(ClickInventoryEvent.class, e -> {
+        icon.addListener(clickable -> {
             if (!this.pokeball.equals("N/A"))
                 this.addIcon(pokeballIcon(EnumPokeballs.valueOf(this.pokeball).ordinal() + 27,
                                           EnumPokeballs.valueOf(this.pokeball), false));

@@ -17,6 +17,7 @@ import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,6 +41,14 @@ public class TextParsingUtils {
 		}
 
 		return templates;
+	}
+
+	public Text parse(String template, CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) throws NucleusException {
+		return this.parse(this.getTemplate(template), source, tokens, variables);
+	}
+
+	public List<Text> parse(Collection<String> templates, CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) throws NucleusException {
+		return this.parse(this.getTemplates(Lists.newArrayList(templates)), source, tokens, variables);
 	}
 
 	public Text parse(NucleusTextTemplate template, CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
@@ -80,9 +89,5 @@ public class TextParsingUtils {
 			return Text.EMPTY;
 
 		return price.getText();
-	}
-
-	public Text getListingInfo(Listing listingFromVaribleIfExists) {
-		return Text.EMPTY;
 	}
 }

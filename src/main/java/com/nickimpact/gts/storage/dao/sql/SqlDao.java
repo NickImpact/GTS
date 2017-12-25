@@ -145,8 +145,6 @@ public class SqlDao extends AbstractDao {
 	public void addListing(Listing listing) throws Exception {
 		try (Connection connection = this.findConnection()) {
 			String stmt = prefix.apply(ADD_LISTING);
-			String json = GTS.prettyGson.toJson(listing);
-			System.out.println("\n" + json);
 			stmt = String.format(stmt, listing.getID(), listing.getOwnerUUID(), GTS.prettyGson.toJson(listing));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();

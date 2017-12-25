@@ -3,25 +3,30 @@ package com.nickimpact.gts.ui;
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
+import com.nickimpact.gts.api.configuration.MsgConfigKeys;
 import com.nickimpact.gts.api.gui.InventoryBase;
-import com.nickimpact.gts.api.gui.InventoryIcon;
+import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import com.nickimpact.gts.utils.ItemUtils;
+import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
+import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyles;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -65,17 +70,29 @@ public class MainUI extends InventoryBase implements Observer {
 
 		this.drawInventory();
 		GTS.getInstance().getUpdater().addObserver(this);
+		Sponge.getScheduler().createTaskBuilder().execute(() -> {
+			this.drawListings(getListings());
+			this.listingUpdate();
+		}).interval(1, TimeUnit.SECONDS).name("Main-" + player.getName()).submit(GTS.getInstance());
 	}
 
-	private void drawInventory() {
-		this.drawDesign();
-
+	private List<Listing> getListings() {
 		List<Listing> listings;
 		if(this.searchCondition != null)
 			listings = GTS.getInstance().getListingsCache().stream().filter(this.searchCondition).collect(Collectors.toList());
 		else
 			listings = GTS.getInstance().getListingsCache();
-		this.drawListings(listings);
+
+		listings = listings.stream().filter(listing -> !listing.checkHasExpired()).collect(Collectors.toList());
+
+		return listings;
+	}
+
+	private void drawInventory() {
+		this.drawDesign();
+		this.drawSidePanel();
+		this.drawActionPanel();
+		this.drawListings(getListings());
 	}
 
 	/**
@@ -88,7 +105,7 @@ public class MainUI extends InventoryBase implements Observer {
 		int x;
 		int y = 0;
 
-		GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(Text.of(GTSInfo.DEBUG_PREFIX, "Size: " + listings.size())));
+		GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.DEBUG_PREFIX, "Drawing listings")));
 
 		int index = 24 * (page - 1);
 
@@ -97,18 +114,18 @@ public class MainUI extends InventoryBase implements Observer {
 				if(index >= listings.size())
 					break;
 				final int pos = index;
-				InventoryIcon icon = new InventoryIcon(x + (9 * y), listings.get(pos).getDisplay(this.player, false));
-				icon.addListener(ClickInventoryEvent.class, e -> {
+				Icon icon = new Icon(x + (9 * y), listings.get(pos).getDisplay(this.player, false));
+				icon.addListener(clickable -> {
 					Listing l = listings.get(pos);
 					int id = l.getID();
 
 					if(GTS.getInstance().getListingsCache().stream().anyMatch(listing -> listing.getID() == id)) {
 						Sponge.getScheduler().createTaskBuilder()
 								.execute(() -> {
-									this.player.closeInventory();
+									clickable.getPlayer().closeInventory();
 									GTS.getInstance().getUpdater().deleteObserver(this);
 
-									this.player.openInventory(new ConfirmUI(this.player, l, searchCondition).getInventory());
+									clickable.getPlayer().openInventory(new ConfirmUI(this.player, l, searchCondition).getInventory());
 								})
 								.delayTicks(1)
 								.submit(GTS.getInstance());
@@ -141,17 +158,116 @@ public class MainUI extends InventoryBase implements Observer {
 				this.addIcon(SharedItems.forgeBorderIcon(x + 9 * y, DyeColors.BLACK));
 			}
 		}
-
-		ItemStack skull = ItemUtils.createSkull(player.getUniqueId(), Text.of(TextColors.YELLOW, "Player Info"), Lists.newArrayList());
-		this.addIcon(new InventoryIcon(49, skull));
 	}
 
 	private void drawSidePanel() {
+		// Page up = 16
+		// Page down = 25
+		// Refresh = 34
 
+		try {
+			Icon up = new Icon(
+					16,
+					ItemStack.builder()
+							.itemType(ItemTypes.TIPPED_ARROW)
+							.add(Keys.POTION_EFFECTS, Lists.newArrayList(
+									PotionEffect.builder()
+											.amplifier(0)
+											.duration(100)
+											.potionType(PotionEffectTypes.JUMP_BOOST)
+											.build()
+							))
+							.add(Keys.DISPLAY_NAME, GTS.getInstance().getTextParsingUtils().parse(
+									GTS.getInstance().getMsgConfig().get(MsgConfigKeys.UI_ITEMS_NEXT_PAGE),
+									player,
+									null,
+									null
+							))
+							.add(Keys.HIDE_ATTRIBUTES, true)
+							.add(Keys.HIDE_MISCELLANEOUS, true)
+							.build()
+			);
+			up.addListener(clickable -> {
+
+			});
+			Icon down = new Icon(
+					25,
+					ItemStack.builder()
+							.itemType(ItemTypes.TIPPED_ARROW)
+							.add(Keys.POTION_EFFECTS, Lists.newArrayList(
+									PotionEffect.builder()
+											.amplifier(0)
+											.duration(100)
+											.potionType(PotionEffectTypes.INSTANT_HEALTH)
+											.build()
+							))
+							.add(Keys.DISPLAY_NAME, GTS.getInstance().getTextParsingUtils().parse(
+									GTS.getInstance().getMsgConfig().get(MsgConfigKeys.UI_ITEMS_LAST_PAGE),
+									player,
+									null,
+									null
+							))
+							.add(Keys.HIDE_ATTRIBUTES, true)
+							.add(Keys.HIDE_MISCELLANEOUS, true)
+							.build()
+			);
+			Icon refresh = new Icon(
+					34,
+					ItemStack.builder()
+							.itemType(ItemTypes.TOTEM_OF_UNDYING)
+							.add(Keys.DISPLAY_NAME, GTS.getInstance().getTextParsingUtils().parse(
+									GTS.getInstance().getMsgConfig().get(MsgConfigKeys.UI_ITEMS_REFRESH),
+									player,
+									null,
+									null
+							))
+							.add(Keys.HIDE_ATTRIBUTES, true)
+							.add(Keys.HIDE_MISCELLANEOUS, true)
+							.build()
+			);
+			refresh.addListener(clickable -> {
+				this.drawListings(this.getListings());
+				this.listingUpdate();
+			});
+			this.addIcon(up);
+			this.addIcon(down);
+			this.addIcon(refresh);
+		} catch (NucleusException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void drawActionPanel() {
+		try {
+			ItemStack sort = ItemStack.builder()
+					.itemType(ItemTypes.FILLED_MAP)
+					.add(Keys.DISPLAY_NAME, GTS.getInstance().getTextParsingUtils().parse(
+							GTS.getInstance().getMsgConfig().get(MsgConfigKeys.UI_ITEMS_SORT_TITLE),
+							player,
+							null,
+							null
+					))
+					.build();
+			Icon icon = new Icon(47, sort);
+			icon.addListener(clickable -> {
+				GTS.getInstance().getConsole().ifPresent(console -> {
+					console.sendMessages(
+							Text.of(GTSInfo.DEBUG_PREFIX, "Click Action Test"),
+							Text.of(GTSInfo.DEBUG_PREFIX, "Player: " + clickable.getPlayer().getName()),
+							Text.of(GTSInfo.DEBUG_PREFIX, "Event: " + clickable.getEvent().getClass())
+					);
+				});
+			});
+			this.addIcon(icon);
+		} catch (NucleusException e) {
+			e.printStackTrace();
+		}
 
+		ItemStack skull = ItemUtils.createSkull(player.getUniqueId(), Text.of(TextColors.YELLOW, "Player Info"), Lists.newArrayList());
+		this.addIcon(new Icon(49, skull));
+
+		ItemStack possession = ItemStack.builder().itemType(ItemTypes.WRITTEN_BOOK).add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Your Listings")).build();
+		this.addIcon(new Icon(51, possession));
 	}
 
 	@Override
@@ -162,5 +278,15 @@ public class MainUI extends InventoryBase implements Observer {
 		else
 			listings = GTS.getInstance().getListingsCache();
 		this.drawListings(listings);
+		this.listingUpdate();
+	}
+
+	private void listingUpdate() {
+		this.updateContents(
+				0, 1, 2, 3, 4, 5,
+				9, 10, 11, 12, 13, 14,
+				18, 19, 20, 21, 22, 23,
+				27, 28, 29, 30, 31, 32
+		);
 	}
 }

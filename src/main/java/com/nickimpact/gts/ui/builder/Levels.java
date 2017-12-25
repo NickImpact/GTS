@@ -3,7 +3,7 @@ package com.nickimpact.gts.ui.builder;
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.gui.InventoryBase;
-import com.nickimpact.gts.api.gui.InventoryIcon;
+import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import org.spongepowered.api.Sponge;
@@ -52,8 +52,8 @@ public class Levels extends InventoryBase {
         this.addIcon(addOption());
         this.addIcon(removeOption());
 
-        InventoryIcon reset = SharedItems.cancelIcon(14);
-        reset.addListener(ClickInventoryEvent.class, e -> {
+        Icon reset = SharedItems.cancelIcon(14);
+        reset.addListener(clickable -> {
             this.currLevel = 1;
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -64,12 +64,12 @@ public class Levels extends InventoryBase {
         });
         this.addIcon(reset);
 
-        InventoryIcon back = new InventoryIcon(16, ItemStack.builder()
+        Icon back = new Icon(16, ItemStack.builder()
                 .itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:eject_button").orElse(ItemTypes.BARRIER))
                 .keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "\u2190 Return to Spec Designer \u2190"))
                 .build()
         );
-        back.addListener(ClickInventoryEvent.class, e -> {
+        back.addListener(clickable -> {
             this.base.level = currLevel;
 
             Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -85,8 +85,8 @@ public class Levels extends InventoryBase {
         this.addIcon(back);
     }
 
-    private InventoryIcon addOption(){
-        InventoryIcon icon =  new InventoryIcon(10, ItemStack.builder()
+    private Icon addOption(){
+        Icon icon =  new Icon(10, ItemStack.builder()
                 .itemType(ItemTypes.STAINED_HARDENED_CLAY)
                 .keyValue(Keys.DYE_COLOR, DyeColors.LIME)
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
@@ -109,8 +109,8 @@ public class Levels extends InventoryBase {
                 ))
                 .build()
         );
-        icon.addListener(ClickInventoryEvent.class, e -> {
-            if(!(e instanceof ClickInventoryEvent.Shift)){
+        icon.addListener(clickable -> {
+            if(!(clickable.getEvent() instanceof ClickInventoryEvent.Shift)){
                 if(this.currLevel + 1 <= PixelmonConfig.maxLevel)
                 this.currLevel += 1;
             } else {
@@ -128,8 +128,8 @@ public class Levels extends InventoryBase {
         return icon;
     }
 
-    private InventoryIcon removeOption(){
-        InventoryIcon icon =  new InventoryIcon(12, ItemStack.builder()
+    private Icon removeOption(){
+        Icon icon =  new Icon(12, ItemStack.builder()
                 .itemType(ItemTypes.STAINED_HARDENED_CLAY)
                 .keyValue(Keys.DYE_COLOR, DyeColors.RED)
                 .keyValue(Keys.DISPLAY_NAME, Text.of(
@@ -152,8 +152,8 @@ public class Levels extends InventoryBase {
                 ))
                 .build()
         );
-        icon.addListener(ClickInventoryEvent.class, e -> {
-            if(!(e instanceof ClickInventoryEvent.Shift)) {
+        icon.addListener(clickable -> {
+            if(!(clickable.getEvent() instanceof ClickInventoryEvent.Shift)) {
                 if (this.currLevel - 1 >= 1)
                     this.currLevel -= 1;
             } else {

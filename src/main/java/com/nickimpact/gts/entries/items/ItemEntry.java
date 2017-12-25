@@ -1,4 +1,4 @@
-package com.nickimpact.gts.entries;
+package com.nickimpact.gts.entries.items;
 
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
@@ -20,6 +20,7 @@ import org.spongepowered.api.text.Text;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Represents an ItemStack that can be added as an entry into the GTS market. The generified typing
@@ -62,14 +63,19 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	protected List<String> baseLoreTemplate() {
-		return Lists.newArrayList(
+		List<String> output = Lists.newArrayList(
 				"&7Listing ID: &e{{id}}",
 				"&7Seller: &e{{seller}}",
 				"&7Price: &e{{price}}",
-				"&7Time Left: &e{{time_left}}",
-				"",
-				"{{lore}}"
+				"&7Time Left: &e{{time_left}}"
 		);
+
+		this.decode().get(Keys.ITEM_LORE).ifPresent(lore -> {
+			output.add("&aItem Lore:");
+			output.addAll(lore.stream().map(Text::toPlain).collect(Collectors.toList()));
+		});
+
+		return output;
 	}
 
 	@Override
@@ -89,11 +95,7 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	public boolean giveEntry(User user){
-		Optional<Player> optP = Sponge.getServer().getPlayer(user.getUniqueId());
-		if(!optP.isPresent())
-			return false;
-
-		optP.get().getInventory().offer(decode());
+		((Player)user).getInventory().offer(this.decode());
 		return true;
 	}
 

@@ -2,7 +2,9 @@ package com.nickimpact.gts.internal;
 
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.api.text.Translator;
+import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -24,7 +26,7 @@ public class ItemTokens {
 		tokens.put("item_title", (p, v, m) -> {
 			ItemStack item = getItemStackFromVariableIfExists(m);
 			if(!item.get(Keys.DISPLAY_NAME).isPresent())
-				return Optional.of(Text.of(item.getType().getName()));
+				return Optional.of(Text.of(TextColors.DARK_AQUA, item.getType().getTranslation().get()));
 
 			return Optional.of(item.get(Keys.DISPLAY_NAME).get());
 		});
@@ -52,7 +54,14 @@ public class ItemTokens {
 	}
 
 	private static ItemStack getItemStackFromVariableIfExists(Map<String, Object> m) {
-		Optional<Object> opt = m.values().stream().filter(val -> val instanceof ItemStack).findAny();
-		return (ItemStack) opt.orElse(null);
+		Optional<Object> opt = m.values().stream().filter(val -> val instanceof ItemStack || val instanceof DataContainer).findAny();
+		if(opt.isPresent()) {
+			if(opt.get() instanceof DataContainer)
+				return ItemStack.builder().fromContainer((DataContainer)opt.get()).build();
+
+			return (ItemStack) opt.get();
+		}
+
+		return ItemStack.builder().itemType(ItemTypes.BARRIER).add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "ERROR")).build();
 	}
 }

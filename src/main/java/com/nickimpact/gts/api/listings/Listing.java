@@ -2,9 +2,11 @@ package com.nickimpact.gts.api.listings;
 
 import com.nickimpact.gts.api.listings.data.AuctionData;
 import com.nickimpact.gts.api.listings.entries.Entry;
+import lombok.Getter;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
@@ -17,93 +19,56 @@ import java.util.UUID;
 public class Listing {
 
     /** The ID of the entry */
-    private int id;
+    @Getter private int ID;
 
     /** The owner of the entry */
-    private String oName;
+    @Getter private String ownerName;
 
     /** The uuid of the entry owner */
-    private UUID oUUID;
+    @Getter private UUID ownerUUID;
 
-    private Entry entry;
+    @Getter private Entry entry;
 
     /** Whether or not the entry will expire */
     private boolean expires;
 
     /** When the lot will expire, if the above is true */
-    private Date expiration;
+    @Getter private Date expiration;
 
     /** Represents the data for an auction, if the listing is in fact one */
-    private AuctionData aucData;
+    @Getter private AuctionData aucData;
 
 	/**
-	 * Constructs the contents of an entry that will partake within the GTS listings
+	 * Constructs the content of a listing that will be available on the GTS market
 	 *
-	 * @param id The entry id
-	 * @param player The player who is depositing the entry
-	 * @param entry The element held within a listing
-	 * @param expires Whether or not the entry will expire
-	 * @param seconds How many seconds a lot should exist for
+	 * @param id The listing ID
+	 * @param player The player depositing the listing
+	 * @param entry The element represented by the listing
+	 * @param expires Whether or not the listing will expire
+	 * @param seconds The duration of the listing's lifetime
 	 */
     public Listing(int id, Player player, Entry entry, boolean expires, long seconds){
-        this.id = id;
-        this.oName = player.getName();
-        this.oUUID = player.getUniqueId();
-        this.entry = entry;
-
-        this.expires = expires;
-        expiration = Date.from(Instant.now().plusSeconds(seconds));
+        this(id, player, entry, expires, seconds, null);
     }
 
-    public Listing(int id, Entry entry, boolean expires, long seconds) {
-    	this(id, entry, expires, seconds, null);
-
-    }
-
-    public Listing(int id, Entry entry, boolean expires, long seconds, AuctionData ad) {
-	    this.id = id;
-	    this.oName = "Test";
-	    this.oUUID = UUID.randomUUID();
+	/**
+	 * Constructs the content of a listing that will be available on the GTS market
+	 *
+	 * @param id The listing ID
+	 * @param player The player depositing the listing
+	 * @param entry The element represented by the listing
+	 * @param expires Whether or not the listing will expire
+	 * @param seconds The duration of the listing's lifetime
+	 * @param ad Data representing an auction (can be null to state it is not an auction)
+	 */
+    public Listing(int id, Player player, Entry entry, boolean expires, long seconds, @Nullable AuctionData ad) {
+	    this.ID = id;
+	    this.ownerName = player.getName();
+	    this.ownerUUID = player.getUniqueId();
 	    this.entry = entry;
 	    this.expires = expires;
 	    this.expiration = Date.from(Instant.now().plusSeconds(seconds));
 	    this.aucData = ad;
-    }
-
-	/**
-	 * Fetches the ID of a lot entry
-	 *
-	 * @return The ID of a lot entry
-	 */
-	public int getID() {
-        return this.id;
-    }
-
-	/**
-	 * Fetches the owner, by name, of a lot entry
-	 *
-	 * @return The owner of a lot entry
-	 */
-	public String getOwnerName() {
-        return this.oName;
-    }
-
-	/**
-	 * Fetches the owner, by UUID, of a lot entry
-	 *
-	 * @return The UUID of a lot entry's owner
-	 */
-	public UUID getOwnerUUID() {
-        return this.oUUID;
-    }
-
-	/**
-	 * States the specified pricing of an entry. The pricing is to be declared by an incoming function.
-	 *
-	 * @return The mode the entry is assigned to
-	 */
-	public Entry getEntry() {
-        return this.entry;
     }
 
 	/**
@@ -116,22 +81,11 @@ public class Listing {
     }
 
 	/**
-	 * States the Date a lot will expire on
-	 *
-	 * @return The Data a lot will expire on
-	 */
-	public Date getExpiration() {
-        return expiration;
-    }
-
-	/**
 	 * Checks whether or not a listing has exceeded its allocated listing time.
 	 *
 	 * @return Whether or not a listing has expired
 	 */
 	public boolean checkHasExpired() {
-		System.out.println(getExpiration() + " vs " + Date.from(Instant.now()));
-		System.out.println(getExpiration().before(Date.from(Instant.now())));
         return getExpiration().before(Date.from(Instant.now()));
     }
 
@@ -151,9 +105,5 @@ public class Listing {
 		} else {
 			return this.entry.getBaseDisplay(player, this);
 		}
-	}
-
-	public AuctionData getAucData() {
-		return aucData;
 	}
 }

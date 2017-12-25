@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.gui.InventoryBase;
-import com.nickimpact.gts.api.gui.InventoryIcon;
+import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -62,12 +62,12 @@ public class Competitive extends InventoryBase {
 
 		addModifiers();
 
-		InventoryIcon back = new InventoryIcon(17, ItemStack.builder()
+		Icon back = new Icon(17, ItemStack.builder()
 				.itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:eject_button").orElse(ItemTypes.BARRIER))
-				.keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "\u2190 Return to Spec Designer \u2190"))
+				.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "\u2190 Return to Spec Designer \u2190"))
 				.build()
 				);
-		back.addListener(ClickInventoryEvent.class, e -> {
+		back.addListener(pl -> {
 			this.base.evs = evs;
 			this.base.ivs = ivs;
 
@@ -81,8 +81,8 @@ public class Competitive extends InventoryBase {
 		});
 		this.addIcon(back);
 
-		InventoryIcon reset = SharedItems.cancelIcon(44);
-		reset.addListener(ClickInventoryEvent.class, e -> {
+		Icon reset = SharedItems.cancelIcon(44);
+		reset.addListener(pl -> {
 			int[] baseStats = new int[]{0, 0, 0, 0, 0, 0};
 
 			if(this.evs == baseStats && this.ivs == baseStats) return;
@@ -102,7 +102,7 @@ public class Competitive extends InventoryBase {
 		this.addIcon(reset);
 	}
 
-	private InventoryIcon statIcon(int slot, StatsType st){
+	private Icon statIcon(int slot, StatsType st){
 		String item;
 		if(st.equals(StatsType.HP)){
 			item = "pixelmon:power_weight";
@@ -127,26 +127,26 @@ public class Competitive extends InventoryBase {
 				Text.of(TextColors.GRAY, "IVs: ", TextColors.YELLOW, this.ivs[this.getIndex(st)])
 				);
 
-		return new InventoryIcon(slot, ItemStack.builder()
+		return new Icon(slot, ItemStack.builder()
 				.itemType(Sponge.getRegistry().getType(ItemType.class, item).orElse(ItemTypes.BARRIER))
-				.keyValue(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, st.name()))
-				.keyValue(Keys.ITEM_LORE, lore)
+				.add(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, st.name()))
+				.add(Keys.ITEM_LORE, lore)
 				.build()
 				);
 	}
 
-	private InventoryIcon incrementIcon(StatsType st, boolean evs){
-		InventoryIcon icon = new InventoryIcon(getSlot(st, evs, true), ItemStack.builder()
+	private Icon incrementIcon(StatsType st, boolean evs){
+		Icon icon = new Icon(getSlot(st, evs, true), ItemStack.builder()
 				.itemType(ItemTypes.STAINED_HARDENED_CLAY)
-				.keyValue(Keys.DYE_COLOR, DyeColors.LIME)
-				.keyValue(Keys.DISPLAY_NAME, Text.of(
+				.add(Keys.DYE_COLOR, DyeColors.LIME)
+				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.GREEN, TextStyles.BOLD, "Add " + st.name() + (evs ? " EVs" : " IVs")
 						))
-				.keyValue(Keys.ITEM_LORE, this.getLore(st, evs, true))
+				.add(Keys.ITEM_LORE, this.getLore(st, evs, true))
 				.build()
 				);
 
-		icon.addListener(ClickInventoryEvent.class, e -> {
+		icon.addListener(clickable -> {
 			int max = (evs ? 510 : 186);
 			int total = 0;
 			if(evs)
@@ -156,7 +156,7 @@ public class Competitive extends InventoryBase {
 				for(int iv : this.ivs)
 					total += iv;
 
-			if(!(e instanceof ClickInventoryEvent.Shift)){
+			if(!(clickable.getEvent() instanceof ClickInventoryEvent.Shift)){
 				if(evs) {
 					if (this.evs[this.getIndex(st)] + 1 <= 255 && total + 1 <= max)
 						this.evs[this.getIndex(st)] += 1;
@@ -186,18 +186,18 @@ public class Competitive extends InventoryBase {
 		return icon;
 	}
 
-	private InventoryIcon decrementIcon(StatsType st, boolean evs){
-		InventoryIcon icon = new InventoryIcon(getSlot(st, evs, false), ItemStack.builder()
+	private Icon decrementIcon(StatsType st, boolean evs){
+		Icon icon = new Icon(getSlot(st, evs, false), ItemStack.builder()
 				.itemType(ItemTypes.STAINED_HARDENED_CLAY)
-				.keyValue(Keys.DYE_COLOR, DyeColors.RED)
-				.keyValue(Keys.DISPLAY_NAME, Text.of(
+				.add(Keys.DYE_COLOR, DyeColors.RED)
+				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.RED, TextStyles.BOLD, "Subtract " + st.name() + (evs ? " EVs" : " IVs")
 						))
-				.keyValue(Keys.ITEM_LORE, this.getLore(st, evs, false))
+				.add(Keys.ITEM_LORE, this.getLore(st, evs, false))
 				.build()
 				);
 
-		icon.addListener(ClickInventoryEvent.class, e -> {
+		icon.addListener(clickable -> {
 			int total = 0;
 			if(evs)
 				for(int ev : this.evs)
@@ -206,7 +206,7 @@ public class Competitive extends InventoryBase {
 				for(int iv : this.ivs)
 					total += iv;
 
-			if(!(e instanceof ClickInventoryEvent.Shift)){
+			if(!(clickable.getEvent() instanceof ClickInventoryEvent.Shift)){
 				if(evs) {
 					if (this.evs[this.getIndex(st)] - 1 >= 0 && total - 1 >= 0)
 						this.evs[this.getIndex(st)] -= 1;

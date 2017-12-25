@@ -1,7 +1,7 @@
 package com.nickimpact.gts.api.time;
 
-import java.text.DecimalFormat;
 import java.time.Instant;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,9 +26,9 @@ public class Time
     private static final int secondsPerWeek = secondsPerDay * 7;
 
     /** Returns a {@link Time} object representing how long the given milliseconds is in weeks, days, hours, minutes and seconds */
-    public Time(long milliseconds)
+    public Time(long seconds)
     {
-        this.time = (milliseconds / 1000);
+        this.time = seconds;
     }
 
     /** Returns a {@link Time} object given the string representation e.g. 3w5d9h3m1s*/
@@ -79,10 +79,11 @@ public class Time
 	    if(time <= 0)
 		    return "Error";
 
-	    return "Weeks: " + this.time % secondsPerWeek + '\n' +
-			    "Days:  " + (this.time % secondsPerDay) + '\n' +
-			    new DecimalFormat("00").format(this.time % secondsPerHour) + ':' +
-			    new DecimalFormat("00").format(this.time % secondsPerMinute) + ':' +
-			    new DecimalFormat("00").format(this.time % 60);
+	    return String.format(
+	    		"%02d:%02d:%02d",
+			    TimeUnit.SECONDS.toHours(this.time),
+			    TimeUnit.SECONDS.toMinutes(this.time) % 60,
+			    this.time % 60
+	    );
     }
 }

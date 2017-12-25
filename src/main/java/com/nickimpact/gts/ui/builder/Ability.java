@@ -2,14 +2,13 @@ package com.nickimpact.gts.ui.builder;
 
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.gui.InventoryBase;
-import com.nickimpact.gts.api.gui.InventoryIcon;
+import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.enchantment.Enchantment;
@@ -76,12 +75,12 @@ public class Ability extends InventoryBase {
 			this.addIcon(invalidIcon(32));
 		}
 
-		InventoryIcon back = new InventoryIcon(16, ItemStack.builder()
+		Icon back = new Icon(16, ItemStack.builder()
 				.itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:eject_button").orElse(ItemTypes.BARRIER))
 				.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "\u2190 Return to Spec Designer \u2190"))
 				.build()
-				);
-		back.addListener(ClickInventoryEvent.class, e -> {
+		);
+		back.addListener(clickable -> {
 			this.base.ability = ability;
 
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -94,8 +93,8 @@ public class Ability extends InventoryBase {
 		});
 		this.addIcon(back);
 
-		InventoryIcon reset = SharedItems.cancelIcon(34);
-		reset.addListener(ClickInventoryEvent.class, e -> {
+		Icon reset = SharedItems.cancelIcon(34);
+		reset.addListener(clickable -> {
 			this.ability = "N/A";
 
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
@@ -117,8 +116,8 @@ public class Ability extends InventoryBase {
 		this.addIcon(reset);
 	}
 
-	private InventoryIcon abilityIcon(int slot, boolean selected){
-		InventoryIcon icon =  new InventoryIcon(slot, ItemStack.builder()
+	private Icon abilityIcon(int slot, boolean selected){
+		Icon icon =  new Icon(slot, ItemStack.builder()
 				.itemType(ItemTypes.STAINED_HARDENED_CLAY)
 				.add(Keys.DYE_COLOR,
 						slot == 28 ? DyeColors.GREEN :
@@ -146,7 +145,7 @@ public class Ability extends InventoryBase {
 			icon.getDisplay().offer(Keys.HIDE_ENCHANTMENTS, true);
 		}
 
-		icon.addListener(ClickInventoryEvent.class, e -> {
+		icon.addListener(clickable -> {
 			if(slot == 28) {
 				this.ability = abilities[0];
 				this.addIcon(
@@ -177,7 +176,7 @@ public class Ability extends InventoryBase {
 						);
 			}
 
-			InventoryIcon update = abilityIcon(slot, true);
+			Icon update = abilityIcon(slot, true);
 
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
 				this.addIcon(selectedIcon());
@@ -189,20 +188,20 @@ public class Ability extends InventoryBase {
 		return icon;
 	}
 
-	private InventoryIcon invalidIcon(int slot){
-		return new InventoryIcon(slot, ItemStack.builder()
+	private Icon invalidIcon(int slot){
+		return new Icon(slot, ItemStack.builder()
 				.itemType(ItemTypes.BARRIER)
 				.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "N/A"))
 				.build()
 				);
 	}
 
-	private InventoryIcon selectedIcon(){
+	private Icon selectedIcon(){
 		DyeColor color = abilities[0].equalsIgnoreCase(ability) ? DyeColors.GREEN :
 			abilities[1] != null && abilities[1].equalsIgnoreCase(ability) ? DyeColors.YELLOW :
 				abilities[2] != null && abilities[2].equalsIgnoreCase(ability) ? DyeColors.RED : DyeColors.WHITE;
 
-		return new InventoryIcon(11, ItemStack.builder()
+		return new Icon(11, ItemStack.builder()
 				.itemType(ItemTypes.STAINED_HARDENED_CLAY)
 				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.DARK_AQUA, TextStyles.BOLD, "Selected ABILITY"
@@ -215,8 +214,8 @@ public class Ability extends InventoryBase {
 				);
 	}
 
-	private InventoryIcon mapInfo(){
-		return new InventoryIcon(13, ItemStack.builder()
+	private Icon mapInfo(){
+		return new Icon(13, ItemStack.builder()
 				.itemType(ItemTypes.FILLED_MAP)
 				.add(Keys.DISPLAY_NAME, Text.of(
 						TextColors.DARK_AQUA, TextStyles.BOLD, "ABILITY Info"
