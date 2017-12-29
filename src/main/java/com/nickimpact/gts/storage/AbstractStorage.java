@@ -3,6 +3,10 @@ package com.nickimpact.gts.storage;
 import com.google.common.base.Throwables;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.listings.Listing;
+import com.nickimpact.gts.api.listings.entries.Entry;
+import com.nickimpact.gts.api.listings.entries.EntryHolder;
+import com.nickimpact.gts.api.listings.pricing.Price;
+import com.nickimpact.gts.api.listings.pricing.PriceHolder;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.logs.Log;
 import com.nickimpact.gts.storage.dao.AbstractDao;
@@ -12,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.spongepowered.api.Sponge;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -118,6 +123,36 @@ public class AbstractStorage implements Storage {
 	@Override
 	public CompletableFuture<List<Log>> getLogs() {
 		return makeFuture(dao::getLogs);
+	}
+
+	@Override
+	public CompletableFuture<Void> addHeldElement(EntryHolder holder) {
+		return makeFuture(() -> dao.addHeldElement(holder));
+	}
+
+	@Override
+	public CompletableFuture<Void> removeHeldElement(EntryHolder holder) {
+		return makeFuture(() -> dao.removeHeldElement(holder));
+	}
+
+	@Override
+	public CompletableFuture<List<EntryHolder>> getHeldElements() {
+		return makeFuture(dao::getHeldElements);
+	}
+
+	@Override
+	public CompletableFuture<Void> addHeldPrice(PriceHolder holder) {
+		return makeFuture(() -> dao.addHeldPrice(holder));
+	}
+
+	@Override
+	public CompletableFuture<Void> removeHeldPrice(PriceHolder holder) {
+		return makeFuture(() -> dao.removeHeldPrice(holder));
+	}
+
+	@Override
+	public CompletableFuture<List<PriceHolder>> getHeldPrices() {
+		return makeFuture(dao::getHeldPrices);
 	}
 
 	@Override

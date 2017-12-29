@@ -1,6 +1,7 @@
-package com.nickimpact.gts.api.configuration;
+package com.nickimpact.gts.configuration;
 
 import com.google.common.collect.ImmutableMap;
+import com.nickimpact.gts.api.configuration.ConfigKey;
 import com.nickimpact.gts.api.configuration.keys.*;
 import com.nickimpact.gts.storage.StorageCredentials;
 

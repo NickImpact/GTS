@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.nickimpact.gts.api.GtsAPI;
-import com.nickimpact.gts.api.configuration.ConfigKeys;
+import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.api.configuration.GTSConfiguration;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.entries.Entry;
@@ -17,6 +17,9 @@ import com.nickimpact.gts.configuration.GTSConfigAdapter;
 import com.nickimpact.gts.entries.items.ItemAdapter;
 import com.nickimpact.gts.entries.items.ItemEntry;
 import com.nickimpact.gts.entries.pixelmon.PokemonEntry;
+import com.nickimpact.gts.entries.prices.ItemPrice;
+import com.nickimpact.gts.entries.prices.MoneyPrice;
+import com.nickimpact.gts.entries.prices.PokePrice;
 import com.nickimpact.gts.internal.TextParsingUtils;
 import com.nickimpact.gts.api.text.Tokens;
 import com.nickimpact.gts.listeners.JoinListener;
@@ -27,8 +30,9 @@ import com.nickimpact.gts.storage.StorageType;
 import com.nickimpact.gts.storage.dao.file.FileWatcher;
 import com.nickimpact.gts.ui.updater.GuiUpdater;
 import com.nickimpact.gts.utils.ListingTasks;
-import com.nickimpact.gts.utils.LotUtils;
+import com.nickimpact.gts.utils.ListingUtils;
 import lombok.Getter;
+import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.config.ConfigDir;
@@ -46,6 +50,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.AsynchronousExecutor;
 import org.spongepowered.api.scheduler.SpongeExecutorService;
 import org.spongepowered.api.service.economy.EconomyService;
+import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -69,12 +74,14 @@ public class GTS {
 	/** The containing instance of the plugin set by Sponge */
 	@Inject private PluginContainer pluginContainer;
 
+	@Inject private Logger logger;
+
 	/** The pathing to the config directory for GTS */
 	@Inject @ConfigDir(sharedRoot = false) private Path configDir;
 
-	@Inject
-	@AsynchronousExecutor
-	private SpongeExecutorService asyncExecutorService;
+	@Inject @AsynchronousExecutor private SpongeExecutorService asyncExecutorService;
+
+	private UserStorageService userStorageService;
 
 	/** An instance of the plugin itself */
 	private static GTS instance;
@@ -173,11 +180,26 @@ public class GTS {
 
 				List<Listing> temp = Lists.newArrayList(this.listingsCache);
 				temp.sort(Comparator.comparing(Listing::getID));
-				LotUtils.setListingID(temp.size() != 0 ? temp.get(temp.size() - 1).getID() : 0);
+
+				int id = -1;
+				for(int i = 0; i < temp.size() - 1; i++) {
+					if(temp.get(i).getID() + 1 < temp.get(i + 1).getID()) {
+						id = temp.get(i).getID();
+						break;
+					}
+				}
+				ListingUtils.setListingID(temp.size() != 0 && id != -1 ? id : 0);
 
 				List<Log> tmp = Lists.newArrayList(this.logCache);
 				tmp.sort(Comparator.comparing(Log::getID));
-				LotUtils.setLogID(tmp.size() != 0 ? tmp.get(tmp.size() - 1).getID() : 0);
+				id = -1;
+				for(int i = 0; i < temp.size() - 1; i++) {
+					if(tmp.get(i).getID() + 1 < tmp.get(i + 1).getID()) {
+						id = tmp.get(i).getID();
+						break;
+					}
+				}
+				ListingUtils.setLogID(tmp.size() != 0 && id != -1 ? id : 0);
 			} catch (InterruptedException | ExecutionException e1) {
 				e1.printStackTrace();
 			}
@@ -266,10 +288,11 @@ public class GTS {
 	}
 
 	@Listener
-	public void registerEconomyService(ChangeServiceProviderEvent e){
-		if(e.getService().equals(EconomyService.class)){
+	public void registerServices(ChangeServiceProviderEvent e){
+		if(e.getService().equals(EconomyService.class))
 			this.economy = (EconomyService) e.getNewProviderRegistration().getProvider();
-		}
+		else if(e.getService().equals(UserStorageService.class))
+			this.userStorageService = (UserStorageService) e.getNewProviderRegistration().getProvider();
 	}
 
 	public static GTS getInstance() {

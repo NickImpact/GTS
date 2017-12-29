@@ -15,6 +15,8 @@ import java.util.UUID;
 @Setter
 public class AuctionData {
 
+	private int numIncrements;
+
 	private Price increment;
 
 	private UUID highBidder;

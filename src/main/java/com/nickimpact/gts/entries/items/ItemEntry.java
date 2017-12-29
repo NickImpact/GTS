@@ -71,8 +71,18 @@ public class ItemEntry extends Entry<DataContainer> {
 		);
 
 		this.decode().get(Keys.ITEM_LORE).ifPresent(lore -> {
-			output.add("&aItem Lore:");
-			output.addAll(lore.stream().map(Text::toPlain).collect(Collectors.toList()));
+			if(lore.size() > 0) {
+				GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
+						Text.of(GTSInfo.DEBUG_PREFIX, "Item Lore:")
+				));
+				for(Text line : lore)
+					GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
+							Text.of(GTSInfo.DEBUG_PREFIX, line)
+					));
+
+				output.add("&aItem Lore:");
+				output.addAll(lore.stream().map(Text::toPlain).collect(Collectors.toList()));
+			}
 		});
 
 		return output;
@@ -91,6 +101,11 @@ public class ItemEntry extends Entry<DataContainer> {
 	@Override
 	protected List<String> confirmLoreTemplate() {
 		return this.baseLoreTemplate();
+	}
+
+	@Override
+	public boolean supportsOffline() {
+		return false;
 	}
 
 	@Override

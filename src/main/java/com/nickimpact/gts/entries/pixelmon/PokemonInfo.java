@@ -1,27 +1,16 @@
 package com.nickimpact.gts.entries.pixelmon;
 
-import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.api.configuration.MsgConfigKeys;
-import com.nickimpact.gts.api.listings.pricing.Price;
-import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.storage.NbtKeys;
-import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
-import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
-import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * (Some note will go here)

@@ -5,6 +5,10 @@ import com.google.gson.JsonSyntaxException;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.listings.Listing;
+import com.nickimpact.gts.api.listings.entries.Entry;
+import com.nickimpact.gts.api.listings.entries.EntryHolder;
+import com.nickimpact.gts.api.listings.pricing.Price;
+import com.nickimpact.gts.api.listings.pricing.PriceHolder;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.logs.Log;
 import com.nickimpact.gts.storage.dao.AbstractDao;
@@ -19,6 +23,7 @@ import java.lang.reflect.MalformedParameterizedTypeException;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 
 /**
@@ -228,6 +233,36 @@ public class SqlDao extends AbstractDao {
 		}
 
 		return logs;
+	}
+
+	@Override
+	public void addHeldElement(EntryHolder holder) {
+
+	}
+
+	@Override
+	public void removeHeldElement(EntryHolder holder) {
+
+	}
+
+	@Override
+	public List<EntryHolder> getHeldElements() {
+		return null;
+	}
+
+	@Override
+	public void addHeldPrice(PriceHolder holder) {
+
+	}
+
+	@Override
+	public void removeHeldPrice(PriceHolder holder) {
+
+	}
+
+	@Override
+	public List<PriceHolder> getHeldPrices() {
+		return null;
 	}
 
 	@Override

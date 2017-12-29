@@ -12,7 +12,8 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- *
+ * A Listing represents the wrapper object for an {@link Entry}, whilst also holding information
+ * in regards to player info, as well as other listing data such as expiration time.
  *
  * @author NickImpact
  */
@@ -99,6 +100,13 @@ public class Listing {
 		return entry.getName();
 	}
 
+	/**
+	 * Retrieves the ItemStack display for the {@link Entry} attached to this listing
+	 *
+	 * @param player The player to create the item stack for
+	 * @param confirm Whether or not the display requested is a confirmation display
+	 * @return The {@link ItemStack} display for the listing
+	 */
 	public ItemStack getDisplay(Player player, boolean confirm) {
 		if(confirm) {
 			return this.entry.getConfirmDisplay(player, this);

@@ -7,6 +7,7 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.text.DecimalFormat;
 import java.util.function.Function;
@@ -39,7 +40,7 @@ public enum EnumPokemonFields {
 	IV_PERCENT(pokemon -> new DecimalFormat("#0.##").format(totalIVs(pokemon.stats.IVs) / 186.0 * 100) + "%"),
 	EV_TOTAL(pokemon -> (int)totalEVs(pokemon.stats.EVs)),
 	IV_TOTAL(pokemon -> (int)totalIVs(pokemon.stats.IVs)),
-	NICKNAME(EntityPixelmon::getNickname),
+	NICKNAME(pokemon -> TextSerializers.LEGACY_FORMATTING_CODE.deserialize(pokemon.getNickname())),
 	EV_HP(pokemon -> pokemon.stats.EVs.HP),
 	EV_ATK(pokemon -> pokemon.stats.EVs.Attack),
 	EV_DEF(pokemon -> pokemon.stats.EVs.Defence),

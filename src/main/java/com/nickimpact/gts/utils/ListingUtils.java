@@ -4,8 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
-import com.nickimpact.gts.api.configuration.ConfigKeys;
-import com.nickimpact.gts.api.configuration.MsgConfigKeys;
+import com.nickimpact.gts.api.listings.pricing.Price;
+import com.nickimpact.gts.configuration.ConfigKeys;
+import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.api.events.ListEvent;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.pricing.PricingException;
@@ -34,13 +35,11 @@ import java.util.stream.Collectors;
  *
  * @author NickImpact
  */
-public class LotUtils {
+public class ListingUtils {
 
-	@Setter
-	private static int listingID;
+	@Setter private static int listingID;
 
-	@Setter
-	private static int logID;
+	@Setter private static int logID;
 
 	public static int getNextID(Class<?> clazz) {
 		if(clazz.equals(Listing.class)) {
@@ -121,8 +120,8 @@ public class LotUtils {
 						Map<String, Function<CommandSource, Optional<Text>>> extras = Maps.newHashMap();
 						extras.put("tax", src -> Optional.of(Text.of(t)));
 
-						player.sendMessage(GTS.getInstance().getTextParsingUtils().parse(
-								GTS.getInstance().getTextParsingUtils().getTemplate(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.TAX_INVALID)),
+						player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+								GTS.getInstance().getMsgConfig().get(MsgConfigKeys.TAX_INVALID),
 								player,
 								extras,
 								null
@@ -160,8 +159,8 @@ public class LotUtils {
 		    	final BigDecimal t = tax.orElse(BigDecimal.ZERO);
 			    Map<String, Function<CommandSource, Optional<Text>>> extras = Maps.newHashMap();
 			    extras.put("tax", src -> Optional.of(Text.of(GTS.getInstance().getEconomy().getDefaultCurrency().format(t))));
-			    player.sendMessage(GTS.getInstance().getTextParsingUtils().parse(
-					    GTS.getInstance().getTextParsingUtils().getTemplate(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.TAX_APPLICATION)),
+			    player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+			    		GTS.getInstance().getMsgConfig().get(MsgConfigKeys.TAX_APPLICATION),
 					    player,
 					    extras,
 					    null
@@ -217,42 +216,122 @@ public class LotUtils {
 	    }
     }
 
-    public static void buyLot(Player player, Listing entry) {
+    public static void purchase(Player player, Listing listing) {
+		if(GTS.getInstance().getListingsCache().contains(listing)) {
+			try {
+				player.sendMessages(
+						GTS.getInstance().getTextParsingUtils().parse(
+								GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ALREADY_CLAIMED),
+								player,
+								null,
+								null
+						)
+				);
+			} catch (NucleusException e) {
+				e.printStackTrace();
+			}
+			return;
+		}
 
+		Price price = listing.getEntry().getPrice();
+	    try {
+		    if(price.canPay(player)) {
+				price.pay(player);
+				player.sendMessages(
+						GTS.getInstance().getTextParsingUtils().parse(
+								GTS.getInstance().getMsgConfig().get(MsgConfigKeys.PURCHASE_PAY),
+								player,
+								null,
+								null
+						)
+				);
+
+				if(!price.supportsOfflineReward()) {
+					Player receiver;
+					if ((receiver = Sponge.getServer().getPlayer(listing.getOwnerUUID()).orElse(null)) != null) {
+						price.reward(listing.getOwnerUUID());
+						receiver.sendMessages(
+								GTS.getInstance().getTextParsingUtils().parse(
+										GTS.getInstance().getMsgConfig().get(MsgConfigKeys.PURCHASE_RECEIVE),
+										player,
+										null,
+										null
+								)
+						);
+					}
+					else {
+						// TODO - Add a storage option to temporarily hold a price reward
+					}
+				}
+
+
+				deleteEntry(listing);
+		    } else {
+		    	player.sendMessages(
+		    			GTS.getInstance().getTextParsingUtils().parse(
+		    					GTS.getInstance().getMsgConfig().get(MsgConfigKeys.NOT_ENOUGH_FUNDS),
+							    player,
+							    null,
+							    null
+					    )
+			    );
+		    }
+	    } catch (Exception e) {
+		    player.sendMessages(
+		    		Text.of(GTSInfo.ERROR_PREFIX, "Unfortunately, you were unable to purchase the listing due to an error...")
+		    );
+		    GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
+		    		Text.of(GTSInfo.ERROR_PREFIX, e.getMessage())
+		    ));
+	    }
     }
 
     public static void bid(Player player, Listing listing) {
-		if(listing.getAucData() != null) {
+	    Map<String, Object> variables = Maps.newHashMap();
+	    variables.put("listing_specifics", listing);
+	    variables.put("listing_name", listing);
+	    variables.put("time_left", listing);
+	    variables.put("id", listing);
 
+		if(listing.getAucData() != null) {
+			if(listing.getAucData().getHighBidder().equals(player.getUniqueId())) {
+				try {
+					player.sendMessages(
+							GTS.getInstance().getTextParsingUtils().parse(
+									GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_IS_HIGH_BIDDER),
+									player,
+									null,
+									variables
+							)
+					);
+				} catch (NucleusException e) {
+					e.printStackTrace();
+				}
+			} else {
+				listing.getAucData().setHighBidder(player.getUniqueId());
+				listing.getAucData().setNumIncrements(listing.getAucData().getNumIncrements());
+
+				try {
+					List<Text> broadcast = GTS.getInstance().getTextParsingUtils().parse(
+							GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_BID),
+							player,
+							null,
+							variables
+					);
+					for(Text line : broadcast)
+						Sponge.getServer().getBroadcastChannel().send(line);
+				} catch (NucleusException e) {
+					e.printStackTrace();
+				}
+			}
 		}
     }
 
-
-    public static void trade(Player player, Listing entry) {
-		/*
-		Trade trade = (Trade)entry.getPrice();
-
-		TradeRequest tr = GsonUtils.deserialize(GsonUtils.prettyGson, trade.getRequest(), new TypeToken<TradeRequest>(){}.getType());
-		if(tr instanceof PokeRequest)
-			TradeUtils.pokemonTrade(player, entry, (PokeRequest)tr, pos);
-		else
-			TradeUtils.itemTrade(player, (ItemRequest)tr);
-		*/
-    }
-
-    public static boolean priceCheck() {
-        return false;
-    }
-
-    public static boolean handleTax() {
-        return true;
-    }
-
-    public static boolean hasMax(User user) {
+    private static boolean hasMax(User user) {
         return hasMax(user.getUniqueId());
     }
 
-    public static boolean hasMax(UUID uuid) {
+    private static boolean hasMax(UUID uuid) {
         int count = GTS.getInstance().getListingsCache().stream().filter(listing -> listing.getOwnerUUID().equals(uuid)).collect(Collectors.toList()).size();
         return count >= GTS.getInstance().getConfig().get(ConfigKeys.MAX_LISTINGS);
     }

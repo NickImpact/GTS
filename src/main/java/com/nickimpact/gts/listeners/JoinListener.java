@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.listings.Listing;
-import com.nickimpact.gts.utils.LotUtils;
+import com.nickimpact.gts.utils.ListingUtils;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -29,7 +29,7 @@ public class JoinListener {
 				.filter(Listing::checkHasExpired)
 				.forEach(listing -> {
 					listing.getEntry().giveEntry(player);
-					LotUtils.deleteEntry(listing);
+					ListingUtils.deleteEntry(listing);
 
 					Map<String, Optional<Object>> replacements = Maps.newHashMap();
 					replacements.put("player", Optional.of(player.getName()));

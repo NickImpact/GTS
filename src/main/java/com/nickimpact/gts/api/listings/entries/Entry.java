@@ -18,14 +18,28 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * (Some note will go here)
+ * An entry represents the actual elements we add into the GTS listings. Essentially, they provide
+ * the backbone information for each type of listing. For example, one entry type pertains to pokemon,
+ * while another pertains to items.
+ *
+ * <p>
+ * An entry is responsible for two things. One, being that it must provide some way for GSON to know
+ * how to deserialize it. If the {@link Typing} annotation is found to be missing from the class, the
+ * ID for deserialization will default to the class name.
+ * </p>
+ *
+ * <p>
+ * The second things an entry must provide is the {@link Price}. Like Entries, Prices are also extendable,
+ * allowing for custom price settings. The entry itself holds the Price information, purely due to the
+ * fact that the {@link Listing} class really just represents the holder for these elements.
+ * </p>
  *
  * @author NickImpact
  */
 public abstract class Entry<T> {
 
-	@Getter
-	private final String id;
+	/** The id typing for an entry (used for GSON deserialization) */
+	@Getter private final String id;
 
 	/** The element held within the entry */
 	protected T element;
@@ -34,7 +48,10 @@ public abstract class Entry<T> {
 	protected Price price;
 
 	public Entry(T element, Price price) {
-		this.id = this.getClass().getAnnotation(Typing.class).value();
+		if(this.getClass().isAnnotationPresent(Typing.class))
+			this.id = this.getClass().getAnnotation(Typing.class).value();
+		else
+			this.id = this.getClass().getSimpleName();
 		this.element = element;
 		this.price = price;
 	}
@@ -55,6 +72,10 @@ public abstract class Entry<T> {
 	 */
 	public Price getPrice() {
 		return this.price;
+	}
+
+	public String getBroadcastTemplate() {
+		return "";
 	}
 
 	/**
@@ -81,7 +102,6 @@ public abstract class Entry<T> {
 
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("dummy", getElement());
-		variables.put("price", price);
 		variables.put("dummy2", listing);
 
 		try {
@@ -134,12 +154,17 @@ public abstract class Entry<T> {
 		Text title;
 		List<Text> lore;
 
+		Map<String, Object> variables = Maps.newHashMap();
+		variables.put("dummy", getElement());
+		variables.put("price", price);
+		variables.put("dummy2", listing);
+
 		try {
 			title = GTS.getInstance().getTextParsingUtils().parse(
 					GTS.getInstance().getTextParsingUtils().getTemplate(confirmTitleTemplate()),
 					player,
 					null,
-					null
+					variables
 			);
 		} catch (NucleusException e) {
 			title = Text.of();
@@ -150,7 +175,7 @@ public abstract class Entry<T> {
 					GTS.getInstance().getTextParsingUtils().getTemplates(confirmLoreTemplate()),
 					player,
 					null,
-					null
+					variables
 			);
 		} catch (NucleusException e) {
 			lore = Lists.newArrayList();
@@ -165,6 +190,18 @@ public abstract class Entry<T> {
 		applyConfExtensions(player, item, listing);
 
 		return item;
+	}
+
+	/**
+	 * States whether or not a listing can be handled for an offline player.
+	 * By default, this setting is set to true for all listings. However,
+	 * things like ItemStacks, since they require an online player to go
+	 * to a player's inventory, are unable to support such.
+	 *
+	 * @return Whether an entry typing supports offline rewarding/give back
+	 */
+	public boolean supportsOffline() {
+		return true;
 	}
 
 	/**

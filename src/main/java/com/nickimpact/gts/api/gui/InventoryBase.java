@@ -66,18 +66,17 @@ public class InventoryBase {
 				transaction.getSlot().getProperty(SlotIndex.class, "slotindex").ifPresent(slot -> {
 					Icon icon = icons.get(slot.getValue());
 					if(icon != null) {
-						icon.process(new Clickable(player, event));
+						Sponge.getScheduler().createTaskBuilder()
+								.execute(() -> icon.process(new Clickable(player, event)))
+								.delayTicks(1)
+								.submit(GTS.getInstance());
 					}
 				});
 			});
 		});
 	}
 
-	protected void processClose(InteractInventoryEvent.Close event) {
-		Sponge.getScheduler().getTasksByName("Main-" + player.getName()).forEach(
-				Task::cancel
-		);
-	}
+	protected void processClose(InteractInventoryEvent.Close event) {}
 
 	/**
 	 * Adds a {@link Icon} display to the Mapped table of icons for the UI.
@@ -86,6 +85,10 @@ public class InventoryBase {
 	 */
 	public void addIcon(Icon icon) {
 		this.icons.put(icon.getSlot(), icon);
+	}
+
+	public void removeIcon(int slot) {
+		this.icons.remove(slot);
 	}
 
 	/**
@@ -162,16 +165,26 @@ public class InventoryBase {
 	 * @param slots The slot indexes to modify
 	 */
 	public void updateContents(int... slots){
-		GridInventory gridInventory = this.inventory.query(GridInventory.class);
-		this.icons.forEach((index, inventoryIcon) -> {
-			for(int sl : slots){
-				if(sl == index){
-					Slot slot = gridInventory.getSlot(
-							SlotIndex.of(index)).orElseThrow(() -> new IllegalArgumentException("Invalid index: " + index));
-					slot.set(inventoryIcon.getDisplay());
-				}
-			}
-		});
+		GridInventory inv = this.inventory.query(GridInventory.class);
+		for(final int sl : slots) {
+			Slot slot = inv.getSlot(SlotIndex.of(sl)).orElseThrow(() -> new IllegalArgumentException("Invalid index: " + sl));
+			if(this.icons.containsKey(sl))
+				slot.set(this.icons.get(sl).getDisplay());
+			else
+				slot.clear();
+		}
+	}
+
+	public void updateContents(int min, int max) {
+		GridInventory inv = this.inventory.query(GridInventory.class);
+		for(int i = min; i < max + 1; i++) {
+			final int index = i;
+			Slot slot = inv.getSlot(SlotIndex.of(i)).orElseThrow(() -> new IllegalArgumentException("Invalid index: " + index));
+			if(this.icons.containsKey(i))
+				slot.set(this.icons.get(i).getDisplay());
+			else
+				slot.clear();
+		}
 	}
 
 	/**

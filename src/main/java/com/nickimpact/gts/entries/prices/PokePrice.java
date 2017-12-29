@@ -1,26 +1,24 @@
-package com.nickimpact.gts.api.listings.pricing;
+package com.nickimpact.gts.entries.prices;
 
 import com.nickimpact.gts.api.json.Typing;
-import org.spongepowered.api.data.DataContainer;
+import com.nickimpact.gts.api.listings.pricing.Price;
+import com.nickimpact.gts.trades.PokeRequest;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * (Some note will go here)
  *
  * @author NickImpact
  */
-@Typing("Item")
-public class ItemPrice extends Price<DataContainer> {
+@Typing("Pokemon")
+public class PokePrice extends Price<PokeRequest> {
 
-	private transient ItemStack price;
-
-	public ItemPrice(ItemStack price) {
-		super(price.toContainer());
-		this.price = price;
+	public PokePrice(PokeRequest price) {
+		super(price);
 	}
 
 	@Override
@@ -44,7 +42,7 @@ public class ItemPrice extends Price<DataContainer> {
 	}
 
 	@Override
-	public void reward(Player recipient) {
+	public void reward(UUID uuid) {
 
 	}
 

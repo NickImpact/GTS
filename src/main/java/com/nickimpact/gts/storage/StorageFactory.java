@@ -2,10 +2,9 @@ package com.nickimpact.gts.storage;
 
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
-import com.nickimpact.gts.api.configuration.ConfigKeys;
+import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.storage.dao.AbstractDao;
-import com.nickimpact.gts.storage.dao.file.JsonDao;
 import com.nickimpact.gts.storage.dao.sql.SqlDao;
 import com.nickimpact.gts.storage.dao.sql.connection.file.H2ConnectionFactory;
 import com.nickimpact.gts.storage.dao.sql.connection.hikari.MySqlConnectionFactory;

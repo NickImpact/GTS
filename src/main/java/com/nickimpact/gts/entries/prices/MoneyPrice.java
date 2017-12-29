@@ -1,7 +1,9 @@
-package com.nickimpact.gts.api.listings.pricing;
+package com.nickimpact.gts.entries.prices;
 
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.json.Typing;
+import com.nickimpact.gts.api.listings.pricing.Price;
+import com.nickimpact.gts.api.listings.pricing.PricingException;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
@@ -9,6 +11,7 @@ import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 /**
  * (Some note will go here)
@@ -72,11 +75,11 @@ public class MoneyPrice extends Price<BigDecimal> {
 	}
 
 	@Override
-	public void reward(Player recipient) throws PricingException{
-		UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(recipient.getUniqueId()).orElse(null);
+	public void reward(UUID uuid) throws PricingException{
+		UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(uuid).orElse(null);
 
 		if(acc == null)
-			throw new PricingException(recipient.getName() + "'s economic account was unable to be found...");
+			throw new PricingException(uuid.toString() + "'s economic account was unable to be found...");
 
 		acc.deposit(
 				GTS.getInstance().getEconomy().getDefaultCurrency(),

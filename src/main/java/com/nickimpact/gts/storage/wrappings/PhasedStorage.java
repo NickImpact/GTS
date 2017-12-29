@@ -1,12 +1,15 @@
 package com.nickimpact.gts.storage.wrappings;
 
 import com.nickimpact.gts.api.listings.Listing;
+import com.nickimpact.gts.api.listings.entries.Entry;
+import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.logs.Log;
 import com.nickimpact.gts.storage.Storage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
@@ -107,6 +110,36 @@ public class PhasedStorage implements Storage {
 		} finally {
 			phaser.arriveAndDeregister();
 		}
+	}
+
+	@Override
+	public CompletableFuture<Void> addHeldElement(UUID uuid, Entry entry) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<Void> removeHeldElement(UUID uuid, Entry entry) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<List<Entry>> getHeldElements() {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<Void> addHeldPrice(UUID uuid, Price price) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<Void> removeHeldPrice(UUID uuid, Price price) {
+		return null;
+	}
+
+	@Override
+	public CompletableFuture<List<Price>> getHeldPrices() {
+		return null;
 	}
 
 	@Override

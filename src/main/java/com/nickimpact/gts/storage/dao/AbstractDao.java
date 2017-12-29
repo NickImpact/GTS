@@ -2,6 +2,8 @@ package com.nickimpact.gts.storage.dao;
 
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.listings.Listing;
+import com.nickimpact.gts.api.listings.entries.EntryHolder;
+import com.nickimpact.gts.api.listings.pricing.PriceHolder;
 import com.nickimpact.gts.logs.Log;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -38,6 +40,18 @@ public abstract class AbstractDao {
 	public abstract void removeLog(int id) throws Exception;
 
 	public abstract List<Log> getLogs() throws Exception;
+
+	public abstract void addHeldElement(EntryHolder holder);
+
+	public abstract void removeHeldElement(EntryHolder holder);
+
+	public abstract List<EntryHolder> getHeldElements();
+
+	public abstract void addHeldPrice(PriceHolder holder);
+
+	public abstract void removeHeldPrice(PriceHolder holder);
+
+	public abstract List<PriceHolder> getHeldPrices();
 
 	public abstract void purge(boolean logs) throws Exception;
 

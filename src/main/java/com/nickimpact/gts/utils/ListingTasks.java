@@ -43,7 +43,7 @@ public class ListingTasks {
 	            }
 
 	            if(successful) {
-	        		LotUtils.deleteEntry(listing);
+	        		ListingUtils.deleteEntry(listing);
 	        		GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.DEBUG_PREFIX, "Removing listing from market with ID: " + listing.getID())));
 	            }
             });
@@ -58,16 +58,23 @@ public class ListingTasks {
 
     private static boolean expire(Listing listing) {
 		Optional<Player> owner = Sponge.getServer().getPlayer(listing.getOwnerUUID());
-		if(!owner.isPresent())
-			return false;
+		if(!owner.isPresent()) {
+			// Offline player provider
+			if(listing.getEntry().supportsOffline()) {
+				User user = GTS.getInstance().getUserStorageService().get(listing.getOwnerUUID()).orElse(null);
+				return user != null && listing.getEntry().giveEntry(user);
+			}
+		}
 
 	    Player player = owner.get();
-	    player.sendMessages(Text.of(GTSInfo.PREFIX, "Returning your listing!"));
 	    boolean task = listing.getEntry().giveEntry(player);
 
 	    // Send a message about the expiration
+	    player.sendMessages(
+	    		Text.of()
+	    );
 
-	    return true;
+	    return task;
     }
 
     private static boolean award(User user, Listing listing) {

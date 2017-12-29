@@ -1,8 +1,12 @@
 package com.nickimpact.gts.storage.dao.file;
 
+import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.listings.Listing;
+import com.nickimpact.gts.api.listings.entries.Entry;
+import com.nickimpact.gts.api.listings.entries.EntryHolder;
+import com.nickimpact.gts.api.listings.pricing.PriceHolder;
 import com.nickimpact.gts.logs.Log;
 import com.nickimpact.gts.storage.dao.AbstractDao;
 import lombok.Getter;
@@ -17,6 +21,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * (Some note will go here)
@@ -142,7 +147,7 @@ public abstract class ConfigurateDao extends AbstractDao {
 
 	@Override
 	public List<Listing> getListings() throws Exception {
-		return null;
+		return Lists.newArrayList();
 	}
 
 	@Override
@@ -153,7 +158,29 @@ public abstract class ConfigurateDao extends AbstractDao {
 
 	@Override
 	public List<Log> getLogs() throws Exception {
-		return null;
+		return Lists.newArrayList();
+	}
+
+	@Override
+	public void addHeldElement(EntryHolder holder) {}
+
+	@Override
+	public void removeHeldElement(EntryHolder holder) {}
+
+	@Override
+	public List<EntryHolder> getHeldElements() {
+		return Lists.newArrayList();
+	}
+
+	@Override
+	public void addHeldPrice(PriceHolder holder) {}
+
+	@Override
+	public void removeHeldPrice(PriceHolder holder) {}
+
+	@Override
+	public List<PriceHolder> getHeldPrices() {
+		return Lists.newArrayList();
 	}
 
 	@Override

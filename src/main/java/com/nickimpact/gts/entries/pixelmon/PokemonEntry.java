@@ -83,8 +83,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 	@Override
 	public List<String> confirmLoreTemplate() {
 		return Lists.newArrayList(
-				"Here's some additional info:",
-				"",
+				"&7Here's some additional info:",
 				"&7EVs: &e{{evs_total}}&7/&e510 &7(&a{{evs_percent}}&7)",
 				"&7IVs: &e{{ivs_total}}&7/&e186 &7(&a{{ivs_percent}}&7)",
 				"",
@@ -99,7 +98,8 @@ public class PokemonEntry extends Entry<Pokemon> {
 	@Override
 	public boolean giveEntry(User user) {
 		Optional<PlayerStorage> optStorage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID(
-				(MinecraftServer) Sponge.getServer(), user.getUniqueId()
+				(MinecraftServer) Sponge.getServer(),
+				user.getUniqueId()
 		);
 
 		if (!optStorage.isPresent())
@@ -107,9 +107,10 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 		PlayerStorage storage = optStorage.get();
 		storage.addToParty(this.getElement().getPokemon());
-		storage.sendUpdatedList();
+		if(!storage.isOffline())
+			storage.sendUpdatedList();
 
-		return false;
+		return true;
 	}
 
 	@Override
