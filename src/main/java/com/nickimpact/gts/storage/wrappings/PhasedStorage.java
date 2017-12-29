@@ -2,7 +2,9 @@ package com.nickimpact.gts.storage.wrappings;
 
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.entries.Entry;
+import com.nickimpact.gts.api.listings.entries.EntryHolder;
 import com.nickimpact.gts.api.listings.pricing.Price;
+import com.nickimpact.gts.api.listings.pricing.PriceHolder;
 import com.nickimpact.gts.logs.Log;
 import com.nickimpact.gts.storage.Storage;
 import lombok.AccessLevel;
@@ -113,33 +115,63 @@ public class PhasedStorage implements Storage {
 	}
 
 	@Override
-	public CompletableFuture<Void> addHeldElement(UUID uuid, Entry entry) {
-		return null;
+	public CompletableFuture<Void> addHeldElement(EntryHolder holder) {
+		phaser.register();
+		try {
+			return delegate.addHeldElement(holder);
+		} finally {
+			phaser.arriveAndDeregister();
+		}
 	}
 
 	@Override
-	public CompletableFuture<Void> removeHeldElement(UUID uuid, Entry entry) {
-		return null;
+	public CompletableFuture<Void> removeHeldElement(EntryHolder holder) {
+		phaser.register();
+		try {
+			return delegate.removeHeldElement(holder);
+		} finally {
+			phaser.arriveAndDeregister();
+		}
 	}
 
 	@Override
-	public CompletableFuture<List<Entry>> getHeldElements() {
-		return null;
+	public CompletableFuture<List<EntryHolder>> getHeldElements() {
+		phaser.register();
+		try {
+			return delegate.getHeldElements();
+		} finally {
+			phaser.arriveAndDeregister();
+		}
 	}
 
 	@Override
-	public CompletableFuture<Void> addHeldPrice(UUID uuid, Price price) {
-		return null;
+	public CompletableFuture<Void> addHeldPrice(PriceHolder holder) {
+		phaser.register();
+		try {
+			return delegate.addHeldPrice(holder);
+		} finally {
+			phaser.arriveAndDeregister();
+		}
 	}
 
 	@Override
-	public CompletableFuture<Void> removeHeldPrice(UUID uuid, Price price) {
-		return null;
+	public CompletableFuture<Void> removeHeldPrice(PriceHolder holder) {
+		phaser.register();
+		try {
+			return delegate.removeHeldPrice(holder);
+		} finally {
+			phaser.arriveAndDeregister();
+		}
 	}
 
 	@Override
-	public CompletableFuture<List<Price>> getHeldPrices() {
-		return null;
+	public CompletableFuture<List<PriceHolder>> getHeldPrices() {
+		phaser.register();
+		try {
+			return delegate.getHeldPrices();
+		} finally {
+			phaser.arriveAndDeregister();
+		}
 	}
 
 	@Override
