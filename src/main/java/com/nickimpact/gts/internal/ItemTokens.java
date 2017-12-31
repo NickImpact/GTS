@@ -23,8 +23,18 @@ public class ItemTokens {
 	private static Map<String, Translator> tokens = Maps.newHashMap();
 
 	static {
+		tokens.put("item_type", (p, v, m) -> {
+			ItemStack item = getItemStackFromVariableIfExists(m);
+			if(item == null)
+				return Optional.empty();
+
+			return Optional.of(Text.of(item.getType().getTranslation().get()));
+		});
 		tokens.put("item_title", (p, v, m) -> {
 			ItemStack item = getItemStackFromVariableIfExists(m);
+			if(item == null)
+				return Optional.empty();
+
 			if(!item.get(Keys.DISPLAY_NAME).isPresent())
 				return Optional.of(Text.of(TextColors.DARK_AQUA, item.getType().getTranslation().get()));
 

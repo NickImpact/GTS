@@ -156,6 +156,21 @@ public class AbstractStorage implements Storage {
 	}
 
 	@Override
+	public CompletableFuture<Void> addIgnorer(UUID uuid) {
+		return makeFuture(() -> dao.addIgnorer(uuid));
+	}
+
+	@Override
+	public CompletableFuture<Void> removeIgnorer(UUID uuid) {
+		return makeFuture(() -> dao.removeIgnorer(uuid));
+	}
+
+	@Override
+	public CompletableFuture<List<UUID>> getIgnorers() {
+		return makeFuture(dao::getIgnorers);
+	}
+
+	@Override
 	public CompletableFuture<Void> purge(boolean logs) {
 		return makeFuture(() -> dao.purge(logs));
 	}

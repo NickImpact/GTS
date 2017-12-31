@@ -4,7 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
+import com.nickimpact.gts.api.listings.entries.Entry;
+import com.nickimpact.gts.api.listings.entries.EntryHolder;
 import com.nickimpact.gts.api.listings.pricing.Price;
+import com.nickimpact.gts.api.listings.pricing.PriceHolder;
+import com.nickimpact.gts.api.listings.pricing.RewardException;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.api.events.ListEvent;
@@ -38,7 +42,6 @@ import java.util.stream.Collectors;
 public class ListingUtils {
 
 	@Setter private static int listingID;
-
 	@Setter private static int logID;
 
 	public static int getNextID(Class<?> clazz) {
@@ -99,7 +102,6 @@ public class ListingUtils {
 	    ListEvent listEvent = new ListEvent(
 			    player,
 			    listing,
-			    listing.getEntry().getPrice(),
 			    Cause.of(EventContext.builder()
 							    .add(EventContextKeys.PLUGIN, GTS.getInstance().getPluginContainer())
 							    .add(EventContextKeys.PLAYER_SIMULATED, player.getProfile())
@@ -111,6 +113,10 @@ public class ListingUtils {
 
 	    if(!listEvent.isCancelled()) {
 	    	// We can check here for minimum prices, if we decide to support it
+
+		    Map<String, Object> variables = Maps.newHashMap();
+		    variables.put("dummy", listing.getEntry());
+		    variables.put("dummy2", listing);
 
 		    Optional<BigDecimal> tax = Optional.empty();
 		    if(GTS.getInstance().getConfig().get(ConfigKeys.TAX_ENABLED)) {
@@ -142,10 +148,10 @@ public class ListingUtils {
 
 		    try {
 		    	player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
-		    			GTS.getInstance().getTextParsingUtils().getTemplates(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ADD_TEMPLATE)),
+		    			GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ADD_TEMPLATE),
 					    player,
 					    null,
-					    null
+					    variables
 			    ));
 		    } catch (NucleusException e) {
 			    MessageUtils.genAndSendErrorMessage(
@@ -174,10 +180,8 @@ public class ListingUtils {
 		    }
 
 		    if(!listing.getEntry().doTakeAway(player)) {
-			    // Some message about being unable to take a listing for player X
-			    // Also refund the user their price + tax (if applicable)
+			    // Refund applied tax
 			    try {
-			    	listing.getEntry().giveEntry(player);
 				    UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId()).orElse(null);
 				    if(acc != null)
 				    	acc.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(), tax.orElse(BigDecimal.ZERO), Cause.builder().append(GTS.getInstance()).build(EventContext.empty()));
@@ -192,16 +196,19 @@ public class ListingUtils {
 		    GTS.getInstance().getStorage().addListing(listing);
 			GTS.getInstance().getListingsCache().add(listing);
 
-			// Broadcast a message to everyone but the player who deposited the listing
-		    Set<Player> players = Sponge.getServer().getOnlinePlayers().stream().filter(pl -> !pl.getUniqueId().equals(player.getUniqueId())).collect(Collectors.toSet());
+			// Broadcast a message to everyone but the player who deposited the listing and the ignorers
+		    Set<Player> players = Sponge.getServer().getOnlinePlayers().stream()
+				    .filter(pl -> !pl.getUniqueId().equals(player.getUniqueId()))
+				    .filter(pl -> !GTS.getInstance().getIgnorers().contains(pl.getUniqueId()))
+				    .collect(Collectors.toSet());
 			List<Text> broadcast;
+
 		    try {
 			    broadcast = GTS.getInstance().getTextParsingUtils().parse(
-					    GTS.getInstance().getTextParsingUtils().getTemplates(
-							    GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ADD_BROADCAST)),
+			    		GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ADD_BROADCAST),
 					    player,
 					    null,
-					    null
+					    variables
 			    );
 		    } catch (NucleusException e) {
 			    broadcast = Lists.newArrayList(
@@ -233,6 +240,10 @@ public class ListingUtils {
 			return;
 		}
 
+	    Map<String, Object> variables = Maps.newHashMap();
+	    variables.put("dummy", listing.getEntry());
+	    variables.put("dummy2", listing);
+
 		Price price = listing.getEntry().getPrice();
 	    try {
 		    if(price.canPay(player)) {
@@ -242,7 +253,7 @@ public class ListingUtils {
 								GTS.getInstance().getMsgConfig().get(MsgConfigKeys.PURCHASE_PAY),
 								player,
 								null,
-								null
+								variables
 						)
 				);
 
@@ -255,15 +266,14 @@ public class ListingUtils {
 										GTS.getInstance().getMsgConfig().get(MsgConfigKeys.PURCHASE_RECEIVE),
 										player,
 										null,
-										null
+										variables
 								)
 						);
 					}
 					else {
-						// TODO - Add a storage option to temporarily hold a price reward
+						addHeldPrice(new PriceHolder(randomID(Price.class), listing.getOwnerUUID(), price));
 					}
 				}
-
 
 				deleteEntry(listing);
 		    } else {
@@ -272,17 +282,22 @@ public class ListingUtils {
 		    					GTS.getInstance().getMsgConfig().get(MsgConfigKeys.NOT_ENOUGH_FUNDS),
 							    player,
 							    null,
-							    null
+							    variables
 					    )
 			    );
 		    }
 	    } catch (Exception e) {
-		    player.sendMessages(
-		    		Text.of(GTSInfo.ERROR_PREFIX, "Unfortunately, you were unable to purchase the listing due to an error...")
-		    );
-		    GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
-		    		Text.of(GTSInfo.ERROR_PREFIX, e.getMessage())
-		    ));
+	    	if(e instanceof RewardException) {
+			    addHeldPrice(new PriceHolder(randomID(Price.class), listing.getOwnerUUID(), price));
+		    } else {
+			    player.sendMessages(
+					    Text.of(GTSInfo.ERROR_PREFIX,
+					            "Unfortunately, you were unable to purchase the listing due to an error...")
+			    );
+			    GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
+					    Text.of(GTSInfo.ERROR_PREFIX, e.getMessage())
+			    ));
+		    }
 	    }
     }
 
@@ -318,8 +333,10 @@ public class ListingUtils {
 							null,
 							variables
 					);
-					for(Text line : broadcast)
-						Sponge.getServer().getBroadcastChannel().send(line);
+					listing.getAucData().getListeners().stream()
+							.filter(pl -> GTS.getInstance().getIgnorers().contains(pl.getUniqueId()))
+							.forEach(pl -> pl.sendMessages(broadcast));
+
 				} catch (NucleusException e) {
 					e.printStackTrace();
 				}
@@ -340,5 +357,37 @@ public class ListingUtils {
     	GTS.getInstance().getListingsCache().remove(entry);
     	int id = entry.getID();
     	GTS.getInstance().getStorage().removeListing(id);
+	}
+
+	public static void addHeldEntry(EntryHolder holder) {
+		GTS.getInstance().getHeldEntryCache().add(holder);
+		GTS.getInstance().getStorage().addHeldElement(holder);
+	}
+
+	public static void addHeldPrice(PriceHolder holder) {
+		GTS.getInstance().getHeldPriceCache().add(holder);
+		GTS.getInstance().getStorage().addHeldPrice(holder);
+	}
+
+	private static int randomID(Class<?> clazz) {
+		Random rng = new Random();
+		int selection;
+		if(clazz.equals(Entry.class)) {
+			while(true) {
+				selection = rng.nextInt(25001);
+				final int id = selection;
+				if (GTS.getInstance().getHeldEntryCache().stream().anyMatch(holder -> holder.getId() == id)) continue;
+				break;
+			}
+		} else {
+			while(true) {
+				selection = rng.nextInt(25001);
+				final int id = selection;
+				if (GTS.getInstance().getHeldPriceCache().stream().anyMatch(holder -> holder.getId() == id)) continue;
+				break;
+			}
+		}
+
+		return selection;
 	}
 }

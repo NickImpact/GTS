@@ -1,5 +1,12 @@
 package com.nickimpact.gts.api.configuration;
 
+/**
+ * This interface represents the actual backbone for a configuration file. A configuration file will
+ * need to be initialized, have all its keys loaded, have a way to access these keys, and finally, be
+ * able to be reloaded during runtime.
+ *
+ * @author NickImpact
+ */
 public interface GTSConfiguration {
 
 	/**

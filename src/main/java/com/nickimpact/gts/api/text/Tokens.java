@@ -108,7 +108,7 @@ public final class Tokens implements NucleusMessageTokenService.TokenParser {
 
 			try {
 				return Optional.of(GTS.getInstance().getTextParsingUtils().parse(
-						listing.getEntry().getBroadcastTemplate(),
+						listing.getEntry().getSpecsTemplate(),
 						p,
 						null,
 						null

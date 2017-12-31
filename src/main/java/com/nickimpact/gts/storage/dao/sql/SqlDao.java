@@ -39,8 +39,17 @@ public class SqlDao extends AbstractDao {
 	private static final String TRUNCATE_LOGS = "TRUNCATE TABLE `{prefix}logs`";
 	private static final String ADD_LISTING = "INSERT INTO `{prefix}listings` VALUES (%d, '%s', '%s')";
 	private static final String ADD_LOG = "INSERT INTO `{prefix}logs` VALUES (%d, '%s', '%s')";
-	private static final String REMOVE_LISTING = "REMOVE FROM `{prefix}listings` WHERE ID=%d)";
-	private static final String REMOVE_LOG = "REMOVE FROM `{prefix}logs` WHERE ID=%d";
+	private static final String REMOVE_LISTING = "DELETE FROM `{prefix}listings` WHERE ID=%d";
+	private static final String REMOVE_LOG = "DELETE FROM `{prefix}logs` WHERE ID=%d";
+	private static final String ADD_HELD_ENTRY = "INSERT INTO `{prefix}held_entries` VALUES (%d, '%s')";
+	private static final String REMOVE_HELD_ENTRY = "DELETE FROM `{prefix}held_entries` WHERE ID=%d";
+	private static final String GET_HELD_ENTRIES = "SELECT * FROM `{prefix}held_entries` ORDER BY ID ASC";
+	private static final String ADD_HELD_PRICE = "INSERT INTO `{prefix}held_prices` VALUES (%d, '%s')";
+	private static final String REMOVE_HELD_PRICE = "DELETE FROM `{prefix}held_prices` WHERE ID=%d";
+	private static final String GET_HELD_PRICES = "SELECT * FROM `{prefix}held_prices` ORDER BY ID ASC";
+	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES ('%s')";
+	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID='%s'";
+	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";
 
 	@Getter
 	private final AbstractConnectionFactory provider;
@@ -85,6 +94,8 @@ public class SqlDao extends AbstractDao {
 				ps.executeUpdate();
 				ps.close();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -262,6 +273,21 @@ public class SqlDao extends AbstractDao {
 
 	@Override
 	public List<PriceHolder> getHeldPrices() {
+		return null;
+	}
+
+	@Override
+	public void addIgnorer(UUID uuid) {
+
+	}
+
+	@Override
+	public void removeIgnorer(UUID uuid) {
+
+	}
+
+	@Override
+	public List<UUID> getIgnorers() {
 		return null;
 	}
 

@@ -21,9 +21,15 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ *
+ *
+ * @author NickImpact, RysingDragon
+ */
 public class InventoryBase {
 
 	protected Player player;
@@ -99,6 +105,12 @@ public class InventoryBase {
 	 */
 	public Optional<Icon> getIcon(int slot) {
 		return Optional.ofNullable(this.icons.get(slot));
+	}
+
+	public void clearIcons(int... slots) {
+		for(int slot : slots) {
+			this.icons.remove(slot);
+		}
 	}
 
 	/**

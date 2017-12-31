@@ -3,11 +3,17 @@ package com.nickimpact.gts.entries.prices;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.listings.pricing.PricingException;
+import com.nickimpact.gts.api.listings.pricing.RewardException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.inventory.Carrier;
+import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.entity.Hotbar;
+import org.spongepowered.api.item.inventory.type.CarriedInventory;
+import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
@@ -58,10 +64,13 @@ public class ItemPrice extends Price<DataContainer> {
 	}
 
 	@Override
-	public void reward(UUID uuid) {
-		// The get method here will always return true due to an initial offline check by the purchase operation
+	public void reward(UUID uuid) throws RewardException {
+		// The get method here will always return a player due to an initial offline check by the purchase operation
 		@SuppressWarnings("ConstantConditions")
 		Player player = Sponge.getServer().getPlayer(uuid).get();
+		if(player.getInventory().query(Hotbar.class, GridInventory.class).size() == 36)
+			throw new RewardException("Player inventory is full");
+
 		player.getInventory().offer(this.decode());
 	}
 

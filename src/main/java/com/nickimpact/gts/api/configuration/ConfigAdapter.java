@@ -6,7 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * (Some note will go here)
+ * The ConfigAdapter interface represents the forefront for deserialization of a key. A key will
+ * implement a specified type, and use the adapter here to receive its desired value.
  *
  * @author NickImpact
  */

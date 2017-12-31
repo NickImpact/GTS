@@ -1,10 +1,13 @@
 package com.nickimpact.gts.utils;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.data.AuctionData;
+import com.nickimpact.gts.configuration.MsgConfigKeys;
+import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
@@ -13,6 +16,7 @@ import org.spongepowered.api.text.Text;
 import java.sql.Date;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -44,7 +48,6 @@ public class ListingTasks {
 
 	            if(successful) {
 	        		ListingUtils.deleteEntry(listing);
-	        		GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.DEBUG_PREFIX, "Removing listing from market with ID: " + listing.getID())));
 	            }
             });
 
@@ -64,26 +67,53 @@ public class ListingTasks {
 				User user = GTS.getInstance().getUserStorageService().get(listing.getOwnerUUID()).orElse(null);
 				return user != null && listing.getEntry().giveEntry(user);
 			}
+			return false;
 		}
 
+		Map<String, Object> variables = Maps.newHashMap();
+	    variables.put("listing_specifics", listing);
+	    variables.put("listing_name", listing);
+	    variables.put("time_left", listing);
+	    variables.put("id", listing);
+
 	    Player player = owner.get();
-	    boolean task = listing.getEntry().giveEntry(player);
+	    if(!listing.getEntry().giveEntry(player))
+	    	return false;
 
-	    // Send a message about the expiration
-	    player.sendMessages(
-	    		Text.of()
-	    );
+	    try {
+		    player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+				    GTS.getInstance().getMsgConfig().get(MsgConfigKeys.REMOVAL_EXPIRES),
+				    player,
+				    null,
+				    variables
+		    ));
+	    } catch (NucleusException e) {
+		    e.printStackTrace();
+	    }
 
-	    return task;
+	    return true;
     }
 
     private static boolean award(User user, Listing listing) {
     	if(user == null || !user.getPlayer().isPresent())
     		return false;
 
-    	boolean task = listing.getEntry().giveEntry(user.getPlayer().get());
-    	// Send a message about the auction
+    	if(!listing.getEntry().giveEntry(user.getPlayer().get()))
+    	    return false;
 
+	    try {
+	    	List<Text> broadcast = GTS.getInstance().getTextParsingUtils().parse(
+				    GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_WIN),
+				    user.getPlayer().get(),
+				    null,
+				    null
+		    );
+		    Sponge.getServer().getOnlinePlayers().stream()
+				    .filter(pl -> GTS.getInstance().getIgnorers().contains(pl.getUniqueId()))
+				    .forEach(pl -> pl.sendMessages(broadcast));
+	    } catch (NucleusException e) {
+		    e.printStackTrace();
+	    }
 	    return true;
     }
 }

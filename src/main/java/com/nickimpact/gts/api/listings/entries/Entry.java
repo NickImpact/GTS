@@ -3,6 +3,7 @@ package com.nickimpact.gts.api.listings.entries;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.pricing.Price;
@@ -47,6 +48,10 @@ public abstract class Entry<T> {
 	/** The price of the entry */
 	protected Price price;
 
+	public Entry() {
+		this.id = "";
+	}
+
 	public Entry(T element, Price price) {
 		if(this.getClass().isAnnotationPresent(Typing.class))
 			this.id = this.getClass().getAnnotation(Typing.class).value();
@@ -74,9 +79,23 @@ public abstract class Entry<T> {
 		return this.price;
 	}
 
-	public String getBroadcastTemplate() {
-		return "";
-	}
+	/**
+	 * This here declares how "/gts sell" will process your entry type. For example, a pokemon entry
+	 * will be formatted as such: "/gts sell pokemon (any additional args)". We handle it like such so
+	 * that each entry type has a specific way to add in their options.
+	 *
+	 * <p>
+	 * Note: This method will be deprecated, as future plans will call for a gui rather than specifying a command.
+	 * This way, we can offer builders for easy user manipulation. However, due to the release of reforged, GTS
+	 * must release ASAP.
+	 * </p>
+	 *
+	 * @return A sub command to be registered into the "/gts sell" command
+	 */
+	@Deprecated
+	public abstract SpongeSubCommand commandSpec();
+
+	public abstract String getSpecsTemplate();
 
 	/**
 	 * Retrieves the name of a listing

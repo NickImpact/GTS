@@ -1,12 +1,15 @@
 package com.nickimpact.gts.ui;
 
+import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.api.gui.InventoryBase;
 import com.nickimpact.gts.api.listings.Listing;
+import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import com.nickimpact.gts.utils.ListingUtils;
+import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
@@ -19,6 +22,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
@@ -72,6 +76,9 @@ public class ConfirmUI extends InventoryBase {
 	}
 
 	private void drawConfirmIcon() {
+		Map<String, Object> variables = Maps.newHashMap();
+		variables.put("dummy", target.getEntry());
+		variables.put("dummy2", target);
 		if(this.target.getOwnerUUID().equals(this.player.getUniqueId())) {
 			Icon icon = new Icon(
 					12,
@@ -89,9 +96,18 @@ public class ConfirmUI extends InventoryBase {
 				}
 				this.target.getEntry().giveEntry(clickable.getPlayer());
 				ListingUtils.deleteEntry(this.target);
-				clickable.getPlayer().sendMessages(
-						Text.of(GTSInfo.PREFIX, "Your " + this.target.getName() + " has been returned!")
-				);
+				try {
+					clickable.getPlayer().sendMessages(
+							GTS.getInstance().getTextParsingUtils().parse(
+									GTS.getInstance().getMsgConfig().get(MsgConfigKeys.REMOVAL_CHOICE),
+									player,
+									null,
+									variables
+							)
+					);
+				} catch (NucleusException e) {
+					e.printStackTrace();
+				}
 				clickable.getPlayer().closeInventory();
 			});
 			this.addIcon(icon);

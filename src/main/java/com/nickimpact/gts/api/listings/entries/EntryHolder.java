@@ -14,6 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class EntryHolder {
 
+	private final int id;
 	private final UUID uuid;
 	private final Entry entry;
 }

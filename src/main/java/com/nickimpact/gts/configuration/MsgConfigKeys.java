@@ -20,7 +20,7 @@ public class MsgConfigKeys {
 			"{{gts_prefix}} &cUnfortunately, you can't deposit another listing, since you already have {{max_listings}} deposited..."
 	));
 	public static final ConfigKey<List<String>> ADD_TEMPLATE = ListKey.of("addition-to-seller", Lists.newArrayList(
-			"{{gts_prefix}} &7Your {{listing_name}} has been added to the market!"
+			"{{gts_prefix}} &7Your &a{{listing_name}} &7has been added to the market!"
 	));
 	public static final ConfigKey<List<String>> TAX_APPLICATION = ListKey.of("taxes.applied", Lists.newArrayList(
 			"&c&l- {{tax}} &7(&aTaxes&7)"
@@ -46,11 +46,16 @@ public class MsgConfigKeys {
 	public static final ConfigKey<List<String>> AUCTION_IS_HIGH_BIDDER = ListKey.of("auctions.is-high-bidder", Lists.newArrayList(
 			"{{gts_prefix}} &cHold off! You wouldn't want to bid against yourself!"
 	));
+	public static final ConfigKey<List<String>> REMOVAL_CHOICE = ListKey.of("removal.choice", Lists.newArrayList(
+			"{{gts_prefix}} &7Your &a{{listing_name}} &7listing has been returned!"
+	));
+	public static final ConfigKey<List<String>> REMOVAL_EXPIRES = ListKey.of("removal.expires", Lists.newArrayList(
+			"{{gts_prefix}} &7Your &a{{listing_name}} &7listing has expired, and has thus been returned!"
+	));
 
 	// Items
 	public static final ConfigKey<String> UI_ITEMS_NEXT_PAGE = StringKey.of("next-page", "&a\u2192 Next Page \u2192");
 	public static final ConfigKey<String> UI_ITEMS_LAST_PAGE = StringKey.of("last-page", "&c\u2190 Last Page \u2190");
-	public static final ConfigKey<String> UI_ITEMS_REFRESH = StringKey.of("refresh", "&eRefresh Listings");
 	public static final ConfigKey<String> UI_ITEMS_PLAYER_TITLE = StringKey.of("head.title", "&ePlayer Info");
 	public static final ConfigKey<List<String>> UI_ITEMS_PLAYER_LORE = ListKey.of("head.lore", Lists.newArrayList());
 	public static final ConfigKey<String> UI_ITEMS_SORT_TITLE = StringKey.of("sort.title", "&eSort Listings");

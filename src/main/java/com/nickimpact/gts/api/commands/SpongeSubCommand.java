@@ -1,7 +1,9 @@
 package com.nickimpact.gts.api.commands;
 
 /**
- * (Some note will go here)
+ * Like it's parent, the SpongeSubCommand class is used primarily for fast class path loaders.
+ * We use this class as a method to avoid registering the same command twice, once as a child,
+ * and again as it's own command.
  *
  * @author NickImpact
  */

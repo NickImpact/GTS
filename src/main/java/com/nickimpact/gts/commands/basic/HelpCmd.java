@@ -1,6 +1,6 @@
 package com.nickimpact.gts.commands.basic;
 
-import com.nickimpact.gts.api.annotations.CommandAliases;
+import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import org.spongepowered.api.command.CommandException;

@@ -81,7 +81,9 @@ public class TextParsingUtils {
 	}
 
 	public Text getPokemonInfo(EntityPixelmon pokemon, EnumPokemonFields field) {
-		return Text.of(field.function.apply(pokemon));
+		if(pokemon != null)
+			return Text.of(field.function.apply(pokemon));
+		return Text.EMPTY;
 	}
 
 	public Text getPriceInfo(Price price) {

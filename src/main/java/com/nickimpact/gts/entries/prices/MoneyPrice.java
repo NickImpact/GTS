@@ -4,6 +4,7 @@ import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.listings.pricing.PricingException;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
@@ -54,7 +55,7 @@ public class MoneyPrice extends Price<BigDecimal> {
 		acc.withdraw(
 				GTS.getInstance().getEconomy().getDefaultCurrency(),
 				this.price,
-				Cause.builder().append(GTS.getInstance().getPluginContainer()).build(EventContext.empty())
+				Sponge.getCauseStackManager().getCurrentCause()
 		);
 	}
 
@@ -84,7 +85,7 @@ public class MoneyPrice extends Price<BigDecimal> {
 		acc.deposit(
 				GTS.getInstance().getEconomy().getDefaultCurrency(),
 				this.price,
-				Cause.builder().append(GTS.getInstance().getPluginContainer()).build(EventContext.empty())
+				Sponge.getCauseStackManager().getCurrentCause()
 		);
 	}
 

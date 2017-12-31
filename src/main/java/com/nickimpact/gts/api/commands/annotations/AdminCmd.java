@@ -1,4 +1,4 @@
-package com.nickimpact.gts.api.annotations;
+package com.nickimpact.gts.api.commands.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

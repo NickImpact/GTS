@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * (Some note will go here)
@@ -52,6 +53,12 @@ public abstract class AbstractDao {
 	public abstract void removeHeldPrice(PriceHolder holder);
 
 	public abstract List<PriceHolder> getHeldPrices();
+
+	public abstract void addIgnorer(UUID uuid);
+
+	public abstract void removeIgnorer(UUID uuid);
+
+	public abstract List<UUID> getIgnorers();
 
 	public abstract void purge(boolean logs) throws Exception;
 

@@ -3,8 +3,8 @@ package com.nickimpact.gts.api.commands;
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
-import com.nickimpact.gts.api.annotations.AdminCmd;
-import com.nickimpact.gts.api.annotations.CommandAliases;
+import com.nickimpact.gts.api.commands.annotations.AdminCmd;
+import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
@@ -79,7 +79,7 @@ public abstract class SpongeCommand implements CommandExecutor
 
         return CommandSpec.builder()
                 .children(subCommands)
-                .permission(this.basePermission + ".command")
+                .permission(this.basePermission)
                 .description(getDescription())
                 .executor(this)
                 .arguments(args)

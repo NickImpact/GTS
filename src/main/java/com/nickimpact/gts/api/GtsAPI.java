@@ -44,14 +44,11 @@ public class GtsAPI {
 	 * @param clazz The class type of the target registry
 	 * @return A registry pertaining to the class type, or null if none exist
 	 */
-	@Nullable
 	public Registry getRegistry(Class<?> clazz) {
 		if(clazz.equals(Entry.class))
 			return entries;
-		else if(clazz.equals(Price.class))
+		else
 			return prices;
-
-		return null;
 	}
 
 	public Map<Class<? extends Entry>, ItemStack> getEntryDisplays() {

@@ -1,7 +1,11 @@
 package com.nickimpact.gts.api.listings;
 
+import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.api.exceptions.ListingException;
 import com.nickimpact.gts.api.listings.data.AuctionData;
 import com.nickimpact.gts.api.listings.entries.Entry;
+import com.nickimpact.gts.configuration.ConfigKeys;
+import com.nickimpact.gts.utils.ListingUtils;
 import lombok.Getter;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -17,27 +21,27 @@ import java.util.UUID;
  *
  * @author NickImpact
  */
-public class Listing {
+public final class Listing {
 
     /** The ID of the entry */
-    @Getter private int ID;
+    @Getter private final int ID;
 
     /** The owner of the entry */
-    @Getter private String ownerName;
+    @Getter private final String ownerName;
 
     /** The uuid of the entry owner */
-    @Getter private UUID ownerUUID;
+    @Getter private final UUID ownerUUID;
 
-    @Getter private Entry entry;
+    @Getter private final Entry entry;
 
     /** Whether or not the entry will expire */
-    private boolean expires;
+    private final boolean expires;
 
     /** When the lot will expire, if the above is true */
-    @Getter private Date expiration;
+    @Getter private final Date expiration;
 
     /** Represents the data for an auction, if the listing is in fact one */
-    @Getter private AuctionData aucData;
+    @Getter private final AuctionData aucData;
 
 	/**
 	 * Constructs the content of a listing that will be available on the GTS market
@@ -70,6 +74,24 @@ public class Listing {
 	    this.expires = expires;
 	    this.expiration = Date.from(Instant.now().plusSeconds(seconds));
 	    this.aucData = ad;
+
+	    ListingUtils.addToMarket(player, this);
+    }
+
+    public Listing(Builder builder) {
+		this.ID = ListingUtils.getNextID(Listing.class);
+		this.ownerName = builder.player.getName();
+		this.ownerUUID = builder.player.getUniqueId();
+		this.entry = builder.entry;
+		this.expires = builder.expires;
+		this.expiration = builder.expiration;
+		this.aucData = builder.data;
+
+	    ListingUtils.addToMarket(builder.player, this);
+    }
+
+    public static Builder builder() {
+    	return new Builder();
     }
 
 	/**
@@ -112,6 +134,64 @@ public class Listing {
 			return this.entry.getConfirmDisplay(player, this);
 		} else {
 			return this.entry.getBaseDisplay(player, this);
+		}
+	}
+
+	public static class Builder {
+
+		private Player player;
+
+		private Entry entry;
+
+		private boolean expires;
+
+		private Date expiration;
+
+		private AuctionData data;
+
+		public Builder player(Player player) {
+			this.player = player;
+			return this;
+		}
+
+		public Builder entry(Entry entry) {
+			this.entry = entry;
+			return this;
+		}
+
+		public Builder doesExpire() {
+			this.expires = true;
+			return this;
+		}
+
+		public Builder expiration(long seconds) {
+			this.expiration = Date.from(Instant.now().plusSeconds(seconds));
+			return this;
+		}
+
+		public Builder expiration(Date expiration) {
+			this.expiration = expiration;
+			return this;
+		}
+
+		public Builder auctionData(AuctionData data) {
+			this.data = data;
+			return this;
+		}
+
+		public Listing build() throws ListingException {
+			if(player == null || entry == null)
+				throw new ListingException();
+
+			if(expiration != null && !expires) {
+				expires = true;
+			}
+
+			if(expires && expiration == null) {
+				expiration = Date.from(Instant.now().plusSeconds(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME)));
+			}
+
+			return new Listing(this);
 		}
 	}
 }

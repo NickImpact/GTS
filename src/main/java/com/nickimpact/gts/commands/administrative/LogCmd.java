@@ -1,7 +1,7 @@
 package com.nickimpact.gts.commands.administrative;
 
-import com.nickimpact.gts.api.annotations.AdminCmd;
-import com.nickimpact.gts.api.annotations.CommandAliases;
+import com.nickimpact.gts.api.commands.annotations.AdminCmd;
+import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import org.spongepowered.api.command.CommandException;

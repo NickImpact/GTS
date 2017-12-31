@@ -1,18 +1,11 @@
 package com.nickimpact.gts.entries.pixelmon;
 
-import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.utils.GsonUtils;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import lombok.Getter;
-import lombok.Setter;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.text.Text;
 
 /**
  * (Some note will go here)

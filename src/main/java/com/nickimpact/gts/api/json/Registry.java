@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This class serves as an in-memory storage facility for class registration in call for
@@ -19,7 +20,7 @@ import java.util.HashMap;
  */
 public class Registry<E> {
 	/** The registry mapping holding a class to its typing */
-	private final HashMap<String, Class<? extends E>> typings = Maps.newHashMap();
+	private final Map<String, Class<? extends E>> typings = Maps.newHashMap();
 
 	/**
 	 * Registers a class to the registry. If we are missing the {@link Typing} annotation,
@@ -59,7 +60,7 @@ public class Registry<E> {
 		return typings.get(id);
 	}
 
-	public HashMap<String, Class<? extends E>> getTypings() {
+	public Map<String, Class<? extends E>> getTypings() {
 		return this.typings;
 	}
 }

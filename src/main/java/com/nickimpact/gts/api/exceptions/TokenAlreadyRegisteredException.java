@@ -3,7 +3,11 @@ package com.nickimpact.gts.api.exceptions;
 import lombok.Getter;
 
 /**
- * (Some note will go here)
+ * Since we provide an API for others to register their own tokens through GTS into Nucleus,
+ * we must also provide a check to ensure a Token has not yet been registered. That way, we don't
+ * allow any sort of override on a variable.
+ *
+ * <p>Note: This may change depending on what the community of developers deems is proper.</p>
  *
  * @author NickImpact
  */

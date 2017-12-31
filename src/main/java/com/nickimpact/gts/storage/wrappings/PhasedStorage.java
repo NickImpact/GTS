@@ -175,6 +175,36 @@ public class PhasedStorage implements Storage {
 	}
 
 	@Override
+	public CompletableFuture<Void> addIgnorer(UUID uuid) {
+		phaser.register();
+		try {
+			return delegate.addIgnorer(uuid);
+		} finally {
+			phaser.arriveAndDeregister();
+		}
+	}
+
+	@Override
+	public CompletableFuture<Void> removeIgnorer(UUID uuid) {
+		phaser.register();
+		try {
+			return delegate.removeIgnorer(uuid);
+		} finally {
+			phaser.arriveAndDeregister();
+		}
+	}
+
+	@Override
+	public CompletableFuture<List<UUID>> getIgnorers() {
+		phaser.register();
+		try {
+			return delegate.getIgnorers();
+		} finally {
+			phaser.arriveAndDeregister();
+		}
+	}
+
+	@Override
 	public CompletableFuture<Void> purge(boolean logs) {
 		phaser.register();
 		try {

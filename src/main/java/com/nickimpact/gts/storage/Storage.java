@@ -124,6 +124,17 @@ public interface Storage {
 	 */
 	CompletableFuture<List<PriceHolder>> getHeldPrices();
 
+	CompletableFuture<Void> addIgnorer(UUID uuid);
+
+	CompletableFuture<Void> removeIgnorer(UUID uuid);
+
+	/**
+	 * Fetches a list of UUIDs that prefer not to be bothered by GTS broadcasts
+	 *
+	 * @return A set of users ignoring GTS broadcasts
+	 */
+	CompletableFuture<List<UUID>> getIgnorers();
+
     /**
      * This method is meant to clean out the gts, along with logs if the passed variable
      * is <code>true</code>.

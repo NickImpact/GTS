@@ -3,11 +3,24 @@ package com.nickimpact.gts.entries.items;
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
+import com.nickimpact.gts.api.commands.SpongeCommand;
+import com.nickimpact.gts.api.commands.SpongeSubCommand;
+import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.json.Typing;
+import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.pricing.Price;
+import com.nickimpact.gts.api.listings.pricing.RewardException;
+import com.nickimpact.gts.configuration.ConfigKeys;
+import com.nickimpact.gts.entries.prices.MoneyPrice;
 import net.minecraft.init.Items;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandException;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.data.key.Keys;
@@ -15,7 +28,10 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.inventory.Carrier;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.entity.Hotbar;
+import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.item.inventory.type.CarriedInventory;
+import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 
 import java.util.List;
@@ -37,6 +53,10 @@ public class ItemEntry extends Entry<DataContainer> {
 	/** The cached version of the ItemStack */
 	private transient ItemStack item;
 
+	public ItemEntry() {
+		super();
+	}
+
 	public ItemEntry(ItemStack element, Price price) {
 		super(element.toContainer(), price);
 		this.item = element;
@@ -47,13 +67,27 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@Override
+	public SpongeSubCommand commandSpec() {
+		return new ItemSub();
+	}
+
+	@Override
+	public String getSpecsTemplate() {
+		return "{{item_title}}";
+	}
+
+	@Override
 	public String getName() {
-		return decode().getType().getName();
+		return this.decode().getTranslation().get();
 	}
 
 	@Override
 	protected ItemStack baseItemStack(Player player) {
-		return decode();
+		return ItemStack.builder()
+				.itemType(this.decode().getType())
+				.quantity(this.decode().getQuantity())
+				.add(Keys.ITEM_ENCHANTMENTS, this.decode().get(Keys.ITEM_ENCHANTMENTS).orElse(Lists.newArrayList()))
+				.build();
 	}
 
 	@Override
@@ -90,17 +124,38 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	protected ItemStack confirmItemStack(Player player) {
-		return decode();
+		return baseItemStack(player);
 	}
 
 	@Override
-	protected String confirmTitleTemplate() {
-		return this.baseTitleTemplate();
+	public String confirmTitleTemplate() {
+		return "&ePurchase {{item_title}}?";
 	}
 
 	@Override
 	protected List<String> confirmLoreTemplate() {
-		return this.baseLoreTemplate();
+		List<String> output = Lists.newArrayList(
+				"&7Listing ID: &e{{id}}",
+				"&7Seller: &e{{seller}}",
+				"&7Price: &e{{price}}"
+		);
+
+		this.decode().get(Keys.ITEM_LORE).ifPresent(lore -> {
+			if(lore.size() > 0) {
+				GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
+						Text.of(GTSInfo.DEBUG_PREFIX, "Item Lore:")
+				));
+				for(Text line : lore)
+					GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
+							Text.of(GTSInfo.DEBUG_PREFIX, line)
+					));
+
+				output.add("&aItem Lore:");
+				output.addAll(lore.stream().map(Text::toPlain).collect(Collectors.toList()));
+			}
+		});
+
+		return output;
 	}
 
 	@Override
@@ -109,14 +164,73 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@Override
-	public boolean giveEntry(User user){
-		((Player)user).getInventory().offer(this.decode());
+	public boolean giveEntry(User user) {
+		// User will always be a player here due to the offline support check
+		Player player = (Player)user;
+		if(player.getInventory().query(Hotbar.class, GridInventory.class).size() == 36)
+			return false;
+
+		player.getInventory().offer(this.decode());
 		return true;
 	}
 
 	@Override
 	public boolean doTakeAway(Player player) {
-		Optional<ItemStack> opt = player.getInventory().query(this.element).poll();
+		Optional<ItemStack> opt = player.getInventory().query(Hotbar.class, GridInventory.class).query(this.decode()).poll(this.decode().getQuantity());
 		return opt.isPresent();
+	}
+
+	@CommandAliases("item")
+	private class ItemSub extends SpongeSubCommand {
+
+		private final Text argSlot = Text.of("invSlot");
+		private final Text argAmount = Text.of("amount");
+		private final Text argPrice = Text.of("price");
+
+		@Override
+		public CommandElement[] getArgs() {
+			return new CommandElement[]{
+					GenericArguments.integer(argSlot),
+					GenericArguments.optional(GenericArguments.integer(argAmount)),
+					GenericArguments.integer(argPrice)
+			};
+		}
+
+		@Override
+		public Text getDescription() {
+			return Text.of("Handles item entries for the GTS");
+		}
+
+		@Override
+		public SpongeCommand[] getSubCommands() {
+			return new SpongeCommand[0];
+		}
+
+		@Override
+		public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+			if(src instanceof Player) {
+				Player player = (Player)src;
+				int invSlot = args.<Integer>getOne(argSlot).orElse(1) - 1;
+				Optional<ItemStack> item = player.getInventory()
+						.query(Hotbar.class, GridInventory.class)
+						.query(SlotIndex.of(invSlot))
+						.peek();
+
+				if(item.isPresent()) {
+					Listing.builder()
+							.player(player)
+							.entry(new ItemEntry(item.get(), new MoneyPrice(args.<Integer>getOne(argPrice).get())))
+							.doesExpire()
+							.expiration(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME))
+							.build();
+
+					return CommandResult.success();
+				}
+
+				throw new CommandException(Text.of("Unable to find an item in the specified inventory position..."));
+			}
+
+			throw new CommandException(Text.of("Only players may use this command..."));
+		}
 	}
 }

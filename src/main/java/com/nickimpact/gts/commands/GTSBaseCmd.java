@@ -1,6 +1,6 @@
 package com.nickimpact.gts.commands;
 
-import com.nickimpact.gts.api.annotations.CommandAliases;
+import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.commands.basic.HelpCmd;
 import com.nickimpact.gts.commands.basic.IgnoreCmd;

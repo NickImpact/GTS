@@ -53,24 +53,23 @@ public class GTSInfo {
 
     static void startup(){
         String logo = "\n" +
-                "      &e  _______ .___________.    _______.\n" +
-                "      &e /  _____||           |   /       |\n" +
-                "      &e|  |  __  `---|  |----`  |   (----`\n" +
-                "      &e|  | |_ |     |  |        \\   \\    \n" +
-                "      &e|  |__| |     |  |    .----)   |   \n" +
-                "      &e \\______|     |__|    |_______/    \n ";
+                "    &e  _______ .___________.    _______.\n" +
+                "    &e /  _____||           |   /       |\n" +
+                "    &e|  |  __  `---|  |----`  |   (----`\n" +
+                "    &e|  | |_ |     |  |        \\   \\    \n" +
+                "    &e|  |__| |     |  |    .----)   |   \n" +
+                "    &e \\______|     |__|    |_______/    \n ";
 
         for(String s : logo.split(Pattern.quote("\n")))
             GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(TextSerializers.FORMATTING_CODE.deserialize(s))));
 
-        GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(
-                "    ", TextColors.GREEN, "Author:  ", TextColors.AQUA, "NickImpact"
-        )));
-
-        GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(
-                "    ", TextColors.GREEN, "Version: ",
-                TextColors.AQUA, VERSION
-        )));
+        GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
+                Text.of("    ", TextColors.YELLOW, "Rise of the Doof Edition"),
+                Text.EMPTY,
+                Text.of("    ", TextColors.GREEN, "Author:  ", TextColors.AQUA, "NickImpact"),
+                Text.of("    ", TextColors.GREEN, "Version: ", TextColors.AQUA, VERSION),
+                Text.EMPTY
+        ));
 
         GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.EMPTY));
     }

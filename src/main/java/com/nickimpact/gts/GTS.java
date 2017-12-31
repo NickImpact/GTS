@@ -5,6 +5,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.nickimpact.gts.api.GtsAPI;
+import com.nickimpact.gts.api.json.Registry;
+import com.nickimpact.gts.api.listings.entries.EntryHolder;
+import com.nickimpact.gts.api.utils.MessageUtils;
+import com.nickimpact.gts.commands.basic.SellCmd;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.api.configuration.GTSConfiguration;
 import com.nickimpact.gts.api.listings.Listing;
@@ -57,9 +61,7 @@ import org.spongepowered.api.text.format.TextColors;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -112,6 +114,15 @@ public class GTS {
 	/** The cache holding all logs in the current running instance */
 	private List<Log> logCache = Lists.newArrayList();
 
+	/** The cache holding all temporary entries */
+	private List<EntryHolder> heldEntryCache = Lists.newArrayList();
+
+	/** The cache holding all temporary prices */
+	private List<PriceHolder> heldPriceCache = Lists.newArrayList();
+
+	/** A list of users who prefer not to be spammed by GTS broadcasts */
+	private List<UUID> ignorers = Lists.newArrayList();
+
 	/** The observable instance that allows the UIs to detect updates */
 	private GuiUpdater updater = new GuiUpdater();
 
@@ -149,11 +160,10 @@ public class GTS {
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Now entering the init phase")));
 			api.setTokens(new Tokens());
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading configuration...")));
-			// TODO - Load the config and whatnot here
-			this.config = new AbstractConfig(this, new GTSConfigAdapter(this), "gts.conf"); // Regular config
+			this.config = new AbstractConfig(this, new GTSConfigAdapter(this), "gts.conf");
 			this.config.init();
 
-			this.msgConfig = new AbstractConfig(this, new GTSConfigAdapter(this), "messages.conf"); // Base message config
+			this.msgConfig = new AbstractConfig(this, new GTSConfigAdapter(this), "messages.conf");
 			this.msgConfig.init();
 
 			if(getConfig().get(ConfigKeys.WATCH_FILES)) {
@@ -163,6 +173,23 @@ public class GTS {
 
 			// Register the base command
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing commands...")));
+			@SuppressWarnings("unchecked") Registry<Entry> entryTypes = this.api.getRegistry(Entry.class);
+			entryTypes.getTypings().forEach((key, clazz) -> {
+				try {
+					Entry entry = clazz.newInstance();
+					if(entry.commandSpec() == null) {
+						MessageUtils.genAndSendErrorMessage(
+								"Invalid Entry Command Spec",
+								"Command Spec is null",
+								"Offender: " + clazz.getSimpleName()
+						);
+					}
+					SellCmd.children.add(entry.commandSpec());
+				} catch (InstantiationException | IllegalAccessException e1) {
+					e1.printStackTrace();
+				}
+			});
+
 			new GTSBaseCmd().register();
 
 			// Declare and activate listeners
@@ -177,29 +204,40 @@ public class GTS {
 			try {
 				this.listingsCache = this.storage.getListings().get();
 				this.logCache = this.storage.getLogs().get();
+				this.heldEntryCache = this.storage.getHeldElements().get();
+				this.heldPriceCache = this.storage.getHeldPrices().get();
+				this.ignorers = this.storage.getIgnorers().get();
 
 				List<Listing> temp = Lists.newArrayList(this.listingsCache);
 				temp.sort(Comparator.comparing(Listing::getID));
 
 				int id = -1;
-				for(int i = 0; i < temp.size() - 1; i++) {
-					if(temp.get(i).getID() + 1 < temp.get(i + 1).getID()) {
+				if(temp.size() == 0) {
+					id = 0;
+				} else {
+					for (int i = 0; i < temp.size() - 1; i++) {
 						id = temp.get(i).getID();
-						break;
+						if (temp.get(i).getID() + 1 < temp.get(i + 1).getID()) {
+							break;
+						}
 					}
 				}
-				ListingUtils.setListingID(temp.size() != 0 && id != -1 ? id : 0);
+				ListingUtils.setListingID(temp.size() != 0 && id != -1 ? ++id : 0);
 
 				List<Log> tmp = Lists.newArrayList(this.logCache);
 				tmp.sort(Comparator.comparing(Log::getID));
 				id = -1;
-				for(int i = 0; i < temp.size() - 1; i++) {
-					if(tmp.get(i).getID() + 1 < tmp.get(i + 1).getID()) {
+				if(tmp.size() == 0) {
+					id = 0;
+				} else {
+					for (int i = 0; i < temp.size() - 1; i++) {
 						id = tmp.get(i).getID();
-						break;
+						if (tmp.get(i).getID() + 1 < tmp.get(i + 1).getID()) {
+							break;
+						}
 					}
 				}
-				ListingUtils.setLogID(tmp.size() != 0 && id != -1 ? id : 0);
+				ListingUtils.setLogID(tmp.size() != 0 && id != -1 ? ++id : 0);
 			} catch (InterruptedException | ExecutionException e1) {
 				e1.printStackTrace();
 			}

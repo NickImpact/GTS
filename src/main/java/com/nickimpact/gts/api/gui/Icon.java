@@ -1,16 +1,18 @@
 package com.nickimpact.gts.api.gui;
 
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.item.inventory.AffectSlotEvent;
-import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.property.SlotIndex;
-import org.spongepowered.api.item.inventory.transaction.SlotTransaction;
 
-import javax.crypto.Cipher;
 import java.util.*;
 import java.util.function.Consumer;
 
+/**
+ * An Icon represents the individual elements that can be added into an Inventory display.
+ * Each icon has an assigned slot and {@link ItemStack}, to which to specify their display location.
+ * Along with such, each Icon may have a set of Consumer's to which a {@link Clickable} action may
+ * take place.
+ *
+ * @author NickImpact, RysingDragon
+ */
 public class Icon {
 
     private int slot;

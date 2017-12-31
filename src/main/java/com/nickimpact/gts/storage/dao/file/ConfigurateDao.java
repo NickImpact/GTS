@@ -184,6 +184,17 @@ public abstract class ConfigurateDao extends AbstractDao {
 	}
 
 	@Override
+	public void addIgnorer(UUID uuid) {}
+
+	@Override
+	public void removeIgnorer(UUID uuid) {}
+
+	@Override
+	public List<UUID> getIgnorers() {
+		return Lists.newArrayList();
+	}
+
+	@Override
 	public void purge(boolean logs) throws Exception {}
 
 	@Override

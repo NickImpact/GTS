@@ -1,22 +1,44 @@
 package com.nickimpact.gts.entries.pixelmon;
 
 import com.google.common.collect.Lists;
+import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.GTSInfo;
+import com.nickimpact.gts.api.commands.SpongeCommand;
+import com.nickimpact.gts.api.commands.SpongeSubCommand;
+import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.json.Typing;
+import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.pricing.Price;
+import com.nickimpact.gts.api.utils.MessageUtils;
+import com.nickimpact.gts.configuration.ConfigKeys;
+import com.nickimpact.gts.entries.items.ItemEntry;
+import com.nickimpact.gts.entries.prices.MoneyPrice;
+import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
+import com.pixelmonmod.pixelmon.storage.PlayerComputerStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandException;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.args.CommandContext;
+import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.entity.Hotbar;
+import org.spongepowered.api.item.inventory.property.SlotIndex;
+import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 
@@ -31,12 +53,26 @@ import java.util.Optional;
 @Typing("Pokemon")
 public class PokemonEntry extends Entry<Pokemon> {
 
+	public PokemonEntry() {
+		super();
+	}
+
 	public PokemonEntry(EntityPixelmon pokemon, Price price) {
 		this(new Pokemon(pokemon), price);
 	}
 
 	public PokemonEntry(Pokemon pokemon, Price price) {
 		super(pokemon, price);
+	}
+
+	@Override
+	public SpongeSubCommand commandSpec() {
+		return new PokemonSub();
+	}
+
+	@Override
+	public String getSpecsTemplate() {
+		return "{{ability}} {{iv_percent}} IV {{shiny:s}}&a{{pokemon}}";
 	}
 
 	@Override
@@ -106,9 +142,16 @@ public class PokemonEntry extends Entry<Pokemon> {
 			return false;
 
 		PlayerStorage storage = optStorage.get();
-		storage.addToParty(this.getElement().getPokemon());
-		if(!storage.isOffline())
-			storage.sendUpdatedList();
+		if(storage.count() == 6) {
+			PlayerComputerStorage store = PixelmonStorage.computerManager.getPlayerStorageOffline((MinecraftServer)Sponge.getServer(), user.getUniqueId());
+			if(store != null) {
+				store.addToComputer(this.getElement().getPokemon().writeToNBT(new NBTTagCompound()));
+			}
+		} else {
+			storage.addToParty(this.getElement().getPokemon());
+			if (!storage.isOffline())
+				storage.sendUpdatedList();
+		}
 
 		return true;
 	}
@@ -147,5 +190,72 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 		item.setTagCompound(nbt);
 		return ItemStackUtil.fromNative(item);
+	}
+
+	@CommandAliases({"pokemon", "poke"})
+	private class PokemonSub extends SpongeSubCommand {
+
+		private final Text argPos = Text.of("pos");
+		private final Text argPrice = Text.of("price");
+
+		@Override
+		public CommandElement[] getArgs() {
+			return new CommandElement[]{
+					GenericArguments.integer(argPos),
+					GenericArguments.integer(argPrice)
+			};
+		}
+
+		@Override
+		public Text getDescription() {
+			return Text.of("Handles pokemon entries for the GTS");
+		}
+
+		@Override
+		public SpongeCommand[] getSubCommands() {
+			return new SpongeCommand[0];
+		}
+
+		@Override
+		public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+			if(src instanceof Player) {
+				Player player = (Player)src;
+				int pos = args.<Integer>getOne(argPos).get() - 1;
+
+				Optional<PlayerStorage> optStorage = PixelmonStorage.pokeBallManager.getPlayerStorage((EntityPlayerMP)player);
+				if(optStorage.isPresent()) {
+					PlayerStorage storage = optStorage.get();
+					NBTTagCompound nbt = storage.getNBT(storage.getIDFromPosition(pos));
+					if(nbt != null) {
+						EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(
+								nbt,
+								(World) Sponge.getServer().getWorld(Sponge.getServer().getDefaultWorldName()).get()
+						);
+						if (storage.countTeam() == 1 && !pokemon.isEgg)
+							throw new CommandException(Text.of("You can't sell your last non-egg party member!"));
+
+						Listing.builder()
+								.player(player)
+								.entry(new PokemonEntry(pokemon, new MoneyPrice(args.<Integer>getOne(argPrice).get())))
+								.doesExpire()
+								.expiration(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME))
+								.build();
+
+						return CommandResult.success();
+					}
+
+					throw new CommandException(Text.of("Unable to find a pokemon in the specified slot..."));
+				}
+
+				MessageUtils.genAndSendErrorMessage(
+						"Pixelmon Storage Access Error",
+						"Unable to locate storage for " + player.getName(),
+						"Their UUID: " + player.getUniqueId()
+				);
+				throw new CommandException(Text.of("Unable to find your party data, this error has been reported"));
+			}
+
+			throw new CommandException(Text.of("Only players may use this command..."));
+		}
 	}
 }
