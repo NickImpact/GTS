@@ -179,8 +179,10 @@ public class PokemonEntry extends Entry<Pokemon> {
 				case Togepi:
 					nbt.setString(NbtKeys.SPRITE_NAME,
 					              String.format("pixelmon:sprites/eggs/%s1", pokemon.getSpecies().name.toLowerCase()));
+					break;
 				default:
 					nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/egg1");
+					break;
 			}
 		} else if (pokemon.getIsShiny()) {
 			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.getSpecies().name, pokemon.getForm()));

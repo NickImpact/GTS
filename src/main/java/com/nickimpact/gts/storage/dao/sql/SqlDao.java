@@ -277,18 +277,44 @@ public class SqlDao extends AbstractDao {
 	}
 
 	@Override
-	public void addIgnorer(UUID uuid) {
-
+	public void addIgnorer(UUID uuid) throws Exception {
+		try (Connection connection = this.findConnection()) {
+			String stmt = prefix.apply(ADD_IGNORER);
+			stmt = String.format(stmt, uuid);
+			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
+				ps.executeUpdate();
+				ps.close();
+			}
+		}
 	}
 
 	@Override
-	public void removeIgnorer(UUID uuid) {
-
+	public void removeIgnorer(UUID uuid) throws Exception{
+		try (Connection connection = this.findConnection()) {
+			String stmt = prefix.apply(REMOVE_IGNORER);
+			stmt = String.format(stmt, uuid);
+			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
+				ps.executeUpdate();
+				ps.close();
+			}
+		}
 	}
 
 	@Override
-	public List<UUID> getIgnorers() {
-		return null;
+	public List<UUID> getIgnorers() throws Exception {
+		List<UUID> ignorers = Lists.newArrayList();
+		try (Connection connection = this.findConnection()) {
+			try (PreparedStatement query = connection.prepareStatement(prefix.apply(GET_IGNORERS))) {
+				ResultSet results = query.executeQuery();
+				while(results.next())
+					ignorers.add(UUID.fromString(results.getString("uuid")));
+
+				results.close();
+				query.close();
+			}
+		}
+
+		return ignorers;
 	}
 
 	@Override

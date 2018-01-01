@@ -80,21 +80,18 @@ public class ListingUtils {
 	}
 
     public static void addToMarket(Player player, Listing listing) {
-        Map<String, Function<CommandSource, Optional<Text>>> replacements = Maps.newHashMap();
-
-        if(hasMax(player)){
-            replacements.put("max_listings", src -> Optional.of(Text.of(GTS.getInstance().getConfig().get(ConfigKeys.MAX_LISTINGS))));
-            for (String string : GTS.getInstance().getMsgConfig().get(MsgConfigKeys.MAX_LISTINGS)) {
-	            try {
-		            player.sendMessage(GTS.getInstance().getTextParsingUtils().parse(
-				            GTS.getInstance().getTextParsingUtils().getTemplate(string),
-				            player,
-				            replacements,
-				            null
-		            ));
-	            } catch (NucleusException e) {
-		            e.printStackTrace();
-	            }
+        if(hasMax(player)) {
+	        Map<String, Function<CommandSource, Optional<Text>>> replacements = Maps.newHashMap();
+	        replacements.put("max_listings", src -> Optional.of(Text.of(GTS.getInstance().getConfig().get(ConfigKeys.MAX_LISTINGS))));
+            try {
+	            player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+			            GTS.getInstance().getMsgConfig().get(MsgConfigKeys.MAX_LISTINGS),
+			            player,
+			            replacements,
+			            null
+	            ));
+            } catch (NucleusException e) {
+	            e.printStackTrace();
             }
             return;
         }
@@ -130,7 +127,7 @@ public class ListingUtils {
 								GTS.getInstance().getMsgConfig().get(MsgConfigKeys.TAX_INVALID),
 								player,
 								extras,
-								null
+								variables
 						));
 				    } else {
 				    	tax = Optional.of(t);
@@ -224,7 +221,7 @@ public class ListingUtils {
     }
 
     public static void purchase(Player player, Listing listing) {
-		if(GTS.getInstance().getListingsCache().contains(listing)) {
+		if(!GTS.getInstance().getListingsCache().contains(listing)) {
 			try {
 				player.sendMessages(
 						GTS.getInstance().getTextParsingUtils().parse(

@@ -5,6 +5,7 @@ import com.nickimpact.gts.api.commands.annotations.AdminCmd;
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
+import com.nickimpact.gts.api.listings.Listing;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -38,6 +39,9 @@ public class ClearCmd extends SpongeSubCommand {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+		for(Listing listing : GTS.getInstance().getListingsCache())
+			listing.getEntry().giveEntry(GTS.getInstance().getUserStorageService().get(listing.getOwnerUUID()).get());
+
 		GTS.getInstance().getListingsCache().clear();
 		GTS.getInstance().getStorage().purge(false);
 		return CommandResult.success();

@@ -42,23 +42,23 @@ public abstract class AbstractDao {
 
 	public abstract List<Log> getLogs() throws Exception;
 
-	public abstract void addHeldElement(EntryHolder holder);
+	public abstract void addHeldElement(EntryHolder holder) throws Exception;
 
-	public abstract void removeHeldElement(EntryHolder holder);
+	public abstract void removeHeldElement(EntryHolder holder) throws Exception;
 
-	public abstract List<EntryHolder> getHeldElements();
+	public abstract List<EntryHolder> getHeldElements() throws Exception;
 
-	public abstract void addHeldPrice(PriceHolder holder);
+	public abstract void addHeldPrice(PriceHolder holder) throws Exception;
 
-	public abstract void removeHeldPrice(PriceHolder holder);
+	public abstract void removeHeldPrice(PriceHolder holder) throws Exception;
 
-	public abstract List<PriceHolder> getHeldPrices();
+	public abstract List<PriceHolder> getHeldPrices() throws Exception;
 
-	public abstract void addIgnorer(UUID uuid);
+	public abstract void addIgnorer(UUID uuid) throws Exception;
 
-	public abstract void removeIgnorer(UUID uuid);
+	public abstract void removeIgnorer(UUID uuid) throws Exception;
 
-	public abstract List<UUID> getIgnorers();
+	public abstract List<UUID> getIgnorers() throws Exception;
 
 	public abstract void purge(boolean logs) throws Exception;
 
