@@ -111,7 +111,7 @@ public final class Tokens implements NucleusMessageTokenService.TokenParser {
 						listing.getEntry().getSpecsTemplate(),
 						p,
 						null,
-						null
+						m
 				));
 			} catch (NucleusException e) {
 				return Optional.empty();

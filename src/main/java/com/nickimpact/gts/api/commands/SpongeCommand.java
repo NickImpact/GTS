@@ -62,7 +62,11 @@ public abstract class SpongeCommand implements CommandExecutor
 
     private CommandSpec getCommandSpec()
     {
-        this.basePermission = GTSInfo.ID + ".command." + (this.getClass().isAnnotationPresent(AdminCmd.class) ? "admin." : "") + getAllAliases().get(0);
+    	CommandSpec.Builder cb = CommandSpec.builder();
+    	if(!(this instanceof SpongeSubCommand)) {
+		    this.basePermission = GTSInfo.ID + ".command." + (this.getClass().isAnnotationPresent(AdminCmd.class) ? "admin." : "") + getAllAliases().get(0);
+	    }
+	    cb.permission(this.basePermission);
 
         SpongeCommand[] subCmds = getSubCommands();
         HashMap<List<String>, CommandSpec> subCommands = new HashMap<>();
@@ -79,7 +83,6 @@ public abstract class SpongeCommand implements CommandExecutor
 
         return CommandSpec.builder()
                 .children(subCommands)
-                .permission(this.basePermission)
                 .description(getDescription())
                 .executor(this)
                 .arguments(args)

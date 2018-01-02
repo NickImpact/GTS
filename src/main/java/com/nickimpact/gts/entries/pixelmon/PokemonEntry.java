@@ -2,7 +2,6 @@ package com.nickimpact.gts.entries.pixelmon;
 
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
@@ -12,7 +11,6 @@ import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.configuration.ConfigKeys;
-import com.nickimpact.gts.entries.items.ItemEntry;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
@@ -36,9 +34,6 @@ import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.entity.Hotbar;
-import org.spongepowered.api.item.inventory.property.SlotIndex;
-import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 

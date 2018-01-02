@@ -221,6 +221,10 @@ public class ListingUtils {
     }
 
     public static void purchase(Player player, Listing listing) {
+	    Map<String, Object> variables = Maps.newHashMap();
+	    variables.put("dummy", listing.getEntry());
+	    variables.put("dummy2", listing);
+
 		if(!GTS.getInstance().getListingsCache().contains(listing)) {
 			try {
 				player.sendMessages(
@@ -228,7 +232,7 @@ public class ListingUtils {
 								GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ALREADY_CLAIMED),
 								player,
 								null,
-								null
+								variables
 						)
 				);
 			} catch (NucleusException e) {
@@ -236,10 +240,6 @@ public class ListingUtils {
 			}
 			return;
 		}
-
-	    Map<String, Object> variables = Maps.newHashMap();
-	    variables.put("dummy", listing.getEntry());
-	    variables.put("dummy2", listing);
 
 		Price price = listing.getEntry().getPrice();
 	    try {
@@ -270,8 +270,32 @@ public class ListingUtils {
 					else {
 						addHeldPrice(new PriceHolder(randomID(Price.class), listing.getOwnerUUID(), price));
 					}
+				} else {
+					price.reward(listing.getOwnerUUID());
+					Sponge.getServer().getPlayer(listing.getOwnerUUID()).ifPresent(pl -> {
+						try {
+							pl.sendMessages(
+									GTS.getInstance().getTextParsingUtils().parse(
+											GTS.getInstance().getMsgConfig().get(MsgConfigKeys.PURCHASE_RECEIVE),
+											player,
+											null,
+											variables
+									)
+							);
+						} catch (NucleusException e) {
+							e.printStackTrace();
+						}
+					});
 				}
 
+				if(!listing.getEntry().supportsOffline()) {
+					Player receiver;
+					if ((receiver = Sponge.getServer().getPlayer(listing.getOwnerUUID()).orElse(null)) != null) {
+						listing.getEntry().giveEntry(receiver);
+					}
+				} else {
+					listing.getEntry().giveEntry(player);
+				}
 				deleteEntry(listing);
 		    } else {
 		    	player.sendMessages(
