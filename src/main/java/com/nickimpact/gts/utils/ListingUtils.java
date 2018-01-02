@@ -158,34 +158,43 @@ public class ListingUtils {
 			    );
 		    }
 
-		    try {
-		    	final BigDecimal t = tax.orElse(BigDecimal.ZERO);
-			    Map<String, Function<CommandSource, Optional<Text>>> extras = Maps.newHashMap();
-			    extras.put("tax", src -> Optional.of(Text.of(GTS.getInstance().getEconomy().getDefaultCurrency().format(t))));
-			    player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
-			    		GTS.getInstance().getMsgConfig().get(MsgConfigKeys.TAX_APPLICATION),
-					    player,
-					    extras,
-					    null
-			    ));
-		    } catch (NucleusException e) {
-			    MessageUtils.genAndSendErrorMessage(
-					    "Message Parse Error",
-					    "Nucleus was unable to decode a message properly...",
-					    "Template: " + GTS.getInstance().getMsgConfig().get(MsgConfigKeys.TAX_APPLICATION)
-			    );
+		    if(GTS.getInstance().getConfig().get(ConfigKeys.TAX_ENABLED)) {
+			    try {
+				    final BigDecimal t = tax.orElse(BigDecimal.ZERO);
+				    Map<String, Function<CommandSource, Optional<Text>>> extras = Maps.newHashMap();
+				    extras.put("tax", src -> Optional.of(
+						    Text.of(GTS.getInstance().getEconomy().getDefaultCurrency().format(t))));
+				    player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+						    GTS.getInstance().getMsgConfig().get(MsgConfigKeys.TAX_APPLICATION),
+						    player,
+						    extras,
+						    null
+				    ));
+			    } catch (NucleusException e) {
+				    MessageUtils.genAndSendErrorMessage(
+						    "Message Parse Error",
+						    "Nucleus was unable to decode a message properly...",
+						    "Template: " + GTS.getInstance().getMsgConfig().get(MsgConfigKeys.TAX_APPLICATION)
+				    );
+			    }
 		    }
 
 		    if(!listing.getEntry().doTakeAway(player)) {
 			    // Refund applied tax
-			    try {
-				    UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId()).orElse(null);
-				    if(acc != null)
-				    	acc.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(), tax.orElse(BigDecimal.ZERO), Cause.builder().append(GTS.getInstance()).build(EventContext.empty()));
+			    if(GTS.getInstance().getConfig().get(ConfigKeys.TAX_ENABLED)) {
+				    try {
+					    UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(
+							    player.getUniqueId()).orElse(null);
+					    if (acc != null)
+						    acc.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(),
+						                tax.orElse(BigDecimal.ZERO),
+						                Cause.builder().append(GTS.getInstance()).build(EventContext.empty()));
 
-				    player.sendMessage(Text.of(GTSInfo.ERROR_PREFIX, TextColors.RED, "Your listing failed to be taken, so we have refunded the tax applied!"));
-			    } catch (Exception e) {
-				    e.printStackTrace();
+					    player.sendMessage(Text.of(GTSInfo.ERROR_PREFIX, TextColors.RED,
+					                               "Your listing failed to be taken, so we have refunded the tax applied!"));
+				    } catch (Exception e) {
+					    e.printStackTrace();
+				    }
 			    }
 			    return;
 		    }
