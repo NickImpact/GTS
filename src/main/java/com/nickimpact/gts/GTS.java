@@ -202,42 +202,50 @@ public class GTS {
 			// Read in and register all data entries into the cache
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading data into cache...")));
 			try {
-				this.listingsCache = this.storage.getListings().get();
-				this.logCache = this.storage.getLogs().get();
+				this.storage.getListings().thenAccept(list -> {
+					this.listingsCache = list;
+
+					List<Listing> temp = Lists.newArrayList(this.listingsCache);
+					temp.sort(Comparator.comparing(Listing::getID));
+
+					int id = -1;
+					if(temp.size() == 0) {
+						id = 0;
+					} else if(temp.size() == 1) {
+						id = temp.get(0).getID();
+					} else {
+						for (int i = 0; i < temp.size() - 1; i++) {
+							id = temp.get(i).getID();
+							if (temp.get(i).getID() + 1 < temp.get(i + 1).getID()) {
+								break;
+							}
+						}
+					}
+					ListingUtils.setListingID(temp.size() != 0 && id != -1 ? ++id : 0);
+				});
+				this.storage.getLogs().thenAccept(list -> {
+					this.logCache = list;
+
+					List<Log> tmp = Lists.newArrayList(this.logCache);
+					tmp.sort(Comparator.comparing(Log::getID));
+					int id = -1;
+					if(tmp.size() == 0) {
+						id = 0;
+					} else if(tmp.size() == 1) {
+						id = tmp.get(0).getID();
+					} else {
+						for (int i = 0; i < tmp.size() - 1; i++) {
+							id = tmp.get(i).getID();
+							if (tmp.get(i).getID() + 1 < tmp.get(i + 1).getID()) {
+								break;
+							}
+						}
+					}
+					ListingUtils.setLogID(tmp.size() != 0 && id != -1 ? ++id : 0);
+				});
 				this.heldEntryCache = this.storage.getHeldElements().get();
 				this.heldPriceCache = this.storage.getHeldPrices().get();
 				this.ignorers = this.storage.getIgnorers().get();
-
-				List<Listing> temp = Lists.newArrayList(this.listingsCache);
-				temp.sort(Comparator.comparing(Listing::getID));
-
-				int id = -1;
-				if(temp.size() == 0) {
-					id = 0;
-				} else {
-					for (int i = 0; i < temp.size() - 1; i++) {
-						id = temp.get(i).getID();
-						if (temp.get(i).getID() + 1 < temp.get(i + 1).getID()) {
-							break;
-						}
-					}
-				}
-				ListingUtils.setListingID(temp.size() != 0 && id != -1 ? ++id : 0);
-
-				List<Log> tmp = Lists.newArrayList(this.logCache);
-				tmp.sort(Comparator.comparing(Log::getID));
-				id = -1;
-				if(tmp.size() == 0) {
-					id = 0;
-				} else {
-					for (int i = 0; i < temp.size() - 1; i++) {
-						id = tmp.get(i).getID();
-						if (tmp.get(i).getID() + 1 < tmp.get(i + 1).getID()) {
-							break;
-						}
-					}
-				}
-				ListingUtils.setLogID(tmp.size() != 0 && id != -1 ? ++id : 0);
 			} catch (InterruptedException | ExecutionException e1) {
 				e1.printStackTrace();
 			}

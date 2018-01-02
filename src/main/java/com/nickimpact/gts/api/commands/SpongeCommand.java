@@ -81,8 +81,7 @@ public abstract class SpongeCommand implements CommandExecutor
         if (args == null || args.length == 0)
             args = new CommandElement[]{GenericArguments.none()};
 
-        return CommandSpec.builder()
-                .children(subCommands)
+        return cb.children(subCommands)
                 .description(getDescription())
                 .executor(this)
                 .arguments(args)
