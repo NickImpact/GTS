@@ -44,6 +44,11 @@ public class SearchCmd extends SpongeSubCommand {
 	}
 
 	@Override
+	public Text getUsage() {
+		return Text.of("/gts search <parameters>");
+	}
+
+	@Override
 	public SpongeCommand[] getSubCommands() {
 		return null;
 	}

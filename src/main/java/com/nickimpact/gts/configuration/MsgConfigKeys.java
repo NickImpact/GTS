@@ -14,6 +14,9 @@ import java.util.List;
  */
 public class MsgConfigKeys {
 
+	// Plugin chat prefix (replacement option for {{gts_prefix}}
+	public static final ConfigKey<String> PREFIX = StringKey.of("prefix", "&eGTS &7\u00bb ");
+
 	// Generic messages for the program
 	// Best to support lists of text here, as a server may decide to go heavy on text formatting
 	public static final ConfigKey<List<String>> MAX_LISTINGS = ListKey.of("max-listings", Lists.newArrayList(

@@ -196,7 +196,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 	}
 
 	@CommandAliases({"pokemon", "poke"})
-	private class PokemonSub extends SpongeSubCommand {
+	public class PokemonSub extends SpongeSubCommand {
 
 		private final Text argPos = Text.of("pos");
 		private final Text argPrice = Text.of("price");
@@ -212,6 +212,11 @@ public class PokemonEntry extends Entry<Pokemon> {
 		@Override
 		public Text getDescription() {
 			return Text.of("Handles pokemon entries for the GTS");
+		}
+
+		@Override
+		public Text getUsage() {
+			return Text.of("/gts sell pokemon <party slot> <price>");
 		}
 
 		@Override

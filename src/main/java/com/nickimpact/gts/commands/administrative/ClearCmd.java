@@ -31,7 +31,12 @@ public class ClearCmd extends SpongeSubCommand {
 
 	@Override
 	public Text getDescription() {
-		return Text.of();
+		return Text.of("Clears all current listings");
+	}
+
+	@Override
+	public Text getUsage() {
+		return Text.of("/gts admin clear");
 	}
 
 	@Override

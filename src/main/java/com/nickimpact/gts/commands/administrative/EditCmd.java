@@ -27,7 +27,12 @@ public class EditCmd extends SpongeSubCommand {
 
 	@Override
 	public Text getDescription() {
-		return Text.of();
+		return Text.of("Edit the GTS listings");
+	}
+
+	@Override
+	public Text getUsage() {
+		return Text.of("/gts admin edit");
 	}
 
 	@Override
@@ -37,6 +42,6 @@ public class EditCmd extends SpongeSubCommand {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		return CommandResult.success();
+		throw new CommandException(Text.of("Coming soon..."));
 	}
 }

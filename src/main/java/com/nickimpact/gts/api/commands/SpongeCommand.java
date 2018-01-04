@@ -58,9 +58,11 @@ public abstract class SpongeCommand implements CommandExecutor
 
     public abstract Text getDescription();
 
+    public abstract Text getUsage();
+
     public abstract SpongeCommand[] getSubCommands();
 
-    private CommandSpec getCommandSpec()
+    public CommandSpec getCommandSpec()
     {
     	CommandSpec.Builder cb = CommandSpec.builder();
     	if(!(this instanceof SpongeSubCommand)) {

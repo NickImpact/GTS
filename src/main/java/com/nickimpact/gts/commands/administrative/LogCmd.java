@@ -19,6 +19,7 @@ import org.spongepowered.api.text.Text;
 @AdminCmd
 @CommandAliases({"logs"})
 public class LogCmd extends SpongeSubCommand {
+
 	@Override
 	public CommandElement[] getArgs() {
 		return new CommandElement[0];
@@ -27,6 +28,11 @@ public class LogCmd extends SpongeSubCommand {
 	@Override
 	public Text getDescription() {
 		return Text.of();
+	}
+
+	@Override
+	public Text getUsage() {
+		return Text.of("/gts admin logs <target>");
 	}
 
 	@Override

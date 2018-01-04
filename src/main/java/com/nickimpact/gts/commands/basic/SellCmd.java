@@ -30,7 +30,12 @@ public class SellCmd extends SpongeSubCommand {
 
 	@Override
 	public Text getDescription() {
-		return Text.of("Grants the ability to add a kind of element to the GTS listings");
+		return Text.of("Adds a listing to the market");
+	}
+
+	@Override
+	public Text getUsage() {
+		return Text.of("/gts sell <type>");
 	}
 
 	@Override

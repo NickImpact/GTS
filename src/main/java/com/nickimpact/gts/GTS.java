@@ -8,6 +8,7 @@ import com.nickimpact.gts.api.GtsAPI;
 import com.nickimpact.gts.api.json.Registry;
 import com.nickimpact.gts.api.listings.entries.EntryHolder;
 import com.nickimpact.gts.api.utils.MessageUtils;
+import com.nickimpact.gts.commands.basic.HelpCmd;
 import com.nickimpact.gts.commands.basic.SellCmd;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.api.configuration.GTSConfiguration;
@@ -174,23 +175,25 @@ public class GTS {
 			// Register the base command
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing commands...")));
 			@SuppressWarnings("unchecked") Registry<Entry> entryTypes = this.api.getRegistry(Entry.class);
-			entryTypes.getTypings().forEach((key, clazz) -> {
+			for(Map.Entry<String, Class<? extends Entry>> mapping : entryTypes.getTypings().entrySet()) {
 				try {
-					Entry entry = clazz.newInstance();
+					Entry entry = mapping.getValue().newInstance();
 					if(entry.commandSpec() == null) {
 						MessageUtils.genAndSendErrorMessage(
 								"Invalid Entry Command Spec",
 								"Command Spec is null",
-								"Offender: " + clazz.getSimpleName()
+								"Offender: " + mapping.getValue().getSimpleName()
 						);
 					}
 					SellCmd.children.add(entry.commandSpec());
 				} catch (InstantiationException | IllegalAccessException e1) {
 					e1.printStackTrace();
 				}
-			});
+			}
 
-			new GTSBaseCmd().register();
+			GTSBaseCmd base = new GTSBaseCmd();
+			base.register();
+			HelpCmd.updateCommand(base);
 
 			// Declare and activate listeners
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing listeners...")));

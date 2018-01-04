@@ -183,7 +183,7 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@CommandAliases("item")
-	private class ItemSub extends SpongeSubCommand {
+	public class ItemSub extends SpongeSubCommand {
 
 		private final Text argSlot = Text.of("invSlot");
 		private final Text argAmount = Text.of("amount");
@@ -193,7 +193,7 @@ public class ItemEntry extends Entry<DataContainer> {
 		public CommandElement[] getArgs() {
 			return new CommandElement[]{
 					GenericArguments.integer(argSlot),
-					GenericArguments.optional(GenericArguments.integer(argAmount)),
+					GenericArguments.integer(argAmount),
 					GenericArguments.integer(argPrice)
 			};
 		}
@@ -201,6 +201,11 @@ public class ItemEntry extends Entry<DataContainer> {
 		@Override
 		public Text getDescription() {
 			return Text.of("Handles item entries for the GTS");
+		}
+
+		@Override
+		public Text getUsage() {
+			return Text.of("/gts sell item <inv slot> <amount> <price>");
 		}
 
 		@Override

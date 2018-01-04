@@ -10,6 +10,7 @@ import com.nickimpact.gts.api.exceptions.TokenAlreadyRegisteredException;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.time.Time;
+import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.internal.ItemTokens;
 import com.nickimpact.gts.internal.PokemonTokens;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
@@ -39,7 +40,9 @@ public final class Tokens implements NucleusMessageTokenService.TokenParser {
 	private final Map<String, Translator> translatorMap = Maps.newHashMap();
 
 	public Tokens() {
-		translatorMap.put("gts_prefix", (p, v, m) -> Optional.of(Text.of(TextColors.YELLOW, "GTS ", TextColors.GRAY, "\u00bb")));
+		translatorMap.put("gts_prefix", (p, v, m) -> Optional.of(TextSerializers.FORMATTING_CODE.deserialize(
+				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.PREFIX)
+		)));
 		translatorMap.put("balance", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getBalance(
 				getSourceFromVariableIfExists(p, v, m))
 		));

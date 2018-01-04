@@ -29,7 +29,12 @@ public class AdminBaseCmd extends SpongeSubCommand {
 
 	@Override
 	public Text getDescription() {
-		return null;
+		return Text.of("The administrative bridge for GTS");
+	}
+
+	@Override
+	public Text getUsage() {
+		return Text.of("/gts admin <clear/edit>");
 	}
 
 	@Override
@@ -42,6 +47,6 @@ public class AdminBaseCmd extends SpongeSubCommand {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		return null;
+		throw new CommandException(Text.of("/gts admin requires a specific action"));
 	}
 }

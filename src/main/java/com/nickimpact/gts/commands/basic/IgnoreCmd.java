@@ -20,6 +20,7 @@ import org.spongepowered.api.text.Text;
  */
 @CommandAliases({"ignore"})
 public class IgnoreCmd extends SpongeSubCommand {
+
 	@Override
 	public CommandElement[] getArgs() {
 		return new CommandElement[0];
@@ -27,7 +28,12 @@ public class IgnoreCmd extends SpongeSubCommand {
 
 	@Override
 	public Text getDescription() {
-		return Text.of();
+		return Text.of("Toggle ability to ignore GTS broadcasts");
+	}
+
+	@Override
+	public Text getUsage() {
+		return Text.of("/gts ignore");
 	}
 
 	@Override
