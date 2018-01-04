@@ -52,7 +52,7 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'org.spongepowered:spongeapi:7.0.0-SNAPSHOT'
+    compile 'org.spongepowered:spongeapi:7.0.0'
     compile "org.projectlombok:lombok:1.16.10"
 	compile group: 'com.zaxxer', name: 'HikariCP', version: '2.5.1'
 }

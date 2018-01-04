@@ -22,10 +22,10 @@ import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
-import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
+import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 
@@ -171,19 +171,13 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	public boolean doTakeAway(Player player) {
-		Optional<ItemStack> opt = Optional.empty();
-
-		ItemStack.Builder ib = ItemStack.builder().from(this.decode());
-		for(Inventory inv : player.getInventory().query(Hotbar.class, GridInventory.class).slots()) {
-			Optional<ItemStack> item = inv.peek();
-			if(item.isPresent()) {
-				ItemStack it = ib.quantity(item.get().getQuantity()).build();
-				if(it.equalTo(item.get())) {
-					opt = inv.poll(this.decode().getQuantity());
-					break;
-				}
-			}
-		}
+		Optional<ItemStack> opt = player.getInventory()
+				.query(
+						QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
+						QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class)
+				)
+				.query(QueryOperationTypes.ITEM_STACK_IGNORE_QUANTITY.of(this.decode()))
+				.poll(this.decode().getQuantity());
 
 		return opt.isPresent();
 	}
@@ -221,8 +215,11 @@ public class ItemEntry extends Entry<DataContainer> {
 				int invSlot = args.<Integer>getOne(argSlot).orElse(1) - 1;
 
 				Optional<ItemStack> item = player.getInventory()
-						.query(Hotbar.class, GridInventory.class)
-						.query(SlotIndex.of(invSlot))
+						.query(
+								QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
+								QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class)
+						)
+						.query(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotIndex.of(invSlot)))
 						.peek(args.<Integer>getOne(argAmount).orElse(1));
 
 				if(item.isPresent()) {
