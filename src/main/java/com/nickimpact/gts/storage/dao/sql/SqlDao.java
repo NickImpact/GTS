@@ -247,33 +247,87 @@ public class SqlDao extends AbstractDao {
 	}
 
 	@Override
-	public void addHeldElement(EntryHolder holder) {
-
+	public void addHeldElement(EntryHolder holder) throws Exception {
+		try (Connection connection = this.findConnection()) {
+			String stmt = prefix.apply(ADD_HELD_ENTRY);
+			stmt = String.format(stmt, holder.getId(), GTS.prettyGson.toJson(holder));
+			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
+				ps.executeUpdate();
+				ps.close();
+			}
+		}
 	}
 
 	@Override
-	public void removeHeldElement(EntryHolder holder) {
-
+	public void removeHeldElement(EntryHolder holder) throws Exception {
+		this.runRemoval(REMOVE_HELD_ENTRY, holder.getId());
 	}
 
 	@Override
-	public List<EntryHolder> getHeldElements() {
-		return null;
+	public List<EntryHolder> getHeldElements() throws Exception {
+		List<EntryHolder> holders = Lists.newArrayList();
+		try (Connection connection = this.findConnection()) {
+			try (PreparedStatement query = connection.prepareStatement(prefix.apply(GET_HELD_ENTRIES))) {
+				ResultSet results = query.executeQuery();
+				while(results.next()) {
+					try {
+						holders.add(GTS.prettyGson.fromJson(results.getString("holder"), EntryHolder.class));
+					} catch (JsonSyntaxException e) {
+						MessageUtils.genAndSendErrorMessage(
+								"JSON Syntax Error",
+								"Invalid EntryHolder JSON detected",
+								"Holder ID: " + results.getInt("id")
+						);
+					}
+				}
+				results.close();
+				query.close();
+			}
+		}
+
+		return holders;
 	}
 
 	@Override
-	public void addHeldPrice(PriceHolder holder) {
-
+	public void addHeldPrice(PriceHolder holder) throws Exception {
+		try (Connection connection = this.findConnection()) {
+			String stmt = prefix.apply(ADD_HELD_PRICE);
+			stmt = String.format(stmt, holder.getId(), GTS.prettyGson.toJson(holder));
+			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
+				ps.executeUpdate();
+				ps.close();
+			}
+		}
 	}
 
 	@Override
-	public void removeHeldPrice(PriceHolder holder) {
-
+	public void removeHeldPrice(PriceHolder holder) throws Exception {
+		this.runRemoval(REMOVE_HELD_PRICE, holder.getId());
 	}
 
 	@Override
-	public List<PriceHolder> getHeldPrices() {
-		return null;
+	public List<PriceHolder> getHeldPrices() throws Exception {
+		List<PriceHolder> holders = Lists.newArrayList();
+		try (Connection connection = this.findConnection()) {
+			try (PreparedStatement query = connection.prepareStatement(prefix.apply(GET_HELD_PRICES))) {
+				ResultSet results = query.executeQuery();
+				while(results.next()) {
+					try {
+						holders.add(GTS.prettyGson.fromJson(results.getString("holder"), PriceHolder.class));
+					} catch (JsonSyntaxException e) {
+						MessageUtils.genAndSendErrorMessage(
+								"JSON Syntax Error",
+								"Invalid PriceHolder JSON detected",
+								"Holder ID: " + results.getInt("id")
+						);
+					}
+				}
+				results.close();
+				query.close();
+			}
+		}
+
+		return holders;
 	}
 
 	@Override

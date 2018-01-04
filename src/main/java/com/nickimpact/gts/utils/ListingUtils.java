@@ -112,8 +112,9 @@ public class ListingUtils {
 	    	// We can check here for minimum prices, if we decide to support it
 
 		    Map<String, Object> variables = Maps.newHashMap();
-		    variables.put("dummy", listing.getEntry());
+		    variables.put("dummy", listing.getEntry().getElement());
 		    variables.put("dummy2", listing);
+		    variables.put("dummy3", listing.getEntry());
 
 		    Optional<BigDecimal> tax = Optional.empty();
 		    if(GTS.getInstance().getConfig().get(ConfigKeys.TAX_ENABLED)) {
@@ -231,8 +232,9 @@ public class ListingUtils {
 
     public static void purchase(Player player, Listing listing) {
 	    Map<String, Object> variables = Maps.newHashMap();
-	    variables.put("dummy", listing.getEntry());
+	    variables.put("dummy", listing.getEntry().getElement());
 	    variables.put("dummy2", listing);
+	    variables.put("dummy3", listing.getEntry());
 
 		if(!GTS.getInstance().getListingsCache().contains(listing)) {
 			try {
@@ -297,15 +299,9 @@ public class ListingUtils {
 					});
 				}
 
-				if(!listing.getEntry().supportsOffline()) {
-					Player receiver;
-					if ((receiver = Sponge.getServer().getPlayer(listing.getOwnerUUID()).orElse(null)) != null) {
-						listing.getEntry().giveEntry(receiver);
-					}
-				} else {
-					listing.getEntry().giveEntry(player);
-				}
+				listing.getEntry().giveEntry(player);
 				deleteEntry(listing);
+				GTS.getInstance().getUpdater().sendUpdate();
 		    } else {
 		    	player.sendMessages(
 		    			GTS.getInstance().getTextParsingUtils().parse(

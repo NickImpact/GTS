@@ -77,8 +77,10 @@ public class ConfirmUI extends InventoryBase {
 
 	private void drawConfirmIcon() {
 		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("dummy", target.getEntry());
+		variables.put("dummy", target.getEntry().getElement());
 		variables.put("dummy2", target);
+		variables.put("dummy3", target.getEntry());
+
 		if(this.target.getOwnerUUID().equals(this.player.getUniqueId())) {
 			Icon icon = new Icon(
 					12,
