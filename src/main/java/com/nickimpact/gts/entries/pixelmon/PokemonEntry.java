@@ -67,7 +67,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 	@Override
 	public String getSpecsTemplate() {
-		return "{{ability}} {{iv_percent}} IV {{shiny:s}}&a{{pokemon}}";
+		return "{{ability}} {{ivs_percent}} IV {{shiny:s}}&a{{pokemon}}";
 	}
 
 	@Override
@@ -128,24 +128,30 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 	@Override
 	public boolean giveEntry(User user) {
-		Optional<PlayerStorage> optStorage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID(
-				(MinecraftServer) Sponge.getServer(),
-				user.getUniqueId()
-		);
+		if(Sponge.getServer().getPlayer(user.getUniqueId()).isPresent()) {
+			Optional<PlayerStorage> optStorage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID(
+					(MinecraftServer) Sponge.getServer(),
+					user.getUniqueId()
+			);
 
-		if (!optStorage.isPresent())
-			return false;
+			if (!optStorage.isPresent())
+				return false;
 
-		PlayerStorage storage = optStorage.get();
-		if(storage.count() == 6) {
-			PlayerComputerStorage store = PixelmonStorage.computerManager.getPlayerStorageOffline((MinecraftServer)Sponge.getServer(), user.getUniqueId());
-			if(store != null) {
-				store.addToComputer(this.getElement().getPokemon().writeToNBT(new NBTTagCompound()));
-			}
+			optStorage.get().addToParty(this.getElement().getPokemon());
+			optStorage.get().sendUpdatedList();
 		} else {
-			storage.addToParty(this.getElement().getPokemon());
-			if (!storage.isOffline())
-				storage.sendUpdatedList();
+			Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), user.getUniqueId());
+			PlayerComputerStorage computerStorage = PixelmonStorage.computerManager.getPlayerStorageOffline((MinecraftServer)Sponge.getServer(), user.getUniqueId());
+
+			if(storage.isPresent()) {
+				if(storage.get().count() == 6) {
+					computerStorage.addToComputer(this.getElement().getPokemon().writeToNBT(new NBTTagCompound()));
+				} else {
+					storage.get().addToParty(this.getElement().getPokemon());
+				}
+			} else {
+				computerStorage.addToComputer(this.getElement().getPokemon().writeToNBT(new NBTTagCompound()));
+			}
 		}
 
 		return true;

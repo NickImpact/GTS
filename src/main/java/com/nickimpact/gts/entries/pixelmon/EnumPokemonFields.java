@@ -14,7 +14,13 @@ import java.util.function.Function;
 
 public enum EnumPokemonFields {
 
-	NAME(EntityPixelmon::getName),
+	NAME(pokemon -> {
+		if(pokemon.isEgg) {
+			return "Unknown";
+		}
+
+		return pokemon.getName();
+	}),
 	ABILITY(pokemon -> pokemon.getAbility().getName()),
 	NATURE(pokemon -> pokemon.getNature().name()),
 	GENDER(pokemon -> pokemon.getGender().name()),

@@ -66,8 +66,9 @@ public class ItemTokens {
 	private static ItemStack getItemStackFromVariableIfExists(Map<String, Object> m) {
 		Optional<Object> opt = m.values().stream().filter(val -> val instanceof ItemStack || val instanceof DataContainer).findAny();
 		if(opt.isPresent()) {
-			if(opt.get() instanceof DataContainer)
-				return ItemStack.builder().fromContainer((DataContainer)opt.get()).build();
+			if(opt.get() instanceof DataContainer) {
+				return ItemStack.builder().fromContainer((DataContainer) opt.get()).build();
+			}
 
 			return (ItemStack) opt.get();
 		}
