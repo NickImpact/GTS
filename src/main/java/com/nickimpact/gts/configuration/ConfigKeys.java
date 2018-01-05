@@ -1,6 +1,7 @@
 package com.nickimpact.gts.configuration;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.nickimpact.gts.api.configuration.ConfigKey;
 import com.nickimpact.gts.api.configuration.keys.*;
 import com.nickimpact.gts.storage.StorageCredentials;
@@ -8,6 +9,7 @@ import com.nickimpact.gts.storage.StorageCredentials;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +40,12 @@ public class ConfigKeys {
 
 	/** Whether or not taxes should be applied on listing entries */
 	public static final ConfigKey<Boolean> TAX_ENABLED = BooleanKey.of("tax-enabled", false);
+
+	//------------------------------------------------------------------------------------------------------------------
+	// Blacklist config settings
+	//------------------------------------------------------------------------------------------------------------------
+	public static final ConfigKey<List<String>> BLACKLISTED_POKEMON = ListKey.of("blacklist.pokemon", Lists.newArrayList());
+	public static final ConfigKey<List<String>> BLACKLISTED_ITEMS = ListKey.of("blacklist.items", Lists.newArrayList());
 
 	//------------------------------------------------------------------------------------------------------------------
 	// Storage-based config settings

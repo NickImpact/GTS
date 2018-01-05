@@ -15,6 +15,7 @@ import com.nickimpact.gts.entries.prices.MoneyPrice;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerComputerStorage;
@@ -87,18 +88,27 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 	@Override
 	public List<String> baseLoreTemplate() {
-		return Lists.newArrayList(
+		List<String> template = Lists.newArrayList(
 				"&7Listing ID: &e{{id}}",
 				"&7Seller: &e{{seller}}",
 				"",
 				"&7Ability: &e{{ability}}",
 				"&7Gender: &e{{gender}}",
 				"&7Nature: &e{{nature}}",
-				"&7Size: &e{{growth}}",
+				"&7Size: &e{{growth}}"
+		);
+
+		if(this.getElement().getPokemon().getSpecies().equals(EnumPokemon.Mew)) {
+			template.add("&7Clones: &e{{clones}}");
+		}
+
+		template.addAll(Lists.newArrayList(
 				"",
 				"&7Price: &e{{price}}",
 				"&7Time Left: &e{{time_left}}"
-		);
+		));
+
+		return template;
 	}
 
 	@Override
@@ -146,11 +156,14 @@ public class PokemonEntry extends Entry<Pokemon> {
 			if(storage.isPresent()) {
 				if(storage.get().count() == 6) {
 					computerStorage.addToComputer(this.getElement().getPokemon().writeToNBT(new NBTTagCompound()));
+					PixelmonStorage.computerManager.savePlayer(computerStorage);
 				} else {
 					storage.get().addToParty(this.getElement().getPokemon());
+					PixelmonStorage.pokeBallManager.savePlayer((MinecraftServer)Sponge.getServer(), storage.get());
 				}
 			} else {
 				computerStorage.addToComputer(this.getElement().getPokemon().writeToNBT(new NBTTagCompound()));
+				PixelmonStorage.computerManager.savePlayer(computerStorage);
 			}
 		}
 
@@ -159,6 +172,10 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 	@Override
 	public boolean doTakeAway(Player player) {
+		if(GTS.getInstance().getConfig().get(ConfigKeys.BLACKLISTED_POKEMON).stream().anyMatch(name -> name.equalsIgnoreCase(this.getElement().getPokemon().getName()))){
+			return false;
+		}
+
 		PlayerStorage ps = PixelmonStorage.pokeBallManager.getPlayerStorage((EntityPlayerMP)player).orElse(null);
 		if(ps == null)
 			return false;
@@ -229,6 +246,10 @@ public class PokemonEntry extends Entry<Pokemon> {
 			if(src instanceof Player) {
 				Player player = (Player)src;
 				int pos = args.<Integer>getOne(argPos).get() - 1;
+				int price = args.<Integer>getOne(argPrice).get();
+				if(price <= 0) {
+					throw new CommandException(Text.of("Price must be a positive integer!"));
+				}
 
 				Optional<PlayerStorage> optStorage = PixelmonStorage.pokeBallManager.getPlayerStorage((EntityPlayerMP)player);
 				if(optStorage.isPresent()) {
@@ -244,7 +265,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 						Listing.builder()
 								.player(player)
-								.entry(new PokemonEntry(pokemon, new MoneyPrice(args.<Integer>getOne(argPrice).get())))
+								.entry(new PokemonEntry(pokemon, new MoneyPrice(price)))
 								.doesExpire()
 								.expiration(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME))
 								.build();

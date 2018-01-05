@@ -218,6 +218,10 @@ public class ItemEntry extends Entry<DataContainer> {
 			if(src instanceof Player) {
 				Player player = (Player)src;
 				int invSlot = args.<Integer>getOne(argSlot).orElse(1) - 1;
+				int price = args.<Integer>getOne(argPrice).get();
+				if(price <= 0) {
+					throw new CommandException(Text.of("Price must be a positive integer!"));
+				}
 
 				Optional<ItemStack> item = player.getInventory()
 						.query(
