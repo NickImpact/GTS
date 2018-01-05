@@ -28,5 +28,5 @@ CREATE TABLE `{prefix}held_prices` (
 
 CREATE TABLE `{prefix}ignorers` (
   `uuid`      VARCHAR(36) NOT NULL,
-  PRIMARY KEY ('uuid')
+  PRIMARY KEY (`uuid`)
 ) DEFAULT CHARSET = utf8;
