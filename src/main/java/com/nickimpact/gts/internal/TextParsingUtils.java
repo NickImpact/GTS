@@ -6,6 +6,7 @@ import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.entries.pixelmon.EnumPokemonFields;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import io.github.nucleuspowered.nucleus.api.text.NucleusTextTemplate;
@@ -81,8 +82,17 @@ public class TextParsingUtils {
 	}
 
 	public Text getPokemonInfo(EntityPixelmon pokemon, EnumPokemonFields field) {
-		if(pokemon != null)
+		if(pokemon != null) {
+			if(pokemon.isEgg) {
+				if(field.equals(EnumPokemonFields.NAME)) {
+					return Text.of(field.function.apply(pokemon));
+				}
+
+				return Text.EMPTY;
+			}
+
 			return Text.of(field.function.apply(pokemon));
+		}
 		return Text.EMPTY;
 	}
 

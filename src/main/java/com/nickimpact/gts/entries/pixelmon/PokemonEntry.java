@@ -137,35 +137,22 @@ public class PokemonEntry extends Entry<Pokemon> {
 	}
 
 	@Override
+	public boolean supportsOffline() {
+		return false;
+	}
+
+	@Override
 	public boolean giveEntry(User user) {
-		if(Sponge.getServer().getPlayer(user.getUniqueId()).isPresent()) {
-			Optional<PlayerStorage> optStorage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID(
-					(MinecraftServer) Sponge.getServer(),
-					user.getUniqueId()
-			);
+		Optional<PlayerStorage> optStorage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID(
+				(MinecraftServer) Sponge.getServer(),
+				user.getUniqueId()
+		);
 
-			if (!optStorage.isPresent())
-				return false;
+		if (!optStorage.isPresent())
+			return false;
 
-			optStorage.get().addToParty(this.getElement().getPokemon());
-			optStorage.get().sendUpdatedList();
-		} else {
-			Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID((MinecraftServer)Sponge.getServer(), user.getUniqueId());
-			PlayerComputerStorage computerStorage = PixelmonStorage.computerManager.getPlayerStorageOffline((MinecraftServer)Sponge.getServer(), user.getUniqueId());
-
-			if(storage.isPresent()) {
-				if(storage.get().count() == 6) {
-					computerStorage.addToComputer(this.getElement().getPokemon().writeToNBT(new NBTTagCompound()));
-					PixelmonStorage.computerManager.savePlayer(computerStorage);
-				} else {
-					storage.get().addToParty(this.getElement().getPokemon());
-					PixelmonStorage.pokeBallManager.savePlayer((MinecraftServer)Sponge.getServer(), storage.get());
-				}
-			} else {
-				computerStorage.addToComputer(this.getElement().getPokemon().writeToNBT(new NBTTagCompound()));
-				PixelmonStorage.computerManager.savePlayer(computerStorage);
-			}
-		}
+		optStorage.get().addToParty(this.getElement().getPokemon());
+		optStorage.get().sendUpdatedList();
 
 		return true;
 	}
