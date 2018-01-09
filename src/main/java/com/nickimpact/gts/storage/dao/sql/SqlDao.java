@@ -76,18 +76,8 @@ public class SqlDao extends AbstractDao {
 		}
 	}
 
-	private Connection findConnection() throws SQLException {
-		try (Connection connection = provider.getConnection()) {
-			if (connection.isClosed()) {
-				throw new IllegalStateException("Fetched connection for operation is closed...");
-			}
-
-			return connection;
-		}
-	}
-
 	private void runRemoval(String key, int id) throws Exception {
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			String stmt = prefix.apply(key);
 			stmt = String.format(stmt, id);
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
@@ -159,7 +149,7 @@ public class SqlDao extends AbstractDao {
 
 	@Override
 	public void addListing(Listing listing) throws Exception {
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			String stmt = prefix.apply(ADD_LISTING);
 			stmt = String.format(stmt, listing.getID(), listing.getOwnerUUID(), GTS.prettyGson.toJson(listing));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
@@ -182,7 +172,7 @@ public class SqlDao extends AbstractDao {
 	@Override
 	public List<Listing> getListings() throws Exception {
 		List<Listing> entries = Lists.newArrayList();
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			try (PreparedStatement query = connection.prepareStatement(prefix.apply(SELECT_ALL_LISTINGS))) {
 				ResultSet results = query.executeQuery();
 				while(results.next()) {
@@ -206,7 +196,7 @@ public class SqlDao extends AbstractDao {
 
 	@Override
 	public void addLog(Log log) throws Exception {
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			String stmt = prefix.apply(ADD_LOG);
 			stmt = String.format(stmt, log.getID(), log.getSource(), GTS.prettyGson.toJson(log));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
@@ -224,7 +214,7 @@ public class SqlDao extends AbstractDao {
 	@Override
 	public List<Log> getLogs() throws Exception {
 		List<Log> logs = Lists.newArrayList();
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			try (PreparedStatement query = connection.prepareStatement(prefix.apply(SELECT_ALL_LOGS))) {
 				ResultSet results = query.executeQuery();
 				while(results.next()) {
@@ -248,7 +238,7 @@ public class SqlDao extends AbstractDao {
 
 	@Override
 	public void addHeldElement(EntryHolder holder) throws Exception {
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			String stmt = prefix.apply(ADD_HELD_ENTRY);
 			stmt = String.format(stmt, holder.getId(), GTS.prettyGson.toJson(holder));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
@@ -266,7 +256,7 @@ public class SqlDao extends AbstractDao {
 	@Override
 	public List<EntryHolder> getHeldElements() throws Exception {
 		List<EntryHolder> holders = Lists.newArrayList();
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			try (PreparedStatement query = connection.prepareStatement(prefix.apply(GET_HELD_ENTRIES))) {
 				ResultSet results = query.executeQuery();
 				while(results.next()) {
@@ -290,7 +280,7 @@ public class SqlDao extends AbstractDao {
 
 	@Override
 	public void addHeldPrice(PriceHolder holder) throws Exception {
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			String stmt = prefix.apply(ADD_HELD_PRICE);
 			stmt = String.format(stmt, holder.getId(), GTS.prettyGson.toJson(holder));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
@@ -308,7 +298,7 @@ public class SqlDao extends AbstractDao {
 	@Override
 	public List<PriceHolder> getHeldPrices() throws Exception {
 		List<PriceHolder> holders = Lists.newArrayList();
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			try (PreparedStatement query = connection.prepareStatement(prefix.apply(GET_HELD_PRICES))) {
 				ResultSet results = query.executeQuery();
 				while(results.next()) {
@@ -332,7 +322,7 @@ public class SqlDao extends AbstractDao {
 
 	@Override
 	public void addIgnorer(UUID uuid) throws Exception {
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			String stmt = prefix.apply(ADD_IGNORER);
 			stmt = String.format(stmt, uuid);
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
@@ -344,7 +334,7 @@ public class SqlDao extends AbstractDao {
 
 	@Override
 	public void removeIgnorer(UUID uuid) throws Exception{
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			String stmt = prefix.apply(REMOVE_IGNORER);
 			stmt = String.format(stmt, uuid);
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
@@ -357,7 +347,7 @@ public class SqlDao extends AbstractDao {
 	@Override
 	public List<UUID> getIgnorers() throws Exception {
 		List<UUID> ignorers = Lists.newArrayList();
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			try (PreparedStatement query = connection.prepareStatement(prefix.apply(GET_IGNORERS))) {
 				ResultSet results = query.executeQuery();
 				while(results.next())
@@ -373,7 +363,7 @@ public class SqlDao extends AbstractDao {
 
 	@Override
 	public void purge(boolean logs) throws Exception {
-		try (Connection connection = this.findConnection()) {
+		try (Connection connection = provider.getConnection()) {
 			try (PreparedStatement stmt = connection.prepareStatement(prefix.apply(TRUNCATE_LISTINGS))) {
 				stmt.executeUpdate();
 				stmt.close();
