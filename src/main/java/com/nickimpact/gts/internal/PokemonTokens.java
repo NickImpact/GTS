@@ -7,6 +7,7 @@ import com.nickimpact.gts.api.text.Translator;
 import com.nickimpact.gts.entries.pixelmon.EnumPokemonFields;
 import com.nickimpact.gts.entries.pixelmon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import org.spongepowered.api.text.Text;
 
 import java.util.Map;
 import java.util.Optional;
@@ -120,6 +121,20 @@ public class PokemonTokens {
 		tokens.put("moves_4", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
 				getPokemonFromVariableIfExists(m), EnumPokemonFields.MOVES_4
 		)));
+		tokens.put("ivs_stat", (p, v, m) -> {
+			if(getPokemonFromVariableIfExists(m) != null) {
+				return Optional.of(Text.of("IV"));
+			}
+
+			return Optional.empty();
+		});
+		tokens.put("evs_stat", (p, v, m) -> {
+			if(getPokemonFromVariableIfExists(m) != null) {
+				return Optional.of(Text.of("EV"));
+			}
+
+			return Optional.empty();
+		});
 	}
 
 	public static Map<String, Translator> getTokens() {

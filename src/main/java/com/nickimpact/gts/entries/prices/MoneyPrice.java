@@ -4,6 +4,7 @@ import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.listings.pricing.PricingException;
+import com.nickimpact.gts.configuration.ConfigKeys;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
@@ -62,7 +63,7 @@ public class MoneyPrice extends Price<BigDecimal> {
 	@Override
 	public BigDecimal calcTax(Player player) throws PricingException {
 		// Return a tax rate of 8% based on the price
-		BigDecimal tax = new BigDecimal(price.doubleValue() * 0.08);
+		BigDecimal tax = new BigDecimal(price.doubleValue() * GTS.getInstance().getConfig().get(ConfigKeys.TAX_MONEY_TAX));
 		UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId()).orElse(null);
 		if(acc == null)
 			throw new PricingException(player.getName() + "'s economic account was unable to be found...");

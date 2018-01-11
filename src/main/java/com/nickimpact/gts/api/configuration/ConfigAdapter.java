@@ -23,6 +23,8 @@ public interface ConfigAdapter {
 
 	int getInt(String path, int def);
 
+	double getDouble(String path, double def);
+
 	boolean getBoolean(String path, boolean def);
 
 	List<String> getList(String path, List<String> def);

@@ -39,7 +39,8 @@ public class ConfigKeys {
 	public static final ConfigKey<Integer> MAX_LISTINGS = IntegerKey.of("listings-max", 5);
 
 	/** Whether or not taxes should be applied on listing entries */
-	public static final ConfigKey<Boolean> TAX_ENABLED = BooleanKey.of("tax-enabled", false);
+	public static final ConfigKey<Boolean> TAX_ENABLED = BooleanKey.of("tax.enabled", false);
+	public static final ConfigKey<Double> TAX_MONEY_TAX = DoubleKey.of("tax.money.tax", 0.08);
 
 	//------------------------------------------------------------------------------------------------------------------
 	// Blacklist config settings

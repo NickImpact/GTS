@@ -15,7 +15,7 @@ import java.util.List;
 public class MsgConfigKeys {
 
 	// Plugin chat prefix (replacement option for {{gts_prefix}}
-	public static final ConfigKey<String> PREFIX = StringKey.of("prefix", "&eGTS &7\u00bb ");
+	public static final ConfigKey<String> PREFIX = StringKey.of("prefix", "&eGTS &7\u00bb");
 
 	// Generic messages for the program
 	// Best to support lists of text here, as a server may decide to go heavy on text formatting
@@ -63,6 +63,41 @@ public class MsgConfigKeys {
 	public static final ConfigKey<List<String>> UI_ITEMS_PLAYER_LORE = ListKey.of("head.lore", Lists.newArrayList());
 	public static final ConfigKey<String> UI_ITEMS_SORT_TITLE = StringKey.of("sort.title", "&eSort Listings");
 	public static final ConfigKey<List<String>> UI_ITEMS_SORT_LORE = ListKey.of("sort.lore", Lists.newArrayList());
+
+	// Entries
+	public static final ConfigKey<List<String>> ENTRY_INFO = ListKey.of("entries.base-info", Lists.newArrayList(
+			"",
+			"&7Price: &e{{price}}",
+			"&7Time Left: &e{{time_left}}"
+	));
+
+	// Pokemon Entries
+	public static final ConfigKey<String> POKEMON_ENTRY_SPEC_TEMPLATE = StringKey.of("entries.pokemon.spec-template", "{{ability:s}}{{ivs_percent:s}}{{ivs_stat:s}}{{shiny:s}}&a{{pokemon}}");
+	public static final ConfigKey<String> POKEMON_ENTRY_BASE_TITLE = StringKey.of("entries.pokemon.base.title", "&e{{pokemon}} {{shiny:s}}&7| &bLvl {{level}}");
+	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_LORE = ListKey.of("entries.pokemon.base.lore.base", Lists.newArrayList(
+			"&7Listing ID: &e{{id}}",
+			"&7Seller: &e{{seller}}",
+			"",
+			"&7Ability: &e{{ability}}",
+			"&7Gender: &e{{gender}}",
+			"&7Nature: &e{{nature}}",
+			"&7Size: &e{{growth}}"
+	));
+	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_MEW_CLONES = ListKey.of("entries.pokemon.base.lore.mew-clones", Lists.newArrayList(
+			"&7Clones: &e{{clones}}"
+	));
+	public static final ConfigKey<String> POKEMON_ENTRY_CONFIRM_TITLE = StringKey.of("entries.pokemon.confirm.title", "&ePurchase {{pokemon}}?");
+	public static final ConfigKey<List<String>> POKEMON_ENTRY_CONFIRM_LORE = ListKey.of("entries.pokemon.confirm.lore", Lists.newArrayList(
+			"&7Here's some additional info:",
+			"&7EVs: &e{{evs_total}}&7/&e510 &7(&a{{evs_percent}}&7)",
+			"&7IVs: &e{{ivs_total}}&7/&e186 &7(&a{{ivs_percent}}&7)",
+			"",
+			"&7Move Set:",
+			"  &7 - &e{{moves_1}}",
+			"  &7 - &e{{moves_2}}",
+			"  &7 - &e{{moves_3}}",
+			"  &7 - &e{{moves_4}}"
+	));
 
 	// Error messages
 	public static final ConfigKey<String> NOT_ENOUGH_FUNDS = StringKey.of("purchase.not-enough-funds", "&cUnfortunately, you were unable to afford the price of {{price}}");

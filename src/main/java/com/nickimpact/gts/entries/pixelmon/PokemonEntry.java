@@ -11,6 +11,7 @@ import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.configuration.ConfigKeys;
+import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
@@ -68,7 +69,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 	@Override
 	public String getSpecsTemplate() {
-		return "{{ability}} {{ivs_percent}} IV {{shiny:s}}&a{{pokemon}}";
+		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE);
 	}
 
 	@Override
@@ -83,30 +84,19 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 	@Override
 	public String baseTitleTemplate() {
-		return "&e{{pokemon}} {{shiny:s}}&7| &bLvl {{level}}";
+		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_TITLE);
 	}
 
 	@Override
 	public List<String> baseLoreTemplate() {
-		List<String> template = Lists.newArrayList(
-				"&7Listing ID: &e{{id}}",
-				"&7Seller: &e{{seller}}",
-				"",
-				"&7Ability: &e{{ability}}",
-				"&7Gender: &e{{gender}}",
-				"&7Nature: &e{{nature}}",
-				"&7Size: &e{{growth}}"
-		);
+		List<String> template = Lists.newArrayList();
+		template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_LORE));
 
 		if(this.getElement().getPokemon().getSpecies().equals(EnumPokemon.Mew)) {
-			template.add("&7Clones: &e{{clones}}");
+			template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_MEW_CLONES));
 		}
 
-		template.addAll(Lists.newArrayList(
-				"",
-				"&7Price: &e{{price}}",
-				"&7Time Left: &e{{time_left}}"
-		));
+		template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
 
 		return template;
 	}
@@ -118,22 +108,12 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 	@Override
 	public String confirmTitleTemplate() {
-		return "&ePurchase {{pokemon}}?";
+		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE);
 	}
 
 	@Override
 	public List<String> confirmLoreTemplate() {
-		return Lists.newArrayList(
-				"&7Here's some additional info:",
-				"&7EVs: &e{{evs_total}}&7/&e510 &7(&a{{evs_percent}}&7)",
-				"&7IVs: &e{{ivs_total}}&7/&e186 &7(&a{{ivs_percent}}&7)",
-				"",
-				"&7Move Set:",
-				"  &7 - &e{{moves_1}}",
-				"  &7 - &e{{moves_2}}",
-				"  &7 - &e{{moves_3}}",
-				"  &7 - &e{{moves_4}}"
-		);
+		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE);
 	}
 
 	@Override

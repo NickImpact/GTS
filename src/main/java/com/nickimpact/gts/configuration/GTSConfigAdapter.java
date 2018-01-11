@@ -96,6 +96,11 @@ public class GTSConfigAdapter implements ConfigAdapter {
 	}
 
 	@Override
+	public double getDouble(String path, double def) {
+		return resolvePath(path).getDouble(def);
+	}
+
+	@Override
 	public boolean getBoolean(String path, boolean def) {
 		return resolvePath(path).getBoolean(def);
 	}
