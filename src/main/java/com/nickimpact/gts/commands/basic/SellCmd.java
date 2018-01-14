@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
+import com.nickimpact.gts.api.commands.annotations.Parent;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -18,6 +19,7 @@ import java.util.List;
  *
  * @author NickImpact
  */
+@Parent
 @CommandAliases({"sell", "add"})
 public class SellCmd extends SpongeSubCommand {
 
