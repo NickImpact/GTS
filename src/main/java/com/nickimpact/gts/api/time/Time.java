@@ -1,6 +1,5 @@
 package com.nickimpact.gts.api.time;
 
-import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -58,15 +57,6 @@ public class Time
         }
 
         return 0;
-    }
-
-    public Instant getAsInstant() throws InvalidTimeException
-    {
-    	if(this.time <= 0) {
-    		throw new InvalidTimeException();
-	    }
-
-        return Instant.EPOCH.plusSeconds(this.time);
     }
 
     public long getTime() {

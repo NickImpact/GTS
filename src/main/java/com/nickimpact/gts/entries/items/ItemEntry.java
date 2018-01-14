@@ -25,6 +25,7 @@ import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
+import org.spongepowered.api.item.inventory.property.SlotPos;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
@@ -228,7 +229,7 @@ public class ItemEntry extends Entry<DataContainer> {
 								QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
 								QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class)
 						)
-						.query(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotIndex.of(invSlot)))
+						.query(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotPos.of(invSlot)))
 						.peek(args.<Integer>getOne(argAmount).orElse(1));
 
 				if(item.isPresent()) {
