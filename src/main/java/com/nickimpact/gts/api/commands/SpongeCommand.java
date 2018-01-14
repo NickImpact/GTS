@@ -5,6 +5,7 @@ import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.commands.annotations.AdminCmd;
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
+import com.nickimpact.gts.api.commands.annotations.Parent;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
@@ -15,6 +16,7 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -66,7 +68,7 @@ public abstract class SpongeCommand implements CommandExecutor
     {
     	CommandSpec.Builder cb = CommandSpec.builder();
     	if(!(this instanceof SpongeSubCommand)) {
-		    this.basePermission = GTSInfo.ID + ".command." + (this.getClass().isAnnotationPresent(AdminCmd.class) ? "admin." : "") + getAllAliases().get(0);
+		    this.basePermission = formPermission(null);
 	    }
 	    cb.permission(this.basePermission);
 
@@ -75,7 +77,7 @@ public abstract class SpongeCommand implements CommandExecutor
         if (subCmds != null && subCmds.length > 0)
             for (SpongeCommand cmd : subCmds)
             {
-                cmd.basePermission = this.basePermission + "." + cmd.getAllAliases().get(0);
+                cmd.basePermission = formPermission(cmd.getClass().isAnnotationPresent(Parent.class) ? cmd.getAllAliases().get(0) : null);
                 subCommands.put(cmd.getAllAliases(), cmd.getCommandSpec());
             }
 
@@ -116,5 +118,19 @@ public abstract class SpongeCommand implements CommandExecutor
     public void sendCommandUsage(CommandSource src)
     {
         src.sendMessage(getDescription());
+    }
+
+    private String formPermission(@Nullable String parent) {
+    	String perm = GTSInfo.ID + ".command.";
+    	if((this.getClass().isAnnotationPresent(AdminCmd.class))) {
+    		perm += "admin.";
+	    }
+
+	    if(parent != null) {
+    		perm += parent + ".";
+	    }
+	    perm += getAllAliases().get(0);
+
+    	return perm;
     }
 }
