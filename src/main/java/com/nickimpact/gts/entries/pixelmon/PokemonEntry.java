@@ -229,7 +229,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 					if(nbt != null) {
 						EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(
 								nbt,
-								(World) Sponge.getServer().getWorld(Sponge.getServer().getDefaultWorldName()).get()
+								(World) player.getWorld()
 						);
 						if (storage.countTeam() == 1 && !pokemon.isEgg)
 							throw new CommandException(Text.of("You can't sell your last non-egg party member!"));

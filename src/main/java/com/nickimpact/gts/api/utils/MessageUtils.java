@@ -16,11 +16,11 @@ public class MessageUtils {
 
 	public static List<Text> genErrorMessage(String label, String... info) {
 		List<Text> error = Lists.newArrayList(
-				Text.of(GTSInfo.ERROR_PREFIX, "========== ", label, " ==========")
+				Text.of(GTSInfo.ERROR, "========== ", label, " ==========")
 		);
 
 		for(String str : info) {
-			error.add(Text.of(GTSInfo.ERROR_PREFIX, str));
+			error.add(Text.of(GTSInfo.ERROR, str));
 		}
 
 		return error;

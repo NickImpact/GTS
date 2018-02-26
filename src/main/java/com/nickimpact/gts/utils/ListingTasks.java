@@ -49,7 +49,7 @@ public class ListingTasks {
 
             long end = System.nanoTime();
 	        //GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(Text.of(
-			//        GTSInfo.DEBUG_PREFIX, "Execution Time: ", ((end - start) / Math.pow(10, 6)) + " ms"
+			//        GTSInfo.DEBUG, "Execution Time: ", ((end - start) / Math.pow(10, 6)) + " ms"
 	        //)));
 
         }).interval(1, TimeUnit.SECONDS).submit(GTS.getInstance());

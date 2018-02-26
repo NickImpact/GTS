@@ -32,10 +32,10 @@ public abstract class Adapter<E> implements JsonSerializer<E>, JsonDeserializer<
 			return (E) getGson().fromJson(obj, getRegistry().get(obj.get("id").getAsString()));
 		} catch (Exception e) {
 			GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
-					Text.of(GTSInfo.ERROR_PREFIX, "========== JSON Error =========="),
-					Text.of(GTSInfo.ERROR_PREFIX, "Failed to deserialize JSON data"),
-					Text.of(GTSInfo.ERROR_PREFIX, "Exception: " + e.getClass().getSimpleName()),
-					Text.of(GTSInfo.ERROR_PREFIX, "================================")
+					Text.of(GTSInfo.ERROR, "========== JSON Error =========="),
+					Text.of(GTSInfo.ERROR, "Failed to deserialize JSON data"),
+					Text.of(GTSInfo.ERROR, "Exception: " + e.getClass().getSimpleName()),
+					Text.of(GTSInfo.ERROR, "================================")
 			));
 			throw new JsonParseException(e.getMessage());
 		}

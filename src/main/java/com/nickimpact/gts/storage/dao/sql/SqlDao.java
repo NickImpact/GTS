@@ -5,9 +5,7 @@ import com.google.gson.JsonSyntaxException;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.listings.Listing;
-import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.entries.EntryHolder;
-import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.listings.pricing.PriceHolder;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.logs.Log;
@@ -19,7 +17,6 @@ import org.spongepowered.api.text.Text;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.MalformedParameterizedTypeException;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.List;
@@ -33,25 +30,29 @@ import java.util.function.Function;
  */
 public class SqlDao extends AbstractDao {
 
-	private static final String SELECT_ALL_LISTINGS = "SELECT ID, LISTING FROM `{prefix}listings`";
-	private static final String SELECT_ALL_LOGS = "SELECT * FROM `{prefix}logs` ORDER BY ID ASC";
-	private static final String TRUNCATE_LISTINGS = "TRUNCATE TABLE `{prefix}listings`";
-	private static final String TRUNCATE_LOGS = "TRUNCATE TABLE `{prefix}logs`";
-	private static final String ADD_LISTING = "INSERT INTO `{prefix}listings` VALUES (%d, '%s', '%s')";
-	private static final String ADD_LOG = "INSERT INTO `{prefix}logs` VALUES (%d, '%s', '%s')";
-	private static final String REMOVE_LISTING = "DELETE FROM `{prefix}listings` WHERE ID=%d";
-	private static final String REMOVE_LOG = "DELETE FROM `{prefix}logs` WHERE ID=%d";
-	private static final String ADD_HELD_ENTRY = "INSERT INTO `{prefix}held_entries` VALUES (%d, '%s')";
-	private static final String REMOVE_HELD_ENTRY = "DELETE FROM `{prefix}held_entries` WHERE ID=%d";
-	private static final String GET_HELD_ENTRIES = "SELECT * FROM `{prefix}held_entries` ORDER BY ID ASC";
-	private static final String ADD_HELD_PRICE = "INSERT INTO `{prefix}held_prices` VALUES (%d, '%s')";
-	private static final String REMOVE_HELD_PRICE = "DELETE FROM `{prefix}held_prices` WHERE ID=%d";
-	private static final String GET_HELD_PRICES = "SELECT * FROM `{prefix}held_prices` ORDER BY ID ASC";
+	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM `{prefix}listings_v2`";
+	private static final String SELECT_ALL_LOGS = "SELECT * FROM `{prefix}logs_v2`";
+	private static final String TRUNCATE_LISTINGS = "TRUNCATE TABLE `{prefix}listings_v2`";
+	private static final String TRUNCATE_LOGS = "TRUNCATE TABLE `{prefix}logs_v2`";
+	private static final String ADD_LISTING = "INSERT INTO `{prefix}listings_v2` VALUES ('%s', '%s', '%s')";
+	private static final String ADD_LOG = "INSERT INTO `{prefix}logs_v2` VALUES ('%s', '%s', '%s')";
+	private static final String REMOVE_LISTING = "DELETE FROM `{prefix}listings_v2` WHERE UUID='%s'";
+	private static final String REMOVE_LOG = "DELETE FROM `{prefix}logs_v2` WHERE UUID='%s'";
+	private static final String ADD_HELD_ENTRY = "INSERT INTO `{prefix}held_entries_v2` VALUES ('%s', '%s')";
+	private static final String REMOVE_HELD_ENTRY = "DELETE FROM `{prefix}held_entries_v2` WHERE UUID='%s'";
+	private static final String GET_HELD_ENTRIES = "SELECT * FROM `{prefix}held_entries_v2`";
+	private static final String ADD_HELD_PRICE = "INSERT INTO `{prefix}held_prices_v2` VALUES ('%s', '%s')";
+	private static final String REMOVE_HELD_PRICE = "DELETE FROM `{prefix}held_prices_v2` WHERE UUID='%s'";
+	private static final String GET_HELD_PRICES = "SELECT * FROM `{prefix}held_prices_v2`";
 	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES ('%s')";
 	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID='%s'";
 	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";
 
-	private static final String ID_TO_UUID = "ALTER TABLE `{prefix}listings` MODIFY COLUMN ID VARCHAR(36)";
+	@Deprecated
+	private static final String TEMP = "SELECT * FROM `{prefix}listings`";
+
+	@Deprecated
+	private static final String TEMP_DROP = "DROP TABLE `{prefix}%s`";
 
 	@Getter
 	private final AbstractConnectionFactory provider;
@@ -78,6 +79,19 @@ public class SqlDao extends AbstractDao {
 		}
 	}
 
+	private void runRemoval(String key, UUID uuid) throws Exception {
+		try (Connection connection = provider.getConnection()) {
+			String stmt = prefix.apply(key);
+			stmt = String.format(stmt, uuid);
+			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
+				ps.executeUpdate();
+				ps.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void runRemoval(String key, int id) throws Exception {
 		try (Connection connection = provider.getConnection()) {
 			String stmt = prefix.apply(key);
@@ -97,7 +111,7 @@ public class SqlDao extends AbstractDao {
 			provider.init();
 
 			// Init tables
-			if(!tableExists(prefix.apply("{prefix}listings"))) {
+			if(!tableExists(prefix.apply("{prefix}listings_v2"))) {
 				String schemaFileName = "schema/" + provider.getName().toLowerCase() + ".sql";
 				try (InputStream is = plugin.getResourceStream(schemaFileName)) {
 					if(is == null) {
@@ -109,21 +123,32 @@ public class SqlDao extends AbstractDao {
 							try (Statement s = connection.createStatement()) {
 								StringBuilder sb = new StringBuilder();
 								String line;
+
+								boolean available = true;
 								while ((line = reader.readLine()) != null) {
 									if (line.startsWith("--") || line.startsWith("#")) continue;
+									if (line.startsWith("CREATE TABLE") && tableExists(prefix.apply(line.substring(14, line.length() - 3)))) {
+										available = false;
+									}
 
-									sb.append(line);
+									if(available) {
+										sb.append(line);
+									}
 
 									// check for end of declaration
 									if (line.endsWith(";")) {
-										sb.deleteCharAt(sb.length() - 1);
+										if(!available) {
+											available = true;
+										} else {
+											sb.deleteCharAt(sb.length() - 1);
 
-										String result = prefix.apply(sb.toString().trim());
-										if (!result.isEmpty())
-											s.addBatch(result);
+											String result = prefix.apply(sb.toString().trim());
+											if (!result.isEmpty())
+												s.addBatch(result);
 
-										// reset
-										sb = new StringBuilder();
+											// reset
+											sb = new StringBuilder();
+										}
 									}
 								}
 								s.executeBatch();
@@ -132,10 +157,57 @@ public class SqlDao extends AbstractDao {
 					}
 				}
 			}
+
+			try {
+				if (tableExists(prefix.apply("{prefix}listings"))) {
+					GTS.getInstance().getConsole().ifPresent(console -> {
+						console.sendMessage(Text.of(GTSInfo.WARNING, "Detected legacy database, proceeding to update..."));
+					});
+					List<Listing> listings = this.getListings(TEMP);
+					this.dropTable("listings");
+
+					for (Listing listing : listings) {
+						listing.createUUID();
+						this.addListing(listing);
+					}
+					if(tableExists(prefix.apply("{prefix}held_entries"))) {
+						this.dropTable("held_entries");
+					}
+
+					if(tableExists(prefix.apply("{prefix}held_prices"))) {
+						this.dropTable("held_prices");
+					}
+
+					if(tableExists(prefix.apply("{prefix}logs"))) {
+						this.dropTable("logs");
+					}
+
+					GTS.getInstance().getConsole().ifPresent(console -> {
+						console.sendMessage(Text.of(GTSInfo.WARNING, String.format("Legacy conversion complete! Transferred %s listings!", listings.size())));
+					});
+				}
+			} catch (Exception e) {
+				GTS.getInstance().getConsole().ifPresent(console -> {
+					console.sendMessage(Text.of(GTSInfo.ERROR, "Unable to complete legacy conversion..."));
+				});
+			}
 		} catch (Exception e) {
 			plugin.getConsole().ifPresent(console -> console.sendMessage(Text.of(
-					GTSInfo.ERROR_PREFIX, "An error occurred whilst initializing the database..."
+					GTSInfo.ERROR, "An error occurred whilst initializing the database..."
 			)));
+			e.printStackTrace();
+		}
+	}
+
+	@Deprecated
+	private void dropTable(String table) throws Exception {
+		try (Connection connection = provider.getConnection()) {
+			String stmt = prefix.apply(String.format(TEMP_DROP, table));
+			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
+				ps.execute();
+				ps.close();
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -153,29 +225,33 @@ public class SqlDao extends AbstractDao {
 	public void addListing(Listing listing) throws Exception {
 		try (Connection connection = provider.getConnection()) {
 			String stmt = prefix.apply(ADD_LISTING);
-			stmt = String.format(stmt, listing.getID(), listing.getOwnerUUID(), GTS.prettyGson.toJson(listing));
+			stmt = String.format(stmt, listing.getUuid(), listing.getOwnerUUID(), GTS.prettyGson.toJson(listing));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
 				ps.close();
 			}
 		} catch (Exception e) {
 			GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(
-					Text.of(GTSInfo.ERROR_PREFIX, "Something happened during the writing process")
+					Text.of(GTSInfo.ERROR, "Something happened during the writing process")
 			));
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void removeListing(int id) throws Exception {
-		this.runRemoval(REMOVE_LISTING, id);
+	public void removeListing(UUID uuid) throws Exception {
+		this.runRemoval(REMOVE_LISTING, uuid);
 	}
 
 	@Override
 	public List<Listing> getListings() throws Exception {
+		return getListings(SELECT_ALL_LISTINGS);
+	}
+
+	public List<Listing> getListings(String key) throws Exception {
 		List<Listing> entries = Lists.newArrayList();
 		try (Connection connection = provider.getConnection()) {
-			try (PreparedStatement query = connection.prepareStatement(prefix.apply(SELECT_ALL_LISTINGS))) {
+			try (PreparedStatement query = connection.prepareStatement(prefix.apply(key))) {
 				ResultSet results = query.executeQuery();
 				while(results.next()) {
 					try {
@@ -184,7 +260,7 @@ public class SqlDao extends AbstractDao {
 						MessageUtils.genAndSendErrorMessage(
 								"JSON Syntax Error",
 								"Invalid listing JSON detected",
-								"Listing ID: " + results.getInt("id")
+								"Listing ID: " + results.getString("uuid")
 						);
 					}
 				}
@@ -226,7 +302,7 @@ public class SqlDao extends AbstractDao {
 						MessageUtils.genAndSendErrorMessage(
 								"JSON Syntax Error",
 								"Invalid Log JSON detected",
-								"Log ID: " + results.getInt("id")
+								"Log ID: " + results.getInt("uuid")
 						);
 					}
 				}
@@ -268,7 +344,7 @@ public class SqlDao extends AbstractDao {
 						MessageUtils.genAndSendErrorMessage(
 								"JSON Syntax Error",
 								"Invalid EntryHolder JSON detected",
-								"Holder ID: " + results.getInt("id")
+								"Holder ID: " + results.getInt("uuid")
 						);
 					}
 				}
@@ -310,7 +386,7 @@ public class SqlDao extends AbstractDao {
 						MessageUtils.genAndSendErrorMessage(
 								"JSON Syntax Error",
 								"Invalid PriceHolder JSON detected",
-								"Holder ID: " + results.getInt("id")
+								"Holder ID: " + results.getInt("uuid")
 						);
 					}
 				}

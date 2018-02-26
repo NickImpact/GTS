@@ -205,22 +205,8 @@ public class GTS {
 			// Read in and register all data entries into the cache
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading data into cache...")));
 			try {
-				this.storage.getListings().thenAccept(list -> {
-					this.listingsCache = list;
-
-					List<Listing> temp = Lists.newArrayList(this.listingsCache);
-					temp.sort(Comparator.comparing(Listing::getID));
-					int id = temp.get(temp.size() - 1).getID();
-					ListingUtils.setListingID(temp.size() != 0 && id != -1 ? ++id : 0);
-				});
-				this.storage.getLogs().thenAccept(list -> {
-					this.logCache = list;
-
-					List<Log> tmp = Lists.newArrayList(this.logCache);
-					tmp.sort(Comparator.comparing(Log::getID));
-					int id = tmp.get(tmp.size() - 1).getID();
-					ListingUtils.setLogID(tmp.size() != 0 && id != -1 ? ++id : 0);
-				});
+				this.listingsCache = this.storage.getListings().get();
+				this.logCache = this.storage.getLogs().get();
 				this.heldEntryCache = this.storage.getHeldElements().get();
 				this.heldPriceCache = this.storage.getHeldPrices().get();
 				this.ignorers = this.storage.getIgnorers().get();

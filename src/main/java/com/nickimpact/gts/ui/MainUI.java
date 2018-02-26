@@ -24,10 +24,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import javax.annotation.Nullable;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -138,9 +135,9 @@ public class MainUI extends InventoryBase implements Observer {
 				Icon icon = new Icon(x + (9 * y), listings.get(pos).getDisplay(this.player, false));
 				icon.addListener(clickable -> {
 					Listing l = listings.get(pos);
-					int id = l.getID();
+					UUID uuid = l.getUuid();
 
-					if(GTS.getInstance().getListingsCache().stream().anyMatch(listing -> listing.getID() == id)) {
+					if(GTS.getInstance().getListingsCache().stream().anyMatch(listing -> listing.getUuid() == uuid)) {
 						Sponge.getScheduler().createTaskBuilder()
 								.execute(() -> {
 									clickable.getPlayer().closeInventory();
@@ -148,8 +145,6 @@ public class MainUI extends InventoryBase implements Observer {
 								})
 								.delayTicks(1)
 								.submit(GTS.getInstance());
-					} else {
-						// Send error message about the lot already being purchased, then update the inventory
 					}
 				});
 
@@ -338,7 +333,7 @@ public class MainUI extends InventoryBase implements Observer {
 									.build()
 					);
 					frame.addListener(action -> {
-						this.sorter = Comparator.comparing(Listing::getID);
+						this.sorter = Comparator.comparing(Listing::getUuid);
 						this.drawListings(getListings());
 						this.listingUpdate();
 					});

@@ -27,7 +27,7 @@ public final class Listing {
     @Deprecated @Getter private final int ID;
 
     /** The Unique ID of the entry */
-    @Getter private final UUID uuid;
+    @Getter private UUID uuid;
 
     /** The owner of the entry */
     @Getter private final String ownerName;
@@ -107,7 +107,7 @@ public final class Listing {
     }
 
     public Listing(Builder builder) {
-		this.ID = ListingUtils.getNextID(Listing.class);
+		this.ID = -1;
 		this.uuid = UUID.randomUUID();
 		this.ownerName = builder.player.getName();
 		this.ownerUUID = builder.player.getUniqueId();
@@ -164,6 +164,11 @@ public final class Listing {
 		} else {
 			return this.entry.getBaseDisplay(player, this);
 		}
+	}
+
+	@Deprecated
+	public void createUUID() {
+		this.uuid = UUID.randomUUID();
 	}
 
 	public static class Builder {

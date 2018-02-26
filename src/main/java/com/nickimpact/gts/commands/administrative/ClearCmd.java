@@ -49,7 +49,7 @@ public class ClearCmd extends SpongeSubCommand {
 		for(Listing listing : GTS.getInstance().getListingsCache()) {
 			if(!listing.getEntry().supportsOffline()) {
 				if(!Sponge.getServer().getPlayer(listing.getOwnerUUID()).isPresent()) {
-					GTS.getInstance().getStorage().addHeldElement(new EntryHolder(listing.getID(), listing.getOwnerUUID(), listing.getEntry()));
+					GTS.getInstance().getStorage().addHeldElement(new EntryHolder(listing.getUuid(), listing.getOwnerUUID(), listing.getEntry()));
 				} else {
 					listing.getEntry().giveEntry(Sponge.getServer().getPlayer(listing.getOwnerUUID()).get());
 				}

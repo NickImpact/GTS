@@ -12,23 +12,28 @@ import java.util.regex.Pattern;
  */
 public class GTSInfo {
 
-    private GTSInfo() {}
+	private GTSInfo() {}
 
     public static final String ID = "gts";
 
     public static final String NAME = "GTS";
-    public static final String VERSION = "3.0.0-PR5-S7.0";
+    public static final String VERSION = "3.6.0-S7.1";
     public static final String DESCRIPTION = "A Sponge Representation of the Global Trading Station";
 
     public static final Text PREFIX = Text.of(TextColors.YELLOW, "GTS ", TextColors.GRAY, "\u00bb ", TextColors.DARK_AQUA);
-    public static final Text ERROR_PREFIX = Text.of(
+    public static final Text ERROR = Text.of(
             TextColors.RED, "GTS ", TextColors.GRAY, "(", TextColors.RED, "Error", TextColors.GRAY, ") ",
             TextColors.DARK_RED
     );
-    public static final Text DEBUG_PREFIX = Text.of(
+    public static final Text DEBUG = Text.of(
             TextColors.YELLOW, "GTS ", TextColors.GRAY, "(", TextColors.RED, "Debug", TextColors.GRAY, ") ",
             TextColors.DARK_AQUA
     );
+    public static final Text WARNING = Text.of(
+            TextColors.YELLOW, "GTS ", TextColors.GRAY, "(", TextColors.RED, "Warning", TextColors.GRAY, ") ",
+            TextColors.DARK_AQUA
+    );
+
 
     public enum Dependencies {
         Nucleus("nucleus", "Nucleus-1.2.0-S7.0+"),
@@ -79,9 +84,9 @@ public class GTSInfo {
 
         for(Dependencies dependency : Dependencies.values()){
             if(!Sponge.getPluginManager().isLoaded(dependency.getDependency())){
-                GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(ERROR_PREFIX, Text.of(TextColors.DARK_RED, "==== Missing Dependency ===="))));
-                GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(ERROR_PREFIX, Text.of(TextColors.DARK_RED, "  Dependency: ", TextColors.RED, dependency.name()))));
-                GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(ERROR_PREFIX, Text.of(TextColors.DARK_RED, "  Version: ", TextColors.RED, dependency.getVersion()))));
+                GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(ERROR, Text.of(TextColors.DARK_RED, "==== Missing Dependency ===="))));
+                GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(ERROR, Text.of(TextColors.DARK_RED, "  Dependency: ", TextColors.RED, dependency.name()))));
+                GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(ERROR, Text.of(TextColors.DARK_RED, "  Version: ", TextColors.RED, dependency.getVersion()))));
 
                 valid = false;
             }

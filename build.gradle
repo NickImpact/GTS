@@ -8,16 +8,12 @@ buildscript {
     }
 }
 
-plugins {
-    id 'com.qixalite.spongestart' version '1.6.2'
-}
-
 apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 
 
 group 'com.nickimpact.gts'
-version '3.5.1-S7.1'
+version '3.6.0-S7.1'
 archivesBaseName = "GTS"
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
@@ -30,16 +26,6 @@ minecraft {
     runDir = "run"
     mappings = "snapshot_20170919"
     useDepAts = true
-}
-
-spongestart{
-    eula true
-
-    //optional settings, takes latest version by default
-    minecraft '1.12.2'
-    type 'bleeding'
-    spongeForgeVersion '1.12.2-2555-7.0.0-BETA-2774'
-    spongeVanillaVersion '1.12.2-7.0.0-BETA-374'
 }
 
 repositories {

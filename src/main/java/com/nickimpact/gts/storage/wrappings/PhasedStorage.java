@@ -65,10 +65,10 @@ public class PhasedStorage implements Storage {
 	}
 
 	@Override
-	public CompletableFuture<Void> removeListing(int id) {
+	public CompletableFuture<Void> removeListing(UUID uuid) {
 		phaser.register();
 		try {
-			return delegate.removeListing(id);
+			return delegate.removeListing(uuid);
 		} finally {
 			phaser.arriveAndDeregister();
 		}

@@ -37,10 +37,10 @@ public abstract class SpongeCommand implements CommandExecutor
         {
 
             GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
-                    Text.of(GTSInfo.ERROR_PREFIX, "======= Invalid Command Structure ======="),
-                    Text.of(GTSInfo.ERROR_PREFIX, "Executor: ", TextColors.RED, this.getClass().getSimpleName()),
-                    Text.of(GTSInfo.ERROR_PREFIX, "Reason: ", TextColors.RED, "Missing header annotation"),
-                    Text.of(GTSInfo.ERROR_PREFIX, "=========================================")
+                    Text.of(GTSInfo.ERROR, "======= Invalid Command Structure ======="),
+                    Text.of(GTSInfo.ERROR, "Executor: ", TextColors.RED, this.getClass().getSimpleName()),
+                    Text.of(GTSInfo.ERROR, "Reason: ", TextColors.RED, "Missing header annotation"),
+                    Text.of(GTSInfo.ERROR, "=========================================")
             ));
 
         }

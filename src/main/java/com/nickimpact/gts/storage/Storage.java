@@ -38,10 +38,10 @@ public interface Storage {
 	/**
 	 * Remove a listing from the storage provider based on the ID of a listing
 	 *
-	 * @param id The target ID of a listing
+	 * @param uuid The target ID of a listing
 	 * @return A completable future in which a listing is removed from the storage provider
 	 */
-    CompletableFuture<Void> removeListing(int id);
+    CompletableFuture<Void> removeListing(UUID uuid);
 
     /**
      * Fetches a list of all listings from the storage provider, and forms them into a list

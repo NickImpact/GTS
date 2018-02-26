@@ -4,14 +4,12 @@ import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.listings.Listing;
-import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.entries.EntryHolder;
 import com.nickimpact.gts.api.listings.pricing.PriceHolder;
 import com.nickimpact.gts.logs.Log;
 import com.nickimpact.gts.storage.dao.AbstractDao;
 import lombok.Getter;
 import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.SimpleConfigurationNode;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -95,7 +93,7 @@ public abstract class ConfigurateDao extends AbstractDao {
 
 	private Exception reportException(String file, Exception ex) throws Exception {
 		plugin.getConsole().ifPresent(console -> console.sendMessage(
-				Text.of(GTSInfo.ERROR_PREFIX, "Exception thrown whilst performing i/o: " + file)
+				Text.of(GTSInfo.ERROR, "Exception thrown whilst performing i/o: " + file)
 		));
 		ex.printStackTrace();
 		throw ex;
@@ -143,7 +141,7 @@ public abstract class ConfigurateDao extends AbstractDao {
 	public void addListing(Listing listing) {}
 
 	@Override
-	public void removeListing(int id) {}
+	public void removeListing(UUID uuid) {}
 
 	@Override
 	public List<Listing> getListings() throws Exception {

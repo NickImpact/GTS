@@ -92,7 +92,7 @@ public class ConfirmUI extends InventoryBase {
 			icon.addListener(clickable -> {
 				if(!GTS.getInstance().getListingsCache().contains(this.target)) {
 					clickable.getPlayer().sendMessages(
-							Text.of(GTSInfo.ERROR_PREFIX, "Unfortunately, your listing has already been claimed...")
+							Text.of(GTSInfo.ERROR, "Unfortunately, your listing has already been claimed...")
 					);
 					return;
 				}

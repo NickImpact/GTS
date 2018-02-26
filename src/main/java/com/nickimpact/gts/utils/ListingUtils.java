@@ -41,44 +41,6 @@ import java.util.stream.Collectors;
  */
 public class ListingUtils {
 
-	@Setter private static int listingID;
-	@Setter private static int logID;
-
-	public static synchronized int getNextID(Class<?> clazz) {
-		if(clazz.equals(Listing.class)) {
-			if (listingID < 25000)
-				return ++listingID;
-			else {
-				listingID = 1;
-				List<Listing> listings = Lists.newArrayList(GTS.getInstance().getListingsCache());
-				listings.sort(Comparator.comparing(Listing::getID));
-				for(Listing listing : listings) {
-					if(listingID == listing.getID())
-						++listingID;
-					else
-						return listingID;
-				}
-				return listingID;
-			}
-		} else {
-			if(logID < 25000)
-				return ++logID;
-			else {
-				logID = 1;
-				List<Log> logs = Lists.newArrayList(GTS.getInstance().getLogCache());
-				logs.sort(Comparator.comparing(Log::getID));
-				for(Log log : logs) {
-					if(logID == log.getID())
-						++logID;
-					else
-						return logID;
-				}
-
-				return logID;
-			}
-		}
-	}
-
     public static void addToMarket(Player player, Listing listing) {
         if(hasMax(player)) {
 	        Map<String, Function<CommandSource, Optional<Text>>> replacements = Maps.newHashMap();
@@ -176,7 +138,7 @@ public class ListingUtils {
 						                tax.orElse(BigDecimal.ZERO),
 						                Cause.builder().append(GTS.getInstance()).build(EventContext.empty()));
 
-					    player.sendMessage(Text.of(GTSInfo.ERROR_PREFIX, TextColors.RED,
+					    player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.RED,
 					                               "Your listing failed to be taken, so we have refunded the tax applied!"));
 				    } catch (Exception e) {
 					    e.printStackTrace();
@@ -279,7 +241,7 @@ public class ListingUtils {
 						);
 					}
 					else {
-						addHeldPrice(new PriceHolder(randomID(Price.class), listing.getOwnerUUID(), price));
+						addHeldPrice(new PriceHolder(UUID.randomUUID(), listing.getOwnerUUID(), price));
 					}
 				} else {
 					price.reward(listing.getOwnerUUID());
@@ -314,14 +276,14 @@ public class ListingUtils {
 		    }
 	    } catch (Exception e) {
 	    	if(e instanceof RewardException) {
-			    addHeldPrice(new PriceHolder(randomID(Price.class), listing.getOwnerUUID(), price));
+			    addHeldPrice(new PriceHolder(UUID.randomUUID(), listing.getOwnerUUID(), price));
 		    } else {
 			    player.sendMessages(
-					    Text.of(GTSInfo.ERROR_PREFIX,
+					    Text.of(GTSInfo.ERROR,
 					            "Unfortunately, you were unable to purchase the listing due to an error...")
 			    );
 			    GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
-					    Text.of(GTSInfo.ERROR_PREFIX, e.getMessage())
+					    Text.of(GTSInfo.ERROR, e.getMessage())
 			    ));
 		    }
 	    }
@@ -381,8 +343,7 @@ public class ListingUtils {
 
 	public static void deleteEntry(Listing entry) {
     	GTS.getInstance().getListingsCache().remove(entry);
-    	int id = entry.getID();
-    	GTS.getInstance().getStorage().removeListing(id);
+    	GTS.getInstance().getStorage().removeListing(entry.getUuid());
 	}
 
 	public static void addHeldEntry(EntryHolder holder) {
@@ -393,27 +354,5 @@ public class ListingUtils {
 	public static void addHeldPrice(PriceHolder holder) {
 		GTS.getInstance().getHeldPriceCache().add(holder);
 		GTS.getInstance().getStorage().addHeldPrice(holder);
-	}
-
-	private static int randomID(Class<?> clazz) {
-		Random rng = new Random();
-		int selection;
-		if(clazz.equals(Entry.class)) {
-			while(true) {
-				selection = rng.nextInt(25001);
-				final int id = selection;
-				if (GTS.getInstance().getHeldEntryCache().stream().anyMatch(holder -> holder.getId() == id)) continue;
-				break;
-			}
-		} else {
-			while(true) {
-				selection = rng.nextInt(25001);
-				final int id = selection;
-				if (GTS.getInstance().getHeldPriceCache().stream().anyMatch(holder -> holder.getId() == id)) continue;
-				break;
-			}
-		}
-
-		return selection;
 	}
 }

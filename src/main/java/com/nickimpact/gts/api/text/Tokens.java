@@ -91,7 +91,7 @@ public final class Tokens implements NucleusMessageTokenService.TokenParser {
 		translatorMap.put("max_listings", (p, v, m) -> Optional.of(Text.of(GTS.getInstance().getConfig().get(ConfigKeys.MAX_LISTINGS))));
 		translatorMap.put("id", (p, v, m) -> {
 			Listing listing = getListingFromVaribleIfExists(m);
-			return Optional.of(listing != null ? Text.of(listing.getID()) : Text.EMPTY);
+			return Optional.of(listing != null ? Text.of(listing.getUuid()) : Text.EMPTY);
 		});
 		translatorMap.put("time_left", (p, v, m) -> {
 			Listing listing = getListingFromVaribleIfExists(m);
