@@ -106,8 +106,9 @@ public final class Tokens implements NucleusMessageTokenService.TokenParser {
 		});
 		translatorMap.put("listing_specifics", (p, v, m) -> {
 			Listing listing = getListingFromVaribleIfExists(m);
-			if(listing == null)
+			if(listing == null) {
 				return Optional.empty();
+			}
 
 			try {
 				return Optional.of(GTS.getInstance().getTextParsingUtils().parse(
@@ -122,8 +123,9 @@ public final class Tokens implements NucleusMessageTokenService.TokenParser {
 		});
 		translatorMap.put("listing_name", (p, v, m) -> {
 			Listing listing = getListingFromVaribleIfExists(m);
-			if(listing == null)
+			if(listing == null) {
 				return Optional.empty();
+			}
 
 			return Optional.of(TextSerializers.FORMATTING_CODE.deserialize(listing.getName()));
 		});

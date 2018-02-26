@@ -195,7 +195,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 		@Override
 		public Text getDescription() {
-			return Text.of("Handles pokemon entries for the GTS");
+			return Text.of("Handles pokemon");
 		}
 
 		@Override
@@ -210,6 +210,10 @@ public class PokemonEntry extends Entry<Pokemon> {
 
 		@Override
 		public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+			if(!GTS.getInstance().getConfig().get(ConfigKeys.POKEMON_ENABLED)) {
+				throw new CommandException(Text.of("The selling of pokemon is disabled..."));
+			}
+
 			if(src instanceof Player) {
 				Player player = (Player)src;
 				int pos = args.<Integer>getOne(argPos).get() - 1;
@@ -244,7 +248,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 				}
 
 				MessageUtils.genAndSendErrorMessage(
-						"Pixelmon Storage Access Error",
+						"Pixelmon storage Access Error",
 						"Unable to locate storage for " + player.getName(),
 						"Their UUID: " + player.getUniqueId()
 				);

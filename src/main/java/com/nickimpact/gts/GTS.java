@@ -210,20 +210,7 @@ public class GTS {
 
 					List<Listing> temp = Lists.newArrayList(this.listingsCache);
 					temp.sort(Comparator.comparing(Listing::getID));
-
-					int id = -1;
-					if(temp.size() == 0) {
-						id = 0;
-					} else if(temp.size() == 1) {
-						id = temp.get(0).getID();
-					} else {
-						for (int i = 0; i < temp.size() - 1; i++) {
-							id = temp.get(i).getID();
-							if (temp.get(i).getID() + 1 < temp.get(i + 1).getID()) {
-								break;
-							}
-						}
-					}
+					int id = temp.get(temp.size() - 1).getID();
 					ListingUtils.setListingID(temp.size() != 0 && id != -1 ? ++id : 0);
 				});
 				this.storage.getLogs().thenAccept(list -> {
@@ -231,19 +218,7 @@ public class GTS {
 
 					List<Log> tmp = Lists.newArrayList(this.logCache);
 					tmp.sort(Comparator.comparing(Log::getID));
-					int id = -1;
-					if(tmp.size() == 0) {
-						id = 0;
-					} else if(tmp.size() == 1) {
-						id = tmp.get(0).getID();
-					} else {
-						for (int i = 0; i < tmp.size() - 1; i++) {
-							id = tmp.get(i).getID();
-							if (tmp.get(i).getID() + 1 < tmp.get(i + 1).getID()) {
-								break;
-							}
-						}
-					}
+					int id = tmp.get(tmp.size() - 1).getID();
 					ListingUtils.setLogID(tmp.size() != 0 && id != -1 ? ++id : 0);
 				});
 				this.heldEntryCache = this.storage.getHeldElements().get();

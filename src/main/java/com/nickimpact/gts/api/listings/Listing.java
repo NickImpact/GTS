@@ -24,7 +24,10 @@ import java.util.UUID;
 public final class Listing {
 
     /** The ID of the entry */
-    @Getter private final int ID;
+    @Deprecated @Getter private final int ID;
+
+    /** The Unique ID of the entry */
+    @Getter private final UUID uuid;
 
     /** The owner of the entry */
     @Getter private final String ownerName;
@@ -52,6 +55,7 @@ public final class Listing {
 	 * @param expires Whether or not the listing will expire
 	 * @param seconds The duration of the listing's lifetime
 	 */
+	@Deprecated
     public Listing(int id, Player player, Entry entry, boolean expires, long seconds){
         this(id, player, entry, expires, seconds, null);
     }
@@ -66,8 +70,10 @@ public final class Listing {
 	 * @param seconds The duration of the listing's lifetime
 	 * @param ad Data representing an auction (can be null to state it is not an auction)
 	 */
+	@Deprecated
     public Listing(int id, Player player, Entry entry, boolean expires, long seconds, @Nullable AuctionData ad) {
 	    this.ID = id;
+	    this.uuid = UUID.randomUUID();
 	    this.ownerName = player.getName();
 	    this.ownerUUID = player.getUniqueId();
 	    this.entry = entry;
@@ -78,8 +84,31 @@ public final class Listing {
 	    ListingUtils.addToMarket(player, this);
     }
 
+	/**
+	 * Constructs the content of a listing that will be available on the GTS market
+	 *
+	 * @param player The player depositing the listing
+	 * @param entry The element represented by the listing
+	 * @param expires Whether or not the listing will expire
+	 * @param seconds The duration of the listing's lifetime
+	 * @param ad Data representing an auction (can be null to state it is not an auction)
+	 */
+    public Listing(Player player, Entry entry, boolean expires, long seconds, @Nullable AuctionData ad) {
+		this.ID = -1;
+		this.uuid = UUID.randomUUID();
+		this.ownerName = player.getName();
+		this.ownerUUID = player.getUniqueId();
+		this.entry = entry;
+		this.expires = expires;
+		this.expiration = Date.from(Instant.now().plusSeconds(seconds));
+		this.aucData = ad;
+
+		ListingUtils.addToMarket(player, this);
+    }
+
     public Listing(Builder builder) {
 		this.ID = ListingUtils.getNextID(Listing.class);
+		this.uuid = UUID.randomUUID();
 		this.ownerName = builder.player.getName();
 		this.ownerUUID = builder.player.getUniqueId();
 		this.entry = builder.entry;

@@ -44,7 +44,7 @@ public class ListingUtils {
 	@Setter private static int listingID;
 	@Setter private static int logID;
 
-	public static int getNextID(Class<?> clazz) {
+	public static synchronized int getNextID(Class<?> clazz) {
 		if(clazz.equals(Listing.class)) {
 			if (listingID < 25000)
 				return ++listingID;
@@ -144,21 +144,6 @@ public class ListingUtils {
 			    }
 		    }
 
-		    try {
-		    	player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
-		    			GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ADD_TEMPLATE),
-					    player,
-					    null,
-					    variables
-			    ));
-		    } catch (NucleusException e) {
-			    MessageUtils.genAndSendErrorMessage(
-			    		"Message Parse Error",
-					    "Nucleus was unable to decode a message properly...",
-					    "Template: " + GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ADD_TEMPLATE)
-			    );
-		    }
-
 		    if(GTS.getInstance().getConfig().get(ConfigKeys.TAX_ENABLED)) {
 			    try {
 				    final BigDecimal t = tax.orElse(BigDecimal.ZERO);
@@ -199,6 +184,21 @@ public class ListingUtils {
 			    }
 			    return;
 		    }
+
+			try {
+				player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+						GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ADD_TEMPLATE),
+						player,
+						null,
+						variables
+				));
+			} catch (NucleusException e) {
+				MessageUtils.genAndSendErrorMessage(
+						"Message Parse Error",
+						"Nucleus was unable to decode a message properly...",
+						"Template: " + GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ADD_TEMPLATE)
+				);
+			}
 
 		    GTS.getInstance().getStorage().addListing(listing);
 			GTS.getInstance().getListingsCache().add(listing);

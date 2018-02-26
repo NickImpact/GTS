@@ -68,7 +68,7 @@ public abstract class SpongeCommand implements CommandExecutor
     {
     	CommandSpec.Builder cb = CommandSpec.builder();
     	if(!(this instanceof SpongeSubCommand)) {
-		    this.basePermission = formPermission(null);
+		    this.basePermission = formPermission(null, this.getAllAliases().get(0));
 	    }
 	    cb.permission(this.basePermission);
 
@@ -77,7 +77,7 @@ public abstract class SpongeCommand implements CommandExecutor
         if (subCmds != null && subCmds.length > 0)
             for (SpongeCommand cmd : subCmds)
             {
-                cmd.basePermission = formPermission(cmd.getClass().isAnnotationPresent(Parent.class) ? cmd.getAllAliases().get(0) : null);
+                cmd.basePermission = formPermission(this.getClass().isAnnotationPresent(Parent.class) ? this.getAllAliases().get(0) : null, cmd.getAllAliases().get(0));
                 subCommands.put(cmd.getAllAliases(), cmd.getCommandSpec());
             }
 
@@ -120,7 +120,7 @@ public abstract class SpongeCommand implements CommandExecutor
         src.sendMessage(getDescription());
     }
 
-    private String formPermission(@Nullable String parent) {
+    private String formPermission(@Nullable String parent, String alias) {
     	String perm = GTSInfo.ID + ".command.";
     	if((this.getClass().isAnnotationPresent(AdminCmd.class))) {
     		perm += "admin.";
@@ -129,7 +129,7 @@ public abstract class SpongeCommand implements CommandExecutor
 	    if(parent != null) {
     		perm += parent + ".";
 	    }
-	    perm += getAllAliases().get(0);
+	    perm += alias;
 
     	return perm;
     }

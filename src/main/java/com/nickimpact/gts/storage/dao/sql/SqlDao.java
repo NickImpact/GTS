@@ -51,6 +51,8 @@ public class SqlDao extends AbstractDao {
 	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID='%s'";
 	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";
 
+	private static final String ID_TO_UUID = "ALTER TABLE `{prefix}listings` MODIFY COLUMN ID VARCHAR(36)";
+
 	@Getter
 	private final AbstractConnectionFactory provider;
 

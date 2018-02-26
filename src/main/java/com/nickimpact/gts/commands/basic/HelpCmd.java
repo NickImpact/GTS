@@ -72,17 +72,8 @@ public class HelpCmd extends SpongeSubCommand {
 				cmd.getDescription()
 		));
 
-		GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
-				Text.of(GTSInfo.DEBUG_PREFIX, "Working on " + cmd.getUsage()),
-				Text.of(GTSInfo.DEBUG_PREFIX, "Has children: ", (cmd.getSubCommands() != null && cmd.getSubCommands().length > 0 ? "Yes" : "No"))
-		));
-
 		if(cmd.getSubCommands() != null && cmd.getSubCommands().length > 0) {
 			for(SpongeCommand child : cmd.getSubCommands()) {
-				GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
-						Text.of(GTSInfo.DEBUG_PREFIX, "Testing child " + child.getUsage()),
-						Text.of(GTSInfo.DEBUG_PREFIX, "Permission Valid?: ", (child.getCommandSpec().testPermission(src) ? "Yes" : "No"))
-				));
 				if(child.getCommandSpec().testPermission(src))
 					commands.addAll(this.formatCommands(src, child));
 			}

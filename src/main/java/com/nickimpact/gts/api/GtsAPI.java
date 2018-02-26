@@ -1,6 +1,8 @@
 package com.nickimpact.gts.api;
 
 import com.google.common.collect.Maps;
+import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.json.Registry;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.Listing;
@@ -8,9 +10,12 @@ import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.text.Tokens;
 import com.nickimpact.gts.api.utils.MessageUtils;
+import com.nickimpact.gts.entries.items.ItemEntry;
+import com.nickimpact.gts.entries.pixelmon.PokemonEntry;
 import lombok.Getter;
 import lombok.Setter;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.text.Text;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -73,6 +78,12 @@ public class GtsAPI {
 		for(Class<? extends E> clazz : classes) {
 			try {
 				registry.register(clazz);
+
+				if(!clazz.equals(ItemEntry.class) && !clazz.equals(PokemonEntry.class)) {
+					GTS.getInstance().getConsole().ifPresent(console -> {
+						console.sendMessage(Text.of(GTSInfo.PREFIX, "Loaded entry type: " + clazz.getSimpleName()));
+					});
+				}
 			} catch (Exception e) {
 				MessageUtils.genAndSendErrorMessage(
 						"Registration Failure",

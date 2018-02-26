@@ -36,7 +36,7 @@ public class ItemTokens {
 				return Optional.empty();
 
 			if(!item.get(Keys.DISPLAY_NAME).isPresent())
-				return Optional.of(Text.of(TextColors.DARK_AQUA, item.getType().getTranslation().get()));
+				return Optional.of(Text.of(TextColors.DARK_AQUA, item.getTranslation().get()));
 
 			return Optional.of(item.get(Keys.DISPLAY_NAME).get());
 		});

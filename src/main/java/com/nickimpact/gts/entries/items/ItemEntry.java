@@ -1,11 +1,13 @@
 package com.nickimpact.gts.entries.items;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
+import com.nickimpact.gts.api.configuration.ConfigKey;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.entries.Entry;
@@ -18,20 +20,25 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
+import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
+import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
+import org.spongepowered.api.item.inventory.entity.PlayerInventory;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
 import org.spongepowered.api.item.inventory.property.SlotPos;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.common.item.inventory.adapter.impl.comp.HotbarAdapter;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +55,8 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	/** The cached version of the ItemStack */
 	private transient ItemStack item;
+
+	private static Map<UUID, Integer> amounts = Maps.newHashMap();
 
 	public ItemEntry() {
 		super();
@@ -102,14 +111,6 @@ public class ItemEntry extends Entry<DataContainer> {
 
 		this.decode().get(Keys.ITEM_LORE).ifPresent(lore -> {
 			if(lore.size() > 0) {
-				GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
-						Text.of(GTSInfo.DEBUG_PREFIX, "Item Lore:")
-				));
-				for(Text line : lore)
-					GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
-							Text.of(GTSInfo.DEBUG_PREFIX, line)
-					));
-
 				output.add("&aItem Lore:");
 				output.addAll(lore.stream().map(Text::toPlain).collect(Collectors.toList()));
 			}
@@ -138,14 +139,6 @@ public class ItemEntry extends Entry<DataContainer> {
 
 		this.decode().get(Keys.ITEM_LORE).ifPresent(lore -> {
 			if(lore.size() > 0) {
-				GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
-						Text.of(GTSInfo.DEBUG_PREFIX, "Item Lore:")
-				));
-				for(Text line : lore)
-					GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
-							Text.of(GTSInfo.DEBUG_PREFIX, line)
-					));
-
 				output.add("&aItem Lore:");
 				output.addAll(lore.stream().map(Text::toPlain).collect(Collectors.toList()));
 			}
@@ -172,28 +165,30 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	public boolean doTakeAway(Player player) {
-		Optional<ItemStack> opt = player.getInventory()
-				.query(
-						QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
-						QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class)
-				)
-				.query(QueryOperationTypes.ITEM_STACK_IGNORE_QUANTITY.of(this.decode()))
-				.poll(this.decode().getQuantity());
-
-		return opt.isPresent();
+		Optional<ItemStack> item = player.getItemInHand(HandTypes.MAIN_HAND);
+		if(item.isPresent()) {
+			if(!GTS.getInstance().getConfig().get(ConfigKeys.CUSTOM_NAME_ALLOWED)) {
+				if(item.get().get(Keys.DISPLAY_NAME).isPresent()) {
+					return false;
+				}
+			}
+			int amount = amounts.get(player.getUniqueId());
+			item.get().setQuantity(item.get().getQuantity() - amount);
+			player.setItemInHand(HandTypes.MAIN_HAND, item.get());
+			return true;
+		}
+		return false;
 	}
 
 	@CommandAliases("item")
 	public class ItemSub extends SpongeSubCommand {
 
-		private final Text argSlot = Text.of("invSlot");
 		private final Text argAmount = Text.of("amount");
 		private final Text argPrice = Text.of("price");
 
 		@Override
 		public CommandElement[] getArgs() {
 			return new CommandElement[]{
-					GenericArguments.integer(argSlot),
 					GenericArguments.integer(argAmount),
 					GenericArguments.integer(argPrice)
 			};
@@ -201,12 +196,12 @@ public class ItemEntry extends Entry<DataContainer> {
 
 		@Override
 		public Text getDescription() {
-			return Text.of("Handles item entries for the GTS");
+			return Text.of("Handles items");
 		}
 
 		@Override
 		public Text getUsage() {
-			return Text.of("/gts sell item <inv slot> <amount> <price>");
+			return Text.of("/gts sell item <amount> <price>");
 		}
 
 		@Override
@@ -216,26 +211,28 @@ public class ItemEntry extends Entry<DataContainer> {
 
 		@Override
 		public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+			if(!GTS.getInstance().getConfig().get(ConfigKeys.ITEMS_ENABLED)) {
+				throw new CommandException(Text.of("The selling of items is disabled..."));
+			}
+
 			if(src instanceof Player) {
 				Player player = (Player)src;
-				int invSlot = args.<Integer>getOne(argSlot).orElse(1) - 1;
 				int price = args.<Integer>getOne(argPrice).get();
 				if(price <= 0) {
 					throw new CommandException(Text.of("Price must be a positive integer!"));
 				}
 
-				Optional<ItemStack> item = player.getInventory()
-						.query(
-								QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
-								QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class)
-						)
-						.query(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotPos.of(invSlot)))
-						.peek(args.<Integer>getOne(argAmount).orElse(1));
-
+				Optional<ItemStack> item = player.getItemInHand(HandTypes.MAIN_HAND);
 				if(item.isPresent()) {
+					int amount = args.<Integer>getOne(argAmount).get();
+					if(amount >= item.get().getQuantity()) {
+						amount = item.get().getQuantity();
+					}
+					ItemStack entry = ItemStack.builder().from(item.get()).quantity(amount).build();
+					amounts.put(player.getUniqueId(), amount);
 					Listing.builder()
 							.player(player)
-							.entry(new ItemEntry(item.get(), new MoneyPrice(args.<Integer>getOne(argPrice).get())))
+							.entry(new ItemEntry(entry, new MoneyPrice(args.<Integer>getOne(argPrice).get())))
 							.doesExpire()
 							.expiration(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME))
 							.build();

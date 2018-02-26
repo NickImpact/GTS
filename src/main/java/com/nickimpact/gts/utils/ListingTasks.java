@@ -35,13 +35,9 @@ public class ListingTasks {
 	        listings.stream().filter(listing -> listing.getExpiration().before(Date.from(Instant.now()))).forEach(listing -> {
 	            boolean successful;
 
-	        	if(listing.getAucData() != null) {
-		            AuctionData ad = listing.getAucData();
-		            if(ad.getHighBidder() == null)
-			            successful = expire(listing);
-		            else {
-		            	successful = award(PlayerUtils.getUserFromUUID(ad.getHighBidder()).orElse(null), listing);
-		            }
+	            AuctionData ad = listing.getAucData();
+	        	if(ad != null && ad.getHighBidder() != null) {
+	        		successful = award(PlayerUtils.getUserFromUUID(ad.getHighBidder()).orElse(null), listing);
 	            } else {
 		            successful = expire(listing);
 	            }
@@ -71,10 +67,9 @@ public class ListingTasks {
 		}
 
 		Map<String, Object> variables = Maps.newHashMap();
-	    variables.put("listing_specifics", listing);
-	    variables.put("listing_name", listing);
-	    variables.put("time_left", listing);
-	    variables.put("id", listing);
+	    variables.put("dummy", listing);
+	    variables.put("dummy2", listing.getEntry());
+	    variables.put("dummy3", listing.getEntry().getElement());
 
 	    Player player = owner.get();
 	    if(!listing.getEntry().giveEntry(player))

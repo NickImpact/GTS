@@ -42,6 +42,12 @@ public class ConfigKeys {
 	public static final ConfigKey<Boolean> TAX_ENABLED = BooleanKey.of("tax.enabled", false);
 	public static final ConfigKey<Double> TAX_MONEY_TAX = DoubleKey.of("tax.money.tax", 0.08);
 
+	public static final ConfigKey<Boolean> ITEMS_ENABLED = BooleanKey.of("entries.items.enabled", true);
+	public static final ConfigKey<Boolean> POKEMON_ENABLED = BooleanKey.of("entries.pokemon.enabled", true);
+
+	public static final ConfigKey<Boolean> CUSTOM_NAME_ALLOWED = BooleanKey.of("entries.items.custom-names-allowed", true);
+
+
 	//------------------------------------------------------------------------------------------------------------------
 	// Blacklist config settings
 	//------------------------------------------------------------------------------------------------------------------

@@ -219,9 +219,7 @@ public abstract class Entry<T> {
 	 *
 	 * @return Whether an entry typing supports offline rewarding/give back
 	 */
-	public boolean supportsOffline() {
-		return true;
-	}
+	public abstract boolean supportsOffline();
 
 	/**
 	 * Attempts to give the contents of a lot entry to the passed player.
