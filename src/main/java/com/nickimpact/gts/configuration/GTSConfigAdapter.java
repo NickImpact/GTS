@@ -1,7 +1,9 @@
 package com.nickimpact.gts.configuration;
 
 import com.google.common.base.Splitter;
+import com.google.common.reflect.TypeToken;
 import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.configuration.ConfigAdapter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,8 @@ import ninja.leaping.configurate.SimpleConfigurationNode;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader;
 import ninja.leaping.configurate.loader.ConfigurationLoader;
+import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import org.spongepowered.api.text.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +38,8 @@ public class GTSConfigAdapter implements ConfigAdapter {
 
 	private ConfigurationNode root;
 
+	private ConfigurationLoader<CommentedConfigurationNode> loader;
+
 	private Path makeFile(String resource) throws IOException {
 		File cfg = plugin.getConfigDir().resolve(resource).toFile();
 		//noinspection ResultOfMethodCallIgnored
@@ -51,7 +57,7 @@ public class GTSConfigAdapter implements ConfigAdapter {
 	@Override
 	public void init(String resource) {
 		try {
-			ConfigurationLoader<CommentedConfigurationNode> loader = HoconConfigurationLoader.builder()
+			this.loader = HoconConfigurationLoader.builder()
 					.setPath(makeFile(resource))
 					.build();
 
@@ -80,6 +86,21 @@ public class GTSConfigAdapter implements ConfigAdapter {
 		return node;
 	}
 
+	private <T> T getValue(String path, T def) {
+		if(this.contains(path)) {
+			return (T) resolvePath(path).getValue();
+		} else {
+			GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(Text.of(GTSInfo.WARNING, String.format("Found missing config option (%s)... Adding it!", path))));
+			resolvePath(path).setValue(def);
+			try {
+				this.loader.save(root);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return def;
+		}
+	}
+
 	@Override
 	public boolean contains(String path) {
 		return !resolvePath(path).isVirtual();
@@ -87,28 +108,33 @@ public class GTSConfigAdapter implements ConfigAdapter {
 
 	@Override
 	public String getString(String path, String def) {
-		return resolvePath(path).getString(def);
+		return getValue(path, def);
 	}
 
 	@Override
 	public int getInt(String path, int def) {
-		return resolvePath(path).getInt(def);
+		return getValue(path, def);
 	}
 
 	@Override
 	public double getDouble(String path, double def) {
-		return resolvePath(path).getDouble(def);
+		return getValue(path, def);
 	}
 
 	@Override
 	public boolean getBoolean(String path, boolean def) {
-		return resolvePath(path).getBoolean(def);
+		return getValue(path, def);
 	}
 
 	@Override
 	public List<String> getList(String path, List<String> def) {
 		ConfigurationNode node = resolvePath(path);
 		if (node.isVirtual()) {
+			try {
+				resolvePath(path).setValue(new TypeToken<List<String>>() {}, def);
+			} catch (ObjectMappingException e) {
+				e.printStackTrace();
+			}
 			return def;
 		}
 
@@ -119,6 +145,11 @@ public class GTSConfigAdapter implements ConfigAdapter {
 	public List<String> getObjectList(String path, List<String> def) {
 		ConfigurationNode node = resolvePath(path);
 		if (node.isVirtual()) {
+			try {
+				resolvePath(path).setValue(new TypeToken<List<String>>() {}, def);
+			} catch (ObjectMappingException e) {
+				e.printStackTrace();
+			}
 			return def;
 		}
 
@@ -130,6 +161,11 @@ public class GTSConfigAdapter implements ConfigAdapter {
 	public Map<String, String> getMap(String path, Map<String, String> def) {
 		ConfigurationNode node = resolvePath(path);
 		if (node.isVirtual()) {
+			try {
+				resolvePath(path).setValue(new TypeToken<Map<String, String>>() {}, def);
+			} catch (ObjectMappingException e) {
+				e.printStackTrace();
+			}
 			return def;
 		}
 

@@ -88,6 +88,19 @@ public final class Tokens implements NucleusMessageTokenService.TokenParser {
 
 			return Optional.empty();
 		});
+		translatorMap.put("high_bidder", (p, v, m) -> {
+			Listing listing = getListingFromVaribleIfExists(m);
+			if(listing == null) {
+				return Optional.empty();
+			}
+
+			AuctionData data = listing.getAucData();
+			if(data != null) {
+				return Optional.of(data.getHbName());
+			}
+
+			return Optional.of(Text.of("No bidder..."));
+		});
 		translatorMap.put("max_listings", (p, v, m) -> Optional.of(Text.of(GTS.getInstance().getConfig().get(ConfigKeys.MAX_LISTINGS))));
 		translatorMap.put("id", (p, v, m) -> {
 			Listing listing = getListingFromVaribleIfExists(m);

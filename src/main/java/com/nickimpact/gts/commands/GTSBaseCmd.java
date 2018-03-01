@@ -2,6 +2,7 @@ package com.nickimpact.gts.commands;
 
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.commands.SpongeCommand;
+import com.nickimpact.gts.commands.basic.AucCmd;
 import com.nickimpact.gts.commands.basic.HelpCmd;
 import com.nickimpact.gts.commands.basic.IgnoreCmd;
 import com.nickimpact.gts.commands.basic.SellCmd;
@@ -44,6 +45,7 @@ public class GTSBaseCmd extends SpongeCommand {
 				new SellCmd(),
 				new IgnoreCmd(),
 				new HelpCmd(),
+				new AucCmd(),
 				new AdminBaseCmd()
 		};
 	}

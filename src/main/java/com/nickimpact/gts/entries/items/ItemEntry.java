@@ -10,9 +10,11 @@ import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.configuration.ConfigKey;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.Listing;
+import com.nickimpact.gts.api.listings.data.AuctionData;
 import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.configuration.ConfigKeys;
+import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -72,8 +74,8 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@Override
-	public SpongeSubCommand commandSpec() {
-		return new ItemSub();
+	public SpongeSubCommand commandSpec(boolean isAuction) {
+		return new ItemSub(isAuction);
 	}
 
 	@Override
@@ -97,26 +99,28 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	protected String baseTitleTemplate() {
-		return "{{item_title}}";
+		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_TITLE);
 	}
 
 	@Override
-	protected List<String> baseLoreTemplate() {
-		List<String> output = Lists.newArrayList(
-				"&7Listing ID: &e{{id}}",
-				"&7Seller: &e{{seller}}",
-				"&7Price: &e{{price}}",
-				"&7Time Left: &e{{time_left}}"
-		);
+	protected List<String> baseLoreTemplate(boolean auction) {
+		List<String> lore = Lists.newArrayList();
+		lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_LORE));
 
-		this.decode().get(Keys.ITEM_LORE).ifPresent(lore -> {
-			if(lore.size() > 0) {
-				output.add("&aItem Lore:");
-				output.addAll(lore.stream().map(Text::toPlain).collect(Collectors.toList()));
+		this.decode().get(Keys.ITEM_LORE).ifPresent(l -> {
+			if(l.size() > 0) {
+				lore.add("&aItem Lore:");
+				lore.addAll(l.stream().map(Text::toPlain).collect(Collectors.toList()));
 			}
 		});
 
-		return output;
+		if(auction) {
+			lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_INFO));
+		} else {
+			lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
+		}
+
+		return lore;
 	}
 
 	@Override
@@ -126,25 +130,22 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	public String confirmTitleTemplate() {
-		return "&ePurchase {{item_title}}?";
+		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_TITLE);
 	}
 
 	@Override
 	protected List<String> confirmLoreTemplate() {
-		List<String> output = Lists.newArrayList(
-				"&7Listing ID: &e{{id}}",
-				"&7Seller: &e{{seller}}",
-				"&7Price: &e{{price}}"
-		);
+		List<String> lore = Lists.newArrayList();
+		lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_LORE));
 
-		this.decode().get(Keys.ITEM_LORE).ifPresent(lore -> {
-			if(lore.size() > 0) {
-				output.add("&aItem Lore:");
-				output.addAll(lore.stream().map(Text::toPlain).collect(Collectors.toList()));
+		this.decode().get(Keys.ITEM_LORE).ifPresent(l -> {
+			if(l.size() > 0) {
+				lore.add("&aItem Lore:");
+				lore.addAll(l.stream().map(Text::toPlain).collect(Collectors.toList()));
 			}
 		});
 
-		return output;
+		return lore;
 	}
 
 	@Override
@@ -156,8 +157,10 @@ public class ItemEntry extends Entry<DataContainer> {
 	public boolean giveEntry(User user) {
 		// User will always be a player here due to the offline support check
 		Player player = (Player)user;
-		if(player.getInventory().query(Hotbar.class, GridInventory.class).size() == 36)
+		if(player.getInventory().query(Hotbar.class, GridInventory.class).size() == 36) {
+			player.sendMessage(Text.of("Your inventory is full, so we can't award you this listing..."));
 			return false;
+		}
 
 		player.getInventory().offer(this.decode());
 		return true;
@@ -172,6 +175,7 @@ public class ItemEntry extends Entry<DataContainer> {
 					return false;
 				}
 			}
+
 			int amount = amounts.get(player.getUniqueId());
 			item.get().setQuantity(item.get().getQuantity() - amount);
 			player.setItemInHand(HandTypes.MAIN_HAND, item.get());
@@ -185,6 +189,12 @@ public class ItemEntry extends Entry<DataContainer> {
 
 		private final Text argAmount = Text.of("amount");
 		private final Text argPrice = Text.of("price");
+
+		private final boolean isAuction;
+
+		public ItemSub(boolean isAuction) {
+			this.isAuction = isAuction;
+		}
 
 		@Override
 		public CommandElement[] getArgs() {
@@ -230,13 +240,17 @@ public class ItemEntry extends Entry<DataContainer> {
 					}
 					ItemStack entry = ItemStack.builder().from(item.get()).quantity(amount).build();
 					amounts.put(player.getUniqueId(), amount);
-					Listing.builder()
+					Listing.Builder lb = Listing.builder()
 							.player(player)
 							.entry(new ItemEntry(entry, new MoneyPrice(args.<Integer>getOne(argPrice).get())))
 							.doesExpire()
-							.expiration(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME))
-							.build();
+							.expiration(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME));
 
+					if(isAuction) {
+						lb = lb.auction();
+					}
+
+					lb.build();
 					return CommandResult.success();
 				}
 

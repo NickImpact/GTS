@@ -2,9 +2,9 @@ package com.nickimpact.gts.commands.basic;
 
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
+import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.commands.annotations.Parent;
 import com.nickimpact.gts.api.json.Registry;
 import com.nickimpact.gts.api.listings.entries.Entry;
@@ -14,42 +14,55 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
 import java.util.List;
-import java.util.Map;
 
-/**
- * (Some note will go here)
- *
- * @author NickImpact
- */
 @Parent
-@CommandAliases({"sell", "add"})
-public class SellCmd extends SpongeSubCommand {
+@CommandAliases({"auc", "auction"})
+public class AucCmd extends SpongeSubCommand {
 
-	public static List<SpongeSubCommand> children = Lists.newArrayList();
+	private static List<SpongeSubCommand> children = Lists.newArrayList();
 
 	@Override
 	public CommandElement[] getArgs() {
-		return null;
+		return new CommandElement[0];
 	}
 
 	@Override
 	public Text getDescription() {
-		return Text.of("Adds a listing to the market");
+		return Text.of("Auction listings");
 	}
 
 	@Override
 	public Text getUsage() {
-		return Text.of("/gts sell <type>");
+		return Text.of("/gts auc <type>");
+	}
+
+	@Override
+	public SpongeCommand[] getSubCommands() {
+		getEntryCommandSpecs(children, true);
+		return children.toArray(new SpongeSubCommand[children.size()]);
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
-	public SpongeCommand[] getSubCommands() {
-		AucCmd.getEntryCommandSpecs(children, false);
-		return children.toArray(new SpongeSubCommand[children.size()]);
+	static void getEntryCommandSpecs(List<SpongeSubCommand> children, boolean isAuction) {
+		((Registry<Entry>) GTS.getInstance().getApi().getRegistry(Entry.class)).getTypings().forEach((key, value) -> {
+			try {
+				Entry entry = value.newInstance();
+				if (entry.commandSpec(isAuction) == null) {
+					MessageUtils.genAndSendErrorMessage(
+							"Invalid Entry Command Spec",
+							"Command Spec is null",
+							"Offender: " + value.getSimpleName()
+					);
+				}
+				children.add(entry.commandSpec(isAuction));
+			} catch (InstantiationException | IllegalAccessException e1) {
+				e1.printStackTrace();
+			}
+		});
 	}
 
 	@Override

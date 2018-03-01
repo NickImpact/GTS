@@ -55,7 +55,11 @@ public class AbstractConfig implements GTSConfiguration, CacheLoader<ConfigKey<?
 
 	@Override
 	public void loadAll() {
-		ConfigKeys.getAllKeys().values().forEach(cache::get);
+		if(resource.equals("gts.conf")) {
+			ConfigKeys.getAllKeys().values().forEach(cache::get);
+		} else {
+			MsgConfigKeys.getAllKeys().values().forEach(cache::get);
+		}
 	}
 
 	@SuppressWarnings("unchecked")

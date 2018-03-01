@@ -92,8 +92,7 @@ public abstract class Entry<T> {
 	 *
 	 * @return A sub command to be registered into the "/gts sell" command
 	 */
-	@Deprecated
-	public abstract SpongeSubCommand commandSpec();
+	public abstract SpongeSubCommand commandSpec(boolean isAuction);
 
 	public abstract String getSpecsTemplate();
 
@@ -113,7 +112,7 @@ public abstract class Entry<T> {
 
 	protected abstract String baseTitleTemplate();
 
-	protected abstract List<String> baseLoreTemplate();
+	protected abstract List<String> baseLoreTemplate(boolean auction);
 
 	private void applyExtensions(Player player, ItemStack item, Listing listing) {
 		Text title;
@@ -136,7 +135,7 @@ public abstract class Entry<T> {
 
 		try {
 			lore = GTS.getInstance().getTextParsingUtils().parse(
-					GTS.getInstance().getTextParsingUtils().getTemplates(baseLoreTemplate()),
+					GTS.getInstance().getTextParsingUtils().getTemplates(baseLoreTemplate(listing.getAucData() != null)),
 					player,
 					null,
 					variables

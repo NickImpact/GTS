@@ -167,30 +167,13 @@ public class GTS {
 			this.msgConfig = new AbstractConfig(this, new GTSConfigAdapter(this), "messages.conf");
 			this.msgConfig.init();
 
-			if(getConfig().get(ConfigKeys.WATCH_FILES)) {
-				fileWatcher = new FileWatcher(this);
-				Sponge.getScheduler().createTaskBuilder().async().intervalTicks(30).delayTicks(30).execute(fileWatcher).submit(GTS.getInstance());
-			}
+			//if(getConfig().get(ConfigKeys.WATCH_FILES)) {
+			//	fileWatcher = new FileWatcher(this);
+			//	Sponge.getScheduler().createTaskBuilder().async().intervalTicks(30).delayTicks(30).execute(fileWatcher).submit(GTS.getInstance());
+			//}
 
 			// Register the base command
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing commands...")));
-			@SuppressWarnings("unchecked") Registry<Entry> entryTypes = this.api.getRegistry(Entry.class);
-			for(Map.Entry<String, Class<? extends Entry>> mapping : entryTypes.getTypings().entrySet()) {
-				try {
-					Entry entry = mapping.getValue().newInstance();
-					if(entry.commandSpec() == null) {
-						MessageUtils.genAndSendErrorMessage(
-								"Invalid Entry Command Spec",
-								"Command Spec is null",
-								"Offender: " + mapping.getValue().getSimpleName()
-						);
-					}
-					SellCmd.children.add(entry.commandSpec());
-				} catch (InstantiationException | IllegalAccessException e1) {
-					e1.printStackTrace();
-				}
-			}
-
 			GTSBaseCmd base = new GTSBaseCmd();
 			base.register();
 			HelpCmd.updateCommand(base);

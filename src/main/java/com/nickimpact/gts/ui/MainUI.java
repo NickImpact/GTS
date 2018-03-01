@@ -22,6 +22,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -254,10 +255,58 @@ public class MainUI extends InventoryBase implements Observer {
 	private void drawActionPanel() {
 		this.addSortOption();
 
-		ItemStack skull = ItemUtils.createSkull(player.getUniqueId(), Text.of(TextColors.YELLOW, "Player Info"), Lists.newArrayList());
+		Text skullTitle;
+		try {
+			skullTitle = GTS.getInstance().getTextParsingUtils().parse(
+					GTS.getInstance().getMsgConfig().get(MsgConfigKeys.UI_ITEMS_PLAYER_TITLE),
+					this.player,
+					null,
+					null
+			);
+		} catch (NucleusException e) {
+			skullTitle = Text.of(TextColors.YELLOW, "Player Info");
+		}
+
+		List<Text> skullLore;
+		try {
+			skullLore = GTS.getInstance().getTextParsingUtils().parse(
+					GTS.getInstance().getMsgConfig().get(MsgConfigKeys.UI_ITEMS_PLAYER_LORE),
+					this.player,
+					null,
+					null
+			);
+		} catch (NucleusException e) {
+			skullLore = Lists.newArrayList(Text.of(TextColors.RED, "Failed to parse configuration..."));
+		}
+
+		ItemStack skull = ItemUtils.createSkull(player.getUniqueId(), skullTitle, skullLore);
 		this.addIcon(new Icon(49, skull));
 
-		ItemStack possession = ItemStack.builder().itemType(ItemTypes.WRITTEN_BOOK).add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Your Listings")).build();
+		Text listingsTitle;
+		try {
+			listingsTitle = GTS.getInstance().getTextParsingUtils().parse(
+					GTS.getInstance().getMsgConfig().get(MsgConfigKeys.UI_ITEMS_PLAYER_LISTINGS_TITLE),
+					this.player,
+					null,
+					null
+			);
+		} catch (NucleusException e) {
+			listingsTitle = Text.of(TextColors.YELLOW, "Player Info");
+		}
+
+		List<Text> listingsLore;
+		try {
+			listingsLore = GTS.getInstance().getTextParsingUtils().parse(
+					GTS.getInstance().getMsgConfig().get(MsgConfigKeys.UI_ITEMS_PLAYER_LISTINGS_LORE),
+					this.player,
+					null,
+					null
+			);
+		} catch (NucleusException e) {
+			listingsLore = Lists.newArrayList(Text.of(TextColors.RED, "Failed to parse configuration..."));
+		}
+
+		ItemStack possession = ItemStack.builder().itemType(ItemTypes.WRITTEN_BOOK).add(Keys.DISPLAY_NAME, listingsTitle).add(Keys.ITEM_LORE, listingsLore).build();
 		this.addIcon(new Icon(51, possession));
 	}
 

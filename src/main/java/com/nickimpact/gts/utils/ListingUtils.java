@@ -6,14 +6,11 @@ import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.entries.EntryHolder;
-import com.nickimpact.gts.api.listings.pricing.Price;
-import com.nickimpact.gts.api.listings.pricing.PriceHolder;
-import com.nickimpact.gts.api.listings.pricing.RewardException;
+import com.nickimpact.gts.api.listings.pricing.*;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.api.events.ListEvent;
 import com.nickimpact.gts.api.listings.Listing;
-import com.nickimpact.gts.api.listings.pricing.PricingException;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.logs.Log;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
@@ -217,6 +214,10 @@ public class ListingUtils {
 		Price price = listing.getEntry().getPrice();
 	    try {
 		    if(price.canPay(player)) {
+		    	if(!listing.getEntry().giveEntry(player)) {
+		    	    return;
+			    }
+
 				price.pay(player);
 				player.sendMessages(
 						GTS.getInstance().getTextParsingUtils().parse(
@@ -261,7 +262,6 @@ public class ListingUtils {
 					});
 				}
 
-				listing.getEntry().giveEntry(player);
 				deleteEntry(listing);
 				GTS.getInstance().getUpdater().sendUpdate();
 		    } else {
@@ -289,6 +289,7 @@ public class ListingUtils {
 	    }
     }
 
+    @SuppressWarnings("unchecked")
     public static void bid(Player player, Listing listing) {
 	    Map<String, Object> variables = Maps.newHashMap();
 	    variables.put("listing_specifics", listing);
@@ -312,7 +313,9 @@ public class ListingUtils {
 				}
 			} else {
 				listing.getAucData().setHighBidder(player.getUniqueId());
-				listing.getAucData().setNumIncrements(listing.getAucData().getNumIncrements());
+
+				// No matter what, the two prices here will always be the same
+				((Auctionable)listing.getAucData().getCurrent()).add(listing.getAucData().getIncrement());
 
 				try {
 					List<Text> broadcast = GTS.getInstance().getTextParsingUtils().parse(

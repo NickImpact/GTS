@@ -1,11 +1,18 @@
 package com.nickimpact.gts.configuration;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.api.configuration.ConfigKey;
 import com.nickimpact.gts.api.configuration.keys.ListKey;
 import com.nickimpact.gts.api.configuration.keys.StringKey;
+import joptsimple.OptionSpec;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * (Some note will go here)
@@ -57,12 +64,14 @@ public class MsgConfigKeys {
 	));
 
 	// Items
-	public static final ConfigKey<String> UI_ITEMS_NEXT_PAGE = StringKey.of("next-page", "&a\u2192 Next Page \u2192");
-	public static final ConfigKey<String> UI_ITEMS_LAST_PAGE = StringKey.of("last-page", "&c\u2190 Last Page \u2190");
-	public static final ConfigKey<String> UI_ITEMS_PLAYER_TITLE = StringKey.of("head.title", "&ePlayer Info");
-	public static final ConfigKey<List<String>> UI_ITEMS_PLAYER_LORE = ListKey.of("head.lore", Lists.newArrayList());
-	public static final ConfigKey<String> UI_ITEMS_SORT_TITLE = StringKey.of("sort.title", "&eSort Listings");
-	public static final ConfigKey<List<String>> UI_ITEMS_SORT_LORE = ListKey.of("sort.lore", Lists.newArrayList());
+	public static final ConfigKey<String> UI_ITEMS_NEXT_PAGE = StringKey.of("item-displays.next-page", "&a\u2192 Next Page \u2192");
+	public static final ConfigKey<String> UI_ITEMS_LAST_PAGE = StringKey.of("item-displays.last-page", "&c\u2190 Last Page \u2190");
+	public static final ConfigKey<String> UI_ITEMS_PLAYER_TITLE = StringKey.of("item-displays.head.title", "&ePlayer Info");
+	public static final ConfigKey<List<String>> UI_ITEMS_PLAYER_LORE = ListKey.of("item-displays.head.lore", Lists.newArrayList());
+	public static final ConfigKey<String> UI_ITEMS_SORT_TITLE = StringKey.of("item-displays.sort.title", "&eSort Listings");
+	public static final ConfigKey<List<String>> UI_ITEMS_SORT_LORE = ListKey.of("item-displays.sort.lore", Lists.newArrayList());
+	public static final ConfigKey<String> UI_ITEMS_PLAYER_LISTINGS_TITLE = StringKey.of("item-displays.player-listings.title", "&eYour Listings");
+	public static final ConfigKey<List<String>> UI_ITEMS_PLAYER_LISTINGS_LORE = ListKey.of("item-displays.player-listings.lore", Lists.newArrayList());
 
 	// Entries
 	public static final ConfigKey<List<String>> ENTRY_INFO = ListKey.of("entries.base-info", Lists.newArrayList(
@@ -70,6 +79,14 @@ public class MsgConfigKeys {
 			"&7Price: &e{{price}}",
 			"&7Time Left: &e{{time_left}}"
 	));
+	public static final ConfigKey<List<String>> AUCTION_INFO = ListKey.of("entries.auction-info", Lists.newArrayList(
+			"",
+			"&7High Bidder: &e{{high_bidder}}",
+			"&7Current Price: &e{{auc_price}}",
+			"&7Increment: &e[{increment}}",
+			"&7Time Left: &e{{time_left}}"
+	));
+
 
 	// Pokemon Entries
 	public static final ConfigKey<String> POKEMON_ENTRY_SPEC_TEMPLATE = StringKey.of("entries.pokemon.spec-template", "{{ability:s}}{{ivs_percent:s}}{{ivs_stat:s}}{{shiny:s}}&a{{pokemon}}");
@@ -102,4 +119,39 @@ public class MsgConfigKeys {
 	// Error messages
 	public static final ConfigKey<String> NOT_ENOUGH_FUNDS = StringKey.of("purchase.not-enough-funds", "&cUnfortunately, you were unable to afford the price of {{price}}");
 	public static final ConfigKey<String> ALREADY_CLAIMED = StringKey.of("purchase.already-claimed", "&cUnfortunately, this listing has already been claimed...");
+	public static final ConfigKey<List<String>> ITEM_ENTRY_BASE_LORE = ListKey.of("entries.item.base.lore", Lists.newArrayList(
+			"&7Seller: &e{{seller}}"
+	));
+	public static final ConfigKey<List<String>> ITEM_ENTRY_CONFIRM_LORE = ListKey.of("entries.item.confirm.lore", Lists.newArrayList(
+			"&7Seller: &e{{seller}}"
+	));
+	public static final ConfigKey<String> ITEM_ENTRY_CONFIRM_TITLE = StringKey.of("entries.item.confirm.title", "&ePurchase {{item_title}}?");
+	public static final ConfigKey<String> ITEM_ENTRY_BASE_TITLE = StringKey.of("entries.item.base.title", "{{item_title}}");
+	public static final ConfigKey<String> ITEM_ENTRY_SPEC_TEMPLATE = StringKey.of("entries.item.spec-template", "{{item_title}}");
+
+	private static Map<String, ConfigKey<?>> KEYS = null;
+
+	public static synchronized Map<String, ConfigKey<?>> getAllKeys() {
+		if(KEYS == null) {
+			Map<String, ConfigKey<?>> keys = new LinkedHashMap<>();
+
+			try {
+				Field[] values = MsgConfigKeys.class.getFields();
+				for(Field f : values) {
+					if(!Modifier.isStatic(f.getModifiers()))
+						continue;
+
+					Object val = f.get(null);
+					if(val instanceof ConfigKey<?>)
+						keys.put(f.getName(), (ConfigKey<?>) val);
+				}
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+
+			KEYS = ImmutableMap.copyOf(keys);
+		}
+
+		return KEYS;
+	}
 }

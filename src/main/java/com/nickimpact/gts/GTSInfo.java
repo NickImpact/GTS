@@ -17,7 +17,7 @@ public class GTSInfo {
     public static final String ID = "gts";
 
     public static final String NAME = "GTS";
-    public static final String VERSION = "3.6.0-S7.1";
+    public static final String VERSION = "3.7.0-S7.1";
     public static final String DESCRIPTION = "A Sponge Representation of the Global Trading Station";
 
     public static final Text PREFIX = Text.of(TextColors.YELLOW, "GTS ", TextColors.GRAY, "\u00bb ", TextColors.DARK_AQUA);

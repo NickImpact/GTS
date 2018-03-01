@@ -13,6 +13,7 @@ import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -63,8 +64,8 @@ public class PokemonEntry extends Entry<Pokemon> {
 	}
 
 	@Override
-	public SpongeSubCommand commandSpec() {
-		return new PokemonSub();
+	public SpongeSubCommand commandSpec(boolean isAuction) {
+		return new PokemonSub(isAuction);
 	}
 
 	@Override
@@ -88,7 +89,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 	}
 
 	@Override
-	public List<String> baseLoreTemplate() {
+	public List<String> baseLoreTemplate(boolean auction) {
 		List<String> template = Lists.newArrayList();
 		template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_LORE));
 
@@ -96,7 +97,11 @@ public class PokemonEntry extends Entry<Pokemon> {
 			template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_MEW_CLONES));
 		}
 
-		template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
+		if(auction) {
+			template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_INFO));
+		} else {
+			template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
+		}
 
 		return template;
 	}
@@ -185,6 +190,12 @@ public class PokemonEntry extends Entry<Pokemon> {
 		private final Text argPos = Text.of("pos");
 		private final Text argPrice = Text.of("price");
 
+		private final boolean isAuction;
+
+		public PokemonSub(boolean isAuction) {
+			this.isAuction = isAuction;
+		}
+
 		@Override
 		public CommandElement[] getArgs() {
 			return new CommandElement[]{
@@ -234,12 +245,17 @@ public class PokemonEntry extends Entry<Pokemon> {
 						if (storage.countTeam() == 1 && !pokemon.isEgg)
 							throw new CommandException(Text.of("You can't sell your last non-egg party member!"));
 
-						Listing.builder()
+						Listing.Builder lb = Listing.builder()
 								.player(player)
 								.entry(new PokemonEntry(pokemon, new MoneyPrice(price)))
 								.doesExpire()
-								.expiration(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME))
-								.build();
+								.expiration(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME));
+
+						if(isAuction) {
+							lb = lb.auction();
+						}
+
+						lb.build();
 
 						return CommandResult.success();
 					}

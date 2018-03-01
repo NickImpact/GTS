@@ -208,8 +208,8 @@ public final class Listing {
 			return this;
 		}
 
-		public Builder auctionData(AuctionData data) {
-			this.data = data;
+		public Builder auction() {
+			this.data = new AuctionData();
 			return this;
 		}
 

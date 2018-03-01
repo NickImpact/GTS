@@ -2,6 +2,7 @@ package com.nickimpact.gts.entries.prices;
 
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.json.Typing;
+import com.nickimpact.gts.api.listings.pricing.Auctionable;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.listings.pricing.PricingException;
 import com.nickimpact.gts.configuration.ConfigKeys;
@@ -21,7 +22,7 @@ import java.util.UUID;
  * @author NickImpact
  */
 @Typing("Money")
-public class MoneyPrice extends Price<BigDecimal> {
+public class MoneyPrice extends Price<BigDecimal> implements Auctionable<MoneyPrice> {
 
 	public MoneyPrice(double price) {
 		this(BigDecimal.valueOf(price));
@@ -93,5 +94,10 @@ public class MoneyPrice extends Price<BigDecimal> {
 	@Override
 	public void openCreateUI(Player player) {
 
+	}
+
+	@Override
+	public void add(MoneyPrice price) {
+		this.price = this.price.add(price.getPrice());
 	}
 }

@@ -17,5 +17,4 @@ public interface ConfigKey<T> {
 	 * @return the value mapped to this key
 	 */
 	T get(ConfigAdapter adapter);
-
 }
