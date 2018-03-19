@@ -12,6 +12,7 @@ import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.api.events.ListEvent;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.utils.MessageUtils;
+import com.nickimpact.gts.entries.prices.MoneyPrice;
 import com.nickimpact.gts.logs.Log;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import lombok.Setter;
@@ -74,6 +75,30 @@ public class ListingUtils {
 		    variables.put("dummy", listing.getEntry().getElement());
 		    variables.put("dummy2", listing);
 		    variables.put("dummy3", listing.getEntry());
+
+		    if(listing.getEntry().getPrice() instanceof Minable) {
+		    	MoneyPrice price = (MoneyPrice) listing.getEntry().getPrice();
+		    	MoneyPrice min = ((Minable)listing.getEntry()).calcMinPrice();
+		    	if(price.getPrice().compareTo(min.getPrice()) < 0) {
+		    		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+		    		tokens.put("min_price", src -> Optional.of(min.getText()));
+				    try {
+					    GTS.getInstance().getTextParsingUtils().parse(
+							    GTS.getInstance().getMsgConfig().get(MsgConfigKeys.MIN_PRICE_ERROR),
+							    player,
+							    tokens,
+							    null
+					    );
+				    } catch (NucleusException e) {
+					    player.sendMessage(Text.of(
+							    GTSInfo.ERROR, TextColors.GRAY, "To sell your ", TextColors.YELLOW, listing.getEntry().getName(),
+							    TextColors.GRAY, "you must list it for ", TextColors.GREEN, min.getText()
+					    ));
+				    }
+
+		    		return;
+			    }
+		    }
 
 		    Optional<BigDecimal> tax = Optional.empty();
 		    if(GTS.getInstance().getConfig().get(ConfigKeys.TAX_ENABLED)) {
@@ -289,7 +314,6 @@ public class ListingUtils {
 	    }
     }
 
-    @SuppressWarnings("unchecked")
     public static void bid(Player player, Listing listing) {
 	    Map<String, Object> variables = Maps.newHashMap();
 	    variables.put("listing_specifics", listing);
@@ -298,7 +322,7 @@ public class ListingUtils {
 	    variables.put("id", listing);
 
 		if(listing.getAucData() != null) {
-			if(listing.getAucData().getHighBidder().equals(player.getUniqueId())) {
+			if(listing.getAucData().getHighBidder() != null && listing.getAucData().getHighBidder().equals(player.getUniqueId())) {
 				try {
 					player.sendMessages(
 							GTS.getInstance().getTextParsingUtils().parse(
@@ -312,10 +336,23 @@ public class ListingUtils {
 					e.printStackTrace();
 				}
 			} else {
-				listing.getAucData().setHighBidder(player.getUniqueId());
+				try {
+					if(!listing.getEntry().getPrice().canPay(player)) {
+						player.sendMessage(Text.of(GTSInfo.ERROR, "Your balance is too low to bid..."));
+						return;
+					}
+				} catch (Exception e) {
+					return;
+				}
 
-				// No matter what, the two prices here will always be the same
-				((Auctionable)listing.getAucData().getCurrent()).add(listing.getAucData().getIncrement());
+				listing.getAucData().setHighBidder(player.getUniqueId());
+				listing.getAucData().setHbName(Text.of(player.getName()));
+				try {
+					((MoneyPrice)listing.getEntry().getPrice()).add(listing.getAucData().getIncrement());
+				} catch (PricingException e) {
+					e.printStackTrace();
+				}
+				GTS.getInstance().getStorage().updateListing(listing);
 
 				try {
 					List<Text> broadcast = GTS.getInstance().getTextParsingUtils().parse(

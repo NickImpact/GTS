@@ -10,5 +10,9 @@ package com.nickimpact.gts.api.listings.pricing;
  */
 public interface Auctionable<T extends Price> {
 
-	void add(T price);
+	T getBase() throws Exception;
+
+	void add(T price) throws Exception;
+
+	T calculate(T price) throws Exception;
 }

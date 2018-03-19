@@ -12,6 +12,7 @@ import com.nickimpact.gts.api.text.Tokens;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.entries.items.ItemEntry;
 import com.nickimpact.gts.entries.pixelmon.PokemonEntry;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import lombok.Getter;
 import lombok.Setter;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -20,6 +21,7 @@ import org.spongepowered.api.text.Text;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * (Some note will go here)
@@ -96,5 +98,14 @@ public class GtsAPI {
 
 	public <E> void addDisplayOption(Map<Class<? extends E>, ItemStack> mapping, Class<? extends E> clazz, ItemStack item) {
 		mapping.putIfAbsent(clazz, item);
+	}
+
+	public void addMinPriceFunction(Function<EntityPixelmon, Double> function) {
+		this.addMinPriceFunctions(function);
+	}
+
+	@SafeVarargs
+	public final void addMinPriceFunctions(Function<EntityPixelmon, Double>... functions) {
+		PokemonEntry.addMinPriceOption(functions);
 	}
 }

@@ -1,7 +1,11 @@
 package com.nickimpact.gts.api.listings.data;
 
+import com.google.common.collect.Lists;
+import com.nickimpact.gts.api.listings.pricing.Auctionable;
 import com.nickimpact.gts.api.listings.pricing.Price;
+import com.nickimpact.gts.entries.prices.MoneyPrice;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
@@ -18,13 +22,17 @@ import java.util.UUID;
 @Setter
 public class AuctionData {
 
-	private Price current;
-
-	private Price increment;
+	private final MoneyPrice increment;
 
 	private UUID highBidder;
 
 	private Text hbName;
 
-	private List<Player> listeners;
+	private List<Player> listeners = Lists.newArrayList();
+
+	private boolean ownerReceived;
+
+	public AuctionData(MoneyPrice increment) {
+		this.increment = increment;
+	}
 }

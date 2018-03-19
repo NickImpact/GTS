@@ -35,6 +35,7 @@ public class SqlDao extends AbstractDao {
 	private static final String TRUNCATE_LISTINGS = "TRUNCATE TABLE `{prefix}listings_v2`";
 	private static final String TRUNCATE_LOGS = "TRUNCATE TABLE `{prefix}logs_v2`";
 	private static final String ADD_LISTING = "INSERT INTO `{prefix}listings_v2` VALUES ('%s', '%s', '%s')";
+	private static final String UPDATE_LISTING = "UPDATE `{prefix}listings_v2` SET LISTING='%s' WHERE UUID='%s'";
 	private static final String ADD_LOG = "INSERT INTO `{prefix}logs_v2` VALUES ('%s', '%s', '%s')";
 	private static final String REMOVE_LISTING = "DELETE FROM `{prefix}listings_v2` WHERE UUID='%s'";
 	private static final String REMOVE_LOG = "DELETE FROM `{prefix}logs_v2` WHERE UUID='%s'";
@@ -226,6 +227,23 @@ public class SqlDao extends AbstractDao {
 		try (Connection connection = provider.getConnection()) {
 			String stmt = prefix.apply(ADD_LISTING);
 			stmt = String.format(stmt, listing.getUuid(), listing.getOwnerUUID(), GTS.prettyGson.toJson(listing));
+			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
+				ps.executeUpdate();
+				ps.close();
+			}
+		} catch (Exception e) {
+			GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(
+					Text.of(GTSInfo.ERROR, "Something happened during the writing process")
+			));
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void updateListing(Listing listing) throws Exception {
+		try (Connection connection = provider.getConnection()) {
+			String stmt = prefix.apply(UPDATE_LISTING);
+			stmt = String.format(stmt, GTS.prettyGson.toJson(listing), listing.getUuid());
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
 				ps.close();

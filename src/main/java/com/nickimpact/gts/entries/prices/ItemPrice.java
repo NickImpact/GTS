@@ -8,6 +8,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.inventory.Carrier;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -44,13 +45,13 @@ public class ItemPrice extends Price<DataContainer> {
 	}
 
 	@Override
-	public boolean canPay(Player player) {
-		return player.getInventory().query(this.decode()).capacity() > 0;
+	public boolean canPay(User user) {
+		return user.getInventory().query(this.decode()).capacity() > 0;
 	}
 
 	@Override
-	public void pay(Player payer) {
-		payer.getInventory().query(this.decode()).poll(this.decode().getQuantity());
+	public void pay(User user) {
+		user.getInventory().query(this.decode()).poll(this.decode().getQuantity());
 	}
 
 	@Override

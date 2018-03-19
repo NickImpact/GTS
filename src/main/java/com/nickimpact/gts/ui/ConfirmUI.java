@@ -116,10 +116,11 @@ public class ConfirmUI extends InventoryBase {
 		} else {
 			Icon icon = SharedItems.confirmIcon(12);
 			icon.addListener(clickable -> {
-				if (this.target.getAucData() != null)
+				if (this.target.getAucData() != null) {
 					ListingUtils.bid(clickable.getPlayer(), this.target);
-				else
+				} else {
 					ListingUtils.purchase(clickable.getPlayer(), this.target);
+				}
 
 				clickable.getPlayer().closeInventory();
 			});

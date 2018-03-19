@@ -40,6 +40,7 @@ import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.common.item.inventory.adapter.impl.comp.HotbarAdapter;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -80,7 +81,7 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	public String getSpecsTemplate() {
-		return "{{item_title}}";
+		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_SPEC_TEMPLATE);
 	}
 
 	@Override
@@ -191,6 +192,7 @@ public class ItemEntry extends Entry<DataContainer> {
 		private final Text argPrice = Text.of("price");
 
 		private final boolean isAuction;
+		private final Text argIncrement = Text.of("increment");
 
 		public ItemSub(boolean isAuction) {
 			this.isAuction = isAuction;
@@ -200,7 +202,8 @@ public class ItemEntry extends Entry<DataContainer> {
 		public CommandElement[] getArgs() {
 			return new CommandElement[]{
 					GenericArguments.integer(argAmount),
-					GenericArguments.integer(argPrice)
+					GenericArguments.integer(argPrice),
+					GenericArguments.optional(GenericArguments.doubleNum(argIncrement))
 			};
 		}
 
@@ -244,10 +247,21 @@ public class ItemEntry extends Entry<DataContainer> {
 							.player(player)
 							.entry(new ItemEntry(entry, new MoneyPrice(args.<Integer>getOne(argPrice).get())))
 							.doesExpire()
-							.expiration(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME));
+							.expiration(
+									!isAuction ? GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME) :
+											GTS.getInstance().getConfig().get(ConfigKeys.AUC_TIME)
+							);
 
 					if(isAuction) {
-						lb = lb.auction();
+						Optional<Double> optInc = args.getOne(argIncrement);
+						if(!optInc.isPresent()) {
+							throw new CommandException(Text.of("You must supply an increment..."));
+						}
+						MoneyPrice increment = new MoneyPrice(optInc.get());
+						if(increment.getPrice().compareTo(new BigDecimal(0)) < 0) {
+							throw new CommandException(Text.of("Increment must be a positive value..."));
+						}
+						lb = lb.auction(increment);
 					}
 
 					lb.build();

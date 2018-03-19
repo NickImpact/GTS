@@ -8,6 +8,7 @@ import com.nickimpact.gts.api.listings.pricing.PricingException;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
@@ -32,27 +33,40 @@ public class MoneyPrice extends Price<BigDecimal> implements Auctionable<MoneyPr
 		super(price);
 	}
 
+	private void isAvailable() throws PricingException {
+		if(GTS.getInstance().getEconomy() == null) {
+			throw new PricingException("Economy Service could not be found...");
+		}
+	}
+
 	@Override
 	public Text getText() {
+		try {
+			this.isAvailable();
+		} catch (PricingException e) {
+			return Text.of("???");
+		}
 		return GTS.getInstance().getEconomy().getDefaultCurrency().format(price);
 	}
 
 	@Override
-	public boolean canPay(Player player) throws PricingException {
-		UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId()).orElse(null);
+	public boolean canPay(User user) throws PricingException {
+		this.isAvailable();
+		UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(user.getUniqueId()).orElse(null);
 
 		if(acc == null)
-			throw new PricingException(player.getName() + " was unable to afford the price of the lot");
+			throw new PricingException(user.getName() + " was unable to afford the price of the lot");
 
 		return acc.getBalance(GTS.getInstance().getEconomy().getDefaultCurrency()).compareTo(price) >= 0;
 	}
 
 	@Override
-	public void pay(Player payer) throws PricingException {
-		UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(payer.getUniqueId()).orElse(null);
+	public void pay(User user) throws PricingException {
+		this.isAvailable();
+		UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(user.getUniqueId()).orElse(null);
 
 		if(acc == null)
-			throw new PricingException(payer.getName() + "'s economic account was unable to be found...");
+			throw new PricingException(user.getName() + "'s economic account was unable to be found...");
 
 		acc.withdraw(
 				GTS.getInstance().getEconomy().getDefaultCurrency(),
@@ -63,6 +77,8 @@ public class MoneyPrice extends Price<BigDecimal> implements Auctionable<MoneyPr
 
 	@Override
 	public BigDecimal calcTax(Player player) throws PricingException {
+		this.isAvailable();
+
 		// Return a tax rate of 8% based on the price
 		BigDecimal tax = new BigDecimal(price.doubleValue() * GTS.getInstance().getConfig().get(ConfigKeys.TAX_MONEY_TAX));
 		UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId()).orElse(null);
@@ -78,7 +94,8 @@ public class MoneyPrice extends Price<BigDecimal> implements Auctionable<MoneyPr
 	}
 
 	@Override
-	public void reward(UUID uuid) throws PricingException{
+	public void reward(UUID uuid) throws PricingException {
+		this.isAvailable();
 		UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(uuid).orElse(null);
 
 		if(acc == null)
@@ -92,12 +109,23 @@ public class MoneyPrice extends Price<BigDecimal> implements Auctionable<MoneyPr
 	}
 
 	@Override
-	public void openCreateUI(Player player) {
+	public void openCreateUI(Player player) {}
 
+	@Override
+	public MoneyPrice getBase() throws PricingException {
+		this.isAvailable();
+		return new MoneyPrice(new BigDecimal(0));
 	}
 
 	@Override
-	public void add(MoneyPrice price) {
+	public void add(MoneyPrice price) throws PricingException {
+		this.isAvailable();
 		this.price = this.price.add(price.getPrice());
+	}
+
+	@Override
+	public MoneyPrice calculate(MoneyPrice price) throws PricingException {
+		this.isAvailable();
+		return new MoneyPrice(this.price.add(price.getPrice()));
 	}
 }

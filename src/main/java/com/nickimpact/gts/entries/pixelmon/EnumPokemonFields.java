@@ -2,6 +2,7 @@ package com.nickimpact.gts.entries.pixelmon;
 
 import com.pixelmonmod.pixelmon.battles.attacks.specialAttacks.basic.HiddenPower;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVsStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
@@ -32,7 +33,13 @@ public enum EnumPokemonFields {
 	}),
 
 	GROWTH(pokemon -> pokemon.getGrowth().name()),
-	LEVEL(pokemon -> pokemon.getLvl().getLevel()),
+	LEVEL(pokemon -> {
+		if(pokemon.isEgg) {
+			return 1;
+		}
+
+		return pokemon.getLvl().getLevel();
+	}),
 	FORM(EntityPixelmon::getForm),
 	CLONES(pokemon -> {
 		switch(pokemon.getSpecies()) {
@@ -59,8 +66,13 @@ public enum EnumPokemonFields {
 	IV_SPATK(pokemon -> pokemon.stats.IVs.SpAtt),
 	IV_SPDEF(pokemon -> pokemon.stats.IVs.SpDef),
 	IV_SPEED(pokemon -> pokemon.stats.IVs.Speed),
-	HALLOWEEN(pokemon -> pokemon.getSpecialTexture() == 2 ? "Halloween" : ""),
-	ROASTED(pokemon -> pokemon.getSpecialTexture() == 1 ? "Roasted" : ""),
+	SPECIAL_TEXTURE(pokemon -> {
+		try {
+			return EnumSpecialTexture.fromIndex(pokemon.getSpecialTextureIndex()).name();
+		} catch (Exception e) {
+			return "";
+		}
+	}),
 	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.stats.IVs)),
 	MOVES_1(pokemon -> pokemon.getMoveset().attacks[0].baseAttack.getLocalizedName()),
 	MOVES_2(pokemon -> pokemon.getMoveset().attacks[1].baseAttack.getLocalizedName()),

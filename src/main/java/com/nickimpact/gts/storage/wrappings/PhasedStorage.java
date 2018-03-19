@@ -65,6 +65,16 @@ public class PhasedStorage implements Storage {
 	}
 
 	@Override
+	public CompletableFuture<Void> updateListing(Listing listing) {
+		phaser.register();
+		try {
+			return delegate.updateListing(listing);
+		} finally {
+			phaser.arriveAndDeregister();
+		}
+	}
+
+	@Override
 	public CompletableFuture<Void> removeListing(UUID uuid) {
 		phaser.register();
 		try {

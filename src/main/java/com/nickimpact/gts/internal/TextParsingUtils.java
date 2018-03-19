@@ -84,7 +84,7 @@ public class TextParsingUtils {
 	public Text getPokemonInfo(EntityPixelmon pokemon, EnumPokemonFields field) {
 		if(pokemon != null) {
 			if(pokemon.isEgg) {
-				if(field.equals(EnumPokemonFields.NAME)) {
+				if(field.equals(EnumPokemonFields.NAME) || field.equals(EnumPokemonFields.LEVEL)) {
 					return Text.of(field.function.apply(pokemon));
 				}
 

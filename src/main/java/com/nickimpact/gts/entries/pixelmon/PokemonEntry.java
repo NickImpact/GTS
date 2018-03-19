@@ -5,9 +5,12 @@ import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
+import com.nickimpact.gts.api.configuration.ConfigKey;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.Listing;
+import com.nickimpact.gts.api.listings.data.AuctionData;
 import com.nickimpact.gts.api.listings.entries.Entry;
+import com.nickimpact.gts.api.listings.pricing.Minable;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.configuration.ConfigKeys;
@@ -40,8 +43,12 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * (Some note will go here)
@@ -49,7 +56,9 @@ import java.util.Optional;
  * @author NickImpact
  */
 @Typing("Pokemon")
-public class PokemonEntry extends Entry<Pokemon> {
+public class PokemonEntry extends Entry<Pokemon> implements Minable {
+
+	private static Collection<Function<EntityPixelmon, Double>> extraMinPriceOptions;
 
 	public PokemonEntry() {
 		super();
@@ -184,6 +193,41 @@ public class PokemonEntry extends Entry<Pokemon> {
 		return ItemStackUtil.fromNative(item);
 	}
 
+	@Override
+	public MoneyPrice calcMinPrice() {
+		double price = GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_BASE);
+		EntityPixelmon pokemon = this.getElement().getPokemon();
+		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getName());
+		if(isLegend && pokemon.getIsShiny()) {
+			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY);
+		} else if(isLegend) {
+			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND);
+		} else if(pokemon.getIsShiny()) {
+			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY);
+		}
+
+		for(int iv : pokemon.stats.IVs.getArray()) {
+			if(iv >= GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_IVS_MINVAL)) {
+				price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_IVS_PRICE);
+			}
+		}
+
+		if(pokemon.getAbilitySlot() == 2) {
+			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_HA);
+		}
+
+		for(Function<EntityPixelmon, Double> function : extraMinPriceOptions) {
+			price += function.apply(pokemon);
+		}
+
+		return new MoneyPrice(price);
+	}
+
+	@SafeVarargs
+	public static void addMinPriceOption(Function<EntityPixelmon, Double>... functions) {
+		extraMinPriceOptions.addAll(Arrays.asList(functions));
+	}
+
 	@CommandAliases({"pokemon", "poke"})
 	public class PokemonSub extends SpongeSubCommand {
 
@@ -191,6 +235,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 		private final Text argPrice = Text.of("price");
 
 		private final boolean isAuction;
+		private final Text argIncrement = Text.of("increment");
 
 		public PokemonSub(boolean isAuction) {
 			this.isAuction = isAuction;
@@ -200,7 +245,8 @@ public class PokemonEntry extends Entry<Pokemon> {
 		public CommandElement[] getArgs() {
 			return new CommandElement[]{
 					GenericArguments.integer(argPos),
-					GenericArguments.integer(argPrice)
+					GenericArguments.integer(argPrice),
+					GenericArguments.optional(GenericArguments.doubleNum(argIncrement))
 			};
 		}
 
@@ -230,7 +276,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 				int pos = args.<Integer>getOne(argPos).get() - 1;
 				int price = args.<Integer>getOne(argPrice).get();
 				if(price <= 0) {
-					throw new CommandException(Text.of("Price must be a positive integer!"));
+					throw new CommandException(Text.of("Price must be a positive integer..."));
 				}
 
 				Optional<PlayerStorage> optStorage = PixelmonStorage.pokeBallManager.getPlayerStorage((EntityPlayerMP)player);
@@ -243,16 +289,27 @@ public class PokemonEntry extends Entry<Pokemon> {
 								(World) player.getWorld()
 						);
 						if (storage.countTeam() == 1 && !pokemon.isEgg)
-							throw new CommandException(Text.of("You can't sell your last non-egg party member!"));
+							throw new CommandException(Text.of("You can't sell your last non-egg party member..."));
 
 						Listing.Builder lb = Listing.builder()
 								.player(player)
 								.entry(new PokemonEntry(pokemon, new MoneyPrice(price)))
 								.doesExpire()
-								.expiration(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME));
+								.expiration(
+										!isAuction ? GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME) :
+												GTS.getInstance().getConfig().get(ConfigKeys.AUC_TIME)
+								);
 
 						if(isAuction) {
-							lb = lb.auction();
+							Optional<Double> optInc = args.getOne(argIncrement);
+							if(!optInc.isPresent()) {
+								throw new CommandException(Text.of("You must supply an increment..."));
+							}
+							MoneyPrice increment = new MoneyPrice(optInc.get());
+							if(increment.getPrice().compareTo(new BigDecimal(0)) < 0) {
+								throw new CommandException(Text.of("Increment must be a positive value..."));
+							}
+							lb = lb.auction(increment);
 						}
 
 						lb.build();
@@ -264,7 +321,7 @@ public class PokemonEntry extends Entry<Pokemon> {
 				}
 
 				MessageUtils.genAndSendErrorMessage(
-						"Pixelmon storage Access Error",
+						"Pixelmon Storage Access Error",
 						"Unable to locate storage for " + player.getName(),
 						"Their UUID: " + player.getUniqueId()
 				);

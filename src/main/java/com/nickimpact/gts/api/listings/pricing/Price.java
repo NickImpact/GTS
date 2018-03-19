@@ -3,6 +3,7 @@ package com.nickimpact.gts.api.listings.pricing;
 import com.nickimpact.gts.api.json.Typing;
 import lombok.Getter;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
@@ -29,12 +30,38 @@ public abstract class Price<T> {
 		this.price = price;
 	}
 
+	/**
+	 * Retrieve the {@link Text} representation of a price. Essentially, this just references
+	 * how to format the price when requested for chat representation.
+	 *
+	 * @return The Textual format of a price
+	 */
 	public abstract Text getText();
 
-	public abstract boolean canPay(Player player) throws Exception;
+	/**
+	 * States whether or not a user can afford this price
+	 *
+	 * @param user The user to check
+	 * @return True in the event they can afford it, false otherwise
+	 * @throws Exception In the event anything prevents proper checks of the price against the user
+	 */
+	public abstract boolean canPay(User user) throws Exception;
 
-	public abstract void pay(Player payer) throws Exception;
+	/**
+	 * Withdraws the current status of the price from the specified user.
+	 *
+	 * @param user The user to withdraw from
+	 * @throws Exception In the event anything prevents the user from paying the price
+	 */
+	public abstract void pay(User user) throws Exception;
 
+	/**
+	 *
+	 *
+	 * @param player
+	 * @return
+	 * @throws Exception
+	 */
 	public abstract BigDecimal calcTax(Player player) throws Exception;
 
 	/**

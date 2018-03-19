@@ -38,6 +38,19 @@ public class ListingTasks {
 	            AuctionData ad = listing.getAucData();
 	        	if(ad != null && ad.getHighBidder() != null) {
 	        		successful = award(PlayerUtils.getUserFromUUID(ad.getHighBidder()).orElse(null), listing);
+	        		// Even if we can't give the winning player their award, due to them being offline, at least
+			        // give the auctioneer their winnings
+	        		if(!ad.isOwnerReceived()) {
+				        try {
+					        listing.getEntry().getPrice().reward(listing.getOwnerUUID());
+					        ad.setOwnerReceived(true);
+					        if(!successful) {
+					        	GTS.getInstance().getStorage().updateListing(listing);
+					        }
+				        } catch (Exception e) {
+					        e.printStackTrace();
+				        }
+			        }
 	            } else {
 		            successful = expire(listing);
 	            }
@@ -95,6 +108,12 @@ public class ListingTasks {
 
     	if(!listing.getEntry().giveEntry(user.getPlayer().get()))
     	    return false;
+
+	    try {
+		    listing.getEntry().getPrice().pay(user);
+	    } catch (Exception e) {
+		    e.printStackTrace();
+	    }
 
 	    try {
 	    	List<Text> broadcast = GTS.getInstance().getTextParsingUtils().parse(

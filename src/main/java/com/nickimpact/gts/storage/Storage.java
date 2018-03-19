@@ -35,6 +35,8 @@ public interface Storage {
 	 */
 	CompletableFuture<Void> addListing(Listing listing);
 
+	CompletableFuture<Void> updateListing(Listing listing);
+
 	/**
 	 * Remove a listing from the storage provider based on the ID of a listing
 	 *

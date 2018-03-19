@@ -101,6 +101,11 @@ public class AbstractStorage implements Storage {
 	}
 
 	@Override
+	public CompletableFuture<Void> updateListing(Listing listing) {
+		return makeFuture(() -> dao.updateListing(listing));
+	}
+
+	@Override
 	public CompletableFuture<Void> removeListing(UUID uuid) {
 		return makeFuture(() -> dao.removeListing(uuid));
 	}

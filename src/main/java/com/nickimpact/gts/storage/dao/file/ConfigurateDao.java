@@ -141,6 +141,9 @@ public abstract class ConfigurateDao extends AbstractDao {
 	public void addListing(Listing listing) {}
 
 	@Override
+	public void updateListing(Listing listing) {}
+
+	@Override
 	public void removeListing(UUID uuid) {}
 
 	@Override

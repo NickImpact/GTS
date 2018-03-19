@@ -5,12 +5,14 @@ import com.google.common.collect.Sets;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.listings.data.AuctionData;
+import com.nickimpact.gts.api.listings.pricing.Auctionable;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.api.exceptions.TokenAlreadyRegisteredException;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.time.Time;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
+import com.nickimpact.gts.entries.prices.MoneyPrice;
 import com.nickimpact.gts.internal.ItemTokens;
 import com.nickimpact.gts.internal.PokemonTokens;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
@@ -23,6 +25,7 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import javax.annotation.Nonnull;
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -42,6 +45,9 @@ public final class Tokens implements NucleusMessageTokenService.TokenParser {
 	public Tokens() {
 		translatorMap.put("gts_prefix", (p, v, m) -> Optional.of(TextSerializers.FORMATTING_CODE.deserialize(
 				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.PREFIX)
+		)));
+		translatorMap.put("gts_error", (p, v, m) -> Optional.of(TextSerializers.FORMATTING_CODE.deserialize(
+				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ERROR_PREFIX)
 		)));
 		translatorMap.put("balance", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getBalance(
 				getSourceFromVariableIfExists(p, v, m))
@@ -68,13 +74,8 @@ public final class Tokens implements NucleusMessageTokenService.TokenParser {
 			if(listing == null)
 				return Optional.empty();
 
-			AuctionData data = listing.getAucData();
 			Price price = listing.getEntry().getPrice();
-			if(data != null) {
-				return Optional.of(Text.of(price.getText(), TextColors.GREEN, " + ", TextColors.YELLOW, data.getIncrement().getText()));
-			}
-
-			return Optional.empty();
+			return Optional.of(Text.of(price.getText()));
 		});
 		translatorMap.put("increment", (p, v, m) -> {
 			Listing listing = getListingFromVaribleIfExists(m);
@@ -96,6 +97,9 @@ public final class Tokens implements NucleusMessageTokenService.TokenParser {
 
 			AuctionData data = listing.getAucData();
 			if(data != null) {
+				if(data.getHbName() == null) {
+					return Optional.of(Text.of("No bidder..."));
+				}
 				return Optional.of(data.getHbName());
 			}
 

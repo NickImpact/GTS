@@ -4,6 +4,7 @@ import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.trades.PokeRequest;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
@@ -27,12 +28,12 @@ public class PokePrice extends Price<PokeRequest> {
 	}
 
 	@Override
-	public boolean canPay(Player player) throws Exception {
+	public boolean canPay(User user) throws Exception {
 		return false;
 	}
 
 	@Override
-	public void pay(Player payer) {
+	public void pay(User user) {
 
 	}
 

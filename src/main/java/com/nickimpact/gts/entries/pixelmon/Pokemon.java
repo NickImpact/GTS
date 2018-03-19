@@ -30,7 +30,7 @@ public class Pokemon {
 	public EntityPixelmon getPokemon() {
 		if(this.pokemon == null) {
 			this.pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(
-					decode(), (World) Sponge.getServer().getWorld(Sponge.getServer().getDefaultWorldName()).get()
+					decode(), (World) Sponge.getServer().getWorld(Sponge.getServer().getDefaultWorldName()).orElse(null)
 			);
 		}
 

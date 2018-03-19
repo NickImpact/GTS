@@ -4,7 +4,10 @@ import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.exceptions.ListingException;
 import com.nickimpact.gts.api.listings.data.AuctionData;
 import com.nickimpact.gts.api.listings.entries.Entry;
+import com.nickimpact.gts.api.listings.pricing.Auctionable;
+import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.configuration.ConfigKeys;
+import com.nickimpact.gts.entries.prices.MoneyPrice;
 import com.nickimpact.gts.utils.ListingUtils;
 import lombok.Getter;
 import org.spongepowered.api.entity.living.player.Player;
@@ -208,8 +211,8 @@ public final class Listing {
 			return this;
 		}
 
-		public Builder auction() {
-			this.data = new AuctionData();
+		public <T extends MoneyPrice> Builder auction(T price) {
+			this.data = new AuctionData(price);
 			return this;
 		}
 

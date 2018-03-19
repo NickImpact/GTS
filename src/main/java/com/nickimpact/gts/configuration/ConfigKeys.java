@@ -71,6 +71,12 @@ public class ConfigKeys {
 
 	/** The table prefix for the main SQL tables */
 	public static final ConfigKey<String> SQL_TABLE_PREFIX = EnduringKey.wrap(StringKey.of("storage.data.table_prefix", "gts_"));
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_BASE = DoubleKey.of("min-pricing.pokemon.base", 5000.0);
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_IVS_PRICE = DoubleKey.of("min-pricing.pokemon.ivs.price", 5000.0);
+	public static final ConfigKey<Integer> MIN_PRICING_POKEMON_IVS_MINVAL = IntegerKey.of("min-pricing.pokemon.ivs.min-iv", 28);
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_LEGEND = DoubleKey.of("min-pricing.pokemon.base", 5000.0);
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_SHINY = DoubleKey.of("min-pricing.pokemon.base", 2500.0);
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_HA = DoubleKey.of("min-pricing.pokemon.base", 5000.0);
 
 	private static Map<String, ConfigKey<?>> KEYS = null;
 

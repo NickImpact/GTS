@@ -37,7 +37,7 @@ public class GTSInfo {
 
     public enum Dependencies {
         Nucleus("nucleus", "Nucleus-1.2.0-S7.0+"),
-        Pixelmon("pixelmon", "6.x.x+");
+        Pixelmon("pixelmon", "6.2.2+");
 
         private String dependency;
         private String version;

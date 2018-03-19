@@ -97,11 +97,8 @@ public class PokemonTokens {
 		tokens.put("shiny", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
 				getPokemonFromVariableIfExists(m), EnumPokemonFields.SHINY
 		)));
-		tokens.put("halloween", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
-				getPokemonFromVariableIfExists(m), EnumPokemonFields.HALLOWEEN
-		)));
-		tokens.put("roasted", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
-				getPokemonFromVariableIfExists(m), EnumPokemonFields.ROASTED
+		tokens.put("special_texture", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
+				getPokemonFromVariableIfExists(m), EnumPokemonFields.SPECIAL_TEXTURE
 		)));
 		tokens.put("clones", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
 				getPokemonFromVariableIfExists(m), EnumPokemonFields.CLONES

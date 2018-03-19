@@ -32,6 +32,8 @@ public abstract class AbstractDao {
 
 	public abstract void addListing(Listing listing) throws Exception;
 
+	public abstract void updateListing(Listing listing) throws Exception;
+
 	public abstract void removeListing(UUID uuid) throws Exception;
 
 	public abstract List<Listing> getListings() throws Exception;
