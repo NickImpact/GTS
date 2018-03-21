@@ -3,7 +3,6 @@ package com.nickimpact.gts.utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.data.AuctionData;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
@@ -47,6 +46,22 @@ public class ListingTasks {
 					        if(!successful) {
 					        	GTS.getInstance().getStorage().updateListing(listing);
 					        }
+					        Sponge.getServer().getPlayer(listing.getOwnerUUID()).ifPresent(player -> {
+						        try {
+							        Map<String, Object> variables = Maps.newHashMap();
+							        variables.put("dummy", listing.getEntry().getElement());
+							        variables.put("dummy2", listing);
+							        variables.put("dummy3", listing.getEntry());
+							        player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+									        GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_SOLD),
+									        player,
+									        null,
+									        variables
+							        ));
+						        } catch (NucleusException e) {
+							        e.printStackTrace();
+						        }
+					        });
 				        } catch (Exception e) {
 					        e.printStackTrace();
 				        }
@@ -115,9 +130,26 @@ public class ListingTasks {
 		    e.printStackTrace();
 	    }
 
+	    Map<String, Object> variables = Maps.newHashMap();
+	    variables.put("dummy", listing.getEntry().getElement());
+	    variables.put("dummy2", listing);
+	    variables.put("dummy3", listing.getEntry());
+	    try {
+		    user.getPlayer().get().sendMessages(
+				    GTS.getInstance().getTextParsingUtils().parse(
+						    GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_WIN),
+						    user.getPlayer().get(),
+						    null,
+						    variables
+				    )
+		    );
+	    } catch (NucleusException e) {
+		    e.printStackTrace();
+	    }
+
 	    try {
 	    	List<Text> broadcast = GTS.getInstance().getTextParsingUtils().parse(
-				    GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_WIN),
+				    GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_WIN_BROADCAST),
 				    user.getPlayer().get(),
 				    null,
 				    null

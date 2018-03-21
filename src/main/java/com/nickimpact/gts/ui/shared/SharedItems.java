@@ -78,11 +78,11 @@ public class SharedItems {
         return ItemStackUtil.fromNative(nativeItem);
     }
 
-    public static Icon confirmIcon(int slot){
+    public static Icon confirmIcon(int slot, boolean auction){
         return new Icon(slot, ItemStack.builder()
                 .itemType(ItemTypes.DYE)
                 .quantity(1)
-                .add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, "Confirm Action"))
+                .add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, (auction ? "Confirm Bid" : "Confirm Purchase")))
                 .add(Keys.DYE_COLOR, DyeColors.LIME)
                 .build()
         );

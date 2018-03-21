@@ -3,14 +3,11 @@ package com.nickimpact.gts.entries.items;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
-import com.nickimpact.gts.api.configuration.ConfigKey;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.Listing;
-import com.nickimpact.gts.api.listings.data.AuctionData;
 import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.configuration.ConfigKeys;
@@ -22,23 +19,15 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
-import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
-import org.spongepowered.api.item.inventory.entity.PlayerInventory;
-import org.spongepowered.api.item.inventory.property.SlotIndex;
-import org.spongepowered.api.item.inventory.property.SlotPos;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
-import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.common.item.inventory.adapter.impl.comp.HotbarAdapter;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -130,14 +119,19 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@Override
-	public String confirmTitleTemplate() {
-		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_TITLE);
+	protected String confirmTitleTemplate(boolean auction) {
+		return !auction ? GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_TITLE) :
+				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_TITLE_AUCTION);
 	}
 
 	@Override
-	protected List<String> confirmLoreTemplate() {
+	protected List<String> confirmLoreTemplate(boolean auction) {
 		List<String> lore = Lists.newArrayList();
-		lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_LORE));
+		if(!auction) {
+			lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_LORE));
+		} else {
+			lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_LORE_AUCTION));
+		}
 
 		this.decode().get(Keys.ITEM_LORE).ifPresent(l -> {
 			if(l.size() > 0) {
@@ -158,7 +152,7 @@ public class ItemEntry extends Entry<DataContainer> {
 	public boolean giveEntry(User user) {
 		// User will always be a player here due to the offline support check
 		Player player = (Player)user;
-		if(player.getInventory().query(Hotbar.class, GridInventory.class).size() == 36) {
+		if(player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).size() == 36) {
 			player.sendMessage(Text.of("Your inventory is full, so we can't award you this listing..."));
 			return false;
 		}

@@ -86,10 +86,8 @@ public class GTSConfigAdapter implements ConfigAdapter {
 		return node;
 	}
 
-	private <T> T getValue(String path, T def) {
-		if(this.contains(path)) {
-			return (T) resolvePath(path).getValue();
-		} else {
+	private <T> void checkMissing (String path, T def) {
+		if(!this.contains(path)) {
 			GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(Text.of(GTSInfo.WARNING, String.format("Found missing config option (%s)... Adding it!", path))));
 			resolvePath(path).setValue(def);
 			try {
@@ -97,7 +95,6 @@ public class GTSConfigAdapter implements ConfigAdapter {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return def;
 		}
 	}
 
@@ -108,22 +105,25 @@ public class GTSConfigAdapter implements ConfigAdapter {
 
 	@Override
 	public String getString(String path, String def) {
-		return getValue(path, def);
+		this.checkMissing(path, def);
+		return resolvePath(path).getString(def);
 	}
 
 	@Override
 	public int getInt(String path, int def) {
-		return getValue(path, def);
+		this.checkMissing(path, def);
+		return resolvePath(path).getInt(def);
 	}
 
 	@Override
 	public double getDouble(String path, double def) {
-		return getValue(path, def);
+		this.checkMissing(path, def);
+		return resolvePath(path).getDouble(def);
 	}
 
 	@Override
 	public boolean getBoolean(String path, boolean def) {
-		return getValue(path, def);
+		return resolvePath(path).getBoolean(def);
 	}
 
 	@Override

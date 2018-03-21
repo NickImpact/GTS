@@ -48,11 +48,20 @@ public class MsgConfigKeys {
 	public static final ConfigKey<List<String>> PURCHASE_RECEIVE = ListKey.of("general.prices.receive", Lists.newArrayList(
 			"{{gts_prefix}} &7You have received your price of &e{{price}} from your &a{{listing_name}} &7listing!"
 	));
-	public static final ConfigKey<List<String>> AUCTION_BID = ListKey.of("general.auctions.bid", Lists.newArrayList(
+	public static final ConfigKey<List<String>> AUCTION_BID_BROADCAST = ListKey.of("general.auctions.bid", Lists.newArrayList(
 			"{{gts_prefix}} &e{{player}} &7has placed a bid on the &a{{listing_specifics}}!"
 	));
-	public static final ConfigKey<List<String>> AUCTION_WIN = ListKey.of("general.auctions.win", Lists.newArrayList(
+	public static final ConfigKey<List<String>> AUCTION_BID = ListKey.of("general.auctions.bid-personal", Lists.newArrayList(
+			"{{gts_prefix}} &7Your bid has been placed! If you win, you will pay &e{{price}}&7!"
+	));
+	public static final ConfigKey<List<String>> AUCTION_WIN_BROADCAST = ListKey.of("general.auctions.win", Lists.newArrayList(
 			"{{gts_prefix}} &e{{player}} &7has won the auction for the &a{{listing_specifics}}!"
+	));
+	public static final ConfigKey<List<String>> AUCTION_WIN = ListKey.of("general.auctions.win-personal", Lists.newArrayList(
+			"{{gts_prefix}} &7Congrats! You've won the auction on the &e{{listing_specifics}} &7for &a{{price}}&7!"
+	));
+	public static final ConfigKey<List<String>> AUCTION_SOLD = ListKey.of("general.auctions.sold", Lists.newArrayList(
+			"{{gts_prefix}} &7You're &e{{listing_specifics}} &7auction was sold to &e{{high_bidder}} &7for &a{{price}}&7!"
 	));
 	public static final ConfigKey<List<String>> AUCTION_IS_HIGH_BIDDER = ListKey.of("general.auctions.is-high-bidder", Lists.newArrayList(
 			"{{gts_prefix}} &cHold off! You wouldn't want to bid against yourself!"
@@ -131,6 +140,21 @@ public class MsgConfigKeys {
 	public static final ConfigKey<String> ITEM_ENTRY_CONFIRM_TITLE = StringKey.of("entries.item.confirm.title", "&ePurchase {{item_title}}?");
 	public static final ConfigKey<String> ITEM_ENTRY_BASE_TITLE = StringKey.of("entries.item.base.title", "{{item_title}}");
 	public static final ConfigKey<String> ITEM_ENTRY_SPEC_TEMPLATE = StringKey.of("entries.item.spec-template", "{{item_title}}");
+	public static final ConfigKey<String> ITEM_ENTRY_CONFIRM_TITLE_AUCTION = StringKey.of("entries.item.confirm.title-auctions", "&eBid on {{item_title}}?");
+	public static final ConfigKey<List<String>> ITEM_ENTRY_CONFIRM_LORE_AUCTION = ListKey.of("entries.item.confirm.lore-auction", Lists.newArrayList(
+			"&7Seller: &e{{seller}}"
+	));
+	public static final ConfigKey<String> POKEMON_ENTRY_CONFIRM_TITLE_AUCTION = StringKey.of("entries.pokemon.confirm.title-auction", "&eBid on {{pokemon}}?");
+	public static final ConfigKey<List<String>> POKEMON_ENTRY_CONFIRM_LORE_AUCTION = ListKey.of("entries.pokemon.confirm.lore-auction", Lists.newArrayList("&7Here's some additional info:",
+			"&7EVs: &e{{evs_total}}&7/&e510 &7(&a{{evs_percent}}&7)",
+			"&7IVs: &e{{ivs_total}}&7/&e186 &7(&a{{ivs_percent}}&7)",
+			"",
+			"&7Move Set:",
+			"  &7 - &e{{moves_1}}",
+			"  &7 - &e{{moves_2}}",
+			"  &7 - &e{{moves_3}}",
+			"  &7 - &e{{moves_4}}"
+	));
 
 	private static Map<String, ConfigKey<?>> KEYS = null;
 

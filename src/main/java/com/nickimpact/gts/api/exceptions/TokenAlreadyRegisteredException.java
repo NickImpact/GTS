@@ -11,7 +11,7 @@ import lombok.Getter;
  *
  * @author NickImpact
  */
-public class TokenAlreadyRegisteredException extends RuntimeException {
+public class TokenAlreadyRegisteredException extends Exception {
 
 	@Getter private String key;
 

@@ -1,5 +1,6 @@
 package com.nickimpact.gts.entries.pixelmon;
 
+import com.nickimpact.gts.api.listings.entries.EntryElement;
 import com.nickimpact.gts.utils.GsonUtils;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -12,7 +13,7 @@ import org.spongepowered.api.Sponge;
  *
  * @author NickImpact
  */
-public class Pokemon {
+public class Pokemon implements EntryElement<EntityPixelmon> {
 
 	private transient EntityPixelmon pokemon;
 
@@ -25,6 +26,11 @@ public class Pokemon {
 		NBTTagCompound nbt = new NBTTagCompound();
 		this.nbt = pokemon.writeToNBT(nbt);
 		nbtJSON = GsonUtils.serialize(this.nbt);
+	}
+
+	@Override
+	public EntityPixelmon getElement() {
+		return this.getPokemon();
 	}
 
 	public EntityPixelmon getPokemon() {

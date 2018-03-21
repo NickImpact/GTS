@@ -2,28 +2,28 @@ package com.nickimpact.gts.entries.pixelmon;
 
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.GTSInfo;
+import com.nickimpact.gts.api.GtsService;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
-import com.nickimpact.gts.api.configuration.ConfigKey;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.Listing;
-import com.nickimpact.gts.api.listings.data.AuctionData;
 import com.nickimpact.gts.api.listings.entries.Entry;
-import com.nickimpact.gts.api.listings.pricing.Minable;
+import com.nickimpact.gts.api.listings.entries.EntryElement;
+import com.nickimpact.gts.api.listings.entries.Minable;
 import com.nickimpact.gts.api.listings.pricing.Price;
+import com.nickimpact.gts.api.listings.pricing.PricingException;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
-import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
-import com.pixelmonmod.pixelmon.storage.PlayerComputerStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -44,8 +44,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -57,8 +57,6 @@ import java.util.function.Function;
  */
 @Typing("Pokemon")
 public class PokemonEntry extends Entry<Pokemon> implements Minable {
-
-	private static Collection<Function<EntityPixelmon, Double>> extraMinPriceOptions;
 
 	public PokemonEntry() {
 		super();
@@ -121,13 +119,15 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	}
 
 	@Override
-	public String confirmTitleTemplate() {
-		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE);
+	protected String confirmTitleTemplate(boolean auction) {
+		return !auction ? GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE) :
+				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE_AUCTION);
 	}
 
 	@Override
-	public List<String> confirmLoreTemplate() {
-		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE);
+	protected List<String> confirmLoreTemplate(boolean auction) {
+		return !auction ? GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE) :
+				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE_AUCTION);
 	}
 
 	@Override
@@ -194,38 +194,44 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	}
 
 	@Override
-	public MoneyPrice calcMinPrice() {
-		double price = GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_BASE);
+	public MoneyPrice calcMinPrice() throws PricingException{
+		MoneyPrice price = new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_BASE));
+		Pokemon poke = this.getElement();
 		EntityPixelmon pokemon = this.getElement().getPokemon();
 		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getName());
 		if(isLegend && pokemon.getIsShiny()) {
-			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY);
+			price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY)));
 		} else if(isLegend) {
-			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND);
+			price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND)));
 		} else if(pokemon.getIsShiny()) {
-			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY);
+			price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY)));
 		}
 
 		for(int iv : pokemon.stats.IVs.getArray()) {
 			if(iv >= GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_IVS_MINVAL)) {
-				price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_IVS_PRICE);
+				price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_IVS_PRICE)));
 			}
 		}
 
 		if(pokemon.getAbilitySlot() == 2) {
-			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_HA);
+			price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_HA)));
 		}
 
-		for(Function<EntityPixelmon, Double> function : extraMinPriceOptions) {
-			price += function.apply(pokemon);
+		Optional<List<Function<EntryElement, Price>>> extras = Sponge.getServiceManager().provideUnchecked(GtsService.class).getMinPriceOptions(this.getClass());
+		if(extras.isPresent()) {
+			for(Function<EntryElement, Price> function : extras.get()) {
+				Price p = function.apply(poke);
+				if(p instanceof MoneyPrice) {
+					price.add((MoneyPrice) function.apply(poke));
+				} else {
+					GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(Text.of(
+							GTSInfo.WARNING, "Pricing other than MoneyPrice are not yet supported for min price calculation..."
+					)));
+				}
+			}
 		}
 
-		return new MoneyPrice(price);
-	}
-
-	@SafeVarargs
-	public static void addMinPriceOption(Function<EntityPixelmon, Double>... functions) {
-		extraMinPriceOptions.addAll(Arrays.asList(functions));
+		return price;
 	}
 
 	@CommandAliases({"pokemon", "poke"})

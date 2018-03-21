@@ -114,6 +114,13 @@ public abstract class Entry<T> {
 
 	protected abstract List<String> baseLoreTemplate(boolean auction);
 
+	public ItemStack getBaseDisplay(Player player, Listing listing) {
+		ItemStack item = baseItemStack(player);
+		applyExtensions(player, item, listing);
+
+		return item;
+	}
+
 	private void applyExtensions(Player player, ItemStack item, Listing listing) {
 		Text title;
 		List<Text> lore;
@@ -148,13 +155,6 @@ public abstract class Entry<T> {
 		item.offer(Keys.ITEM_LORE, lore);
 	}
 
-	public ItemStack getBaseDisplay(Player player, Listing listing) {
-		ItemStack item = baseItemStack(player);
-		applyExtensions(player, item, listing);
-
-		return item;
-	}
-
 	/**
 	 * Represents an item stack that will be shown during the confirmation accepting of an entry.
 	 * This display can often be the same as the original display, but for other times, be used to
@@ -164,9 +164,16 @@ public abstract class Entry<T> {
 	 */
 	protected abstract ItemStack confirmItemStack(Player player);
 
-	protected abstract String confirmTitleTemplate();
+	protected abstract String confirmTitleTemplate(boolean auction);
 
-	protected abstract List<String> confirmLoreTemplate();
+	protected abstract List<String> confirmLoreTemplate(boolean auction);
+
+	public ItemStack getConfirmDisplay(Player player, Listing listing) {
+		ItemStack item = confirmItemStack(player);
+		applyConfExtensions(player, item, listing);
+
+		return item;
+	}
 
 	private void applyConfExtensions(Player player, ItemStack item, Listing listing) {
 		Text title;
@@ -179,7 +186,7 @@ public abstract class Entry<T> {
 
 		try {
 			title = GTS.getInstance().getTextParsingUtils().parse(
-					GTS.getInstance().getTextParsingUtils().getTemplate(confirmTitleTemplate()),
+					GTS.getInstance().getTextParsingUtils().getTemplate(confirmTitleTemplate(listing.getAucData() != null)),
 					player,
 					null,
 					variables
@@ -190,7 +197,7 @@ public abstract class Entry<T> {
 
 		try {
 			lore = GTS.getInstance().getTextParsingUtils().parse(
-					GTS.getInstance().getTextParsingUtils().getTemplates(confirmLoreTemplate()),
+					GTS.getInstance().getTextParsingUtils().getTemplates(confirmLoreTemplate(listing.getAucData() != null)),
 					player,
 					null,
 					variables
@@ -201,13 +208,6 @@ public abstract class Entry<T> {
 
 		item.offer(Keys.DISPLAY_NAME, title);
 		item.offer(Keys.ITEM_LORE, lore);
-	}
-
-	public ItemStack getConfirmDisplay(Player player, Listing listing) {
-		ItemStack item = confirmItemStack(player);
-		applyConfExtensions(player, item, listing);
-
-		return item;
 	}
 
 	/**

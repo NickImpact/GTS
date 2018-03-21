@@ -2,11 +2,10 @@ package com.nickimpact.gts.internal;
 
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.api.text.Tokens;
-import com.nickimpact.gts.api.text.Translator;
 import com.nickimpact.gts.entries.pixelmon.EnumPokemonFields;
 import com.nickimpact.gts.entries.pixelmon.Pokemon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import io.github.nucleuspowered.nucleus.internal.text.Tokens;
 import org.spongepowered.api.text.Text;
 
 import java.util.Map;
@@ -19,7 +18,7 @@ import java.util.Optional;
  */
 public class PokemonTokens {
 
-	private static Map<String, Translator> tokens = Maps.newHashMap();
+	private static Map<String, Tokens.Translator> tokens = Maps.newHashMap();
 
 	static {
 		tokens.put("pokemon", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
@@ -134,7 +133,7 @@ public class PokemonTokens {
 		});
 	}
 
-	public static Map<String, Translator> getTokens() {
+	public static Map<String, Tokens.Translator> getTokens() {
 		return tokens;
 	}
 

@@ -2,6 +2,7 @@ package com.nickimpact.gts.commands.basic;
 
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.api.GtsService;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
@@ -48,7 +49,7 @@ public class AucCmd extends SpongeSubCommand {
 
 	@SuppressWarnings("unchecked")
 	static void getEntryCommandSpecs(List<SpongeSubCommand> children, boolean isAuction) {
-		((Registry<Entry>) GTS.getInstance().getApi().getRegistry(Entry.class)).getTypings().forEach((key, value) -> {
+		((Registry<Entry>) GTS.getInstance().getService().getRegistry(GtsService.RegistryType.ENTRY)).getTypings().forEach((key, value) -> {
 			try {
 				Entry entry = value.newInstance();
 				if (entry.commandSpec(isAuction) == null) {

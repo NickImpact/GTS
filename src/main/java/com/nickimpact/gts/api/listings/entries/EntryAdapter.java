@@ -2,6 +2,7 @@ package com.nickimpact.gts.api.listings.entries;
 
 import com.google.gson.Gson;
 import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.api.GtsService;
 import com.nickimpact.gts.api.json.Adapter;
 import com.nickimpact.gts.api.json.Registry;
 
@@ -19,6 +20,6 @@ public class EntryAdapter extends Adapter<Entry> {
 
 	@Override
 	public Registry getRegistry() {
-		return GTS.getInstance().getApi().getRegistry(Entry.class);
+		return GTS.getInstance().getService().getRegistry(GtsService.RegistryType.ENTRY);
 	}
 }

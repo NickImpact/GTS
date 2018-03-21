@@ -1,6 +1,7 @@
 package com.nickimpact.gts.commands.basic;
 
 import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.api.GtsService;
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
@@ -24,14 +25,14 @@ import java.util.Objects;
  */
 @CommandAliases({"search"})
 public class SearchCmd extends SpongeSubCommand {
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public CommandElement[] getArgs() {
 		CommandFlags.Builder builder = GenericArguments.flags();
-		Collection<Class<? extends Entry>> collection = Objects.requireNonNull(
-				GTS.getInstance().getApi().getRegistry(Entry.class)).getTypings().values();
-		for(Class<? extends Entry> clazz : collection) {
-			builder.flag("-" + clazz.getSimpleName().toLowerCase());
-		}
+		Collection collection = Objects.requireNonNull(
+				GTS.getInstance().getService().getRegistry(GtsService.RegistryType.ENTRY)).getTypings().values();
+		collection.forEach(clazz -> builder.flag("-" + ((Class)clazz).getSimpleName().toLowerCase()));
 
 		return new CommandElement[] {
 				builder.buildWith(GenericArguments.none())

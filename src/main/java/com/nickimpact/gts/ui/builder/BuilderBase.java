@@ -117,7 +117,7 @@ public class BuilderBase extends InventoryBase {
 				.build()
 				));
 
-		Icon confirm = SharedItems.confirmIcon(17);
+		Icon confirm = SharedItems.confirmIcon(17, false);
 		confirm.addListener(clickable -> {
 			Sponge.getScheduler().createTaskBuilder().execute(() -> {
 				player.closeInventory();

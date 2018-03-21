@@ -3,29 +3,25 @@ package com.nickimpact.gts.api.text;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.listings.data.AuctionData;
-import com.nickimpact.gts.api.listings.pricing.Auctionable;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.api.exceptions.TokenAlreadyRegisteredException;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.time.Time;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
-import com.nickimpact.gts.entries.prices.MoneyPrice;
 import com.nickimpact.gts.internal.ItemTokens;
 import com.nickimpact.gts.internal.PokemonTokens;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import io.github.nucleuspowered.nucleus.api.exceptions.PluginAlreadyRegisteredException;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
+import io.github.nucleuspowered.nucleus.internal.text.Tokens;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import javax.annotation.Nonnull;
-import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -38,11 +34,11 @@ import java.util.Set;
  *
  * @author NickImpact
  */
-public final class Tokens implements NucleusMessageTokenService.TokenParser {
+public final class TokenService implements NucleusMessageTokenService.TokenParser {
 
-	private final Map<String, Translator> translatorMap = Maps.newHashMap();
+	private final Map<String, Tokens.Translator> translatorMap = Maps.newHashMap();
 
-	public Tokens() {
+	public TokenService() {
 		translatorMap.put("gts_prefix", (p, v, m) -> Optional.of(TextSerializers.FORMATTING_CODE.deserialize(
 				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.PREFIX)
 		)));
@@ -160,7 +156,7 @@ public final class Tokens implements NucleusMessageTokenService.TokenParser {
 		}
 	}
 
-	public void register(String key, Translator translator) throws TokenAlreadyRegisteredException {
+	public void register(String key, Tokens.Translator translator) throws TokenAlreadyRegisteredException {
 		if(translatorMap.containsKey(key))
 			throw new TokenAlreadyRegisteredException(key);
 

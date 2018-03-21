@@ -4,13 +4,10 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
-import com.nickimpact.gts.api.GtsAPI;
-import com.nickimpact.gts.api.json.Registry;
+import com.nickimpact.gts.api.GtsService;
+import com.nickimpact.gts.api.GtsServiceImpl;
 import com.nickimpact.gts.api.listings.entries.EntryHolder;
-import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.commands.basic.HelpCmd;
-import com.nickimpact.gts.commands.basic.SellCmd;
-import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.api.configuration.GTSConfiguration;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.entries.Entry;
@@ -26,7 +23,6 @@ import com.nickimpact.gts.entries.prices.ItemPrice;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
 import com.nickimpact.gts.entries.prices.PokePrice;
 import com.nickimpact.gts.internal.TextParsingUtils;
-import com.nickimpact.gts.api.text.Tokens;
 import com.nickimpact.gts.listeners.JoinListener;
 import com.nickimpact.gts.logs.Log;
 import com.nickimpact.gts.storage.Storage;
@@ -35,21 +31,17 @@ import com.nickimpact.gts.storage.StorageType;
 import com.nickimpact.gts.storage.dao.file.FileWatcher;
 import com.nickimpact.gts.ui.updater.GuiUpdater;
 import com.nickimpact.gts.utils.ListingTasks;
-import com.nickimpact.gts.utils.ListingUtils;
+import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.data.DataContainer;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.*;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.AsynchronousExecutor;
@@ -57,7 +49,6 @@ import org.spongepowered.api.scheduler.SpongeExecutorService;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.io.File;
 import java.io.InputStream;
@@ -90,7 +81,7 @@ public class GTS {
 	private static GTS instance;
 
 	/** The API specific fields for anything that extends outside the normal means of GTS */
-	private GtsAPI api = new GtsAPI();
+	private GtsService service;
 
 	/** The configuration for GTS */
 	private GTSConfiguration config;
@@ -146,11 +137,14 @@ public class GTS {
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Checking dependencies...")));
 		enabled = GTSInfo.dependencyCheck();
 
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Opening API and registering base setup...")));
-		this.api.insertIntoRegistry(this.api.getRegistry(Entry.class), Lists.newArrayList(ItemEntry.class, PokemonEntry.class));
-		this.api.insertIntoRegistry(this.api.getRegistry(Price.class), Lists.newArrayList(MoneyPrice.class, ItemPrice.class, PokePrice.class));
+		if(enabled) {
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Opening API and registering base setup...")));
+			Sponge.getServiceManager().setProvider(this, GtsService.class, (service = new GtsServiceImpl()));
+			service.registerEntries(Lists.newArrayList(ItemEntry.class, PokemonEntry.class));
+			service.registerPrices(Lists.newArrayList(MoneyPrice.class, ItemPrice.class, PokePrice.class));
 
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Pre-init phase complete!")));
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Pre-init phase complete!")));
+		}
 	}
 
 	@Listener
@@ -159,7 +153,6 @@ public class GTS {
 		if(enabled) {
 			// Load the configuration
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Now entering the init phase")));
-			api.setTokens(new Tokens());
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading configuration...")));
 			this.config = new AbstractConfig(this, new GTSConfigAdapter(this), "gts.conf");
 			this.config.init();
@@ -204,68 +197,6 @@ public class GTS {
 	@Listener
 	public void onServerStarted(GameStartedServerEvent e) {
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Post start-up phase has now started")));
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading base entry icons...")));
-		this.api.addDisplayOption(
-				this.api.getEntryDisplays(),
-				ItemEntry.class,
-				ItemStack.builder()
-						.itemType(ItemTypes.DIAMOND)
-						.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Item Entry"))
-						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.GRAY, "Add an item from your inventory"),
-								Text.of(TextColors.GRAY, "to the set of listings")
-						))
-						.build()
-		);
-		this.api.addDisplayOption(
-				this.api.getEntryDisplays(),
-				PokemonEntry.class,
-				ItemStack.builder()
-						.itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:poke_ball").get())
-						.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Pokemon Entry"))
-						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.GRAY, "Add a pokemon from your party"),
-								Text.of(TextColors.GRAY, "or PC to the set of listings")
-						))
-						.build()
-		);
-
-		this.api.addDisplayOption(
-				this.api.getPriceDisplays(),
-				ItemPrice.class,
-				ItemStack.builder()
-						.itemType(ItemTypes.DIAMOND)
-						.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Item Price"))
-						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.GRAY, "Declare an item as your"),
-								Text.of(TextColors.GRAY, "intended pricing option")
-						))
-						.build()
-		);
-		this.api.addDisplayOption(
-				this.api.getPriceDisplays(),
-				PokePrice.class,
-				ItemStack.builder()
-						.itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:poke_ball").get())
-						.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Pokemon Price"))
-						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.GRAY, "Declare a pokemon as your"),
-								Text.of(TextColors.GRAY, "intended pricing option")
-						))
-						.build()
-		);
-		this.api.addDisplayOption(
-				this.api.getPriceDisplays(),
-				MoneyPrice.class,
-				ItemStack.builder()
-						.itemType(ItemTypes.GOLD_INGOT)
-						.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Monetary Price"))
-						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.GRAY, "Declare a monetary price as your"),
-								Text.of(TextColors.GRAY, "intended pricing option")
-						))
-						.build()
-		);
 
 		if(enabled) {
 			ListingTasks.updateTask();
@@ -282,10 +213,13 @@ public class GTS {
 
 	@Listener
 	public void registerServices(ChangeServiceProviderEvent e){
-		if(e.getService().equals(EconomyService.class))
+		if(e.getService().equals(EconomyService.class)) {
 			this.economy = (EconomyService) e.getNewProviderRegistration().getProvider();
-		else if(e.getService().equals(UserStorageService.class))
+		} else if(e.getService().equals(UserStorageService.class)) {
 			this.userStorageService = (UserStorageService) e.getNewProviderRegistration().getProvider();
+		} else if(e.getService().equals(NucleusMessageTokenService.class)) {
+			this.service.registerTokenService();
+		}
 	}
 
 	public static GTS getInstance() {

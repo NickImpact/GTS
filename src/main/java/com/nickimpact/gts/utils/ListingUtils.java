@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
-import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.entries.EntryHolder;
+import com.nickimpact.gts.api.listings.entries.Minable;
 import com.nickimpact.gts.api.listings.pricing.*;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
@@ -13,9 +13,7 @@ import com.nickimpact.gts.api.events.ListEvent;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
-import com.nickimpact.gts.logs.Log;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
-import lombok.Setter;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
@@ -76,27 +74,34 @@ public class ListingUtils {
 		    variables.put("dummy2", listing);
 		    variables.put("dummy3", listing.getEntry());
 
-		    if(listing.getEntry().getPrice() instanceof Minable) {
+		    if(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_ENABLED) && listing.getEntry() instanceof Minable) {
 		    	MoneyPrice price = (MoneyPrice) listing.getEntry().getPrice();
-		    	MoneyPrice min = ((Minable)listing.getEntry()).calcMinPrice();
-		    	if(price.getPrice().compareTo(min.getPrice()) < 0) {
-		    		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
-		    		tokens.put("min_price", src -> Optional.of(min.getText()));
-				    try {
-					    GTS.getInstance().getTextParsingUtils().parse(
-							    GTS.getInstance().getMsgConfig().get(MsgConfigKeys.MIN_PRICE_ERROR),
-							    player,
-							    tokens,
-							    null
-					    );
-				    } catch (NucleusException e) {
-					    player.sendMessage(Text.of(
-							    GTSInfo.ERROR, TextColors.GRAY, "To sell your ", TextColors.YELLOW, listing.getEntry().getName(),
-							    TextColors.GRAY, "you must list it for ", TextColors.GREEN, min.getText()
-					    ));
-				    }
+		    	try {
+				    MoneyPrice min = ((Minable) listing.getEntry()).calcMinPrice();
+				    if (price.getPrice().compareTo(min.getPrice()) < 0) {
+					    Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+					    tokens.put("min_price", src -> Optional.of(min.getText()));
+					    try {
+						    player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+								    GTS.getInstance().getMsgConfig().get(MsgConfigKeys.MIN_PRICE_ERROR),
+								    player,
+								    tokens,
+								    variables
+						    ));
+					    } catch (NucleusException e) {
+						    player.sendMessage(Text.of(
+								    GTSInfo.ERROR, TextColors.GRAY, "To sell your ", TextColors.YELLOW, listing.getEntry().getName(),
+								    TextColors.GRAY, "you must list it for ", TextColors.GREEN, min.getText()
+						    ));
+					    }
 
-		    		return;
+					    return;
+				    }
+			    } catch (PricingException e) {
+		    		GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(Text.of(
+		    				GTSInfo.ERROR, e.getMessage()
+				    )));
+				    return;
 			    }
 		    }
 
@@ -114,6 +119,7 @@ public class ListingUtils {
 								extras,
 								variables
 						));
+						return;
 				    } else {
 				    	tax = Optional.of(t);
 				    }
@@ -126,9 +132,7 @@ public class ListingUtils {
 					    );
 				    }
 			    }
-		    }
 
-		    if(GTS.getInstance().getConfig().get(ConfigKeys.TAX_ENABLED)) {
 			    try {
 				    final BigDecimal t = tax.orElse(BigDecimal.ZERO);
 				    Map<String, Function<CommandSource, Optional<Text>>> extras = Maps.newHashMap();
@@ -140,6 +144,9 @@ public class ListingUtils {
 						    extras,
 						    null
 				    ));
+				    GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId()).ifPresent(acc -> {
+				    	acc.withdraw(GTS.getInstance().getEconomy().getDefaultCurrency(), t, Sponge.getCauseStackManager().getCurrentCause());
+				    });
 			    } catch (NucleusException e) {
 				    MessageUtils.genAndSendErrorMessage(
 						    "Message Parse Error",
@@ -348,6 +355,20 @@ public class ListingUtils {
 				listing.getAucData().setHighBidder(player.getUniqueId());
 				listing.getAucData().setHbName(Text.of(player.getName()));
 				try {
+					player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+							GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_BID),
+							player,
+							null,
+							null
+					));
+				} catch (NucleusException e) {
+					GTS.getInstance().getConsole().ifPresent(console -> {
+						console.sendMessage(Text.of(
+								GTSInfo.ERROR, "Unable to send a bid message for ", player.getName()
+						));
+					});
+				}
+				try {
 					((MoneyPrice)listing.getEntry().getPrice()).add(listing.getAucData().getIncrement());
 				} catch (PricingException e) {
 					e.printStackTrace();
@@ -356,12 +377,12 @@ public class ListingUtils {
 
 				try {
 					List<Text> broadcast = GTS.getInstance().getTextParsingUtils().parse(
-							GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_BID),
+							GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_BID_BROADCAST),
 							player,
 							null,
 							variables
 					);
-					listing.getAucData().getListeners().stream()
+					Sponge.getServer().getOnlinePlayers().stream()
 							.filter(pl -> GTS.getInstance().getIgnorers().contains(pl.getUniqueId()))
 							.forEach(pl -> pl.sendMessages(broadcast));
 

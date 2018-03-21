@@ -31,7 +31,7 @@ public class Registry<E> {
 	 */
 	public void register(Class<? extends E> clazz) throws Exception {
 		if(!clazz.isAnnotationPresent(Typing.class))
-			throw new Exception("Missing typing annotation, class registration cancelled");
+			throw new Exception(String.format("Missing typing annotation, class registration for %s cancelled", clazz.getSimpleName()));
 
 		this.register(clazz.getAnnotation(Typing.class).value(), clazz);
 	}

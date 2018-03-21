@@ -74,9 +74,10 @@ public class ConfigKeys {
 	public static final ConfigKey<Double> MIN_PRICING_POKEMON_BASE = DoubleKey.of("min-pricing.pokemon.base", 5000.0);
 	public static final ConfigKey<Double> MIN_PRICING_POKEMON_IVS_PRICE = DoubleKey.of("min-pricing.pokemon.ivs.price", 5000.0);
 	public static final ConfigKey<Integer> MIN_PRICING_POKEMON_IVS_MINVAL = IntegerKey.of("min-pricing.pokemon.ivs.min-iv", 28);
-	public static final ConfigKey<Double> MIN_PRICING_POKEMON_LEGEND = DoubleKey.of("min-pricing.pokemon.base", 5000.0);
-	public static final ConfigKey<Double> MIN_PRICING_POKEMON_SHINY = DoubleKey.of("min-pricing.pokemon.base", 2500.0);
-	public static final ConfigKey<Double> MIN_PRICING_POKEMON_HA = DoubleKey.of("min-pricing.pokemon.base", 5000.0);
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_LEGEND = DoubleKey.of("min-pricing.pokemon.legends", 5000.0);
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_SHINY = DoubleKey.of("min-pricing.pokemon.shiny", 2500.0);
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_HA = DoubleKey.of("min-pricing.pokemon.hidden-ability", 5000.0);
+	public static final ConfigKey<Boolean> MIN_PRICING_ENABLED = BooleanKey.of("min-pricing.enabled", true);
 
 	private static Map<String, ConfigKey<?>> KEYS = null;
 
