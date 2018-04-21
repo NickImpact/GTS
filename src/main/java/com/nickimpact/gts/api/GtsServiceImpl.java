@@ -1,20 +1,19 @@
 package com.nickimpact.gts.api;
 
+import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
+import com.nickimpact.gts.api.exceptions.NotMinableException;
 import com.nickimpact.gts.api.json.Registry;
 import com.nickimpact.gts.api.listings.entries.Entry;
-import com.nickimpact.gts.api.listings.entries.EntryElement;
 import com.nickimpact.gts.api.listings.entries.MinPriceMapping;
 import com.nickimpact.gts.api.listings.entries.Minable;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.text.Token;
 import com.nickimpact.gts.api.text.TokenService;
 import com.nickimpact.gts.entries.items.ItemEntry;
-import com.nickimpact.gts.entries.pixelmon.PokemonEntry;
 import com.nickimpact.gts.entries.prices.ItemPrice;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
@@ -39,6 +38,11 @@ public class GtsServiceImpl implements GtsService {
 	@Override
 	public Registry getRegistry(RegistryType type) {
 		return type == RegistryType.ENTRY ? entries : prices;
+	}
+
+	@Override
+	public void registerEntry(Class<? extends Entry> entry) {
+		this.registerEntries(Lists.newArrayList(entry));
 	}
 
 	@Override
@@ -68,6 +72,11 @@ public class GtsServiceImpl implements GtsService {
 	}
 
 	@Override
+	public void registerPrice(Class<? extends Price> price) {
+		this.registerPrices(Lists.newArrayList(price));
+	}
+
+	@Override
 	public void registerPrices(Collection<Class<? extends Price>> prices) {
 		prices.forEach(price -> {
 			try {
@@ -94,32 +103,15 @@ public class GtsServiceImpl implements GtsService {
 	}
 
 	@Override
-	public void addMinPriceOption(Class<? extends Entry> clazz, Function<EntryElement, Price> function) {
+	public void addMinPriceOption(Class<? extends Entry> clazz, Function<EntryElement, Price> function) throws NotMinableException {
 		this.getEntries().stream().filter(entry -> entry.equals(clazz)).forEach(
 				entry -> {
 					if(!entry.isAssignableFrom(Minable.class)) {
-						GTS.getInstance().getConsole().ifPresent(console -> {
-							console.sendMessage(Text.of(
-									GTSInfo.ERROR, String.format("%s does not support min prices...", clazz.getSimpleName())
-							));
-						});
+						throw new NotMinableException(String.format("%s does not support min prices...", clazz.getSimpleName()));
 					}
 					this.minPriceMapping.getMapping().put(entry, function);
 				}
 		);
-	}
-
-	private void addPokemonMinPrice() {
-		Sponge.getServiceManager().provide(GtsService.class).ifPresent(service -> {
-			service.addMinPriceOption(PokemonEntry.class, element -> {
-				// We cast to EntityPixelmon here, as element.getElement() will return such in this case
-				if(((EntityPixelmon)element.getElement()).isEgg) {
-					return new MoneyPrice(25);
-				} else {
-					return new MoneyPrice(50);
-				}
-			});
-		});
 	}
 
 	@Override

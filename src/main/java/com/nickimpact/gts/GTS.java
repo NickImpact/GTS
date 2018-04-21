@@ -40,6 +40,7 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.*;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Plugin;
@@ -201,6 +202,12 @@ public class GTS {
 		if(enabled) {
 			ListingTasks.updateTask();
 		}
+	}
+
+	@Listener
+	public void onReload(GameReloadEvent e) {
+		this.config.reload();
+		this.msgConfig.reload();
 	}
 
 	@Listener

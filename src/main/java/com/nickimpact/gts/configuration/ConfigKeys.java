@@ -29,6 +29,8 @@ public class ConfigKeys {
 	/** Max time = 5 minutes = 300 seconds */
 	public static final ConfigKey<Integer> AUC_MAX_TIME = IntegerKey.of("auctions.max-time", 300);
 
+	public static final ConfigKey<Boolean> BID_KEEP_UI_OPEN = BooleanKey.of("auctions.keep-ui-open-on-bid", false);
+
 	/** Default time = 1 hour = 60 minutes = 3600 seconds */
 	public static final ConfigKey<Integer> LISTING_TIME = IntegerKey.of("listings.listing-time", 60 * 60);
 
@@ -44,6 +46,7 @@ public class ConfigKeys {
 
 	public static final ConfigKey<Boolean> ITEMS_ENABLED = BooleanKey.of("entries.items.enabled", true);
 	public static final ConfigKey<Boolean> POKEMON_ENABLED = BooleanKey.of("entries.pokemon.enabled", true);
+	public static final ConfigKey<Boolean> MEMES = BooleanKey.of("entries.pokemon.memes", true);
 
 	public static final ConfigKey<Boolean> CUSTOM_NAME_ALLOWED = BooleanKey.of("entries.items.custom-names-allowed", true);
 
@@ -78,6 +81,7 @@ public class ConfigKeys {
 	public static final ConfigKey<Double> MIN_PRICING_POKEMON_SHINY = DoubleKey.of("min-pricing.pokemon.shiny", 2500.0);
 	public static final ConfigKey<Double> MIN_PRICING_POKEMON_HA = DoubleKey.of("min-pricing.pokemon.hidden-ability", 5000.0);
 	public static final ConfigKey<Boolean> MIN_PRICING_ENABLED = BooleanKey.of("min-pricing.enabled", true);
+	public static final ConfigKey<Double> MAX_MONEY_PRICE = DoubleKey.of("max-pricing.money.max", 100000000.0);
 
 	private static Map<String, ConfigKey<?>> KEYS = null;
 

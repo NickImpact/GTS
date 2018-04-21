@@ -2,6 +2,7 @@ package com.nickimpact.gts.entries.prices;
 
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.json.Typing;
+import com.nickimpact.gts.api.listings.entries.Maxable;
 import com.nickimpact.gts.api.listings.pricing.Auctionable;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.listings.pricing.PricingException;
@@ -23,7 +24,9 @@ import java.util.UUID;
  * @author NickImpact
  */
 @Typing("Money")
-public class MoneyPrice extends Price<BigDecimal> implements Auctionable<MoneyPrice> {
+public class MoneyPrice extends Price<BigDecimal> implements Auctionable<MoneyPrice>, Maxable<BigDecimal, MoneyPrice> {
+
+	private static final BigDecimal max = new BigDecimal(GTS.getInstance().getConfig().get(ConfigKeys.MAX_MONEY_PRICE));
 
 	public MoneyPrice(double price) {
 		this(BigDecimal.valueOf(price));
@@ -127,5 +130,15 @@ public class MoneyPrice extends Price<BigDecimal> implements Auctionable<MoneyPr
 	public MoneyPrice calculate(MoneyPrice price) throws PricingException {
 		this.isAvailable();
 		return new MoneyPrice(this.price.add(price.getPrice()));
+	}
+
+	@Override
+	public BigDecimal getMax() {
+		return max;
+	}
+
+	@Override
+	public boolean isLowerOrEqual() {
+		return this.price.compareTo(this.getMax()) < 1;
 	}
 }

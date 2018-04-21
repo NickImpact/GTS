@@ -16,7 +16,6 @@ import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import io.github.nucleuspowered.nucleus.api.exceptions.PluginAlreadyRegisteredException;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
-import io.github.nucleuspowered.nucleus.internal.text.Tokens;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -36,7 +35,7 @@ import java.util.Set;
  */
 public final class TokenService implements NucleusMessageTokenService.TokenParser {
 
-	private final Map<String, Tokens.Translator> translatorMap = Maps.newHashMap();
+	private final Map<String, Translator> translatorMap = Maps.newHashMap();
 
 	public TokenService() {
 		translatorMap.put("gts_prefix", (p, v, m) -> Optional.of(TextSerializers.FORMATTING_CODE.deserialize(
@@ -93,10 +92,10 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 
 			AuctionData data = listing.getAucData();
 			if(data != null) {
-				if(data.getHbName() == null) {
+				if(data.getHbNameString() == null) {
 					return Optional.of(Text.of("No bidder..."));
 				}
-				return Optional.of(data.getHbName());
+				return Optional.of(Text.of(data.getHbNameString()));
 			}
 
 			return Optional.of(Text.of("No bidder..."));
@@ -156,7 +155,7 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 		}
 	}
 
-	public void register(String key, Tokens.Translator translator) throws TokenAlreadyRegisteredException {
+	public void register(String key, Translator translator) throws TokenAlreadyRegisteredException {
 		if(translatorMap.containsKey(key))
 			throw new TokenAlreadyRegisteredException(key);
 
@@ -164,7 +163,7 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 		NucleusAPI.getMessageTokenService().registerPrimaryToken(key.toLowerCase(), GTS.getInstance().getPluginContainer(), key.toLowerCase());
 	}
 
-	private Set<String> getTokenNames() {
+	public Set<String> getTokenNames() {
 		return Sets.newHashSet(translatorMap.keySet());
 	}
 

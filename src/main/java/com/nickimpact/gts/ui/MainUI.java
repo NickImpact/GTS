@@ -16,6 +16,7 @@ import org.spongepowered.api.data.type.SkullTypes;
 import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -45,6 +46,8 @@ public class MainUI extends InventoryBase implements Observer {
 
 	/** Defines the sort algorithm for listings */
 	private Comparator<? super Listing> sorter;
+
+	private List<Listing> playerListings;
 
 	/**
 	 * Constructs an Inventory to which listings from the GTS are displayed.
@@ -95,10 +98,15 @@ public class MainUI extends InventoryBase implements Observer {
 	 */
 	private List<Listing> getListings() {
 		List<Listing> listings;
-		if(this.searchCondition != null)
-			listings = GTS.getInstance().getListingsCache().stream().filter(this.searchCondition).collect(Collectors.toList());
-		else
-			listings = GTS.getInstance().getListingsCache();
+		if(playerListings != null) {
+			listings = this.playerListings;
+		} else {
+			if (this.searchCondition != null) {
+				listings = GTS.getInstance().getListingsCache().stream().filter(this.searchCondition).collect(Collectors.toList());
+			} else {
+				listings = GTS.getInstance().getListingsCache();
+			}
+		}
 
 		listings = listings.stream().filter(listing -> !listing.checkHasExpired()).collect(Collectors.toList());
 		if(sorter != null) {
@@ -291,7 +299,7 @@ public class MainUI extends InventoryBase implements Observer {
 					null
 			);
 		} catch (NucleusException e) {
-			listingsTitle = Text.of(TextColors.YELLOW, "Player Info");
+			listingsTitle = Text.of(TextColors.YELLOW, "Player Listings");
 		}
 
 		List<Text> listingsLore;
@@ -307,7 +315,35 @@ public class MainUI extends InventoryBase implements Observer {
 		}
 
 		ItemStack possession = ItemStack.builder().itemType(ItemTypes.WRITTEN_BOOK).add(Keys.DISPLAY_NAME, listingsTitle).add(Keys.ITEM_LORE, listingsLore).build();
-		this.addIcon(new Icon(51, possession));
+		Icon pl = new Icon(51, possession);
+		pl.addListener(clickable -> {
+			this.playerListings = GTS.getInstance().getListingsCache().stream()
+					.filter(listing -> listing.getOwnerUUID().equals(clickable.getPlayer().getUniqueId()))
+					.collect(Collectors.toList());
+			this.clearIcons(0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31, 32, 51);
+			this.drawListings(this.playerListings);
+
+			Icon normal = new Icon(
+					51,
+					ItemStack.builder()
+							.itemType(ItemTypes.TIPPED_ARROW)
+							.add(Keys.POTION_EFFECTS, Lists.newArrayList(
+									PotionEffect.builder().potionType(PotionEffectTypes.INSTANT_HEALTH).amplifier(0).duration(100).build()
+							))
+							.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "\u2190 Show All Listings \u2190"))
+							.build()
+			);
+			normal.addListener(clickable1 -> {
+				this.clearIcons(0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31, 32, 51);
+				this.addIcon(pl);
+				this.drawListings(GTS.getInstance().getListingsCache());
+				this.listingUpdate();
+			});
+			this.addIcon(normal);
+
+			this.listingUpdate();
+		});
+		this.addIcon(pl);
 	}
 
 	@Override

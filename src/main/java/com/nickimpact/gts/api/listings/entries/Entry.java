@@ -94,14 +94,14 @@ public abstract class Entry<T> {
 	 */
 	public abstract SpongeSubCommand commandSpec(boolean isAuction);
 
-	public abstract String getSpecsTemplate();
+	public abstract String getSpecsTemplate(Player player);
 
 	/**
 	 * Retrieves the name of a listing
 	 *
 	 * @return The name of an entry
 	 */
-	public abstract String getName();
+	public abstract String getName(Player player);
 
 	/**
 	 * Represents the ItemStack that will be used to represent the entry in the listing display
@@ -110,9 +110,9 @@ public abstract class Entry<T> {
 	 */
 	protected abstract ItemStack baseItemStack(Player player);
 
-	protected abstract String baseTitleTemplate();
+	protected abstract String baseTitleTemplate(Player player);
 
-	protected abstract List<String> baseLoreTemplate(boolean auction);
+	protected abstract List<String> baseLoreTemplate(Player player, boolean auction);
 
 	public ItemStack getBaseDisplay(Player player, Listing listing) {
 		ItemStack item = baseItemStack(player);
@@ -131,7 +131,7 @@ public abstract class Entry<T> {
 
 		try {
 			title = GTS.getInstance().getTextParsingUtils().parse(
-					GTS.getInstance().getTextParsingUtils().getTemplate(baseTitleTemplate()),
+					GTS.getInstance().getTextParsingUtils().getTemplate(baseTitleTemplate(player)),
 					player,
 					null,
 					variables
@@ -142,7 +142,7 @@ public abstract class Entry<T> {
 
 		try {
 			lore = GTS.getInstance().getTextParsingUtils().parse(
-					GTS.getInstance().getTextParsingUtils().getTemplates(baseLoreTemplate(listing.getAucData() != null)),
+					GTS.getInstance().getTextParsingUtils().getTemplates(baseLoreTemplate(player, listing.getAucData() != null)),
 					player,
 					null,
 					variables
@@ -164,9 +164,9 @@ public abstract class Entry<T> {
 	 */
 	protected abstract ItemStack confirmItemStack(Player player);
 
-	protected abstract String confirmTitleTemplate(boolean auction);
+	protected abstract String confirmTitleTemplate(Player player, boolean auction);
 
-	protected abstract List<String> confirmLoreTemplate(boolean auction);
+	protected abstract List<String> confirmLoreTemplate(Player player, boolean auction);
 
 	public ItemStack getConfirmDisplay(Player player, Listing listing) {
 		ItemStack item = confirmItemStack(player);
@@ -186,7 +186,7 @@ public abstract class Entry<T> {
 
 		try {
 			title = GTS.getInstance().getTextParsingUtils().parse(
-					GTS.getInstance().getTextParsingUtils().getTemplate(confirmTitleTemplate(listing.getAucData() != null)),
+					GTS.getInstance().getTextParsingUtils().getTemplate(confirmTitleTemplate(player, listing.getAucData() != null)),
 					player,
 					null,
 					variables
@@ -197,7 +197,7 @@ public abstract class Entry<T> {
 
 		try {
 			lore = GTS.getInstance().getTextParsingUtils().parse(
-					GTS.getInstance().getTextParsingUtils().getTemplates(confirmLoreTemplate(listing.getAucData() != null)),
+					GTS.getInstance().getTextParsingUtils().getTemplates(confirmLoreTemplate(player, listing.getAucData() != null)),
 					player,
 					null,
 					variables

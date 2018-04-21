@@ -1,7 +1,9 @@
 package com.nickimpact.gts.api.text;
 
+import com.nickimpact.gts.GTS;
 import io.github.nucleuspowered.nucleus.internal.text.Tokens;
 import lombok.Getter;
+import org.spongepowered.api.plugin.PluginContainer;
 
 import java.util.Optional;
 
@@ -9,7 +11,7 @@ import java.util.Optional;
 public class Token {
 
 	private final String key;
-	private final Tokens.Translator translator;
+	private final Translator translator;
 
 	public Token(Builder builder) {
 		key = builder.key;
@@ -22,21 +24,21 @@ public class Token {
 
 	public static class Builder {
 		private String key;
-		private Tokens.Translator translator;
+		private Translator translator;
 
 		public Builder key(String key) {
 			this.key = key;
 			return this;
 		}
 
-		public Builder translator(Tokens.Translator translator) {
+		public Builder translator(Translator translator) {
 			this.translator = translator;
 			return this;
 		}
 
-		public Token build() throws Exception {
+		public Token build() {
 			if(key == null) {
-				throw new Exception("Attempt to build token without a key...");
+				throw new IllegalArgumentException("The key must not be null...");
 			}
 
 			if(translator == null) {

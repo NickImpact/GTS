@@ -50,7 +50,6 @@ public class AbstractConfig implements GTSConfiguration, CacheLoader<ConfigKey<?
 		cache.invalidateAll(toInvalidate);
 
 		loadAll();
-
 	}
 
 	@Override

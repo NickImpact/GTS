@@ -6,6 +6,7 @@ import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.gui.Icon;
 import com.nickimpact.gts.api.gui.InventoryBase;
 import com.nickimpact.gts.api.listings.Listing;
+import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import com.nickimpact.gts.utils.ListingUtils;
@@ -118,11 +119,13 @@ public class ConfirmUI extends InventoryBase {
 			icon.addListener(clickable -> {
 				if (this.target.getAucData() != null) {
 					ListingUtils.bid(clickable.getPlayer(), this.target);
+					if(!GTS.getInstance().getConfig().get(ConfigKeys.BID_KEEP_UI_OPEN)) {
+						clickable.getPlayer().closeInventory();
+					}
 				} else {
 					ListingUtils.purchase(clickable.getPlayer(), this.target);
+					clickable.getPlayer().closeInventory();
 				}
-
-				clickable.getPlayer().closeInventory();
 			});
 			this.addIcon(icon);
 		}

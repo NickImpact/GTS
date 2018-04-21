@@ -69,12 +69,12 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@Override
-	public String getSpecsTemplate() {
+	public String getSpecsTemplate(Player player) {
 		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_SPEC_TEMPLATE);
 	}
 
 	@Override
-	public String getName() {
+	public String getName(Player player) {
 		return this.decode().getTranslation().get();
 	}
 
@@ -88,12 +88,12 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@Override
-	protected String baseTitleTemplate() {
+	protected String baseTitleTemplate(Player player) {
 		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_TITLE);
 	}
 
 	@Override
-	protected List<String> baseLoreTemplate(boolean auction) {
+	protected List<String> baseLoreTemplate(Player player, boolean auction) {
 		List<String> lore = Lists.newArrayList();
 		lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_LORE));
 
@@ -119,13 +119,13 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@Override
-	protected String confirmTitleTemplate(boolean auction) {
+	protected String confirmTitleTemplate(Player player, boolean auction) {
 		return !auction ? GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_TITLE) :
 				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_TITLE_AUCTION);
 	}
 
 	@Override
-	protected List<String> confirmLoreTemplate(boolean auction) {
+	protected List<String> confirmLoreTemplate(Player player, boolean auction) {
 		List<String> lore = Lists.newArrayList();
 		if(!auction) {
 			lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_LORE));

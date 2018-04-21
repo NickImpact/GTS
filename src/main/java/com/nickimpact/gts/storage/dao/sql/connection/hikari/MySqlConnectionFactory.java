@@ -1,7 +1,16 @@
 package com.nickimpact.gts.storage.dao.sql.connection.hikari;
 
+import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.storage.StorageCredentials;
 import com.zaxxer.hikari.HikariConfig;
+import org.spongepowered.api.text.Text;
+
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.function.Function;
 
 /**
  * (Some note will go here)
@@ -41,6 +50,5 @@ public class MySqlConnectionFactory extends HikariConnectionFactory {
 		config.addDataSourceProperty("cacheCallableStmts", "true");
 
 		super.appendProperties(config, credentials);
-
 	}
 }

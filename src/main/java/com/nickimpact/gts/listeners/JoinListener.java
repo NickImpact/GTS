@@ -35,24 +35,34 @@ public class JoinListener {
 				.filter(listing -> listing.getOwnerUUID().equals(player.getUniqueId()))
 				.filter(Listing::checkHasExpired)
 				.forEach(listing -> {
-					listing.getEntry().giveEntry(player);
-					ListingUtils.deleteEntry(listing);
-
 					Map<String, Object> variables = Maps.newHashMap();
 					variables.put("listing_specifics", listing);
 					variables.put("listing_name", listing);
 					variables.put("time_left", listing);
 					variables.put("id", listing);
-
-					try {
-						player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
-								GTS.getInstance().getMsgConfig().get(MsgConfigKeys.REMOVAL_EXPIRES),
-								player,
-								null,
-								variables
-						));
-					} catch (NucleusException e1) {
-						e1.printStackTrace();
+					if(listing.getEntry().giveEntry(player)) {
+						ListingUtils.deleteEntry(listing);
+						try {
+							player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+									GTS.getInstance().getMsgConfig().get(MsgConfigKeys.REMOVAL_EXPIRES),
+									player,
+									null,
+									variables
+							));
+						} catch (NucleusException e1) {
+							e1.printStackTrace();
+						}
+					} else {
+						try {
+							player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+									"{{gts_error}} &7Your &a{{listing_name}} &7listing has expired, but was unable to be returned. It is now in a queue for retrieval once you meet the proper conditions...",
+									player,
+									null,
+									variables
+							));
+						} catch (NucleusException e1) {
+							e1.printStackTrace();
+						}
 					}
 				});
 	}

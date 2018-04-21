@@ -44,7 +44,7 @@ public final class Listing {
     private final boolean expires;
 
     /** When the lot will expire, if the above is true */
-    @Getter private final Date expiration;
+    @Getter private Date expiration;
 
     /** Represents the data for an auction, if the listing is in fact one */
     @Getter private final AuctionData aucData;
@@ -152,6 +152,10 @@ public final class Listing {
 	 */
 	public String getName() {
 		return entry.getName();
+	}
+
+	public void increaseTimeForBid() {
+		this.expiration = Date.from(this.expiration.toInstant().plusSeconds(15));
 	}
 
 	/**

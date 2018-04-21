@@ -6,6 +6,7 @@ import org.spongepowered.api.data.type.SkullTypes;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.profile.GameProfile;
+import org.spongepowered.api.profile.ProfileNotFoundException;
 import org.spongepowered.api.profile.property.ProfileProperty;
 import org.spongepowered.api.text.Text;
 
@@ -28,13 +29,17 @@ public class ItemUtils {
 	 * @return A skull with the assigned texture
 	 */
 	public static ItemStack createSkull(UUID uuid, Text name, List<Text> lore) {
-		return ItemStack.builder()
+		ItemStack.Builder sb = ItemStack.builder()
 				.itemType(ItemTypes.SKULL)
 				.add(Keys.DISPLAY_NAME, name)
 				.add(Keys.ITEM_LORE, lore)
-				.add(Keys.SKULL_TYPE, SkullTypes.PLAYER)
-				.add(Keys.REPRESENTED_PLAYER, GameProfile.of(uuid))
-				.build();
+				.add(Keys.SKULL_TYPE, SkullTypes.PLAYER);
+
+		try {
+			return sb.add(Keys.REPRESENTED_PLAYER, GameProfile.of(uuid)).build();
+		} catch (Exception e) {
+			return sb.build();
+		}
 	}
 
 	/**

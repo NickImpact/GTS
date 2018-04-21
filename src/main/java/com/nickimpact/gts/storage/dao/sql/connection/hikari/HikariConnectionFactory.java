@@ -63,7 +63,7 @@ public abstract class HikariConnectionFactory extends AbstractConnectionFactory 
 
 		config.setConnectionTestQuery("/* GTS ping */ SELECT 1");
 
-		config.setInitializationFailFast(false);
+		config.setInitializationFailTimeout(1);
 
 		hikari = new HikariDataSource(config);
 	}

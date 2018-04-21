@@ -1,7 +1,7 @@
 package com.nickimpact.gts.internal;
 
 import com.google.common.collect.Maps;
-import io.github.nucleuspowered.nucleus.internal.text.Tokens;
+import com.nickimpact.gts.api.text.Translator;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.item.ItemTypes;
@@ -20,7 +20,7 @@ import java.util.Optional;
  */
 public class ItemTokens {
 
-	private static Map<String, Tokens.Translator> tokens = Maps.newHashMap();
+	private static Map<String, Translator> tokens = Maps.newHashMap();
 
 	static {
 		tokens.put("item_type", (p, v, m) -> {
@@ -59,7 +59,7 @@ public class ItemTokens {
 		});
 	}
 
-	public static Map<String, Tokens.Translator> getTokens() {
+	public static Map<String, Translator> getTokens() {
 		return tokens;
 	}
 

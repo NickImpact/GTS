@@ -1,8 +1,8 @@
 package com.nickimpact.gts.api;
 
+import com.nickimpact.gts.api.exceptions.NotMinableException;
 import com.nickimpact.gts.api.json.Registry;
 import com.nickimpact.gts.api.listings.entries.Entry;
-import com.nickimpact.gts.api.listings.entries.EntryElement;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.text.Token;
 import com.nickimpact.gts.api.text.TokenService;
@@ -24,6 +24,13 @@ public interface GtsService {
 	Registry getRegistry(RegistryType type);
 
 	/**
+	 * Registers a single entry into the GTS Service
+	 *
+	 * @param entry The class of the entry you wish to register
+	 */
+	void registerEntry(Class<? extends Entry> entry);
+
+	/**
 	 * Registers types of entries into the GTS Service.
 	 *
 	 * @param entries The entries you wish to add into the Service
@@ -36,6 +43,13 @@ public interface GtsService {
 	 * @return All the entries currently registered with the GTS Service.
 	 */
 	Collection<Class<? extends Entry>> getEntries();
+
+	/**
+	 * Registers a single type of price into the GTS Sercice
+	 *
+	 * @param price The class of the price you wish to register
+	 */
+	void registerPrice(Class<? extends Price> price);
 
 	/**
 	 * Registers types of prices into the GTS Service.
@@ -57,7 +71,7 @@ public interface GtsService {
 	 * @param clazz The class representing the type of entry you wish to add a min price option to
 	 * @param function A function that will apply some sort of change to the calculated min price
 	 */
-	void addMinPriceOption(Class<? extends Entry> clazz, Function<EntryElement, Price> function);
+	void addMinPriceOption(Class<? extends Entry> clazz, Function<EntryElement, Price> function) throws NotMinableException;
 
 	/**
 	 * Fetches a list of functions built to do some form of manipulation with a calculated min price.

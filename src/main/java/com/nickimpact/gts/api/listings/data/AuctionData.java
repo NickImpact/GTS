@@ -26,9 +26,12 @@ public class AuctionData {
 
 	private UUID highBidder;
 
-	private Text hbName;
+	private String hbNameString;
 
-	private List<Player> listeners = Lists.newArrayList();
+	@Deprecated
+	private transient Text hbName;
+
+	private transient List<Player> listeners = Lists.newArrayList();
 
 	private boolean ownerReceived;
 

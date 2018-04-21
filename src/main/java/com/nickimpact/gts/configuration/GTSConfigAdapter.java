@@ -123,6 +123,7 @@ public class GTSConfigAdapter implements ConfigAdapter {
 
 	@Override
 	public boolean getBoolean(String path, boolean def) {
+		this.checkMissing(path, def);
 		return resolvePath(path).getBoolean(def);
 	}
 

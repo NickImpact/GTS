@@ -11,6 +11,7 @@ import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.logs.Log;
 import com.nickimpact.gts.storage.dao.AbstractDao;
 import com.nickimpact.gts.storage.dao.sql.connection.AbstractConnectionFactory;
+import com.nickimpact.gts.storage.dao.sql.connection.hikari.MySqlConnectionFactory;
 import lombok.Getter;
 import org.spongepowered.api.text.Text;
 
@@ -158,40 +159,6 @@ public class SqlDao extends AbstractDao {
 					}
 				}
 			}
-
-			try {
-				if (tableExists(prefix.apply("{prefix}listings"))) {
-					GTS.getInstance().getConsole().ifPresent(console -> {
-						console.sendMessage(Text.of(GTSInfo.WARNING, "Detected legacy database, proceeding to update..."));
-					});
-					List<Listing> listings = this.getListings(TEMP);
-					this.dropTable("listings");
-
-					for (Listing listing : listings) {
-						listing.createUUID();
-						this.addListing(listing);
-					}
-					if(tableExists(prefix.apply("{prefix}held_entries"))) {
-						this.dropTable("held_entries");
-					}
-
-					if(tableExists(prefix.apply("{prefix}held_prices"))) {
-						this.dropTable("held_prices");
-					}
-
-					if(tableExists(prefix.apply("{prefix}logs"))) {
-						this.dropTable("logs");
-					}
-
-					GTS.getInstance().getConsole().ifPresent(console -> {
-						console.sendMessage(Text.of(GTSInfo.WARNING, String.format("Legacy conversion complete! Transferred %s listings!", listings.size())));
-					});
-				}
-			} catch (Exception e) {
-				GTS.getInstance().getConsole().ifPresent(console -> {
-					console.sendMessage(Text.of(GTSInfo.ERROR, "Unable to complete legacy conversion..."));
-				});
-			}
 		} catch (Exception e) {
 			plugin.getConsole().ifPresent(console -> console.sendMessage(Text.of(
 					GTSInfo.ERROR, "An error occurred whilst initializing the database..."
@@ -272,8 +239,16 @@ public class SqlDao extends AbstractDao {
 			try (PreparedStatement query = connection.prepareStatement(prefix.apply(key))) {
 				ResultSet results = query.executeQuery();
 				while(results.next()) {
+					String json = results.getString("listing");
+
+					if(this.provider instanceof MySqlConnectionFactory) {
+						if(json.contains("nbtJSON") && json.contains("\"id\": \"Pokemon\"")) {
+							String nbtJSON = "nbtJSON\": \"{";
+							json = json.substring(json.indexOf(nbtJSON) + nbtJSON.length(), json.indexOf("}\""));
+						}
+					}
 					try {
-						entries.add(GTS.prettyGson.fromJson(results.getString("listing"), Listing.class));
+						entries.add(GTS.prettyGson.fromJson(json, Listing.class));
 					} catch (JsonSyntaxException e) {
 						MessageUtils.genAndSendErrorMessage(
 								"JSON Syntax Error",

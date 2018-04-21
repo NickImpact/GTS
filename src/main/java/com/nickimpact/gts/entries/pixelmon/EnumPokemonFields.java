@@ -1,10 +1,13 @@
 package com.nickimpact.gts.entries.pixelmon;
 
+import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.configuration.ConfigKeys;
 import com.pixelmonmod.pixelmon.battles.attacks.specialAttacks.basic.HiddenPower;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVsStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
+import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -18,6 +21,16 @@ public enum EnumPokemonFields {
 	NAME(pokemon -> {
 		if(pokemon.isEgg) {
 			return "Unknown";
+		}
+
+		if(GTS.getInstance().getConfig().get(ConfigKeys.MEMES)) {
+			if (pokemon.getSpecies().equals(EnumPokemon.Psyduck)) {
+				return "AnDwHaT5 (Psyduck)";
+			}
+
+			if (pokemon.getSpecies().equals(EnumPokemon.Bidoof)) {
+				return "God himself (Bidoof)";
+			}
 		}
 
 		return pokemon.getName();
@@ -42,9 +55,17 @@ public enum EnumPokemonFields {
 	}),
 	FORM(EntityPixelmon::getForm),
 	CLONES(pokemon -> {
-		switch(pokemon.getSpecies()) {
-			case Mew:
-				return pokemon.getEntityData().getShort(NbtKeys.STATS_NUM_CLONED);
+		if(pokemon.getSpecies().equals(EnumPokemon.Mew)) {
+			return pokemon.getEntityData().getShort(NbtKeys.STATS_NUM_CLONED);
+		}
+		return 0;
+	}),
+	ENCHANTED(pokemon -> {
+		switch (pokemon.getSpecies()) {
+			case Mesprit:
+			case Azelf:
+			case Uxie:
+				return pokemon.getEntityData().getShort(NbtKeys.STATS_NUM_ENCHANTED);
 			default:
 				return 0;
 		}

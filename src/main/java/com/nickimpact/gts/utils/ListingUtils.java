@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
+import com.nickimpact.gts.api.listings.data.AuctionData;
+import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.entries.EntryHolder;
 import com.nickimpact.gts.api.listings.entries.Minable;
 import com.nickimpact.gts.api.listings.pricing.*;
@@ -77,7 +79,7 @@ public class ListingUtils {
 		    if(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_ENABLED) && listing.getEntry() instanceof Minable) {
 		    	MoneyPrice price = (MoneyPrice) listing.getEntry().getPrice();
 		    	try {
-				    MoneyPrice min = ((Minable) listing.getEntry()).calcMinPrice();
+				    MoneyPrice min = ((Minable) listing.getEntry()).calcMinPrice(player);
 				    if (price.getPrice().compareTo(min.getPrice()) < 0) {
 					    Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
 					    tokens.put("min_price", src -> Optional.of(min.getText()));
@@ -90,7 +92,7 @@ public class ListingUtils {
 						    ));
 					    } catch (NucleusException e) {
 						    player.sendMessage(Text.of(
-								    GTSInfo.ERROR, TextColors.GRAY, "To sell your ", TextColors.YELLOW, listing.getEntry().getName(),
+								    GTSInfo.ERROR, TextColors.GRAY, "To sell your ", TextColors.YELLOW, listing.getEntry().getName(player),
 								    TextColors.GRAY, "you must list it for ", TextColors.GREEN, min.getText()
 						    ));
 					    }
@@ -311,8 +313,7 @@ public class ListingUtils {
 			    addHeldPrice(new PriceHolder(UUID.randomUUID(), listing.getOwnerUUID(), price));
 		    } else {
 			    player.sendMessages(
-					    Text.of(GTSInfo.ERROR,
-					            "Unfortunately, you were unable to purchase the listing due to an error...")
+					    Text.of(GTSInfo.ERROR, "Unfortunately, you were unable to purchase the listing due to an error...")
 			    );
 			    GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(
 					    Text.of(GTSInfo.ERROR, e.getMessage())
@@ -343,17 +344,29 @@ public class ListingUtils {
 					e.printStackTrace();
 				}
 			} else {
+				MoneyPrice newPrice;
 				try {
-					if(!listing.getEntry().getPrice().canPay(player)) {
+					newPrice = ((MoneyPrice)listing.getEntry().getPrice()).calculate(listing.getAucData().getIncrement());
+					if(!newPrice.canPay(player)) {
 						player.sendMessage(Text.of(GTSInfo.ERROR, "Your balance is too low to bid..."));
 						return;
 					}
-				} catch (Exception e) {
+				} catch (PricingException e) {
 					return;
 				}
 
+				UUID oldHigh = listing.getAucData().getHighBidder();
+				Sponge.getServer().getPlayer(oldHigh).ifPresent(p -> {
+					Text.Builder builder = Text.builder();
+					builder.append();
+
+					p.sendMessages(builder.build());
+				});
+
 				listing.getAucData().setHighBidder(player.getUniqueId());
 				listing.getAucData().setHbName(Text.of(player.getName()));
+				listing.getAucData().setHbNameString(player.getName());
+				listing.increaseTimeForBid();
 				try {
 					player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
 							GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_BID),
