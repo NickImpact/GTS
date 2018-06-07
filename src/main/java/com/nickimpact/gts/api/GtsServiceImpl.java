@@ -1,20 +1,23 @@
 package com.nickimpact.gts.api;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.exceptions.NotMinableException;
 import com.nickimpact.gts.api.json.Registry;
 import com.nickimpact.gts.api.listings.entries.Entry;
-import com.nickimpact.gts.api.listings.entries.MinPriceMapping;
 import com.nickimpact.gts.api.listings.entries.Minable;
 import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.api.text.Token;
 import com.nickimpact.gts.api.text.TokenService;
 import com.nickimpact.gts.entries.items.ItemEntry;
+import com.nickimpact.gts.entries.pixelmon.PokemonEntry;
 import com.nickimpact.gts.entries.prices.ItemPrice;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
+import lombok.Getter;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 
@@ -31,7 +34,7 @@ public class GtsServiceImpl implements GtsService {
 	/** The registry that holds the typings for all prices */
 	private Registry<Price> prices = new Registry<>();
 
-	private MinPriceMapping minPriceMapping = new MinPriceMapping();
+	private ArrayListMultimap<Class<? extends Entry>, Function<Object, Price>> mapping = ArrayListMultimap.create();
 
 	private TokenService tokens;
 
@@ -50,12 +53,9 @@ public class GtsServiceImpl implements GtsService {
 		entries.forEach(entry -> {
 			try {
 				this.entries.register(entry);
-
-				if(!entry.equals(ItemEntry.class)) {
-					GTS.getInstance().getConsole().ifPresent(console -> {
-						console.sendMessage(Text.of(GTSInfo.PREFIX, "Loaded entry type: " + entry.getSimpleName()));
-					});
-				}
+				GTS.getInstance().getConsole().ifPresent(console -> {
+					console.sendMessage(Text.of(GTSInfo.PREFIX, "Loaded element type: " + entry.getSimpleName()));
+				});
 			} catch (Exception e) {
 				GTS.getInstance().getConsole().ifPresent(console -> {
 					console.sendMessage(Text.of(
@@ -103,20 +103,21 @@ public class GtsServiceImpl implements GtsService {
 	}
 
 	@Override
-	public void addMinPriceOption(Class<? extends Entry> clazz, Function<EntryElement, Price> function) throws NotMinableException {
+	public void addMinPriceOption(Class<? extends Entry> clazz, Function<Object, Price> function) throws NotMinableException {
 		this.getEntries().stream().filter(entry -> entry.equals(clazz)).forEach(
 				entry -> {
 					if(!entry.isAssignableFrom(Minable.class)) {
 						throw new NotMinableException(String.format("%s does not support min prices...", clazz.getSimpleName()));
 					}
-					this.minPriceMapping.getMapping().put(entry, function);
+
+					this.mapping.put(entry, function);
 				}
 		);
 	}
 
 	@Override
-	public Optional<List<Function<EntryElement, Price>>> getMinPriceOptions(Class<? extends Entry> clazz) {
-		return Optional.ofNullable(this.minPriceMapping.getMapping().get(clazz));
+	public Optional<List<Function<Object, Price>>> getMinPriceOptions(Class<? extends Entry> clazz) {
+		return Optional.ofNullable(this.mapping.get(clazz));
 	}
 
 	@Override
@@ -146,7 +147,8 @@ public class GtsServiceImpl implements GtsService {
 		}
 	}
 
-	private void addToken(Token token) throws Exception {
+	@Override
+	public void addToken(Token token) throws Exception {
 		this.getTokensService().register(token.getKey(), token.getTranslator());
 	}
 }

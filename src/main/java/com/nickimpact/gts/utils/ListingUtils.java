@@ -4,8 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
-import com.nickimpact.gts.api.listings.data.AuctionData;
-import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.entries.EntryHolder;
 import com.nickimpact.gts.api.listings.entries.Minable;
 import com.nickimpact.gts.api.listings.pricing.*;
@@ -25,9 +23,11 @@ import org.spongepowered.api.event.cause.EventContext;
 import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -72,14 +72,14 @@ public class ListingUtils {
 	    	// We can check here for minimum prices, if we decide to support it
 
 		    Map<String, Object> variables = Maps.newHashMap();
-		    variables.put("dummy", listing.getEntry().getElement());
+		    variables.put("dummy", listing.getEntry().getEntry());
 		    variables.put("dummy2", listing);
 		    variables.put("dummy3", listing.getEntry());
 
 		    if(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_ENABLED) && listing.getEntry() instanceof Minable) {
 		    	MoneyPrice price = (MoneyPrice) listing.getEntry().getPrice();
 		    	try {
-				    MoneyPrice min = ((Minable) listing.getEntry()).calcMinPrice(player);
+				    MoneyPrice min = ((Minable) listing.getEntry()).calcMinPrice();
 				    if (price.getPrice().compareTo(min.getPrice()) < 0) {
 					    Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
 					    tokens.put("min_price", src -> Optional.of(min.getText()));
@@ -92,7 +92,7 @@ public class ListingUtils {
 						    ));
 					    } catch (NucleusException e) {
 						    player.sendMessage(Text.of(
-								    GTSInfo.ERROR, TextColors.GRAY, "To sell your ", TextColors.YELLOW, listing.getEntry().getName(player),
+								    GTSInfo.ERROR, TextColors.GRAY, "To sell your ", TextColors.YELLOW, listing.getEntry().getName(),
 								    TextColors.GRAY, "you must list it for ", TextColors.GREEN, min.getText()
 						    ));
 					    }
@@ -225,7 +225,7 @@ public class ListingUtils {
 
     public static void purchase(Player player, Listing listing) {
 	    Map<String, Object> variables = Maps.newHashMap();
-	    variables.put("dummy", listing.getEntry().getElement());
+	    variables.put("dummy", listing.getEntry().getEntry());
 	    variables.put("dummy2", listing);
 	    variables.put("dummy3", listing.getEntry());
 
@@ -357,22 +357,22 @@ public class ListingUtils {
 
 				UUID oldHigh = listing.getAucData().getHighBidder();
 				Sponge.getServer().getPlayer(oldHigh).ifPresent(p -> {
-					Text.Builder builder = Text.builder();
-					builder.append();
-
-					p.sendMessages(builder.build());
+					Text message = Text.of(GTSInfo.PREFIX, TextColors.GRAY, TextActions.executeCallback(src -> bid((Player) src, listing)), TextActions.showText(Text.of(TextColors.GRAY, "Click to bid!")), "You've been ", TextColors.RED, "outbid", TextColors.GRAY, "... Click here to bid once more!");
+					p.sendMessages(message);
 				});
 
 				listing.getAucData().setHighBidder(player.getUniqueId());
 				listing.getAucData().setHbName(Text.of(player.getName()));
 				listing.getAucData().setHbNameString(player.getName());
-				listing.increaseTimeForBid();
+				if(listing.getExpiration().getTime() / 1000 - Date.from(Instant.now()).getTime() / 1000 < 15) {
+					listing.increaseTimeForBid();
+				}
 				try {
 					player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
 							GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_BID),
 							player,
 							null,
-							null
+							variables
 					));
 				} catch (NucleusException e) {
 					GTS.getInstance().getConsole().ifPresent(console -> {

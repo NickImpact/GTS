@@ -78,7 +78,7 @@ public class ConfirmUI extends InventoryBase {
 
 	private void drawConfirmIcon() {
 		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("dummy", target.getEntry().getElement());
+		variables.put("dummy", target.getEntry().getEntry());
 		variables.put("dummy2", target);
 		variables.put("dummy3", target.getEntry());
 

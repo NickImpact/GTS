@@ -40,7 +40,7 @@ public class Log {
 	}
 
 	/**
-	 * Returns the ID of the log entry
+	 * Returns the ID of the log element
 	 *
 	 * @return The log ID
 	 */
@@ -67,7 +67,7 @@ public class Log {
 	}
 
 	/**
-	 * Fetches the actual log entry for the log
+	 * Fetches the actual log element for the log
 	 *
 	 * @return The information pertaining to a log
 	 */

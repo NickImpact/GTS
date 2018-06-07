@@ -49,7 +49,7 @@ public class ListingTasks {
 					        Sponge.getServer().getPlayer(listing.getOwnerUUID()).ifPresent(player -> {
 						        try {
 							        Map<String, Object> variables = Maps.newHashMap();
-							        variables.put("dummy", listing.getEntry().getElement());
+							        variables.put("dummy", listing.getEntry().getEntry());
 							        variables.put("dummy2", listing);
 							        variables.put("dummy3", listing.getEntry());
 							        player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
@@ -97,7 +97,7 @@ public class ListingTasks {
 		Map<String, Object> variables = Maps.newHashMap();
 	    variables.put("dummy", listing);
 	    variables.put("dummy2", listing.getEntry());
-	    variables.put("dummy3", listing.getEntry().getElement());
+	    variables.put("dummy3", listing.getEntry().getEntry());
 
 	    Player player = owner.get();
 	    if(!listing.getEntry().giveEntry(player))
@@ -131,7 +131,7 @@ public class ListingTasks {
 	    }
 
 	    Map<String, Object> variables = Maps.newHashMap();
-	    variables.put("dummy", listing.getEntry().getElement());
+	    variables.put("dummy", listing.getEntry().getEntry());
 	    variables.put("dummy2", listing);
 	    variables.put("dummy3", listing.getEntry());
 	    try {

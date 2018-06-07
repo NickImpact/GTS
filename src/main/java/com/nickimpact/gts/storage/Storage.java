@@ -99,21 +99,21 @@ public interface Storage {
 
 	/**
 	 * In the event an {@link Entry} is unable to be given to a user, due to it not supporting
-	 * offline rewarding, we will store the entry into storage until their next login.
+	 * offline rewarding, we will store the element into storage until their next login.
 	 * That way, we can ensure the user receives their reward in the event the server
 	 * closes down for any reason.
 	 *
-	 * @param holder A wrapper which holds the user's UUID along with the entry they are to receive
-	 * @return A completable future in which an entry is to be stored temporarily within the storage provider
+	 * @param holder A wrapper which holds the user's UUID along with the element they are to receive
+	 * @return A completable future in which an element is to be stored temporarily within the storage provider
 	 */
 	CompletableFuture<Void> addHeldElement(EntryHolder holder);
 
 	/**
-	 * Removes an {@link Entry} from the storage provider based on the user's UUID and the entry itself.
+	 * Removes an {@link Entry} from the storage provider based on the user's UUID and the element itself.
 	 * This method should only be called after a player has received the reward they originally did not.
 	 *
-	 * @param holder A wrapper which holds the user's UUID along with the entry they are to receive
-	 * @return A completable future in which an entry is removed from temporary storage
+	 * @param holder A wrapper which holds the user's UUID along with the element they are to receive
+	 * @return A completable future in which an element is removed from temporary storage
 	 */
 	CompletableFuture<Void> removeHeldElement(EntryHolder holder);
 
@@ -126,7 +126,7 @@ public interface Storage {
 
 	/**
 	 * In the event a {@link Price} is unable to be given to a receiver, due to it not supporting
-	 * offline rewarding, we will store the entry into storage until their next login.
+	 * offline rewarding, we will store the element into storage until their next login.
 	 * That way, we can ensure the user receives their reward in the event the server
 	 * closes down for any reason.
 	 *
@@ -139,7 +139,7 @@ public interface Storage {
 	 * Removes a {@link Price} from the storage provider based on the user's UUID and the price itself.
 	 * This method should only be called after a player has received the reward they originally did not.
 	 *
-	 * @param holder A wrapper which holds the user's UUID along with the entry they are to receive
+	 * @param holder A wrapper which holds the user's UUID along with the element they are to receive
 	 * @return A completable future in which an price is removed from temporary storage
 	 */
 	CompletableFuture<Void> removeHeldPrice(PriceHolder holder);

@@ -17,6 +17,7 @@ import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import io.github.nucleuspowered.nucleus.api.exceptions.PluginAlreadyRegisteredException;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
 import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 

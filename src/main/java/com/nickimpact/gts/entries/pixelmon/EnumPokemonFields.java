@@ -70,23 +70,23 @@ public enum EnumPokemonFields {
 				return 0;
 		}
 	}),
-	EV_PERCENT(pokemon -> new DecimalFormat("#0.##").format(totalEVs(pokemon.stats.EVs) / 510.0 * 100) + "%"),
-	IV_PERCENT(pokemon -> new DecimalFormat("#0.##").format(totalIVs(pokemon.stats.IVs) / 186.0 * 100) + "%"),
-	EV_TOTAL(pokemon -> (int)totalEVs(pokemon.stats.EVs)),
-	IV_TOTAL(pokemon -> (int)totalIVs(pokemon.stats.IVs)),
+	EV_PERCENT(pokemon -> new DecimalFormat("#0.##").format(totalEVs(pokemon.stats.evs) / 510.0 * 100) + "%"),
+	IV_PERCENT(pokemon -> new DecimalFormat("#0.##").format(totalIVs(pokemon.stats.ivs) / 186.0 * 100) + "%"),
+	EV_TOTAL(pokemon -> (int)totalEVs(pokemon.stats.evs)),
+	IV_TOTAL(pokemon -> (int)totalIVs(pokemon.stats.ivs)),
 	NICKNAME(pokemon -> TextSerializers.LEGACY_FORMATTING_CODE.deserialize(pokemon.getNickname())),
-	EV_HP(pokemon -> pokemon.stats.EVs.HP),
-	EV_ATK(pokemon -> pokemon.stats.EVs.Attack),
-	EV_DEF(pokemon -> pokemon.stats.EVs.Defence),
-	EV_SPATK(pokemon -> pokemon.stats.EVs.SpecialAttack),
-	EV_SPDEF(pokemon -> pokemon.stats.EVs.SpecialDefence),
-	EV_SPEED(pokemon -> pokemon.stats.EVs.Speed),
-	IV_HP(pokemon -> pokemon.stats.IVs.HP),
-	IV_ATK(pokemon -> pokemon.stats.IVs.Attack),
-	IV_DEF(pokemon -> pokemon.stats.IVs.Defence),
-	IV_SPATK(pokemon -> pokemon.stats.IVs.SpAtt),
-	IV_SPDEF(pokemon -> pokemon.stats.IVs.SpDef),
-	IV_SPEED(pokemon -> pokemon.stats.IVs.Speed),
+	EV_HP(pokemon -> pokemon.stats.evs.hp),
+	EV_ATK(pokemon -> pokemon.stats.evs.attack),
+	EV_DEF(pokemon -> pokemon.stats.evs.defence),
+	EV_SPATK(pokemon -> pokemon.stats.evs.specialAttack),
+	EV_SPDEF(pokemon -> pokemon.stats.evs.specialDefence),
+	EV_SPEED(pokemon -> pokemon.stats.evs.speed),
+	IV_HP(pokemon -> pokemon.stats.ivs.HP),
+	IV_ATK(pokemon -> pokemon.stats.ivs.Attack),
+	IV_DEF(pokemon -> pokemon.stats.ivs.Defence),
+	IV_SPATK(pokemon -> pokemon.stats.ivs.SpAtt),
+	IV_SPDEF(pokemon -> pokemon.stats.ivs.SpDef),
+	IV_SPEED(pokemon -> pokemon.stats.ivs.Speed),
 	SPECIAL_TEXTURE(pokemon -> {
 		try {
 			return EnumSpecialTexture.fromIndex(pokemon.getSpecialTextureIndex()).name();
@@ -94,7 +94,7 @@ public enum EnumPokemonFields {
 			return "";
 		}
 	}),
-	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.stats.IVs)),
+	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.stats.ivs)),
 	MOVES_1(pokemon -> pokemon.getMoveset().attacks[0].baseAttack.getLocalizedName()),
 	MOVES_2(pokemon -> pokemon.getMoveset().attacks[1].baseAttack.getLocalizedName()),
 	MOVES_3(pokemon -> pokemon.getMoveset().attacks[2].baseAttack.getLocalizedName()),
@@ -107,7 +107,7 @@ public enum EnumPokemonFields {
 	}
 
 	private static double totalEVs(EVsStore evs) {
-		return evs.HP + evs.Attack + evs.Defence + evs.SpecialAttack + evs.SpecialDefence + evs.Speed;
+		return evs.hp + evs.attack + evs.defence + evs.specialAttack + evs.specialDefence + evs.speed;
 	}
 
 	private static double totalIVs(IVStore ivs) {

@@ -18,6 +18,8 @@ import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
+import com.pixelmonmod.pixelmon.battles.BattleRegistry;
+import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -41,6 +43,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 
 import java.math.BigDecimal;
@@ -74,32 +77,34 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	}
 
 	@Override
-	public String getSpecsTemplate(Player player) {
+	public String getSpecsTemplate() {
 		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE);
 	}
 
 	@Override
-	public String getName(Player player) {
-		return this.getElement().getPokemon(player).getName();
+	public String getName() {
+		return this.getEntry().getPokemon().getName();
 	}
 
 	@Override
-	public ItemStack baseItemStack(Player player) {
-		return getPicture(this.getElement().getPokemon(player));
+	public ItemStack baseItemStack() {
+		return getPicture(this.getEntry().getPokemon());
 	}
 
 	@Override
-	public String baseTitleTemplate(Player player) {
+	public String baseTitleTemplate() {
 		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_TITLE);
 	}
 
 	@Override
-	public List<String> baseLoreTemplate(Player player, boolean auction) {
+	public List<String> baseLoreTemplate(boolean auction) {
 		List<String> template = Lists.newArrayList();
 		template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_LORE));
 
-		if(this.getElement().getPokemon(player).getSpecies().equals(EnumPokemon.Mew)) {
+		if(this.getEntry().getPokemon().getSpecies().equals(EnumPokemon.Mew)) {
 			template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_MEW_CLONES));
+		} else if(LakeTrio.isMember(this.getEntry().getPokemon().getSpecies())) {
+			template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_LAKE_TRIO));
 		}
 
 		if(auction) {
@@ -112,18 +117,18 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	}
 
 	@Override
-	public ItemStack confirmItemStack(Player player) {
-		return getPicture(this.getElement().getPokemon(player));
+	public ItemStack confirmItemStack() {
+		return getPicture(this.getEntry().getPokemon());
 	}
 
 	@Override
-	protected String confirmTitleTemplate(Player player, boolean auction) {
+	protected String confirmTitleTemplate(boolean auction) {
 		return !auction ? GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE) :
 				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE_AUCTION);
 	}
 
 	@Override
-	protected List<String> confirmLoreTemplate(Player player, boolean auction) {
+	protected List<String> confirmLoreTemplate(boolean auction) {
 		return !auction ? GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE) :
 				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE_AUCTION);
 	}
@@ -143,8 +148,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 		if (!optStorage.isPresent())
 			return false;
 
-		Player player = Sponge.getServer().getPlayer(user.getUniqueId()).get();
-		optStorage.get().addToParty(this.getElement().getPokemon(player));
+		optStorage.get().addToParty(this.getEntry().getPokemon());
 		optStorage.get().sendUpdatedList();
 
 		return true;
@@ -152,7 +156,13 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
 	@Override
 	public boolean doTakeAway(Player player) {
-		if(GTS.getInstance().getConfig().get(ConfigKeys.BLACKLISTED_POKEMON).stream().anyMatch(name -> name.equalsIgnoreCase(this.getElement().getPokemon(player).getName()))){
+		if(GTS.getInstance().getConfig().get(ConfigKeys.BLACKLISTED_POKEMON).stream().anyMatch(name -> name.equalsIgnoreCase(this.getEntry().getPokemon().getName()))){
+			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));
+			return false;
+		}
+
+		if(BattleRegistry.getBattle(player.getName()) != null) {
+			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "You are in battle, you can't sell any pokemon currently..."));
 			return false;
 		}
 
@@ -161,7 +171,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 			return false;
 
 		ps.recallAllPokemon();
-		ps.removeFromPartyPlayer(ps.getPosition(this.getElement().getPokemon(player).getPokemonId()));
+		ps.removeFromPartyPlayer(ps.getPosition(this.getEntry().getPokemon().getPokemonId()));
 		ps.sendUpdatedList();
 
 		return true;
@@ -193,10 +203,10 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	}
 
 	@Override
-	public MoneyPrice calcMinPrice(Player player) throws PricingException{
+	public MoneyPrice calcMinPrice() throws PricingException {
 		MoneyPrice price = new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_BASE));
-		Pokemon poke = this.getElement();
-		EntityPixelmon pokemon = this.getElement().getPokemon(player);
+		Pokemon poke = this.getEntry();
+		EntityPixelmon pokemon = this.getEntry().getPokemon();
 		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getName());
 		if(isLegend && pokemon.getIsShiny()) {
 			price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY)));
@@ -206,7 +216,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 			price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY)));
 		}
 
-		for(int iv : pokemon.stats.IVs.getArray()) {
+		for(int iv : pokemon.stats.ivs.getArray()) {
 			if(iv >= GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_IVS_MINVAL)) {
 				price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_IVS_PRICE)));
 			}
@@ -216,12 +226,12 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 			price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_HA)));
 		}
 
-		Optional<List<Function<EntryElement, Price>>> extras = Sponge.getServiceManager().provideUnchecked(GtsService.class).getMinPriceOptions(this.getClass());
+		Optional<List<Function<Object, Price>>> extras = Sponge.getServiceManager().provideUnchecked(GtsService.class).getMinPriceOptions(this.getClass());
 		if(extras.isPresent()) {
-			for(Function<EntryElement, Price> function : extras.get()) {
-				Price p = function.apply(poke);
+			for(Function<Object, Price> function : extras.get()) {
+				Price p = function.apply(pokemon);
 				if(p instanceof MoneyPrice) {
-					price.add((MoneyPrice) function.apply(poke));
+					price.add((MoneyPrice) function.apply(pokemon));
 				} else {
 					GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(Text.of(
 							GTSInfo.WARNING, "Pricing other than MoneyPrice are not yet supported for min price calculation..."
@@ -306,11 +316,9 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 							if(!mp.isLowerOrEqual()) {
 								throw new CommandException(Text.of("Your money request is above the max amount of " + new MoneyPrice(mp.getMax()).getText()));
 							}
-							PokemonEntry entry = new PokemonEntry(pokemon, mp);
-							entry.element.getPokemon(player);
 							lb = Listing.builder()
 									.player(player)
-									.entry(entry)
+									.entry(new PokemonEntry(pokemon, mp))
 									.doesExpire()
 									.expiration(
 											!isAuction ? GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME) :
@@ -350,6 +358,28 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 			}
 
 			throw new CommandException(Text.of("Only players may use this command..."));
+		}
+	}
+
+	private enum LakeTrio {
+		Mesprit(EnumPokemon.Mesprit),
+		Azelf(EnumPokemon.Azelf),
+		Uxie(EnumPokemon.Uxie);
+
+		private EnumPokemon species;
+
+		LakeTrio(EnumPokemon species) {
+			this.species = species;
+		}
+
+		public static boolean isMember(EnumPokemon species) {
+			for(LakeTrio guardian : values()) {
+				if(guardian.species == species) {
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }

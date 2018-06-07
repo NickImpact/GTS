@@ -81,7 +81,7 @@ public class MsgConfigKeys {
 			"{{gts_prefix}} &7Congrats! You've won the auction on the &e{{listing_specifics}} &7for &a{{price}}&7!"
 	));
 	public static final ConfigKey<List<String>> AUCTION_SOLD = ListKey.of("general.auctions.sold", Lists.newArrayList(
-			"{{gts_prefix}} &7You're &e{{listing_specifics}} &7auction was sold to &e{{high_bidder}} &7for &a{{price}}&7!"
+			"{{gts_prefix}} &7Your &e{{listing_specifics}} &7auction was sold to &e{{high_bidder}} &7for &a{{price}}&7!"
 	));
 	public static final ConfigKey<List<String>> AUCTION_IS_HIGH_BIDDER = ListKey.of("general.auctions.is-high-bidder", Lists.newArrayList(
 			"{{gts_prefix}} &cHold off! You wouldn't want to bid against yourself!"
@@ -136,7 +136,7 @@ public class MsgConfigKeys {
 			"&7Clones: &e{{clones}}"
 	));
 	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_LAKE_TRIO = ListKey.of("entries.pokemon.base.lore.lake-trio", Lists.newArrayList(
-			"&7Clones: &e{{clones}}"
+			"&7Gemmed: &e{{enchanted}}"
 	));
 	public static final ConfigKey<String> POKEMON_ENTRY_CONFIRM_TITLE = StringKey.of("entries.pokemon.confirm.title", "&ePurchase {{pokemon}}?");
 	public static final ConfigKey<List<String>> POKEMON_ENTRY_CONFIRM_LORE = ListKey.of("entries.pokemon.confirm.lore", Lists.newArrayList(

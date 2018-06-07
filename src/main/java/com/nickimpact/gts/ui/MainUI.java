@@ -140,17 +140,16 @@ public class MainUI extends InventoryBase implements Observer {
 			for(x = 0; x < 6; x++, index++) {
 				if(index >= listings.size())
 					break;
-				final int pos = index;
-				Icon icon = new Icon(x + (9 * y), listings.get(pos).getDisplay(this.player, false));
+				final Listing listing = listings.get(index);
+				Icon icon = new Icon(x + (9 * y), listing.getDisplay(this.player, false));
 				icon.addListener(clickable -> {
-					Listing l = listings.get(pos);
-					UUID uuid = l.getUuid();
+					UUID uuid = listing.getUuid();
 
-					if(GTS.getInstance().getListingsCache().stream().anyMatch(listing -> listing.getUuid() == uuid)) {
+					if(GTS.getInstance().getListingsCache().stream().anyMatch(listing1 -> listing1.getUuid() == uuid)) {
 						Sponge.getScheduler().createTaskBuilder()
 								.execute(() -> {
 									clickable.getPlayer().closeInventory();
-									clickable.getPlayer().openInventory(new ConfirmUI(this.player, l, searchCondition).getInventory());
+									clickable.getPlayer().openInventory(new ConfirmUI(this.player, listing, searchCondition).getInventory());
 								})
 								.delayTicks(1)
 								.submit(GTS.getInstance());

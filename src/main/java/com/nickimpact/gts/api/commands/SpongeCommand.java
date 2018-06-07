@@ -7,6 +7,7 @@ import com.nickimpact.gts.api.commands.annotations.AdminCmd;
 import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.commands.annotations.Parent;
 import com.nickimpact.gts.api.utils.MessageUtils;
+import lombok.Getter;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandElement;
@@ -29,7 +30,7 @@ import java.util.List;
  */
 public abstract class SpongeCommand implements CommandExecutor
 {
-    private String basePermission;
+    @Getter private String permission = "???";
 
     public SpongeCommand()
     {
@@ -68,16 +69,16 @@ public abstract class SpongeCommand implements CommandExecutor
     {
     	CommandSpec.Builder cb = CommandSpec.builder();
     	if(!(this instanceof SpongeSubCommand)) {
-		    this.basePermission = formPermission(null, this.getAllAliases().get(0));
+		    this.permission = formPermission(null, this.getAllAliases().get(0));
 	    }
-	    cb.permission(this.basePermission);
+	    cb.permission(this.permission);
 
         SpongeCommand[] subCmds = getSubCommands();
         HashMap<List<String>, CommandSpec> subCommands = new HashMap<>();
         if (subCmds != null && subCmds.length > 0)
             for (SpongeCommand cmd : subCmds)
             {
-                cmd.basePermission = formPermission(this.getClass().isAnnotationPresent(Parent.class) ? this.getAllAliases().get(0) : null, cmd.getAllAliases().get(0));
+                cmd.permission = formPermission(this.getClass().isAnnotationPresent(Parent.class) ? this.getAllAliases().get(0) : null, cmd.getAllAliases().get(0));
                 subCommands.put(cmd.getAllAliases(), cmd.getCommandSpec());
             }
 
@@ -112,7 +113,7 @@ public abstract class SpongeCommand implements CommandExecutor
     }
 
     public boolean testPermissionSuffix(CommandSource src, String suffix) {
-        return src.hasPermission(this.basePermission + "." + suffix);
+        return src.hasPermission(this.permission + "." + suffix);
     }
 
     public void sendCommandUsage(CommandSource src)

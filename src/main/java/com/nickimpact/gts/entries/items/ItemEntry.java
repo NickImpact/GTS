@@ -34,7 +34,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Represents an ItemStack that can be added as an entry into the GTS market. The generified typing
+ * Represents an ItemStack that can be added as an element into the GTS market. The generified typing
  * here represents the lower-level phase of the ItemStack, as an ItemStack in a generic setup
  * like such produces a MalformedParameterizedTypeException, prevention serialization. Luckily
  * for us, Sponge provides a way to go from this low-level back up, so we can simply store the
@@ -69,17 +69,18 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@Override
-	public String getSpecsTemplate(Player player) {
+	public String getSpecsTemplate() {
 		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_SPEC_TEMPLATE);
 	}
 
 	@Override
-	public String getName(Player player) {
-		return this.decode().getTranslation().get();
+	public String getName() {
+		ItemStack item = this.decode();
+		return item.get(Keys.DISPLAY_NAME).orElse(Text.of(item.getType().getName())).toPlain();
 	}
 
 	@Override
-	protected ItemStack baseItemStack(Player player) {
+	protected ItemStack baseItemStack() {
 		return ItemStack.builder()
 				.itemType(this.decode().getType())
 				.quantity(this.decode().getQuantity())
@@ -88,12 +89,12 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@Override
-	protected String baseTitleTemplate(Player player) {
+	protected String baseTitleTemplate() {
 		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_TITLE);
 	}
 
 	@Override
-	protected List<String> baseLoreTemplate(Player player, boolean auction) {
+	protected List<String> baseLoreTemplate(boolean auction) {
 		List<String> lore = Lists.newArrayList();
 		lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_LORE));
 
@@ -114,18 +115,18 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@Override
-	protected ItemStack confirmItemStack(Player player) {
-		return baseItemStack(player);
+	protected ItemStack confirmItemStack() {
+		return baseItemStack();
 	}
 
 	@Override
-	protected String confirmTitleTemplate(Player player, boolean auction) {
+	protected String confirmTitleTemplate(boolean auction) {
 		return !auction ? GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_TITLE) :
 				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_TITLE_AUCTION);
 	}
 
 	@Override
-	protected List<String> confirmLoreTemplate(Player player, boolean auction) {
+	protected List<String> confirmLoreTemplate(boolean auction) {
 		List<String> lore = Lists.newArrayList();
 		if(!auction) {
 			lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_LORE));

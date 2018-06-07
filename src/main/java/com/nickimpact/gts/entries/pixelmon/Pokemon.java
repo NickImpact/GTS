@@ -1,12 +1,11 @@
 package com.nickimpact.gts.entries.pixelmon;
 
-import com.nickimpact.gts.api.exceptions.InvalidNBTException;
 import com.nickimpact.gts.utils.GsonUtils;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
-import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.Sponge;
 
 /**
  * (Some note will go here)
@@ -28,15 +27,11 @@ public class Pokemon {
 		nbtJSON = GsonUtils.serialize(this.nbt);
 	}
 
-	public EntityPixelmon getPokemon(Player player) throws InvalidNBTException {
+	public EntityPixelmon getPokemon() {
 		if(this.pokemon == null) {
-			try {
-				this.pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(
-						decode(), (World) player.getWorld()
-				);
-			} catch (Exception e) {
-				throw new InvalidNBTException(this.nbtJSON, null);
-			}
+			this.pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(
+					decode(), (World) Sponge.getServer().getWorld(Sponge.getServer().getDefaultWorldName()).orElse(Sponge.getServer().getOnlinePlayers().iterator().next().getWorld())
+			);
 		}
 
 		return this.pokemon;

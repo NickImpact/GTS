@@ -26,21 +26,21 @@ import java.util.UUID;
  */
 public final class Listing {
 
-    /** The ID of the entry */
+    /** The ID of the element */
     @Deprecated @Getter private final int ID;
 
-    /** The Unique ID of the entry */
+    /** The Unique ID of the element */
     @Getter private UUID uuid;
 
-    /** The owner of the entry */
+    /** The owner of the element */
     @Getter private final String ownerName;
 
-    /** The uuid of the entry owner */
+    /** The uuid of the element owner */
     @Getter private final UUID ownerUUID;
 
     @Getter private final Entry entry;
 
-    /** Whether or not the entry will expire */
+    /** Whether or not the element will expire */
     private final boolean expires;
 
     /** When the lot will expire, if the above is true */
@@ -127,7 +127,7 @@ public final class Listing {
     }
 
 	/**
-	 * States whether or not a lot entry can expire
+	 * States whether or not a lot element can expire
 	 *
 	 * @return True if it can expire, false otherwise
 	 */
@@ -145,10 +145,10 @@ public final class Listing {
     }
 
 	/**
-	 * Returns the name of a lot entry. Common uses of this method might be its use in messages displayed
+	 * Returns the name of a lot element. Common uses of this method might be its use in messages displayed
 	 * to users.
 	 *
-	 * @return The name of a lot entry.
+	 * @return The name of a lot element.
 	 */
 	public String getName() {
 		return entry.getName();

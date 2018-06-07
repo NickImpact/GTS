@@ -48,6 +48,7 @@ import java.sql.*;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 
 public class SqlDao extends AbstractDao {
@@ -108,7 +109,6 @@ public class SqlDao extends AbstractDao {
 			stmt = String.format(stmt, uuid);
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
-				ps.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,7 +121,6 @@ public class SqlDao extends AbstractDao {
 			stmt = String.format(stmt, id);
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
-				ps.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -135,7 +134,7 @@ public class SqlDao extends AbstractDao {
 
 			// Init tables
 			if(!tableExists(prefix.apply("{prefix}listings_v2"))) {
-				String schemaFileName = "schema/" + provider.getName().toLowerCase() + ".sql";
+				String schemaFileName = "com/nickimpact/gts/schema/" + provider.getName().toLowerCase() + ".sql";
 				try (InputStream is = plugin.getResourceStream(schemaFileName)) {
 					if(is == null) {
 						throw new Exception("Couldn't locate schema file for " + provider.getName());
@@ -194,7 +193,6 @@ public class SqlDao extends AbstractDao {
 			String stmt = prefix.apply(String.format(TEMP_DROP, table));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.execute();
-				ps.close();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -217,7 +215,6 @@ public class SqlDao extends AbstractDao {
 			stmt = String.format(stmt, listing.getUuid(), listing.getOwnerUUID(), GTS.prettyGson.toJson(listing));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
-				ps.close();
 			}
 		} catch (Exception e) {
 			GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(
@@ -234,7 +231,6 @@ public class SqlDao extends AbstractDao {
 			stmt = String.format(stmt, GTS.prettyGson.toJson(listing), listing.getUuid());
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
-				ps.close();
 			}
 		} catch (Exception e) {
 			GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(
@@ -265,7 +261,12 @@ public class SqlDao extends AbstractDao {
 					if(this.provider instanceof MySqlConnectionFactory) {
 						if(json.contains("nbtJSON") && json.contains("\"id\": \"Pokemon\"")) {
 							String nbtJSON = "nbtJSON\": \"{";
-							json = json.substring(json.indexOf(nbtJSON) + nbtJSON.length(), json.indexOf("}\""));
+							String nbt = json.substring(json.indexOf(nbtJSON) + nbtJSON.length(), json.indexOf("}\""));
+							int length = nbt.length();
+							String reformated = json.substring(0, json.indexOf(nbtJSON) + nbtJSON.length());
+							reformated += Pattern.compile("\"").matcher(nbt).replaceAll("\\\\\"");
+							reformated += json.substring(json.indexOf(nbt) + length);
+							json = reformated;
 						}
 					}
 					try {
@@ -279,7 +280,6 @@ public class SqlDao extends AbstractDao {
 					}
 				}
 				results.close();
-				query.close();
 			}
 		}
 
@@ -293,7 +293,6 @@ public class SqlDao extends AbstractDao {
 			stmt = String.format(stmt, log.getID(), log.getSource(), GTS.prettyGson.toJson(log));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
-				ps.close();
 			}
 		}
 	}
@@ -321,7 +320,6 @@ public class SqlDao extends AbstractDao {
 					}
 				}
 				results.close();
-				query.close();
 			}
 		}
 
@@ -335,7 +333,6 @@ public class SqlDao extends AbstractDao {
 			stmt = String.format(stmt, holder.getId(), GTS.prettyGson.toJson(holder));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
-				ps.close();
 			}
 		}
 	}
@@ -363,7 +360,6 @@ public class SqlDao extends AbstractDao {
 					}
 				}
 				results.close();
-				query.close();
 			}
 		}
 
@@ -377,7 +373,6 @@ public class SqlDao extends AbstractDao {
 			stmt = String.format(stmt, holder.getId(), GTS.prettyGson.toJson(holder));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
-				ps.close();
 			}
 		}
 	}
@@ -405,7 +400,6 @@ public class SqlDao extends AbstractDao {
 					}
 				}
 				results.close();
-				query.close();
 			}
 		}
 
@@ -419,7 +413,6 @@ public class SqlDao extends AbstractDao {
 			stmt = String.format(stmt, uuid);
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
-				ps.close();
 			}
 		}
 	}
@@ -431,7 +424,6 @@ public class SqlDao extends AbstractDao {
 			stmt = String.format(stmt, uuid);
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
-				ps.close();
 			}
 		}
 	}
@@ -446,7 +438,6 @@ public class SqlDao extends AbstractDao {
 					ignorers.add(UUID.fromString(results.getString("uuid")));
 
 				results.close();
-				query.close();
 			}
 		}
 
@@ -458,12 +449,10 @@ public class SqlDao extends AbstractDao {
 		try (Connection connection = provider.getConnection()) {
 			try (PreparedStatement stmt = connection.prepareStatement(prefix.apply(TRUNCATE_LISTINGS))) {
 				stmt.executeUpdate();
-				stmt.close();
 			}
 
 			try (PreparedStatement stmt = connection.prepareStatement(prefix.apply(TRUNCATE_LOGS))) {
 				stmt.executeUpdate();
-				stmt.close();
 			}
 
 			// Clear the cache

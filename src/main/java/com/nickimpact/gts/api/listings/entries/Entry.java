@@ -19,19 +19,19 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An entry represents the actual elements we add into the GTS listings. Essentially, they provide
- * the backbone information for each type of listing. For example, one entry type pertains to pokemon,
+ * An element represents the actual elements we add into the GTS listings. Essentially, they provide
+ * the backbone information for each type of listing. For example, one element type pertains to pokemon,
  * while another pertains to items.
  *
  * <p>
- * An entry is responsible for two things. One, being that it must provide some way for GSON to know
+ * An element is responsible for two things. One, being that it must provide some way for GSON to know
  * how to deserialize it. If the {@link Typing} annotation is found to be missing from the class, the
  * ID for deserialization will default to the class name.
  * </p>
  *
  * <p>
- * The second things an entry must provide is the {@link Price}. Like Entries, Prices are also extendable,
- * allowing for custom price settings. The entry itself holds the Price information, purely due to the
+ * The second things an element must provide is the {@link Price}. Like Entries, Prices are also extendable,
+ * allowing for custom price settings. The element itself holds the Price information, purely due to the
  * fact that the {@link Listing} class really just represents the holder for these elements.
  * </p>
  *
@@ -39,50 +39,59 @@ import java.util.Map;
  */
 public abstract class Entry<T> {
 
-	/** The id typing for an entry (used for GSON deserialization) */
+	/** The id typing for an element (used for GSON deserialization) */
 	@Getter private final String id;
 
-	/** The element held within the entry */
+	/** The element held within the element */
 	protected T element;
 
-	/** The price of the entry */
+	/** Insurance for the 3.8 data */
+	@Deprecated protected T entry;
+
+	/** The price of the element */
 	protected Price price;
 
 	public Entry() {
 		this.id = "";
 	}
 
-	public Entry(T element, Price price) {
-		if(this.getClass().isAnnotationPresent(Typing.class))
+	public Entry(T entry, Price price) {
+		if(this.getClass().isAnnotationPresent(Typing.class)) {
 			this.id = this.getClass().getAnnotation(Typing.class).value();
-		else
+		} else {
 			this.id = this.getClass().getSimpleName();
-		this.element = element;
+		}
+
+		this.element = entry;
 		this.price = price;
 	}
 
 	/**
-	 * Fetches the element held by this entry.
+	 * Fetches the element held by this element.
 	 *
-	 * @return The elemnt held by this entry.
+	 * @return The elemnt held by this element.
 	 */
-	public T getElement() {
-		return element;
+	public T getEntry() {
+		if(this.element != null) {
+			return element;
+		} else {
+			return entry;
+		}
 	}
 
 	/**
-	 * Fetches the price of the entry
+	 * Fetches the price of the element
 	 *
-	 * @return The price of the entry
+	 * @return The price of the element
 	 */
 	public Price getPrice() {
 		return this.price;
 	}
 
 	/**
-	 * This here declares how "/gts sell" will process your entry type. For example, a pokemon entry
+	 * This here declares how "/gts sell" will process your element type. For example, a pokemon element
 	 * will be formatted as such: "/gts sell pokemon (any additional args)". We handle it like such so
-	 * that each entry type has a specific way to add in their options.
+	 * that each element type has a specific way to add in their options.
 	 *
 	 * <p>
 	 * Note: This method will be deprecated, as future plans will call for a gui rather than specifying a command.
@@ -94,28 +103,28 @@ public abstract class Entry<T> {
 	 */
 	public abstract SpongeSubCommand commandSpec(boolean isAuction);
 
-	public abstract String getSpecsTemplate(Player player);
+	public abstract String getSpecsTemplate();
 
 	/**
 	 * Retrieves the name of a listing
 	 *
-	 * @return The name of an entry
+	 * @return The name of an element
 	 */
-	public abstract String getName(Player player);
+	public abstract String getName();
 
 	/**
-	 * Represents the ItemStack that will be used to represent the entry in the listing display
+	 * Represents the ItemStack that will be used to represent the element in the listing display
 	 *
-	 * @return An ItemStack built to represent an entry
+	 * @return An ItemStack built to represent an element
 	 */
-	protected abstract ItemStack baseItemStack(Player player);
+	protected abstract ItemStack baseItemStack();
 
-	protected abstract String baseTitleTemplate(Player player);
+	protected abstract String baseTitleTemplate();
 
-	protected abstract List<String> baseLoreTemplate(Player player, boolean auction);
+	protected abstract List<String> baseLoreTemplate(boolean auction);
 
 	public ItemStack getBaseDisplay(Player player, Listing listing) {
-		ItemStack item = baseItemStack(player);
+		ItemStack item = baseItemStack();
 		applyExtensions(player, item, listing);
 
 		return item;
@@ -126,12 +135,12 @@ public abstract class Entry<T> {
 		List<Text> lore;
 
 		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("dummy", getElement());
+		variables.put("dummy", getEntry());
 		variables.put("dummy2", listing);
 
 		try {
 			title = GTS.getInstance().getTextParsingUtils().parse(
-					GTS.getInstance().getTextParsingUtils().getTemplate(baseTitleTemplate(player)),
+					GTS.getInstance().getTextParsingUtils().getTemplate(baseTitleTemplate()),
 					player,
 					null,
 					variables
@@ -142,7 +151,7 @@ public abstract class Entry<T> {
 
 		try {
 			lore = GTS.getInstance().getTextParsingUtils().parse(
-					GTS.getInstance().getTextParsingUtils().getTemplates(baseLoreTemplate(player, listing.getAucData() != null)),
+					GTS.getInstance().getTextParsingUtils().getTemplates(baseLoreTemplate(listing.getAucData() != null)),
 					player,
 					null,
 					variables
@@ -156,20 +165,20 @@ public abstract class Entry<T> {
 	}
 
 	/**
-	 * Represents an item stack that will be shown during the confirmation accepting of an entry.
+	 * Represents an item stack that will be shown during the confirmation accepting of an element.
 	 * This display can often be the same as the original display, but for other times, be used to
-	 * help display extra data the original entry did not.
+	 * help display extra data the original element did not.
 	 *
-	 * @return An ItemStack built to represent an entry during confirmation.
+	 * @return An ItemStack built to represent an element during confirmation.
 	 */
-	protected abstract ItemStack confirmItemStack(Player player);
+	protected abstract ItemStack confirmItemStack();
 
-	protected abstract String confirmTitleTemplate(Player player, boolean auction);
+	protected abstract String confirmTitleTemplate(boolean auction);
 
-	protected abstract List<String> confirmLoreTemplate(Player player, boolean auction);
+	protected abstract List<String> confirmLoreTemplate(boolean auction);
 
 	public ItemStack getConfirmDisplay(Player player, Listing listing) {
-		ItemStack item = confirmItemStack(player);
+		ItemStack item = confirmItemStack();
 		applyConfExtensions(player, item, listing);
 
 		return item;
@@ -180,13 +189,13 @@ public abstract class Entry<T> {
 		List<Text> lore;
 
 		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("dummy", getElement());
+		variables.put("dummy", getEntry());
 		variables.put("price", price);
 		variables.put("dummy2", listing);
 
 		try {
 			title = GTS.getInstance().getTextParsingUtils().parse(
-					GTS.getInstance().getTextParsingUtils().getTemplate(confirmTitleTemplate(player, listing.getAucData() != null)),
+					GTS.getInstance().getTextParsingUtils().getTemplate(confirmTitleTemplate(listing.getAucData() != null)),
 					player,
 					null,
 					variables
@@ -197,7 +206,7 @@ public abstract class Entry<T> {
 
 		try {
 			lore = GTS.getInstance().getTextParsingUtils().parse(
-					GTS.getInstance().getTextParsingUtils().getTemplates(confirmLoreTemplate(player, listing.getAucData() != null)),
+					GTS.getInstance().getTextParsingUtils().getTemplates(confirmLoreTemplate(listing.getAucData() != null)),
 					player,
 					null,
 					variables
@@ -216,20 +225,20 @@ public abstract class Entry<T> {
 	 * things like ItemStacks, since they require an online player to go
 	 * to a player's inventory, are unable to support such.
 	 *
-	 * @return Whether an entry typing supports offline rewarding/give back
+	 * @return Whether an element typing supports offline rewarding/give back
 	 */
 	public abstract boolean supportsOffline();
 
 	/**
-	 * Attempts to give the contents of a lot entry to the passed player.
+	 * Attempts to give the contents of a lot element to the passed player.
 	 *
-	 * @param user The user to receive the packed contents of an entry
+	 * @param user The user to receive the packed contents of an element
 	 * @return True if the task is successful, false otherwise
 	 */
 	public abstract boolean giveEntry(User user);
 
 	/**
-	 * Attempts to take the entry away from the player depositing the listing.
+	 * Attempts to take the element away from the player depositing the listing.
 	 *
 	 * @param player The player who wants to deposit something
 	 * @return True if the task is successful, false otherwise

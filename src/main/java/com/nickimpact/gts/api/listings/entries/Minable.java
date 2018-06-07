@@ -6,5 +6,5 @@ import org.spongepowered.api.entity.living.player.Player;
 
 public interface Minable {
 
-	MoneyPrice calcMinPrice(Player player) throws PricingException;
+	MoneyPrice calcMinPrice() throws PricingException;
 }

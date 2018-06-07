@@ -24,9 +24,9 @@ public interface GtsService {
 	Registry getRegistry(RegistryType type);
 
 	/**
-	 * Registers a single entry into the GTS Service
+	 * Registers a single element into the GTS Service
 	 *
-	 * @param entry The class of the entry you wish to register
+	 * @param entry The class of the element you wish to register
 	 */
 	void registerEntry(Class<? extends Entry> entry);
 
@@ -67,19 +67,23 @@ public interface GtsService {
 
 	/**
 	 * Attempts to add a function meant to help decide the level of a minimum price on an {@link Entry}.
+	 * Be sure to cast your function variable to the proper object expected for the element class. For instance,
+	 * a PokemonEntry should have the Object field of the Function argument filled in with an EntityPixelmon.
+	 * Now you can use the Object as is if you don't care about the details to the pokemon, be do ensure that you
+	 * cast to an EntityPixelmon during your function parsing if you wish to use some of those methods!
 	 *
-	 * @param clazz The class representing the type of entry you wish to add a min price option to
+	 * @param clazz The class representing the type of element you wish to add a min price option to
 	 * @param function A function that will apply some sort of change to the calculated min price
 	 */
-	void addMinPriceOption(Class<? extends Entry> clazz, Function<EntryElement, Price> function) throws NotMinableException;
+	void addMinPriceOption(Class<? extends Entry> clazz, Function<Object, Price> function) throws NotMinableException;
 
 	/**
 	 * Fetches a list of functions built to do some form of manipulation with a calculated min price.
 	 *
-	 * @param clazz The entry class you wish to receive a list of
+	 * @param clazz The element class you wish to receive a list of
 	 * @return An {@link Optional} holding the list of functions, or {@link Optional#empty()} if none exist
 	 */
-	Optional<List<Function<EntryElement, Price>>> getMinPriceOptions(Class<? extends Entry> clazz);
+	Optional<List<Function<Object, Price>>> getMinPriceOptions(Class<? extends Entry> clazz);
 
 	/**
 	 * Registers the TokenService for GTS.
@@ -96,6 +100,13 @@ public interface GtsService {
 	 * @throws Exception If the service is not yet initialized
 	 */
 	TokenService getTokensService() throws Exception;
+
+	/**
+	 * Attempts to register a token that can be parsed by Nucleus.
+	 *
+	 * @param token The tokens to register
+	 */
+	void addToken(Token token) throws Exception;
 
 	/**
 	 * Attempts to register a series of tokens that can be parsed by Nucleus.
