@@ -97,6 +97,9 @@ public class PokemonTokens {
 		tokens.put("shiny", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
 				getPokemonFromVariableIfExists(m), EnumPokemonFields.SHINY
 		)));
+		tokens.put("shiny_state", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
+				getPokemonFromVariableIfExists(m), EnumPokemonFields.SHINY_STATE
+		)));
 		tokens.put("special_texture", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
 				getPokemonFromVariableIfExists(m), EnumPokemonFields.SPECIAL_TEXTURE
 		)));
@@ -135,6 +138,12 @@ public class PokemonTokens {
 
 			return Optional.empty();
 		});
+		tokens.put("pokerus", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
+				getPokemonFromVariableIfExists(m), EnumPokemonFields.POKERUS
+		)));
+		tokens.put("pokerus_state", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
+				getPokemonFromVariableIfExists(m), EnumPokemonFields.POKERUS_STATE
+		)));
 	}
 
 	public static Map<String, Translator> getTokens() {

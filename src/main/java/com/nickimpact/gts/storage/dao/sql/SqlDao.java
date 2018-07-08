@@ -25,6 +25,7 @@
 
 package com.nickimpact.gts.storage.dao.sql;
 
+import com.google.common.collect.Comparators;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonSyntaxException;
 import com.nickimpact.gts.GTS;
@@ -45,6 +46,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
@@ -54,7 +56,7 @@ import java.util.regex.Pattern;
 public class SqlDao extends AbstractDao {
 
 	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM `{prefix}listings_v2`";
-	private static final String SELECT_ALL_LOGS = "SELECT * FROM `{prefix}logs_v2`";
+	private static final String SELECT_ALL_LOGS = "SELECT * FROM `{prefix}logs_v2` WHERE OWNER='%s'";
 	private static final String TRUNCATE_LISTINGS = "TRUNCATE TABLE `{prefix}listings_v2`";
 	private static final String TRUNCATE_LOGS = "TRUNCATE TABLE `{prefix}logs_v2`";
 	private static final String ADD_LISTING = "INSERT INTO `{prefix}listings_v2` VALUES ('%s', '%s', '%s')";
@@ -290,7 +292,7 @@ public class SqlDao extends AbstractDao {
 	public void addLog(Log log) throws Exception {
 		try (Connection connection = provider.getConnection()) {
 			String stmt = prefix.apply(ADD_LOG);
-			stmt = String.format(stmt, log.getID(), log.getSource(), GTS.prettyGson.toJson(log));
+			stmt = String.format(stmt, log.getId(), log.getSource(), GTS.prettyGson.toJson(log));
 			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
 				ps.executeUpdate();
 			}
@@ -303,10 +305,12 @@ public class SqlDao extends AbstractDao {
 	}
 
 	@Override
-	public List<Log> getLogs() throws Exception {
+	public List<Log> getLogs(UUID uuid) throws Exception {
 		List<Log> logs = Lists.newArrayList();
 		try (Connection connection = provider.getConnection()) {
-			try (PreparedStatement query = connection.prepareStatement(prefix.apply(SELECT_ALL_LOGS))) {
+			String stmt = prefix.apply(SELECT_ALL_LOGS);
+			stmt = String.format(stmt, uuid);
+			try (PreparedStatement query = connection.prepareStatement(stmt)) {
 				ResultSet results = query.executeQuery();
 				while(results.next()) {
 					try {
@@ -321,8 +325,12 @@ public class SqlDao extends AbstractDao {
 				}
 				results.close();
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
 		}
 
+		logs.sort(Comparator.comparing(Log::getDate));
 		return logs;
 	}
 

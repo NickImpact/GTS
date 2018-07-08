@@ -18,8 +18,8 @@ import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
-import com.pixelmonmod.pixelmon.battles.controller.BattleControllerBase;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -59,6 +59,8 @@ import java.util.function.Function;
 @Typing("Pokemon")
 public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
+	private static final PokemonSpec UNTRADABLE = new PokemonSpec("untradeable");
+
 	public PokemonEntry() {
 		super();
 	}
@@ -79,6 +81,11 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	@Override
 	public String getSpecsTemplate() {
 		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE);
+	}
+
+	@Override
+	public List<String> getLogTemplate() {
+		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.LOGS_ENTRIES_POKEMON);
 	}
 
 	@Override
@@ -156,13 +163,18 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
 	@Override
 	public boolean doTakeAway(Player player) {
-		if(GTS.getInstance().getConfig().get(ConfigKeys.BLACKLISTED_POKEMON).stream().anyMatch(name -> name.equalsIgnoreCase(this.getEntry().getPokemon().getName()))){
-			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));
+		if(BattleRegistry.getBattle(player.getName()) != null) {
+			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "You are in battle, you can't sell any pokemon currently..."));
 			return false;
 		}
 
-		if(BattleRegistry.getBattle(player.getName()) != null) {
-			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "You are in battle, you can't sell any pokemon currently..."));
+		if(UNTRADABLE.matches(this.getEntry().getPokemon())) {
+			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "This pokemon is marked as untradeable, and cannot be sold..."));
+			return false;
+		}
+
+		if(GTS.getInstance().getConfig().get(ConfigKeys.BLACKLISTED_POKEMON).stream().anyMatch(name -> name.equalsIgnoreCase(this.getEntry().getPokemon().getName()))){
+			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));
 			return false;
 		}
 

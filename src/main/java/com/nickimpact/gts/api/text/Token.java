@@ -1,9 +1,6 @@
 package com.nickimpact.gts.api.text;
 
-import com.nickimpact.gts.GTS;
-import io.github.nucleuspowered.nucleus.internal.text.Tokens;
 import lombok.Getter;
-import org.spongepowered.api.plugin.PluginContainer;
 
 import java.util.Optional;
 

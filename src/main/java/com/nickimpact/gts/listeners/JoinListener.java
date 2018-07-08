@@ -5,19 +5,15 @@ import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
+import com.nickimpact.gts.logs.Log;
+import com.nickimpact.gts.logs.LogAction;
 import com.nickimpact.gts.utils.ListingUtils;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.format.TextStyles;
 
 import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 /**
  * On a client connection, we need to check and see if any entries in the GTS have expired for the player
@@ -42,6 +38,12 @@ public class JoinListener {
 					variables.put("id", listing);
 					if(listing.getEntry().giveEntry(player)) {
 						ListingUtils.deleteEntry(listing);
+						Log expires = Log.builder()
+								.action(LogAction.Expiration)
+								.source(player.getUniqueId())
+								.hover(Log.forgeTemplate(player, listing, LogAction.Expiration))
+								.build();
+						GTS.getInstance().getStorage().addLog(expires);
 						try {
 							player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
 									GTS.getInstance().getMsgConfig().get(MsgConfigKeys.REMOVAL_EXPIRES),

@@ -146,8 +146,8 @@ public class AbstractStorage implements Storage {
 	}
 
 	@Override
-	public CompletableFuture<List<Log>> getLogs() {
-		return makeFuture(dao::getLogs);
+	public CompletableFuture<List<Log>> getLogs(UUID uuid) {
+		return makeFuture(() -> dao.getLogs(uuid));
 	}
 
 	@Override

@@ -75,18 +75,18 @@ public class MainUI extends InventoryBase implements Observer {
 		this.searchCondition = predicate;
 
 		this.drawInventory();
-		GTS.getInstance().getUpdater().addObserver(this);
-		Sponge.getScheduler().createTaskBuilder().execute(() -> {
-			this.clearIcons(0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31, 32);
-			this.drawListings(getListings());
-			this.listingUpdate();
-		}).interval(1, TimeUnit.SECONDS).name("Main-" + player.getName()).submit(GTS.getInstance());
+		//GTS.getInstance().getUpdater().addObserver(this);
+//		Sponge.getScheduler().createTaskBuilder().execute(() -> {
+//			this.clearIcons(0, 1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21, 22, 23, 27, 28, 29, 30, 31, 32);
+//			this.drawListings(getListings());
+//			this.listingUpdate();
+//		}).interval(1, TimeUnit.SECONDS).name("Main-" + player.getName()).submit(GTS.getInstance());
 	}
 
 	@Override
 	protected void processClose(InteractInventoryEvent.Close event) {
-		Sponge.getScheduler().getTasksByName("Main-" + player.getName()).forEach(Task::cancel);
-		GTS.getInstance().getUpdater().deleteObserver(this);
+		//Sponge.getScheduler().getTasksByName("Main-" + player.getName()).forEach(Task::cancel);
+		//GTS.getInstance().getUpdater().deleteObserver(this);
 	}
 
 	/**

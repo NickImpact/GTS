@@ -38,6 +38,8 @@ public interface ConfigAdapter {
 
 	boolean contains(String path);
 
+	<T> void set(String path, T def);
+
 	String getString(String path, String def);
 
 	int getInt(String path, int def);

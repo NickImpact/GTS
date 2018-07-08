@@ -179,6 +179,45 @@ public class MsgConfigKeys {
 			"  &7 - &e{{moves_4}}"
 	));
 
+	// Logs
+	public static final ConfigKey<List<String>> LOGS_ADD = ListKey.of("logging.add-listing", Lists.newArrayList(
+			"&7List Price: &e{{price}}"
+	));
+	public static final ConfigKey<List<String>> LOGS_REMOVE = ListKey.of("logging.remove-listing", Lists.newArrayList(
+			"&7Element: &e{{listing_specifics}}"
+	));
+	public static final ConfigKey<List<String>> LOGS_EXPIRE = ListKey.of("logging.listing-expires", Lists.newArrayList(
+			"&7Element: &e{{listing_specifics}}"
+	));
+	public static final ConfigKey<List<String>> LOGS_PURCHASE = ListKey.of("logging.purchase-listing", Lists.newArrayList(
+			"&7Seller: &e{{seller}}",
+			"&7Price: &e{{price}}",
+			"&7Received: &e{{listing_specifics}}"
+	));
+	public static final ConfigKey<List<String>> LOGS_SELL = ListKey.of("logging.sell-listing", Lists.newArrayList(
+			"&7Buyer: &e{{buyer}}",
+			"&7Price: &e{{price}}",
+			"&7Sold: &e{{listing_specifics}}"
+	));
+	public static final ConfigKey<String> LOGS_LOG_DISPLAY = StringKey.of("logging.display", "&e{{action}} &7(&aHover for Info&7) - Issued: &e{{issued}}");
+	public static final ConfigKey<List<String>> LOGS_ENTRIES_POKEMON = ListKey.of("logging.entries.pokemon", Lists.newArrayList(
+			"&7Element Type: &ePokemon",
+			"",
+			"&aDetails:",
+			"  &7Species: &e{{pokemon}}",
+			"  &7Level: &e{{level}}",
+			"  &7Shiny: &e{{shiny_state}}",
+			"  &7Pokerus: &e{{pokerus_state}}",
+			"  &7Ability: &e{{ability}}",
+			"  &7Nature: &e{{nature}}",
+			"  &7Growth: &e{{growth}}",
+			"  &7Gender: &e{{gender}}",
+			"  &7EVs: &e{{evs_total}}&7/&e510 &7(&a{{evs_percent}}&7)",
+			"  &7EVs: &e{{evhp}}&7/&e{{evatk}}&7/&e{{evdef}}&7/&e{{evspatk}}&7/&e{{evspdef}}&7/&e{{evspeed}}",
+			"  &7IVs: &e{{ivs_total}}&7/&e186 &7(&a{{ivs_percent}}&7)",
+			"  &7IVs: &e{{ivhp}}&7/&e{{ivatk}}&7/&e{{ivdef}}&7/&e{{ivspatk}}&7/&e{{ivspdef}}&7/&e{{ivspeed}}"
+	));
+
 	private static Map<String, ConfigKey<?>> KEYS = null;
 
 	public static synchronized Map<String, ConfigKey<?>> getAllKeys() {

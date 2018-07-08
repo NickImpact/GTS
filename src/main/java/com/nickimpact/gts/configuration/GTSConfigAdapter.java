@@ -118,9 +118,31 @@ public class GTSConfigAdapter implements ConfigAdapter {
 		}
 	}
 
+	private <T> void checkMissing(String path, T def, TypeToken<T> type) {
+		try {
+			if (!this.contains(path)) {
+				GTS.getInstance().getConsole().ifPresent(console -> console.sendMessage(Text.of(GTSInfo.WARNING, String.format("Found missing config option (%s)... Adding it!", path))));
+				resolvePath(path).setValue(type, def);
+				this.loader.save(root);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public boolean contains(String path) {
 		return !resolvePath(path).isVirtual();
+	}
+
+	@Override
+	public <T> void set(String path, T def) {
+		resolvePath(path).setValue(def);
+		try {
+			this.loader.save(root);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -149,32 +171,14 @@ public class GTSConfigAdapter implements ConfigAdapter {
 
 	@Override
 	public List<String> getList(String path, List<String> def) {
-		ConfigurationNode node = resolvePath(path);
-		if (node.isVirtual()) {
-			try {
-				resolvePath(path).setValue(new TypeToken<List<String>>() {}, def);
-			} catch (ObjectMappingException e) {
-				e.printStackTrace();
-			}
-			return def;
-		}
-
-		return node.getList(Object::toString);
+		this.checkMissing(path, def, new TypeToken<List<String>>() {});
+		return resolvePath(path).getList(Object::toString);
 	}
 
 	@Override
 	public List<String> getObjectList(String path, List<String> def) {
-		ConfigurationNode node = resolvePath(path);
-		if (node.isVirtual()) {
-			try {
-				resolvePath(path).setValue(new TypeToken<List<String>>() {}, def);
-			} catch (ObjectMappingException e) {
-				e.printStackTrace();
-			}
-			return def;
-		}
-
-		return node.getChildrenMap().keySet().stream().map(Object::toString).collect(Collectors.toList());
+		this.checkMissing(path, def, new TypeToken<List<String>>() {});
+		return resolvePath(path).getChildrenMap().keySet().stream().map(Object::toString).collect(Collectors.toList());
 	}
 
 	@SuppressWarnings("unchecked")

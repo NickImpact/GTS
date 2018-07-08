@@ -17,6 +17,9 @@ import java.util.regex.Pattern;
  */
 public class Time
 {
+    public static final Time SPECIAL = new Time(-1);
+    public static final Time INVALID = new Time(-2);
+
     private long time;
 
     private static final int secondsPerMinute = 60;

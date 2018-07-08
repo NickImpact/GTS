@@ -8,6 +8,8 @@ import com.nickimpact.gts.api.gui.InventoryBase;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
+import com.nickimpact.gts.logs.Log;
+import com.nickimpact.gts.logs.LogAction;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import com.nickimpact.gts.utils.ListingUtils;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
@@ -47,16 +49,16 @@ public class ConfirmUI extends InventoryBase {
 
 		this.drawDesign();
 
-		Sponge.getScheduler().createTaskBuilder()
-				.execute(this::drawTarget)
-				.interval(1, TimeUnit.SECONDS)
-				.name("Confirm-" + player.getName())
-				.submit(GTS.getInstance());
+//		Sponge.getScheduler().createTaskBuilder()
+//				.execute(this::drawTarget)
+//				.interval(1, TimeUnit.SECONDS)
+//				.name("Confirm-" + player.getName())
+//				.submit(GTS.getInstance());
 	}
 
 	@Override
 	protected void processClose(InteractInventoryEvent.Close event) {
-		Sponge.getScheduler().getTasksByName("Confirm-" + player.getName()).forEach(Task::cancel);
+		//Sponge.getScheduler().getTasksByName("Confirm-" + player.getName()).forEach(Task::cancel);
 	}
 
 	private void drawDesign() {
@@ -111,6 +113,12 @@ public class ConfirmUI extends InventoryBase {
 				} catch (NucleusException e) {
 					e.printStackTrace();
 				}
+				Log remove = Log.builder()
+						.action(LogAction.Removal)
+						.source(player.getUniqueId())
+						.hover(Log.forgeTemplate(player, target, LogAction.Removal))
+						.build();
+				GTS.getInstance().getStorage().addLog(remove);
 				clickable.getPlayer().closeInventory();
 			});
 			this.addIcon(icon);

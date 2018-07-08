@@ -168,9 +168,7 @@ public class GTS {
 
 			// Register the base command
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing commands...")));
-			GTSBaseCmd base = new GTSBaseCmd();
-			base.register();
-			HelpCmd.updateCommand(base);
+			new GTSBaseCmd().register();
 
 			// Declare and activate listeners
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing listeners...")));
@@ -183,7 +181,6 @@ public class GTS {
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading data into cache...")));
 			try {
 				this.listingsCache = this.storage.getListings().get();
-				this.logCache = this.storage.getLogs().get();
 				this.heldEntryCache = this.storage.getHeldElements().get();
 				this.heldPriceCache = this.storage.getHeldPrices().get();
 				this.ignorers = this.storage.getIgnorers().get();

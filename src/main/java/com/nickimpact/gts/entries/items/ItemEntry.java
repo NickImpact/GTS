@@ -74,6 +74,11 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	@Override
+	public List<String> getLogTemplate() {
+		return Lists.newArrayList();
+	}
+
+	@Override
 	public String getName() {
 		ItemStack item = this.decode();
 		return item.get(Keys.DISPLAY_NAME).orElse(Text.of(item.getType().getName())).toPlain();

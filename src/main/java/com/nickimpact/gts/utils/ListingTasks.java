@@ -3,9 +3,12 @@ package com.nickimpact.gts.utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
+import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.data.AuctionData;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
+import com.nickimpact.gts.logs.Log;
+import com.nickimpact.gts.logs.LogAction;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -113,6 +116,12 @@ public class ListingTasks {
 	    } catch (NucleusException e) {
 		    e.printStackTrace();
 	    }
+	    Log expires = Log.builder()
+			    .action(LogAction.Expiration)
+			    .source(player.getUniqueId())
+			    .hover(Log.forgeTemplate(player, listing, LogAction.Expiration))
+			    .build();
+	    GTS.getInstance().getStorage().addLog(expires);
 
 	    return true;
     }
@@ -125,6 +134,10 @@ public class ListingTasks {
     	    return false;
 
 	    try {
+		    if(!listing.getEntry().getPrice().canPay(user.getPlayer().get())) {
+			    user.getPlayer().get().sendMessage(Text.of(GTSInfo.ERROR, "Your balance was too low to afford your bid..."));
+			    return false;
+		    }
 		    listing.getEntry().getPrice().pay(user);
 	    } catch (Exception e) {
 		    e.printStackTrace();

@@ -13,6 +13,8 @@ import com.nickimpact.gts.api.events.ListEvent;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
+import com.nickimpact.gts.logs.Log;
+import com.nickimpact.gts.logs.LogAction;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
@@ -59,12 +61,7 @@ public class ListingUtils {
 	    ListEvent listEvent = new ListEvent(
 			    player,
 			    listing,
-			    Cause.of(EventContext.builder()
-							    .add(EventContextKeys.PLUGIN, GTS.getInstance().getPluginContainer())
-							    .add(EventContextKeys.PLAYER_SIMULATED, player.getProfile())
-							    .build(),
-			             GTS.getInstance()
-			    )
+			    Sponge.getCauseStackManager().getCurrentCause()
 	    );
 	    Sponge.getEventManager().post(listEvent);
 
@@ -219,7 +216,14 @@ public class ListingUtils {
 			    pl.sendMessages(broadcast);
 		    }
 
-		    GTS.getInstance().getUpdater().sendUpdate();
+		    Log add = Log.builder()
+				    .action(LogAction.Addition)
+				    .source(player.getUniqueId())
+				    .hover(Log.forgeTemplate(player, listing, LogAction.Addition))
+				    .build();
+		    GTS.getInstance().getStorage().addLog(add);
+
+		    //GTS.getInstance().getUpdater().sendUpdate();
 	    }
     }
 
@@ -297,7 +301,21 @@ public class ListingUtils {
 				}
 
 				deleteEntry(listing);
-				GTS.getInstance().getUpdater().sendUpdate();
+			    Log buyer = Log.builder()
+					    .action(LogAction.Purchase)
+					    .source(player.getUniqueId())
+					    .hover(Log.forgeTemplate(player, listing, LogAction.Purchase))
+					    .build();
+			    GTS.getInstance().getStorage().addLog(buyer);
+
+			    Log seller = Log.builder()
+					    .action(LogAction.Sell)
+					    .source(listing.getOwnerUUID())
+					    .hover(Log.forgeTemplate(player, listing, LogAction.Sell))
+					    .build();
+			    GTS.getInstance().getStorage().addLog(seller);
+
+				//GTS.getInstance().getUpdater().sendUpdate();
 		    } else {
 		    	player.sendMessages(
 		    			GTS.getInstance().getTextParsingUtils().parse(

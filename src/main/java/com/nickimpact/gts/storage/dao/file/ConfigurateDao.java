@@ -178,7 +178,7 @@ public abstract class ConfigurateDao extends AbstractDao {
 	public void removeLog(int id) {}
 
 	@Override
-	public List<Log> getLogs() throws Exception {
+	public List<Log> getLogs(UUID uuid) throws Exception {
 		return Lists.newArrayList();
 	}
 

@@ -140,10 +140,10 @@ public class PhasedStorage implements Storage {
 	}
 
 	@Override
-	public CompletableFuture<List<Log>> getLogs() {
+	public CompletableFuture<List<Log>> getLogs(UUID uuid) {
 		phaser.register();
 		try {
-			return delegate.getLogs();
+			return delegate.getLogs(uuid);
 		} finally {
 			phaser.arriveAndDeregister();
 		}

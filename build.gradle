@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 
 group 'com.nickimpact.gts'
-version '3.8.2-S7.1'
+version '3.9.0-S7.1'
 archivesBaseName = "GTS"
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
@@ -38,7 +38,7 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'org.spongepowered:spongeapi:7.0.0'
+    compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
     compile "org.projectlombok:lombok:1.16.10"
 	compile group: 'com.zaxxer', name: 'HikariCP', version: '2.5.1'
     testCompile "junit:junit:4.11"

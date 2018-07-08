@@ -95,7 +95,7 @@ public interface Storage {
 	/**
 	 * Fetches all logs within the storage data, and adds them to the gts log cache
 	 */
-	CompletableFuture<List<Log>> getLogs();
+	CompletableFuture<List<Log>> getLogs(UUID uuid);
 
 	/**
 	 * In the event an {@link Entry} is unable to be given to a user, due to it not supporting

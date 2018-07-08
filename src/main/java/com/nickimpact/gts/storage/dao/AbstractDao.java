@@ -62,7 +62,7 @@ public abstract class AbstractDao {
 
 	public abstract void removeLog(int id) throws Exception;
 
-	public abstract List<Log> getLogs() throws Exception;
+	public abstract List<Log> getLogs(UUID uuid) throws Exception;
 
 	public abstract void addHeldElement(EntryHolder holder) throws Exception;
 

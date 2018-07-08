@@ -6,6 +6,7 @@ import com.nickimpact.gts.api.commands.SpongeCommand;
 import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import com.nickimpact.gts.commands.administrative.ClearCmd;
 import com.nickimpact.gts.commands.administrative.EditCmd;
+import com.nickimpact.gts.commands.administrative.LogCmd;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -41,7 +42,8 @@ public class AdminBaseCmd extends SpongeSubCommand {
 	public SpongeCommand[] getSubCommands() {
 		return new SpongeCommand[]{
 				new ClearCmd(),
-				new EditCmd()
+				new EditCmd(),
+				new LogCmd()
 		};
 	}
 

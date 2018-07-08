@@ -7,6 +7,7 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVsStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import org.spongepowered.api.text.Text;
@@ -35,8 +36,10 @@ public enum EnumPokemonFields {
 
 		return pokemon.getName();
 	}),
-	ABILITY(pokemon -> pokemon.getAbility().getName()),
+	ABILITY(pokemon -> pokemon.getAbility().getLocalizedName()),
 	NATURE(pokemon -> pokemon.getNature().name()),
+	NATURE_INCREASED(pokemon -> "+" + toRep(pokemon.getNature().increasedStat)),
+	NATURE_DECREASED(pokemon -> "-" + toRep(pokemon.getNature().decreasedStat)),
 	GENDER(pokemon -> pokemon.getGender().name()),
 	SHINY(pokemon -> {
 		if(!pokemon.getIsShiny())
@@ -54,6 +57,14 @@ public enum EnumPokemonFields {
 		return pokemon.getLvl().getLevel();
 	}),
 	FORM(EntityPixelmon::getForm),
+	FORM_NAME(pokemon -> {
+		String form = pokemon.getFormEnum().getFormSuffix();
+		if(form.startsWith("-")) {
+			return form.substring(1);
+		} else {
+			return form;
+		}
+	}),
 	CLONES(pokemon -> {
 		if(pokemon.getSpecies().equals(EnumPokemon.Mew)) {
 			return pokemon.getEntityData().getShort(NbtKeys.STATS_NUM_CLONED);
@@ -94,11 +105,14 @@ public enum EnumPokemonFields {
 			return "";
 		}
 	}),
-	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.stats.ivs)),
+	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.stats.ivs).name()),
 	MOVES_1(pokemon -> pokemon.getMoveset().attacks[0].baseAttack.getLocalizedName()),
 	MOVES_2(pokemon -> pokemon.getMoveset().attacks[1].baseAttack.getLocalizedName()),
 	MOVES_3(pokemon -> pokemon.getMoveset().attacks[2].baseAttack.getLocalizedName()),
-	MOVES_4(pokemon -> pokemon.getMoveset().attacks[3].baseAttack.getLocalizedName());
+	MOVES_4(pokemon -> pokemon.getMoveset().attacks[3].baseAttack.getLocalizedName()),
+	SHINY_STATE(pokemon -> pokemon.getIsShiny() ? "Yes" : "No"),
+	POKERUS_STATE(pokemon -> pokemon.getPokerus().isPresent() ? "Yes" : "No"),
+	POKERUS(pokemon -> pokemon.getPokerus().isPresent() ? "PKRS" : null);
 
 	public final Function<EntityPixelmon, Object> function;
 
@@ -112,5 +126,24 @@ public enum EnumPokemonFields {
 
 	private static double totalIVs(IVStore ivs) {
 		return ivs.HP + ivs.Attack + ivs.Defence + ivs.SpAtt + ivs.SpDef + ivs.Speed;
+	}
+
+	private static String toRep(StatsType stat) {
+		switch(stat) {
+			case HP:
+				return "HP";
+			case Attack:
+				return "Atk";
+			case Defence:
+				return "Def";
+			case SpecialAttack:
+				return "SpAtk";
+			case SpecialDefence:
+				return "SpDef";
+			case Speed:
+				return "Speed";
+			default:
+				return "???";
+		}
 	}
 }

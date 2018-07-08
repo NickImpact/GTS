@@ -1,6 +1,7 @@
 package com.nickimpact.gts.commands.basic;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.commands.SpongeCommand;
@@ -18,6 +19,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * (Some note will go here)
@@ -27,9 +29,7 @@ import java.util.List;
 @CommandAliases({"help"})
 public class HelpCmd extends SpongeSubCommand {
 
-	private static GTSBaseCmd base;
-
-	private List<Text> cmds = Lists.newArrayList();
+	public static Map<String, Text> commands = Maps.newHashMap();
 
 	@Override
 	public CommandElement[] getArgs() {
@@ -53,7 +53,13 @@ public class HelpCmd extends SpongeSubCommand {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		List<Text> commands = cmds.isEmpty() ? formatCommands(src, base) : cmds;
+		List<Text> cmds = Lists.newArrayList();
+		for(Map.Entry<String, Text> entry : commands.entrySet()) {
+			if(src.hasPermission(entry.getKey())) {
+				cmds.add(entry.getValue());
+			}
+		}
+
 		PaginationList.builder()
 				.title(Text.of(TextColors.YELLOW, "GTS Command Help"))
 				.header(Text.of(
@@ -61,7 +67,7 @@ public class HelpCmd extends SpongeSubCommand {
 						TextColors.YELLOW, "<> ", TextColors.GRAY, "- Required", Text.NEW_LINE,
 						TextColors.YELLOW, "[] ", TextColors.GRAY, "- Optional", Text.NEW_LINE
 				))
-				.contents(commands)
+				.contents(cmds)
 				.sendTo(src);
 
 		return CommandResult.success();
@@ -87,9 +93,5 @@ public class HelpCmd extends SpongeSubCommand {
 		}
 
 		return commands;
-	}
-
-	public static void updateCommand(GTSBaseCmd base) {
-		HelpCmd.base = base;
 	}
 }
