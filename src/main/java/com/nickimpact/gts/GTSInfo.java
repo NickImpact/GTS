@@ -1,5 +1,6 @@
 package com.nickimpact.gts;
 
+import com.nickimpact.impactor.api.plugins.PluginInfo;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -10,14 +11,12 @@ import java.util.regex.Pattern;
 /**
  * Created by Nick on 12/15/2016.
  */
-public class GTSInfo {
-
-	private GTSInfo() {}
+public class GTSInfo implements PluginInfo {
 
     public static final String ID = "gts";
 
     public static final String NAME = "GTS";
-    public static final String VERSION = "3.9.0-S7.1";
+    public static final String VERSION = "3.10.0-S7.1";
     public static final String DESCRIPTION = "A Sponge Representation of the Global Trading Station";
 
     public static final Text PREFIX = Text.of(TextColors.YELLOW, "GTS ", TextColors.GRAY, "\u00bb ", TextColors.DARK_AQUA);
@@ -33,6 +32,26 @@ public class GTSInfo {
             TextColors.YELLOW, "GTS ", TextColors.GRAY, "(", TextColors.RED, "Warning", TextColors.GRAY, ") ",
             TextColors.DARK_AQUA
     );
+
+    @Override
+    public String getID() {
+        return ID;
+    }
+
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public String getVersion() {
+        return VERSION;
+    }
+
+    @Override
+    public String getDescription() {
+        return DESCRIPTION;
+    }
 
 
     public enum Dependencies {

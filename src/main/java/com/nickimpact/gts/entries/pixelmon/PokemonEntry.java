@@ -28,6 +28,7 @@ import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
@@ -41,6 +42,7 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -125,7 +127,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
 	@Override
 	public ItemStack confirmItemStack() {
-		return getPicture(this.getEntry().getPokemon());
+		return ItemStack.builder().itemType(ItemTypes.PAPER).build();
 	}
 
 	@Override
@@ -163,7 +165,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
 	@Override
 	public boolean doTakeAway(Player player) {
-		if(BattleRegistry.getBattle(player.getName()) != null) {
+		if(BattleRegistry.getBattle((EntityPlayer) player) != null) {
 			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "You are in battle, you can't sell any pokemon currently..."));
 			return false;
 		}
@@ -217,7 +219,6 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	@Override
 	public MoneyPrice calcMinPrice() throws PricingException {
 		MoneyPrice price = new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_BASE));
-		Pokemon poke = this.getEntry();
 		EntityPixelmon pokemon = this.getEntry().getPokemon();
 		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getName());
 		if(isLegend && pokemon.getIsShiny()) {

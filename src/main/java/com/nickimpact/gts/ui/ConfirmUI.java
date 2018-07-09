@@ -3,8 +3,6 @@ package com.nickimpact.gts.ui;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
-import com.nickimpact.gts.api.gui.Icon;
-import com.nickimpact.gts.api.gui.InventoryBase;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
@@ -12,20 +10,26 @@ import com.nickimpact.gts.logs.Log;
 import com.nickimpact.gts.logs.LogAction;
 import com.nickimpact.gts.ui.shared.SharedItems;
 import com.nickimpact.gts.utils.ListingUtils;
+import com.nickimpact.impactor.gui.v2.Displayable;
+import com.nickimpact.impactor.gui.v2.Icon;
+import com.nickimpact.impactor.gui.v2.Layout;
+import com.nickimpact.impactor.gui.v2.UI;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.item.inventory.InteractInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
@@ -34,66 +38,107 @@ import java.util.function.Predicate;
  *
  * @author NickImpact
  */
-public class ConfirmUI extends InventoryBase {
+public class ConfirmUI implements Displayable, Observer {
 
-	/** The listing that the player might wish to purchase */
+	private UI ui;
+
+	private Player player;
+
+	/**
+	 * The listing that the player might wish to purchase
+	 */
 	private Listing target;
 
-	/** The lingering search condition that can be restored if the user cancels purchase */
-	private Predicate<Listing> search;
+	/**
+	 * The lingering search conditions that can be restored if the user cancels purchase
+	 */
+	private Collection<Predicate<Listing>> searchConditions;
 
-	public ConfirmUI(Player player, Listing listing, @Nullable Predicate<Listing> search) {
-		super(player, 3, Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "\u00BB ", TextColors.DARK_AQUA, "Confirmation"));
-		this.target = listing;
-		this.search = search;
+	private boolean confirmed = false;
+	private Layout.Builder copy;
 
-		this.drawDesign();
+	public ConfirmUI(Player player, Listing target, Collection<Predicate<Listing>> searchConditions) {
+		this.player = player;
+		this.target = target;
+		this.searchConditions = searchConditions;
 
-//		Sponge.getScheduler().createTaskBuilder()
-//				.execute(this::drawTarget)
-//				.interval(1, TimeUnit.SECONDS)
-//				.name("Confirm-" + player.getName())
-//				.submit(GTS.getInstance());
+		this.ui = UI.builder()
+				.dimension(InventoryDimension.of(9, 6))
+				.title(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "\u00BB ", TextColors.DARK_AQUA, "Confirmation"))
+				.closeAction((close, pl) -> Sponge.getScheduler().getTasksByName("Confirm-" + this.player.getName()).forEach(Task::cancel))
+				.build(GTS.getInstance());
+		Layout layout = this.forgeDisplay();
+		layout.getElements().entrySet().stream()
+				.filter(entry -> (entry.getKey() >= 11 && entry.getKey() <= 13) || entry.getKey() == 20 || entry.getKey() == 22 || (entry.getKey() >= 29 && entry.getKey() <= 31))
+				.forEach(entry -> {
+					entry.getValue().addListener(clickable -> {
+						if (!confirmed) {
+							this.confirmed = true;
+							this.ui.define(copy.hollowSquare(Icon.from(
+									ItemStack.builder()
+											.itemType(ItemTypes.STAINED_GLASS_PANE)
+											.add(Keys.DISPLAY_NAME, Text.EMPTY)
+											.add(Keys.DYE_COLOR, DyeColors.LIME)
+											.build()
+							), 21).build());
+						}
+					});
+				});
+		this.ui.define(layout);
+
+		GTS.getInstance().getUpdater().addObserver(this);
+		Sponge.getScheduler().createTaskBuilder()
+				.execute(this::apply)
+				.interval(1, TimeUnit.SECONDS)
+				.name("Confirm-" + player.getName())
+				.submit(GTS.getInstance());
 	}
 
 	@Override
-	protected void processClose(InteractInventoryEvent.Close event) {
-		//Sponge.getScheduler().getTasksByName("Confirm-" + player.getName()).forEach(Task::cancel);
+	public UI getDisplay() {
+		return this.ui;
 	}
 
-	private void drawDesign() {
-		// Draw the typical Nick border
-		// Place listing on the left
-		// Draw confirm, deny, and more info icons appropriately
-		this.drawBorder(3, DyeColors.BLACK);
-		this.addIcon(new Icon(10, this.target.getDisplay(player, false)));
-		this.addIcon(SharedItems.forgeBorderIcon(11, DyeColors.GRAY));
-		this.addIcon(new Icon(14, this.target.getDisplay(player, true)));
-		this.drawConfirmIcon();
-		this.drawDenyIcon();
+	private Layout forgeDisplay() {
+		Layout.Builder lb = Layout.builder();
+		lb.row(Icon.BORDER, 0).row(Icon.BORDER, 4).column(Icon.BORDER, 0).column(Icon.BORDER, 8).slot(Icon.BORDER, 49);
+		if(!this.target.getOwnerUUID().equals(this.player.getUniqueId())) {
+			lb.hollowSquare(Icon.from(
+					ItemStack.builder()
+							.itemType(ItemTypes.STAINED_GLASS_PANE)
+							.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Click here to confirm!"))
+							.add(Keys.DYE_COLOR, DyeColors.RED)
+							.build()
+			), 21);
+		}
+		lb.slots(this.drawConfirmIcon(), 46, 47, 48);
+		lb.slots(this.drawDenyIcon(), 50, 51, 52);
+		lb.slot(this.drawTarget(), 21);
+		lb.slot(Icon.from(this.target.getEntry().getConfirmDisplay(player, this.target)), 24);
+
+		this.copy = lb;
+		return lb.build();
 	}
 
-	private void drawTarget() {
-		this.addIcon(new Icon(10, this.target.getDisplay(player, false)));
-		this.updateContents(10);
+	private Icon drawTarget() {
+		return Icon.from(this.target.getEntry().getBaseDisplay(player, this.target));
 	}
 
-	private void drawConfirmIcon() {
+	private Icon drawConfirmIcon() {
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("dummy", target.getEntry().getEntry());
 		variables.put("dummy2", target);
 		variables.put("dummy3", target.getEntry());
 
-		if(this.target.getOwnerUUID().equals(this.player.getUniqueId())) {
+		if (this.target.getOwnerUUID().equals(this.player.getUniqueId())) {
 			Icon icon = new Icon(
-					12,
 					ItemStack.builder()
 							.itemType(ItemTypes.ANVIL)
 							.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Remove from GTS"))
 							.build()
 			);
 			icon.addListener(clickable -> {
-				if(!GTS.getInstance().getListingsCache().contains(this.target)) {
+				if (!GTS.getInstance().getListingsCache().contains(this.target)) {
 					clickable.getPlayer().sendMessages(
 							Text.of(GTSInfo.ERROR, "Unfortunately, your listing has already been claimed...")
 					);
@@ -121,30 +166,43 @@ public class ConfirmUI extends InventoryBase {
 				GTS.getInstance().getStorage().addLog(remove);
 				clickable.getPlayer().closeInventory();
 			});
-			this.addIcon(icon);
+
+			return icon;
 		} else {
-			Icon icon = SharedItems.confirmIcon(12, this.target.getAucData() != null);
+			Icon icon = SharedItems.confirmIcon(this.target.getAucData() != null);
 			icon.addListener(clickable -> {
-				if (this.target.getAucData() != null) {
-					ListingUtils.bid(clickable.getPlayer(), this.target);
-					if(!GTS.getInstance().getConfig().get(ConfigKeys.BID_KEEP_UI_OPEN)) {
+				if(confirmed) {
+					if (this.target.getAucData() != null) {
+						ListingUtils.bid(clickable.getPlayer(), this.target);
+						if (!GTS.getInstance().getConfig().get(ConfigKeys.BID_KEEP_UI_OPEN)) {
+							clickable.getPlayer().closeInventory();
+						}
+					} else {
+						ListingUtils.purchase(clickable.getPlayer(), this.target);
 						clickable.getPlayer().closeInventory();
 					}
-				} else {
-					ListingUtils.purchase(clickable.getPlayer(), this.target);
-					clickable.getPlayer().closeInventory();
 				}
 			});
-			this.addIcon(icon);
+
+			return icon;
 		}
 	}
 
-	private void drawDenyIcon() {
-		Icon icon = SharedItems.denyIcon(16);
+	private Icon drawDenyIcon() {
+		Icon icon = SharedItems.denyIcon();
 		icon.addListener(clickable -> {
-			clickable.getPlayer().closeInventory();
-			clickable.getPlayer().openInventory(new MainUI(clickable.getPlayer(), 1, search).getInventory());
+			this.close(player);
+			new MainUI(clickable.getPlayer(), searchConditions).open(player, 1);
 		});
-		this.addIcon(icon);
+		return icon;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		this.apply();
+	}
+
+	private void apply() {
+		this.ui.setSlot(21, this.drawTarget());
 	}
 }

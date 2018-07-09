@@ -24,6 +24,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
@@ -48,6 +49,8 @@ public class ItemEntry extends Entry<DataContainer> {
 	/** The cached version of the ItemStack */
 	private transient ItemStack item;
 
+	private String name;
+
 	private static Map<UUID, Integer> amounts = Maps.newHashMap();
 
 	public ItemEntry() {
@@ -57,6 +60,7 @@ public class ItemEntry extends Entry<DataContainer> {
 	public ItemEntry(ItemStack element, Price price) {
 		super(element.toContainer(), price);
 		this.item = element;
+		this.name = element.getTranslation().get();
 	}
 
 	private ItemStack decode() {
@@ -80,8 +84,12 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	public String getName() {
-		ItemStack item = this.decode();
-		return item.get(Keys.DISPLAY_NAME).orElse(Text.of(item.getType().getName())).toPlain();
+		if(name == null) {
+			ItemStack item = this.decode();
+			return item.get(Keys.DISPLAY_NAME).orElse(Text.of(item.getTranslation().get())).toPlain();
+		} else {
+			return name;
+		}
 	}
 
 	@Override
@@ -121,7 +129,7 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	protected ItemStack confirmItemStack() {
-		return baseItemStack();
+		return ItemStack.builder().itemType(ItemTypes.PAPER).build();
 	}
 
 	@Override

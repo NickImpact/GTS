@@ -13,7 +13,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 
 group 'com.nickimpact.gts'
-version '3.9.0-S7.1'
+version '3.10.0-S7.1'
 archivesBaseName = "GTS"
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
@@ -28,17 +28,36 @@ minecraft {
     useDepAts = true
 }
 
-repositories {
-    mavenCentral()
-    maven {
-        name = 'sponge'
-        url = 'http://repo.spongepowered.org/maven'
+allprojects {
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'sponge'
+            url = 'http://repo.spongepowered.org/maven'
+        }
+        maven { url = 'https://jitpack.io' }
+        maven {
+            name 'drnaylor-minecraft'
+            url 'http://repo.drnaylor.co.uk/artifactory/list/minecraft'
+        }
+        maven {
+            name 'drnaylor'
+            url 'http://repo.drnaylor.co.uk/artifactory/list/quickstart'
+        }
+        ivy {
+            url "https://download.nodecdn.net/containers"
+            layout "pattern", {
+                artifact "/[organisation]/[module]/release/[revision]/[ext]"
+            }
+        }
     }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
+    compile 'com.github.NickImpact:Impactor:1.3.2'
     compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
+    compile 'reforged:server:6.3.2@Pixelmon-1.12.2-6.3.2-server.jar'
     compile "org.projectlombok:lombok:1.16.10"
 	compile group: 'com.zaxxer', name: 'HikariCP', version: '2.5.1'
     testCompile "junit:junit:4.11"

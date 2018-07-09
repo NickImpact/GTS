@@ -53,7 +53,7 @@ public class GTSBaseCmd extends SpongeCommand {
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
 		if(src instanceof Player) {
-			((Player)src).openInventory(new MainUI(((Player)src), 1).getInventory());
+			new MainUI(((Player)src)).open((Player) src, 1);
 		} else if(src instanceof ConsoleSource) {
 			// Send help to console
 		} else {

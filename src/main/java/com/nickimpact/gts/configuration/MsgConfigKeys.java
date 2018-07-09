@@ -27,19 +27,18 @@ package com.nickimpact.gts.configuration;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.nickimpact.gts.api.configuration.ConfigKey;
-import com.nickimpact.gts.api.configuration.keys.ListKey;
-import com.nickimpact.gts.api.configuration.keys.StringKey;
-import joptsimple.OptionSpec;
+import com.nickimpact.impactor.api.configuration.ConfigKey;
+import com.nickimpact.impactor.api.configuration.IConfigKeys;
+import com.nickimpact.impactor.api.configuration.keys.ListKey;
+import com.nickimpact.impactor.api.configuration.keys.StringKey;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MsgConfigKeys {
+public class MsgConfigKeys implements IConfigKeys {
 
 	// Plugin chat prefix (replacement option for {{gts_prefix}}
 	public static final ConfigKey<String> PREFIX = StringKey.of("general.gts-prefix", "&eGTS &7\u00bb");
@@ -220,7 +219,8 @@ public class MsgConfigKeys {
 
 	private static Map<String, ConfigKey<?>> KEYS = null;
 
-	public static synchronized Map<String, ConfigKey<?>> getAllKeys() {
+	@Override
+	public synchronized Map<String, ConfigKey<?>> getAllKeys() {
 		if(KEYS == null) {
 			Map<String, ConfigKey<?>> keys = new LinkedHashMap<>();
 

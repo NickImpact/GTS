@@ -1,7 +1,7 @@
 package com.nickimpact.gts.logs;
 
-import com.nickimpact.gts.api.configuration.ConfigKey;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
+import com.nickimpact.impactor.api.configuration.ConfigKey;
 import lombok.Getter;
 
 import java.util.List;

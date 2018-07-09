@@ -7,15 +7,13 @@ import com.google.inject.Inject;
 import com.nickimpact.gts.api.GtsService;
 import com.nickimpact.gts.api.GtsServiceImpl;
 import com.nickimpact.gts.api.listings.entries.EntryHolder;
-import com.nickimpact.gts.commands.basic.HelpCmd;
-import com.nickimpact.gts.api.configuration.GTSConfiguration;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.entries.Entry;
 import com.nickimpact.gts.api.listings.entries.EntryAdapter;
 import com.nickimpact.gts.api.listings.pricing.*;
 import com.nickimpact.gts.commands.GTSBaseCmd;
-import com.nickimpact.gts.configuration.AbstractConfig;
-import com.nickimpact.gts.configuration.GTSConfigAdapter;
+import com.nickimpact.gts.configuration.ConfigKeys;
+import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.entries.items.ItemAdapter;
 import com.nickimpact.gts.entries.items.ItemEntry;
 import com.nickimpact.gts.entries.pixelmon.PokemonEntry;
@@ -31,9 +29,16 @@ import com.nickimpact.gts.storage.StorageType;
 import com.nickimpact.gts.storage.dao.file.FileWatcher;
 import com.nickimpact.gts.ui.updater.GuiUpdater;
 import com.nickimpact.gts.utils.ListingTasks;
+import com.nickimpact.impactor.api.configuration.AbstractConfig;
+import com.nickimpact.impactor.api.configuration.AbstractConfigAdapter;
+import com.nickimpact.impactor.api.configuration.ConfigBase;
+import com.nickimpact.impactor.api.logger.Logger;
+import com.nickimpact.impactor.api.plugins.ConfigurableSpongePlugin;
+import com.nickimpact.impactor.api.plugins.PluginInfo;
+import com.nickimpact.impactor.logging.ConsoleLogger;
+import com.nickimpact.impactor.logging.SpongeLogger;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
 import lombok.Getter;
-import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.config.ConfigDir;
@@ -43,6 +48,7 @@ import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.*;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
+import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.AsynchronousExecutor;
@@ -63,13 +69,16 @@ import java.util.concurrent.ExecutionException;
  * @author NickImpact
  */
 @Getter
-@Plugin(id = GTSInfo.ID, name = GTSInfo.NAME, version = GTSInfo.VERSION, description = GTSInfo.DESCRIPTION)
-public class GTS {
+@Plugin(id = GTSInfo.ID, name = GTSInfo.NAME, version = GTSInfo.VERSION, description = GTSInfo.DESCRIPTION, dependencies = @Dependency(id="nucleus"))
+public class GTS extends ConfigurableSpongePlugin {
 
 	/** The containing instance of the plugin set by Sponge */
 	@Inject private PluginContainer pluginContainer;
 
-	@Inject private Logger logger;
+	private PluginInfo pluginInfo = new GTSInfo();
+
+	@Inject private org.slf4j.Logger fallback;
+	private Logger logger;
 
 	/** The pathing to the config directory for GTS */
 	@Inject @ConfigDir(sharedRoot = false) private Path configDir;
@@ -85,10 +94,10 @@ public class GTS {
 	private GtsService service;
 
 	/** The configuration for GTS */
-	private GTSConfiguration config;
+	private ConfigBase config;
 
 	/** The message configuration for GTS */
-	private GTSConfiguration msgConfig;
+	private ConfigBase msgConfig;
 
 	/** The storage provider for the plugin */
 	private Storage storage;
@@ -134,6 +143,7 @@ public class GTS {
 	@SuppressWarnings("unchecked")
 	public void onPreInit(GamePreInitializationEvent e) {
 		instance = this;
+		this.logger = new ConsoleLogger(this, new SpongeLogger(this, fallback));
 		GTSInfo.startup();
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Checking dependencies...")));
 		enabled = GTSInfo.dependencyCheck();
@@ -152,43 +162,7 @@ public class GTS {
 	public void onInit(GameInitializationEvent e) {
 		// If the preliminary checks complete, enable the plugin
 		if(enabled) {
-			// Load the configuration
-			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Now entering the init phase")));
-			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading configuration...")));
-			this.config = new AbstractConfig(this, new GTSConfigAdapter(this), "gts.conf");
-			this.config.init();
-
-			this.msgConfig = new AbstractConfig(this, new GTSConfigAdapter(this), "messages.conf");
-			this.msgConfig.init();
-
-			//if(getConfig().get(ConfigKeys.WATCH_FILES)) {
-			//	fileWatcher = new FileWatcher(this);
-			//	Sponge.getScheduler().createTaskBuilder().async().intervalTicks(30).delayTicks(30).execute(fileWatcher).submit(GTS.getInstance());
-			//}
-
-			// Register the base command
-			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing commands...")));
-			new GTSBaseCmd().register();
-
-			// Declare and activate listeners
-			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing listeners...")));
-			Sponge.getEventManager().registerListeners(this, new JoinListener());
-
-			// Launch the storage option chosen via the config
-			this.storage = StorageFactory.getInstance(this, StorageType.H2);
-
-			// Read in and register all data entries into the cache
-			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading data into cache...")));
-			try {
-				this.listingsCache = this.storage.getListings().get();
-				this.heldEntryCache = this.storage.getHeldElements().get();
-				this.heldPriceCache = this.storage.getHeldPrices().get();
-				this.ignorers = this.storage.getIgnorers().get();
-			} catch (InterruptedException | ExecutionException e1) {
-				e1.printStackTrace();
-			}
-
-			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initialization complete!")));
+			this.connect();
 		}
 	}
 
@@ -249,7 +223,49 @@ public class GTS {
 		return getClass().getClassLoader().getResourceAsStream(path);
 	}
 
-	public GTSConfiguration getDefaultMsgConfig() {
-		return msgConfig;
+	@Override
+	public void doConnect() {
+		// Load the configuration
+		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Now entering the init phase")));
+		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading configuration...")));
+		this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new ConfigKeys(), "gts.conf");
+		this.config.init();
+
+		this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new MsgConfigKeys(), "messages.conf");
+		this.msgConfig.init();
+
+		//if(getConfig().get(ConfigKeys.WATCH_FILES)) {
+		//	fileWatcher = new FileWatcher(this);
+		//	Sponge.getScheduler().createTaskBuilder().async().intervalTicks(30).delayTicks(30).execute(fileWatcher).submit(GTS.getInstance());
+		//}
+
+		// Register the base command
+		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing commands...")));
+		new GTSBaseCmd().register();
+
+		// Declare and activate listeners
+		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing listeners...")));
+		Sponge.getEventManager().registerListeners(this, new JoinListener());
+
+		// Launch the storage option chosen via the config
+		this.storage = StorageFactory.getInstance(this, StorageType.H2);
+
+		// Read in and register all data entries into the cache
+		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading data into cache...")));
+		try {
+			this.listingsCache = this.storage.getListings().get();
+			this.heldEntryCache = this.storage.getHeldElements().get();
+			this.heldPriceCache = this.storage.getHeldPrices().get();
+			this.ignorers = this.storage.getIgnorers().get();
+		} catch (InterruptedException | ExecutionException e1) {
+			e1.printStackTrace();
+		}
+
+		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initialization complete!")));
+	}
+
+	@Override
+	public void doDisconnect() {
+
 	}
 }
