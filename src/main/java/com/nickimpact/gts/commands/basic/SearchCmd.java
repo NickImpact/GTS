@@ -2,10 +2,10 @@ package com.nickimpact.gts.commands.basic;
 
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.api.GtsService;
-import com.nickimpact.gts.api.commands.annotations.CommandAliases;
-import com.nickimpact.gts.api.commands.SpongeCommand;
-import com.nickimpact.gts.api.commands.SpongeSubCommand;
-import com.nickimpact.gts.api.listings.entries.Entry;
+import com.nickimpact.impactor.api.commands.SpongeCommand;
+import com.nickimpact.impactor.api.commands.SpongeSubCommand;
+import com.nickimpact.impactor.api.commands.annotations.Aliases;
+import com.nickimpact.impactor.api.plugins.SpongePlugin;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -23,8 +23,12 @@ import java.util.Objects;
  *
  * @author NickImpact
  */
-@CommandAliases({"search"})
+@Aliases({"search"})
 public class SearchCmd extends SpongeSubCommand {
+
+	public SearchCmd(SpongePlugin plugin) {
+		super(plugin);
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override

@@ -20,6 +20,8 @@ public class DateArg extends CommandElement {
 
 	private static final Pattern DATE_FORMAT = Pattern.compile("^(?<month>[0-9][0-9]?)/(?<day>[0-9][0-9]?)/(?<year>[0-9]{2,4})(-(?<hour>[0-9][0-9]?)(:(?<minute>[0-9][0-9]))?)?$");
 
+	private static final String YEAR_FIX = "20xx";
+
 	public DateArg(@Nullable Text key) {
 		super(key);
 	}
@@ -33,7 +35,19 @@ public class DateArg extends CommandElement {
 		if(matcher.matches()) {
 			int month = Integer.parseInt(matcher.group("month")) - 1;
 			int day = Integer.parseInt(matcher.group("day"));
-			int year = Integer.parseInt(matcher.group("year"));
+			String y = matcher.group("year");
+			String proper = "";
+			if(y.length() < 4) {
+				for(int i = 0; i < 2; i++) {
+					proper = String.valueOf(YEAR_FIX.charAt(i));
+					if((proper + y).length() == 4) {
+						break;
+					}
+				}
+			} else {
+				proper = y;
+			}
+			int year = Integer.parseInt(proper);
 			String hourS = matcher.group("hour");
 			String minuteS = matcher.group("minute");
 

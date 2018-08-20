@@ -21,7 +21,7 @@ public enum EnumPokemonFields {
 
 	NAME(pokemon -> {
 		if(pokemon.isEgg) {
-			return "Unknown";
+			return "Pokemon Egg";
 		}
 
 		if(GTS.getInstance().getConfig().get(ConfigKeys.MEMES)) {

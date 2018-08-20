@@ -1,9 +1,10 @@
 package com.nickimpact.gts.commands.administrative;
 
-import com.nickimpact.gts.api.commands.annotations.AdminCmd;
-import com.nickimpact.gts.api.commands.annotations.CommandAliases;
-import com.nickimpact.gts.api.commands.SpongeCommand;
-import com.nickimpact.gts.api.commands.SpongeSubCommand;
+import com.nickimpact.impactor.api.commands.SpongeCommand;
+import com.nickimpact.impactor.api.commands.SpongeSubCommand;
+import com.nickimpact.impactor.api.commands.annotations.Aliases;
+import com.nickimpact.impactor.api.commands.annotations.Permission;
+import com.nickimpact.impactor.api.plugins.SpongePlugin;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -16,9 +17,13 @@ import org.spongepowered.api.text.Text;
  *
  * @author NickImpact
  */
-@AdminCmd
-@CommandAliases({"reload"})
+@Aliases({"reload"})
+@Permission(admin = true)
 public class ReloadCmd extends SpongeSubCommand {
+
+	public ReloadCmd(SpongePlugin plugin) {
+		super(plugin);
+	}
 
 	@Override
 	public CommandElement[] getArgs() {

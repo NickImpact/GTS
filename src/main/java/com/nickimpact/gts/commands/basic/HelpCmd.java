@@ -2,13 +2,10 @@ package com.nickimpact.gts.commands.basic;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.GTSInfo;
-import com.nickimpact.gts.api.commands.SpongeCommand;
-import com.nickimpact.gts.api.commands.SpongeSubCommand;
-import com.nickimpact.gts.api.commands.annotations.AdminCmd;
-import com.nickimpact.gts.api.commands.annotations.CommandAliases;
-import com.nickimpact.gts.commands.GTSBaseCmd;
+import com.nickimpact.impactor.api.commands.SpongeCommand;
+import com.nickimpact.impactor.api.commands.SpongeSubCommand;
+import com.nickimpact.impactor.api.commands.annotations.Aliases;
+import com.nickimpact.impactor.api.plugins.SpongePlugin;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -26,10 +23,14 @@ import java.util.Map;
  *
  * @author NickImpact
  */
-@CommandAliases({"help"})
+@Aliases({"help"})
 public class HelpCmd extends SpongeSubCommand {
 
 	public static Map<String, Text> commands = Maps.newHashMap();
+
+	public HelpCmd(SpongePlugin plugin) {
+		super(plugin);
+	}
 
 	@Override
 	public CommandElement[] getArgs() {
@@ -71,27 +72,5 @@ public class HelpCmd extends SpongeSubCommand {
 				.sendTo(src);
 
 		return CommandResult.success();
-	}
-
-	private List<Text> formatCommands(CommandSource src, SpongeCommand cmd) {
-		List<Text> commands = Lists.newArrayList();
-
-		if(!cmd.getClass().isAnnotationPresent(AdminCmd.class) || !src.hasPermission(cmd.getPermission())) {
-			return commands;
-		}
-
-		commands.add(Text.of(
-				TextColors.AQUA, cmd.getUsage(), TextColors.GRAY, " - ", TextColors.YELLOW,
-				cmd.getDescription()
-		));
-
-		if(cmd.getSubCommands() != null && cmd.getSubCommands().length > 0) {
-			for(SpongeCommand child : cmd.getSubCommands()) {
-				if(child.getCommandSpec().testPermission(src))
-					commands.addAll(this.formatCommands(src, child));
-			}
-		}
-
-		return commands;
 	}
 }

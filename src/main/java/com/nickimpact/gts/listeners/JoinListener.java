@@ -29,7 +29,7 @@ public class JoinListener {
 
 		ImmutableList.copyOf(GTS.getInstance().getListingsCache()).stream()
 				.filter(listing -> listing.getOwnerUUID().equals(player.getUniqueId()))
-				.filter(Listing::checkHasExpired)
+				.filter(Listing::hasExpired)
 				.forEach(listing -> {
 					Map<String, Object> variables = Maps.newHashMap();
 					variables.put("listing_specifics", listing);

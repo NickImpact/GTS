@@ -23,12 +23,10 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.item.inventory.property.InventoryTitle;
-import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -51,6 +49,8 @@ public class MainUI implements PageDisplayable, Observer {
 	/** Whether or not we should show the player's listings or not */
 	private boolean justPlayer = false;
 
+	private static final Icon BORDER = Icon.from(ItemStack.builder().from(Icon.BORDER.getDisplay()).add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Click to refresh UI")).build());
+
 	public MainUI(Player player) {
 		this(player, Lists.newArrayList());
 	}
@@ -62,8 +62,12 @@ public class MainUI implements PageDisplayable, Observer {
 	 * @param conditions The search condition to apply to the listings available
 	 */
 	public MainUI(Player player, Collection<Predicate<Listing>> conditions) {
+		if(BORDER.getListeners().isEmpty()) {
+			BORDER.addListener(clickable -> apply());
+		}
 		this.player = player;
 		this.searchConditions.addAll(conditions);
+		this.searchConditions.add(listing -> !listing.hasExpired());
 
 		this.page = Page.builder()
 				.property(InventoryTitle.of(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "\u00BB ", TextColors.DARK_AQUA, "Listings")))
@@ -74,20 +78,20 @@ public class MainUI implements PageDisplayable, Observer {
 				.layout(this.design())
 				.build(GTS.getInstance());
 		this.page.define(drawListings(), InventoryDimension.of(7, 3), 1, 1);
-		this.page.getViews().forEach(ui -> {
-			ui.setOpenAction((event, pl) -> {
-				GTS.getInstance().getUpdater().addObserver(this);
-				Sponge.getScheduler().createTaskBuilder()
-						.execute(this::apply)
-						.interval(1, TimeUnit.SECONDS)
-						.name("Main-" + player.getName())
-						.submit(GTS.getInstance());
-			});
-			ui.setCloseAction((event, pl) -> {
-				GTS.getInstance().getUpdater().deleteObserver(this);
-				Sponge.getScheduler().getTasksByName("Main-" + player.getName()).forEach(Task::cancel);
-			});
-		});
+//		this.page.getViews().forEach(ui -> {
+//			ui.setOpenAction((event, pl) -> {
+//				GTS.getInstance().getUpdater().addObserver(this);
+//				Sponge.getScheduler().createTaskBuilder()
+//						.execute(this::apply)
+//						.interval(5, TimeUnit.SECONDS)
+//						.name("Main-" + player.getName())
+//						.submit(GTS.getInstance());
+//			});
+//			ui.setCloseAction((event, pl) -> {
+//				GTS.getInstance().getUpdater().deleteObserver(this);
+//				Sponge.getScheduler().getTasksByName("Main-" + player.getName()).forEach(Task::cancel);
+//			});
+//		});
 	}
 
 	@Override
@@ -97,9 +101,9 @@ public class MainUI implements PageDisplayable, Observer {
 
 	private Layout design() {
 		Layout.Builder lb = Layout.builder().dimension(9, 6);
-		lb.row(Icon.BORDER, 0).row(Icon.BORDER, 4);
-		lb.column(Icon.BORDER, 0).column(Icon.BORDER, 8);
-		lb.slots(Icon.BORDER, 47, 50);
+		lb.row(BORDER, 0).row(BORDER, 4);
+		lb.column(BORDER, 0).column(BORDER, 8);
+		lb.slots(BORDER, 47, 50);
 
 		Text skullTitle = GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(this.player, MsgConfigKeys.UI_ITEMS_PLAYER_TITLE, null, null);
 		List<Text> skullLore = GTS.getInstance().getTextParsingUtils().fetchAndParseMsgs(this.player, MsgConfigKeys.UI_ITEMS_PLAYER_LORE, null, null);
@@ -216,7 +220,7 @@ public class MainUI implements PageDisplayable, Observer {
 			}
 		}
 
-		listings = listings.stream().filter(listing -> !listing.checkHasExpired()).collect(Collectors.toList());
+		listings = listings.stream().filter(listing -> !listing.hasExpired()).collect(Collectors.toList());
 		return listings;
 	}
 

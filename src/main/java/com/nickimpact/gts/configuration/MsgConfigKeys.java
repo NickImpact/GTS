@@ -122,6 +122,7 @@ public class MsgConfigKeys implements IConfigKeys {
 
 	// Pokemon Entries
 	public static final ConfigKey<String> POKEMON_ENTRY_SPEC_TEMPLATE = StringKey.of("entries.pokemon.spec-template", "{{ability:s}}{{ivs_percent:s}}{{ivs_stat:s}}{{shiny:s}}&a{{pokemon}}");
+	public static final ConfigKey<String> POKEMON_ENTRY_SPEC_TEMPLATE_EGG = StringKey.of("entries.pokemon.egg-spec-template", "&a{{pokemon}}");
 	public static final ConfigKey<String> POKEMON_ENTRY_BASE_TITLE = StringKey.of("entries.pokemon.base.title", "&e{{pokemon}} {{shiny:s}}&7| &bLvl {{level}}");
 	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_LORE = ListKey.of("entries.pokemon.base.lore.base", Lists.newArrayList(
 			"&7Seller: &e{{seller}}",

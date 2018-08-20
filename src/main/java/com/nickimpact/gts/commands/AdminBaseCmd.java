@@ -1,12 +1,14 @@
 package com.nickimpact.gts.commands;
 
-import com.nickimpact.gts.api.commands.annotations.AdminCmd;
-import com.nickimpact.gts.api.commands.annotations.CommandAliases;
-import com.nickimpact.gts.api.commands.SpongeCommand;
-import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import com.nickimpact.gts.commands.administrative.ClearCmd;
 import com.nickimpact.gts.commands.administrative.EditCmd;
+import com.nickimpact.gts.commands.administrative.FakeAdditionCmd;
 import com.nickimpact.gts.commands.administrative.LogCmd;
+import com.nickimpact.impactor.api.commands.SpongeCommand;
+import com.nickimpact.impactor.api.commands.SpongeSubCommand;
+import com.nickimpact.impactor.api.commands.annotations.Aliases;
+import com.nickimpact.impactor.api.commands.annotations.Permission;
+import com.nickimpact.impactor.api.plugins.SpongePlugin;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -19,9 +21,13 @@ import org.spongepowered.api.text.Text;
  *
  * @author NickImpact
  */
-@AdminCmd
-@CommandAliases({"admin"})
+@Aliases({"admin"})
+@Permission
 public class AdminBaseCmd extends SpongeSubCommand {
+
+	public AdminBaseCmd(SpongePlugin plugin) {
+		super(plugin);
+	}
 
 	@Override
 	public CommandElement[] getArgs() {
@@ -41,9 +47,10 @@ public class AdminBaseCmd extends SpongeSubCommand {
 	@Override
 	public SpongeCommand[] getSubCommands() {
 		return new SpongeCommand[]{
-				new ClearCmd(),
-				new EditCmd(),
-				new LogCmd()
+				new ClearCmd(this.plugin),
+				new EditCmd(this.plugin),
+				new LogCmd(this.plugin),
+				new FakeAdditionCmd(plugin)
 		};
 	}
 

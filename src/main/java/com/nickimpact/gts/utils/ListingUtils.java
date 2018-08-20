@@ -12,6 +12,7 @@ import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.api.events.ListEvent;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.utils.MessageUtils;
+import com.nickimpact.gts.discord.Message;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
 import com.nickimpact.gts.logs.Log;
 import com.nickimpact.gts.logs.LogAction;
@@ -22,15 +23,16 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.event.cause.Cause;
 import org.spongepowered.api.event.cause.EventContext;
-import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.awt.*;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.*;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -41,22 +43,67 @@ import java.util.stream.Collectors;
  */
 public class ListingUtils {
 
+	public static void addToMarket(Listing listing) {
+		ListEvent listEvent = new ListEvent(
+				null,
+				listing,
+				Sponge.getCauseStackManager().getCurrentCause()
+		);
+		Sponge.getEventManager().post(listEvent);
+
+		if(!listEvent.isCancelled()) {
+			GTS.getInstance().getStorage().addListing(listing);
+			GTS.getInstance().getListingsCache().add(listing);
+
+			// Broadcast a message to everyone but the player who deposited the listing and the ignorers
+			Set<Player> players = Sponge.getServer().getOnlinePlayers().stream()
+					.filter(pl -> !GTS.getInstance().getIgnorers().contains(pl.getUniqueId()))
+					.collect(Collectors.toSet());
+			List<Text> broadcast;
+			Map<String, Object> variables = Maps.newHashMap();
+			variables.put("dummy", listing.getEntry().getEntry());
+			variables.put("dummy2", listing);
+			variables.put("dummy3", listing.getEntry());
+
+			try {
+				broadcast = GTS.getInstance().getTextParsingUtils().parse(
+						Lists.newArrayList(
+								"{{gts_prefix}} &7A &a{{listing_specifics}} &7has been added to the GTS for &a{{price}}&7!"
+						),
+						null,
+						null,
+						variables
+				);
+			} catch (NucleusException e) {
+				broadcast = Lists.newArrayList();
+			}
+			for(Player pl : players) {
+				pl.sendMessages(broadcast);
+			}
+
+			GTS.getInstance().getDiscordNotifier().ifPresent(notifier -> {
+				Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_NEW_LISTING), "&7A &a{{listing_specifics}} &7has been added to the GTS for &a{{price}}&7!");
+				notifier.sendMessage(message);
+			});
+		}
+	}
+
     public static void addToMarket(Player player, Listing listing) {
-        if(hasMax(player)) {
-	        Map<String, Function<CommandSource, Optional<Text>>> replacements = Maps.newHashMap();
-	        replacements.put("max_listings", src -> Optional.of(Text.of(GTS.getInstance().getConfig().get(ConfigKeys.MAX_LISTINGS))));
-            try {
-	            player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
-			            GTS.getInstance().getMsgConfig().get(MsgConfigKeys.MAX_LISTINGS),
-			            player,
-			            replacements,
-			            null
-	            ));
-            } catch (NucleusException e) {
-	            e.printStackTrace();
-            }
-            return;
-        }
+	    if(ListingUtils.hasMax(player)) {
+		    Map<String, Function<CommandSource, Optional<Text>>> replacements = Maps.newHashMap();
+		    replacements.put("max_listings", s -> Optional.of(Text.of(GTS.getInstance().getConfig().get(ConfigKeys.MAX_LISTINGS))));
+		    try {
+			    player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(
+					    GTS.getInstance().getMsgConfig().get(MsgConfigKeys.MAX_LISTINGS),
+					    player,
+					    replacements,
+					    null
+			    ));
+		    } catch (NucleusException e) {
+			    e.printStackTrace();
+		    }
+		    return;
+	    }
 
 	    ListEvent listEvent = new ListEvent(
 			    player,
@@ -216,6 +263,23 @@ public class ListingUtils {
 			    pl.sendMessages(broadcast);
 		    }
 
+		    final Text b;
+		    try {
+			    b = GTS.getInstance().getTextParsingUtils().parse(
+					    "&c{{player}} &7has added a &a{{listing_specifics}} &7to the GTS for &a{{price}}&7!",
+					    player,
+					    null,
+					    variables
+			    );
+			    GTS.getInstance().getDiscordNotifier().ifPresent(notifier -> {
+				    Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_NEW_LISTING), b.toPlain());
+				    notifier.sendMessage(message);
+			    });
+		    } catch (NucleusException e) {
+			    e.printStackTrace();
+		    }
+
+
 		    Log add = Log.builder()
 				    .action(LogAction.Addition)
 				    .source(player.getUniqueId())
@@ -246,6 +310,11 @@ public class ListingUtils {
 			} catch (NucleusException e) {
 				e.printStackTrace();
 			}
+			return;
+		}
+
+		if(listing.hasExpired()) {
+			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "That listing has expired..."));
 			return;
 		}
 
@@ -301,6 +370,18 @@ public class ListingUtils {
 				}
 
 				deleteEntry(listing);
+
+			    final String b = GTS.getInstance().getTextParsingUtils().parse(
+					    "{{buyer}} just purchased a {{listing_specifics}} from {{seller}} for {{price}}!",
+					    player,
+					    null,
+					    variables
+			    ).toPlain();
+			    GTS.getInstance().getDiscordNotifier().ifPresent(notifier -> {
+				    Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_SELL_LISTING), b);
+				    notifier.sendMessage(message);
+			    });
+
 			    Log buyer = Log.builder()
 					    .action(LogAction.Purchase)
 					    .source(player.getUniqueId())

@@ -3,12 +3,13 @@ package com.nickimpact.gts.commands.administrative;
 import com.google.common.collect.Lists;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
-import com.nickimpact.gts.api.commands.annotations.AdminCmd;
-import com.nickimpact.gts.api.commands.annotations.CommandAliases;
-import com.nickimpact.gts.api.commands.SpongeCommand;
-import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import com.nickimpact.gts.api.commands.arguments.DateArg;
 import com.nickimpact.gts.logs.Log;
+import com.nickimpact.impactor.api.commands.SpongeCommand;
+import com.nickimpact.impactor.api.commands.SpongeSubCommand;
+import com.nickimpact.impactor.api.commands.annotations.Aliases;
+import com.nickimpact.impactor.api.commands.annotations.Permission;
+import com.nickimpact.impactor.api.plugins.SpongePlugin;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -22,9 +23,8 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.temporal.ChronoField;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -33,8 +33,8 @@ import java.util.stream.Collectors;
  *
  * @author NickImpact
  */
-@AdminCmd
-@CommandAliases({"logs"})
+@Aliases({"logs"})
+@Permission(admin = true)
 public class LogCmd extends SpongeSubCommand {
 
 	private final Text USER = Text.of("user");
@@ -42,6 +42,10 @@ public class LogCmd extends SpongeSubCommand {
 
 	private final Text FROM = Text.of("from");
 	private final Text TO = Text.of("to");
+
+	public LogCmd(SpongePlugin plugin) {
+		super(plugin);
+	}
 
 	@Override
 	public CommandElement[] getArgs() {
@@ -79,7 +83,15 @@ public class LogCmd extends SpongeSubCommand {
 		GTS.getInstance().getStorage().getLogs(user.getUniqueId()).thenAccept(lgs -> {
 			Predicate<Log> predicate = log -> {
 				if(from.isPresent()) {
-					return to.map(date -> log.getDate().after(from.get()) && log.getDate().before(date)).orElseGet(() -> log.getDate().after(from.get()));
+					return to.map(date -> {
+						if(date.equals(from.get())) {
+							Calendar cal = new GregorianCalendar(date.toInstant().get(ChronoField.YEAR), date.toInstant().get(ChronoField.MONTH_OF_YEAR), date.toInstant().get(ChronoField.DAY_OF_MONTH));
+							cal.set(Calendar.HOUR_OF_DAY, 23);
+							cal.set(Calendar.MINUTE, 59);
+							return log.getDate().after(from.get()) && log.getDate().before(cal.getTime());
+						}
+						return log.getDate().after(from.get()) && log.getDate().before(date);
+					}).orElseGet(() -> log.getDate().after(from.get()));
 				} else return to.map(date -> log.getDate().before(date)).orElse(true);
 			};
 

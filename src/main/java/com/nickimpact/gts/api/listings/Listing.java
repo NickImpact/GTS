@@ -110,16 +110,20 @@ public final class Listing {
     }
 
     public Listing(Builder builder) {
-		this.ID = -1;
-		this.uuid = UUID.randomUUID();
-		this.ownerName = builder.player.getName();
-		this.ownerUUID = builder.player.getUniqueId();
-		this.entry = builder.entry;
-		this.expires = builder.expires;
-		this.expiration = builder.expiration;
-		this.aucData = builder.data;
+	    this.ID = -1;
+	    this.uuid = UUID.randomUUID();
+	    this.ownerName = builder.player != null ? builder.player.getName() : builder.fakeName;
+	    this.ownerUUID = builder.player != null ? builder.player.getUniqueId() : builder.fakeUUID;
+	    this.entry = builder.entry;
+	    this.expires = builder.expires;
+	    this.expiration = builder.expiration;
+	    this.aucData = builder.data;
 
-	    ListingUtils.addToMarket(builder.player, this);
+	    if (builder.player == null) {
+		    ListingUtils.addToMarket(this);
+	    } else {
+		    ListingUtils.addToMarket(builder.player, this);
+        }
     }
 
     public static Builder builder() {
@@ -140,7 +144,7 @@ public final class Listing {
 	 *
 	 * @return Whether or not a listing has expired
 	 */
-	public boolean checkHasExpired() {
+	public boolean hasExpired() {
         return getExpiration().before(Date.from(Instant.now()));
     }
 
@@ -182,6 +186,10 @@ public final class Listing {
 
 		private Player player;
 
+		private UUID fakeUUID;
+
+		private String fakeName;
+
 		private Entry entry;
 
 		private boolean expires;
@@ -192,6 +200,12 @@ public final class Listing {
 
 		public Builder player(Player player) {
 			this.player = player;
+			return this;
+		}
+
+		public Builder player(UUID fakeUUID, String fakeName) {
+			this.fakeUUID = fakeUUID;
+			this.fakeName = fakeName;
 			return this;
 		}
 
@@ -221,7 +235,19 @@ public final class Listing {
 		}
 
 		public Listing build() throws ListingException {
-			if(player == null || entry == null)
+			if(player == null && fakeUUID == null && fakeName == null) {
+				throw new ListingException();
+			}
+
+			if(fakeUUID != null && fakeName == null) {
+				fakeName = "Totally Legit User";
+			}
+
+			if(fakeUUID == null) {
+				fakeUUID = UUID.randomUUID();
+			}
+
+			if(entry == null)
 				throw new ListingException();
 
 			if(expiration != null && !expires) {

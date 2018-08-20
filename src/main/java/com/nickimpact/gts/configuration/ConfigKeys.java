@@ -27,11 +27,13 @@ package com.nickimpact.gts.configuration;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.nickimpact.gts.discord.DiscordOption;
 import com.nickimpact.gts.storage.StorageCredentials;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.nickimpact.impactor.api.configuration.IConfigKeys;
 import com.nickimpact.impactor.api.configuration.keys.*;
 
+import java.awt.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
@@ -103,6 +105,31 @@ public class ConfigKeys implements IConfigKeys {
 	public static final ConfigKey<Double> MIN_PRICING_POKEMON_HA = DoubleKey.of("min-pricing.pokemon.hidden-ability", 5000.0);
 	public static final ConfigKey<Boolean> MIN_PRICING_ENABLED = BooleanKey.of("min-pricing.enabled", true);
 	public static final ConfigKey<Double> MAX_MONEY_PRICE = DoubleKey.of("max-pricing.money.max", 100000000.0);
+
+	public static final ConfigKey<Boolean> DISCORD_ENABLED = BooleanKey.of("discord.enabled", false);
+	public static final ConfigKey<Boolean> DISCORD_DEBUG = BooleanKey.of("discord.debug-enabled", false);
+	public static final ConfigKey<String> DISCORD_TITLE = StringKey.of("discord.title", "GTS Notifier");
+	public static final ConfigKey<String> DISCORD_AVATAR = StringKey.of("discord.avatar", "https://cdn.bulbagarden.net/upload/thumb/f/f5/399Bidoof.png/600px-399Bidoof.png");
+	public static final ConfigKey<DiscordOption> DISCORD_NEW_LISTING = AbstractKey.of(d -> new DiscordOption(
+			d.getString("discord.notifications.new-listing.descriptor", "New Listing Published"),
+			Color.decode(d.getString("discord.notifications.new-listing.color", "#00FF00")),
+			d.getList("discord.notifications.new-listing.webhooks", Lists.newArrayList())
+	));
+	public static final ConfigKey<DiscordOption> DISCORD_SELL_LISTING = AbstractKey.of(d -> new DiscordOption(
+			d.getString("discord.notifications.sell-listing.descriptor", "Listing Purchase"),
+			Color.decode(d.getString("discord.notifications.sell-listing.color", "#00FFFF")),
+			d.getList("discord.notifications.sell-listing.webhooks", Lists.newArrayList())
+	));
+	public static final ConfigKey<DiscordOption> DISCORD_EXPIRE = AbstractKey.of(d -> new DiscordOption(
+			d.getString("discord.notifications.listing-expire.descriptor", "Listing Expiration"),
+			Color.decode(d.getString("discord.notifications.listing-expire.color", "#FF0000")),
+			d.getList("discord.notifications.listing-expire.webhooks", Lists.newArrayList())
+	));
+	public static final ConfigKey<DiscordOption> DISCORD_REMOVE = AbstractKey.of(d -> new DiscordOption(
+			d.getString("discord.notifications.listing-remove.descriptor", "Listing Removal"),
+			Color.decode(d.getString("discord.notifications.listing-remove.color", "#800080")),
+			d.getList("discord.notifications.listing-remove.webhooks", Lists.newArrayList())
+	));
 
 	private static Map<String, ConfigKey<?>> KEYS = null;
 

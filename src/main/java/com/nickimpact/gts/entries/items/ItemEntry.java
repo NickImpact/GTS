@@ -3,9 +3,7 @@ package com.nickimpact.gts.entries.items;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.api.commands.SpongeCommand;
-import com.nickimpact.gts.api.commands.SpongeSubCommand;
-import com.nickimpact.gts.api.commands.annotations.CommandAliases;
+import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.entries.Entry;
@@ -13,6 +11,13 @@ import com.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
+import com.nickimpact.gts.utils.ListingUtils;
+import com.nickimpact.impactor.api.commands.SpongeCommand;
+import com.nickimpact.impactor.api.commands.SpongeSubCommand;
+import com.nickimpact.impactor.api.commands.annotations.Aliases;
+import com.nickimpact.impactor.api.commands.annotations.Permission;
+import com.nickimpact.impactor.api.plugins.SpongePlugin;
+import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -25,13 +30,17 @@ import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.InventoryTransformation;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -69,7 +78,7 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	public SpongeSubCommand commandSpec(boolean isAuction) {
-		return new ItemSub(isAuction);
+		return new ItemSub(GTS.getInstance(), isAuction);
 	}
 
 	@Override
@@ -171,7 +180,7 @@ public class ItemEntry extends Entry<DataContainer> {
 			return false;
 		}
 
-		player.getInventory().offer(this.decode());
+		player.getInventory().transform(InventoryTransformation.of(QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class), QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class))).offer(this.decode());
 		return true;
 	}
 
@@ -193,7 +202,8 @@ public class ItemEntry extends Entry<DataContainer> {
 		return false;
 	}
 
-	@CommandAliases("item")
+	@Aliases("item")
+	@Permission(prefix = "sell")
 	public class ItemSub extends SpongeSubCommand {
 
 		private final Text argAmount = Text.of("amount");
@@ -202,7 +212,8 @@ public class ItemEntry extends Entry<DataContainer> {
 		private final boolean isAuction;
 		private final Text argIncrement = Text.of("increment");
 
-		public ItemSub(boolean isAuction) {
+		public ItemSub(SpongePlugin plugin, boolean isAuction) {
+			super(plugin);
 			this.isAuction = isAuction;
 		}
 
@@ -244,9 +255,14 @@ public class ItemEntry extends Entry<DataContainer> {
 				}
 
 				Optional<ItemStack> item = player.getItemInHand(HandTypes.MAIN_HAND);
-				if(item.isPresent()) {
+				if(item.isPresent() && !item.get().equalTo(ItemStack.empty())) {
 					int amount = args.<Integer>getOne(argAmount).get();
+					if(amount < 1) {
+						throw new CommandException(Text.of("Amount must be positive"));
+					}
+
 					if(amount >= item.get().getQuantity()) {
+						player.sendMessage(Text.of(GTSInfo.WARNING, TextColors.GRAY, "The quantity specified is too high, lowering to the amount you possess..."));
 						amount = item.get().getQuantity();
 					}
 					ItemStack entry = ItemStack.builder().from(item.get()).quantity(amount).build();

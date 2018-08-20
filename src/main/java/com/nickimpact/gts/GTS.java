@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import com.nickimpact.gts.api.GtsService;
 import com.nickimpact.gts.api.GtsServiceImpl;
+import com.nickimpact.gts.api.discord.IDiscordNotifier;
 import com.nickimpact.gts.api.listings.entries.EntryHolder;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.entries.Entry;
@@ -20,6 +21,7 @@ import com.nickimpact.gts.entries.pixelmon.PokemonEntry;
 import com.nickimpact.gts.entries.prices.ItemPrice;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
 import com.nickimpact.gts.entries.prices.PokePrice;
+import com.nickimpact.gts.discord.DiscordNotifier;
 import com.nickimpact.gts.internal.TextParsingUtils;
 import com.nickimpact.gts.listeners.JoinListener;
 import com.nickimpact.gts.logs.Log;
@@ -29,12 +31,14 @@ import com.nickimpact.gts.storage.StorageType;
 import com.nickimpact.gts.storage.dao.file.FileWatcher;
 import com.nickimpact.gts.ui.updater.GuiUpdater;
 import com.nickimpact.gts.utils.ListingTasks;
+import com.nickimpact.impactor.api.commands.SpongeCommand;
 import com.nickimpact.impactor.api.configuration.AbstractConfig;
 import com.nickimpact.impactor.api.configuration.AbstractConfigAdapter;
 import com.nickimpact.impactor.api.configuration.ConfigBase;
 import com.nickimpact.impactor.api.logger.Logger;
-import com.nickimpact.impactor.api.plugins.ConfigurableSpongePlugin;
 import com.nickimpact.impactor.api.plugins.PluginInfo;
+import com.nickimpact.impactor.api.plugins.SpongePlugin;
+import com.nickimpact.impactor.api.services.plan.PlanData;
 import com.nickimpact.impactor.logging.ConsoleLogger;
 import com.nickimpact.impactor.logging.SpongeLogger;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
@@ -46,7 +50,10 @@ import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.GameReloadEvent;
-import org.spongepowered.api.event.game.state.*;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -69,8 +76,8 @@ import java.util.concurrent.ExecutionException;
  * @author NickImpact
  */
 @Getter
-@Plugin(id = GTSInfo.ID, name = GTSInfo.NAME, version = GTSInfo.VERSION, description = GTSInfo.DESCRIPTION, dependencies = @Dependency(id="nucleus"))
-public class GTS extends ConfigurableSpongePlugin {
+@Plugin(id = GTSInfo.ID, name = GTSInfo.NAME, version = GTSInfo.VERSION, description = GTSInfo.DESCRIPTION, dependencies = {@Dependency(id="nucleus"), @Dependency(id="impactor")})
+public class GTS extends SpongePlugin {
 
 	/** The containing instance of the plugin set by Sponge */
 	@Inject private PluginContainer pluginContainer;
@@ -91,7 +98,7 @@ public class GTS extends ConfigurableSpongePlugin {
 	private static GTS instance;
 
 	/** The API specific fields for anything that extends outside the normal means of GTS */
-	private GtsService service;
+	private GtsService service = new GtsServiceImpl();
 
 	/** The configuration for GTS */
 	private ConfigBase config;
@@ -128,6 +135,11 @@ public class GTS extends ConfigurableSpongePlugin {
 	/** The observable instance that allows the UIs to detect updates */
 	private GuiUpdater updater = new GuiUpdater();
 
+	private GTSBaseCmd cmd;
+	private JoinListener joinListener;
+
+	private IDiscordNotifier discordNotifier;
+
 	/** The JSON writing/reading object with pretty printing. */
 	public static final Gson prettyGson = new GsonBuilder()
 			.setPrettyPrinting()
@@ -139,54 +151,10 @@ public class GTS extends ConfigurableSpongePlugin {
 	/** Whether or not the plugin has passed preliminary checks */
 	private boolean enabled;
 
-	@Listener(order = Order.EARLY)
-	@SuppressWarnings("unchecked")
-	public void onPreInit(GamePreInitializationEvent e) {
-		instance = this;
-		this.logger = new ConsoleLogger(this, new SpongeLogger(this, fallback));
-		GTSInfo.startup();
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Checking dependencies...")));
-		enabled = GTSInfo.dependencyCheck();
-
-		if(enabled) {
-			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Opening API and registering base setup...")));
-			Sponge.getServiceManager().setProvider(this, GtsService.class, (service = new GtsServiceImpl()));
-			service.registerEntries(Lists.newArrayList(ItemEntry.class, PokemonEntry.class));
-			service.registerPrices(Lists.newArrayList(MoneyPrice.class, ItemPrice.class, PokePrice.class));
-
-			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Pre-init phase complete!")));
-		}
-	}
-
-	@Listener
-	public void onInit(GameInitializationEvent e) {
-		// If the preliminary checks complete, enable the plugin
-		if(enabled) {
-			this.connect();
-		}
-	}
-
-	@Listener
-	public void onServerStarted(GameStartedServerEvent e) {
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Post start-up phase has now started")));
-
-		if(enabled) {
-			ListingTasks.updateTask();
-		}
-	}
-
 	@Listener
 	public void onReload(GameReloadEvent e) {
 		this.config.reload();
 		this.msgConfig.reload();
-	}
-
-	@Listener
-	public void onStop(GameStoppingServerEvent e) {
-		if(enabled) {
-			// Do shutdown procedures, such as saving content
-			this.storage.shutdown();
-		}
 	}
 
 	@Listener
@@ -224,48 +192,119 @@ public class GTS extends ConfigurableSpongePlugin {
 	}
 
 	@Override
-	public void doConnect() {
-		// Load the configuration
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Now entering the init phase")));
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading configuration...")));
-		this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new ConfigKeys(), "gts.conf");
-		this.config.init();
-
-		this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new MsgConfigKeys(), "messages.conf");
-		this.msgConfig.init();
-
-		//if(getConfig().get(ConfigKeys.WATCH_FILES)) {
-		//	fileWatcher = new FileWatcher(this);
-		//	Sponge.getScheduler().createTaskBuilder().async().intervalTicks(30).delayTicks(30).execute(fileWatcher).submit(GTS.getInstance());
-		//}
-
-		// Register the base command
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing commands...")));
-		new GTSBaseCmd().register();
-
-		// Declare and activate listeners
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing listeners...")));
-		Sponge.getEventManager().registerListeners(this, new JoinListener());
-
-		// Launch the storage option chosen via the config
-		this.storage = StorageFactory.getInstance(this, StorageType.H2);
-
-		// Read in and register all data entries into the cache
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading data into cache...")));
-		try {
-			this.listingsCache = this.storage.getListings().get();
-			this.heldEntryCache = this.storage.getHeldElements().get();
-			this.heldPriceCache = this.storage.getHeldPrices().get();
-			this.ignorers = this.storage.getIgnorers().get();
-		} catch (InterruptedException | ExecutionException e1) {
-			e1.printStackTrace();
-		}
-
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initialization complete!")));
+	public Optional<PlanData> getPlanData() {
+		return Optional.empty();
 	}
 
 	@Override
-	public void doDisconnect() {
+	public List<ConfigBase> getConfigs() {
+		return Lists.newArrayList(config, msgConfig);
+	}
 
+	@Override
+	public List<SpongeCommand> getCommands() {
+		return Collections.singletonList(cmd);
+	}
+
+	@Override
+	public List<Object> getListeners() {
+		return Lists.newArrayList(joinListener);
+	}
+
+	@Override
+	public void onDisconnect() {
+		if(enabled) {
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Closing the storage provider...")));
+			this.storage.shutdown();
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Storage provider closed, good bye!")));
+		}
+	}
+
+	@Override
+	public void onReload() {}
+
+	@Listener(order = Order.EARLY)
+	public void onPreInit(GamePreInitializationEvent e) {
+		instance = this;
+		this.logger = new ConsoleLogger(this, new SpongeLogger(this, fallback));
+		GTSInfo.startup();
+		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Checking dependencies...")));
+		enabled = GTSInfo.dependencyCheck();
+
+		if(enabled) {
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Opening API and registering base setup...")));
+			Sponge.getServiceManager().setProvider(this, GtsService.class, service);
+			service.registerEntries(Lists.newArrayList(ItemEntry.class, PokemonEntry.class));
+			service.registerPrices(Lists.newArrayList(MoneyPrice.class, ItemPrice.class, PokePrice.class));
+
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Pre-init phase complete!")));
+		}
+	}
+
+	@Listener
+	public void onInit(GameInitializationEvent e) {
+		// Load the configuration
+		if(enabled) {
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Now entering the init phase")));
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading configuration...")));
+			this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new ConfigKeys(), "gts.conf");
+			this.config.init();
+
+			this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new MsgConfigKeys(), "messages.conf");
+			this.msgConfig.init();
+
+			//if(getConfig().get(ConfigKeys.WATCH_FILES)) {
+			//	fileWatcher = new FileWatcher(this);
+			//	Sponge.getScheduler().createTaskBuilder().async().intervalTicks(30).delayTicks(30).execute(fileWatcher).submit(GTS.getInstance());
+			//}
+
+			// Register the base command
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing commands...")));
+			(cmd = new GTSBaseCmd(this)).register(this);
+
+			// Declare and activate listeners
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing listeners...")));
+			Sponge.getEventManager().registerListeners(this, joinListener = new JoinListener());
+
+			// Launch the storage option chosen via the config
+			this.storage = StorageFactory.getInstance(this, StorageType.H2);
+
+			// Read in and register all data entries into the cache
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading data into cache...")));
+			try {
+				this.listingsCache = this.storage.getListings().get();
+				this.heldEntryCache = this.storage.getHeldElements().get();
+				this.heldPriceCache = this.storage.getHeldPrices().get();
+				this.ignorers = this.storage.getIgnorers().get();
+			} catch (InterruptedException | ExecutionException e1) {
+				e1.printStackTrace();
+			}
+
+			if(this.config.get(ConfigKeys.DISCORD_ENABLED)) {
+				getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Launching Discord Bot...")));
+				this.discordNotifier = new DiscordNotifier();
+			}
+
+			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initialization complete!")));
+		}
+	}
+
+	@Listener
+	public void onServerStarted(GameStartedServerEvent e) {
+		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Post start-up phase has now started")));
+
+		if(enabled) {
+			ListingTasks.updateTask();
+		}
+	}
+
+	@Listener
+	public void onServerStopping(GameStoppingServerEvent e) {
+		// Do shutdown procedures, such as saving content
+		this.onDisconnect();
+	}
+
+	public Optional<IDiscordNotifier> getDiscordNotifier() {
+		return Optional.ofNullable(this.discordNotifier);
 	}
 }

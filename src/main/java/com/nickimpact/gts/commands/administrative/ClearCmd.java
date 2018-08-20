@@ -1,12 +1,13 @@
 package com.nickimpact.gts.commands.administrative;
 
 import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.api.commands.annotations.AdminCmd;
-import com.nickimpact.gts.api.commands.annotations.CommandAliases;
-import com.nickimpact.gts.api.commands.SpongeCommand;
-import com.nickimpact.gts.api.commands.SpongeSubCommand;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.entries.EntryHolder;
+import com.nickimpact.impactor.api.commands.SpongeCommand;
+import com.nickimpact.impactor.api.commands.SpongeSubCommand;
+import com.nickimpact.impactor.api.commands.annotations.Aliases;
+import com.nickimpact.impactor.api.commands.annotations.Permission;
+import com.nickimpact.impactor.api.plugins.SpongePlugin;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -20,9 +21,13 @@ import org.spongepowered.api.text.Text;
  *
  * @author NickImpact
  */
-@AdminCmd
-@CommandAliases({"clear"})
+@Aliases({"clear"})
+@Permission(admin = true)
 public class ClearCmd extends SpongeSubCommand {
+
+	public ClearCmd(SpongePlugin plugin) {
+		super(plugin);
+	}
 
 	@Override
 	public CommandElement[] getArgs() {

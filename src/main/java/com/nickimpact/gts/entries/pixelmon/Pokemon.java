@@ -3,6 +3,8 @@ package com.nickimpact.gts.entries.pixelmon;
 import com.nickimpact.gts.utils.GsonUtils;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
@@ -24,7 +26,7 @@ public class Pokemon {
 		this.pokemon = pokemon;
 		NBTTagCompound nbt = new NBTTagCompound();
 		this.nbt = pokemon.writeToNBT(nbt);
-		nbtJSON = GsonUtils.serialize(this.nbt);
+		nbtJSON = this.nbt.toString();
 	}
 
 	public EntityPixelmon getPokemon() {
@@ -38,6 +40,10 @@ public class Pokemon {
 	}
 
 	private NBTTagCompound decode() {
-		return nbt != null ? nbt : (nbt = GsonUtils.deserialize(nbtJSON));
+		try {
+			return nbt != null ? nbt : (nbt = JsonToNBT.getTagFromJson(nbtJSON));
+		} catch (NBTException e) {
+			return nbt = GsonUtils.deserialize(nbtJSON);
+		}
 	}
 }

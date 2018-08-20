@@ -1,12 +1,10 @@
 package com.nickimpact.gts.entries.pixelmon;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.GtsService;
-import com.nickimpact.gts.api.commands.SpongeCommand;
-import com.nickimpact.gts.api.commands.SpongeSubCommand;
-import com.nickimpact.gts.api.commands.annotations.CommandAliases;
 import com.nickimpact.gts.api.exceptions.InvalidNBTException;
 import com.nickimpact.gts.api.json.Typing;
 import com.nickimpact.gts.api.listings.Listing;
@@ -18,6 +16,12 @@ import com.nickimpact.gts.api.utils.MessageUtils;
 import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.gts.entries.prices.MoneyPrice;
+import com.nickimpact.gts.utils.ListingUtils;
+import com.nickimpact.impactor.api.commands.SpongeCommand;
+import com.nickimpact.impactor.api.commands.SpongeSubCommand;
+import com.nickimpact.impactor.api.commands.annotations.Aliases;
+import com.nickimpact.impactor.api.commands.annotations.Permission;
+import com.nickimpact.impactor.api.plugins.SpongePlugin;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
@@ -28,6 +32,7 @@ import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
+import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,6 +55,7 @@ import org.spongepowered.common.item.inventory.util.ItemStackUtil;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -77,11 +83,14 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
 	@Override
 	public SpongeSubCommand commandSpec(boolean isAuction) {
-		return new PokemonSub(isAuction);
+		return new PokemonSub(GTS.getInstance(), isAuction);
 	}
 
 	@Override
 	public String getSpecsTemplate() {
+		if(this.getEntry().getPokemon().isEgg) {
+			return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE_EGG);
+		}
 		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE);
 	}
 
@@ -256,7 +265,8 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 		return price;
 	}
 
-	@CommandAliases({"pokemon", "poke"})
+	@Aliases({"pokemon", "poke"})
+	@Permission(prefix = "sell")
 	public class PokemonSub extends SpongeSubCommand {
 
 		private final Text argPos = Text.of("pos");
@@ -265,7 +275,8 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 		private final boolean isAuction;
 		private final Text argIncrement = Text.of("increment");
 
-		public PokemonSub(boolean isAuction) {
+		public PokemonSub(SpongePlugin plugin, boolean isAuction) {
+			super(plugin);
 			this.isAuction = isAuction;
 		}
 

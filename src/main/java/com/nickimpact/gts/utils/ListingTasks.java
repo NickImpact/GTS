@@ -6,7 +6,9 @@ import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.GTSInfo;
 import com.nickimpact.gts.api.listings.Listing;
 import com.nickimpact.gts.api.listings.data.AuctionData;
+import com.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.gts.configuration.MsgConfigKeys;
+import com.nickimpact.gts.discord.Message;
 import com.nickimpact.gts.logs.Log;
 import com.nickimpact.gts.logs.LogAction;
 import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
@@ -116,6 +118,22 @@ public class ListingTasks {
 	    } catch (NucleusException e) {
 		    e.printStackTrace();
 	    }
+
+	    try {
+		    final String b = GTS.getInstance().getTextParsingUtils().parse(
+				    "{{seller}}'s {{listing_specifics}} listing has now expired!",
+				    player,
+				    null,
+				    variables
+		    ).toPlain();
+		    GTS.getInstance().getDiscordNotifier().ifPresent(notifier -> {
+			    Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_EXPIRE), b);
+			    notifier.sendMessage(message);
+		    });
+	    } catch (NucleusException e) {
+		    e.printStackTrace();
+	    }
+
 	    Log expires = Log.builder()
 			    .action(LogAction.Expiration)
 			    .source(player.getUniqueId())
