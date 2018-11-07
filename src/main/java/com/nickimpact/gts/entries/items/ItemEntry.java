@@ -233,7 +233,7 @@ public class ItemEntry extends Entry<DataContainer> {
 
 		@Override
 		public Text getUsage() {
-			return Text.of("/gts sell item <amount> <price>");
+			return Text.of("/gts sell/auc item <amount> <price> (increment - auctions only)");
 		}
 
 		@Override
@@ -261,7 +261,7 @@ public class ItemEntry extends Entry<DataContainer> {
 						throw new CommandException(Text.of("Amount must be positive"));
 					}
 
-					if(amount >= item.get().getQuantity()) {
+					if(amount > item.get().getQuantity()) {
 						player.sendMessage(Text.of(GTSInfo.WARNING, TextColors.GRAY, "The quantity specified is too high, lowering to the amount you possess..."));
 						amount = item.get().getQuantity();
 					}

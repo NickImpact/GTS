@@ -51,6 +51,10 @@ public class AucCmd extends SpongeSubCommand {
 
 	@SuppressWarnings("unchecked")
 	static void getEntryCommandSpecs(List<SpongeSubCommand> children, boolean isAuction) {
+		if(!children.isEmpty()) {
+			return;
+		}
+
 		((Registry<Entry>) GTS.getInstance().getService().getRegistry(GtsService.RegistryType.ENTRY)).getTypings().forEach((key, value) -> {
 			try {
 				Entry entry = value.newInstance();

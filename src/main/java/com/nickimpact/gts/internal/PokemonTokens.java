@@ -100,6 +100,9 @@ public class PokemonTokens {
 		tokens.put("shiny_state", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
 				getPokemonFromVariableIfExists(m), EnumPokemonFields.SHINY_STATE
 		)));
+		tokens.put("texture", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
+				getPokemonFromVariableIfExists(m), EnumPokemonFields.TEXTURE
+		)));
 		tokens.put("special_texture", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
 				getPokemonFromVariableIfExists(m), EnumPokemonFields.SPECIAL_TEXTURE
 		)));

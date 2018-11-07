@@ -47,11 +47,11 @@ public class GTSBaseCmd extends SpongeCommand {
 	@Override
 	public SpongeCommand[] getSubCommands() {
 		return new SpongeCommand[] {
-				new SellCmd(this.plugin),
+				new HelpCmd(this.plugin, this),
 				new IgnoreCmd(this.plugin),
-				new HelpCmd(this.plugin),
+				new AdminBaseCmd(this.plugin),
 				new AucCmd(this.plugin),
-				new AdminBaseCmd(this.plugin)
+				new SellCmd(this.plugin),
 		};
 	}
 

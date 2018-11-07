@@ -10,6 +10,7 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
+import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -98,12 +99,19 @@ public enum EnumPokemonFields {
 	IV_SPATK(pokemon -> pokemon.stats.ivs.SpAtt),
 	IV_SPDEF(pokemon -> pokemon.stats.ivs.SpDef),
 	IV_SPEED(pokemon -> pokemon.stats.ivs.Speed),
-	SPECIAL_TEXTURE(pokemon -> {
-		try {
-			return EnumSpecialTexture.fromIndex(pokemon.getSpecialTextureIndex()).name();
-		} catch (Exception e) {
-			return "";
+	TEXTURE(pokemon -> {
+		NBTTagCompound nbt = new NBTTagCompound();
+		pokemon.writeToNBT(nbt);
+
+		String texture = nbt.getString(NbtKeys.CUSTOM_TEXTURE);
+		if(!texture.isEmpty()) {
+			return texture;
 		}
+
+		return pokemon.getIsShiny() ? "Shiny" : "Normal";
+	}),
+	SPECIAL_TEXTURE(pokemon -> {
+		return EnumSpecialTexture.fromIndex(pokemon.getSpecialTextureIndex()).name();
 	}),
 	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.stats.ivs).name()),
 	MOVES_1(pokemon -> pokemon.getMoveset().attacks[0].baseAttack.getLocalizedName()),

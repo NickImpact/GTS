@@ -51,7 +51,7 @@ public class FakeAdditionCmd extends SpongeSubCommand {
 
 	@Override
 	public Text getUsage() {
-		return Text.of();
+		return Text.of("/gts admin fake (pokemon)");
 	}
 
 	@Override

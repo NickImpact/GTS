@@ -292,7 +292,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
 		@Override
 		public Text getUsage() {
-			return Text.of("/gts sell pokemon <party slot> <price>");
+			return Text.of("/gts sell/auc pokemon <party slot> <price> (increment - auctions only)");
 		}
 
 		@Override
