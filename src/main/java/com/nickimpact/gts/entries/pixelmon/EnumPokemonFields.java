@@ -2,6 +2,7 @@ package com.nickimpact.gts.entries.pixelmon;
 
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.configuration.ConfigKeys;
+import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.attacks.specialAttacks.basic.HiddenPower;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
@@ -120,7 +121,19 @@ public enum EnumPokemonFields {
 	MOVES_4(pokemon -> pokemon.getMoveset().attacks[3].baseAttack.getLocalizedName()),
 	SHINY_STATE(pokemon -> pokemon.getIsShiny() ? "Yes" : "No"),
 	POKERUS_STATE(pokemon -> pokemon.getPokerus().isPresent() ? "Yes" : "No"),
-	POKERUS(pokemon -> pokemon.getPokerus().isPresent() ? "PKRS" : null);
+	POKERUS(pokemon -> pokemon.getPokerus().isPresent() ? "PKRS" : null),
+	UNBREEDABLE(pokemon -> {
+		PokemonSpec unbreedable = new PokemonSpec("unbreedable");
+		if(unbreedable.matches(pokemon)){
+			return "\u00a74Unbreedable";
+		}else{
+			return "\u00a7aBreedable";
+		}
+	}),
+	POKE_BALL_NAME(pokemon ->{
+		return pokemon.caughtBall.name();
+	});
+
 
 	public final Function<EntityPixelmon, Object> function;
 

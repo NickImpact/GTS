@@ -147,6 +147,12 @@ public class PokemonTokens {
 		tokens.put("pokerus_state", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
 				getPokemonFromVariableIfExists(m), EnumPokemonFields.POKERUS_STATE
 		)));
+		tokens.put("unbreedable", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
+				getPokemonFromVariableIfExists(m), EnumPokemonFields.UNBREEDABLE
+		)));
+		tokens.put("pokeball_name", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getPokemonInfo(
+				getPokemonFromVariableIfExists(m), EnumPokemonFields.POKE_BALL_NAME
+		)));
 	}
 
 	public static Map<String, Translator> getTokens() {
