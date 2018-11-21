@@ -127,7 +127,7 @@ public enum EnumPokemonFields {
 		if(unbreedable.matches(pokemon)){
 			return "\u00a74Unbreedable";
 		}else{
-			return "\u00a7aBreedable";
+			return "\u00a7cBreedable";
 		}
 	}),
 	POKE_BALL_NAME(pokemon ->{
