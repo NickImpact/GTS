@@ -121,7 +121,7 @@ public class MsgConfigKeys implements IConfigKeys {
 
 
 	// Pokemon Entries
-	public static final ConfigKey<String> POKEMON_ENTRY_SPEC_TEMPLATE = StringKey.of("entries.pokemon.spec-template", "{{ability:s}}{{ivs_percent:s}}{{ivs_stat:s}}{{shiny:s}}&a{{pokemon}}");
+	public static final ConfigKey<String> POKEMON_ENTRY_SPEC_TEMPLATE = StringKey.of("entries.pokemon.spec-template", "{{ability:s}}{{ivs_percent:s}}{{ivs_stat:s}}{{shiny:s}}{{texture:s}}&a{{pokemon}}");
 	public static final ConfigKey<String> POKEMON_ENTRY_SPEC_TEMPLATE_EGG = StringKey.of("entries.pokemon.egg-spec-template", "&a{{pokemon}}");
 	public static final ConfigKey<String> POKEMON_ENTRY_BASE_TITLE = StringKey.of("entries.pokemon.base.title", "&e{{pokemon}} {{shiny:s}}&7| &bLvl {{level}}");
 	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_LORE = ListKey.of("entries.pokemon.base.lore.base", Lists.newArrayList(
@@ -138,6 +138,16 @@ public class MsgConfigKeys implements IConfigKeys {
 	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_LAKE_TRIO = ListKey.of("entries.pokemon.base.lore.lake-trio", Lists.newArrayList(
 			"&7Gemmed: &e{{enchanted}}"
 	));
+	public static final ConfigKey<List<String>> PE_BASE_TEXTURE = ListKey.of("entries.pokemon.base.lore.texture", Lists.newArrayList(
+			"&7Texture: &e{{texture}}"
+	));
+	public static final ConfigKey<List<String>> PE_BASE_POKERUS = ListKey.of("entries.pokemon.base.lore.pokerus", Lists.newArrayList(
+			"&7Inflicted with &dPokerus"
+	));
+	public static final ConfigKey<List<String>> PE_BASE_UNBREEDABLE = ListKey.of("entries.pokemon.base.lore.unbreedable", Lists.newArrayList(
+			"&cUnbreedable"
+	));
+
 	public static final ConfigKey<String> POKEMON_ENTRY_CONFIRM_TITLE = StringKey.of("entries.pokemon.confirm.title", "&ePurchase {{pokemon}}?");
 	public static final ConfigKey<List<String>> POKEMON_ENTRY_CONFIRM_LORE = ListKey.of("entries.pokemon.confirm.lore", Lists.newArrayList(
 			"&7Here's some additional info:",

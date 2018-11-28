@@ -131,6 +131,9 @@ public class ConfigKeys implements IConfigKeys {
 			d.getList("discord.notifications.listing-remove.webhooks", Lists.newArrayList())
 	));
 
+	public static final ConfigKey<Boolean> TEXTUREFLAG_CAPITALIZE = BooleanKey.of("entries.pokemon.variables.texture.capitalize", true);
+	public static final ConfigKey<Boolean> TEXTUREFLAG_TRIM_TRAILING_NUMS = BooleanKey.of("entries.pokemon.variables.texture.trim-trailing-numbers", true);
+
 	private static Map<String, ConfigKey<?>> KEYS = null;
 
 	@Override

@@ -115,10 +115,10 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 		List<String> template = Lists.newArrayList();
 		template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_LORE));
 
-		if(this.getEntry().getPokemon().getSpecies().equals(EnumPokemon.Mew)) {
-			template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_MEW_CLONES));
-		} else if(LakeTrio.isMember(this.getEntry().getPokemon().getSpecies())) {
-			template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_LAKE_TRIO));
+		for(EnumHidableDetail detail : EnumHidableDetail.values()) {
+			if(detail.getCondition().test(this.getEntry().getPokemon())) {
+				template.addAll(GTS.getInstance().getMsgConfig().get(detail.getField()));
+			}
 		}
 
 		if(auction) {
@@ -381,7 +381,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 		}
 	}
 
-	private enum LakeTrio {
+	public enum LakeTrio {
 		Mesprit(EnumPokemon.Mesprit),
 		Azelf(EnumPokemon.Azelf),
 		Uxie(EnumPokemon.Uxie);

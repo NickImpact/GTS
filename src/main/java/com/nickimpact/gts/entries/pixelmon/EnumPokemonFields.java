@@ -2,6 +2,7 @@ package com.nickimpact.gts.entries.pixelmon;
 
 import com.nickimpact.gts.GTS;
 import com.nickimpact.gts.configuration.ConfigKeys;
+import com.nickimpact.impactor.api.configuration.ConfigBase;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.attacks.specialAttacks.basic.HiddenPower;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -69,7 +70,9 @@ public enum EnumPokemonFields {
 	}),
 	CLONES(pokemon -> {
 		if(pokemon.getSpecies().equals(EnumPokemon.Mew)) {
-			return pokemon.getEntityData().getShort(NbtKeys.STATS_NUM_CLONED);
+			NBTTagCompound nbt = new NBTTagCompound();
+			pokemon.writeToNBT(nbt);
+			return nbt.getShort(NbtKeys.STATS_NUM_CLONED);
 		}
 		return 0;
 	}),
@@ -78,7 +81,9 @@ public enum EnumPokemonFields {
 			case Mesprit:
 			case Azelf:
 			case Uxie:
-				return pokemon.getEntityData().getShort(NbtKeys.STATS_NUM_ENCHANTED);
+				NBTTagCompound nbt = new NBTTagCompound();
+				pokemon.writeToNBT(nbt);
+				return nbt.getShort(NbtKeys.STATS_NUM_ENCHANTED);
 			default:
 				return 0;
 		}
@@ -106,6 +111,27 @@ public enum EnumPokemonFields {
 
 		String texture = nbt.getString(NbtKeys.CUSTOM_TEXTURE);
 		if(!texture.isEmpty()) {
+			ConfigBase config = GTS.getInstance().getConfig();
+			if(config.get(ConfigKeys.TEXTUREFLAG_CAPITALIZE)) {
+				StringBuilder sb = new StringBuilder();
+				String[] split = texture.split("\\s+");
+
+				boolean first = true;
+				for(String word : split) {
+					if(!first) {
+						sb.append(" ");
+					}
+					sb.append(word.substring(0, 1).toUpperCase()).append(word.substring(1).toLowerCase());
+					first = false;
+				}
+
+				texture = sb.toString();
+			}
+
+			if(config.get(ConfigKeys.TEXTUREFLAG_TRIM_TRAILING_NUMS)) {
+				texture = texture.replaceAll("\\d*$", "");
+			}
+
 			return texture;
 		}
 
@@ -125,9 +151,9 @@ public enum EnumPokemonFields {
 	UNBREEDABLE(pokemon -> {
 		PokemonSpec unbreedable = new PokemonSpec("unbreedable");
 		if(unbreedable.matches(pokemon)){
-			return "\u00a74Unbreedable";
+			return Text.of(TextColors.RED, "Unbreedable");
 		}else{
-			return "\u00a7cBreedable";
+			return Text.of(TextColors.GREEN, "Breedable");
 		}
 	}),
 	POKE_BALL_NAME(pokemon ->{
