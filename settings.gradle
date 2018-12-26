@@ -2,7 +2,7 @@ rootProject.name = 'GTS'
 
 include (
         'plugin',
-        'pixelmon'
+        'pixelmon',
+        'generations'
 )
-include 'pixelmon'
 
