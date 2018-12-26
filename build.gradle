@@ -1,47 +1,27 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'maven'
+
+    group = 'me.nickimpact.gts'
+    version = '4.0.0'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
     }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
-    }
-}
 
-//plugins {
-//    id 'com.github.johnrengelman.shadow' version '2.0.4'
-//}
+    project.ext.version = '4.0.0'
+    project.ext.sponge = 'S7.1'
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-
-group 'com.nickimpact.gts'
-version '3.11.3-S7.1'
-archivesBaseName = "GTS"
-
-sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
-compileJava {
-    options.encoding = 'UTF-8'
-    sourceCompatibility = targetCompatibility = "1.8"
-}
-
-minecraft {
-    version = "1.12.2-14.23.1.2555"
-    runDir = "run"
-    mappings = "snapshot_20170919"
-    useDepAts = true
-    makeObfSourceJar = false
-}
-
-allprojects {
     repositories {
-        jcenter()
         mavenCentral()
-        maven {
-            name = 'sponge'
-            url = 'http://repo.spongepowered.org/maven'
-        }
         maven { url = 'https://jitpack.io' }
+        maven {
+            name 'sponge-repo'
+            url 'https://repo.spongepowered.org/maven'
+        }
         maven {
             name 'drnaylor-minecraft'
             url 'http://repo.drnaylor.co.uk/artifactory/list/minecraft'
@@ -50,74 +30,12 @@ allprojects {
             name 'drnaylor'
             url 'http://repo.drnaylor.co.uk/artifactory/list/quickstart'
         }
-        ivy {
-            url "https://download.nodecdn.net/containers"
-            layout "pattern", {
-                artifact "/[organisation]/[module]/release/[revision]/[ext]"
-            }
-        }
-    }
-}
-
-//configurations {
-//    compile.extendsFrom shade
-//}
-
-dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
-    compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
-    compile 'io.github.nucleuspowered:nucleus-api:1.4.7-SNAPSHOT-S7.0'
-    compile 'reforged:server:6.3.2@Pixelmon-1.12.2-6.3.2-server.jar'
-    compile "org.projectlombok:lombok:1.16.10"
-//    shadow ('net.dv8tion:JDA:3.7.1_386') {
-//        exclude group: 'org.slf4j'
-//    }
-	compile group: 'com.zaxxer', name: 'HikariCP', version: '2.5.1'
-    testCompile "junit:junit:4.11"
-}
-
-//shadowJar {
-//    classifier = 'universal' // This is now the main jar
-//    configurations = [project.configurations.shadow]
-//}
-//
-//reobf {
-//    shadowJar { mappingType = 'SEARGE' }
-//}
-
-//tasks.build.dependsOn reobfShadowJar
-
-//artifacts {
-//    archives shadowJar
-//}
-
-task deobfJar(type: Jar) {
-    from sourceSets.main.output
-    classifier = 'deobf'
-    version = "${project.minecraft.version}-${project.version}"
-}
-
-tasks.withType(JavaCompile) { task ->
-    task.options.encoding = 'UTF-8'
-    task.options.fork = true
-}
-
-
-processResources {
-    // this will ensure that this task is redone when the versions change.
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    // replace stuff in mcmod.info, nothing else
-    from(sourceSets.main.resources.srcDirs) {
-        include "mcmod.info"
-
-        // replace version and mcversion
-        expand "version": project.version, "mcversion": project.minecraft.version
     }
 
-    // copy everything else, thats not the mcmod.info
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "mcmod.info"
+    dependencies {
+        compile 'org.spongepowered:spongeapi:7.1.0'
+        compile 'io.github.nucleuspowered:nucleus-api:1.7.0-S7.1'
+        compile "org.projectlombok:lombok:1.18.4"
+        compile 'com.github.rojo8399:PlaceholderAPI:master-SNAPSHOT'
     }
 }

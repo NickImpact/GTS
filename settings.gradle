@@ -1,0 +1,8 @@
+rootProject.name = 'GTS'
+
+include (
+        'plugin',
+        'pixelmon'
+)
+include 'pixelmon'
+
