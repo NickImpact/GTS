@@ -1,11 +1,8 @@
-package com.nickimpact.gts.utils.pokemon;
+package me.nickimpact.gts.pixelmon.utils;
 
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.storage.ComputerBox;
-import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
-import com.pixelmonmod.pixelmon.storage.PlayerComputerStorage;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import org.spongepowered.api.entity.living.player.Player;

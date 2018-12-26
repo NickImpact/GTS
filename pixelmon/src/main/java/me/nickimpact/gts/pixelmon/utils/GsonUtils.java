@@ -1,7 +1,7 @@
-package com.nickimpact.gts.utils;
+package me.nickimpact.gts.pixelmon.utils;
 
 import com.google.common.collect.Lists;
-import com.nickimpact.gts.GTS;
+import me.nickimpact.gts.GTS;
 import net.minecraft.nbt.*;
 
 import java.util.HashMap;

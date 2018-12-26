@@ -23,21 +23,18 @@
  *  SOFTWARE.
  */
 
-package com.nickimpact.gts.storage.dao.sql;
+package me.nickimpact.gts.storage.dao.sql;
 
-import com.google.common.collect.Comparators;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonSyntaxException;
-import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.GTSInfo;
-import com.nickimpact.gts.api.listings.Listing;
-import com.nickimpact.gts.api.listings.entries.EntryHolder;
-import com.nickimpact.gts.api.listings.pricing.PriceHolder;
-import com.nickimpact.gts.api.utils.MessageUtils;
-import com.nickimpact.gts.logs.Log;
-import com.nickimpact.gts.storage.dao.AbstractDao;
-import com.nickimpact.gts.storage.dao.sql.connection.AbstractConnectionFactory;
-import com.nickimpact.gts.storage.dao.sql.connection.hikari.MySqlConnectionFactory;
+import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.GTSInfo;
+import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.utils.MessageUtils;
+import me.nickimpact.gts.logs.Log;
+import me.nickimpact.gts.storage.dao.AbstractDao;
+import me.nickimpact.gts.storage.dao.sql.connection.AbstractConnectionFactory;
+import me.nickimpact.gts.storage.dao.sql.connection.hikari.MySqlConnectionFactory;
 import lombok.Getter;
 import org.spongepowered.api.text.Text;
 
@@ -332,86 +329,6 @@ public class SqlDao extends AbstractDao {
 
 		logs.sort(Comparator.comparing(Log::getDate));
 		return logs;
-	}
-
-	@Override
-	public void addHeldElement(EntryHolder holder) throws Exception {
-		try (Connection connection = provider.getConnection()) {
-			String stmt = prefix.apply(ADD_HELD_ENTRY);
-			stmt = String.format(stmt, holder.getId(), GTS.prettyGson.toJson(holder));
-			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
-				ps.executeUpdate();
-			}
-		}
-	}
-
-	@Override
-	public void removeHeldElement(EntryHolder holder) throws Exception {
-		this.runRemoval(REMOVE_HELD_ENTRY, holder.getId());
-	}
-
-	@Override
-	public List<EntryHolder> getHeldElements() throws Exception {
-		List<EntryHolder> holders = Lists.newArrayList();
-		try (Connection connection = provider.getConnection()) {
-			try (PreparedStatement query = connection.prepareStatement(prefix.apply(GET_HELD_ENTRIES))) {
-				ResultSet results = query.executeQuery();
-				while(results.next()) {
-					try {
-						holders.add(GTS.prettyGson.fromJson(results.getString("holder"), EntryHolder.class));
-					} catch (JsonSyntaxException e) {
-						MessageUtils.genAndSendErrorMessage(
-								"JSON Syntax Error",
-								"Invalid EntryHolder JSON detected",
-								"Holder ID: " + results.getInt("uuid")
-						);
-					}
-				}
-				results.close();
-			}
-		}
-
-		return holders;
-	}
-
-	@Override
-	public void addHeldPrice(PriceHolder holder) throws Exception {
-		try (Connection connection = provider.getConnection()) {
-			String stmt = prefix.apply(ADD_HELD_PRICE);
-			stmt = String.format(stmt, holder.getId(), GTS.prettyGson.toJson(holder));
-			try (PreparedStatement ps = connection.prepareStatement(stmt)) {
-				ps.executeUpdate();
-			}
-		}
-	}
-
-	@Override
-	public void removeHeldPrice(PriceHolder holder) throws Exception {
-		this.runRemoval(REMOVE_HELD_PRICE, holder.getId());
-	}
-
-	@Override
-	public List<PriceHolder> getHeldPrices() throws Exception {
-		List<PriceHolder> holders = Lists.newArrayList();
-		try (Connection connection = provider.getConnection()) {
-			try (PreparedStatement query = connection.prepareStatement(prefix.apply(GET_HELD_PRICES))) {
-				ResultSet results = query.executeQuery();
-				while(results.next()) {
-					try {
-						holders.add(GTS.prettyGson.fromJson(results.getString("holder"), PriceHolder.class));
-					} catch (JsonSyntaxException e) {
-						MessageUtils.genAndSendErrorMessage(
-								"JSON Syntax Error",
-								"Invalid PriceHolder JSON detected",
-								"Holder ID: " + results.getInt("uuid")
-						);
-					}
-				}
-				results.close();
-			}
-		}
-
-		return holders;
 	}
 
 	@Override

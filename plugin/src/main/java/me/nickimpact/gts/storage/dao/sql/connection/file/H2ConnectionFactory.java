@@ -1,4 +1,4 @@
-package com.nickimpact.gts.storage.dao.sql.connection.file;
+package me.nickimpact.gts.storage.dao.sql.connection.file;
 
 import java.io.File;
 

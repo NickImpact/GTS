@@ -23,16 +23,16 @@
  *  SOFTWARE.
  */
 
-package com.nickimpact.gts.storage;
+package me.nickimpact.gts.storage;
 
-import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.GTSInfo;
-import com.nickimpact.gts.configuration.ConfigKeys;
-import com.nickimpact.gts.api.utils.MessageUtils;
-import com.nickimpact.gts.storage.dao.AbstractDao;
-import com.nickimpact.gts.storage.dao.sql.SqlDao;
-import com.nickimpact.gts.storage.dao.sql.connection.file.H2ConnectionFactory;
-import com.nickimpact.gts.storage.dao.sql.connection.hikari.MySqlConnectionFactory;
+import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.GTSInfo;
+import me.nickimpact.gts.configuration.ConfigKeys;
+import me.nickimpact.gts.api.utils.MessageUtils;
+import me.nickimpact.gts.storage.dao.AbstractDao;
+import me.nickimpact.gts.storage.dao.sql.SqlDao;
+import me.nickimpact.gts.storage.dao.sql.connection.file.H2ConnectionFactory;
+import me.nickimpact.gts.storage.dao.sql.connection.hikari.MySqlConnectionFactory;
 import org.spongepowered.api.text.Text;
 
 import java.io.File;

@@ -1,8 +1,8 @@
-package com.nickimpact.gts.entries.pixelmon;
+package me.nickimpact.gts.pixelmon.entries;
 
-import com.nickimpact.gts.utils.GsonUtils;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import me.nickimpact.gts.pixelmon.utils.GsonUtils;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;

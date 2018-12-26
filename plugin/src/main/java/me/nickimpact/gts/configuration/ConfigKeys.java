@@ -23,12 +23,12 @@
  *  SOFTWARE.
  */
 
-package com.nickimpact.gts.configuration;
+package me.nickimpact.gts.configuration;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.nickimpact.gts.discord.DiscordOption;
-import com.nickimpact.gts.storage.StorageCredentials;
+import me.nickimpact.gts.discord.DiscordOption;
+import me.nickimpact.gts.storage.StorageCredentials;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.nickimpact.impactor.api.configuration.IConfigKeys;
 import com.nickimpact.impactor.api.configuration.keys.*;

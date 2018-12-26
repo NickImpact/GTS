@@ -1,7 +1,7 @@
-package com.nickimpact.gts.commands.basic;
+package me.nickimpact.gts.commands.basic;
 
-import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.GTSInfo;
+import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.GTSInfo;
 import com.nickimpact.impactor.api.commands.SpongeCommand;
 import com.nickimpact.impactor.api.commands.SpongeSubCommand;
 import com.nickimpact.impactor.api.commands.annotations.Aliases;

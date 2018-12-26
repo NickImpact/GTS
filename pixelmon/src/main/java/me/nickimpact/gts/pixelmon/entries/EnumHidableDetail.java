@@ -1,6 +1,6 @@
-package com.nickimpact.gts.entries.pixelmon;
+package me.nickimpact.gts.pixelmon.entries;
 
-import com.nickimpact.gts.configuration.MsgConfigKeys;
+import me.nickimpact.gts.configuration.MsgConfigKeys;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;

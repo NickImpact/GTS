@@ -1,7 +1,7 @@
-package com.nickimpact.gts.entries.pixelmon;
+package me.nickimpact.gts.pixelmon.entries;
 
-import com.nickimpact.gts.GTS;
-import com.nickimpact.gts.configuration.ConfigKeys;
+import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.configuration.ConfigKeys;
 import com.nickimpact.impactor.api.configuration.ConfigBase;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.attacks.specialAttacks.basic.HiddenPower;
