@@ -13,6 +13,8 @@ import me.nickimpact.gts.pixelmon.ui.PixelmonUI;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStartingServerEvent;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -24,13 +26,19 @@ public class PixelmonBridge {
 
 	@Inject
 	private org.slf4j.Logger fallback;
+	private Logger logger;
+
+	private GtsService service;
 
 	@Listener
 	public void onPreInit(GamePreInitializationEvent e) {
-		Logger logger = new ConsoleLogger(GTS.getInstance(), new SpongeLogger(GTS.getInstance(), fallback));
+		logger = new ConsoleLogger(GTS.getInstance(), new SpongeLogger(GTS.getInstance(), fallback));
+		service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
+		service.registerEntry(PokemonEntry.class, new PixelmonUI(), ItemStack.builder().itemType(ItemTypes.BARRIER).build());
+	}
 
-		GtsService service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
-		service.registerEntry(PokemonEntry.class, new PixelmonUI(null), ItemStack.builder().build());
+	@Listener
+	public void onServerStarted(GameStartingServerEvent e) {
 		for(Map.Entry<String, Translator> token : NucleusPokemonTokens.getTokens().entrySet()) {
 			if(!service.getTokensService().register(token.getKey(), token.getValue())) {
 				logger.warn("Unable to register token {{" + token.getKey() + "}} as it's already registered!");

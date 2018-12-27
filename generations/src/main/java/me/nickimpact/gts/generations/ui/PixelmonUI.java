@@ -4,7 +4,7 @@ import com.nickimpact.impactor.gui.v2.Icon;
 import com.nickimpact.impactor.gui.v2.Layout;
 import com.nickimpact.impactor.gui.v2.UI;
 import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.api.EntryUI;
+import me.nickimpact.gts.api.listings.entries.EntryUI;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.text.Text;
@@ -14,9 +14,16 @@ public class PixelmonUI extends EntryUI {
 
 	private UI display;
 
-	public PixelmonUI(Player player) {
+	public PixelmonUI() {}
+
+	private PixelmonUI(Player player) {
 		super(player);
 		this.display = this.createUI(player);
+	}
+
+	@Override
+	public PixelmonUI createFor(Player player) {
+		return new PixelmonUI(player);
 	}
 
 	@Override
@@ -40,6 +47,6 @@ public class PixelmonUI extends EntryUI {
 		lb.column(Icon.BORDER, 0).slots(Icon.BORDER, 16, 34, 43, 52);
 
 
-		return null;
+		return lb.build();
 	}
 }

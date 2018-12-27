@@ -30,7 +30,7 @@ public class GenerationsBridge {
         Logger logger = new ConsoleLogger(GTS.getInstance(), new SpongeLogger(GTS.getInstance(), fallback));
 
         GtsService service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
-        service.registerEntry(PokemonEntry.class, new PixelmonUI(null), ItemStack.builder().build());
+        service.registerEntry(PokemonEntry.class, new PixelmonUI(), ItemStack.builder().build());
         for(Map.Entry<String, Translator> token : NucleusPokemonTokens.getTokens().entrySet()) {
             if(!service.getTokensService().register(token.getKey(), token.getValue())) {
                 logger.warn("Unable to register token {{" + token.getKey() + "}} as it's already registered!");

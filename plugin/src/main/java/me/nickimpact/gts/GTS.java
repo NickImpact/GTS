@@ -4,7 +4,10 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
+import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
 import me.nickimpact.gts.api.GtsService;
+import me.nickimpact.gts.api.text.TokenService;
+import me.nickimpact.gts.entries.items.ui.ItemUI;
 import me.nickimpact.gts.internal.GtsServiceImpl;
 import me.nickimpact.gts.api.discord.IDiscordNotifier;
 import me.nickimpact.gts.api.listings.Listing;
@@ -43,6 +46,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.data.DataContainer;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.GameReloadEvent;
@@ -51,6 +55,8 @@ import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
+import org.spongepowered.api.item.ItemTypes;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -155,6 +161,8 @@ public class GTS extends SpongePlugin {
 			this.economy = (EconomyService) e.getNewProviderRegistration().getProvider();
 		} else if(e.getService().equals(UserStorageService.class)) {
 			this.userStorageService = (UserStorageService) e.getNewProviderRegistration().getProvider();
+		} else if(e.getService().equals(NucleusMessageTokenService.class)) {
+			((GtsServiceImpl) this.service).setTokens(new TokenService());
 		}
 	}
 
@@ -220,7 +228,7 @@ public class GTS extends SpongePlugin {
 		Sponge.getServiceManager().setProvider(this, GtsService.class, service);
 
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Registering default implementations...")));
-		service.registerEntry(ItemEntry.class, null, null);
+		service.registerEntry(ItemEntry.class, new ItemUI(), ItemStack.builder().itemType(ItemTypes.DIAMOND).add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Items")).build());
 		try {
 			//noinspection unchecked
 			service.getRegistry(GtsService.RegistryType.PRICE).register(MoneyPrice.class);

@@ -1,9 +1,10 @@
 package me.nickimpact.gts.internal;
 
 import com.google.common.collect.ArrayListMultimap;
+import lombok.Setter;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.GTSInfo;
-import me.nickimpact.gts.api.EntryUI;
+import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.holders.EntryRegistry;
 import me.nickimpact.gts.api.json.Registry;
@@ -26,13 +27,18 @@ public class GtsServiceImpl implements GtsService {
 	private Registry<Price> prices = new Registry<>();
 
 	/** The internal Token Service handled by GTS */
-	private TokenService tokens;
+	@Setter private TokenService tokens;
 
 	private ArrayListMultimap<Class<?>, Function<?, MoneyPrice>> minPriceOptions = ArrayListMultimap.create();
 
 	@Override
 	public Registry getRegistry(RegistryType type) {
 		return type == RegistryType.ENTRY ? entries.getRegistry() : prices;
+	}
+
+	@Override
+	public EntryRegistry getEntryRegistry() {
+		return this.entries;
 	}
 
 	@Override

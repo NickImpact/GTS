@@ -70,8 +70,8 @@ public class NucleusPokemonTokens {
 
 			return Optional.empty();
 		});
-		tokens.put("pokerus", (p, v, m) -> Optional.of(getPokemonInfo(getPokemonFromVariableIfExists(m), EnumPokemonFields.POKERUS)));
-		tokens.put("pokerus_state", (p, v, m) -> Optional.of(getPokemonInfo(getPokemonFromVariableIfExists(m), EnumPokemonFields.POKERUS_STATE)));
+//		tokens.put("pokerus", (p, v, m) -> Optional.of(getPokemonInfo(getPokemonFromVariableIfExists(m), EnumPokemonFields.POKERUS)));
+//		tokens.put("pokerus_state", (p, v, m) -> Optional.of(getPokemonInfo(getPokemonFromVariableIfExists(m), EnumPokemonFields.POKERUS_STATE)));
 		tokens.put("unbreedable", (p, v, m) -> Optional.of(getPokemonInfo(getPokemonFromVariableIfExists(m), EnumPokemonFields.UNBREEDABLE)));
 		tokens.put("pokeball_name", (p, v, m) -> Optional.of(getPokemonInfo(getPokemonFromVariableIfExists(m), EnumPokemonFields.POKE_BALL_NAME)));
 	}

@@ -1,7 +1,7 @@
 package me.nickimpact.gts.api.holders;
 
 import lombok.Getter;
-import me.nickimpact.gts.api.EntryUI;
+import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.json.Registry;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import org.spongepowered.api.item.inventory.ItemStack;

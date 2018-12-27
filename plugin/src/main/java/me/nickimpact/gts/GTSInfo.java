@@ -1,5 +1,6 @@
 package me.nickimpact.gts;
 
+import com.google.common.collect.Lists;
 import com.nickimpact.impactor.api.plugins.PluginInfo;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
@@ -7,6 +8,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -45,17 +47,16 @@ public class GTSInfo implements PluginInfo {
 	}
 
 	static void displayBanner(){
-		String logo =
-				"\n" +
-						"       _________________\n" +
-						"      / ____/_  __/ ___/       &aGTS &bV" + VERSION + "\n" +
-						"     / / __  / /  \\__ \\      &8Running on &e" + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName() + " V" + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().get() + "\n" +
-						"    / /_/ / / /  ___/ / \n     &aAuthor: &bNickImpact" +
-						"    \\____/ /_/  /____/  \n" +
-						"\n";
+		List<Text> output = Lists.newArrayList(
+				Text.EMPTY,
+				Text.of(TextColors.DARK_AQUA, "     _________________"),
+				Text.of(TextColors.DARK_AQUA, "    / ____/_  __/ ___/       ", TextColors.GREEN, "GTS ", VERSION),
+				Text.of(TextColors.DARK_AQUA, "   / / __  / /  \\__ \\        ", TextColors.GREEN, "Running on: ", TextColors.YELLOW, Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName(), " ", Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().get()),
+				Text.of(TextColors.DARK_AQUA, "  / /_/ / / /  ___/ /        ", TextColors.GREEN, "Author: ", TextColors.AQUA, "NickImpact"),
+				Text.of(TextColors.DARK_AQUA, "  \\____/ /_/  /____/"),
+				Text.EMPTY
+		);
 
-		for(String s : logo.split(Pattern.quote("\n"))) {
-			GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(Text.of(TextColors.DARK_AQUA, TextSerializers.FORMATTING_CODE.deserialize(s))));
-		}
+		GTS.getInstance().getConsole().ifPresent(console -> console.sendMessages(output));
 	}
 }

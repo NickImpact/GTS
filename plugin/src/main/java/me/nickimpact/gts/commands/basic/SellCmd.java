@@ -1,18 +1,17 @@
 package me.nickimpact.gts.commands.basic;
 
-import com.google.common.collect.Lists;
 import com.nickimpact.impactor.api.commands.SpongeCommand;
 import com.nickimpact.impactor.api.commands.SpongeSubCommand;
 import com.nickimpact.impactor.api.commands.annotations.Aliases;
 import com.nickimpact.impactor.api.plugins.SpongePlugin;
+import me.nickimpact.gts.ui.SellUI;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-
-import java.util.List;
 
 /**
  * (Some note will go here)
@@ -21,8 +20,6 @@ import java.util.List;
  */
 @Aliases({"sell", "add"})
 public class SellCmd extends SpongeSubCommand {
-
-	public static List<SpongeSubCommand> children = Lists.newArrayList();
 
 	public SellCmd(SpongePlugin plugin) {
 		super(plugin);
@@ -40,10 +37,9 @@ public class SellCmd extends SpongeSubCommand {
 
 	@Override
 	public Text getUsage() {
-		return Text.of("/gts sell <type>");
+		return Text.of("/gts sell");
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public SpongeCommand[] getSubCommands() {
 		return new SpongeCommand[0];
@@ -51,6 +47,11 @@ public class SellCmd extends SpongeSubCommand {
 
 	@Override
 	public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-		return CommandResult.empty();
+		if(src instanceof Player) {
+			new SellUI((Player) src).open((Player) src, 1);
+			return CommandResult.success();
+		}
+
+		throw new CommandException(Text.of("Only players can use this command..."));
 	}
 }

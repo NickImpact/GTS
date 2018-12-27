@@ -1,15 +1,13 @@
 package me.nickimpact.gts.api;
 
+import me.nickimpact.gts.api.holders.EntryRegistry;
 import me.nickimpact.gts.api.json.Registry;
+import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.text.TokenService;
-import me.nickimpact.gts.entries.prices.MoneyPrice;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
 
 public interface GtsService {
 
@@ -21,6 +19,14 @@ public interface GtsService {
 	 * @return The {@link Registry} based upon the request
 	 */
 	Registry getRegistry(RegistryType type);
+
+	/**
+	 * Receives the internal Entry Registry which is used to store things such as the entry type, UI
+	 * representable, and represented icon.
+	 *
+	 * @return GTS's internal Entry registry
+	 */
+	EntryRegistry getEntryRegistry();
 
 	/**
 	 * Registers an entry into the GTS service. An entry will need an accompanying UI
