@@ -5,6 +5,7 @@ import com.nickimpact.impactor.gui.v2.Displayable;
 import com.nickimpact.impactor.gui.v2.Icon;
 import com.nickimpact.impactor.gui.v2.Layout;
 import com.nickimpact.impactor.gui.v2.UI;
+import me.nickimpact.gts.GTS;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
@@ -21,12 +22,12 @@ public abstract class EntryUI implements Displayable {
 	private Player player;
 
 	/** Represents the amount of money being used to put the listing up for */
-	private BigDecimal amount;
+	protected BigDecimal amount = new BigDecimal(0);
 
 	/** Icons which handle the price increase setup */
-	private Icon increase;
-	private Icon money;
-	private Icon decrease;
+	protected Icon increase;
+	protected Icon money;
+	protected Icon decrease;
 
 	public EntryUI() {}
 
@@ -58,15 +59,12 @@ public abstract class EntryUI implements Displayable {
 			} else if(clickable.getEvent() instanceof ClickInventoryEvent.Secondary) {
 				this.amount = this.amount.add(new BigDecimal(10));
 			}
+			this.update();
 		});
 
-		this.money = Icon.from(ItemStack.builder()
-				.itemType(ItemTypes.GOLD_INGOT)
-				.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Listing Price"))
-				.add(Keys.ITEM_LORE, Lists.newArrayList(
+		this.money = this.moneyIcon();
 
-				))
-				.build());
+		this.decrease = Icon.EMPTY;
 	}
 
 	public abstract EntryUI createFor(Player player);
@@ -77,4 +75,22 @@ public abstract class EntryUI implements Displayable {
 
 	protected abstract Layout forgeLayout(Player player);
 
+	protected abstract double getMin();
+
+	protected abstract double getMax();
+
+	protected abstract void update();
+
+	protected Icon moneyIcon() {
+		return Icon.from(ItemStack.builder()
+				.itemType(ItemTypes.GOLD_INGOT)
+				.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Listing Price"))
+				.add(Keys.ITEM_LORE, Lists.newArrayList(
+						Text.of(TextColors.GRAY, "Target Price: ", TextColors.GREEN, GTS.getInstance().getEconomy().getDefaultCurrency().format(this.amount)),
+						Text.EMPTY,
+						Text.of(TextColors.GRAY, "Min Price: ", TextColors.GREEN, GTS.getInstance().getEconomy().getDefaultCurrency().format(new BigDecimal(this.getMin()))),
+						Text.of(TextColors.GRAY, "Max Price: ", TextColors.GREEN, GTS.getInstance().getEconomy().getDefaultCurrency().format(new BigDecimal(this.getMax()))))
+				)
+				.build());
+	}
 }

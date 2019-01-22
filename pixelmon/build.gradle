@@ -18,7 +18,7 @@ ext {
 }
 
 jar {
-    archiveName = "GTS-Pixelmon-${pixelmon}-${project.ext.sponge}-1.0.0.jar"
+    archiveName = "GTS-Reforged-${pixelmon}-${project.ext.sponge}-1.0.0.jar"
 }
 
 repositories {

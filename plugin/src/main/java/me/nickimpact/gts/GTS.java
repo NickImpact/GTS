@@ -228,7 +228,7 @@ public class GTS extends SpongePlugin {
 		Sponge.getServiceManager().setProvider(this, GtsService.class, service);
 
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Registering default implementations...")));
-		service.registerEntry(ItemEntry.class, new ItemUI(), ItemStack.builder().itemType(ItemTypes.DIAMOND).add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Items")).build());
+		service.registerEntry("Items", ItemEntry.class, new ItemUI(), ItemTypes.DIAMOND.getId());
 		try {
 			//noinspection unchecked
 			service.getRegistry(GtsService.RegistryType.PRICE).register(MoneyPrice.class);

@@ -43,7 +43,16 @@ public enum EnumPokemonFields {
 	NATURE(pokemon -> pokemon.getNature().name()),
 	NATURE_INCREASED(pokemon -> "+" + toRep(pokemon.getNature().increasedStat)),
 	NATURE_DECREASED(pokemon -> "-" + toRep(pokemon.getNature().decreasedStat)),
-	GENDER(pokemon -> pokemon.getGender().name()),
+	GENDER(pokemon -> {
+		switch(pokemon.getGender()) {
+			case Male:
+				return Text.of(TextColors.AQUA, "Male");
+			case Female:
+				return Text.of(TextColors.LIGHT_PURPLE, "Female");
+			default:
+				return Text.of(TextColors.WHITE, "None");
+		}
+	}),
 	SHINY(pokemon -> {
 		if(!pokemon.getIsShiny())
 			return Text.EMPTY;
@@ -73,6 +82,14 @@ public enum EnumPokemonFields {
 			NBTTagCompound nbt = new NBTTagCompound();
 			pokemon.writeToNBT(nbt);
 			return nbt.getShort(NbtKeys.STATS_NUM_CLONED);
+		}
+		return 0;
+	}),
+	CLONES_REMAINING(pokemon -> {
+		if(pokemon.getSpecies().equals(EnumPokemon.Mew)) {
+			NBTTagCompound nbt = new NBTTagCompound();
+			pokemon.writeToNBT(nbt);
+			return 3 - nbt.getShort(NbtKeys.STATS_NUM_CLONED);
 		}
 		return 0;
 	}),

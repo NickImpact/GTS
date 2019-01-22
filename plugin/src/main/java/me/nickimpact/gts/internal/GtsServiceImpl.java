@@ -12,6 +12,7 @@ import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.pricing.Price;
 import me.nickimpact.gts.api.text.TokenService;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
@@ -42,8 +43,9 @@ public class GtsServiceImpl implements GtsService {
 	}
 
 	@Override
-	public void registerEntry(Class<? extends Entry> entry, EntryUI ui, ItemStack rep) {
+	public void registerEntry(String identifier, Class<? extends Entry> entry, EntryUI ui, String rep) {
 		try {
+			this.entries.getIdentifiers().put(entry, identifier);
 			this.entries.getRegistry().register(entry);
 			this.entries.getUis().put(entry, ui);
 			this.entries.getReps().put(entry, rep);

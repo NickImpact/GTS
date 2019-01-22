@@ -61,12 +61,6 @@ public class SqlDao extends AbstractDao {
 	private static final String ADD_LOG = "INSERT INTO `{prefix}logs_v2` VALUES ('%s', '%s', '%s')";
 	private static final String REMOVE_LISTING = "DELETE FROM `{prefix}listings_v2` WHERE UUID='%s'";
 	private static final String REMOVE_LOG = "DELETE FROM `{prefix}logs_v2` WHERE UUID='%s'";
-	private static final String ADD_HELD_ENTRY = "INSERT INTO `{prefix}held_entries_v2` VALUES ('%s', '%s')";
-	private static final String REMOVE_HELD_ENTRY = "DELETE FROM `{prefix}held_entries_v2` WHERE UUID='%s'";
-	private static final String GET_HELD_ENTRIES = "SELECT * FROM `{prefix}held_entries_v2`";
-	private static final String ADD_HELD_PRICE = "INSERT INTO `{prefix}held_prices_v2` VALUES ('%s', '%s')";
-	private static final String REMOVE_HELD_PRICE = "DELETE FROM `{prefix}held_prices_v2` WHERE UUID='%s'";
-	private static final String GET_HELD_PRICES = "SELECT * FROM `{prefix}held_prices_v2`";
 	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES ('%s')";
 	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID='%s'";
 	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";

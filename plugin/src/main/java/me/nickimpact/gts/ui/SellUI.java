@@ -1,14 +1,14 @@
 package me.nickimpact.gts.ui;
 
 import com.google.common.collect.Lists;
-import com.nickimpact.impactor.gui.v2.Icon;
-import com.nickimpact.impactor.gui.v2.Layout;
-import com.nickimpact.impactor.gui.v2.Page;
-import com.nickimpact.impactor.gui.v2.PageDisplayable;
+import com.nickimpact.impactor.gui.v2.*;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.holders.EntryRegistry;
 import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.api.utils.ItemUtils;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.item.inventory.property.InventoryTitle;
 import org.spongepowered.api.text.Text;
@@ -30,7 +30,20 @@ public class SellUI implements PageDisplayable {
 
         this.player = player;
         this.display = this.create(height);
-        this.display.define(this.fetchOptions(), InventoryDimension.of(7, 1), 1, 1);
+        List<Icon> options = this.fetchOptions();
+	    this.display.define(options, InventoryDimension.of(7, 1), 1, 1);
+	    if(height == 3) {
+	    	for(int i = 10; i < 17; i++) {
+			    this.display.getViews().get(0).setSlot(i, Icon.EMPTY);
+		    }
+
+        	int i = 0;
+			for(int slot : Locations.getForSize(size).locations) {
+				if(i >= options.size()) break;
+
+				this.display.getViews().get(0).setSlot(slot + 9, options.get(i++));
+			}
+        }
     }
 
     @Override
@@ -60,7 +73,11 @@ public class SellUI implements PageDisplayable {
 
         EntryRegistry er = GTS.getInstance().getService().getEntryRegistry();
         for(Class<? extends Entry> clazz : er.getRegistry().getTypings().values()) {
-            Icon icon = Icon.from(er.getReps().get(clazz));
+            Icon icon = Icon.from(ItemStack.builder()
+		            .itemType(ItemUtils.getOrDefaultFromRegistryID(er.getReps().get(clazz)))
+		            .add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, er.getIdentifiers().get(clazz)))
+		            .build()
+            );
             icon.addListener(clickable -> {
                 this.display.close(player);
                 er.getUis().get(clazz).createFor(player).open(player);
@@ -69,5 +86,41 @@ public class SellUI implements PageDisplayable {
         }
 
         return icons;
+    }
+
+    private enum Locations {
+    	ONE     (4),
+	    TWO     (3, 5),
+	    THREE   (2, 4, 6),
+	    FOUR    (1, 3, 5, 7),
+	    FIVE    (0, 2, 4, 6, 8),
+	    SIX     (1, 2, 3, 5, 6, 7),
+	    SEVEN   (1, 2, 3, 4, 5, 6, 7);
+
+	    private int[] locations;
+
+    	Locations(int... slots) {
+    		this.locations = slots;
+	    }
+
+	    public static Locations getForSize(int size) {
+    		switch(size) {
+			    case 1:
+			    	return ONE;
+			    case 2:
+			    	return TWO;
+			    case 3:
+			    	return THREE;
+			    case 4:
+			    	return FOUR;
+			    case 5:
+			    	return FIVE;
+			    case 6:
+			    	return SIX;
+			    case 7:
+			    default:
+			    	return SEVEN;
+		    }
+	    }
     }
 }

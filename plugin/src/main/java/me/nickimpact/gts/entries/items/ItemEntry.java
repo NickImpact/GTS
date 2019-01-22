@@ -23,9 +23,12 @@ import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -89,11 +92,22 @@ public class ItemEntry extends Entry<DataContainer> {
 				.add(Keys.ITEM_ENCHANTMENTS, this.decode().get(Keys.ITEM_ENCHANTMENTS).orElse(Lists.newArrayList()))
 				.build();
 
+		List<String> lore = Lists.newArrayList();
+
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
-		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_TITLE), player, null, variables));
+		if(this.item.get(Keys.DISPLAY_NAME).isPresent()) {
+			Pattern pattern = Pattern.compile("[&][a-fk-or0-9]");
+			Matcher matcher = pattern.matcher(TextSerializers.FORMATTING_CODE.serialize(this.item.get(Keys.DISPLAY_NAME).get()));
+			if(!matcher.find()) {
+				icon.offer(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, item.getTranslation().get(player.getLocale())));
+				lore.add("&7Item Name: " + this.item.get(Keys.DISPLAY_NAME).get().toPlain());
+				lore.add("");
+			} else {
+				icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_TITLE), player, null, variables));
+			}
+		}
 
-		List<String> lore = Lists.newArrayList();
 		lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_LORE));
 		this.decode().get(Keys.ITEM_LORE).ifPresent(l -> {
 			if(l.size() > 0) {

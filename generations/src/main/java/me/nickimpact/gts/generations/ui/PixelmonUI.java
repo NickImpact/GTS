@@ -49,4 +49,17 @@ public class PixelmonUI extends EntryUI {
 
 		return lb.build();
 	}
+
+	@Override
+	protected double getMin() {
+		return 0;
+	}
+
+	@Override
+	protected double getMax() {
+		return 0;
+	}
+
+	@Override
+	protected void update() {}
 }

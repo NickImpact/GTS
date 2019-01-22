@@ -5,6 +5,7 @@ import me.nickimpact.gts.api.json.Registry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.text.TokenService;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Collection;
@@ -35,9 +36,9 @@ public interface GtsService {
 	 * @since 4.0.0
 	 * @param entry The class of the entry to add to the entry
 	 * @param ui The UI accompanying the entry
-	 * @param rep The ItemStack representation accomanying the entry
+	 * @param rep The ItemStack representation accompanying the entry
 	 */
-	void registerEntry(Class<? extends Entry> entry, EntryUI ui, ItemStack rep);
+	void registerEntry(String identifier, Class<? extends Entry> entry, EntryUI ui, String rep);
 
 	/**
 	 * Fetches a list of all types of entries currently registered to GTS.

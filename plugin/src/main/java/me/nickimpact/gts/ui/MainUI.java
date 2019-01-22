@@ -23,7 +23,12 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -50,7 +55,7 @@ public class MainUI implements PageDisplayable, Observer {
 	private static final Icon BORDER = Icon.from(ItemStack.builder().from(Icon.BORDER.getDisplay()).add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Click to refresh UI")).build());
 
 	public MainUI(Player player) {
-		this(player, Lists.newArrayList());
+		this(player, Collections.emptyList());
 	}
 
 	/**
@@ -60,9 +65,6 @@ public class MainUI implements PageDisplayable, Observer {
 	 * @param conditions The search condition to apply to the listings available
 	 */
 	public MainUI(Player player, Collection<Predicate<Listing>> conditions) {
-		if(BORDER.getListeners().isEmpty()) {
-			BORDER.addListener(clickable -> apply());
-		}
 		this.player = player;
 		this.searchConditions.addAll(conditions);
 		this.searchConditions.add(listing -> !listing.hasExpired());
@@ -80,7 +82,7 @@ public class MainUI implements PageDisplayable, Observer {
 				GTS.getInstance().getUpdater().addObserver(this);
 				Sponge.getScheduler().createTaskBuilder()
 						.execute(this::apply)
-						.interval(5, TimeUnit.SECONDS)
+						.interval(1, TimeUnit.SECONDS)
 						.name("Main-" + player.getName())
 						.submit(GTS.getInstance());
 			});
@@ -109,7 +111,7 @@ public class MainUI implements PageDisplayable, Observer {
 		lb.slot(pInfo, 45);
 
 		Text pLTitle = TextParsingUtils.fetchAndParseMsg(this.player, MsgConfigKeys.UI_ITEMS_PLAYER_LISTINGS_TITLE, null, null);
-		List<Text> pLLore = Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", this.justPlayer ? Text.of(TextColors.GREEN, "Enabled") : Text.of(TextColors.RED, "Disabled")), Text.EMPTY);
+		List<Text> pLLore = Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", this.justPlayer ? Text.of(TextColors.GREEN, "Enabled") : Text.of(TextColors.RED, "Disabled")));
 		ImmutableList<Text> additional = ImmutableList.copyOf(TextParsingUtils.fetchAndParseMsgs(this.player, MsgConfigKeys.UI_ITEMS_PLAYER_LISTINGS_LORE, null, null));
 		pLLore.addAll(additional);
 		ItemStack pListings = ItemStack.builder().itemType(ItemTypes.WRITTEN_BOOK).add(Keys.DISPLAY_NAME, pLTitle).add(Keys.ITEM_LORE, pLLore).build();
