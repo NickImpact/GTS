@@ -244,7 +244,6 @@ public class SqlDao extends AbstractDao {
 						reformatted += after;
 
 						json = reformatted;
-						GTS.getInstance().getLogger().debug(json);
 					}
 
 					try {
