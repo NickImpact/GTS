@@ -237,16 +237,8 @@ public class SqlDao extends AbstractDao {
 					GTS.getInstance().getLogger().debug(json);
 					if(this.provider instanceof MySqlConnectionFactory) {
 						String before = json.substring(0, json.indexOf("\"{") + 2);
-						GTS.getInstance().getLogger().debug("Before: " + before);
-
 						String toConvert = json.substring(before.length(), json.indexOf("\"price\"", before.length()) - (json.contains("}\"\n    }") ? 13 : 11));
-						GTS.getInstance().getLogger().debug("toConvert: " + toConvert);
-
 						String after = json.substring(before.length() + toConvert.length());
-
-						GTS.getInstance().getLogger().debug("After: " + after);
-
-
 						String reformatted = before;
 						reformatted += Pattern.compile("\"").matcher(toConvert).replaceAll("\\\\\"");
 						reformatted += after;
