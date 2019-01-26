@@ -5,6 +5,7 @@ import com.nickimpact.impactor.gui.v2.Layout;
 import com.nickimpact.impactor.gui.v2.UI;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
+import me.nickimpact.gts.generations.GenerationsBridge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.text.Text;
@@ -36,7 +37,7 @@ public class PixelmonUI extends EntryUI {
 		UI display = UI.builder()
 				.title(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "(", TextColors.DARK_AQUA, "Pixelmon", TextColors.GRAY, ")"))
 				.dimension(InventoryDimension.of(9, 6))
-				.build(GTS.getInstance());
+				.build(GenerationsBridge.getInstance());
 		return display.define(this.forgeLayout(player));
 	}
 

@@ -2,6 +2,7 @@ package me.nickimpact.gts.entries.items;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.nickimpact.impactor.api.configuration.ConfigKey;
 import lombok.Getter;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.json.Typing;
@@ -74,11 +75,6 @@ public class ItemEntry extends Entry<DataContainer> {
 	@Override
 	public String getSpecsTemplate() {
 		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_SPEC_TEMPLATE);
-	}
-
-	@Override
-	public List<String> getLogTemplate() {
-		return Lists.newArrayList();
 	}
 
 	@Override
@@ -175,12 +171,17 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	public boolean doTakeAway(Player player) {
-		Optional<ItemStack> item = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).query(QueryOperationTypes.ITEM_STACK_EXACT.of(this.copyForTaking)).poll(this.amount);
+		Optional<ItemStack> item = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).query(QueryOperationTypes.ITEM_STACK_EXACT.of(this.copyForTaking)).peek(this.amount);
 		if(item.isPresent()) {
 			if(!GTS.getInstance().getConfig().get(ConfigKeys.CUSTOM_NAME_ALLOWED)) {
 				return !item.get().get(Keys.DISPLAY_NAME).isPresent();
 			}
 
+			if(GTS.getInstance().getConfig().get(ConfigKeys.BLACKLISTED_ITEMS).contains(item.get().getType().getId())) {
+				return false;
+			}
+
+			player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).query(QueryOperationTypes.ITEM_STACK_EXACT.of(this.copyForTaking)).poll(this.amount);
 			return true;
 		}
 		return false;

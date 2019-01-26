@@ -1,4 +1,4 @@
-package me.nickimpact.gts.pixelmon.config;
+package me.nickimpact.gts.generations.config;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;

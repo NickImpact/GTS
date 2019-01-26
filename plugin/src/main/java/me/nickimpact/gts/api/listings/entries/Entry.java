@@ -76,8 +76,6 @@ public abstract class Entry<T> {
 
 	public abstract String getSpecsTemplate();
 
-	public abstract List<String> getLogTemplate();
-
 	/**
 	 * Retrieves the name of a listing
 	 *

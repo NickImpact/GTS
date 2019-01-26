@@ -1,13 +1,24 @@
 package me.nickimpact.gts.generations;
 
+import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.nickimpact.impactor.api.commands.SpongeCommand;
+import com.nickimpact.impactor.api.configuration.AbstractConfig;
+import com.nickimpact.impactor.api.configuration.AbstractConfigAdapter;
+import com.nickimpact.impactor.api.configuration.ConfigBase;
 import com.nickimpact.impactor.api.logger.Logger;
+import com.nickimpact.impactor.api.plugins.PluginInfo;
+import com.nickimpact.impactor.api.plugins.SpongePlugin;
+import com.nickimpact.impactor.api.services.plan.PlanData;
 import com.nickimpact.impactor.logging.ConsoleLogger;
 import com.nickimpact.impactor.logging.SpongeLogger;
+import lombok.Getter;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.text.Translator;
 import me.nickimpact.gts.api.utils.ItemUtils;
+import me.nickimpact.gts.generations.config.PokemonConfigKeys;
+import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.generations.entries.PokemonEntry;
 import me.nickimpact.gts.generations.text.NucleusPokemonTokens;
 import me.nickimpact.gts.generations.ui.PixelmonUI;
@@ -19,10 +30,17 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+@Getter
 @Plugin(id = "gts_generations", name = "GTS Generations Bridge", version = "1.0.0", dependencies = @Dependency(id = "gts"))
-public class GenerationsBridge {
+public class GenerationsBridge extends SpongePlugin {
+
+	@Getter private static GenerationsBridge instance;
 
     @Inject
     private org.slf4j.Logger fallback;
@@ -30,8 +48,13 @@ public class GenerationsBridge {
 
 	private GtsService service;
 
+	private File configDir = new File("config/gts/");
+	private ConfigBase config;
+	private ConfigBase msgConfig;
+
     @Listener
     public void onPreInit(GamePreInitializationEvent e) {
+    	instance = this;
         this.logger = new ConsoleLogger(GTS.getInstance(), new SpongeLogger(GTS.getInstance(), fallback));
 
         this.service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
@@ -41,6 +64,9 @@ public class GenerationsBridge {
 			    new PixelmonUI(),
 			    "pixelmon:gs_ball"
 	    );
+
+	    this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonConfigKeys(), "generations.conf");
+	    this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonMsgConfigKeys(), "lang/generations-en_us.conf");
     }
 
 	@Listener
@@ -50,5 +76,64 @@ public class GenerationsBridge {
 				logger.warn("Unable to register token {{" + token.getKey() + "}} as it's already registered!");
 			}
 		}
+	}
+
+	@Override
+	public PluginInfo getPluginInfo() {
+		return new PluginInfo() {
+			@Override
+			public String getID() {
+				return "gts_generations";
+			}
+
+			@Override
+			public String getName() {
+				return "GTS Generations Bridge";
+			}
+
+			@Override
+			public String getVersion() {
+				return "1.0.0";
+			}
+
+			@Override
+			public String getDescription() {
+				return "";
+			}
+		};
+	}
+
+	@Override
+	public Optional<PlanData> getPlanData() {
+		return Optional.empty();
+	}
+
+	@Override
+	public List<ConfigBase> getConfigs() {
+		return Lists.newArrayList();
+	}
+
+	@Override
+	public List<SpongeCommand> getCommands() {
+		return Lists.newArrayList();
+	}
+
+	@Override
+	public List<Object> getListeners() {
+		return Lists.newArrayList();
+	}
+
+	@Override
+	public void onDisconnect() {}
+
+	@Override
+	public void onReload() {
+		this.config.reload();
+		this.msgConfig.reload();
+	}
+
+	@Override
+	public Path getConfigDir() {
+		return this.configDir.toPath();
 	}
 }

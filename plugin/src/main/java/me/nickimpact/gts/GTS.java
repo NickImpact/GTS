@@ -244,7 +244,7 @@ public class GTS extends SpongePlugin {
 			this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new ConfigKeys(), "gts.conf");
 			this.config.init();
 
-			this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new MsgConfigKeys(), "messages.conf");
+			this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new MsgConfigKeys(), "lang/en_us.conf");
 			this.msgConfig.init();
 
 			//if(getConfig().get(ConfigKeys.WATCH_FILES)) {

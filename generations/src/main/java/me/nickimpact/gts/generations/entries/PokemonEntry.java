@@ -20,6 +20,9 @@ import me.nickimpact.gts.api.listings.entries.Minable;
 import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
+import me.nickimpact.gts.generations.GenerationsBridge;
+import me.nickimpact.gts.generations.config.PokemonConfigKeys;
+import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.internal.TextParsingUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -65,15 +68,11 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	@Override
 	public String getSpecsTemplate() {
 		if(this.getEntry().getPokemon().isEgg) {
-			return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE_EGG);
+			return GenerationsBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE_EGG);
 		}
-		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE);
+		return GenerationsBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE);
 	}
 
-	@Override
-	public List<String> getLogTemplate() {
-		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.LOGS_ENTRIES_POKEMON);
-	}
 
 	@Override
 	public String getName() {
@@ -86,10 +85,10 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
 
-		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
+		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
 
 		List<String> template = Lists.newArrayList();
-		template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.POKEMON_ENTRY_BASE_LORE));
+		template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LORE));
 		this.addLore(icon, template, player, listing, variables);
 
 		return icon;
@@ -101,10 +100,10 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
 
-		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, listing.getAucData() == null ? MsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE : MsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE_AUCTION, null, variables));
+		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE_AUCTION, null, variables));
 
 		List<String> template = Lists.newArrayList();
-		template.addAll(GTS.getInstance().getMsgConfig().get(listing.getAucData() == null ? MsgConfigKeys.POKEMON_ENTRY_BASE_LORE : MsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE_AUCTION));
+		template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LORE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE_AUCTION));
 		this.addLore(icon, template, player, listing, variables);
 
 		return icon;
@@ -113,14 +112,14 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	private void addLore(ItemStack icon, List<String> template, Player player, Listing listing, Map<String, Object> variables) {
 		for(EnumHidableDetail detail : EnumHidableDetail.values()) {
 			if(detail.getCondition().test(this.getEntry().getPokemon())) {
-				template.addAll(GTS.getInstance().getMsgConfig().get(detail.getField()));
+				template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(detail.getField()));
 			}
 		}
 
 		if(listing.getAucData() != null) {
-			template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_INFO));
+			template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_INFO));
 		} else {
-			template.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
+			template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
 		}
 
 		List<Text> translated = template.stream().map(str -> TextParsingUtils.fetchAndParseMsg(player, str, null, variables)).collect(Collectors.toList());
@@ -160,7 +159,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 			return false;
 		}
 
-		if(GTS.getInstance().getConfig().get(ConfigKeys.BLACKLISTED_POKEMON).stream().anyMatch(name -> name.equalsIgnoreCase(this.getEntry().getPokemon().getName()))){
+		if(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED).stream().anyMatch(name -> name.equalsIgnoreCase(this.getEntry().getPokemon().getName()))){
 			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));
 			return false;
 		}
@@ -203,25 +202,25 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
 	@Override
 	public MoneyPrice calcMinPrice() {
-		MoneyPrice price = new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_BASE));
+		MoneyPrice price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_BASE));
 		EntityPixelmon pokemon = this.getEntry().getPokemon();
 		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getName());
 		if (isLegend && pokemon.getIsShiny()) {
-			price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY)));
+			price.add(new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY)));
 		} else if (isLegend) {
-			price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND)));
+			price.add(new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND)));
 		} else if (pokemon.getIsShiny()) {
-			price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY)));
+			price.add(new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY)));
 		}
 
 		for (int iv : pokemon.stats.IVs.getArray()) {
-			if (iv >= GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_IVS_MINVAL)) {
-				price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_IVS_PRICE)));
+			if (iv >= GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_IVS_MINVAL)) {
+				price.add(new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_IVS_PRICE)));
 			}
 		}
 
 		if (pokemon.getAbilitySlot() == 2) {
-			price.add(new MoneyPrice(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_HA)));
+			price.add(new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_HA)));
 		}
 
 		return price;

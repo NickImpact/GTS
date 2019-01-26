@@ -67,17 +67,12 @@ public class ConfigKeys implements IConfigKeys {
 	public static final ConfigKey<Boolean> TAX_ENABLED = BooleanKey.of("tax.enabled", false);
 	public static final ConfigKey<Double> TAX_MONEY_TAX = DoubleKey.of("tax.money.tax", 0.08);
 
-	public static final ConfigKey<Boolean> ITEMS_ENABLED = BooleanKey.of("entries.items.enabled", true);
-	public static final ConfigKey<Boolean> POKEMON_ENABLED = BooleanKey.of("entries.pokemon.enabled", true);
-	public static final ConfigKey<Boolean> MEMES = BooleanKey.of("entries.pokemon.memes", true);
-
 	public static final ConfigKey<Boolean> CUSTOM_NAME_ALLOWED = BooleanKey.of("entries.items.custom-names-allowed", true);
 
 
 	//------------------------------------------------------------------------------------------------------------------
 	// Blacklist config settings
 	//------------------------------------------------------------------------------------------------------------------
-	public static final ConfigKey<List<String>> BLACKLISTED_POKEMON = ListKey.of("blacklist.pokemon", Lists.newArrayList());
 	public static final ConfigKey<List<String>> BLACKLISTED_ITEMS = ListKey.of("blacklist.items", Lists.newArrayList());
 
 	//------------------------------------------------------------------------------------------------------------------
@@ -97,12 +92,7 @@ public class ConfigKeys implements IConfigKeys {
 
 	/** The table prefix for the main SQL tables */
 	public static final ConfigKey<String> SQL_TABLE_PREFIX = EnduringKey.wrap(StringKey.of("storage.data.table_prefix", "gts_"));
-	public static final ConfigKey<Double> MIN_PRICING_POKEMON_BASE = DoubleKey.of("min-pricing.pokemon.base", 5000.0);
-	public static final ConfigKey<Double> MIN_PRICING_POKEMON_IVS_PRICE = DoubleKey.of("min-pricing.pokemon.ivs.price", 5000.0);
-	public static final ConfigKey<Integer> MIN_PRICING_POKEMON_IVS_MINVAL = IntegerKey.of("min-pricing.pokemon.ivs.min-iv", 28);
-	public static final ConfigKey<Double> MIN_PRICING_POKEMON_LEGEND = DoubleKey.of("min-pricing.pokemon.legends", 5000.0);
-	public static final ConfigKey<Double> MIN_PRICING_POKEMON_SHINY = DoubleKey.of("min-pricing.pokemon.shiny", 2500.0);
-	public static final ConfigKey<Double> MIN_PRICING_POKEMON_HA = DoubleKey.of("min-pricing.pokemon.hidden-ability", 5000.0);
+
 	public static final ConfigKey<Boolean> MIN_PRICING_ENABLED = BooleanKey.of("min-pricing.enabled", true);
 	public static final ConfigKey<Double> MAX_MONEY_PRICE = DoubleKey.of("max-pricing.money.max", 100000000.0);
 
@@ -130,9 +120,6 @@ public class ConfigKeys implements IConfigKeys {
 			Color.decode(d.getString("discord.notifications.listing-remove.color", "#800080")),
 			d.getList("discord.notifications.listing-remove.webhooks", Lists.newArrayList())
 	));
-
-	public static final ConfigKey<Boolean> TEXTUREFLAG_CAPITALIZE = BooleanKey.of("entries.pokemon.variables.texture.capitalize", true);
-	public static final ConfigKey<Boolean> TEXTUREFLAG_TRIM_TRAILING_NUMS = BooleanKey.of("entries.pokemon.variables.texture.trim-trailing-numbers", true);
 
 	private static Map<String, ConfigKey<?>> KEYS = null;
 

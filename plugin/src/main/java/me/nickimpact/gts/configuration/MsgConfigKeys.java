@@ -96,12 +96,6 @@ public class MsgConfigKeys implements IConfigKeys {
 	));
 
 	// Items
-	public static final ConfigKey<String> UI_ITEMS_NEXT_PAGE = StringKey.of("item-displays.next-page", "&a\u2192 Next Page \u2192");
-	public static final ConfigKey<String> UI_ITEMS_LAST_PAGE = StringKey.of("item-displays.last-page", "&c\u2190 Last Page \u2190");
-	public static final ConfigKey<String> UI_ITEMS_PLAYER_TITLE = StringKey.of("item-displays.head.title", "&ePlayer Info");
-	public static final ConfigKey<List<String>> UI_ITEMS_PLAYER_LORE = ListKey.of("item-displays.head.lore", Lists.newArrayList());
-	public static final ConfigKey<String> UI_ITEMS_SORT_TITLE = StringKey.of("item-displays.sort.title", "&eSort Listings");
-	public static final ConfigKey<List<String>> UI_ITEMS_SORT_LORE = ListKey.of("item-displays.sort.lore", Lists.newArrayList());
 	public static final ConfigKey<String> UI_ITEMS_PLAYER_LISTINGS_TITLE = StringKey.of("item-displays.player-listings.title", "&eYour Listings");
 	public static final ConfigKey<List<String>> UI_ITEMS_PLAYER_LISTINGS_LORE = ListKey.of("item-displays.player-listings.lore", Lists.newArrayList());
 
@@ -121,45 +115,7 @@ public class MsgConfigKeys implements IConfigKeys {
 
 
 	// Pokemon Entries
-	public static final ConfigKey<String> POKEMON_ENTRY_SPEC_TEMPLATE = StringKey.of("entries.pokemon.spec-template", "{{ability:s}}{{ivs_percent:s}}{{ivs_stat:s}}{{shiny:s}}{{texture:s}}&a{{pokemon}}");
-	public static final ConfigKey<String> POKEMON_ENTRY_SPEC_TEMPLATE_EGG = StringKey.of("entries.pokemon.egg-spec-template", "&a{{pokemon}}");
-	public static final ConfigKey<String> POKEMON_ENTRY_BASE_TITLE = StringKey.of("entries.pokemon.base.title", "&e{{pokemon}} {{shiny:s}}&7| &bLvl {{level}}");
-	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_LORE = ListKey.of("entries.pokemon.base.lore.base", Lists.newArrayList(
-			"&7Seller: &e{{seller}}",
-			"",
-			"&7Ability: &e{{ability}}",
-			"&7Gender: &e{{gender}}",
-			"&7Nature: &e{{nature}}",
-			"&7Size: &e{{growth}}"
-	));
-	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_MEW_CLONES = ListKey.of("entries.pokemon.base.lore.mew-clones", Lists.newArrayList(
-			"&7Clones: &e{{clones}}"
-	));
-	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_LAKE_TRIO = ListKey.of("entries.pokemon.base.lore.lake-trio", Lists.newArrayList(
-			"&7Gemmed: &e{{enchanted}}"
-	));
-	public static final ConfigKey<List<String>> PE_BASE_TEXTURE = ListKey.of("entries.pokemon.base.lore.texture", Lists.newArrayList(
-			"&7Texture: &e{{texture}}"
-	));
-	public static final ConfigKey<List<String>> PE_BASE_POKERUS = ListKey.of("entries.pokemon.base.lore.pokerus", Lists.newArrayList(
-			"&7Inflicted with &dPokerus"
-	));
-	public static final ConfigKey<List<String>> PE_BASE_UNBREEDABLE = ListKey.of("entries.pokemon.base.lore.unbreedable", Lists.newArrayList(
-			"&cUnbreedable"
-	));
 
-	public static final ConfigKey<String> POKEMON_ENTRY_CONFIRM_TITLE = StringKey.of("entries.pokemon.confirm.title", "&ePurchase {{pokemon}}?");
-	public static final ConfigKey<List<String>> POKEMON_ENTRY_CONFIRM_LORE = ListKey.of("entries.pokemon.confirm.lore", Lists.newArrayList(
-			"&7Here's some additional info:",
-			"&7EVs: &e{{evs_total}}&7/&e510 &7(&a{{evs_percent}}&7)",
-			"&7IVs: &e{{ivs_total}}&7/&e186 &7(&a{{ivs_percent}}&7)",
-			"",
-			"&7Move Set:",
-			"  &7 - &e{{moves_1}}",
-			"  &7 - &e{{moves_2}}",
-			"  &7 - &e{{moves_3}}",
-			"  &7 - &e{{moves_4}}"
-	));
 
 	// Error messages
 	public static final ConfigKey<List<String>> NOT_ENOUGH_FUNDS = ListKey.of("general.purchase.not-enough-funds", Lists.newArrayList("&cUnfortunately, you were unable to afford the price of {{price}}"));
@@ -177,60 +133,9 @@ public class MsgConfigKeys implements IConfigKeys {
 	public static final ConfigKey<List<String>> ITEM_ENTRY_CONFIRM_LORE_AUCTION = ListKey.of("entries.item.confirm.lore-auction", Lists.newArrayList(
 			"&7Seller: &e{{seller}}"
 	));
-	public static final ConfigKey<String> POKEMON_ENTRY_CONFIRM_TITLE_AUCTION = StringKey.of("entries.pokemon.confirm.title-auction", "&eBid on {{pokemon}}?");
-	public static final ConfigKey<List<String>> POKEMON_ENTRY_CONFIRM_LORE_AUCTION = ListKey.of("entries.pokemon.confirm.lore-auction", Lists.newArrayList("&7Here's some additional info:",
-			"&7EVs: &e{{evs_total}}&7/&e510 &7(&a{{evs_percent}}&7)",
-			"&7IVs: &e{{ivs_total}}&7/&e186 &7(&a{{ivs_percent}}&7)",
-			"",
-			"&7Move Set:",
-			"  &7 - &e{{moves_1}}",
-			"  &7 - &e{{moves_2}}",
-			"  &7 - &e{{moves_3}}",
-			"  &7 - &e{{moves_4}}"
-	));
-
-	// Logs
-	public static final ConfigKey<List<String>> LOGS_ADD = ListKey.of("logging.add-listing", Lists.newArrayList(
-			"&7List Price: &e{{price}}"
-	));
-	public static final ConfigKey<List<String>> LOGS_REMOVE = ListKey.of("logging.remove-listing", Lists.newArrayList(
-			"&7Element: &e{{listing_specifics}}"
-	));
-	public static final ConfigKey<List<String>> LOGS_EXPIRE = ListKey.of("logging.listing-expires", Lists.newArrayList(
-			"&7Element: &e{{listing_specifics}}"
-	));
-	public static final ConfigKey<List<String>> LOGS_PURCHASE = ListKey.of("logging.purchase-listing", Lists.newArrayList(
-			"&7Seller: &e{{seller}}",
-			"&7Price: &e{{price}}",
-			"&7Received: &e{{listing_specifics}}"
-	));
-	public static final ConfigKey<List<String>> LOGS_SELL = ListKey.of("logging.sell-listing", Lists.newArrayList(
-			"&7Buyer: &e{{buyer}}",
-			"&7Price: &e{{price}}",
-			"&7Sold: &e{{listing_specifics}}"
-	));
-	public static final ConfigKey<String> LOGS_LOG_DISPLAY = StringKey.of("logging.display", "&e{{action}} &7(&aHover for Info&7) - Issued: &e{{issued}}");
-	public static final ConfigKey<List<String>> LOGS_ENTRIES_POKEMON = ListKey.of("logging.entries.pokemon", Lists.newArrayList(
-			"&7Element Type: &ePokemon",
-			"",
-			"&aDetails:",
-			"  &7Species: &e{{pokemon}}",
-			"  &7Level: &e{{level}}",
-			"  &7Shiny: &e{{shiny_state}}",
-			"  &7Pokerus: &e{{pokerus_state}}",
-			"  &7Ability: &e{{ability}}",
-			"  &7Nature: &e{{nature}}",
-			"  &7Growth: &e{{growth}}",
-			"  &7Gender: &e{{gender}}",
-			"  &7EVs: &e{{evs_total}}&7/&e510 &7(&a{{evs_percent}}&7)",
-			"  &7EVs: &e{{evhp}}&7/&e{{evatk}}&7/&e{{evdef}}&7/&e{{evspatk}}&7/&e{{evspdef}}&7/&e{{evspeed}}",
-			"  &7IVs: &e{{ivs_total}}&7/&e186 &7(&a{{ivs_percent}}&7)",
-			"  &7IVs: &e{{ivhp}}&7/&e{{ivatk}}&7/&e{{ivdef}}&7/&e{{ivspatk}}&7/&e{{ivspdef}}&7/&e{{ivspeed}}"
-	));
 
 	public static final ConfigKey<String> DISCORD_PURCHASE = StringKey.of("discord.purchase", "{{buyer}} just purchased a {{listing_specifics}} from {{seller}} for {{price}}");
 	public static final ConfigKey<String> DISCORD_REMOVE = StringKey.of("discord.purchase", "{{player}} has removed their {{listing_specifics}} from the GTS!");
-	public static final ConfigKey<String> POKEMON_LAST_MEMBER = StringKey.of("entries.pokemon.last-member", "{{gts_error}} You can't list your last non-egg party member!");
 
 	private static Map<String, ConfigKey<?>> KEYS = null;
 

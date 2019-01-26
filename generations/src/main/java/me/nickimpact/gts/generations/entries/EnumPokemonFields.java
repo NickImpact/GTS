@@ -12,6 +12,8 @@ import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.configuration.ConfigKeys;
+import me.nickimpact.gts.generations.GenerationsBridge;
+import me.nickimpact.gts.generations.config.PokemonConfigKeys;
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -27,7 +29,7 @@ public enum EnumPokemonFields {
 			return "Pokemon Egg";
 		}
 
-		if(GTS.getInstance().getConfig().get(ConfigKeys.MEMES)) {
+		if(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MEMES)) {
 			if (pokemon.getSpecies().equals(EnumPokemon.Psyduck)) {
 				return "AnDwHaT5 (Psyduck)";
 			}
@@ -111,8 +113,8 @@ public enum EnumPokemonFields {
 
 		String texture = nbt.getString(NbtKeys.CUSTOM_TEXTURE);
 		if(!texture.isEmpty()) {
-			ConfigBase config = GTS.getInstance().getConfig();
-			if(config.get(ConfigKeys.TEXTUREFLAG_CAPITALIZE)) {
+			ConfigBase config = GenerationsBridge.getInstance().getConfig();
+			if(config.get(PokemonConfigKeys.TEXTUREFLAG_CAPITALIZE)) {
 				StringBuilder sb = new StringBuilder();
 				String[] split = texture.split("\\s+");
 
@@ -128,7 +130,7 @@ public enum EnumPokemonFields {
 				texture = sb.toString();
 			}
 
-			if(config.get(ConfigKeys.TEXTUREFLAG_TRIM_TRAILING_NUMS)) {
+			if(config.get(PokemonConfigKeys.TEXTUREFLAG_TRIM_TRAILING_NUMS)) {
 				texture = texture.replaceAll("\\d*$", "");
 			}
 

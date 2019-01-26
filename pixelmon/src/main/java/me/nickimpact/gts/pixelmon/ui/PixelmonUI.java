@@ -10,14 +10,13 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
-import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
-import me.nickimpact.gts.configuration.ConfigKeys;
-import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
 import me.nickimpact.gts.internal.TextParsingUtils;
+import me.nickimpact.gts.pixelmon.PixelmonBridge;
 import me.nickimpact.gts.pixelmon.config.PokemonConfigKeys;
+import me.nickimpact.gts.pixelmon.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.pixelmon.entries.EnumHidableDetail;
 import me.nickimpact.gts.pixelmon.entries.PokemonEntry;
 import me.nickimpact.gts.ui.SellUI;
@@ -68,7 +67,7 @@ public class PixelmonUI extends EntryUI {
 		UI display = UI.builder()
 				.title(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "(", TextColors.DARK_AQUA, "Pixelmon", TextColors.GRAY, ")"))
 				.dimension(InventoryDimension.of(9, 6))
-				.build(GTS.getInstance());
+				.build(PixelmonBridge.getInstance());
 		return display.define(this.forgeLayout(player));
 	}
 
@@ -97,10 +96,10 @@ public class PixelmonUI extends EntryUI {
 				variables.put("pokemon", pokemon);
 
 				ItemStack display = PixelmonIcons.pokemonDisplay(pokemon, pokemon.getForm());
-				display.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
+				display.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
 
 				List<String> template = Lists.newArrayList();
-				template.addAll(GTS.getInstance().getMsgConfig().get(PokemonConfigKeys.POKEMON_SELLER_PREVIEW));
+				template.addAll(PixelmonBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_SELLER_PREVIEW));
 				this.addLore(pokemon, display, template, player, variables);
 
 				final int sl = s;
@@ -128,7 +127,7 @@ public class PixelmonUI extends EntryUI {
 			if(this.selection != null) {
 				this.display.close(clickable.getPlayer());
 				if(this.storage.countTeam() == 1) {
-					clickable.getPlayer().sendMessage(TextParsingUtils.fetchAndParseMsg(clickable.getPlayer(), MsgConfigKeys.POKEMON_LAST_MEMBER, null, null));
+					clickable.getPlayer().sendMessage(TextParsingUtils.fetchAndParseMsg(clickable.getPlayer(), PokemonMsgConfigKeys.POKEMON_LAST_MEMBER, null, null));
 					return;
 				}
 
@@ -184,7 +183,7 @@ public class PixelmonUI extends EntryUI {
 	private void addLore(EntityPixelmon pokemon, ItemStack icon, List<String> template, Player player, Map<String, Object> variables) {
 		for (EnumHidableDetail detail : EnumHidableDetail.values()) {
 			if (detail.getCondition().test(pokemon)) {
-				template.addAll(GTS.getInstance().getMsgConfig().get(detail.getField()));
+				template.addAll(PixelmonBridge.getInstance().getMsgConfig().get(detail.getField()));
 			}
 		}
 
@@ -193,24 +192,24 @@ public class PixelmonUI extends EntryUI {
 	}
 
 	private double calcMin(EntityPixelmon pokemon) {
-		double price = GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_BASE);
+		double price = PixelmonBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_BASE);
 		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getName());
 		if (isLegend && pokemon.getIsShiny()) {
-			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY);
+			price += PixelmonBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND) + PixelmonBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY);
 		} else if (isLegend) {
-			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND);
+			price += PixelmonBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND);
 		} else if (pokemon.getIsShiny()) {
-			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY);
+			price += PixelmonBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY);
 		}
 
 		for (int iv : pokemon.stats.ivs.getArray()) {
-			if (iv >= GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_IVS_MINVAL)) {
-				price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_IVS_PRICE);
+			if (iv >= PixelmonBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_IVS_MINVAL)) {
+				price += PixelmonBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_IVS_PRICE);
 			}
 		}
 
 		if (pokemon.getAbilitySlot() == 2) {
-			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_HA);
+			price += PixelmonBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_HA);
 		}
 
 		return price;
