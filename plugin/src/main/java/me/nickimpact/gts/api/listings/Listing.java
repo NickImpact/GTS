@@ -8,6 +8,7 @@ import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
 import me.nickimpact.gts.utils.ListingUtils;
 import lombok.Getter;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 
@@ -61,8 +62,6 @@ public final class Listing {
 		this.expires = expires;
 		this.expiration = Date.from(Instant.now().plusSeconds(seconds));
 		this.aucData = ad;
-
-		ListingUtils.addToMarket(player, this);
     }
 
     public Listing(Builder builder) {
@@ -73,12 +72,14 @@ public final class Listing {
 	    this.expires = builder.expires;
 	    this.expiration = builder.expiration;
 	    this.aucData = builder.data;
-
-	    ListingUtils.addToMarket(builder.player, this);
     }
 
     public static Builder builder() {
     	return new Builder();
+    }
+
+    public boolean publish(Player player) {
+    	return ListingUtils.addToMarket(player, this);
     }
 
 	/**

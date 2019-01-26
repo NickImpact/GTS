@@ -230,6 +230,7 @@ public class MsgConfigKeys implements IConfigKeys {
 
 	public static final ConfigKey<String> DISCORD_PURCHASE = StringKey.of("discord.purchase", "{{buyer}} just purchased a {{listing_specifics}} from {{seller}} for {{price}}");
 	public static final ConfigKey<String> DISCORD_REMOVE = StringKey.of("discord.purchase", "{{player}} has removed their {{listing_specifics}} from the GTS!");
+	public static final ConfigKey<String> POKEMON_LAST_MEMBER = StringKey.of("entries.pokemon.last-member", "{{gts_error}} You can't list your last non-egg party member!");
 
 	private static Map<String, ConfigKey<?>> KEYS = null;
 

@@ -6,6 +6,7 @@ import com.nickimpact.impactor.gui.v2.Icon;
 import com.nickimpact.impactor.gui.v2.Layout;
 import com.nickimpact.impactor.gui.v2.UI;
 import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.api.time.Time;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
@@ -22,12 +23,17 @@ public abstract class EntryUI implements Displayable {
 	private Player player;
 
 	/** Represents the amount of money being used to put the listing up for */
-	protected BigDecimal amount = new BigDecimal(0);
+	protected BigDecimal amount = new BigDecimal(this.getMin());
+	protected long time = this.getTimeMin();
 
 	/** Icons which handle the price increase setup */
 	protected Icon increase;
 	protected Icon money;
 	protected Icon decrease;
+
+	protected Icon timeInc;
+	protected Icon timeIcon;
+	protected Icon timeDec;
 
 	public EntryUI() {}
 
@@ -40,31 +46,118 @@ public abstract class EntryUI implements Displayable {
 						.add(Keys.DYE_COLOR, DyeColors.LIME)
 						.add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, "Increase Amount Requested"))
 						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.AQUA, "Left Click: +1"),
-								Text.of(TextColors.AQUA, "Right Click: +10"),
-								Text.of(TextColors.AQUA, "Shift + Left Click: +100"),
-								Text.of(TextColors.AQUA, "Shift + Right Click: +1000")
+								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "+1"),
+								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "+10"),
+								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "+100"),
+								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "+1000")
 						))
 						.build()
 		);
 		this.increase.addListener(clickable -> {
+			double current = this.amount.doubleValue();
+
 			if(clickable.getEvent() instanceof ClickInventoryEvent.Shift) {
 				if(clickable.getEvent() instanceof ClickInventoryEvent.Shift.Primary) {
-					this.amount = this.amount.add(new BigDecimal(100));
+					this.amount = new BigDecimal(Math.min(this.getMax(), current + 100));
 				} else {
-					this.amount = this.amount.add(new BigDecimal(1000));
+					this.amount = new BigDecimal(Math.min(this.getMax(), current + 1000));
 				}
 			} else if (clickable.getEvent() instanceof ClickInventoryEvent.Primary) {
-				this.amount = this.amount.add(new BigDecimal(1));
+				this.amount = new BigDecimal(Math.min(this.getMax(), current + 1));
 			} else if(clickable.getEvent() instanceof ClickInventoryEvent.Secondary) {
-				this.amount = this.amount.add(new BigDecimal(10));
+				this.amount = new BigDecimal(Math.min(this.getMax(), current + 10));
 			}
 			this.update();
 		});
 
 		this.money = this.moneyIcon();
 
-		this.decrease = Icon.EMPTY;
+		this.decrease = Icon.from(
+				ItemStack.builder()
+						.itemType(ItemTypes.DYE)
+						.add(Keys.DYE_COLOR, DyeColors.RED)
+						.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Decrease Amount Requested"))
+						.add(Keys.ITEM_LORE, Lists.newArrayList(
+								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "-1"),
+								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "-10"),
+								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "-100"),
+								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "-1000")
+						))
+						.build()
+		);
+		this.decrease.addListener(clickable -> {
+			double current = this.amount.doubleValue();
+			if(clickable.getEvent() instanceof ClickInventoryEvent.Shift) {
+				if(clickable.getEvent() instanceof ClickInventoryEvent.Shift.Primary) {
+					this.amount = new BigDecimal(Math.max(this.getMin(), current - 100));
+				} else {
+					this.amount = new BigDecimal(Math.max(this.getMin(), current - 1000));
+				}
+			} else if (clickable.getEvent() instanceof ClickInventoryEvent.Primary) {
+				this.amount = new BigDecimal(Math.max(this.getMin(), current - 1));
+			} else if(clickable.getEvent() instanceof ClickInventoryEvent.Secondary) {
+				this.amount = new BigDecimal(Math.max(this.getMin(), current - 10));
+			}
+			this.update();
+		});
+
+		this.timeInc = Icon.from(
+				ItemStack.builder()
+						.itemType(ItemTypes.DYE)
+						.add(Keys.DYE_COLOR, DyeColors.LIME)
+						.add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, "Increase Time"))
+						.add(Keys.ITEM_LORE, Lists.newArrayList(
+								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "+1 minute"),
+								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "+10 minutes"),
+								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "+1 hour"),
+								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "+10 hours")
+						))
+						.build()
+		);
+		this.timeInc.addListener(clickable -> {
+			if(clickable.getEvent() instanceof ClickInventoryEvent.Shift) {
+				if(clickable.getEvent() instanceof ClickInventoryEvent.Shift.Primary) {
+					this.time = Math.min(this.getTimeMax(), time + 3600);
+				} else {
+					this.time = Math.min(this.getTimeMax(), time + (3600 * 10));
+				}
+			} else if (clickable.getEvent() instanceof ClickInventoryEvent.Primary) {
+				this.time = Math.min(this.getTimeMax(), time + 60);
+			} else if(clickable.getEvent() instanceof ClickInventoryEvent.Secondary) {
+				this.time = Math.min(this.getTimeMax(), time + 600);
+			}
+			this.update();
+		});
+
+		this.timeIcon = this.timeIcon();
+
+		this.timeDec = Icon.from(
+				ItemStack.builder()
+						.itemType(ItemTypes.DYE)
+						.add(Keys.DYE_COLOR, DyeColors.RED)
+						.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Decrease Time"))
+						.add(Keys.ITEM_LORE, Lists.newArrayList(
+								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "-1 minute"),
+								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "-10 minutes"),
+								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "-1 hour"),
+								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "-10 hours")
+						))
+						.build()
+		);
+		this.timeDec.addListener(clickable -> {
+			if(clickable.getEvent() instanceof ClickInventoryEvent.Shift) {
+				if(clickable.getEvent() instanceof ClickInventoryEvent.Shift.Primary) {
+					this.time = Math.max(this.getTimeMin(), time - 3600);
+				} else {
+					this.time = Math.max(this.getTimeMin(), time - (3600 * 10));
+				}
+			} else if (clickable.getEvent() instanceof ClickInventoryEvent.Primary) {
+				this.time = Math.max(this.getTimeMin(), time - 60);
+			} else if(clickable.getEvent() instanceof ClickInventoryEvent.Secondary) {
+				this.time = Math.max(this.getTimeMin(), time - 600);
+			}
+			this.update();
+		});
 	}
 
 	public abstract EntryUI createFor(Player player);
@@ -79,6 +172,10 @@ public abstract class EntryUI implements Displayable {
 
 	protected abstract double getMax();
 
+	protected abstract long getTimeMin();
+
+	protected abstract long getTimeMax();
+
 	protected abstract void update();
 
 	protected Icon moneyIcon() {
@@ -90,6 +187,19 @@ public abstract class EntryUI implements Displayable {
 						Text.EMPTY,
 						Text.of(TextColors.GRAY, "Min Price: ", TextColors.GREEN, GTS.getInstance().getEconomy().getDefaultCurrency().format(new BigDecimal(this.getMin()))),
 						Text.of(TextColors.GRAY, "Max Price: ", TextColors.GREEN, GTS.getInstance().getEconomy().getDefaultCurrency().format(new BigDecimal(this.getMax()))))
+				)
+				.build());
+	}
+
+	protected Icon timeIcon() {
+		return Icon.from(ItemStack.builder()
+				.itemType(ItemTypes.CLOCK)
+				.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Listing Time"))
+				.add(Keys.ITEM_LORE, Lists.newArrayList(
+						Text.of(TextColors.GRAY, "Target Time: ", TextColors.GREEN, new Time(this.time).toString()),
+						Text.EMPTY,
+						Text.of(TextColors.GRAY, "Min Time: ", TextColors.GREEN, new Time(this.getTimeMin()).toString()),
+						Text.of(TextColors.GRAY, "Max Time: ", TextColors.GREEN, new Time(this.getTimeMax()).toString()))
 				)
 				.build());
 	}

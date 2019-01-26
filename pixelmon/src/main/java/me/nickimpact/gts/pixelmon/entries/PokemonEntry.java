@@ -85,6 +85,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 		ItemStack icon = getPicture(this.getEntry().getPokemon());
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
+		variables.put("pokemon", this.element.getPokemon());
 
 		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
 

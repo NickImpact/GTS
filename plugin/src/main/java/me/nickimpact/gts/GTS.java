@@ -22,7 +22,6 @@ import me.nickimpact.gts.entries.prices.MoneyPrice;
 import me.nickimpact.gts.discord.DiscordNotifier;
 import me.nickimpact.gts.internal.TextParsingUtils;
 import me.nickimpact.gts.listeners.JoinListener;
-import me.nickimpact.gts.logs.Log;
 import me.nickimpact.gts.storage.Storage;
 import me.nickimpact.gts.storage.StorageFactory;
 import me.nickimpact.gts.storage.StorageType;
@@ -46,7 +45,6 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.data.DataContainer;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.GameReloadEvent;
@@ -56,7 +54,6 @@ import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.game.state.GameStoppingServerEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -72,7 +69,6 @@ import java.io.*;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 /**
  * (Some note will go here)
@@ -123,9 +119,6 @@ public class GTS extends SpongePlugin {
 
 	/** The cache holding all listings in the current running instance */
 	private List<Listing> listingsCache = Lists.newArrayList();
-
-	/** The cache holding all logs in the current running instance */
-	private List<Log> logCache = Lists.newArrayList();
 
 	/** A list of users who prefer not to be spammed by GTS broadcasts */
 	private List<UUID> ignorers = Lists.newArrayList();

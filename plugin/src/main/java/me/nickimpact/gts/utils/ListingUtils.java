@@ -11,8 +11,6 @@ import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
 import me.nickimpact.gts.internal.TextParsingUtils;
-import me.nickimpact.gts.logs.Log;
-import me.nickimpact.gts.logs.LogAction;
 import me.nickimpact.gts.api.listings.pricing.Price;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
@@ -48,10 +46,10 @@ public class ListingUtils {
 		return TextParsingUtils.parse(base, player, tokens, variables);
 	}
 
-    public static void addToMarket(Player player, Listing listing) {
+    public static boolean addToMarket(Player player, Listing listing) {
 	    if(ListingUtils.hasMax(player)) {
 	    	player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.MAX_LISTINGS), player, null, null));
-		    return;
+		    return false;
 	    }
 
 	    ListEvent listEvent = new ListEvent(player, listing, Sponge.getCauseStackManager().getCurrentCause());
@@ -60,6 +58,7 @@ public class ListingUtils {
 	    if(!listEvent.isCancelled()) {
 		    Map<String, Object> variables = Maps.newHashMap();
 		    variables.put("listing", listing);
+		    variables.put("entry", listing.getEntry().getEntry());
 
 		    if(GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_ENABLED) && listing.getEntry() instanceof Minable) {
 		    	MoneyPrice price = listing.getEntry().getPrice();
@@ -68,7 +67,7 @@ public class ListingUtils {
 					Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
 					tokens.put("min_price", src -> Optional.of(min.getText()));
 					player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.MIN_PRICE_ERROR), player, tokens, variables));
-					return;
+					return false;
 				}
 		    }
 
@@ -80,7 +79,7 @@ public class ListingUtils {
 					extras.put("tax", src -> Optional.of(Text.of(t.getFirst())));
 
 					player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.TAX_INVALID), player, extras, variables));
-					return;
+					return false;
 				} else {
 					tax = Optional.of(t.getFirst());
 				}
@@ -106,7 +105,7 @@ public class ListingUtils {
 
 					player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.RED, "Your listing failed to be taken, so we have refunded the tax applied!"));
 			    }
-			    return;
+			    return false;
 		    }
 
 		    player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ADD_TEMPLATE), player, null, variables));
@@ -131,14 +130,12 @@ public class ListingUtils {
 				notifier.sendMessage(message);
 			});
 
-		    Log add = Log.builder()
-				    .action(LogAction.Addition)
-				    .source(player.getUniqueId())
-				    .hover(Log.forgeTemplate(player, listing, LogAction.Addition))
-				    .build();
-		    GTS.getInstance().getStorage().addLog(add);
 		    GTS.getInstance().getUpdater().sendUpdate();
+
+		    return true;
 	    }
+
+	    return false;
     }
 
     public static void purchase(Player player, Listing listing) {
@@ -177,20 +174,6 @@ public class ListingUtils {
 				Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_SELL_LISTING), b);
 				notifier.sendMessage(message);
 			});
-
-			Log buyer = Log.builder()
-					.action(LogAction.Purchase)
-					.source(player.getUniqueId())
-					.hover(Log.forgeTemplate(player, listing, LogAction.Purchase))
-					.build();
-			GTS.getInstance().getStorage().addLog(buyer);
-
-			Log seller = Log.builder()
-					.action(LogAction.Sell)
-					.source(listing.getOwnerUUID())
-					.hover(Log.forgeTemplate(player, listing, LogAction.Sell))
-					.build();
-			GTS.getInstance().getStorage().addLog(seller);
 
 			GTS.getInstance().getUpdater().sendUpdate();
 		} else {

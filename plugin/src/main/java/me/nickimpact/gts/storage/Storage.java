@@ -26,9 +26,6 @@
 package me.nickimpact.gts.storage;
 
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.listings.pricing.Price;
-import me.nickimpact.gts.logs.Log;
 
 import java.util.List;
 import java.util.UUID;
@@ -73,27 +70,6 @@ public interface Storage {
      * to represent the cached listings.
      */
     CompletableFuture<List<Listing>> getListings();
-
-	/**
-	 * Add a log to the storage provider
-	 *
-	 * @param log The target log
-	 * @return A completable future in which a log is added to the storage provider
-	 */
-	CompletableFuture<Void> addLog(Log log);
-
-	/**
-	 * Remove a log from the storage provider based on the ID of a log
-	 *
-	 * @param id The target ID of a log
-	 * @return A completable future in which a log is removed from the storage provider
-	 */
-	CompletableFuture<Void> removeLog(int id);
-
-	/**
-	 * Fetches all logs within the storage data, and adds them to the gts log cache
-	 */
-	CompletableFuture<List<Log>> getLogs(UUID uuid);
 
 	CompletableFuture<Void> addIgnorer(UUID uuid);
 

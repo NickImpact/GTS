@@ -8,15 +8,12 @@ import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.internal.TextParsingUtils;
-import me.nickimpact.gts.logs.Log;
-import me.nickimpact.gts.logs.LogAction;
 import me.nickimpact.gts.ui.shared.SharedItems;
 import me.nickimpact.gts.utils.ListingUtils;
 import com.nickimpact.impactor.gui.v2.Displayable;
 import com.nickimpact.impactor.gui.v2.Icon;
 import com.nickimpact.impactor.gui.v2.Layout;
 import com.nickimpact.impactor.gui.v2.UI;
-import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
@@ -155,12 +152,6 @@ public class ConfirmUI implements Displayable, Observer {
 				notifier.sendMessage(message);
 			});
 
-			Log remove = Log.builder()
-					.action(LogAction.Removal)
-					.source(player.getUniqueId())
-					.hover(Log.forgeTemplate(player, target, LogAction.Removal))
-					.build();
-			GTS.getInstance().getStorage().addLog(remove);
 			clickable.getPlayer().closeInventory();
 		});
 

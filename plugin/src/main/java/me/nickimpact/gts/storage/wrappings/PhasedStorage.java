@@ -26,7 +26,6 @@
 package me.nickimpact.gts.storage.wrappings;
 
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.logs.Log;
 import me.nickimpact.gts.storage.Storage;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -115,35 +114,6 @@ public class PhasedStorage implements Storage {
 		}
 	}
 
-	@Override
-	public CompletableFuture<Void> addLog(Log log) {
-		phaser.register();
-		try {
-			return delegate.addLog(log);
-		} finally {
-			phaser.arriveAndDeregister();
-		}
-	}
-
-	@Override
-	public CompletableFuture<Void> removeLog(int id) {
-		phaser.register();
-		try {
-			return delegate.removeLog(id);
-		} finally {
-			phaser.arriveAndDeregister();
-		}
-	}
-
-	@Override
-	public CompletableFuture<List<Log>> getLogs(UUID uuid) {
-		phaser.register();
-		try {
-			return delegate.getLogs(uuid);
-		} finally {
-			phaser.arriveAndDeregister();
-		}
-	}
 
 	@Override
 	public CompletableFuture<Void> addIgnorer(UUID uuid) {

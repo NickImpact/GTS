@@ -29,7 +29,6 @@ import com.google.common.collect.Lists;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.GTSInfo;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.logs.Log;
 import me.nickimpact.gts.storage.dao.AbstractDao;
 import lombok.Getter;
 import ninja.leaping.configurate.ConfigurationNode;
@@ -166,17 +165,6 @@ public abstract class ConfigurateDao extends AbstractDao {
 
 	@Override
 	public List<Listing> getListings() throws Exception {
-		return Lists.newArrayList();
-	}
-
-	@Override
-	public void addLog(Log log) {}
-
-	@Override
-	public void removeLog(int id) {}
-
-	@Override
-	public List<Log> getLogs(UUID uuid) throws Exception {
 		return Lists.newArrayList();
 	}
 

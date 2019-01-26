@@ -29,7 +29,6 @@ import com.google.common.base.Throwables;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.utils.MessageUtils;
-import me.nickimpact.gts.logs.Log;
 import me.nickimpact.gts.storage.dao.AbstractDao;
 import me.nickimpact.gts.storage.wrappings.PhasedStorage;
 import lombok.AccessLevel;
@@ -128,21 +127,6 @@ public class AbstractStorage implements Storage {
 	@Override
 	public CompletableFuture<List<Listing>> getListings() {
 		return makeFuture(dao::getListings);
-	}
-
-	@Override
-	public CompletableFuture<Void> addLog(Log log) {
-		return makeFuture(() -> dao.addLog(log));
-	}
-
-	@Override
-	public CompletableFuture<Void> removeLog(int id) {
-		return makeFuture(() -> dao.removeLog(id));
-	}
-
-	@Override
-	public CompletableFuture<List<Log>> getLogs(UUID uuid) {
-		return makeFuture(() -> dao.getLogs(uuid));
 	}
 
 	@Override

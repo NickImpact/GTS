@@ -61,5 +61,15 @@ public class PixelmonUI extends EntryUI {
 	}
 
 	@Override
+	protected long getTimeMin() {
+		return 0;
+	}
+
+	@Override
+	protected long getTimeMax() {
+		return 0;
+	}
+
+	@Override
 	protected void update() {}
 }

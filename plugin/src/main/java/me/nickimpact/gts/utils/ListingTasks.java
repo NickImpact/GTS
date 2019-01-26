@@ -10,8 +10,6 @@ import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.internal.TextParsingUtils;
-import me.nickimpact.gts.logs.Log;
-import me.nickimpact.gts.logs.LogAction;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
@@ -93,13 +91,6 @@ public class ListingTasks {
 			Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_EXPIRE), b);
 			notifier.sendMessage(message);
 		});
-
-	    Log expires = Log.builder()
-			    .action(LogAction.Expiration)
-			    .source(player.getUniqueId())
-			    .hover(Log.forgeTemplate(player, listing, LogAction.Expiration))
-			    .build();
-	    GTS.getInstance().getStorage().addLog(expires);
 
 	    return true;
     }

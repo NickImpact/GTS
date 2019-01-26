@@ -2,7 +2,6 @@ package me.nickimpact.gts.commands;
 
 import me.nickimpact.gts.commands.administrative.ClearCmd;
 import me.nickimpact.gts.commands.administrative.EditCmd;
-import me.nickimpact.gts.commands.administrative.LogCmd;
 import com.nickimpact.impactor.api.commands.SpongeCommand;
 import com.nickimpact.impactor.api.commands.SpongeSubCommand;
 import com.nickimpact.impactor.api.commands.annotations.Aliases;
@@ -47,8 +46,7 @@ public class AdminBaseCmd extends SpongeSubCommand {
 	public SpongeCommand[] getSubCommands() {
 		return new SpongeCommand[]{
 				new ClearCmd(this.plugin),
-				new EditCmd(this.plugin),
-				new LogCmd(this.plugin)
+				new EditCmd(this.plugin)
 		};
 	}
 

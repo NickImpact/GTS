@@ -19,10 +19,13 @@ import me.nickimpact.gts.entries.prices.MoneyPrice;
 import me.nickimpact.gts.internal.TextParsingUtils;
 import me.nickimpact.gts.pixelmon.config.PokemonConfigKeys;
 import me.nickimpact.gts.pixelmon.entries.EnumHidableDetail;
+import me.nickimpact.gts.pixelmon.entries.PokemonEntry;
+import me.nickimpact.gts.ui.SellUI;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
@@ -39,6 +42,7 @@ public class PixelmonUI extends EntryUI {
 	private UI display;
 
 	private EntityPixelmon selection;
+	private PlayerStorage storage;
 	private double min;
 
 	public PixelmonUI() {
@@ -72,15 +76,20 @@ public class PixelmonUI extends EntryUI {
 	protected Layout forgeLayout(Player player) {
 		Layout.Builder lb = Layout.builder();
 		lb.row(Icon.BORDER, 0).row(Icon.BORDER, 2);
-		lb.slots(Icon.BORDER, 0, 9, 18, 16, 34, 43, 52);
+		lb.slots(Icon.BORDER, 9, 18, 16, 34, 43, 52);
 
-		lb.slot(this.increase, 30);
-		lb.slot(this.money, 39);
-		lb.slot(this.decrease, 48);
+		lb.slot(this.increase, 29);
+		lb.slot(this.money, 38);
+		lb.slot(this.decrease, 47);
+
+		lb.slot(this.timeInc, 31);
+		lb.slot(this.timeIcon, 40);
+		lb.slot(this.timeDec, 49);
 
 		List<Icon> party = Lists.newArrayList();
-		PlayerStorage storage = PixelmonStorage.pokeBallManager.getPlayerStorage((EntityPlayerMP) player).orElse(null);
+		this.storage = PixelmonStorage.pokeBallManager.getPlayerStorage((EntityPlayerMP) player).orElse(null);
 		if (storage != null) {
+			int s = 0;
 			for (NBTTagCompound nbt : storage.partyPokemon) {
 				if(nbt == null) continue;
 				EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(nbt, (World) player.getWorld());
@@ -94,6 +103,7 @@ public class PixelmonUI extends EntryUI {
 				template.addAll(GTS.getInstance().getMsgConfig().get(PokemonConfigKeys.POKEMON_SELLER_PREVIEW));
 				this.addLore(pokemon, display, template, player, variables);
 
+				final int sl = s;
 				Icon icon = Icon.from(display);
 				icon.addListener(clickable -> {
 					this.selection = pokemon;
@@ -101,15 +111,46 @@ public class PixelmonUI extends EntryUI {
 					this.min = this.calcMin(pokemon);
 
 					this.amount = new BigDecimal(this.min);
+
 					this.update();
 				});
 				party.add(icon);
+				++s;
 			}
 		}
 
 		for (int i = 10; i < 16 && i - 10 < party.size(); i++) {
 			lb.slot(party.get(i - 10), i);
 		}
+
+		Icon confirm = Icon.from(Icon.CONFIRM.getDisplay());
+		confirm.addListener(clickable -> {
+			if(this.selection != null) {
+				this.display.close(clickable.getPlayer());
+				if(this.storage.countTeam() == 1) {
+					clickable.getPlayer().sendMessage(TextParsingUtils.fetchAndParseMsg(clickable.getPlayer(), MsgConfigKeys.POKEMON_LAST_MEMBER, null, null));
+					return;
+				}
+
+				Listing listing = Listing.builder()
+						.entry(new PokemonEntry(this.selection, new MoneyPrice(this.amount)))
+						.doesExpire()
+						.player(clickable.getPlayer())
+						.expiration(this.time)
+						.build();
+
+				listing.publish(clickable.getPlayer());
+			}
+		});
+		lb.slot(confirm, 35);
+
+		Icon cancel = Icon.from(Icon.CANCEL.getDisplay());
+		cancel.getDisplay().offer(Keys.DYE_COLOR, DyeColors.RED);
+		cancel.addListener(clickable -> {
+			this.display.close(clickable.getPlayer());
+			new SellUI(clickable.getPlayer()).open(clickable.getPlayer(), 1);
+		});
+		lb.slot(cancel, 53);
 
 		return lb.build();
 	}
@@ -121,12 +162,23 @@ public class PixelmonUI extends EntryUI {
 
 	@Override
 	protected double getMax() {
-		return 0;
+		return 100_000_000;
+	}
+
+	@Override
+	protected long getTimeMin() {
+		return 1800;
+	}
+
+	@Override
+	protected long getTimeMax() {
+		return 3600 * 24;
 	}
 
 	@Override
 	protected void update() {
-		this.getDisplay().setSlot(39, this.moneyIcon());
+		this.getDisplay().setSlot(38, this.moneyIcon());
+		this.getDisplay().setSlot(40, this.timeIcon());
 	}
 
 	private void addLore(EntityPixelmon pokemon, ItemStack icon, List<String> template, Player player, Map<String, Object> variables) {
@@ -141,7 +193,7 @@ public class PixelmonUI extends EntryUI {
 	}
 
 	private double calcMin(EntityPixelmon pokemon) {
-		double price = 0;
+		double price = GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_BASE);
 		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getName());
 		if (isLegend && pokemon.getIsShiny()) {
 			price += GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_POKEMON_SHINY);

@@ -46,17 +46,24 @@ public class ItemEntry extends Entry<DataContainer> {
 	/** The cached version of the ItemStack */
 	@Getter private transient ItemStack item;
 
-	private String name;
+	private transient int amount;
+	private transient ItemStack copyForTaking;
 
-	private static Map<UUID, Integer> amounts = Maps.newHashMap();
+	private String name;
 
 	public ItemEntry() {
 		super();
 	}
 
 	public ItemEntry(ItemStack element, MoneyPrice price) {
+		this(element, element.getQuantity(), price);
+	}
+
+	public ItemEntry(ItemStack element, int amount, MoneyPrice price) {
 		super(element.toContainer(), price);
-		this.item = element;
+		this.copyForTaking = element;
+		this.amount = amount;
+		this.item = ItemStack.builder().fromItemStack(element).quantity(amount).build();
 		this.name = element.getTranslation().get();
 	}
 
@@ -96,21 +103,26 @@ public class ItemEntry extends Entry<DataContainer> {
 
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
-		if(this.item.get(Keys.DISPLAY_NAME).isPresent()) {
+		variables.put("item", this.decode());
+
+		if(this.decode().get(Keys.DISPLAY_NAME).isPresent()) {
 			Pattern pattern = Pattern.compile("[&][a-fk-or0-9]");
-			Matcher matcher = pattern.matcher(TextSerializers.FORMATTING_CODE.serialize(this.item.get(Keys.DISPLAY_NAME).get()));
+			Matcher matcher = pattern.matcher(TextSerializers.FORMATTING_CODE.serialize(this.decode().get(Keys.DISPLAY_NAME).get()));
 			if(!matcher.find()) {
-				icon.offer(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, item.getTranslation().get(player.getLocale())));
-				lore.add("&7Item Name: " + this.item.get(Keys.DISPLAY_NAME).get().toPlain());
+				icon.offer(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, decode().getTranslation().get(player.getLocale())));
+				lore.add("&7Item Name: &e" + this.decode().get(Keys.DISPLAY_NAME).get().toPlain());
 				lore.add("");
 			} else {
 				icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_TITLE), player, null, variables));
 			}
+		} else {
+			icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_TITLE), player, null, variables));
 		}
 
 		lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_LORE));
 		this.decode().get(Keys.ITEM_LORE).ifPresent(l -> {
 			if(l.size() > 0) {
+				lore.add("");
 				lore.add("&aItem Lore: ");
 				lore.addAll(l.stream().map(TextSerializers.FORMATTING_CODE::serialize).collect(Collectors.toList()));
 			}
@@ -163,17 +175,12 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	public boolean doTakeAway(Player player) {
-		Optional<ItemStack> item = player.getItemInHand(HandTypes.MAIN_HAND);
+		Optional<ItemStack> item = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).query(QueryOperationTypes.ITEM_STACK_EXACT.of(this.copyForTaking)).poll(this.amount);
 		if(item.isPresent()) {
 			if(!GTS.getInstance().getConfig().get(ConfigKeys.CUSTOM_NAME_ALLOWED)) {
-				if(item.get().get(Keys.DISPLAY_NAME).isPresent()) {
-					return false;
-				}
+				return !item.get().get(Keys.DISPLAY_NAME).isPresent();
 			}
 
-			int amount = amounts.get(player.getUniqueId());
-			item.get().setQuantity(item.get().getQuantity() - amount);
-			player.setItemInHand(HandTypes.MAIN_HAND, item.get());
 			return true;
 		}
 		return false;

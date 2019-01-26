@@ -66,17 +66,7 @@ public class ItemTokens {
 	}
 
 	private static ItemStack getItemStackFromVariableIfExists(Map<String, Object> m) {
-		Optional<Listing> opt = m.values().stream().filter(val -> val instanceof Listing).map(val -> (Listing) val).findAny();
-		if(opt.isPresent()) {
-			if(opt.get().getEntry() instanceof ItemEntry) {
-				if(((ItemEntry) opt.get().getEntry().getEntry()).getItem() == null) {
-					return ItemStack.builder().fromContainer((DataContainer) opt.get().getEntry().getEntry()).build();
-				}
-
-				return ((ItemEntry) opt.get().getEntry()).getItem();
-			}
-		}
-
-		return ItemStack.builder().itemType(ItemTypes.BARRIER).add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "ERROR")).build();
+		Optional<ItemStack> opt = m.values().stream().filter(val -> val instanceof ItemStack).map(val -> (ItemStack) val).findAny();
+		return opt.orElse(ItemStack.builder().itemType(ItemTypes.BARRIER).add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "ERROR")).build());
 	}
 }

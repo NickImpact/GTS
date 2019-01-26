@@ -27,7 +27,6 @@ package me.nickimpact.gts.storage.dao;
 
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.logs.Log;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -55,12 +54,6 @@ public abstract class AbstractDao {
 	public abstract void removeListing(UUID uuid) throws Exception;
 
 	public abstract List<Listing> getListings() throws Exception;
-
-	public abstract void addLog(Log log) throws Exception;
-
-	public abstract void removeLog(int id) throws Exception;
-
-	public abstract List<Log> getLogs(UUID uuid) throws Exception;
 
 	public abstract void addIgnorer(UUID uuid) throws Exception;
 

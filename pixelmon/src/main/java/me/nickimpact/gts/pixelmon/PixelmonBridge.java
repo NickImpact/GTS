@@ -7,21 +7,15 @@ import com.nickimpact.impactor.logging.SpongeLogger;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.text.Translator;
-import me.nickimpact.gts.api.utils.ItemUtils;
 import me.nickimpact.gts.pixelmon.entries.PokemonEntry;
 import me.nickimpact.gts.pixelmon.text.NucleusPokemonTokens;
 import me.nickimpact.gts.pixelmon.ui.PixelmonUI;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.util.Map;
 

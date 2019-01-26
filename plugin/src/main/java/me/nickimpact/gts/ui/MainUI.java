@@ -3,6 +3,7 @@ package me.nickimpact.gts.ui;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.internal.TextParsingUtils;
@@ -49,10 +50,16 @@ public class MainUI implements PageDisplayable, Observer {
 	/** The condition to search by for the listings */
 	private Collection<Predicate<Listing>> searchConditions = Lists.newArrayList();
 
+	private List<Class<? extends Entry>> classSelections = Lists.newArrayList();
+
 	/** Whether or not we should show the player's listings or not */
 	private boolean justPlayer = false;
 
 	private static final Icon BORDER = Icon.from(ItemStack.builder().from(Icon.BORDER.getDisplay()).add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Click to refresh UI")).build());
+
+	/** These two fields represent the current set of categories we can use to filter our listings */
+	private List<Icon> categories = Lists.newArrayList();
+	private int index = 0;
 
 	public MainUI(Player player) {
 		this(player, Collections.emptyList());
@@ -68,11 +75,21 @@ public class MainUI implements PageDisplayable, Observer {
 		this.player = player;
 		this.searchConditions.addAll(conditions);
 		this.searchConditions.add(listing -> !listing.hasExpired());
+		this.searchConditions.add(listing -> {
+			if(this.classSelections.isEmpty()) return true;
+
+			for (Class<? extends Entry> entry : classSelections) {
+				if (listing.getEntry().getClass().isAssignableFrom(entry)) {
+					return true;
+				}
+			}
+			return false;
+		});
 
 		this.page = Page.builder()
 				.property(InventoryTitle.of(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "\u00BB ", TextColors.DARK_AQUA, "Listings")))
 				.property(InventoryDimension.of(9, 6))
-				.previous(Icon.from(ItemStack.builder().itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:trade_holder_left").orElse(ItemTypes.BARRIER)).build()), 51)
+				.previous(Icon.from(ItemStack.builder().itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:trade_holder_left").orElse(ItemTypes.BARRIER)).build()), 52)
 				.next(Icon.from(ItemStack.builder().itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:trade_holder_right").orElse(ItemTypes.BARRIER)).build()), 53)
 				.layout(this.design())
 				.build(GTS.getInstance());
@@ -102,13 +119,7 @@ public class MainUI implements PageDisplayable, Observer {
 		Layout.Builder lb = Layout.builder().dimension(9, 6);
 		lb.row(BORDER, 0).row(BORDER, 4);
 		lb.column(BORDER, 0).column(BORDER, 8);
-		lb.slots(BORDER, 47, 50);
-
-		Text skullTitle = TextParsingUtils.fetchAndParseMsg(this.player, MsgConfigKeys.UI_ITEMS_PLAYER_TITLE, null, null);
-		List<Text> skullLore = TextParsingUtils.fetchAndParseMsgs(this.player, MsgConfigKeys.UI_ITEMS_PLAYER_LORE, null, null);
-		ItemStack skull = ItemUtils.createSkull(player.getUniqueId(), skullTitle, skullLore);
-		Icon pInfo = new Icon(skull);
-		lb.slot(pInfo, 45);
+		lb.slots(BORDER, 46, 51);
 
 		Text pLTitle = TextParsingUtils.fetchAndParseMsg(this.player, MsgConfigKeys.UI_ITEMS_PLAYER_LISTINGS_TITLE, null, null);
 		List<Text> pLLore = Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", this.justPlayer ? Text.of(TextColors.GREEN, "Enabled") : Text.of(TextColors.RED, "Disabled")));
@@ -121,20 +132,49 @@ public class MainUI implements PageDisplayable, Observer {
 			List<Text> lore = Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", this.justPlayer ? Text.of(TextColors.GREEN, "Enabled") : Text.of(TextColors.RED, "Disabled")));
 			lore.addAll(additional);
 			pl.getDisplay().offer(Keys.ITEM_LORE, lore);
-			this.page.apply(pl, 46);
+			this.page.apply(pl, 45);
 			this.apply();
 		});
-		lb.slot(pl, 46);
+		lb.slot(pl, 45);
 
 		// Setup Entry Selector
 		// This needs to be scrollable within the layout, such that only two appear at once.
+		GTS.getInstance().getService().getEntryRegistry().getReps().forEach((entry, id) -> {
+			String identifier = GTS.getInstance().getService().getEntryRegistry().getIdentifiers().get(entry);
+			ItemStack rep = ItemStack.builder().itemType(Sponge.getRegistry().getType(ItemType.class, id).orElse(ItemTypes.BARRIER)).build();
+			rep.offer(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Show only ", identifier, "?"));
+			rep.offer(Keys.ITEM_LORE, Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", TextColors.RED, "Disabled")));
 
+			Icon icon = Icon.from(rep);
+			icon.addListener(clickable -> {
+				if(this.hasEntryType(entry)) {
+					this.classSelections.remove(entry);
+					rep.offer(Keys.ITEM_LORE, Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", TextColors.RED, "Disabled")));
+				} else {
+					this.classSelections.add(entry);
+					rep.offer(Keys.ITEM_LORE, Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", TextColors.GREEN, "Enabled")));
+				}
+				this.updateOptions();
+				this.apply();
+			});
+
+			this.categories.add(icon);
+		});
+
+		for(int i = 0; i < 2; i++) {
+			lb.slot(this.categories.get(i), 48 + i);
+		}
 
 		return lb.build();
 	}
 
-	private boolean hasCondition(Predicate<Listing> predicate) {
-		return this.searchConditions.contains(predicate);
+	private boolean hasEntryType(Class<? extends Entry> entry) {
+		return this.classSelections.contains(entry);
+	}
+
+	private void updateOptions() {
+		this.page.apply(this.categories.get(index), 48);
+		this.page.apply(this.categories.get(index + 1), 49);
 	}
 
 	private void apply() {

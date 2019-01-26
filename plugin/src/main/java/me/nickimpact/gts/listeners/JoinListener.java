@@ -6,10 +6,7 @@ import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.internal.TextParsingUtils;
-import me.nickimpact.gts.logs.Log;
-import me.nickimpact.gts.logs.LogAction;
 import me.nickimpact.gts.utils.ListingUtils;
-import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
@@ -39,12 +36,6 @@ public class JoinListener {
 					variables.put("id", listing);
 					if(listing.getEntry().giveEntry(player)) {
 						ListingUtils.deleteEntry(listing);
-						Log expires = Log.builder()
-								.action(LogAction.Expiration)
-								.source(player.getUniqueId())
-								.hover(Log.forgeTemplate(player, listing, LogAction.Expiration))
-								.build();
-						GTS.getInstance().getStorage().addLog(expires);
 						player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.REMOVAL_EXPIRES), player, null, variables));
 					} else {
 						player.sendMessages(TextParsingUtils.parse("{{gts_error}} &7Your &a{{listing_name}} &7listing has expired, but was unable to be returned. It is now in a queue for retrieval once you meet the proper conditions...", player, null, variables));
