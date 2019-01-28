@@ -12,12 +12,17 @@ import com.nickimpact.impactor.api.plugins.SpongePlugin;
 import com.nickimpact.impactor.api.services.plan.PlanData;
 import com.nickimpact.impactor.logging.ConsoleLogger;
 import com.nickimpact.impactor.logging.SpongeLogger;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.ExtraStats;
 import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
+import me.nickimpact.gts.api.events.DataReceivedEvent;
+import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.text.Translator;
 import me.nickimpact.gts.pixelmon.config.PokemonConfigKeys;
 import me.nickimpact.gts.pixelmon.config.PokemonMsgConfigKeys;
-import me.nickimpact.gts.pixelmon.entries.PokemonEntry;
+import me.nickimpact.gts.pixelmon.entries.ReforgedEntry;
+import me.nickimpact.gts.pixelmon.entries.removable.PokemonEntry;
+import me.nickimpact.gts.pixelmon.entries.translators.ExtraStatsAdapter;
 import me.nickimpact.gts.pixelmon.text.NucleusPokemonTokens;
 import me.nickimpact.gts.pixelmon.ui.PixelmonUI;
 import org.spongepowered.api.Sponge;
@@ -35,9 +40,9 @@ import java.util.Optional;
 
 @Getter
 @Plugin(id = "gts_reforged", name = "GTS Reforged Bridge", version = "1.0.0", dependencies = @Dependency(id = "gts"))
-public class PixelmonBridge extends SpongePlugin {
+public class ReforgedBridge extends SpongePlugin {
 
-	@Getter private static PixelmonBridge instance;
+	@Getter private static ReforgedBridge instance;
 
 	@Inject
 	private org.slf4j.Logger fallback;
@@ -72,6 +77,15 @@ public class PixelmonBridge extends SpongePlugin {
 		for(Map.Entry<String, Translator> token : NucleusPokemonTokens.getTokens().entrySet()) {
 			service.getTokensService().register(token.getKey(), token.getValue());
 		}
+	}
+
+	@Listener
+	public void onDataReceived(DataReceivedEvent e) {
+		e.filterAndEdit(listing -> listing.getEntry() instanceof PokemonEntry, listings -> {
+			for(Listing listing : listings) {
+				listing.setEntry(new ReforgedEntry(((me.nickimpact.gts.pixelmon.entries.removable.Pokemon)(listing.getEntry().getEntry())).getPokemon().getPokemonData(), listing.getEntry().getPrice()));
+			}
+		});
 	}
 
 	@Override

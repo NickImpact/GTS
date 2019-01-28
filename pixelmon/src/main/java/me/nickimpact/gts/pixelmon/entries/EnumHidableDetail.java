@@ -1,13 +1,14 @@
 package me.nickimpact.gts.pixelmon.entries;
 
 import com.nickimpact.impactor.api.configuration.ConfigKey;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.enums.EnumPokemon;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.nickimpact.gts.pixelmon.config.PokemonMsgConfigKeys;
+import me.nickimpact.gts.pixelmon.entries.removable.PokemonEntry;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.List;
@@ -31,11 +32,11 @@ public enum EnumHidableDetail {
 		},
 			PokemonMsgConfigKeys.PE_BASE_UNBREEDABLE
 	),
-	POKERUS(pokemon -> pokemon.getPokerus().isPresent(), PokemonMsgConfigKeys.PE_BASE_POKERUS),
-	CLONES(pokemon -> pokemon.getSpecies().equals(EnumPokemon.Mew), PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_MEW_CLONES),
+	POKERUS(pokemon -> pokemon.getPokerus() != null, PokemonMsgConfigKeys.PE_BASE_POKERUS),
+	CLONES(pokemon -> pokemon.getSpecies().equals(EnumSpecies.Mew), PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_MEW_CLONES),
 	ENCHANTED(pokemon -> PokemonEntry.LakeTrio.isMember(pokemon.getSpecies()), PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LAKE_TRIO),
 	;
 
-	private Predicate<EntityPixelmon> condition;
+	private Predicate<Pokemon> condition;
 	private ConfigKey<List<String>> field;
 }

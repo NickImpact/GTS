@@ -1,5 +1,6 @@
 package me.nickimpact.gts.api.listings;
 
+import lombok.Setter;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.exceptions.ListingException;
 import me.nickimpact.gts.api.listings.data.AuctionData;
@@ -34,7 +35,7 @@ public final class Listing {
     /** The uuid of the element owner */
     @Getter private final UUID ownerUUID;
 
-    @Getter private final Entry entry;
+    @Getter @Setter private Entry entry;
 
     /** Whether or not the element will expire */
     private final boolean expires;

@@ -17,7 +17,6 @@ public class ItemAdapter implements JsonSerializer<DataContainer>, JsonDeseriali
 
 	@Override
 	public DataContainer deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-		
 		String data = GTS.prettyGson.fromJson(json, String.class);
 		try {
 			return DataFormats.JSON.read(data);

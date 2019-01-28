@@ -1,4 +1,4 @@
-package me.nickimpact.gts.pixelmon.entries;
+package me.nickimpact.gts.pixelmon.entries.removable;
 
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
@@ -14,6 +14,7 @@ import org.spongepowered.api.Sponge;
  *
  * @author NickImpact
  */
+@Deprecated
 public class Pokemon {
 
 	private transient EntityPixelmon pokemon;

@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
 import me.nickimpact.gts.api.GtsService;
+import me.nickimpact.gts.api.events.DataReceivedEvent;
 import me.nickimpact.gts.api.text.TokenService;
 import me.nickimpact.gts.entries.items.ui.ItemUI;
 import me.nickimpact.gts.internal.GtsServiceImpl;
@@ -132,7 +133,7 @@ public class GTS extends SpongePlugin {
 	private IDiscordNotifier discordNotifier;
 
 	/** The JSON writing/reading object with pretty printing. */
-	public static final Gson prettyGson = new GsonBuilder()
+	public static Gson prettyGson = new GsonBuilder()
 			.setPrettyPrinting()
 			.registerTypeAdapter(Entry.class, new EntryAdapter())
 			.registerTypeAdapter(Price.class, new PriceAdapter())
@@ -265,7 +266,15 @@ public class GTS extends SpongePlugin {
 
 			// Read in and register all data entries into the cache
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading data into cache...")));
-			this.storage.getListings().thenAccept(listings -> this.listingsCache = listings);
+			this.storage.getListings().thenAccept(listings -> {
+				this.listingsCache = listings;
+				DataReceivedEvent dre = new DataReceivedEvent(listings);
+				Sponge.getEventManager().post(dre);
+
+				if(dre.isEdited()) {
+					this.updateStorageForEdits(listings);
+				}
+			});
 			this.storage.getIgnorers().thenAccept(ignorers -> this.ignorers = ignorers);
 
 			if(this.config.get(ConfigKeys.DISCORD_ENABLED)) {
@@ -279,6 +288,21 @@ public class GTS extends SpongePlugin {
 			this.disable();
 			e1.printStackTrace();
 		}
+	}
+
+	private void updateStorageForEdits(List<Listing> listings) {
+		Iterator<Listing> iterator = listings.iterator();
+		if(iterator.hasNext()) {
+			this.sendUpdate(iterator.next(), iterator);
+		}
+	}
+
+	private void sendUpdate(Listing listing, Iterator<Listing> iterator) {
+		this.storage.updateListing(listing).thenAccept(x -> {
+			if(iterator.hasNext()) {
+				this.sendUpdate(iterator.next(), iterator);
+			}
+		});
 	}
 
 	@Listener

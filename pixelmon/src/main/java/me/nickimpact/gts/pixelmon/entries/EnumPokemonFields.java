@@ -1,16 +1,15 @@
 package me.nickimpact.gts.pixelmon.entries;
 
 import com.nickimpact.impactor.api.configuration.ConfigBase;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.attacks.specialAttacks.basic.HiddenPower;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVsStore;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
-import com.pixelmonmod.pixelmon.enums.EnumPokemon;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
-import me.nickimpact.gts.pixelmon.PixelmonBridge;
+import me.nickimpact.gts.pixelmon.ReforgedBridge;
 import me.nickimpact.gts.pixelmon.config.PokemonConfigKeys;
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.text.Text;
@@ -23,21 +22,11 @@ import java.util.function.Function;
 public enum EnumPokemonFields {
 
 	NAME(pokemon -> {
-		if(pokemon.isEgg) {
+		if(pokemon.isEgg()) {
 			return "Pokemon Egg";
 		}
 
-		if(PixelmonBridge.getInstance().getConfig().get(PokemonConfigKeys.MEMES)) {
-			if (pokemon.getSpecies().equals(EnumPokemon.Psyduck)) {
-				return "AnDwHaT5 (Psyduck)";
-			}
-
-			if (pokemon.getSpecies().equals(EnumPokemon.Bidoof)) {
-				return "God himself (Bidoof)";
-			}
-		}
-
-		return pokemon.getName();
+		return pokemon.getSpecies().getPokemonName();
 	}),
 	ABILITY(pokemon -> pokemon.getAbility().getLocalizedName()),
 	NATURE(pokemon -> pokemon.getNature().name()),
@@ -54,7 +43,7 @@ public enum EnumPokemonFields {
 		}
 	}),
 	SHINY(pokemon -> {
-		if(!pokemon.getIsShiny())
+		if(!pokemon.isShiny())
 			return Text.EMPTY;
 
 		return Text.of(TextColors.GRAY, "(", TextColors.GOLD, "Shiny", TextColors.GRAY, ")");
@@ -62,13 +51,13 @@ public enum EnumPokemonFields {
 
 	GROWTH(pokemon -> pokemon.getGrowth().name()),
 	LEVEL(pokemon -> {
-		if(pokemon.isEgg) {
+		if(pokemon.isEgg()) {
 			return 1;
 		}
 
-		return pokemon.getLvl().getLevel();
+		return pokemon.getLevel();
 	}),
-	FORM(EntityPixelmon::getForm),
+	FORM(Pokemon::getForm),
 	FORM_NAME(pokemon -> {
 		String form = pokemon.getFormEnum().getFormSuffix();
 		if(form.startsWith("-")) {
@@ -78,7 +67,7 @@ public enum EnumPokemonFields {
 		}
 	}),
 	CLONES(pokemon -> {
-		if(pokemon.getSpecies().equals(EnumPokemon.Mew)) {
+		if(pokemon.getSpecies().equals(EnumSpecies.Mew)) {
 			NBTTagCompound nbt = new NBTTagCompound();
 			pokemon.writeToNBT(nbt);
 			return nbt.getShort(NbtKeys.STATS_NUM_CLONED);
@@ -86,7 +75,7 @@ public enum EnumPokemonFields {
 		return 0;
 	}),
 	CLONES_REMAINING(pokemon -> {
-		if(pokemon.getSpecies().equals(EnumPokemon.Mew)) {
+		if(pokemon.getSpecies().equals(EnumSpecies.Mew)) {
 			NBTTagCompound nbt = new NBTTagCompound();
 			pokemon.writeToNBT(nbt);
 			return 3 - nbt.getShort(NbtKeys.STATS_NUM_CLONED);
@@ -105,30 +94,30 @@ public enum EnumPokemonFields {
 				return 0;
 		}
 	}),
-	EV_PERCENT(pokemon -> new DecimalFormat("#0.##").format(totalEVs(pokemon.stats.evs) / 510.0 * 100) + "%"),
-	IV_PERCENT(pokemon -> new DecimalFormat("#0.##").format(totalIVs(pokemon.stats.ivs) / 186.0 * 100) + "%"),
-	EV_TOTAL(pokemon -> (int)totalEVs(pokemon.stats.evs)),
-	IV_TOTAL(pokemon -> (int)totalIVs(pokemon.stats.ivs)),
-	NICKNAME(pokemon -> TextSerializers.LEGACY_FORMATTING_CODE.deserialize(pokemon.getNickname())),
-	EV_HP(pokemon -> pokemon.stats.evs.hp),
-	EV_ATK(pokemon -> pokemon.stats.evs.attack),
-	EV_DEF(pokemon -> pokemon.stats.evs.defence),
-	EV_SPATK(pokemon -> pokemon.stats.evs.specialAttack),
-	EV_SPDEF(pokemon -> pokemon.stats.evs.specialDefence),
-	EV_SPEED(pokemon -> pokemon.stats.evs.speed),
-	IV_HP(pokemon -> pokemon.stats.ivs.HP),
-	IV_ATK(pokemon -> pokemon.stats.ivs.Attack),
-	IV_DEF(pokemon -> pokemon.stats.ivs.Defence),
-	IV_SPATK(pokemon -> pokemon.stats.ivs.SpAtt),
-	IV_SPDEF(pokemon -> pokemon.stats.ivs.SpDef),
-	IV_SPEED(pokemon -> pokemon.stats.ivs.Speed),
+	EV_PERCENT(pokemon -> new DecimalFormat("#0.##").format(totalEVs(pokemon.getStats().evs) / 510.0 * 100) + "%"),
+	IV_PERCENT(pokemon -> new DecimalFormat("#0.##").format(totalIVs(pokemon.getStats().ivs) / 186.0 * 100) + "%"),
+	EV_TOTAL(pokemon -> (int)totalEVs(pokemon.getStats().evs)),
+	IV_TOTAL(pokemon -> (int)totalIVs(pokemon.getStats().ivs)),
+	NICKNAME(pokemon -> TextSerializers.LEGACY_FORMATTING_CODE.deserialize(pokemon.getNickname() != null ? pokemon.getNickname() : "")),
+	EV_HP(pokemon -> pokemon.getStats().evs.hp),
+	EV_ATK(pokemon -> pokemon.getStats().evs.attack),
+	EV_DEF(pokemon -> pokemon.getStats().evs.defence),
+	EV_SPATK(pokemon -> pokemon.getStats().evs.specialAttack),
+	EV_SPDEF(pokemon -> pokemon.getStats().evs.specialDefence),
+	EV_SPEED(pokemon -> pokemon.getStats().evs.speed),
+	IV_HP(pokemon -> pokemon.getStats().ivs.hp),
+	IV_ATK(pokemon -> pokemon.getStats().ivs.attack),
+	IV_DEF(pokemon -> pokemon.getStats().ivs.defence),
+	IV_SPATK(pokemon -> pokemon.getStats().ivs.specialAttack),
+	IV_SPDEF(pokemon -> pokemon.getStats().ivs.specialDefence),
+	IV_SPEED(pokemon -> pokemon.getStats().ivs.speed),
 	TEXTURE(pokemon -> {
 		NBTTagCompound nbt = new NBTTagCompound();
 		pokemon.writeToNBT(nbt);
 
 		String texture = nbt.getString(NbtKeys.CUSTOM_TEXTURE);
 		if(!texture.isEmpty()) {
-			ConfigBase config = PixelmonBridge.getInstance().getConfig();
+			ConfigBase config = ReforgedBridge.getInstance().getConfig();
 			if(config.get(PokemonConfigKeys.TEXTUREFLAG_CAPITALIZE)) {
 				StringBuilder sb = new StringBuilder();
 				String[] split = texture.split("\\s+");
@@ -152,19 +141,19 @@ public enum EnumPokemonFields {
 			return texture;
 		}
 
-		return pokemon.getIsShiny() ? "Shiny" : "Normal";
+		return pokemon.isShiny() ? "Shiny" : "Normal";
 	}),
 	SPECIAL_TEXTURE(pokemon -> {
-		return EnumSpecialTexture.fromIndex(pokemon.getSpecialTextureIndex()).name();
+		return pokemon.getSpecialTexture().name();
 	}),
-	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.stats.ivs).name()),
+	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.getStats().ivs).name()),
 	MOVES_1(pokemon -> pokemon.getMoveset().attacks[0].baseAttack.getLocalizedName()),
 	MOVES_2(pokemon -> pokemon.getMoveset().attacks[1].baseAttack.getLocalizedName()),
 	MOVES_3(pokemon -> pokemon.getMoveset().attacks[2].baseAttack.getLocalizedName()),
 	MOVES_4(pokemon -> pokemon.getMoveset().attacks[3].baseAttack.getLocalizedName()),
-	SHINY_STATE(pokemon -> pokemon.getIsShiny() ? "Yes" : "No"),
-	POKERUS_STATE(pokemon -> pokemon.getPokerus().isPresent() ? "Yes" : "No"),
-	POKERUS(pokemon -> pokemon.getPokerus().isPresent() ? "PKRS" : null),
+	SHINY_STATE(pokemon -> pokemon.isShiny() ? "Yes" : "No"),
+	POKERUS_STATE(pokemon -> pokemon.getPokerus() != null ? "Yes" : "No"),
+	POKERUS(pokemon -> pokemon.getPokerus() != null ? "PKRS" : null),
 	UNBREEDABLE(pokemon -> {
 		PokemonSpec unbreedable = new PokemonSpec("unbreedable");
 		if(unbreedable.matches(pokemon)){
@@ -174,22 +163,22 @@ public enum EnumPokemonFields {
 		}
 	}),
 	POKE_BALL_NAME(pokemon ->{
-		return pokemon.caughtBall.name();
+		return pokemon.getCaughtBall().name();
 	});
 
 
-	public final Function<EntityPixelmon, Object> function;
+	public final Function<Pokemon, Object> function;
 
-	private EnumPokemonFields(Function<EntityPixelmon, Object> function) {
+	private EnumPokemonFields(Function<Pokemon, Object> function) {
 		this.function = function;
 	}
 
-	private static double totalEVs(EVsStore evs) {
+	private static double totalEVs(EVStore evs) {
 		return evs.hp + evs.attack + evs.defence + evs.specialAttack + evs.specialDefence + evs.speed;
 	}
 
 	private static double totalIVs(IVStore ivs) {
-		return ivs.HP + ivs.Attack + ivs.Defence + ivs.SpAtt + ivs.SpDef + ivs.Speed;
+		return ivs.hp + ivs.attack + ivs.defence + ivs.specialAttack + ivs.specialDefence + ivs.speed;
 	}
 
 	private static String toRep(StatsType stat) {

@@ -1,11 +1,11 @@
 package me.nickimpact.gts.pixelmon.text;
 
 import com.google.common.collect.Maps;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.text.Translator;
 import me.nickimpact.gts.pixelmon.entries.EnumPokemonFields;
-import me.nickimpact.gts.pixelmon.entries.Pokemon;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import me.nickimpact.gts.pixelmon.entries.ReforgedEntry;
 import org.spongepowered.api.text.Text;
 
 import java.util.Map;
@@ -81,26 +81,24 @@ public class NucleusPokemonTokens {
 		return tokens;
 	}
 
-	private static EntityPixelmon getPokemonFromVariableIfExists(Map<String, Object> m) {
-		Optional<Object> optPoke = m.values().stream().filter(val -> val instanceof Listing || val instanceof EntityPixelmon).findAny();
+	private static Pokemon getPokemonFromVariableIfExists(Map<String, Object> m) {
+		Optional<Object> optPoke = m.values().stream().filter(val -> val instanceof Listing || val instanceof Pokemon).findAny();
 		if (optPoke.isPresent()) {
 			if(optPoke.get() instanceof Listing) {
-				if (((Listing)optPoke.get()).getEntry().getEntry() instanceof Pokemon) {
-					return ((Pokemon) ((Listing)optPoke.get()).getEntry().getEntry()).getPokemon();
+				if(((Listing) optPoke.get()).getEntry() instanceof ReforgedEntry) {
+					return (((ReforgedEntry) ((Listing) optPoke.get()).getEntry())).getEntry();
 				}
-			} else if(optPoke.get() instanceof EntityPixelmon){
-				return (EntityPixelmon) optPoke.get();
+			} else {
+				return (Pokemon) optPoke.get();
 			}
-
-			return (EntityPixelmon) ((Listing) optPoke.get()).getEntry().getEntry();
 		}
 
 		return null;
 	}
 
-	private static Text getPokemonInfo(EntityPixelmon pokemon, EnumPokemonFields field) {
+	private static Text getPokemonInfo(Pokemon pokemon, EnumPokemonFields field) {
 		if (pokemon != null) {
-			if (pokemon.isEgg) {
+			if (pokemon.isEgg()) {
 				if (field.equals(EnumPokemonFields.NAME) || field.equals(EnumPokemonFields.LEVEL)) {
 					return Text.of(field.function.apply(pokemon));
 				}
