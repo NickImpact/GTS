@@ -66,15 +66,15 @@ public class GenerationsBridge extends SpongePlugin {
 	    );
 
 	    this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonConfigKeys(), "generations.conf");
+	    this.config.init();
 	    this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonMsgConfigKeys(), "lang/generations-en_us.conf");
+	    this.msgConfig.init();
     }
 
 	@Listener
 	public void onServerStarted(GameStartingServerEvent e) {
 		for(Map.Entry<String, Translator> token : NucleusPokemonTokens.getTokens().entrySet()) {
-			if(!service.getTokensService().register(token.getKey(), token.getValue())) {
-				logger.warn("Unable to register token {{" + token.getKey() + "}} as it's already registered!");
-			}
+			service.getTokensService().register(token.getKey(), token.getValue());
 		}
 	}
 

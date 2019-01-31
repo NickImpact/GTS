@@ -23,7 +23,7 @@ public class SellUI implements PageDisplayable {
 
     public SellUI(Player player) {
         int height = 3;
-        int size = GTS.getInstance().getService().getEntryRegistry().getRegistry().getTypings().size();
+        int size = GTS.getInstance().getService().getEntryRegistry().getIdentifiers().keySet().size();
         if(size > 7) {
             height = 5;
         }
@@ -72,7 +72,7 @@ public class SellUI implements PageDisplayable {
         List<Icon> icons = Lists.newArrayList();
 
         EntryRegistry er = GTS.getInstance().getService().getEntryRegistry();
-        for(Class<? extends Entry> clazz : er.getRegistry().getTypings().values()) {
+        for(Class<? extends Entry> clazz : er.getIdentifiers().keySet()) {
             Icon icon = Icon.from(ItemStack.builder()
 		            .itemType(ItemUtils.getOrDefaultFromRegistryID(er.getReps().get(clazz)))
 		            .add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, er.getIdentifiers().get(clazz)))

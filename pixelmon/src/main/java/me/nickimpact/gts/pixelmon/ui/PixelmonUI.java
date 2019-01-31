@@ -9,6 +9,7 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
+import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
@@ -84,7 +85,6 @@ public class PixelmonUI extends EntryUI {
 		List<Icon> party = Lists.newArrayList();
 		this.storage = Pixelmon.storageManager.getParty(player.getUniqueId());
 		if (storage != null) {
-			int s = 0;
 			for (Pokemon pokemon : storage.getAll()) {
 				if(pokemon == null) continue;
 				Map<String, Object> variables = Maps.newHashMap();
@@ -97,7 +97,6 @@ public class PixelmonUI extends EntryUI {
 				template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_SELLER_PREVIEW));
 				this.addLore(pokemon, display, template, player, variables);
 
-				final int sl = s;
 				Icon icon = Icon.from(display);
 				icon.addListener(clickable -> {
 					this.selection = pokemon;
@@ -109,7 +108,6 @@ public class PixelmonUI extends EntryUI {
 					this.update();
 				});
 				party.add(icon);
-				++s;
 			}
 		}
 
@@ -132,6 +130,8 @@ public class PixelmonUI extends EntryUI {
 						.player(clickable.getPlayer())
 						.expiration(this.time)
 						.build();
+
+				GTS.getInstance().getLogger().debug(GTS.prettyGson.toJson(listing));
 
 				listing.publish(clickable.getPlayer());
 			}

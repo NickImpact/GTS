@@ -22,7 +22,6 @@ import me.nickimpact.gts.pixelmon.config.PokemonConfigKeys;
 import me.nickimpact.gts.pixelmon.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.pixelmon.entries.ReforgedEntry;
 import me.nickimpact.gts.pixelmon.entries.removable.PokemonEntry;
-import me.nickimpact.gts.pixelmon.entries.translators.ExtraStatsAdapter;
 import me.nickimpact.gts.pixelmon.text.NucleusPokemonTokens;
 import me.nickimpact.gts.pixelmon.ui.PixelmonUI;
 import org.spongepowered.api.Sponge;
@@ -61,10 +60,15 @@ public class ReforgedBridge extends SpongePlugin {
 		service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
 		service.registerEntry(
 				"Pokemon",
-				PokemonEntry.class,
+				ReforgedEntry.class,
 				new PixelmonUI(),
 				"pixelmon:gs_ball"
 		);
+		try {
+			service.getRegistry(GtsService.RegistryType.ENTRY).register(PokemonEntry.class);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 
 		this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonConfigKeys(), "reforged.conf");
 		this.config.init();
@@ -81,11 +85,13 @@ public class ReforgedBridge extends SpongePlugin {
 
 	@Listener
 	public void onDataReceived(DataReceivedEvent e) {
-		e.filterAndEdit(listing -> listing.getEntry() instanceof PokemonEntry, listings -> {
-			for(Listing listing : listings) {
-				listing.setEntry(new ReforgedEntry(((me.nickimpact.gts.pixelmon.entries.removable.Pokemon)(listing.getEntry().getEntry())).getPokemon().getPokemonData(), listing.getEntry().getPrice()));
-			}
-		});
+		if(!e.filter(listing -> listing.getEntry() instanceof PokemonEntry).isEmpty()) {
+			e.filterAndEdit(listing -> listing.getEntry() instanceof PokemonEntry, listings -> {
+				for (Listing listing : listings) {
+					listing.setEntry(new ReforgedEntry(((me.nickimpact.gts.pixelmon.entries.removable.Pokemon) (listing.getEntry().getEntry())).getPokemon().getPokemonData(), listing.getEntry().getPrice()));
+				}
+			});
+		}
 	}
 
 	@Override

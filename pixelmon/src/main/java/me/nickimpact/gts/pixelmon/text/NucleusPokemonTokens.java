@@ -86,7 +86,7 @@ public class NucleusPokemonTokens {
 		if (optPoke.isPresent()) {
 			if(optPoke.get() instanceof Listing) {
 				if(((Listing) optPoke.get()).getEntry() instanceof ReforgedEntry) {
-					return (((ReforgedEntry) ((Listing) optPoke.get()).getEntry())).getEntry();
+					return (((ReforgedEntry) ((Listing) optPoke.get()).getEntry())).getPokemon();
 				}
 			} else {
 				return (Pokemon) optPoke.get();

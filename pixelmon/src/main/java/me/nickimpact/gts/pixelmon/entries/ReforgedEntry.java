@@ -12,6 +12,7 @@ import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import me.nickimpact.gts.GTSInfo;
+import me.nickimpact.gts.api.json.Typing;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.Minable;
@@ -38,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Typing("reforged")
 public class ReforgedEntry extends Entry<String> implements Minable {
 
 	private static final PokemonSpec UNTRADABLE = new PokemonSpec("untradeable");
@@ -51,6 +53,10 @@ public class ReforgedEntry extends Entry<String> implements Minable {
 	}
 
 	private transient Pokemon pokemon;
+
+	public Pokemon getPokemon() {
+		return this.decode();
+	}
 
 	private Pokemon decode() {
 		if(pokemon == null) {

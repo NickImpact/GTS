@@ -14,7 +14,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 ext {
-    pixelmon = '2.4.1'
+    pixelmon = '2.4.2'
 }
 
 jar {

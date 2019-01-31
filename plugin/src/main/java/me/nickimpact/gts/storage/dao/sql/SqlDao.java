@@ -236,7 +236,6 @@ public class SqlDao extends AbstractDao {
 				while(results.next()) {
 					String json = results.getString("listing");
 
-					GTS.getInstance().getLogger().debug(json);
 					if(this.provider instanceof MySqlConnectionFactory) {
 						String before = json.substring(0, json.indexOf("\"{") + 2);
 						String toConvert = json.substring(before.length(), json.indexOf("\"price\"", before.length()) - (json.contains("}\"\n    }") ? 13 : 11));
