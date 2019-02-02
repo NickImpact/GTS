@@ -161,7 +161,7 @@ public class MainUI implements PageDisplayable, Observer {
 			this.categories.add(icon);
 		});
 
-		for(int i = 0; i < 2; i++) {
+		for(int i = 0; i < this.categories.size() && i < 2; i++) {
 			lb.slot(this.categories.get(i), 48 + i);
 		}
 

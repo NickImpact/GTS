@@ -130,7 +130,7 @@ public class PixelmonUI extends EntryUI {
 						.player(clickable.getPlayer())
 						.expiration(this.time)
 						.build();
-				
+
 				listing.publish(clickable.getPlayer());
 			}
 		});
