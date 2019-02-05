@@ -238,7 +238,7 @@ public class SqlDao extends AbstractDao {
 
 					if(this.provider instanceof MySqlConnectionFactory) {
 						String before = json.substring(0, json.indexOf("\"{") + 2);
-						String toConvert = json.substring(before.length(), json.indexOf("\"price\"", before.length()) - (json.contains("}\"\n    }") ? 13 : 11));
+						String toConvert = json.substring(before.length(), json.indexOf("\"price\"", before.length()) - 8);
 						String after = json.substring(before.length() + toConvert.length());
 						String reformatted = before;
 						reformatted += Pattern.compile("\"").matcher(toConvert).replaceAll("\\\\\"");

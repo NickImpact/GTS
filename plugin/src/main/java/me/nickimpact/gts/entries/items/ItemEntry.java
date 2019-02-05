@@ -138,6 +138,8 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
+		variables.put("item", this.decode());
+
 		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_TITLE), player, null, variables));
 		List<String> lore = Lists.newArrayList();
 		lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_CONFIRM_LORE));
