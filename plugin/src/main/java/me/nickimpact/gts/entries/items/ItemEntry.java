@@ -42,13 +42,10 @@ import java.util.stream.Collectors;
  * @author NickImpact
  */
 @Typing("Item")
-public class ItemEntry extends Entry<DataContainer> {
+public class ItemEntry extends Entry<DataContainer, ItemStack> {
 
 	/** The cached version of the ItemStack */
 	@Getter private transient ItemStack item;
-
-	private transient int amount;
-	private transient ItemStack copyForTaking;
 
 	private String name;
 
@@ -57,15 +54,14 @@ public class ItemEntry extends Entry<DataContainer> {
 	}
 
 	public ItemEntry(ItemStack element, MoneyPrice price) {
-		this(element, element.getQuantity(), price);
+		super(element.toContainer(), price);
+		this.item = element;
+		this.name = element.getTranslation().get();
 	}
 
-	public ItemEntry(ItemStack element, int amount, MoneyPrice price) {
-		super(element.toContainer(), price);
-		this.copyForTaking = element;
-		this.amount = amount;
-		this.item = ItemStack.builder().fromItemStack(element).quantity(amount).build();
-		this.name = element.getTranslation().get();
+	@Override
+	protected ItemStack handle() {
+		return this.decode();
 	}
 
 	private ItemStack decode() {
@@ -90,8 +86,7 @@ public class ItemEntry extends Entry<DataContainer> {
 	@Override
 	public ItemStack baseItemStack(Player player, Listing listing) {
 		ItemStack icon = ItemStack.builder()
-				.itemType(this.decode().getType())
-				.quantity(this.decode().getQuantity())
+				.fromItemStack(this.decode())
 				.add(Keys.ITEM_ENCHANTMENTS, this.decode().get(Keys.ITEM_ENCHANTMENTS).orElse(Lists.newArrayList()))
 				.build();
 
@@ -171,17 +166,19 @@ public class ItemEntry extends Entry<DataContainer> {
 
 	@Override
 	public boolean doTakeAway(Player player) {
-		Optional<ItemStack> item = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).query(QueryOperationTypes.ITEM_STACK_EXACT.of(this.copyForTaking)).peek(this.amount);
+		Optional<ItemStack> item = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).query(QueryOperationTypes.ITEM_STACK_IGNORE_QUANTITY.of(this.decode())).peek(this.decode().getQuantity());
 		if(item.isPresent()) {
 			if(!GTS.getInstance().getConfig().get(ConfigKeys.CUSTOM_NAME_ALLOWED)) {
-				return !item.get().get(Keys.DISPLAY_NAME).isPresent();
+				if(item.get().get(Keys.DISPLAY_NAME).isPresent()) {
+					return false;
+				}
 			}
 
 			if(GTS.getInstance().getConfig().get(ConfigKeys.BLACKLISTED_ITEMS).contains(item.get().getType().getId())) {
 				return false;
 			}
 
-			player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).query(QueryOperationTypes.ITEM_STACK_EXACT.of(this.copyForTaking)).poll(this.amount);
+			player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).query(QueryOperationTypes.ITEM_STACK_IGNORE_QUANTITY.of(this.decode())).poll(this.decode().getQuantity());
 			return true;
 		}
 		return false;
