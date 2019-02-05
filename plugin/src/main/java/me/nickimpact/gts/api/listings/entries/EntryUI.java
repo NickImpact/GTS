@@ -13,6 +13,7 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -40,16 +41,18 @@ public abstract class EntryUI implements Displayable {
 	protected EntryUI(Player player) {
 		this.player = player;
 
+		EconomyService service = GTS.getInstance().getEconomy();
+
 		this.increase = Icon.from(
 				ItemStack.builder()
 						.itemType(ItemTypes.DYE)
 						.add(Keys.DYE_COLOR, DyeColors.LIME)
 						.add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, "Increase Amount Requested"))
 						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "+1"),
-								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "+10"),
-								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "+100"),
-								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "+1000")
+								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "+", service.getDefaultCurrency().format(new BigDecimal(this.getLeftClickBaseAmount()))),
+								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "+", service.getDefaultCurrency().format(new BigDecimal(this.getRightClickBaseAmount()))),
+								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "+", service.getDefaultCurrency().format(new BigDecimal(this.getLeftClickShiftAmount()))),
+								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "+", service.getDefaultCurrency().format(new BigDecimal(this.getRightClickShiftAmount())))
 						))
 						.build()
 		);
@@ -58,14 +61,14 @@ public abstract class EntryUI implements Displayable {
 
 			if(clickable.getEvent() instanceof ClickInventoryEvent.Shift) {
 				if(clickable.getEvent() instanceof ClickInventoryEvent.Shift.Primary) {
-					this.amount = new BigDecimal(Math.min(this.getMax(), current + 100));
+					this.amount = new BigDecimal(Math.min(this.getMax(), current + this.getLeftClickShiftAmount()));
 				} else {
-					this.amount = new BigDecimal(Math.min(this.getMax(), current + 1000));
+					this.amount = new BigDecimal(Math.min(this.getMax(), current + this.getRightClickShiftAmount()));
 				}
 			} else if (clickable.getEvent() instanceof ClickInventoryEvent.Primary) {
-				this.amount = new BigDecimal(Math.min(this.getMax(), current + 1));
+				this.amount = new BigDecimal(Math.min(this.getMax(), current + this.getLeftClickBaseAmount()));
 			} else if(clickable.getEvent() instanceof ClickInventoryEvent.Secondary) {
-				this.amount = new BigDecimal(Math.min(this.getMax(), current + 10));
+				this.amount = new BigDecimal(Math.min(this.getMax(), current + this.getRightClickBaseAmount()));
 			}
 			this.update();
 		});
@@ -78,10 +81,10 @@ public abstract class EntryUI implements Displayable {
 						.add(Keys.DYE_COLOR, DyeColors.RED)
 						.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Decrease Amount Requested"))
 						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "-1"),
-								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "-10"),
-								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "-100"),
-								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "-1000")
+								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "-", service.getDefaultCurrency().format(new BigDecimal(this.getLeftClickBaseAmount()))),
+								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "-", service.getDefaultCurrency().format(new BigDecimal(this.getRightClickBaseAmount()))),
+								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "-", service.getDefaultCurrency().format(new BigDecimal(this.getLeftClickShiftAmount()))),
+								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "-", service.getDefaultCurrency().format(new BigDecimal(this.getRightClickShiftAmount())))
 						))
 						.build()
 		);
@@ -89,14 +92,14 @@ public abstract class EntryUI implements Displayable {
 			double current = this.amount.doubleValue();
 			if(clickable.getEvent() instanceof ClickInventoryEvent.Shift) {
 				if(clickable.getEvent() instanceof ClickInventoryEvent.Shift.Primary) {
-					this.amount = new BigDecimal(Math.max(this.getMin(), current - 100));
+					this.amount = new BigDecimal(Math.max(this.getMin(), current - this.getLeftClickShiftAmount()));
 				} else {
-					this.amount = new BigDecimal(Math.max(this.getMin(), current - 1000));
+					this.amount = new BigDecimal(Math.max(this.getMin(), current - this.getRightClickShiftAmount()));
 				}
 			} else if (clickable.getEvent() instanceof ClickInventoryEvent.Primary) {
-				this.amount = new BigDecimal(Math.max(this.getMin(), current - 1));
+				this.amount = new BigDecimal(Math.max(this.getMin(), current - this.getLeftClickBaseAmount()));
 			} else if(clickable.getEvent() instanceof ClickInventoryEvent.Secondary) {
-				this.amount = new BigDecimal(Math.max(this.getMin(), current - 10));
+				this.amount = new BigDecimal(Math.max(this.getMin(), current - this.getRightClickBaseAmount()));
 			}
 			this.update();
 		});
@@ -203,4 +206,9 @@ public abstract class EntryUI implements Displayable {
 				)
 				.build());
 	}
+
+	public abstract double getLeftClickBaseAmount();
+	public abstract double getRightClickBaseAmount();
+	public abstract double getLeftClickShiftAmount();
+	public abstract double getRightClickShiftAmount();
 }

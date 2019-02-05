@@ -174,6 +174,26 @@ public class PixelmonUI extends EntryUI {
 		this.getDisplay().setSlot(40, this.timeIcon());
 	}
 
+	@Override
+	public double getLeftClickBaseAmount() {
+		return ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.PRICING_LEFTCLICK_BASE);
+	}
+
+	@Override
+	public double getRightClickBaseAmount() {
+		return ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.PRICING_RIGHTCLICK_BASE);
+	}
+
+	@Override
+	public double getLeftClickShiftAmount() {
+		return ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.PRICING_LEFTCLICK_SHIFT);
+	}
+
+	@Override
+	public double getRightClickShiftAmount() {
+		return ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.PRICING_RIGHTCLICK_SHIFT);
+	}
+
 	private void addLore(Pokemon pokemon, ItemStack icon, List<String> template, Player player, Map<String, Object> variables) {
 		for (EnumHidableDetail detail : EnumHidableDetail.values()) {
 			if (detail.getCondition().test(pokemon)) {

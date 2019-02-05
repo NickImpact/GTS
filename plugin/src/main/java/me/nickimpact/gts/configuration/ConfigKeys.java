@@ -69,6 +69,11 @@ public class ConfigKeys implements IConfigKeys {
 
 	public static final ConfigKey<Boolean> CUSTOM_NAME_ALLOWED = BooleanKey.of("entries.items.custom-names-allowed", true);
 
+	public static final ConfigKey<Double> PRICING_LEFTCLICK_BASE = DoubleKey.of("pricing.left-click.base", 1.0);
+	public static final ConfigKey<Double> PRICING_RIGHTCLICK_BASE = DoubleKey.of("pricing.right-click.base", 10.0);
+	public static final ConfigKey<Double> PRICING_LEFTCLICK_SHIFT = DoubleKey.of("pricing.left-click.shift", 100.0);
+	public static final ConfigKey<Double> PRICING_RIGHTCLICK_SHIFT = DoubleKey.of("pricing.right-click.shift", 1000.0);
+
 
 	//------------------------------------------------------------------------------------------------------------------
 	// Blacklist config settings

@@ -7,6 +7,7 @@ import com.nickimpact.impactor.gui.v2.UI;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
+import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.entries.items.ItemEntry;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
 import me.nickimpact.gts.ui.SellUI;
@@ -167,6 +168,26 @@ public class ItemUI extends EntryUI {
 		this.display.setSlot(37, this.moneyIcon());
 		this.display.setSlot(39, this.amountIcons().get(1));
 		this.display.setSlot(41, this.timeIcon());
+	}
+
+	@Override
+	public double getLeftClickBaseAmount() {
+		return GTS.getInstance().getConfig().get(ConfigKeys.PRICING_LEFTCLICK_BASE);
+	}
+
+	@Override
+	public double getRightClickBaseAmount() {
+		return GTS.getInstance().getConfig().get(ConfigKeys.PRICING_RIGHTCLICK_BASE);
+	}
+
+	@Override
+	public double getLeftClickShiftAmount() {
+		return GTS.getInstance().getConfig().get(ConfigKeys.PRICING_LEFTCLICK_SHIFT);
+	}
+
+	@Override
+	public double getRightClickShiftAmount() {
+		return GTS.getInstance().getConfig().get(ConfigKeys.PRICING_RIGHTCLICK_SHIFT);
 	}
 
 	private List<Icon> amountIcons() {

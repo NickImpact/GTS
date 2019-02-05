@@ -187,6 +187,26 @@ public class PixelmonUI extends EntryUI {
 		this.getDisplay().setSlot(40, this.timeIcon());
 	}
 
+	@Override
+	public double getLeftClickBaseAmount() {
+		return GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.PRICING_LEFTCLICK_BASE);
+	}
+
+	@Override
+	public double getRightClickBaseAmount() {
+		return GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.PRICING_RIGHTCLICK_BASE);
+	}
+
+	@Override
+	public double getLeftClickShiftAmount() {
+		return GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.PRICING_LEFTCLICK_SHIFT);
+	}
+
+	@Override
+	public double getRightClickShiftAmount() {
+		return GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.PRICING_RIGHTCLICK_SHIFT);
+	}
+
 	private double calcMin(EntityPixelmon pokemon) {
 		double price = GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_BASE);
 		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getSpecies().name());

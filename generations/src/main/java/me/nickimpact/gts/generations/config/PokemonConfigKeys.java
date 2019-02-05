@@ -28,6 +28,11 @@ public class PokemonConfigKeys implements IConfigKeys {
 	public static final ConfigKey<Boolean> TEXTUREFLAG_CAPITALIZE = BooleanKey.of("variables.texture.capitalize", true);
 	public static final ConfigKey<Boolean> TEXTUREFLAG_TRIM_TRAILING_NUMS = BooleanKey.of("variables.texture.trim-trailing-numbers", true);
 
+	public static final ConfigKey<Double> PRICING_LEFTCLICK_BASE = DoubleKey.of("pricing.left-click.base", 1.0);
+	public static final ConfigKey<Double> PRICING_RIGHTCLICK_BASE = DoubleKey.of("pricing.right-click.base", 10.0);
+	public static final ConfigKey<Double> PRICING_LEFTCLICK_SHIFT = DoubleKey.of("pricing.left-click.shift", 100.0);
+	public static final ConfigKey<Double> PRICING_RIGHTCLICK_SHIFT = DoubleKey.of("pricing.right-click.shift", 1000.0);
+
 	private static Map<String, ConfigKey<?>> KEYS = null;
 
 	@Override
