@@ -21,7 +21,10 @@ import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
+import org.spongepowered.api.item.inventory.property.SlotIndex;
+import org.spongepowered.api.item.inventory.property.SlotPos;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
+import org.spongepowered.api.item.inventory.transaction.SlotTransaction;
 import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -62,7 +65,25 @@ public class ItemUI extends EntryUI {
         UI display = UI.builder()
                 .title(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "(", TextColors.DARK_AQUA, "Items", TextColors.GRAY, ")"))
                 .dimension(InventoryDimension.of(9, 6)) // Double chest + player inventory
-                .build(GTS.getInstance());
+                .build(GTS.getInstance())
+		        .attachExtraListener((event, pl) -> {
+		        	event.getTransactions().forEach(transaction -> {
+		        		transaction.getSlot().getProperty(SlotIndex.class, "slotindex").ifPresent(slot -> {
+		        			if(slot.getValue() >= 54) {
+		        				if(!transaction.getOriginal().getType().equals(ItemTypes.AIR)) {
+							        ItemStack clicked = transaction.getOriginal().createStack();
+							        if (this.selection != null && this.selection.equalTo(clicked)) {
+								        return;
+							        }
+
+							        this.selection = clicked;
+							        this.display.setSlot(13, Icon.from(clicked));
+							        this.update();
+						        }
+					        }
+				        });
+			        });
+		        });
 
 
 
@@ -87,22 +108,20 @@ public class ItemUI extends EntryUI {
 	    lb.slot(amounts.get(1), 39);
 	    lb.slot(amounts.get(2), 48);
 
-
 	    lb.slot(this.timeInc, 32);
 	    lb.slot(this.timeIcon, 41);
 	    lb.slot(this.timeDec, 50);
 
         // Initialize click events for rest of the Inventory
-        lb.dimension(9, 10);
-        lb = this.addSlots(player, lb, GridInventory.class, 54);
-	    lb = this.addSlots(player, lb, Hotbar.class, 81);
+//      lb = this.addSlots(player, lb, GridInventory.class, 54);
+//	    lb = this.addSlots(player, lb, Hotbar.class, 81);
 
 	    Icon confirm = Icon.from(Icon.CONFIRM.getDisplay());
 	    confirm.addListener(clickable -> {
 		    if(this.selection != null) {
 			    this.display.close(clickable.getPlayer());
 		        Listing listing = Listing.builder()
-					    .entry(new ItemEntry(this.selection, this.size, new MoneyPrice(this.amount)))
+					    .entry(new ItemEntry(ItemStack.builder().fromItemStack(this.selection).quantity(this.size).build(), new MoneyPrice(this.amount)))
 					    .doesExpire()
 					    .expiration(this.time)
 					    .player(player)
@@ -148,38 +167,6 @@ public class ItemUI extends EntryUI {
 		this.display.setSlot(37, this.moneyIcon());
 		this.display.setSlot(39, this.amountIcons().get(1));
 		this.display.setSlot(41, this.timeIcon());
-	}
-
-	private <T extends Inventory> Layout.Builder addSlots(Player player, Layout.Builder lb, Class<T> invType, int start) {
-    	int i = 0;
-    	MainPlayerInventory main = player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
-    	Iterable<Slot> slots;
-    	if(invType.equals(GridInventory.class)) {
-    		slots = main.getGrid().slots();
-	    } else {
-    		slots = main.getHotbar().slots();
-	    }
-
-		for(Slot slot : slots) {
-			Optional<ItemStack> item = slot.peek();
-			if(item.isPresent()) {
-				Icon icon = Icon.from(item.get());
-				icon.addListener(clickable -> {
-					if(this.selection != null && this.selection.equalTo(icon.getDisplay())) {
-						return;
-					}
-
-					this.selection = icon.getDisplay();
-					this.display.setSlot(13, Icon.from(item.get()));
-					this.update();
-				});
-
-				lb = lb.slot(icon, start + i);
-			}
-			i++;
-		}
-
-		return lb;
 	}
 
 	private List<Icon> amountIcons() {

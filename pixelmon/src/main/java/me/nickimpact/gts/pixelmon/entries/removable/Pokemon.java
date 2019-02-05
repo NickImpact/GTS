@@ -1,5 +1,6 @@
 package me.nickimpact.gts.pixelmon.entries.removable;
 
+import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import me.nickimpact.gts.pixelmon.utils.GsonUtils;
@@ -30,14 +31,8 @@ public class Pokemon {
 		nbtJSON = this.nbt.toString();
 	}
 
-	public EntityPixelmon getPokemon() {
-		if(this.pokemon == null) {
-			this.pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(
-					decode(), (World) Sponge.getServer().getWorld(Sponge.getServer().getDefaultWorldName()).orElse(Sponge.getServer().getOnlinePlayers().iterator().next().getWorld())
-			);
-		}
-
-		return this.pokemon;
+	public com.pixelmonmod.pixelmon.api.pokemon.Pokemon getPokemon() {
+		return Pixelmon.pokemonFactory.create(this.decode());
 	}
 
 	private NBTTagCompound decode() {

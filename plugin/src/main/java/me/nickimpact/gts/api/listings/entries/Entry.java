@@ -30,7 +30,7 @@ import java.util.List;
  *
  * @author NickImpact
  */
-public abstract class Entry<T> {
+public abstract class Entry<T, U> {
 
 	/** The id typing for an element (used for GSON deserialization) */
 	@Getter private final String id;
@@ -61,9 +61,11 @@ public abstract class Entry<T> {
 	 *
 	 * @return The elemnt held by this element.
 	 */
-	public T getEntry() {
-		return element;
+	public U getEntry() {
+		return this.handle();
 	}
+
+	protected abstract U handle();
 
 	/**
 	 * Fetches the price of the element

@@ -232,6 +232,13 @@ public class GTS extends SpongePlugin {
 			e1.printStackTrace();
 		}
 
+		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading configuration...")));
+		this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new ConfigKeys(), "gts.conf");
+		this.config.init();
+
+		this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new MsgConfigKeys(), "lang/en_us.conf");
+		this.msgConfig.init();
+
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Pre-init phase complete!")));
 
 	}
@@ -241,12 +248,6 @@ public class GTS extends SpongePlugin {
 		// Load the configuration
 		try {
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Now entering the init phase")));
-			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading configuration...")));
-			this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new ConfigKeys(), "gts.conf");
-			this.config.init();
-
-			this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new MsgConfigKeys(), "lang/en_us.conf");
-			this.msgConfig.init();
 
 			//if(getConfig().get(ConfigKeys.WATCH_FILES)) {
 			//	fileWatcher = new FileWatcher(this);
@@ -266,15 +267,6 @@ public class GTS extends SpongePlugin {
 
 			// Read in and register all data entries into the cache
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading data into cache...")));
-			this.storage.getListings().thenAccept(listings -> {
-				this.listingsCache = listings;
-				DataReceivedEvent dre = new DataReceivedEvent(listings);
-				Sponge.getEventManager().post(dre);
-
-				if(dre.isEdited()) {
-					this.updateStorageForEdits(listings);
-				}
-			});
 			this.storage.getIgnorers().thenAccept(ignorers -> this.ignorers = ignorers);
 
 			if(this.config.get(ConfigKeys.DISCORD_ENABLED)) {
@@ -309,6 +301,15 @@ public class GTS extends SpongePlugin {
 	public void onServerStarted(GameStartedServerEvent e) {
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Post start-up phase has now started")));
 		ListingTasks.updateTask();
+		this.storage.getListings().thenAccept(listings -> {
+			this.listingsCache = listings;
+			DataReceivedEvent dre = new DataReceivedEvent(listings);
+			Sponge.getEventManager().post(dre);
+
+			if(dre.isEdited()) {
+				this.updateStorageForEdits(listings);
+			}
+		});
 	}
 
 	@Listener

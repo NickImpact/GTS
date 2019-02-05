@@ -13,6 +13,7 @@ import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
+import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
 import me.nickimpact.gts.generations.GenerationsBridge;
 import me.nickimpact.gts.generations.config.PokemonConfigKeys;
@@ -162,7 +163,7 @@ public class PixelmonUI extends EntryUI {
 
 	@Override
 	protected double getMin() {
-		return this.min;
+		return GTS.getInstance().getConfig().get(ConfigKeys.MIN_PRICING_ENABLED) ? this.min : 1;
 	}
 
 	@Override

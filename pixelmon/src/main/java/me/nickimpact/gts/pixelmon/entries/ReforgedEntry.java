@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Typing("reforged")
-public class ReforgedEntry extends Entry<String> implements Minable {
+public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 
 	private static final PokemonSpec UNTRADABLE = new PokemonSpec("untradeable");
 
@@ -55,6 +55,11 @@ public class ReforgedEntry extends Entry<String> implements Minable {
 	private transient Pokemon pokemon;
 
 	public Pokemon getPokemon() {
+		return this.decode();
+	}
+
+	@Override
+	protected Pokemon handle() {
 		return this.decode();
 	}
 
@@ -88,7 +93,7 @@ public class ReforgedEntry extends Entry<String> implements Minable {
 		ItemStack icon = getPicture(this.decode());
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
-		variables.put("pokemon", this.element);
+		variables.put("pokemon", this.decode());
 
 		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
 
@@ -104,12 +109,12 @@ public class ReforgedEntry extends Entry<String> implements Minable {
 		ItemStack icon = ItemStack.builder().itemType(ItemTypes.PAPER).build();
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
-		variables.put("pokemon", this.element);
+		variables.put("pokemon", this.decode());
 
 		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE_AUCTION, null, variables));
 
 		List<String> template = Lists.newArrayList();
-		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LORE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE_AUCTION));
+		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE_AUCTION));
 		this.addLore(icon, template, player, listing, variables);
 
 		return icon;

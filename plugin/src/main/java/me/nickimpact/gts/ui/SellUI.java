@@ -3,6 +3,7 @@ package me.nickimpact.gts.ui;
 import com.google.common.collect.Lists;
 import com.nickimpact.impactor.gui.v2.*;
 import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.utils.ItemUtils;
@@ -22,15 +23,16 @@ public class SellUI implements PageDisplayable {
     private Page display;
 
     public SellUI(Player player) {
-        int height = 3;
-        int size = GTS.getInstance().getService().getEntryRegistry().getIdentifiers().keySet().size();
+	    this.player = player;
+
+	    int height = 3;
+	    List<Icon> options = this.fetchOptions();
+	    int size = options.size();
         if(size > 7) {
             height = 5;
         }
 
-        this.player = player;
         this.display = this.create(height);
-        List<Icon> options = this.fetchOptions();
 	    this.display.define(options, InventoryDimension.of(7, 1), 1, 1);
 	    if(height == 3) {
 	    	for(int i = 10; i < 17; i++) {
@@ -72,17 +74,19 @@ public class SellUI implements PageDisplayable {
         List<Icon> icons = Lists.newArrayList();
 
         EntryRegistry er = GTS.getInstance().getService().getEntryRegistry();
-        for(Class<? extends Entry> clazz : er.getIdentifiers().keySet()) {
-            Icon icon = Icon.from(ItemStack.builder()
-		            .itemType(ItemUtils.getOrDefaultFromRegistryID(er.getReps().get(clazz)))
-		            .add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, er.getIdentifiers().get(clazz)))
-		            .build()
-            );
-            icon.addListener(clickable -> {
-                this.display.close(player);
-                er.getUis().get(clazz).createFor(player).open(player);
-            });
-            icons.add(icon);
+        for(EntryClassification classification : er.getClassifications()) {
+	        if(player.hasPermission("gts.command.sell." + classification.getIdentifer().toLowerCase())) {
+		        Icon icon = Icon.from(ItemStack.builder()
+				        .itemType(ItemUtils.getOrDefaultFromRegistryID(classification.getItemRep()))
+				        .add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, classification.getIdentifer()))
+				        .build()
+		        );
+		        icon.addListener(clickable -> {
+			        this.display.close(player);
+			        classification.getUi().createFor(player).open(player);
+		        });
+		        icons.add(icon);
+	        }
         }
 
         return icons;

@@ -48,8 +48,7 @@ import java.util.stream.Collectors;
  * @author NickImpact
  */
 @Typing("Pokemon")
-
-public class PokemonEntry extends Entry<Pokemon> implements Minable {
+public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Minable {
 
 	private static final PokemonSpec UNTRADABLE = new PokemonSpec("untradeable");
 
@@ -66,8 +65,13 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	}
 
 	@Override
+	protected EntityPixelmon handle() {
+		return this.element.getPokemon();
+	}
+
+	@Override
 	public String getSpecsTemplate() {
-		if(this.getEntry().getPokemon().isEgg) {
+		if(this.getEntry().isEgg) {
 			return GenerationsBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE_EGG);
 		}
 		return GenerationsBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE);
@@ -76,12 +80,12 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
 	@Override
 	public String getName() {
-		return this.getEntry().getPokemon().getName();
+		return this.getEntry().getName();
 	}
 
 	@Override
 	public ItemStack baseItemStack(Player player, Listing listing) {
-		ItemStack icon = getPicture(this.getEntry().getPokemon());
+		ItemStack icon = getPicture(this.getEntry());
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
 
@@ -111,7 +115,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
 	private void addLore(ItemStack icon, List<String> template, Player player, Listing listing, Map<String, Object> variables) {
 		for(EnumHidableDetail detail : EnumHidableDetail.values()) {
-			if(detail.getCondition().test(this.getEntry().getPokemon())) {
+			if(detail.getCondition().test(this.getEntry())) {
 				template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(detail.getField()));
 			}
 		}
@@ -141,7 +145,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 		if (!optStorage.isPresent())
 			return false;
 
-		optStorage.get().addToParty(this.getEntry().getPokemon());
+		optStorage.get().addToParty(this.getEntry());
 		optStorage.get().sendUpdatedList();
 
 		return true;
@@ -154,12 +158,12 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 			return false;
 		}
 
-		if(UNTRADABLE.matches(this.getEntry().getPokemon())) {
+		if(UNTRADABLE.matches(this.getEntry())) {
 			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "This pokemon is marked as untradeable, and cannot be sold..."));
 			return false;
 		}
 
-		if(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED).stream().anyMatch(name -> name.equalsIgnoreCase(this.getEntry().getPokemon().getName()))){
+		if(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED).stream().anyMatch(name -> name.equalsIgnoreCase(this.getEntry().getName()))){
 			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));
 			return false;
 		}
@@ -169,7 +173,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 			return false;
 
 		ps.recallAllPokemon();
-		ps.removeFromPartyPlayer(ps.getPosition(this.getEntry().getPokemon().getPokemonId()));
+		ps.removeFromPartyPlayer(ps.getPosition(this.getEntry().getPokemonId()));
 		ps.sendUpdatedList();
 
 		return true;
@@ -203,7 +207,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	@Override
 	public MoneyPrice calcMinPrice() {
 		MoneyPrice price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_BASE));
-		EntityPixelmon pokemon = this.getEntry().getPokemon();
+		EntityPixelmon pokemon = this.getEntry();
 		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getName());
 		if (isLegend && pokemon.getIsShiny()) {
 			price.add(new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY)));

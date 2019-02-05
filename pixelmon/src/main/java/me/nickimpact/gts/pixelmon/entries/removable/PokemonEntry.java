@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  * @author NickImpact
  */
 @Typing("Pokemon")
-public class PokemonEntry extends Entry<Pokemon> implements Minable {
+public class PokemonEntry extends Entry<Pokemon, com.pixelmonmod.pixelmon.api.pokemon.Pokemon> implements Minable {
 
 	private static final PokemonSpec UNTRADABLE = new PokemonSpec("untradeable");
 
@@ -61,8 +61,13 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	}
 
 	@Override
+	protected com.pixelmonmod.pixelmon.api.pokemon.Pokemon handle() {
+		return this.element.getPokemon();
+	}
+
+	@Override
 	public String getSpecsTemplate() {
-		if(this.getEntry().getPokemon().getPokemonData().isEgg()) {
+		if(this.getEntry().isEgg()) {
 			return ReforgedBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE_EGG);
 		}
 		return ReforgedBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE);
@@ -70,15 +75,15 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
 	@Override
 	public String getName() {
-		return this.getEntry().getPokemon().getName();
+		return this.getEntry().getDisplayName();
 	}
 
 	@Override
 	public ItemStack baseItemStack(Player player, Listing listing) {
-		ItemStack icon = getPicture(this.getEntry().getPokemon());
+		ItemStack icon = getPicture(this.getEntry());
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
-		variables.put("pokemon", this.element.getPokemon().getPokemonData());
+		variables.put("pokemon", this.element.getPokemon());
 
 		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
 
@@ -94,7 +99,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 		ItemStack icon = ItemStack.builder().itemType(ItemTypes.PAPER).build();
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
-		variables.put("pokemon", this.element.getPokemon().getPokemonData());
+		variables.put("pokemon", this.element.getPokemon());
 
 		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE_AUCTION, null, variables));
 
@@ -107,7 +112,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 
 	private void addLore(ItemStack icon, List<String> template, Player player, Listing listing, Map<String, Object> variables) {
 		for(EnumHidableDetail detail : EnumHidableDetail.values()) {
-			if(detail.getCondition().test(this.getEntry().getPokemon().getPokemonData())) {
+			if(detail.getCondition().test(this.getEntry())) {
 				template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(detail.getField()));
 			}
 		}
@@ -134,7 +139,7 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 		if (!optStorage.isPresent())
 			return false;
 
-		optStorage.get().add(this.getEntry().getPokemon().getPokemonData());
+		optStorage.get().add(this.getEntry());
 
 		return true;
 	}
@@ -146,12 +151,12 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 			return false;
 		}
 
-		if(UNTRADABLE.matches(this.getEntry().getPokemon())) {
+		if(UNTRADABLE.matches(this.getEntry())) {
 			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "This pokemon is marked as untradeable, and cannot be sold..."));
 			return false;
 		}
 
-		if(ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED).stream().anyMatch(name -> name.equalsIgnoreCase(this.getEntry().getPokemon().getName()))){
+		if(ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED).stream().anyMatch(name -> name.equalsIgnoreCase(this.getEntry().getSpecies().getPokemonName()))){
 			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));
 			return false;
 		}
@@ -161,16 +166,16 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 			return false;
 
 		ps.retrieveAll();
-		ps.set(ps.getPosition(this.getEntry().getPokemon().getPokemonData()), null);
+		ps.set(ps.getPosition(this.getEntry()), null);
 
 		return true;
 	}
 
-	private static ItemStack getPicture(EntityPixelmon pokemon) {
+	private static ItemStack getPicture(com.pixelmonmod.pixelmon.api.pokemon.Pokemon pokemon) {
 		net.minecraft.item.ItemStack item = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
 		NBTTagCompound nbt = new NBTTagCompound();
 		String idValue = String.format("%03d", pokemon.getBaseStats().nationalPokedexNumber);
-		if (pokemon.getPokemonData().isEgg()) {
+		if (pokemon.isEgg()) {
 			switch (pokemon.getSpecies()) {
 				case Manaphy:
 				case Togepi:
@@ -181,10 +186,10 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 					nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/egg1");
 					break;
 			}
-		} else if (pokemon.getPokemonData().isShiny()) {
-			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.getSpecies().name, pokemon.getPokemonData().getForm()));
+		} else if (pokemon.isShiny()) {
+			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.getSpecies().name, pokemon.getForm()));
 		} else {
-			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.getSpecies().name, pokemon.getPokemonData().getForm()));
+			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.getSpecies().name, pokemon.getForm()));
 		}
 
 		item.setTagCompound(nbt);
@@ -194,23 +199,23 @@ public class PokemonEntry extends Entry<Pokemon> implements Minable {
 	@Override
 	public MoneyPrice calcMinPrice() {
 		MoneyPrice price = new MoneyPrice(ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_BASE));
-		EntityPixelmon pokemon = this.getEntry().getPokemon();
-		boolean isLegend = EnumSpecies.legendaries.contains(pokemon.getName());
-		if (isLegend && pokemon.getPokemonData().isShiny()) {
+		com.pixelmonmod.pixelmon.api.pokemon.Pokemon pokemon = this.getEntry();
+		boolean isLegend = EnumSpecies.legendaries.contains(pokemon.getSpecies().getPokemonName());
+		if (isLegend && pokemon.isShiny()) {
 			price.add(new MoneyPrice(ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND) + ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY)));
 		} else if (isLegend) {
 			price.add(new MoneyPrice(ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND)));
-		} else if (pokemon.getPokemonData().isShiny()) {
+		} else if (pokemon.isShiny()) {
 			price.add(new MoneyPrice(ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY)));
 		}
 
-		for (int iv : pokemon.getPokemonData().getStats().ivs.getArray()) {
+		for (int iv : pokemon.getStats().ivs.getArray()) {
 			if (iv >= ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_IVS_MINVAL)) {
 				price.add(new MoneyPrice(ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_IVS_PRICE)));
 			}
 		}
 
-		if (pokemon.getPokemonData().getAbilitySlot() == 2) {
+		if (pokemon.getAbilitySlot() == 2) {
 			price.add(new MoneyPrice(ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_HA)));
 		}
 

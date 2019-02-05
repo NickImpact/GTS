@@ -12,7 +12,7 @@ import com.nickimpact.impactor.api.plugins.SpongePlugin;
 import com.nickimpact.impactor.api.services.plan.PlanData;
 import com.nickimpact.impactor.logging.ConsoleLogger;
 import com.nickimpact.impactor.logging.SpongeLogger;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.ExtraStats;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.events.DataReceivedEvent;
@@ -26,6 +26,7 @@ import me.nickimpact.gts.pixelmon.text.NucleusPokemonTokens;
 import me.nickimpact.gts.pixelmon.ui.PixelmonUI;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.plugin.Dependency;
@@ -38,7 +39,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Getter
-@Plugin(id = "gts_reforged", name = "GTS Reforged Bridge", version = "1.0.0", dependencies = @Dependency(id = "gts"))
+@Plugin(id = "gts_reforged", name = "GTS Reforged Bridge", version = "1.0.4", dependencies = @Dependency(id = "gts"))
 public class ReforgedBridge extends SpongePlugin {
 
 	@Getter private static ReforgedBridge instance;
@@ -57,6 +58,15 @@ public class ReforgedBridge extends SpongePlugin {
 	public void onPreInit(GamePreInitializationEvent e) {
 		instance = this;
 		logger = new ConsoleLogger(this, new SpongeLogger(this, fallback));
+
+		this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonConfigKeys(), "reforged.conf");
+		this.config.init();
+		this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonMsgConfigKeys(), "lang/reforged-en_us.conf");
+		this.msgConfig.init();
+	}
+
+	@Listener
+	public void onInit(GameInitializationEvent e) {
 		service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
 		service.registerEntry(
 				"Pokemon",
@@ -69,11 +79,6 @@ public class ReforgedBridge extends SpongePlugin {
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
-
-		this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonConfigKeys(), "reforged.conf");
-		this.config.init();
-		this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonMsgConfigKeys(), "lang/reforged-en_us.conf");
-		this.msgConfig.init();
 	}
 
 	@Listener
@@ -88,7 +93,7 @@ public class ReforgedBridge extends SpongePlugin {
 		if(!e.filter(listing -> listing.getEntry() instanceof PokemonEntry).isEmpty()) {
 			e.filterAndEdit(listing -> listing.getEntry() instanceof PokemonEntry, listings -> {
 				for (Listing listing : listings) {
-					listing.setEntry(new ReforgedEntry(((me.nickimpact.gts.pixelmon.entries.removable.Pokemon) (listing.getEntry().getEntry())).getPokemon().getPokemonData(), listing.getEntry().getPrice()));
+					listing.setEntry(new ReforgedEntry((Pokemon) listing.getEntry().getEntry(), listing.getEntry().getPrice()));
 				}
 			});
 		}

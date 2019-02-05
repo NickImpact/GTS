@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap;
 import lombok.Setter;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.GTSInfo;
+import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.holders.EntryRegistry;
@@ -45,10 +46,8 @@ public class GtsServiceImpl implements GtsService {
 	@Override
 	public void registerEntry(String identifier, Class<? extends Entry> entry, EntryUI ui, String rep) {
 		try {
-			this.entries.getIdentifiers().put(entry, identifier);
 			this.entries.getRegistry().register(entry);
-			this.entries.getUis().put(entry, ui);
-			this.entries.getReps().put(entry, rep);
+			this.entries.getClassifications().add(new EntryClassification(entry, identifier, rep, ui));
 
 			GTS.getInstance().getConsole().ifPresent(console -> {
 				console.sendMessage(Text.of(GTSInfo.PREFIX, "Loaded element type: " + entry.getSimpleName()));

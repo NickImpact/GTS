@@ -139,19 +139,19 @@ public class MainUI implements PageDisplayable, Observer {
 
 		// Setup Entry Selector
 		// This needs to be scrollable within the layout, such that only two appear at once.
-		GTS.getInstance().getService().getEntryRegistry().getReps().forEach((entry, id) -> {
-			String identifier = GTS.getInstance().getService().getEntryRegistry().getIdentifiers().get(entry);
-			ItemStack rep = ItemStack.builder().itemType(Sponge.getRegistry().getType(ItemType.class, id).orElse(ItemTypes.BARRIER)).build();
+		GTS.getInstance().getService().getEntryRegistry().getClassifications().forEach(classification -> {
+			String identifier = classification.getIdentifer();
+			ItemStack rep = ItemStack.builder().itemType(Sponge.getRegistry().getType(ItemType.class, classification.getItemRep()).orElse(ItemTypes.BARRIER)).build();
 			rep.offer(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Show only ", identifier, "?"));
 			rep.offer(Keys.ITEM_LORE, Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", TextColors.RED, "Disabled")));
 
 			Icon icon = Icon.from(rep);
 			icon.addListener(clickable -> {
-				if(this.hasEntryType(entry)) {
-					this.classSelections.remove(entry);
+				if(this.hasEntryType(classification.getClassification())) {
+					this.classSelections.remove(classification.getClassification());
 					rep.offer(Keys.ITEM_LORE, Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", TextColors.RED, "Disabled")));
 				} else {
-					this.classSelections.add(entry);
+					this.classSelections.add(classification.getClassification());
 					rep.offer(Keys.ITEM_LORE, Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", TextColors.GREEN, "Enabled")));
 				}
 				this.updateOptions();

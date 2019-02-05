@@ -141,6 +141,7 @@ public class ListingUtils {
     public static void purchase(Player player, Listing listing) {
 	    Map<String, Object> variables = Maps.newHashMap();
 	    variables.put("listing", listing);
+	    variables.put("entry", listing.getEntry().getEntry());
 
 		if(!GTS.getInstance().getListingsCache().contains(listing)) {
 			player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ALREADY_CLAIMED), player, null, variables));
@@ -185,8 +186,9 @@ public class ListingUtils {
     public static void bid(Player player, Listing listing) {
 	    Map<String, Object> variables = Maps.newHashMap();
 	    variables.put("listing", listing);
+	    variables.put("entry", listing.getEntry().getEntry());
 
-		if(listing.getAucData() != null) {
+	    if(listing.getAucData() != null) {
 			if(listing.getAucData().getHighBidder() != null && listing.getAucData().getHighBidder().equals(player.getUniqueId())) {
 				player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_IS_HIGH_BIDDER), player, null, variables));
 			} else {

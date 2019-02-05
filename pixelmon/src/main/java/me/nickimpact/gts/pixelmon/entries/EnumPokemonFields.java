@@ -141,7 +141,7 @@ public enum EnumPokemonFields {
 			return texture;
 		}
 
-		return pokemon.isShiny() ? "Shiny" : "Normal";
+		return pokemon.isShiny() ? "Shiny" : "";
 	}),
 	SPECIAL_TEXTURE(pokemon -> {
 		return pokemon.getSpecialTexture().name();

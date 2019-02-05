@@ -24,6 +24,7 @@ import me.nickimpact.gts.generations.text.NucleusPokemonTokens;
 import me.nickimpact.gts.generations.ui.PixelmonUI;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -37,7 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Getter
-@Plugin(id = "gts_generations", name = "GTS Generations Bridge", version = "1.0.0", dependencies = @Dependency(id = "gts"))
+@Plugin(id = "gts_generations", name = "GTS Generations Bridge", version = "1.0.2", dependencies = @Dependency(id = "gts"))
 public class GenerationsBridge extends SpongePlugin {
 
 	@Getter private static GenerationsBridge instance;
@@ -57,18 +58,21 @@ public class GenerationsBridge extends SpongePlugin {
     	instance = this;
         this.logger = new ConsoleLogger(GTS.getInstance(), new SpongeLogger(GTS.getInstance(), fallback));
 
-        this.service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
+	    this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonConfigKeys(), "generations.conf");
+	    this.config.init();
+	    this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonMsgConfigKeys(), "lang/generations-en_us.conf");
+	    this.msgConfig.init();
+    }
+
+    @Listener
+    public void onInit(GameInitializationEvent e) {
+	    this.service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
 	    this.service.registerEntry(
 			    "Pokemon",
 			    PokemonEntry.class,
 			    new PixelmonUI(),
 			    "pixelmon:gs_ball"
 	    );
-
-	    this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonConfigKeys(), "generations.conf");
-	    this.config.init();
-	    this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonMsgConfigKeys(), "lang/generations-en_us.conf");
-	    this.msgConfig.init();
     }
 
 	@Listener
