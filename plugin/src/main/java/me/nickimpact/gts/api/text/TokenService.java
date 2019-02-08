@@ -21,6 +21,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import javax.annotation.Nonnull;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -36,6 +37,8 @@ import java.util.Set;
 public final class TokenService implements NucleusMessageTokenService.TokenParser {
 
 	private final Map<String, Translator> translatorMap = Maps.newHashMap();
+
+	private final SimpleDateFormat sdf = new SimpleDateFormat("MMM dd --> hh:mm a z");
 
 	public TokenService() {
 		translatorMap.put("gts_prefix", (p, v, m) -> Optional.of(TextSerializers.FORMATTING_CODE.deserialize(
@@ -111,10 +114,7 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 				return Optional.of(Text.EMPTY);
 
 			Date expiration = listing.getExpiration();
-			Date now = Date.from(Instant.now());
-			Time time = new Time(Duration.between(now.toInstant(), expiration.toInstant()).getSeconds());
-
-			return Optional.of(Text.of(time.toString()));
+			return Optional.of(Text.of(sdf.format(expiration)));
 		});
 		translatorMap.put("listing_specifics", (p, v, m) -> {
 			Listing listing = getListingFromVaribleIfExists(m);

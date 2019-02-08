@@ -37,9 +37,9 @@ dependencies {
 }
 
 minecraft {
-    version = "1.12.2-14.23.3.2678"
+    version = "1.12.2-14.23.5.2768"
     runDir = "run"
-    mappings = "snapshot_20171007"
+    mappings = "snapshot_20180324"
     useDepAts = true
     makeObfSourceJar = false
 }

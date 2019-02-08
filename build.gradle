@@ -12,7 +12,7 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    project.ext.version = '4.0.4'
+    project.ext.version = '4.0.5'
     project.ext.sponge = 'S7.1'
 
     repositories {

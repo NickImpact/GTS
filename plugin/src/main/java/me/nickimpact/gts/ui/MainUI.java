@@ -2,6 +2,7 @@ package me.nickimpact.gts.ui;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
@@ -24,12 +25,8 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.UUID;
+import java.time.Instant;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -40,6 +37,8 @@ import java.util.stream.Collectors;
  * @author NickImpact
  */
 public class MainUI implements PageDisplayable, Observer {
+
+	private static Map<UUID, Instant> delays = Maps.newHashMap();
 
 	/** The player viewing the UI */
 	private Player player;
@@ -94,18 +93,10 @@ public class MainUI implements PageDisplayable, Observer {
 				.layout(this.design())
 				.build(GTS.getInstance());
 		this.page.define(drawListings(), InventoryDimension.of(7, 3), 1, 1);
+		GTS.getInstance().getUpdater().addObserver(this);
 		this.page.getViews().forEach(ui -> {
-			ui.setOpenAction((event, pl) -> {
-				GTS.getInstance().getUpdater().addObserver(this);
-				Sponge.getScheduler().createTaskBuilder()
-						.execute(this::apply)
-						.interval(1, TimeUnit.SECONDS)
-						.name("Main-" + player.getName())
-						.submit(GTS.getInstance());
-			});
 			ui.setCloseAction((event, pl) -> {
 				GTS.getInstance().getUpdater().deleteObserver(this);
-				Sponge.getScheduler().getTasksByName("Main-" + player.getName()).forEach(Task::cancel);
 			});
 		});
 	}
@@ -147,6 +138,11 @@ public class MainUI implements PageDisplayable, Observer {
 
 			Icon icon = Icon.from(rep);
 			icon.addListener(clickable -> {
+				if(delays.containsKey(clickable.getPlayer().getUniqueId())) {
+					if(!Instant.now().isAfter(delays.get(clickable.getPlayer().getUniqueId()))) {
+						return;
+					}
+				}
 				if(this.hasEntryType(classification.getClassification())) {
 					this.classSelections.remove(classification.getClassification());
 					rep.offer(Keys.ITEM_LORE, Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", TextColors.RED, "Disabled")));
@@ -156,6 +152,7 @@ public class MainUI implements PageDisplayable, Observer {
 				}
 				this.updateOptions();
 				this.apply();
+				delays.put(clickable.getPlayer().getUniqueId(), Instant.now().plusSeconds(3));
 			});
 
 			this.categories.add(icon);

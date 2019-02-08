@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
 import lombok.Getter;
 import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.GTSInfo;
 import me.nickimpact.gts.api.json.Typing;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
@@ -172,11 +173,13 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 		if(item.isPresent()) {
 			if(!GTS.getInstance().getConfig().get(ConfigKeys.CUSTOM_NAME_ALLOWED)) {
 				if(item.get().get(Keys.DISPLAY_NAME).isPresent()) {
+					player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "You can't sell items with custom names!"));
 					return false;
 				}
 			}
 
 			if(GTS.getInstance().getConfig().get(ConfigKeys.BLACKLISTED_ITEMS).contains(item.get().getType().getId())) {
+				player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));
 				return false;
 			}
 

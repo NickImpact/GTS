@@ -18,7 +18,7 @@ public class GTSInfo implements PluginInfo {
 
 	public static final String ID = "gts";
 	public static final String NAME = "GTS";
-	public static final String VERSION = "S7.1-4.0.3";
+	public static final String VERSION = "S7.1-4.0.5";
 	public static final String DESCRIPTION = "A Sponge Representation of the Global Trading Station";
 
 	public static final Text PREFIX = Text.of(TextColors.YELLOW, "GTS ", TextColors.GRAY, "\u00bb ");

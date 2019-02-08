@@ -93,6 +93,7 @@ public class SellUI implements PageDisplayable {
     }
 
     private enum Locations {
+    	ZERO    (),
     	ONE     (4),
 	    TWO     (3, 5),
 	    THREE   (2, 4, 6),
@@ -109,6 +110,8 @@ public class SellUI implements PageDisplayable {
 
 	    public static Locations getForSize(int size) {
     		switch(size) {
+			    case 0:
+			    	return ZERO;
 			    case 1:
 			    	return ONE;
 			    case 2:
