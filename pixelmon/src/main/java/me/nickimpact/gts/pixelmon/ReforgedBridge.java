@@ -72,7 +72,8 @@ public class ReforgedBridge extends SpongePlugin {
 				"Pokemon",
 				ReforgedEntry.class,
 				new PixelmonUI(),
-				"pixelmon:gs_ball"
+				"pixelmon:gs_ball",
+				ReforgedEntry::handleCommand
 		);
 		try {
 			service.getRegistry(GtsService.RegistryType.ENTRY).register(PokemonEntry.class);

@@ -9,10 +9,14 @@ import me.nickimpact.gts.GTSInfo;
 import me.nickimpact.gts.api.json.Typing;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.api.time.Time;
 import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
 import me.nickimpact.gts.internal.TextParsingUtils;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.HandTypes;
@@ -28,6 +32,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -187,5 +192,56 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 			return true;
 		}
 		return false;
+	}
+
+	public static CommandResult handleCommand(CommandSource src, String[] args) {
+		if(args.length < 2) {
+			return CommandResult.empty();
+		}
+
+		Player player = (Player) src;
+		int amount = Integer.parseInt(args[0]);
+		BigDecimal price = new BigDecimal(Double.parseDouble(args[1]));
+		Time time = null;
+		if(args.length == 3) {
+			time = new Time(args[2]);
+		}
+
+		Optional<ItemStack> hand = player.getItemInHand(HandTypes.MAIN_HAND);
+		if(!hand.isPresent()) {
+			player.sendMessage(Text.of(TextColors.RED, "Your hand has no item in it!"));
+			return CommandResult.empty();
+		}
+
+		if(amount < 1 || amount > hand.get().getQuantity()) {
+			if(amount < 1) {
+				amount = 1;
+			} else {
+				amount = hand.get().getQuantity();
+			}
+		}
+
+		if(time != null) {
+			if(time.getTime() > GTS.getInstance().getConfig().get(ConfigKeys.LISTING_MAX_TIME)) {
+				time = new Time(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_MAX_TIME).longValue());
+			}
+		}
+
+		MoneyPrice mp = new MoneyPrice(price);
+		if(!mp.isLowerOrEqual()) {
+			player.sendMessage(Text.of(TextColors.RED, "Your request is above the max amount of ", new MoneyPrice(mp.getMax()).getText()));
+			return CommandResult.success();
+		}
+
+		ItemStack entry = ItemStack.builder().fromItemStack(hand.get()).quantity(amount).build();
+		Listing listing = Listing.builder()
+				.entry(new ItemEntry(entry, mp))
+				.doesExpire()
+				.expiration(time != null ? time.getTime() : GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME))
+				.player(player)
+				.build();
+		listing.publish(player);
+
+		return CommandResult.success();
 	}
 }

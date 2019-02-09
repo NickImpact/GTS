@@ -43,6 +43,7 @@ import lombok.Getter;
 import me.nickimpact.gts.api.listings.pricing.Price;
 import me.nickimpact.gts.api.listings.pricing.PriceAdapter;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.data.DataContainer;
@@ -222,7 +223,7 @@ public class GTS extends SpongePlugin {
 		Sponge.getServiceManager().setProvider(this, GtsService.class, service);
 
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Registering default implementations...")));
-		service.registerEntry("Items", ItemEntry.class, new ItemUI(), ItemTypes.DIAMOND.getId());
+		service.registerEntry("Items", ItemEntry.class, new ItemUI(), ItemTypes.DIAMOND.getId(), ItemEntry::handleCommand);
 		try {
 			//noinspection unchecked
 			service.getRegistry(GtsService.RegistryType.PRICE).register(MoneyPrice.class);

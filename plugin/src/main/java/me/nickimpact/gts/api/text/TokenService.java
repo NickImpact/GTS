@@ -38,8 +38,6 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 
 	private final Map<String, Translator> translatorMap = Maps.newHashMap();
 
-	private final SimpleDateFormat sdf = new SimpleDateFormat("MMM dd --> hh:mm a z");
-
 	public TokenService() {
 		translatorMap.put("gts_prefix", (p, v, m) -> Optional.of(TextSerializers.FORMATTING_CODE.deserialize(
 				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.PREFIX)
@@ -114,7 +112,7 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 				return Optional.of(Text.EMPTY);
 
 			Date expiration = listing.getExpiration();
-			return Optional.of(Text.of(sdf.format(expiration)));
+			return Optional.of(Text.of(new SimpleDateFormat(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.EXPIRATION_DATE_FORMAT)).format(expiration)));
 		});
 		translatorMap.put("listing_specifics", (p, v, m) -> {
 			Listing listing = getListingFromVaribleIfExists(m);

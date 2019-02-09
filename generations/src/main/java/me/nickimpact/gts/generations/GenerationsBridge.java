@@ -71,7 +71,8 @@ public class GenerationsBridge extends SpongePlugin {
 			    "Pokemon",
 			    PokemonEntry.class,
 			    new PixelmonUI(),
-			    "pixelmon:gs_ball"
+			    "pixelmon:gs_ball",
+			    PokemonEntry::handleCommand
 	    );
     }
 

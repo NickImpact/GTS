@@ -11,11 +11,14 @@ import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
+import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.GTSInfo;
 import me.nickimpact.gts.api.json.Typing;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.Minable;
+import me.nickimpact.gts.api.time.Time;
+import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
 import me.nickimpact.gts.internal.TextParsingUtils;
@@ -27,7 +30,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.type.HandTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.ItemTypes;
@@ -35,8 +41,10 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Typing("reforged")
@@ -64,7 +72,7 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 	}
 
 	private Pokemon decode() {
-		if(pokemon == null) {
+		if (pokemon == null) {
 			try {
 				pokemon = Pixelmon.pokemonFactory.create(JsonToNBT.getTagFromJson(this.element));
 			} catch (NBTException e) {
@@ -77,7 +85,7 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 
 	@Override
 	public String getSpecsTemplate() {
-		if(this.decode().isEgg()) {
+		if (this.decode().isEgg()) {
 			return ReforgedBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE_EGG);
 		}
 		return ReforgedBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_SPEC_TEMPLATE);
@@ -121,13 +129,13 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 	}
 
 	private void addLore(ItemStack icon, List<String> template, Player player, Listing listing, Map<String, Object> variables) {
-		for(EnumHidableDetail detail : EnumHidableDetail.values()) {
-			if(detail.getCondition().test(this.decode())) {
+		for (EnumHidableDetail detail : EnumHidableDetail.values()) {
+			if (detail.getCondition().test(this.decode())) {
 				template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(detail.getField()));
 			}
 		}
 
-		if(listing.getAucData() != null) {
+		if (listing.getAucData() != null) {
 			template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_INFO));
 		} else {
 			template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
@@ -151,17 +159,17 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 
 	@Override
 	public boolean doTakeAway(Player player) {
-		if(BattleRegistry.getBattle((EntityPlayer) player) != null) {
+		if (BattleRegistry.getBattle((EntityPlayer) player) != null) {
 			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "You are in battle, you can't sell any pokemon currently..."));
 			return false;
 		}
 
-		if(UNTRADABLE.matches(this.decode())) {
+		if (UNTRADABLE.matches(this.decode())) {
 			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "This pokemon is marked as untradeable, and cannot be sold..."));
 			return false;
 		}
 
-		if(ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED).stream().anyMatch(name -> name.equalsIgnoreCase(this.decode().getSpecies().getPokemonName()))){
+		if (ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED).stream().anyMatch(name -> name.equalsIgnoreCase(this.decode().getSpecies().getPokemonName()))) {
 			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));
 			return false;
 		}
@@ -221,5 +229,53 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 		}
 
 		return price;
+	}
+
+	public static CommandResult handleCommand(CommandSource src, String[] args) {
+		if(args.length < 2) {
+			return CommandResult.empty();
+		}
+
+		Player player = (Player) src;
+
+		int pos = Integer.parseInt(args[0]) - 1;
+		BigDecimal price = new BigDecimal(Double.parseDouble(args[1]));
+		Time time = null;
+		if(args.length == 3) {
+			time = new Time(args[2]);
+			if(time.getTime() > GTS.getInstance().getConfig().get(ConfigKeys.LISTING_MAX_TIME)) {
+				time = new Time(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_MAX_TIME).longValue());
+			}
+		}
+
+		PlayerPartyStorage storage = Pixelmon.storageManager.getParty(player.getUniqueId());
+		Pokemon pokemon = storage.get(pos);
+		if(pokemon == null) {
+			player.sendMessage(Text.of(TextColors.RED, "Unable to find a pokemon in the specified slot..."));
+			return CommandResult.success();
+		}
+
+		if(storage.getTeam().size() == 1) {
+			if(!pokemon.isEgg()) {
+				player.sendMessage(Text.of(TextColors.RED, "You can't sell your last non-egg party member..."));
+				return CommandResult.success();
+			}
+		}
+
+		MoneyPrice mp = new MoneyPrice(price);
+		if(!mp.isLowerOrEqual()) {
+			player.sendMessage(Text.of(TextColors.RED, "Your request is above the max amount of ", new MoneyPrice(mp.getMax()).getText()));
+			return CommandResult.success();
+		}
+
+		Listing listing = Listing.builder()
+				.player(player)
+				.entry(new ReforgedEntry(pokemon, mp))
+				.doesExpire()
+				.expiration(time != null ? time.getTime() : GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME))
+				.build();
+		listing.publish(player);
+
+		return CommandResult.success();
 	}
 }

@@ -5,10 +5,13 @@ import me.nickimpact.gts.api.json.Registry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.text.TokenService;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Collection;
+import java.util.function.BiFunction;
 
 public interface GtsService {
 
@@ -38,7 +41,7 @@ public interface GtsService {
 	 * @param ui The UI accompanying the entry
 	 * @param rep The ItemStack representation accompanying the entry
 	 */
-	void registerEntry(String identifier, Class<? extends Entry> entry, EntryUI ui, String rep);
+	void registerEntry(String identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CommandSource, String[], CommandResult> cmd);
 
 	/**
 	 * Fetches a list of all types of entries currently registered to GTS.

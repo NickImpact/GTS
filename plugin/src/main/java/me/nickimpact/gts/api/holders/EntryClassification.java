@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
+
+import java.util.function.BiFunction;
 
 @Getter
 @AllArgsConstructor
@@ -19,4 +23,7 @@ public class EntryClassification {
 
 	/** Represents the UI that'll be used to handle necessary functionality of the selling operations */
 	private EntryUI ui;
+
+	/** Represents the command functionality for an entry */
+	private BiFunction<CommandSource, String[], CommandResult> cmdHandler;
 }

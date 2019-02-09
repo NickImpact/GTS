@@ -13,11 +13,14 @@ import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.pricing.Price;
 import me.nickimpact.gts.api.text.TokenService;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
+import org.spongepowered.api.command.CommandResult;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
 import java.util.Collection;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class GtsServiceImpl implements GtsService {
@@ -44,10 +47,10 @@ public class GtsServiceImpl implements GtsService {
 	}
 
 	@Override
-	public void registerEntry(String identifier, Class<? extends Entry> entry, EntryUI ui, String rep) {
+	public void registerEntry(String identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CommandSource, String[], CommandResult> cmd) {
 		try {
 			this.entries.getRegistry().register(entry);
-			this.entries.getClassifications().add(new EntryClassification(entry, identifier, rep, ui));
+			this.entries.getClassifications().add(new EntryClassification(entry, identifier, rep, ui, cmd));
 
 			GTS.getInstance().getConsole().ifPresent(console -> {
 				console.sendMessage(Text.of(GTSInfo.PREFIX, "Loaded element type: " + entry.getSimpleName()));

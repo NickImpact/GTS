@@ -79,9 +79,6 @@ public class HelpCmd extends SpongeSubCommand {
 		List<Text> result = Lists.newArrayList();
 		Text x = Text.of(cmd.getUsage(), TextActions.showText(cmd.getDescription()));
 		result.add(x);
-		if(cmd instanceof AucCmd) {
-			return result;
-		}
 
 		for(SpongeCommand child : cmd.getSubCommands()) {
 			if(!(src instanceof ConsoleSource) && src.hasPermission(this.buildPermission(GTS.getInstance(), child))) {

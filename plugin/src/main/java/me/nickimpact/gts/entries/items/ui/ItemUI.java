@@ -78,6 +78,9 @@ public class ItemUI extends EntryUI {
 							        }
 
 							        this.selection = clicked;
+							        if(this.size > this.selection.getQuantity()) {
+							        	this.size = this.selection.getQuantity();
+							        }
 							        this.display.setSlot(13, Icon.from(clicked));
 							        this.update();
 						        }

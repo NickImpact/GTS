@@ -137,6 +137,8 @@ public class MsgConfigKeys implements IConfigKeys {
 	public static final ConfigKey<String> DISCORD_PURCHASE = StringKey.of("discord.purchase", "{{buyer}} just purchased a {{listing_specifics}} from {{seller}} for {{price}}");
 	public static final ConfigKey<String> DISCORD_REMOVE = StringKey.of("discord.purchase", "{{player}} has removed their {{listing_specifics}} from the GTS!");
 
+	public static final ConfigKey<String> EXPIRATION_DATE_FORMAT = StringKey.of("entries.expiration.format", "MMM dd --> hh:mm a z");
+
 	private static Map<String, ConfigKey<?>> KEYS = null;
 
 	@Override
