@@ -98,7 +98,7 @@ public enum EnumPokemonFields {
 	IV_PERCENT(pokemon -> new DecimalFormat("#0.##").format(totalIVs(pokemon.getStats().ivs) / 186.0 * 100) + "%"),
 	EV_TOTAL(pokemon -> (int)totalEVs(pokemon.getStats().evs)),
 	IV_TOTAL(pokemon -> (int)totalIVs(pokemon.getStats().ivs)),
-	NICKNAME(pokemon -> TextSerializers.LEGACY_FORMATTING_CODE.deserialize(pokemon.getNickname() != null ? pokemon.getNickname() : "")),
+	NICKNAME(pokemon -> TextSerializers.LEGACY_FORMATTING_CODE.deserialize(pokemon.getNickname() != null  && !pokemon.getNickname().isEmpty() ? pokemon.getNickname() : pokemon.getSpecies().getPokemonName())),
 	EV_HP(pokemon -> pokemon.getStats().evs.hp),
 	EV_ATK(pokemon -> pokemon.getStats().evs.attack),
 	EV_DEF(pokemon -> pokemon.getStats().evs.defence),

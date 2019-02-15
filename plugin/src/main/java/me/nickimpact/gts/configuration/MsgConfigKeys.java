@@ -113,10 +113,6 @@ public class MsgConfigKeys implements IConfigKeys {
 			"&7Time Left: &e{{time_left}}"
 	));
 
-
-	// Pokemon Entries
-
-
 	// Error messages
 	public static final ConfigKey<List<String>> NOT_ENOUGH_FUNDS = ListKey.of("general.purchase.not-enough-funds", Lists.newArrayList("&cUnfortunately, you were unable to afford the price of {{price}}"));
 	public static final ConfigKey<List<String>> ALREADY_CLAIMED = ListKey.of("general.purchase.already-claimed", Lists.newArrayList("&cUnfortunately, this listing has already been claimed..."));

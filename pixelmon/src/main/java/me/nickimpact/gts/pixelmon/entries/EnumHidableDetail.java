@@ -18,20 +18,8 @@ import java.util.function.Predicate;
 @AllArgsConstructor
 public enum EnumHidableDetail {
 
-	TEXTURE(pokemon -> {
-			NBTTagCompound nbt = new NBTTagCompound();
-			pokemon.writeToNBT(nbt);
-
-			String texture = nbt.getString(NbtKeys.CUSTOM_TEXTURE);
-			return !texture.isEmpty();
-		}, PokemonMsgConfigKeys.PE_BASE_TEXTURE
-	),
-	UNBREEDABLE(pokemon -> {
-			PokemonSpec unbreedable = new PokemonSpec("unbreedable");
-			return unbreedable.matches(pokemon);
-		},
-			PokemonMsgConfigKeys.PE_BASE_UNBREEDABLE
-	),
+	TEXTURE(pokemon -> pokemon.getCustomTexture() != null && !pokemon.getCustomTexture().isEmpty(), PokemonMsgConfigKeys.PE_BASE_TEXTURE),
+	UNBREEDABLE(pokemon -> new PokemonSpec("unbreedable").matches(pokemon), PokemonMsgConfigKeys.PE_BASE_UNBREEDABLE),
 	POKERUS(pokemon -> pokemon.getPokerus() != null, PokemonMsgConfigKeys.PE_BASE_POKERUS),
 	CLONES(pokemon -> pokemon.getSpecies().equals(EnumSpecies.Mew), PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_MEW_CLONES),
 	ENCHANTED(pokemon -> PokemonEntry.LakeTrio.isMember(pokemon.getSpecies()), PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LAKE_TRIO),

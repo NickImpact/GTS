@@ -18,7 +18,7 @@ public class GTSInfo implements PluginInfo {
 
 	public static final String ID = "gts";
 	public static final String NAME = "GTS";
-	public static final String VERSION = "S7.1-4.0.6";
+	public static final String VERSION = "S7.1-4.1.0";
 	public static final String DESCRIPTION = "A Sponge Representation of the Global Trading Station";
 
 	public static final Text PREFIX = Text.of(TextColors.YELLOW, "GTS ", TextColors.GRAY, "\u00bb ");
@@ -51,7 +51,7 @@ public class GTSInfo implements PluginInfo {
 				Text.EMPTY,
 				Text.of(TextColors.DARK_AQUA, "     _________________"),
 				Text.of(TextColors.DARK_AQUA, "    / ____/_  __/ ___/       ", TextColors.GREEN, "GTS ", VERSION),
-				Text.of(TextColors.DARK_AQUA, "   / / __  / /  \\__ \\        ", TextColors.GREEN, "Running on: ", TextColors.YELLOW, Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName(), " ", Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().get()),
+				Text.of(TextColors.DARK_AQUA, "   / / __  / /  \\__ \\        ", TextColors.GREEN, "Running on: ", TextColors.YELLOW, Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName(), " ", Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse("Unknown")),
 				Text.of(TextColors.DARK_AQUA, "  / /_/ / / /  ___/ /        ", TextColors.GREEN, "Author: ", TextColors.AQUA, "NickImpact"),
 				Text.of(TextColors.DARK_AQUA, "  \\____/ /_/  /____/"),
 				Text.EMPTY
