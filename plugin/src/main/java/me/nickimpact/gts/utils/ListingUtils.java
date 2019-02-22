@@ -95,17 +95,19 @@ public class ListingUtils {
 
 		    }
 
-		    if(!listing.getEntry().doTakeAway(player)) {
-			    // Refund applied tax
-			    if(tax.isPresent()) {
-					UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId()).orElse(null);
-					if (acc != null) {
-						acc.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(), tax.get(), Sponge.getCauseStackManager().getCurrentCause());
-					}
+		    if(!listing.getOwnerName().equalsIgnoreCase("Console")) {
+			    if (!listing.getEntry().doTakeAway(player)) {
+				    // Refund applied tax
+				    if (tax.isPresent()) {
+					    UniqueAccount acc = GTS.getInstance().getEconomy().getOrCreateAccount(player.getUniqueId()).orElse(null);
+					    if (acc != null) {
+						    acc.deposit(GTS.getInstance().getEconomy().getDefaultCurrency(), tax.get(), Sponge.getCauseStackManager().getCurrentCause());
+					    }
 
-					player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.RED, "Your listing failed to be taken, so we have refunded the tax applied!"));
+					    player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.RED, "Your listing failed to be taken, so we have refunded the tax applied!"));
+				    }
+				    return false;
 			    }
-			    return false;
 		    }
 
 		    player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ADD_TEMPLATE), player, null, variables));

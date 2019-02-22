@@ -43,7 +43,6 @@ import lombok.Getter;
 import me.nickimpact.gts.api.listings.pricing.Price;
 import me.nickimpact.gts.api.listings.pricing.PriceAdapter;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.data.DataContainer;
@@ -301,6 +300,10 @@ public class GTS extends SpongePlugin {
 	@Listener
 	public void onServerStarted(GameStartedServerEvent e) {
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Post start-up phase has now started")));
+		if(this.economy == null) {
+			getConsole().ifPresent(console -> console.sendMessage(Text.of(GTSInfo.ERROR, "")));
+		}
+
 		ListingTasks.updateTask();
 		this.storage.getListings().thenAccept(listings -> {
 			this.listingsCache = listings;

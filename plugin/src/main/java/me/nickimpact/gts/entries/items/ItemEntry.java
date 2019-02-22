@@ -202,6 +202,12 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 		Player player = (Player) src;
 		int amount = Integer.parseInt(args[0]);
 		BigDecimal price = new BigDecimal(Double.parseDouble(args[1]));
+
+		if(price.signum() <= 0) {
+			player.sendMessage(Text.of(TextColors.RED, "Invalid price! Price values must be positive!"));
+			return CommandResult.empty();
+		}
+
 		Time time = null;
 		if(args.length == 3) {
 			time = new Time(args[2]);

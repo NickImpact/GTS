@@ -68,15 +68,11 @@ public class SellCmd extends SpongeSubCommand {
 					new SellUI((Player) src).open((Player) src, 1);
 					return CommandResult.success();
 				} else {
-					try {
-						if (classification.getCmdHandler().apply(src, context.orElse("").split(" ")).equals(CommandResult.empty())) {
-							throw new CommandException(Text.of("Invalid syntax for that typing!"));
-						}
-
-						return CommandResult.success();
-					} catch (Exception e) {
+					if (classification.getCmdHandler().apply(src, context.orElse("").split(" ")).equals(CommandResult.empty())) {
 						throw new CommandException(Text.of("Invalid syntax for that typing!"));
 					}
+
+					return CommandResult.success();
 				}
 			} else {
 				new SellUI((Player) src).open((Player) src, 1);

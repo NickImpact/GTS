@@ -253,6 +253,11 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 			}
 		}
 
+		if(price.signum() <= 0) {
+			player.sendMessage(Text.of(TextColors.RED, "Invalid price! Price values must be positive!"));
+			return CommandResult.empty();
+		}
+
 		Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID(player.getUniqueId());
 		if(storage.isPresent()) {
 			EntityPixelmon pokemon = storage.get().getPokemon(storage.get().getIDFromPosition(pos), (World) player.getWorld());

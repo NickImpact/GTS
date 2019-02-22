@@ -248,6 +248,11 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 			}
 		}
 
+		if(price.signum() <= 0) {
+			player.sendMessage(Text.of(TextColors.RED, "Invalid price! Price values must be positive!"));
+			return CommandResult.empty();
+		}
+
 		PlayerPartyStorage storage = Pixelmon.storageManager.getParty(player.getUniqueId());
 		Pokemon pokemon = storage.get(pos);
 		if(pokemon == null) {

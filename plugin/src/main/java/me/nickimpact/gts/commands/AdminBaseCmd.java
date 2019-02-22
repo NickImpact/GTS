@@ -7,6 +7,7 @@ import com.nickimpact.impactor.api.commands.SpongeSubCommand;
 import com.nickimpact.impactor.api.commands.annotations.Aliases;
 import com.nickimpact.impactor.api.commands.annotations.Permission;
 import com.nickimpact.impactor.api.plugins.SpongePlugin;
+import me.nickimpact.gts.commands.administrative.PopulateCmd;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -46,7 +47,8 @@ public class AdminBaseCmd extends SpongeSubCommand {
 	public SpongeCommand[] getSubCommands() {
 		return new SpongeCommand[]{
 				new ClearCmd(this.plugin),
-				new EditCmd(this.plugin)
+				new EditCmd(this.plugin),
+				new PopulateCmd()
 		};
 	}
 

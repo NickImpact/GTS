@@ -3,16 +3,15 @@ package me.nickimpact.gts.ui;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.nickimpact.impactor.gui.v2.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.internal.TextParsingUtils;
 import me.nickimpact.gts.utils.ItemUtils;
-import com.nickimpact.impactor.gui.v2.Icon;
-import com.nickimpact.impactor.gui.v2.Layout;
-import com.nickimpact.impactor.gui.v2.Page;
-import com.nickimpact.impactor.gui.v2.PageDisplayable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -36,7 +35,7 @@ import java.util.stream.Collectors;
  *
  * @author NickImpact
  */
-public class MainUI implements PageDisplayable, Observer {
+public class MainUI implements Observer {
 
 	private static Map<UUID, Instant> delays = Maps.newHashMap();
 
@@ -44,7 +43,7 @@ public class MainUI implements PageDisplayable, Observer {
 	private Player player;
 
 	/** The current viewing index of listings */
-	private Page page;
+	private QueriedPage<Listing> page;
 
 	/** The condition to search by for the listings */
 	private Collection<Predicate<Listing>> searchConditions = Lists.newArrayList();
@@ -85,25 +84,36 @@ public class MainUI implements PageDisplayable, Observer {
 			return false;
 		});
 
-		this.page = Page.builder()
-				.property(InventoryTitle.of(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "\u00BB ", TextColors.DARK_AQUA, "Listings")))
-				.property(InventoryDimension.of(9, 6))
-				.previous(Icon.from(ItemStack.builder().itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:trade_holder_left").orElse(ItemTypes.BARRIER)).build()), 52)
-				.next(Icon.from(ItemStack.builder().itemType(Sponge.getRegistry().getType(ItemType.class, "pixelmon:trade_holder_right").orElse(ItemTypes.BARRIER)).build()), 53)
-				.layout(this.design())
+		this.page = QueriedPage.builder()
+				.title(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "\u00BB ", TextColors.DARK_AQUA, "Listings"))
+				.view(this.design())
+				.viewer(player)
+				.previousPage(Sponge.getRegistry().getType(ItemType.class, "pixelmon:trade_holder_left").orElse(ItemTypes.BARRIER), 52)
+				.nextPage(Sponge.getRegistry().getType(ItemType.class, "pixelmon:trade_holder_right").orElse(ItemTypes.BARRIER), 53)
+				.contentZone(InventoryDimension.of(7, 3))
+				.offsets(1)
 				.build(GTS.getInstance());
-		this.page.define(drawListings(), InventoryDimension.of(7, 3), 1, 1);
-		GTS.getInstance().getUpdater().addObserver(this);
-		this.page.getViews().forEach(ui -> {
-			ui.setCloseAction((event, pl) -> {
-				GTS.getInstance().getUpdater().deleteObserver(this);
+		this.page = this.page.applier(listing -> {
+			Icon icon = Icon.from(listing.getDisplay(player, false));
+			icon.addListener(clickable -> {
+				UUID uuid = listing.getUuid();
+				if(GTS.getInstance().getListingsCache().stream().anyMatch(listing1 -> listing1.getUuid() == uuid)) {
+					Sponge.getScheduler().createTaskBuilder()
+							.execute(() -> new ConfirmUI(this.player, listing, searchConditions).open(player))
+							.delayTicks(1)
+							.submit(GTS.getInstance());
+				}
 			});
+
+			return icon;
 		});
+		this.page.define(this.getListings());
+		GTS.getInstance().getUpdater().addObserver(this);
+		this.page.getView().setCloseAction((event, pl) -> GTS.getInstance().getUpdater().deleteObserver(this));
 	}
 
-	@Override
-	public Page getDisplay() {
-		return this.page;
+	public void open() {
+		this.page.open();
 	}
 
 	private Layout design() {
@@ -123,7 +133,12 @@ public class MainUI implements PageDisplayable, Observer {
 			List<Text> lore = Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", this.justPlayer ? Text.of(TextColors.GREEN, "Enabled") : Text.of(TextColors.RED, "Disabled")));
 			lore.addAll(additional);
 			pl.getDisplay().offer(Keys.ITEM_LORE, lore);
-			this.page.apply(pl, 45);
+			this.page.getView().setSlot(45, pl);
+			this.page.getView().clear(
+					10, 11, 12, 13, 14, 15, 16,
+					19, 20, 21, 22, 23, 24, 25,
+					28, 29, 30, 31, 32, 33, 34
+			);
 			this.apply();
 		});
 		lb.slot(pl, 45);
@@ -170,13 +185,12 @@ public class MainUI implements PageDisplayable, Observer {
 	}
 
 	private void updateOptions() {
-		this.page.apply(this.categories.get(index), 48);
-		this.page.apply(this.categories.get(index + 1), 49);
+		this.page.getView().setSlot(48, this.categories.get(index));
+		this.page.getView().setSlot(49, this.categories.get(index + 1));
 	}
 
 	private void apply() {
-		List<Icon> icons = this.drawListings();
-		this.page.update(icons, InventoryDimension.of(7, 3), 1, 1);
+		this.page.define(this.getListings());
 	}
 
 	private List<Listing> getListings() {
@@ -200,28 +214,6 @@ public class MainUI implements PageDisplayable, Observer {
 
 		listings = listings.stream().filter(listing -> !listing.hasExpired()).collect(Collectors.toList());
 		return listings;
-	}
-
-	private List<Icon> drawListings() {
-		List<Icon> icons = Lists.newArrayList();
-		for(Listing listing : this.getListings()) {
-			Icon icon = new Icon(listing.getDisplay(this.player, false));
-			icon.addListener(clickable -> {
-				UUID uuid = listing.getUuid();
-				if(GTS.getInstance().getListingsCache().stream().anyMatch(listing1 -> listing1.getUuid() == uuid)) {
-					Sponge.getScheduler().createTaskBuilder()
-							.execute(() -> {
-								this.close(player);
-								new ConfirmUI(this.player, listing, searchConditions).open(player);
-							})
-							.delayTicks(1)
-							.submit(GTS.getInstance());
-				}
-			});
-			icons.add(icon);
-		}
-
-		return icons;
 	}
 
 	@Override

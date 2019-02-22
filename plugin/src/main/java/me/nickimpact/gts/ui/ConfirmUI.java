@@ -183,7 +183,7 @@ public class ConfirmUI implements Displayable, Observer {
 		Icon icon = SharedItems.denyIcon();
 		icon.addListener(clickable -> {
 			this.close(player);
-			new MainUI(clickable.getPlayer(), searchConditions).open(player, 1);
+			new MainUI(clickable.getPlayer(), searchConditions).open();
 		});
 		return icon;
 	}
