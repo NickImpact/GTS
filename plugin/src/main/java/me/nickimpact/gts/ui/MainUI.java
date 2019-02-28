@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.internal.TextParsingUtils;
@@ -108,8 +109,14 @@ public class MainUI implements Observer {
 			return icon;
 		});
 		this.page.define(this.getListings());
-		GTS.getInstance().getUpdater().addObserver(this);
-		this.page.getView().setCloseAction((event, pl) -> GTS.getInstance().getUpdater().deleteObserver(this));
+		if(GTS.getInstance().getConfig().get(ConfigKeys.OBSERVER_ACTIVE)) {
+			GTS.getInstance().getUpdater().addObserver(this);
+		}
+		this.page.getView().setCloseAction((event, pl) -> {
+			if(GTS.getInstance().getConfig().get(ConfigKeys.OBSERVER_ACTIVE)) {
+				GTS.getInstance().getUpdater().deleteObserver(this);
+			}
+		});
 	}
 
 	public void open() {

@@ -94,6 +94,7 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 		ItemStack icon = getPicture(this.getEntry());
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
+		variables.put("pokemon", this.getEntry());
 
 		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
 
@@ -109,6 +110,7 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 		ItemStack icon = ItemStack.builder().itemType(ItemTypes.PAPER).build();
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
+		variables.put("pokemon", this.getEntry());
 
 		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE_AUCTION, null, variables));
 
@@ -164,10 +166,10 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 			return false;
 		}
 
-		if(UNTRADABLE.matches(this.getEntry())) {
-			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "This pokemon is marked as untradeable, and cannot be sold..."));
-			return false;
-		}
+//		if(UNTRADABLE.matches(this.getEntry())) {
+//			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "This pokemon is marked as untradeable, and cannot be sold..."));
+//			return false;
+//		}
 
 		if(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED).stream().anyMatch(name -> name.equalsIgnoreCase(this.getEntry().getName()))){
 			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));

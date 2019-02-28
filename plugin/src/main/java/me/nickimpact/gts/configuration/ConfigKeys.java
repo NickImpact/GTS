@@ -46,6 +46,8 @@ public class ConfigKeys implements IConfigKeys {
 	// General config settings
 	//------------------------------------------------------------------------------------------------------------------
 
+	public static final ConfigKey<Boolean> OBSERVER_ACTIVE = BooleanKey.of("ui.main.listeners-enabled", true);
+
 	/** Default time = 1 minute = 60 seconds */
 	public static final ConfigKey<Integer> AUC_TIME = IntegerKey.of("auctions.default-time", 60);
 

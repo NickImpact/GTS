@@ -26,12 +26,12 @@ public enum EnumHidableDetail {
 			return !texture.isEmpty();
 		}, PokemonMsgConfigKeys.PE_BASE_TEXTURE
 	),
-	UNBREEDABLE(pokemon -> {
-			PokemonSpec unbreedable = new PokemonSpec("unbreedable");
-			return unbreedable.matches(pokemon);
-		},
-			PokemonMsgConfigKeys.PE_BASE_UNBREEDABLE
-	),
+//	UNBREEDABLE(pokemon -> {
+//			PokemonSpec unbreedable = new PokemonSpec("unbreedable");
+//			return unbreedable.matches(pokemon);
+//		},
+//			PokemonMsgConfigKeys.PE_BASE_UNBREEDABLE
+//	),
 	//POKERUS(pokemon -> pokemon.pokerus().isPresent(), MsgConfigKeys.PE_BASE_POKERUS),
 	CLONES(pokemon -> pokemon.getSpecies().equals(EnumPokemon.Mew), PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_MEW_CLONES),
 	ENCHANTED(pokemon -> PokemonEntry.LakeTrio.isMember(pokemon.getSpecies()), PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LAKE_TRIO),

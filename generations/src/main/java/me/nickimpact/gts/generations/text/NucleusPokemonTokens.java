@@ -81,12 +81,16 @@ public class NucleusPokemonTokens {
 	}
 
 	private static EntityPixelmon getPokemonFromVariableIfExists(Map<String, Object> m) {
-		Optional<Listing> optPoke = m.values().stream().filter(val -> val instanceof Listing).map(val -> (Listing) val).findAny();
+		Optional<Object> optPoke = m.values().stream().filter(val -> val instanceof Listing || val instanceof EntityPixelmon).findAny();
 		if (optPoke.isPresent()) {
-			if (optPoke.get().getEntry().getEntry() instanceof Pokemon)
-				return ((Pokemon) optPoke.get().getEntry().getEntry()).getPokemon();
+			if(optPoke.get() instanceof Listing) {
+				if (((Listing) optPoke.get()).getEntry().getEntry() instanceof Pokemon)
+					return ((Pokemon) ((Listing) optPoke.get()).getEntry().getEntry()).getPokemon();
 
-			return (EntityPixelmon) optPoke.get().getEntry().getEntry();
+				return (EntityPixelmon) ((Listing) optPoke.get()).getEntry().getEntry();
+			} else {
+				return (EntityPixelmon) optPoke.get();
+			}
 		}
 
 		return null;

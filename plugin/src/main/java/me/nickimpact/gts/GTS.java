@@ -301,7 +301,9 @@ public class GTS extends SpongePlugin {
 	public void onServerStarted(GameStartedServerEvent e) {
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Post start-up phase has now started")));
 		if(this.economy == null) {
-			getConsole().ifPresent(console -> console.sendMessage(Text.of(GTSInfo.ERROR, "")));
+			getConsole().ifPresent(console -> console.sendMessage(Text.of(GTSInfo.ERROR, "No economy plugin detected, disabling the plugin...")));
+			this.disable();
+			return;
 		}
 
 		ListingTasks.updateTask();
