@@ -109,14 +109,6 @@ public class MainUI implements Observer {
 			return icon;
 		});
 		this.page.define(this.getListings());
-		if(GTS.getInstance().getConfig().get(ConfigKeys.OBSERVER_ACTIVE)) {
-			GTS.getInstance().getUpdater().addObserver(this);
-		}
-		this.page.getView().setCloseAction((event, pl) -> {
-			if(GTS.getInstance().getConfig().get(ConfigKeys.OBSERVER_ACTIVE)) {
-				GTS.getInstance().getUpdater().deleteObserver(this);
-			}
-		});
 	}
 
 	public void open() {

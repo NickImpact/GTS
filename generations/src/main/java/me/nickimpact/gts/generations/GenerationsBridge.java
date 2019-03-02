@@ -38,7 +38,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Getter
-@Plugin(id = "gts_generations", name = "GTS Generations Bridge", version = "1.0.2", dependencies = @Dependency(id = "gts"))
+@Plugin(id = "gts_generations", name = "GTS Generations Bridge", version = "1.1.2", dependencies = @Dependency(id = "gts"))
 public class GenerationsBridge extends SpongePlugin {
 
 	@Getter private static GenerationsBridge instance;

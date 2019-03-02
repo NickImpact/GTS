@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Getter
-@Plugin(id = "gts_reforged", name = "GTS Reforged Bridge", version = "1.1.0", dependencies = @Dependency(id = "gts"))
+@Plugin(id = "gts_reforged", name = "GTS Reforged Bridge", version = "1.1.2", dependencies = @Dependency(id = "gts"))
 public class ReforgedBridge extends SpongePlugin {
 
 	@Getter private static ReforgedBridge instance;

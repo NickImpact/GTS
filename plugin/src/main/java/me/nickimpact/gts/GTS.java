@@ -249,11 +249,6 @@ public class GTS extends SpongePlugin {
 		try {
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Now entering the init phase")));
 
-			//if(getConfig().get(ConfigKeys.WATCH_FILES)) {
-			//	fileWatcher = new FileWatcher(this);
-			//	Sponge.getScheduler().createTaskBuilder().async().intervalTicks(30).delayTicks(30).execute(fileWatcher).submit(GTS.getInstance());
-			//}
-
 			// Register the base command
 			getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Initializing commands...")));
 			(cmd = new GTSBaseCmd(this)).register(this);

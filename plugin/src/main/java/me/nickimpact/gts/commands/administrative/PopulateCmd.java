@@ -48,12 +48,12 @@ public class PopulateCmd extends SpongeCommand {
 
 	@Override
 	public Text getDescription() {
-		return null;
+		return Text.of("Fills the GTS with randomly selected items");
 	}
 
 	@Override
 	public Text getUsage() {
-		return null;
+		return Text.of("/gts populate (amount)");
 	}
 
 	@Override

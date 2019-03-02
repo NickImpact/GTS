@@ -46,16 +46,6 @@ public class ConfigKeys implements IConfigKeys {
 	// General config settings
 	//------------------------------------------------------------------------------------------------------------------
 
-	public static final ConfigKey<Boolean> OBSERVER_ACTIVE = BooleanKey.of("ui.main.listeners-enabled", true);
-
-	/** Default time = 1 minute = 60 seconds */
-	public static final ConfigKey<Integer> AUC_TIME = IntegerKey.of("auctions.default-time", 60);
-
-	/** Max time = 5 minutes = 300 seconds */
-	public static final ConfigKey<Integer> AUC_MAX_TIME = IntegerKey.of("auctions.max-time", 300);
-
-	public static final ConfigKey<Boolean> BID_KEEP_UI_OPEN = BooleanKey.of("auctions.keep-ui-open-on-bid", false);
-
 	/** Default time = 1 hour = 60 minutes = 3600 seconds */
 	public static final ConfigKey<Integer> LISTING_TIME = IntegerKey.of("listings.listing-time", 60 * 60);
 

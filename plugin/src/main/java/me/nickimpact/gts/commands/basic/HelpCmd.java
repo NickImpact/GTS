@@ -77,7 +77,7 @@ public class HelpCmd extends SpongeSubCommand {
 	 */
 	private List<Text> getUsage(CommandSource src, SpongeCommand cmd) {
 		List<Text> result = Lists.newArrayList();
-		Text x = Text.of(cmd.getUsage(), TextActions.showText(cmd.getDescription()));
+		Text x = Text.builder().append(Text.of(TextColors.GREEN, cmd.getUsage())).onHover(TextActions.showText(cmd.getDescription())).build();
 		result.add(x);
 
 		for(SpongeCommand child : cmd.getSubCommands()) {

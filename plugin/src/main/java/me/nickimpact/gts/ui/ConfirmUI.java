@@ -162,15 +162,8 @@ public class ConfirmUI implements Displayable, Observer {
 		Icon icon = SharedItems.confirmIcon(this.target.getAucData() != null);
 		icon.addListener(clickable -> {
 			if (confirmed) {
-				if (this.target.getAucData() != null) {
-					ListingUtils.bid(clickable.getPlayer(), this.target);
-					if (!GTS.getInstance().getConfig().get(ConfigKeys.BID_KEEP_UI_OPEN)) {
-						clickable.getPlayer().closeInventory();
-					}
-				} else {
-					ListingUtils.purchase(clickable.getPlayer(), this.target);
-					clickable.getPlayer().closeInventory();
-				}
+				ListingUtils.purchase(clickable.getPlayer(), this.target);
+				clickable.getPlayer().closeInventory();
 			} else {
 				player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Please confirm your purchase before proceeding"));
 			}

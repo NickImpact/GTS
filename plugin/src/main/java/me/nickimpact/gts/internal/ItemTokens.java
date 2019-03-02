@@ -1,6 +1,7 @@
 package me.nickimpact.gts.internal;
 
 import com.google.common.collect.Maps;
+import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.text.Translator;
 import me.nickimpact.gts.entries.items.ItemEntry;
@@ -33,14 +34,12 @@ public class ItemTokens {
 			return Optional.of(Text.of(item.getType().getTranslation().get()));
 		});
 		tokens.put("item_title", (p, v, m) -> {
-			ItemStack item = getItemStackFromVariableIfExists(m);
-			if(item == null)
+			Listing listing = getListingFromVaribleIfExists(m);
+			if(listing == null)
 				return Optional.empty();
 
-			if(!item.get(Keys.DISPLAY_NAME).isPresent())
-				return Optional.of(Text.of(TextColors.DARK_AQUA, item.getTranslation().get()));
-
-			return Optional.of(item.get(Keys.DISPLAY_NAME).get());
+			GTS.getInstance().getLogger().debug("Item Type: " + listing.getEntry().getName());
+			return Optional.of(Text.of(listing.getEntry().getName()));
 		});
 		tokens.put("item_lore", (p, v, m) -> {
 			ItemStack item = getItemStackFromVariableIfExists(m);
@@ -63,6 +62,11 @@ public class ItemTokens {
 
 	public static Map<String, Translator> getTokens() {
 		return tokens;
+	}
+
+	private static Listing getListingFromVaribleIfExists(Map<String, Object> m) {
+		Optional<Object> opt = m.values().stream().filter(val -> val instanceof Listing && ((Listing) val).getEntry() instanceof ItemEntry).findAny();
+		return (Listing) opt.orElse(null);
 	}
 
 	private static ItemStack getItemStackFromVariableIfExists(Map<String, Object> m) {
