@@ -60,6 +60,7 @@ public class ConfigKeys implements IConfigKeys {
 	public static final ConfigKey<Double> TAX_MONEY_TAX = DoubleKey.of("tax.money.tax", 0.08);
 
 	public static final ConfigKey<Boolean> CUSTOM_NAME_ALLOWED = BooleanKey.of("entries.items.custom-names-allowed", true);
+	public static final ConfigKey<Boolean> ITEMS_ENABLED = BooleanKey.of("entries.items.enabled", true);
 
 	public static final ConfigKey<Double> PRICING_LEFTCLICK_BASE = DoubleKey.of("pricing.left-click.base", 1.0);
 	public static final ConfigKey<Double> PRICING_RIGHTCLICK_BASE = DoubleKey.of("pricing.right-click.base", 10.0);

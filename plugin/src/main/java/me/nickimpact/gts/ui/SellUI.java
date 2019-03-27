@@ -75,10 +75,10 @@ public class SellUI implements PageDisplayable {
 
         EntryRegistry er = GTS.getInstance().getService().getEntryRegistry();
         for(EntryClassification classification : er.getClassifications()) {
-	        if(player.hasPermission("gts.command.sell." + classification.getIdentifer().toLowerCase())) {
+	        if(player.hasPermission("gts.command.sell." + classification.getPrimaryIdentifier().toLowerCase())) {
 		        Icon icon = Icon.from(ItemStack.builder()
 				        .itemType(ItemUtils.getOrDefaultFromRegistryID(classification.getItemRep()))
-				        .add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, classification.getIdentifer()))
+				        .add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, classification.getPrimaryIdentifier()))
 				        .build()
 		        );
 		        icon.addListener(clickable -> {

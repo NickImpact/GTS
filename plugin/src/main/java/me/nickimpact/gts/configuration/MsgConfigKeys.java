@@ -134,6 +134,7 @@ public class MsgConfigKeys implements IConfigKeys {
 	public static final ConfigKey<String> DISCORD_REMOVE = StringKey.of("discord.purchase", "{{player}} has removed their {{listing_specifics}} from the GTS!");
 
 	public static final ConfigKey<String> EXPIRATION_DATE_FORMAT = StringKey.of("entries.expiration.format", "MMM dd --> hh:mm a z");
+	public static final ConfigKey<String> REFRESH_ICON = StringKey.of("item-displays.refresh-icon.title", "&eRefresh Listings");
 
 	private static Map<String, ConfigKey<?>> KEYS = null;
 

@@ -62,7 +62,11 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 	public ItemEntry(ItemStack element, MoneyPrice price) {
 		super(element.toContainer(), price);
 		this.item = element;
-		this.name = element.getTranslation().get();
+		if(GTS.getInstance().getConfig().get(ConfigKeys.CUSTOM_NAME_ALLOWED)) {
+			this.name = element.get(Keys.DISPLAY_NAME).map(TextSerializers.FORMATTING_CODE::serialize).map(TextSerializers.FORMATTING_CODE::stripCodes).orElse(element.getTranslation().get());
+		} else {
+			this.name = element.getTranslation().get();
+		}
 	}
 
 	@Override
@@ -200,6 +204,11 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 		}
 
 		Player player = (Player) src;
+		if(!player.hasPermission("gts.command.sell.items")) {
+			player.sendMessage(Text.of(TextColors.RED, "You don't have permission to use this command!"));
+			return CommandResult.success();
+		}
+
 		int amount = Integer.parseInt(args[0]);
 		BigDecimal price = new BigDecimal(Double.parseDouble(args[1]));
 

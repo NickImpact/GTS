@@ -7,6 +7,7 @@ import me.nickimpact.gts.api.listings.entries.EntryUI;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 
+import java.util.List;
 import java.util.function.BiFunction;
 
 @Getter
@@ -16,7 +17,7 @@ public class EntryClassification {
 	private Class<? extends Entry> classification;
 
 	/** Represents the identifiable name for an entry classification */
-	private String identifer;
+	private List<String> identifers;
 
 	/** Represents the item type that will serve as the representation for this classification */
 	private String itemRep;
@@ -26,4 +27,8 @@ public class EntryClassification {
 
 	/** Represents the command functionality for an entry */
 	private BiFunction<CommandSource, String[], CommandResult> cmdHandler;
+
+	public String getPrimaryIdentifier() {
+		return identifers.size() > 0 ? identifers.get(0) : "Unknown";
+	}
 }

@@ -11,6 +11,7 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.BiFunction;
 
 public interface GtsService {
@@ -41,7 +42,7 @@ public interface GtsService {
 	 * @param ui The UI accompanying the entry
 	 * @param rep The ItemStack representation accompanying the entry
 	 */
-	void registerEntry(String identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CommandSource, String[], CommandResult> cmd);
+	void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CommandSource, String[], CommandResult> cmd);
 
 	/**
 	 * Fetches a list of all types of entries currently registered to GTS.

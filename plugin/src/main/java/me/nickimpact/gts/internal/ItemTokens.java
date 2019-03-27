@@ -38,8 +38,7 @@ public class ItemTokens {
 			if(listing == null)
 				return Optional.empty();
 
-			GTS.getInstance().getLogger().debug("Item Type: " + listing.getEntry().getName());
-			return Optional.of(Text.of(listing.getEntry().getName()));
+			return Optional.of(Text.of(TextColors.DARK_AQUA, listing.getEntry().getName()));
 		});
 		tokens.put("item_lore", (p, v, m) -> {
 			ItemStack item = getItemStackFromVariableIfExists(m);

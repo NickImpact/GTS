@@ -69,7 +69,7 @@ public class ReforgedBridge extends SpongePlugin {
 	public void onInit(GameInitializationEvent e) {
 		service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
 		service.registerEntry(
-				"Pokemon",
+				Lists.newArrayList("Pokemon"),
 				ReforgedEntry.class,
 				new PixelmonUI(),
 				"pixelmon:gs_ball",

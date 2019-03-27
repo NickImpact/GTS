@@ -221,23 +221,26 @@ public class GTS extends SpongePlugin {
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Registering GTS Service...")));
 		Sponge.getServiceManager().setProvider(this, GtsService.class, service);
 
-		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Registering default implementations...")));
-		service.registerEntry("Items", ItemEntry.class, new ItemUI(), ItemTypes.DIAMOND.getId(), ItemEntry::handleCommand);
-		try {
-			//noinspection unchecked
-			service.getRegistry(GtsService.RegistryType.PRICE).register(MoneyPrice.class);
-		} catch (Exception e1) {
-			this.error = e1;
-			this.disable();
-			e1.printStackTrace();
-		}
-
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Loading configuration...")));
 		this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new ConfigKeys(), "gts.conf");
 		this.config.init();
 
 		this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new MsgConfigKeys(), "lang/en_us.conf");
 		this.msgConfig.init();
+
+		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Registering default implementations...")));
+		if(this.config.get(ConfigKeys.ITEMS_ENABLED)) {
+			service.registerEntry(Lists.newArrayList("Items", "Item"), ItemEntry.class, new ItemUI(), ItemTypes.DIAMOND.getId(), ItemEntry::handleCommand);
+		}
+
+		try {
+			//noinspection unchecked
+			this.service.getRegistry(GtsService.RegistryType.PRICE).register(MoneyPrice.class);
+		} catch (Exception e1) {
+			this.error = e1;
+			this.disable();
+			e1.printStackTrace();
+		}
 
 		getConsole().ifPresent(console -> console.sendMessages(Text.of(GTSInfo.PREFIX, "Pre-init phase complete!")));
 

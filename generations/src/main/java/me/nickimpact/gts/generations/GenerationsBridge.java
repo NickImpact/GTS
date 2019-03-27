@@ -68,7 +68,7 @@ public class GenerationsBridge extends SpongePlugin {
     public void onInit(GameInitializationEvent e) {
 	    this.service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
 	    this.service.registerEntry(
-			    "Pokemon",
+			    Lists.newArrayList("Pokemon"),
 			    PokemonEntry.class,
 			    new PixelmonUI(),
 			    "pixelmon:gs_ball",

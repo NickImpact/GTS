@@ -20,6 +20,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -47,7 +48,7 @@ public class GtsServiceImpl implements GtsService {
 	}
 
 	@Override
-	public void registerEntry(String identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CommandSource, String[], CommandResult> cmd) {
+	public void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CommandSource, String[], CommandResult> cmd) {
 		try {
 			this.entries.getRegistry().register(entry);
 			this.entries.getClassifications().add(new EntryClassification(entry, identifier, rep, ui, cmd));

@@ -245,6 +245,11 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 
 		Player player = (Player) src;
 
+		if(!player.hasPermission("gts.command.sell.pokemon")) {
+			player.sendMessage(Text.of(TextColors.RED, "You don't have permission to use this command!"));
+			return CommandResult.success();
+		}
+
 		int pos = Integer.parseInt(args[0]) - 1;
 		BigDecimal price = new BigDecimal(Double.parseDouble(args[1]));
 		Time time = null;

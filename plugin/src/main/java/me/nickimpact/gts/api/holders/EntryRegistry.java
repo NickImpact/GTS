@@ -15,6 +15,6 @@ public class EntryRegistry {
 	private List<EntryClassification> classifications = Lists.newArrayList();
 
 	public Optional<EntryClassification> getForIdentifier(String id) {
-		return this.getClassifications().stream().filter(classification -> classification.getIdentifer().equalsIgnoreCase(id)).findAny();
+		return this.getClassifications().stream().filter(classification -> classification.getPrimaryIdentifier().equalsIgnoreCase(id)).findAny();
 	}
 }
