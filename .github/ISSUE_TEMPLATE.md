@@ -11,6 +11,9 @@ A clear and concise description of what the bug is.
 **What version of GTS are you running?**
 You can simply mention the jar's name to ease this process.
 
+**Do you run any extensions? If so, list them here! (e.g. GTS-Reforged-*.jar)**
+Like the above, please mention each jar's full name
+
 **What version of Sponge are you running?**
 Please tell us what version of Sponge you're on, so we can triage effectively
 
