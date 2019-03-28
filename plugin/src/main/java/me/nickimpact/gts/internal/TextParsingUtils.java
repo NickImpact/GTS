@@ -1,6 +1,7 @@
 package me.nickimpact.gts.internal;
 
 import com.google.common.collect.Lists;
+import com.nickimpact.impactor.api.configuration.ConfigBase;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.pricing.Price;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
@@ -133,5 +134,13 @@ public class TextParsingUtils {
 
 	public static List<Text> fetchAndParseMsgs(CommandSource source, ConfigKey<List<String>> key, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
 		return parse(GTS.getInstance().getMsgConfig().get(key), source, tokens, variables);
+	}
+
+	public static Text fetchAndParseMsg(CommandSource source, ConfigBase config, ConfigKey<String> key, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
+		return parse(config.get(key), source, tokens, variables);
+	}
+
+	public static List<Text> fetchAndParseMsgs(CommandSource source, ConfigBase config, ConfigKey<List<String>> key, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
+		return parse(config.get(key), source, tokens, variables);
 	}
 }

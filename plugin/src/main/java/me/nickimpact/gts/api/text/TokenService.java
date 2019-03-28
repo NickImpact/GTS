@@ -112,7 +112,8 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 				return Optional.of(Text.EMPTY);
 
 			Date expiration = listing.getExpiration();
-			return Optional.of(Text.of(new SimpleDateFormat(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.EXPIRATION_DATE_FORMAT)).format(expiration)));
+			Date now = Date.from(Instant.now());
+			return Optional.of(Text.of(new Time(Duration.between(now.toInstant(), expiration.toInstant()).getSeconds()).toString()));
 		});
 		translatorMap.put("listing_specifics", (p, v, m) -> {
 			Listing listing = getListingFromVaribleIfExists(m);

@@ -43,6 +43,8 @@ import org.spongepowered.api.text.format.TextColors;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Typing("reforged")
@@ -158,17 +160,19 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 	@Override
 	public boolean doTakeAway(Player player) {
 		if (BattleRegistry.getBattle((EntityPlayer) player) != null) {
-			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "You are in battle, you can't sell any pokemon currently..."));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(player, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_IN_BATTLE, null, null));
 			return false;
 		}
 
 		if (UNTRADABLE.matches(this.decode())) {
-			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "This pokemon is marked as untradeable, and cannot be sold..."));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(player, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_UNTRADABLE, null, null));
 			return false;
 		}
 
 		if (ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED).stream().anyMatch(name -> name.equalsIgnoreCase(this.decode().getSpecies().getPokemonName()))) {
-			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));
+			Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+			tokens.put("gts_entry", src -> Optional.of(Text.of(this.getName())));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.ERROR_BLACKLISTED, tokens, null));
 			return false;
 		}
 
@@ -237,7 +241,7 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 		Player player = (Player) src;
 
 		if(!player.hasPermission("gts.command.sell.pokemon")) {
-			player.sendMessage(Text.of(TextColors.RED, "You don't have permission to use this command!"));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(src, MsgConfigKeys.NO_PERMISSION, null, null));
 			return CommandResult.success();
 		}
 
@@ -252,27 +256,29 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 		}
 
 		if(price.signum() <= 0) {
-			player.sendMessage(Text.of(TextColors.RED, "Invalid price! Price values must be positive!"));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(src, MsgConfigKeys.PRICE_NOT_POSITIVE, null, null));
 			return CommandResult.empty();
 		}
 
 		PlayerPartyStorage storage = Pixelmon.storageManager.getParty(player.getUniqueId());
 		Pokemon pokemon = storage.get(pos);
 		if(pokemon == null) {
-			player.sendMessage(Text.of(TextColors.RED, "Unable to find a pokemon in the specified slot..."));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(src, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_EMPTY_SLOT, null, null));
 			return CommandResult.success();
 		}
 
 		if(storage.getTeam().size() == 1) {
 			if(!pokemon.isEgg()) {
-				player.sendMessage(Text.of(TextColors.RED, "You can't sell your last non-egg party member..."));
+				player.sendMessage(TextParsingUtils.fetchAndParseMsg(src, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_LAST_MEMBER, null, null));
 				return CommandResult.success();
 			}
 		}
 
 		MoneyPrice mp = new MoneyPrice(price);
 		if(!mp.isLowerOrEqual()) {
-			player.sendMessage(Text.of(TextColors.RED, "Your request is above the max amount of ", new MoneyPrice(mp.getMax()).getText()));
+			Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+			tokens.put("gts_max_price", s -> Optional.of(new MoneyPrice(mp.getMax()).getText()));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(src, MsgConfigKeys.PRICE_MAX_INVALID, tokens, null));
 			return CommandResult.success();
 		}
 

@@ -5,12 +5,16 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.attacks.specialAttacks.basic.HiddenPower;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
+import me.nickimpact.gts.configuration.MsgConfigKeys;
+import me.nickimpact.gts.internal.TextParsingUtils;
 import me.nickimpact.gts.pixelmon.ReforgedBridge;
 import me.nickimpact.gts.pixelmon.config.PokemonConfigKeys;
+import me.nickimpact.gts.pixelmon.config.PokemonMsgConfigKeys;
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
@@ -26,30 +30,30 @@ public enum EnumPokemonFields {
 			return "Pokemon Egg";
 		}
 
-		return pokemon.getSpecies().getPokemonName();
+		return pokemon.getSpecies().getLocalizedName();
 	}),
 	ABILITY(pokemon -> pokemon.getAbility().getLocalizedName()),
-	NATURE(pokemon -> pokemon.getNature().name()),
+	NATURE(pokemon -> pokemon.getNature().getLocalizedName()),
 	NATURE_INCREASED(pokemon -> "+" + toRep(pokemon.getNature().increasedStat)),
 	NATURE_DECREASED(pokemon -> "-" + toRep(pokemon.getNature().decreasedStat)),
 	GENDER(pokemon -> {
 		switch(pokemon.getGender()) {
 			case Male:
-				return Text.of(TextColors.AQUA, "Male");
+				return Text.of(TextColors.AQUA, Gender.Male.getLocalizedName());
 			case Female:
-				return Text.of(TextColors.LIGHT_PURPLE, "Female");
+				return Text.of(TextColors.LIGHT_PURPLE, Gender.Female.getLocalizedName());
 			default:
-				return Text.of(TextColors.WHITE, "None");
+				return Text.of(TextColors.WHITE, Gender.None.getLocalizedName());
 		}
 	}),
 	SHINY(pokemon -> {
 		if(!pokemon.isShiny())
 			return Text.EMPTY;
 
-		return Text.of(TextColors.GRAY, "(", TextColors.GOLD, "Shiny", TextColors.GRAY, ")");
+		return Text.of(TextColors.GRAY, "(", TextColors.GOLD, TextParsingUtils.fetchAndParseMsg(null, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.SHINY_TRANSLATION, null, null), TextColors.GRAY, ")");
 	}),
 
-	GROWTH(pokemon -> pokemon.getGrowth().name()),
+	GROWTH(pokemon -> pokemon.getGrowth().getLocalizedName()),
 	LEVEL(pokemon -> {
 		if(pokemon.isEgg()) {
 			return 1;
@@ -141,25 +145,25 @@ public enum EnumPokemonFields {
 			return texture;
 		}
 
-		return pokemon.isShiny() ? "Shiny" : "";
+		return pokemon.isShiny() ? TextParsingUtils.fetchAndParseMsg(null, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.SHINY_TRANSLATION, null, null).toPlain() : "";
 	}),
 	SPECIAL_TEXTURE(pokemon -> {
 		return pokemon.getSpecialTexture().name();
 	}),
-	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.getStats().ivs).name()),
+	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.getStats().ivs).getLocalizedName()),
 	MOVES_1(pokemon -> pokemon.getMoveset().attacks[0].baseAttack.getLocalizedName()),
 	MOVES_2(pokemon -> pokemon.getMoveset().attacks[1].baseAttack.getLocalizedName()),
 	MOVES_3(pokemon -> pokemon.getMoveset().attacks[2].baseAttack.getLocalizedName()),
 	MOVES_4(pokemon -> pokemon.getMoveset().attacks[3].baseAttack.getLocalizedName()),
-	SHINY_STATE(pokemon -> pokemon.isShiny() ? "Yes" : "No"),
-	POKERUS_STATE(pokemon -> pokemon.getPokerus() != null ? "Yes" : "No"),
-	POKERUS(pokemon -> pokemon.getPokerus() != null ? "PKRS" : null),
+	SHINY_STATE(pokemon -> TextParsingUtils.fetchAndParseMsg(null, pokemon.isShiny() ? MsgConfigKeys.TRANSLATIONS_YES : MsgConfigKeys.TRANSLATIONS_NO, null, null)),
+	POKERUS_STATE(pokemon -> TextParsingUtils.fetchAndParseMsg(null, pokemon.isShiny() ? MsgConfigKeys.TRANSLATIONS_YES : MsgConfigKeys.TRANSLATIONS_NO, null, null)),
+	POKERUS(pokemon ->  pokemon.getPokerus() != null ? TextParsingUtils.fetchAndParseMsg(null, PokemonMsgConfigKeys.POKERUS_TRANSLATION, null, null) : null),
 	UNBREEDABLE(pokemon -> {
 		PokemonSpec unbreedable = new PokemonSpec("unbreedable");
 		if(unbreedable.matches(pokemon)){
-			return Text.of(TextColors.RED, "Unbreedable");
+			return TextParsingUtils.fetchAndParseMsg(null, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.BREEDABLE_TRANSLATION, null, null);
 		}else{
-			return Text.of(TextColors.GREEN, "Breedable");
+			return TextParsingUtils.fetchAndParseMsg(null, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.UNBREEDABLE_TRANSLATION, null, null);
 		}
 	}),
 	POKE_BALL_NAME(pokemon ->{

@@ -63,7 +63,7 @@ public class PixelmonUI extends EntryUI {
 	@Override
 	protected UI createUI(Player player) {
 		UI display = UI.builder()
-				.title(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "(", TextColors.DARK_AQUA, "Pixelmon", TextColors.GRAY, ")"))
+				.title(TextParsingUtils.fetchAndParseMsg(null, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.UI_TITLES_POKEMON, null, null))
 				.dimension(InventoryDimension.of(9, 6))
 				.build(ReforgedBridge.getInstance());
 		return display.define(this.forgeLayout(player));

@@ -31,6 +31,8 @@ import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.nickimpact.impactor.api.configuration.IConfigKeys;
 import com.nickimpact.impactor.api.configuration.keys.ListKey;
 import com.nickimpact.impactor.api.configuration.keys.StringKey;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -125,19 +127,42 @@ public class MsgConfigKeys implements IConfigKeys {
 	public static final ConfigKey<String> ITEM_ENTRY_CONFIRM_TITLE = StringKey.of("entries.item.confirm.title", "&ePurchase {{item_title}}?");
 	public static final ConfigKey<String> ITEM_ENTRY_BASE_TITLE = StringKey.of("entries.item.base.title", "{{item_title}}");
 	public static final ConfigKey<String> ITEM_ENTRY_SPEC_TEMPLATE = StringKey.of("entries.item.spec-template", "{{item_title}}");
-	public static final ConfigKey<String> ITEM_ENTRY_CONFIRM_TITLE_AUCTION = StringKey.of("entries.item.confirm.title-auctions", "&eBid on {{item_title}}?");
-	public static final ConfigKey<List<String>> ITEM_ENTRY_CONFIRM_LORE_AUCTION = ListKey.of("entries.item.confirm.lore-auction", Lists.newArrayList(
-			"&7Seller: &e{{seller}}"
-	));
 
 	public static final ConfigKey<String> DISCORD_PURCHASE = StringKey.of("discord.purchase", "{{buyer}} just purchased a {{listing_specifics}} from {{seller}} for {{price}}");
 	public static final ConfigKey<String> DISCORD_REMOVE = StringKey.of("discord.purchase", "{{player}} has removed their {{listing_specifics}} from the GTS!");
 
-	public static final ConfigKey<String> EXPIRATION_DATE_FORMAT = StringKey.of("entries.expiration.format", "MMM dd --> hh:mm a z");
 	public static final ConfigKey<String> REFRESH_ICON = StringKey.of("item-displays.refresh-icon.title", "&eRefresh Listings");
 
-	private static Map<String, ConfigKey<?>> KEYS = null;
+	// -----------------------------------------------------------------------------
+	// As of 4.1.4
+	// -----------------------------------------------------------------------------
+	public static final ConfigKey<String> FILTER_TITLE = StringKey.of("ui.main.filters.title", "&eShow only {{gts_entry_classification}}?");
+	public static final ConfigKey<String> FILTER_STATUS_ENABLED = StringKey.of("ui.main.filters.status.enabled", "&7Status: &aEnabled");
+	public static final ConfigKey<String> FILTER_STATUS_DISABLED = StringKey.of("ui.main.filters.status.disabled", "&7Status: &cDisabled");
 
+	public static final ConfigKey<List<String>> FILTER_NOTES = ListKey.of("ui.main.filters.notes", Lists.newArrayList(
+			"",
+			"&bControls:",
+			"&7Left Click: &aApply action",
+			"&7Right Click: &aSwitch filter",
+			"",
+			"&bNOTE:",
+			"&7This option will be overridden by",
+			"&7the &eYour Listings &7option",
+			"&7if it is enabled."
+	));
+
+	public static final ConfigKey<String> UI_TITLES_MAIN = StringKey.of("ui.main.title", "&cGTS &7\u00bb &3Listings");
+	public static final ConfigKey<String> UI_MAIN_NO_ENTRIES_AVAILABLE = StringKey.of("ui.main.no-entries-available", "&cNo Listing Types Available");
+	public static final ConfigKey<String> TRANSLATIONS_YES = StringKey.of("translations.yes", "Yes");
+	public static final ConfigKey<String> TRANSLATIONS_NO = StringKey.of("translations.no", "No");
+
+	public static final ConfigKey<String> NO_PERMISSION = StringKey.of("general.errors.no-permission", "{{gts_error}} You don't have permission to use this!");
+	public static final ConfigKey<String> PRICE_NOT_POSITIVE = StringKey.of("general.errors.non-positive-price", "{{gts_error}} Invalid price! Value must be positive!");
+	public static final ConfigKey<String> PRICE_MAX_INVALID = StringKey.of("general.errors.max-price.invalid", "{{gts_error}} Your request is above the max amount of &e{{gts_max_price}}&7!");
+	public static final ConfigKey<String> ERROR_BLACKLISTED = StringKey.of("general.errors.blacklisted", "{{gts_error}} Sorry, but &e{{gts_entry}} &7has been blacklisted from the GTS...");
+
+	private static Map<String, ConfigKey<?>> KEYS = null;
 	@Override
 	public synchronized Map<String, ConfigKey<?>> getAllKeys() {
 		if(KEYS == null) {

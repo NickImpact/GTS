@@ -78,6 +78,22 @@ public class PokemonMsgConfigKeys implements IConfigKeys {
 			"  &7 - &e{{moves_4}}"
 	));
 
+	// -----------------------------------------------------------------------------
+	// As of 1.1.3
+	// -----------------------------------------------------------------------------
+	public static final ConfigKey<String> SHINY_TRANSLATION = StringKey.of("translations.shiny", "Shiny");
+	public static final ConfigKey<String> BREEDABLE_TRANSLATION = StringKey.of("translations.breedable", "Breedable");
+	public static final ConfigKey<String> UNBREEDABLE_TRANSLATION = StringKey.of("translations.unbreedable", "Unbreedable");
+	public static final ConfigKey<String> POKERUS_TRANSLATION = StringKey.of("translations.pokerus", "PKRS");
+
+	public static final ConfigKey<String> UI_TITLES_POKEMON = StringKey.of("ui.selling.title", "&cGTS &7(&3Pokemon&7)");
+
+	public static final ConfigKey<String> ERROR_EMPTY_SLOT = StringKey.of("general.errors.empty-slot-selection", "{{gts_error}} No pokemon was found in the specified slot...");
+	public static final ConfigKey<String> ERROR_LAST_MEMBER = StringKey.of("general.errors.last-member", "{{gts_error}} You can't sell the last non-egg member of your party!");
+	public static final ConfigKey<String> ERROR_UNTRADABLE = StringKey.of("general.errors.untradable", "{{gts_error}} That pokemon is marked as untradable, and cannot be sold...");
+	public static final ConfigKey<String> ERROR_IN_BATTLE = StringKey.of("general.errors.in-battle", "{{gts_error}} You are in battle, so you can't sell any pokemon currently...");
+	public static final ConfigKey<List<String>> REFERENCE_TITLES = ListKey.of("general.refrence.titles", Lists.newArrayList("Pokemon"));
+
 	private static Map<String, ConfigKey<?>> KEYS = null;
 
 	@Override

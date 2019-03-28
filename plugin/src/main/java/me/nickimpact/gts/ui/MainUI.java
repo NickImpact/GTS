@@ -15,6 +15,7 @@ import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.internal.TextParsingUtils;
 import me.nickimpact.gts.utils.ItemUtils;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
@@ -31,6 +32,7 @@ import org.spongepowered.api.text.format.TextColors;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -82,7 +84,7 @@ public class MainUI implements Observer {
 		});
 
 		this.page = QueriedPage.builder()
-				.title(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "\u00BB ", TextColors.DARK_AQUA, "Listings"))
+				.title(TextParsingUtils.fetchAndParseMsg(this.player, MsgConfigKeys.UI_TITLES_MAIN, null, null))
 				.view(this.design())
 				.viewer(player)
 				.previousPage(Sponge.getRegistry().getType(ItemType.class, "pixelmon:trade_holder_left").orElse(ItemTypes.BARRIER), 48)
@@ -124,16 +126,18 @@ public class MainUI implements Observer {
 				.build();
 		Icon rIcon = Icon.from(refresher);
 		rIcon.addListener(clickable -> this.apply());
+		lb.slot(rIcon, 49);
 
 		Text pLTitle = TextParsingUtils.fetchAndParseMsg(this.player, MsgConfigKeys.UI_ITEMS_PLAYER_LISTINGS_TITLE, null, null);
-		List<Text> pLLore = Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", this.justPlayer ? Text.of(TextColors.GREEN, "Enabled") : Text.of(TextColors.RED, "Disabled")));
+
+		List<Text> pLLore = Lists.newArrayList(TextParsingUtils.fetchAndParseMsg(this.player, this.justPlayer ? MsgConfigKeys.FILTER_STATUS_ENABLED : MsgConfigKeys.FILTER_STATUS_DISABLED, null, null));
 		ImmutableList<Text> additional = ImmutableList.copyOf(TextParsingUtils.fetchAndParseMsgs(this.player, MsgConfigKeys.UI_ITEMS_PLAYER_LISTINGS_LORE, null, null));
 		pLLore.addAll(additional);
 		ItemStack pListings = ItemStack.builder().itemType(ItemTypes.WRITTEN_BOOK).add(Keys.DISPLAY_NAME, pLTitle).add(Keys.ITEM_LORE, pLLore).add(Keys.HIDE_MISCELLANEOUS, true).build();
 		Icon pl = new Icon(pListings);
 		pl.addListener(clickable -> {
 			this.justPlayer = !this.justPlayer;
-			List<Text> lore = Lists.newArrayList(Text.of(TextColors.GRAY, "Status: ", this.justPlayer ? Text.of(TextColors.GREEN, "Enabled") : Text.of(TextColors.RED, "Disabled")));
+			List<Text> lore = Lists.newArrayList(TextParsingUtils.fetchAndParseMsg(this.player, this.justPlayer ? MsgConfigKeys.FILTER_STATUS_ENABLED : MsgConfigKeys.FILTER_STATUS_DISABLED, null, null));
 			lore.addAll(additional);
 			pl.getDisplay().offer(Keys.ITEM_LORE, lore);
 			this.page.getView().setSlot(45, pl);
@@ -152,7 +156,7 @@ public class MainUI implements Observer {
 			EntryClassification first = classifications.get(0);
 			lb.slot(this.classificationToIcon(first), 53);
 		} else {
-			lb.slot(Icon.from(ItemStack.builder().itemType(ItemTypes.BARRIER).add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "No Listing Types Available")).build()), 53);
+			lb.slot(Icon.from(ItemStack.builder().itemType(ItemTypes.BARRIER).add(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(this.player, MsgConfigKeys.UI_MAIN_NO_ENTRIES_AVAILABLE, null, null)).build()), 53);
 		}
 
 		return lb.build();
@@ -193,19 +197,14 @@ public class MainUI implements Observer {
 	private Icon classificationToIcon(EntryClassification classification) {
 		String identifier = classification.getPrimaryIdentifier();
 		ItemStack rep = ItemStack.builder().itemType(Sponge.getRegistry().getType(ItemType.class, classification.getItemRep()).orElse(ItemTypes.BARRIER)).build();
-		rep.offer(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Show only ", identifier, "?"));
-		rep.offer(Keys.ITEM_LORE, Lists.newArrayList(
-				Text.of(TextColors.GRAY, "Status: ", classification.getClassification().equals(this.classSelections) ? Text.of(Text.of(TextColors.GREEN, "Enabled")) : Text.of(TextColors.RED, "Disabled")),
-				Text.EMPTY,
-				Text.of(TextColors.AQUA, "Controls:"),
-				Text.of(TextColors.GREEN, "Left Click: Apply action"),
-				Text.of(TextColors.GREEN, "Right Click: Switch filter"),
-				Text.EMPTY,
-				Text.of(TextColors.AQUA, "NOTE:"),
-				Text.of(TextColors.GRAY, "This option will be overridden by"),
-				Text.of(TextColors.GRAY, "the ", TextColors.YELLOW, "Your Listings ", TextColors.GRAY, "option"),
-				Text.of(TextColors.GRAY, "if it is enabled.")
-		));
+
+		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+		tokens.put("gts_entry_classification", src -> Optional.of(Text.of(identifier)));
+		rep.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(this.player, MsgConfigKeys.FILTER_TITLE, tokens, null));
+
+		List<Text> lore = Lists.newArrayList(TextParsingUtils.fetchAndParseMsg(this.player, classification.getClassification().equals(this.classSelections) ? MsgConfigKeys.FILTER_STATUS_ENABLED : MsgConfigKeys.FILTER_STATUS_DISABLED, null, null));
+		lore.addAll(TextParsingUtils.fetchAndParseMsgs(this.player, MsgConfigKeys.FILTER_NOTES, null, null));
+		rep.offer(Keys.ITEM_LORE, lore);
 
 		Icon icon = Icon.from(rep);
 		icon.addListener(clickable -> {
@@ -222,15 +221,15 @@ public class MainUI implements Observer {
 					}
 				}
 
-				List<Text> lore = rep.get(Keys.ITEM_LORE).get();
+				List<Text> l = rep.get(Keys.ITEM_LORE).get();
 				if(classification.getClassification().equals(this.classSelections)) {
 					this.classSelections = null;
-					lore.set(0, Text.of(TextColors.GRAY, "Status: ", TextColors.RED, "Disabled"));
+					l.set(0, TextParsingUtils.fetchAndParseMsg(this.player, MsgConfigKeys.FILTER_STATUS_DISABLED, null, null));
 				} else {
 					this.classSelections = classification.getClassification();
-					lore.set(0, Text.of(TextColors.GRAY, "Status: ", TextColors.GREEN, "Enabled"));
+					l.set(0, TextParsingUtils.fetchAndParseMsg(this.player, MsgConfigKeys.FILTER_STATUS_ENABLED, null, null));
 				}
-				rep.offer(Keys.ITEM_LORE, lore);
+				rep.offer(Keys.ITEM_LORE, l);
 
 				this.updateOption(icon);
 				this.apply();
