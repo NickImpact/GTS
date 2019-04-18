@@ -2,7 +2,6 @@ package me.nickimpact.gts.generations.entries;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
@@ -90,6 +89,11 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 	}
 
 	@Override
+	public List<String> getDetails() {
+		return null;
+	}
+
+	@Override
 	public ItemStack baseItemStack(Player player, Listing listing) {
 		ItemStack icon = getPicture(this.getEntry());
 		Map<String, Object> variables = Maps.newHashMap();
@@ -112,10 +116,10 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 		variables.put("listing", listing);
 		variables.put("pokemon", this.getEntry());
 
-		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE_AUCTION, null, variables));
+		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE, null, variables));
 
 		List<String> template = Lists.newArrayList();
-		template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LORE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE_AUCTION));
+		template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LORE ));
 		this.addLore(icon, template, player, listing, variables);
 
 		return icon;
@@ -128,12 +132,7 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 			}
 		}
 
-		if(listing.getAucData() != null) {
-			template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_INFO));
-		} else {
-			template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
-		}
-
+		template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
 		List<Text> translated = template.stream().map(str -> TextParsingUtils.fetchAndParseMsg(player, str, null, variables)).collect(Collectors.toList());
 		icon.offer(Keys.ITEM_LORE, translated);
 	}

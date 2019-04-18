@@ -14,7 +14,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 ext {
-    pixelmon = '7.0.1'
+    pixelmon = '7.0.5'
 }
 
 jar {
@@ -33,7 +33,7 @@ repositories {
 
 dependencies {
     compile project(':plugin')
-    //compile 'reforged:server:6.3.4@Pixelmon-1.12.2-6.3.4-server.jar'
+    compile 'reforged:server:7.0.5@Pixelmon-1.12.2-7.0.5-server.jar'
 }
 
 minecraft {

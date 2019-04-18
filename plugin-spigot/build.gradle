@@ -1,0 +1,27 @@
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        url "https://hub.spigotmc.org/nexus/content/repositories/snapshots"
+    }
+    maven {
+        url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+    maven { url = "https://hub.spigotmc.org/nexus/content/groups/public/" }
+}
+
+shadowJar {
+    archiveName = "GTS-Spigot-1.12.2-4.2.0-DEV.jar"
+    exclude 'GemsEconomy.jar'
+    exclude 'Impactor*.jar'
+}
+
+dependencies {
+    compile project(':api')
+    compile project(':common')
+    compile project(':spigot')
+    compile fileTree(dir:'libs', include:'*.jar')
+    shadow "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
+    shadow "co.aikar:acf-bukkit:0.5.0-SNAPSHOT"
+}

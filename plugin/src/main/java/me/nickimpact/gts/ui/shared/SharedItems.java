@@ -31,11 +31,11 @@ public class SharedItems {
         );
     }
 
-    public static Icon confirmIcon(boolean auction){
+    public static Icon confirmIcon(){
         return new Icon(ItemStack.builder()
                 .itemType(ItemTypes.DYE)
                 .quantity(1)
-                .add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, (auction ? "Confirm Bid" : "Confirm Purchase")))
+                .add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, ("Confirm Purchase")))
                 .add(Keys.DYE_COLOR, DyeColors.LIME)
                 .build()
         );

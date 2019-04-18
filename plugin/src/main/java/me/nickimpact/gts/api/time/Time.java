@@ -70,7 +70,7 @@ public class Time
     public String toString()
     {
 	    if(time <= 0)
-		    return "Expired";
+		    return "???";
 
 	    return String.format(
 	    		"%02d:%02d:%02d",

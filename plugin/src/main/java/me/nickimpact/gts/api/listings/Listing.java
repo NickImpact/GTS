@@ -3,17 +3,13 @@ package me.nickimpact.gts.api.listings;
 import lombok.Setter;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.exceptions.ListingException;
-import me.nickimpact.gts.api.listings.data.AuctionData;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.configuration.ConfigKeys;
-import me.nickimpact.gts.entries.prices.MoneyPrice;
 import me.nickimpact.gts.utils.ListingUtils;
 import lombok.Getter;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 
-import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
@@ -43,9 +39,6 @@ public final class Listing {
     /** When the lot will expire, if the above is true */
     @Getter private Date expiration;
 
-    /** Represents the data for an auction, if the listing is in fact one */
-    @Getter private final AuctionData aucData;
-
 	/**
 	 * Constructs the content of a listing that will be available on the GTS market
 	 *
@@ -53,16 +46,14 @@ public final class Listing {
 	 * @param entry The element represented by the listing
 	 * @param expires Whether or not the listing will expire
 	 * @param seconds The duration of the listing's lifetime
-	 * @param ad Data representing an auction (can be null to state it is not an auction)
 	 */
-    public Listing(Player player, Entry entry, boolean expires, long seconds, @Nullable AuctionData ad) {
+    public Listing(Player player, Entry entry, boolean expires, long seconds) {
 		this.uuid = UUID.randomUUID();
 		this.ownerName = player.getName();
 		this.ownerUUID = player.getUniqueId();
 		this.entry = entry;
 		this.expires = expires;
 		this.expiration = Date.from(Instant.now().plusSeconds(seconds));
-		this.aucData = ad;
     }
 
     public Listing(Builder builder) {
@@ -72,7 +63,6 @@ public final class Listing {
 	    this.entry = builder.entry;
 	    this.expires = builder.expires;
 	    this.expiration = builder.expiration;
-	    this.aucData = builder.data;
     }
 
     public static Builder builder() {
@@ -149,7 +139,6 @@ public final class Listing {
 
 		private Date expiration;
 
-		private AuctionData data;
 
 		public Builder player(Player player) {
 			this.player = player;
@@ -179,11 +168,6 @@ public final class Listing {
 
 		public Builder expiration(Date expiration) {
 			this.expiration = expiration;
-			return this;
-		}
-
-		public <T extends MoneyPrice> Builder auction(T price) {
-			this.data = new AuctionData(price);
 			return this;
 		}
 

@@ -10,7 +10,7 @@ import me.nickimpact.gts.api.events.DataReceivedEvent;
 import me.nickimpact.gts.api.text.TokenService;
 import me.nickimpact.gts.entries.items.ui.ItemUI;
 import me.nickimpact.gts.internal.GtsServiceImpl;
-import me.nickimpact.gts.api.discord.IDiscordNotifier;
+import me.nickimpact.gts.discord.IDiscordNotifier;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryAdapter;

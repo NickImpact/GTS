@@ -2,7 +2,6 @@ package me.nickimpact.gts.discord;
 
 import com.google.common.base.Throwables;
 import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.api.discord.IDiscordNotifier;
 import me.nickimpact.gts.configuration.ConfigKeys;
 import lombok.Getter;
 

@@ -16,7 +16,6 @@ import lombok.Getter;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.text.Translator;
-import me.nickimpact.gts.api.utils.ItemUtils;
 import me.nickimpact.gts.generations.config.PokemonConfigKeys;
 import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.generations.entries.PokemonEntry;
@@ -27,7 +26,6 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 

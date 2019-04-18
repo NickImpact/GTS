@@ -34,6 +34,7 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -62,10 +63,17 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 	public ItemEntry(ItemStack element, MoneyPrice price) {
 		super(element.toContainer(), price);
 		this.item = element;
+
+		String extra = "";
+		int count = element.getQuantity();
+		if(count > 1) {
+			extra = count + "x ";
+		}
+
 		if(GTS.getInstance().getConfig().get(ConfigKeys.CUSTOM_NAME_ALLOWED)) {
-			this.name = element.get(Keys.DISPLAY_NAME).map(TextSerializers.FORMATTING_CODE::serialize).map(TextSerializers.FORMATTING_CODE::stripCodes).orElse(element.getTranslation().get());
+			this.name = extra + element.get(Keys.DISPLAY_NAME).map(TextSerializers.FORMATTING_CODE::serialize).map(TextSerializers.FORMATTING_CODE::stripCodes).orElse(element.getTranslation().get());
 		} else {
-			this.name = element.getTranslation().get();
+			this.name = extra + element.getTranslation().get();
 		}
 	}
 
@@ -91,6 +99,30 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 		} else {
 			return name;
 		}
+	}
+
+	@Override
+	public List<String> getDetails() {
+		List<String> output = Lists.newArrayList();
+
+		ItemStack item = this.decode();
+		output.add("\tStack Size: " + item.getQuantity());
+
+		if(item.get(Keys.DISPLAY_NAME).isPresent()) {
+			output.add("\tItem Display Name: " + item.get(Keys.DISPLAY_NAME).get().toPlain());
+		}
+
+		if(item.get(Keys.ITEM_LORE).isPresent()) {
+			output.add("\tItem Lore: ");
+			output.addAll(item.get(Keys.ITEM_LORE).get().stream().map(t -> "\t\t" + t.toPlain()).collect(Collectors.toList()));
+		}
+
+		if(item.get(Keys.ITEM_ENCHANTMENTS).isPresent()) {
+			output.add("\tEnchantments: ");
+			output.addAll(item.get(Keys.ITEM_ENCHANTMENTS).get().stream().map(t -> "\t\t" + t.getType().getTranslation().get()).collect(Collectors.toList()));
+		}
+
+		return output;
 	}
 
 	@Override
@@ -129,12 +161,7 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 			}
 		});
 
-		if(listing.getAucData() != null) {
-			lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_INFO));
-		} else {
-			lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
-		}
-
+		lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
 		icon.offer(Keys.ITEM_LORE, TextParsingUtils.parse(lore, player, null, variables));
 
 		return icon;
@@ -168,7 +195,7 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 		// User will always be a player here due to the offline support check
 		Player player = (Player)user;
 		if(player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).size() == 36) {
-			player.sendMessage(Text.of("Your inventory is full, so we can't award you this listing..."));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.ITEMS_INVENTORY_FULL, null, null));
 			return false;
 		}
 
@@ -182,13 +209,15 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 		if(item.isPresent()) {
 			if(!GTS.getInstance().getConfig().get(ConfigKeys.CUSTOM_NAME_ALLOWED)) {
 				if(item.get().get(Keys.DISPLAY_NAME).isPresent()) {
-					player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "You can't sell items with custom names!"));
+					player.sendMessage(TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.ITEMS_NO_CUSTOM_NAMES, null, null));
 					return false;
 				}
 			}
 
 			if(GTS.getInstance().getConfig().get(ConfigKeys.BLACKLISTED_ITEMS).contains(item.get().getType().getId())) {
-				player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));
+				Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+				tokens.put("gts_entry", src -> Optional.of(Text.of(this.getName())));
+				player.sendMessage(TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.ERROR_BLACKLISTED, tokens, null));
 				return false;
 			}
 
@@ -205,7 +234,7 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 
 		Player player = (Player) src;
 		if(!player.hasPermission("gts.command.sell.items")) {
-			player.sendMessage(Text.of(TextColors.RED, "You don't have permission to use this command!"));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(src, MsgConfigKeys.NO_PERMISSION, null, null));
 			return CommandResult.success();
 		}
 
@@ -213,7 +242,7 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 		BigDecimal price = new BigDecimal(Double.parseDouble(args[1]));
 
 		if(price.signum() <= 0) {
-			player.sendMessage(Text.of(TextColors.RED, "Invalid price! Price values must be positive!"));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(src, MsgConfigKeys.PRICE_NOT_POSITIVE, null, null));
 			return CommandResult.empty();
 		}
 
@@ -224,7 +253,7 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 
 		Optional<ItemStack> hand = player.getItemInHand(HandTypes.MAIN_HAND);
 		if(!hand.isPresent()) {
-			player.sendMessage(Text.of(TextColors.RED, "Your hand has no item in it!"));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(src, MsgConfigKeys.ITEMS_NONE_IN_HAND, null, null));
 			return CommandResult.empty();
 		}
 
@@ -244,7 +273,7 @@ public class ItemEntry extends Entry<DataContainer, ItemStack> {
 
 		MoneyPrice mp = new MoneyPrice(price);
 		if(!mp.isLowerOrEqual()) {
-			player.sendMessage(Text.of(TextColors.RED, "Your request is above the max amount of ", new MoneyPrice(mp.getMax()).getText()));
+			player.sendMessage(TextParsingUtils.fetchAndParseMsg(src, MsgConfigKeys.PRICE_MAX_INVALID, null, null));
 			return CommandResult.success();
 		}
 

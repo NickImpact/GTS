@@ -1,8 +1,12 @@
 rootProject.name = 'GTS'
 
 include (
-        'plugin',
-        'pixelmon',
-        'generations'
+        'api',
+        'common',
+        'spigot',
+        'sponge',
+        'reforged-sponge'
 )
+include 'plugin-sponge'
+include 'plugin-spigot'
 

@@ -10,8 +10,6 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
-import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.generations.GenerationsBridge;
 import me.nickimpact.gts.generations.config.PokemonConfigKeys;
 import net.minecraft.nbt.NBTTagCompound;

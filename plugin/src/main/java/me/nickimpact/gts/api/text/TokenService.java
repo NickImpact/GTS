@@ -3,16 +3,12 @@ package me.nickimpact.gts.api.text;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.api.listings.data.AuctionData;
 import me.nickimpact.gts.configuration.ConfigKeys;
-import me.nickimpact.gts.api.exceptions.TokenAlreadyRegisteredException;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.listings.pricing.Price;
 import me.nickimpact.gts.api.time.Time;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.internal.ItemTokens;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
-import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
 import io.github.nucleuspowered.nucleus.api.exceptions.PluginAlreadyRegisteredException;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
 import me.nickimpact.gts.internal.TextParsingUtils;
@@ -21,7 +17,6 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import javax.annotation.Nonnull;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -64,42 +59,6 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 				return Optional.empty();
 
 			return Optional.of(listing.getEntry().getPrice().getText());
-		});
-		translatorMap.put("auc_price", (p, v, m) -> {
-			Listing listing = getListingFromVaribleIfExists(m);
-			if(listing == null)
-				return Optional.empty();
-
-			Price price = listing.getEntry().getPrice();
-			return Optional.of(Text.of(price.getText()));
-		});
-		translatorMap.put("increment", (p, v, m) -> {
-			Listing listing = getListingFromVaribleIfExists(m);
-			if(listing == null)
-				return Optional.empty();
-
-			AuctionData data = listing.getAucData();
-			if(data != null) {
-				return Optional.of(data.getIncrement().getText());
-			}
-
-			return Optional.empty();
-		});
-		translatorMap.put("high_bidder", (p, v, m) -> {
-			Listing listing = getListingFromVaribleIfExists(m);
-			if(listing == null) {
-				return Optional.empty();
-			}
-
-			AuctionData data = listing.getAucData();
-			if(data != null) {
-				if(data.getHbNameString() == null) {
-					return Optional.of(Text.of("No bidder..."));
-				}
-				return Optional.of(Text.of(data.getHbNameString()));
-			}
-
-			return Optional.of(Text.of("No bidder..."));
 		});
 		translatorMap.put("max_listings", (p, v, m) -> Optional.of(Text.of(GTS.getInstance().getConfig().get(ConfigKeys.MAX_LISTINGS))));
 		translatorMap.put("id", (p, v, m) -> {

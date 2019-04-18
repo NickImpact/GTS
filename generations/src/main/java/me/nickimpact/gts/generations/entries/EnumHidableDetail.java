@@ -1,13 +1,11 @@
 package me.nickimpact.gts.generations.entries;
 
 import com.nickimpact.impactor.api.configuration.ConfigKey;
-import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
 import net.minecraft.nbt.NBTTagCompound;
 

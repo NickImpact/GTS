@@ -1,5 +1,6 @@
 package me.nickimpact.gts.ui;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.GTSInfo;
@@ -14,6 +15,8 @@ import com.nickimpact.impactor.gui.v2.Displayable;
 import com.nickimpact.impactor.gui.v2.Icon;
 import com.nickimpact.impactor.gui.v2.Layout;
 import com.nickimpact.impactor.gui.v2.UI;
+import me.nickimpact.gts.utils.StringUtils;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
@@ -23,10 +26,8 @@ import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
@@ -60,7 +61,7 @@ public class ConfirmUI implements Displayable, Observer {
 
 		this.ui = UI.builder()
 				.dimension(InventoryDimension.of(9, 6))
-				.title(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "\u00BB ", TextColors.DARK_AQUA, "Confirmation"))
+				.title(TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.UI_TITLES_CONFIRMATION, null, null))
 //				.closeAction((close, pl) -> Sponge.getScheduler().getTasksByName("Confirm-" + this.player.getName()).forEach(Task::cancel))
 				.build(GTS.getInstance());
 		Layout layout = this.forgeDisplay();
@@ -146,9 +147,21 @@ public class ConfirmUI implements Displayable, Observer {
 			ListingUtils.deleteEntry(this.target);
 			clickable.getPlayer().sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.REMOVAL_CHOICE), player, null, variables));
 
-			final String b = TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.DISCORD_REMOVE, null, variables).toPlain();
 			GTS.getInstance().getDiscordNotifier().ifPresent(notifier -> {
-				Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_REMOVE), b);
+				Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+				tokens.put("gts_publisher", src -> Optional.of(Text.of(this.target.getOwnerName())));
+				tokens.put("gts_publisher_id", src -> Optional.of(Text.of(this.target.getOwnerUUID())));
+				tokens.put("gts_published_item", src -> Optional.of(Text.of(this.target.getEntry().getName())));
+
+				List<String> details = Lists.newArrayList("");
+				details.addAll(this.target.getEntry().getDetails());
+				tokens.put("gts_published_item_details", src -> Optional.of(Text.of(StringUtils.stringListToString(details))));
+				tokens.put("gts_publishing_price", src -> Optional.of(Text.of(this.target.getEntry().getPrice().getText().toPlain())));
+				tokens.put("gts_publishing_expiration", src -> Optional.of(Text.of(ListingUtils.sdf.format(this.target.getExpiration()))));
+
+				Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_REMOVE), StringUtils.textListToString(TextParsingUtils.fetchAndParseMsgs(
+						null, MsgConfigKeys.DISCORD_REMOVAL_TEMPLATE, tokens, null)
+				));
 				notifier.sendMessage(message);
 			});
 
@@ -159,7 +172,7 @@ public class ConfirmUI implements Displayable, Observer {
 	}
 
 	private Icon drawConfirmIcon() {
-		Icon icon = SharedItems.confirmIcon(this.target.getAucData() != null);
+		Icon icon = SharedItems.confirmIcon();
 		icon.addListener(clickable -> {
 			if (confirmed) {
 				ListingUtils.purchase(clickable.getPlayer(), this.target);

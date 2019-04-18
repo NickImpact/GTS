@@ -89,6 +89,13 @@ public abstract class Entry<T, U> {
 	public abstract String getName();
 
 	/**
+	 * Retrieves extended details about the listing
+	 *
+	 * @return A list of details relating to the item
+	 */
+	public abstract List<String> getDetails();
+
+	/**
 	 * Represents the ItemStack that will be used to represent the element in the listing display
 	 *
 	 * @return An ItemStack built to represent an element

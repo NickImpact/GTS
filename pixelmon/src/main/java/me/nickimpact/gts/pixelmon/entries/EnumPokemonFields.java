@@ -161,9 +161,9 @@ public enum EnumPokemonFields {
 	UNBREEDABLE(pokemon -> {
 		PokemonSpec unbreedable = new PokemonSpec("unbreedable");
 		if(unbreedable.matches(pokemon)){
-			return TextParsingUtils.fetchAndParseMsg(null, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.BREEDABLE_TRANSLATION, null, null);
-		}else{
 			return TextParsingUtils.fetchAndParseMsg(null, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.UNBREEDABLE_TRANSLATION, null, null);
+		}else{
+			return TextParsingUtils.fetchAndParseMsg(null, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.BREEDABLE_TRANSLATION, null, null);
 		}
 	}),
 	POKE_BALL_NAME(pokemon ->{

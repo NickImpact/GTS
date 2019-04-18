@@ -1,16 +1,16 @@
 package me.nickimpact.gts.utils;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.GTSInfo;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.listings.data.AuctionData;
 import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.internal.TextParsingUtils;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.text.Text;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * (Some note will go here)
@@ -33,40 +34,14 @@ public class ListingTasks {
         Sponge.getScheduler().createTaskBuilder().execute(() -> {
             final List<Listing> listings = ImmutableList.copyOf(GTS.getInstance().getListingsCache());
 	        listings.stream().filter(listing -> listing.getExpiration().before(Date.from(Instant.now()))).forEach(listing -> {
-	            boolean successful;
-
-	            AuctionData ad = listing.getAucData();
-	        	if(ad != null && ad.getHighBidder() != null) {
-	        		successful = award(PlayerUtils.getUserFromUUID(ad.getHighBidder()).orElse(null), listing);
-	        		// Even if we can't give the winning player their award, due to them being offline, at least
-			        // give the auctioneer their winnings
-	        		if(!ad.isOwnerReceived()) {
-				        try {
-					        listing.getEntry().getPrice().reward(listing.getOwnerUUID());
-					        ad.setOwnerReceived(true);
-					        if(!successful) {
-					        	GTS.getInstance().getStorage().updateListing(listing);
-					        }
-					        Sponge.getServer().getPlayer(listing.getOwnerUUID()).ifPresent(player -> {
-									Map<String, Object> variables = Maps.newHashMap();
-									variables.put("listing", listing);
-									player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_SOLD), player, null, variables));
-					        });
-				        } catch (Exception e) {
-					        e.printStackTrace();
-				        }
-			        }
-	            } else {
-		            successful = expire(listing);
-	            }
-
-	            if(successful) {
+	            if(expire(listing)) {
 	        		ListingUtils.deleteEntry(listing);
 	            }
             });
         }).interval(1, TimeUnit.SECONDS).submit(GTS.getInstance());
     }
 
+    @SuppressWarnings("unchecked")
     private static boolean expire(Listing listing) {
 		Optional<Player> owner = Sponge.getServer().getPlayer(listing.getOwnerUUID());
 		if(!owner.isPresent()) {
@@ -86,40 +61,22 @@ public class ListingTasks {
 
 	    player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.REMOVAL_EXPIRES), player, null, variables));
 
-		final String b = TextParsingUtils.parse("{{seller}}'s {{listing_specifics}} listing has now expired!", player, null, variables).toPlain();
-		GTS.getInstance().getDiscordNotifier().ifPresent(notifier -> {
-			Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_EXPIRE), b);
-			notifier.sendMessage(message);
-		});
+	    GTS.getInstance().getDiscordNotifier().ifPresent(notifier -> {
+		    Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+		    tokens.put("gts_publisher", src -> Optional.of(Text.of(listing.getOwnerName())));
+		    tokens.put("gts_publisher_id", src -> Optional.of(Text.of(listing.getOwnerUUID())));
+		    tokens.put("gts_published_item", src -> Optional.of(Text.of(listing.getEntry().getName())));
 
-	    return true;
-    }
+		    List details = Lists.newArrayList("");
+		    details.addAll(listing.getEntry().getDetails());
+		    tokens.put("gts_published_item_details", src -> Optional.of(Text.of(StringUtils.stringListToString(details))));
+		    tokens.put("gts_publishing_price", src -> Optional.of(Text.of(listing.getEntry().getPrice().getText().toPlain())));
 
-    private static boolean award(User user, Listing listing) {
-    	if(user == null || !user.getPlayer().isPresent())
-    		return false;
-
-    	if(!listing.getEntry().giveEntry(user.getPlayer().get()))
-    	    return false;
-
-	    try {
-		    if(!listing.getEntry().getPrice().canPay(user.getPlayer().get())) {
-			    user.getPlayer().get().sendMessage(Text.of(GTSInfo.ERROR, "Your balance was too low to afford your bid..."));
-			    return false;
-		    }
-		    listing.getEntry().getPrice().pay(user);
-	    } catch (Exception e) {
-		    e.printStackTrace();
-	    }
-
-	    Map<String, Object> variables = Maps.newHashMap();
-		variables.put("listing", listing);
-		user.getPlayer().get().sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_WIN), user.getPlayer().get(), null, variables));
-
-		List<Text> broadcast = TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_WIN_BROADCAST), user.getPlayer().get(), null, variables);
-		Sponge.getServer().getOnlinePlayers().stream()
-				.filter(pl -> GTS.getInstance().getIgnorers().contains(pl.getUniqueId()))
-				.forEach(pl -> pl.sendMessages(broadcast));
+		    Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_EXPIRE), StringUtils.textListToString(TextParsingUtils.fetchAndParseMsgs(
+				    null, MsgConfigKeys.DISCORD_EXPIRATION_TEMPLATE, tokens, null)
+		    ));
+		    notifier.sendMessage(message);
+	    });
 
 	    return true;
     }

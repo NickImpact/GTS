@@ -1,0 +1,24 @@
+repositories {
+    mavenCentral()
+    maven {
+        name 'sponge-repo'
+        url 'https://repo.spongepowered.org/maven'
+    }
+    maven {
+        name 'drnaylor-minecraft'
+        url 'http://repo.drnaylor.co.uk/artifactory/list/minecraft'
+    }
+    maven {
+        name 'drnaylor'
+        url 'http://repo.drnaylor.co.uk/artifactory/list/quickstart'
+    }
+}
+
+dependencies {
+    compile project(':api')
+    compile project(':sponge')
+    shadow 'org.spongepowered:spongeapi:7.1.0'
+    shadow 'io.github.nucleuspowered:nucleus-api:1.7.0-S7.1'
+}
+
+

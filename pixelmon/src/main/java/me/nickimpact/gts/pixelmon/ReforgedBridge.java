@@ -12,16 +12,12 @@ import com.nickimpact.impactor.api.plugins.SpongePlugin;
 import com.nickimpact.impactor.api.services.plan.PlanData;
 import com.nickimpact.impactor.logging.ConsoleLogger;
 import com.nickimpact.impactor.logging.SpongeLogger;
-import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
-import me.nickimpact.gts.api.events.DataReceivedEvent;
-import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.text.Translator;
 import me.nickimpact.gts.pixelmon.config.PokemonConfigKeys;
 import me.nickimpact.gts.pixelmon.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.pixelmon.entries.ReforgedEntry;
-import me.nickimpact.gts.pixelmon.entries.removable.PokemonEntry;
 import me.nickimpact.gts.pixelmon.text.NucleusPokemonTokens;
 import me.nickimpact.gts.pixelmon.ui.PixelmonUI;
 import org.spongepowered.api.Sponge;
@@ -75,28 +71,12 @@ public class ReforgedBridge extends SpongePlugin {
 				"pixelmon:gs_ball",
 				ReforgedEntry::handleCommand
 		);
-		try {
-			service.getRegistry(GtsService.RegistryType.ENTRY).register(PokemonEntry.class);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
 	}
 
 	@Listener
 	public void onServerStarted(GameStartingServerEvent e) {
 		for(Map.Entry<String, Translator> token : NucleusPokemonTokens.getTokens().entrySet()) {
 			service.getTokensService().register(token.getKey(), token.getValue());
-		}
-	}
-
-	@Listener
-	public void onDataReceived(DataReceivedEvent e) {
-		if(!e.filter(listing -> listing.getEntry() instanceof PokemonEntry).isEmpty()) {
-			e.filterAndEdit(listing -> listing.getEntry() instanceof PokemonEntry, listings -> {
-				for (Listing listing : listings) {
-					listing.setEntry(new ReforgedEntry((Pokemon) listing.getEntry().getEntry(), listing.getEntry().getPrice()));
-				}
-			});
 		}
 	}
 

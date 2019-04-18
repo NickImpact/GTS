@@ -1,5 +1,6 @@
 package me.nickimpact.gts.utils;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.GTSInfo;
@@ -18,12 +19,11 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.util.Tuple;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.function.Function;
@@ -35,6 +35,8 @@ import java.util.stream.Collectors;
  * @author NickImpact
  */
 public class ListingUtils {
+
+	public static SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy '-' hh:mm:ss a z");
 
 	private static Text toOneText(Player player, List<String> text, Map<String, Function<CommandSource, Optional<Text>>> tokens, Map<String, Object> variables) {
 		StringBuilder sb = new StringBuilder();
@@ -126,9 +128,21 @@ public class ListingUtils {
 			    pl.sendMessages(broadcast);
 		    }
 
-		    final Text b = toOneText(player, GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ADD_BROADCAST), null, variables);
 			GTS.getInstance().getDiscordNotifier().ifPresent(notifier -> {
-				Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_NEW_LISTING), b.toPlain());
+				Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+				tokens.put("gts_publisher", src -> Optional.of(Text.of(listing.getOwnerName())));
+				tokens.put("gts_publisher_id", src -> Optional.of(Text.of(listing.getOwnerUUID())));
+				tokens.put("gts_published_item", src -> Optional.of(Text.of(listing.getEntry().getName())));
+
+				List<String> details = Lists.newArrayList("");
+				details.addAll(listing.getEntry().getDetails());
+				tokens.put("gts_published_item_details", src -> Optional.of(Text.of(StringUtils.stringListToString(details))));
+				tokens.put("gts_publishing_price", src -> Optional.of(Text.of(listing.getEntry().getPrice().getText().toPlain())));
+				tokens.put("gts_publishing_expiration", src -> Optional.of(Text.of(sdf.format(listing.getExpiration()))));
+
+				Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_SELL_LISTING), StringUtils.textListToString(TextParsingUtils.fetchAndParseMsgs(
+						null, MsgConfigKeys.DISCORD_PUBLISH_TEMPLATE, tokens, null)
+				));
 				notifier.sendMessage(message);
 			});
 
@@ -172,9 +186,24 @@ public class ListingUtils {
 
 			deleteEntry(listing);
 
-			final String b = TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.DISCORD_PURCHASE), player, null, variables).toPlain();
 			GTS.getInstance().getDiscordNotifier().ifPresent(notifier -> {
-				Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_SELL_LISTING), b);
+				Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+				tokens.put("gts_seller", src -> Optional.of(Text.of(listing.getOwnerName())));
+				tokens.put("gts_seller_id", src -> Optional.of(Text.of(listing.getOwnerUUID())));
+				tokens.put("gts_buyer", src -> Optional.of(Text.of(player.getName())));
+				tokens.put("gts_buyer_id", src -> Optional.of(Text.of(player.getUniqueId())));
+
+				tokens.put("gts_published_item", src -> Optional.of(Text.of(listing.getEntry().getName())));
+
+				List<String> details = Lists.newArrayList("");
+				details.addAll(listing.getEntry().getDetails());
+				tokens.put("gts_published_item_details", src -> Optional.of(Text.of(StringUtils.stringListToString(details))));
+				tokens.put("gts_publishing_price", src -> Optional.of(Text.of(listing.getEntry().getPrice().getText().toPlain())));
+				tokens.put("gts_publishing_expiration", src -> Optional.of(Text.of(sdf.format(listing.getExpiration()))));
+
+				Message message = notifier.forgeMessage(GTS.getInstance().getConfig().get(ConfigKeys.DISCORD_NEW_LISTING), StringUtils.textListToString(TextParsingUtils.fetchAndParseMsgs(
+						null, MsgConfigKeys.DISCORD_PURCHASE_TEMPLATE, tokens, null)
+				));
 				notifier.sendMessage(message);
 			});
 
@@ -183,45 +212,6 @@ public class ListingUtils {
 			player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.NOT_ENOUGH_FUNDS), player, null, variables));
 		}
 
-    }
-
-    public static void bid(Player player, Listing listing) {
-	    Map<String, Object> variables = Maps.newHashMap();
-	    variables.put("listing", listing);
-	    variables.put("entry", listing.getEntry().getEntry());
-
-	    if(listing.getAucData() != null) {
-			if(listing.getAucData().getHighBidder() != null && listing.getAucData().getHighBidder().equals(player.getUniqueId())) {
-				player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_IS_HIGH_BIDDER), player, null, variables));
-			} else {
-				MoneyPrice newPrice = listing.getEntry().getPrice().calculate(listing.getAucData().getIncrement());
-				if(!newPrice.canPay(player)) {
-					player.sendMessage(Text.of(GTSInfo.ERROR, "Your balance is too low to bid..."));
-					return;
-				}
-
-				UUID oldHigh = listing.getAucData().getHighBidder();
-				Sponge.getServer().getPlayer(oldHigh).ifPresent(p -> {
-					Text message = Text.of(GTSInfo.PREFIX, TextColors.GRAY, TextActions.executeCallback(src -> bid((Player) src, listing)), TextActions.showText(Text.of(TextColors.GRAY, "Click to bid!")), "You've been ", TextColors.RED, "outbid", TextColors.GRAY, "... Click here to bid once more!");
-					p.sendMessages(message);
-				});
-
-				listing.getAucData().setHighBidder(player.getUniqueId());
-				listing.getAucData().setHbNameString(player.getName());
-				if(listing.getExpiration().getTime() / 1000 - Date.from(Instant.now()).getTime() / 1000 < 15) {
-					listing.increaseTimeForBid();
-				}
-
-				player.sendMessages(TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_BID), player, null, variables));
-				listing.getEntry().getPrice().add(listing.getAucData().getIncrement());
-				GTS.getInstance().getStorage().updateListing(listing);
-
-				List<Text> broadcast = TextParsingUtils.parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_BID_BROADCAST), player, null, variables);
-				Sponge.getServer().getOnlinePlayers().stream()
-						.filter(pl -> GTS.getInstance().getIgnorers().contains(pl.getUniqueId()))
-						.forEach(pl -> pl.sendMessages(broadcast));
-			}
-		}
     }
 
     private static boolean hasMax(User user) {

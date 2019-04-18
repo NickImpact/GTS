@@ -29,6 +29,6 @@ public class EntryClassification {
 	private BiFunction<CommandSource, String[], CommandResult> cmdHandler;
 
 	public String getPrimaryIdentifier() {
-		return identifers.size() > 0 ? identifers.get(0) : "Unknown";
+		return identifers.size() > 0 ? identifers.get(0) : "???";
 	}
 }

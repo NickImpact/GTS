@@ -1,5 +1,5 @@
 jar {
-    archiveName = "GTS-${project.ext.sponge}-${project.ext.version}.jar"
+    archiveName = "GTS-${project.ext.sponge}-${project.version}.jar"
 }
 
 repositories {

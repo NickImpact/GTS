@@ -1,12 +1,16 @@
 package me.nickimpact.gts.api.listings.entries;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.nickimpact.impactor.gui.v2.Displayable;
 import com.nickimpact.impactor.gui.v2.Icon;
 import com.nickimpact.impactor.gui.v2.Layout;
 import com.nickimpact.impactor.gui.v2.UI;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.time.Time;
+import me.nickimpact.gts.configuration.MsgConfigKeys;
+import me.nickimpact.gts.internal.TextParsingUtils;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
@@ -18,6 +22,9 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 public abstract class EntryUI implements Displayable {
 
@@ -43,17 +50,22 @@ public abstract class EntryUI implements Displayable {
 
 		EconomyService service = GTS.getInstance().getEconomy();
 
+		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+		tokens.put("gts_button_currency_left_click", src -> Optional.of(service.getDefaultCurrency().format(new BigDecimal(this.getLeftClickBaseAmount()))));
+		tokens.put("gts_button_currency_right_click", src -> Optional.of(service.getDefaultCurrency().format(new BigDecimal(this.getRightClickBaseAmount()))));
+		tokens.put("gts_button_currency_shift_left_click", src -> Optional.of(service.getDefaultCurrency().format(new BigDecimal(this.getLeftClickShiftAmount()))));
+		tokens.put("gts_button_currency_shift_right_click", src -> Optional.of(service.getDefaultCurrency().format(new BigDecimal(this.getRightClickShiftAmount()))));
+		tokens.put("gts_button_time_left_click", src -> Optional.of(Text.of("00:01:00")));
+		tokens.put("gts_button_time_right_click", src -> Optional.of(Text.of("00:10:00")));
+		tokens.put("gts_button_time_shift_left_click", src -> Optional.of(Text.of("01:00:00")));
+		tokens.put("gts_button_time_shift_right_click", src -> Optional.of(Text.of("10:00:00")));
+
 		this.increase = Icon.from(
 				ItemStack.builder()
 						.itemType(ItemTypes.DYE)
 						.add(Keys.DYE_COLOR, DyeColors.LIME)
-						.add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, "Increase Amount Requested"))
-						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "+", service.getDefaultCurrency().format(new BigDecimal(this.getLeftClickBaseAmount()))),
-								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "+", service.getDefaultCurrency().format(new BigDecimal(this.getRightClickBaseAmount()))),
-								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "+", service.getDefaultCurrency().format(new BigDecimal(this.getLeftClickShiftAmount()))),
-								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "+", service.getDefaultCurrency().format(new BigDecimal(this.getRightClickShiftAmount())))
-						))
+						.add(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.BUTTONS_INCREASE_CURRENCY_TITLE, null, null))
+						.add(Keys.ITEM_LORE, TextParsingUtils.fetchAndParseMsgs(player, MsgConfigKeys.BUTTONS_INCREASE_CURRENCY_LORE, tokens, null))
 						.build()
 		);
 		this.increase.addListener(clickable -> {
@@ -79,13 +91,8 @@ public abstract class EntryUI implements Displayable {
 				ItemStack.builder()
 						.itemType(ItemTypes.DYE)
 						.add(Keys.DYE_COLOR, DyeColors.RED)
-						.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Decrease Amount Requested"))
-						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "-", service.getDefaultCurrency().format(new BigDecimal(this.getLeftClickBaseAmount()))),
-								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "-", service.getDefaultCurrency().format(new BigDecimal(this.getRightClickBaseAmount()))),
-								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "-", service.getDefaultCurrency().format(new BigDecimal(this.getLeftClickShiftAmount()))),
-								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "-", service.getDefaultCurrency().format(new BigDecimal(this.getRightClickShiftAmount())))
-						))
+						.add(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.BUTTONS_DECREASE_CURRENCY_TITLE, null, null))
+						.add(Keys.ITEM_LORE, TextParsingUtils.fetchAndParseMsgs(player, MsgConfigKeys.BUTTONS_DECREASE_CURRENCY_LORE, tokens, null))
 						.build()
 		);
 		this.decrease.addListener(clickable -> {
@@ -108,13 +115,8 @@ public abstract class EntryUI implements Displayable {
 				ItemStack.builder()
 						.itemType(ItemTypes.DYE)
 						.add(Keys.DYE_COLOR, DyeColors.LIME)
-						.add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, "Increase Time"))
-						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "+1 minute"),
-								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "+10 minutes"),
-								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "+1 hour"),
-								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "+10 hours")
-						))
+						.add(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.BUTTONS_INCREASE_TIME_TITLE, null, null))
+						.add(Keys.ITEM_LORE, TextParsingUtils.fetchAndParseMsgs(player, MsgConfigKeys.BUTTONS_INCREASE_TIME_LORE, tokens, null))
 						.build()
 		);
 		this.timeInc.addListener(clickable -> {
@@ -138,13 +140,8 @@ public abstract class EntryUI implements Displayable {
 				ItemStack.builder()
 						.itemType(ItemTypes.DYE)
 						.add(Keys.DYE_COLOR, DyeColors.RED)
-						.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Decrease Time"))
-						.add(Keys.ITEM_LORE, Lists.newArrayList(
-								Text.of(TextColors.GRAY, "Left Click: ", TextColors.AQUA, "-1 minute"),
-								Text.of(TextColors.GRAY, "Right Click: ", TextColors.AQUA, "-10 minutes"),
-								Text.of(TextColors.GRAY, "Shift + Left Click: ", TextColors.AQUA, "-1 hour"),
-								Text.of(TextColors.GRAY, "Shift + Right Click: ", TextColors.AQUA, "-10 hours")
-						))
+						.add(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.BUTTONS_DECREASE_TIME_TITLE, null, null))
+						.add(Keys.ITEM_LORE, TextParsingUtils.fetchAndParseMsgs(player, MsgConfigKeys.BUTTONS_DECREASE_TIME_LORE, tokens, null))
 						.build()
 		);
 		this.timeDec.addListener(clickable -> {
@@ -182,28 +179,28 @@ public abstract class EntryUI implements Displayable {
 	protected abstract void update();
 
 	protected Icon moneyIcon() {
+		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+		tokens.put("gts_price", src -> Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().format(this.amount)));
+		tokens.put("gts_min_price", src -> Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().format(new BigDecimal(this.getMin()))));
+		tokens.put("gts_max_price", src -> Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().format(new BigDecimal(this.getMax()))));
+
 		return Icon.from(ItemStack.builder()
 				.itemType(ItemTypes.GOLD_INGOT)
-				.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Listing Price"))
-				.add(Keys.ITEM_LORE, Lists.newArrayList(
-						Text.of(TextColors.GRAY, "Target Price: ", TextColors.GREEN, GTS.getInstance().getEconomy().getDefaultCurrency().format(this.amount)),
-						Text.EMPTY,
-						Text.of(TextColors.GRAY, "Min Price: ", TextColors.GREEN, GTS.getInstance().getEconomy().getDefaultCurrency().format(new BigDecimal(this.getMin()))),
-						Text.of(TextColors.GRAY, "Max Price: ", TextColors.GREEN, GTS.getInstance().getEconomy().getDefaultCurrency().format(new BigDecimal(this.getMax()))))
-				)
+				.add(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(null, MsgConfigKeys.PRICE_DISPLAY_TITLE, null, null))
+				.add(Keys.ITEM_LORE, TextParsingUtils.fetchAndParseMsgs(null, MsgConfigKeys.PRICE_DISPLAY_LORE, tokens, null))
 				.build());
 	}
 
 	protected Icon timeIcon() {
+		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+		tokens.put("gts_time", src -> Optional.of(Text.of(new Time(this.time).toString())));
+		tokens.put("gts_min_time", src -> Optional.of(Text.of(new Time(this.getTimeMin()).toString())));
+		tokens.put("gts_max_time", src -> Optional.of(Text.of(new Time(this.getTimeMax()).toString())));
+
 		return Icon.from(ItemStack.builder()
 				.itemType(ItemTypes.CLOCK)
-				.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Listing Time"))
-				.add(Keys.ITEM_LORE, Lists.newArrayList(
-						Text.of(TextColors.GRAY, "Target Time: ", TextColors.GREEN, new Time(this.time).toString()),
-						Text.EMPTY,
-						Text.of(TextColors.GRAY, "Min Time: ", TextColors.GREEN, new Time(this.getTimeMin()).toString()),
-						Text.of(TextColors.GRAY, "Max Time: ", TextColors.GREEN, new Time(this.getTimeMax()).toString()))
-				)
+				.add(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(null, MsgConfigKeys.TIME_DISPLAY_TITLE, null, null))
+				.add(Keys.ITEM_LORE, TextParsingUtils.fetchAndParseMsgs(null, MsgConfigKeys.TIME_DISPLAY_LORE, tokens, null))
 				.build());
 	}
 

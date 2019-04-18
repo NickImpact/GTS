@@ -12,7 +12,6 @@ public class DiscordOption {
 
 	private final String descriptor;
 	private final Color color;
-
 	private final List<String> webhookChannels;
 
 }

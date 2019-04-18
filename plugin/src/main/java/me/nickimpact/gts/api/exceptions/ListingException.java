@@ -5,5 +5,4 @@ package me.nickimpact.gts.api.exceptions;
  *
  * @author NickImpact
  */
-public class ListingException extends RuntimeException {
-}
+public class ListingException extends RuntimeException {}

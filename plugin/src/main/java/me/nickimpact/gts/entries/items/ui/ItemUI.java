@@ -8,8 +8,10 @@ import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.configuration.ConfigKeys;
+import me.nickimpact.gts.configuration.MsgConfigKeys;
 import me.nickimpact.gts.entries.items.ItemEntry;
 import me.nickimpact.gts.entries.prices.MoneyPrice;
+import me.nickimpact.gts.internal.TextParsingUtils;
 import me.nickimpact.gts.ui.SellUI;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
@@ -64,7 +66,7 @@ public class ItemUI extends EntryUI {
     @Override
     protected UI createUI(Player player) {
         UI display = UI.builder()
-                .title(Text.of(TextColors.RED, "GTS ", TextColors.GRAY, "(", TextColors.DARK_AQUA, "Items", TextColors.GRAY, ")"))
+                .title(TextParsingUtils.fetchAndParseMsg(player, MsgConfigKeys.UI_TITLES_ITEMS, null, null))
                 .dimension(InventoryDimension.of(9, 6)) // Double chest + player inventory
                 .build(GTS.getInstance())
 		        .attachExtraListener((event, pl) -> {

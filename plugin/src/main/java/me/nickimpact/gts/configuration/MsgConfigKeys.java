@@ -153,7 +153,10 @@ public class MsgConfigKeys implements IConfigKeys {
 	));
 
 	public static final ConfigKey<String> UI_TITLES_MAIN = StringKey.of("ui.main.title", "&cGTS &7\u00bb &3Listings");
+	public static final ConfigKey<String> UI_TITLES_ITEMS = StringKey.of("ui.items.title", "&cGTS &7(&3Items&7)");
+	public static final ConfigKey<String> UI_TITLES_CONFIRMATION = StringKey.of("ui.confirm.title", "&cGTS &7\u00bb &3Confirmation");
 	public static final ConfigKey<String> UI_MAIN_NO_ENTRIES_AVAILABLE = StringKey.of("ui.main.no-entries-available", "&cNo Listing Types Available");
+
 	public static final ConfigKey<String> TRANSLATIONS_YES = StringKey.of("translations.yes", "Yes");
 	public static final ConfigKey<String> TRANSLATIONS_NO = StringKey.of("translations.no", "No");
 
@@ -161,6 +164,95 @@ public class MsgConfigKeys implements IConfigKeys {
 	public static final ConfigKey<String> PRICE_NOT_POSITIVE = StringKey.of("general.errors.non-positive-price", "{{gts_error}} Invalid price! Value must be positive!");
 	public static final ConfigKey<String> PRICE_MAX_INVALID = StringKey.of("general.errors.max-price.invalid", "{{gts_error}} Your request is above the max amount of &e{{gts_max_price}}&7!");
 	public static final ConfigKey<String> ERROR_BLACKLISTED = StringKey.of("general.errors.blacklisted", "{{gts_error}} Sorry, but &e{{gts_entry}} &7has been blacklisted from the GTS...");
+
+	public static final ConfigKey<String> BUTTONS_INCREASE_CURRENCY_TITLE = StringKey.of("buttons.currency.increase.title", "&aIncrease Price Requested");
+	public static final ConfigKey<List<String>> BUTTONS_INCREASE_CURRENCY_LORE = ListKey.of("buttons.currency.increase.lore", Lists.newArrayList(
+			"&7Left Click: &b+{{gts_button_currency_left_click}}",
+			"&7Right Click: &b+{{gts_button_currency_right_click}}",
+			"&7Shift + Left Click: &b+{{gts_button_currency_shift_left_click}}",
+			"&7Shift + Right Click: &b+{{gts_button_currency_shift_right_click}}"
+	));
+
+	public static final ConfigKey<String> BUTTONS_DECREASE_CURRENCY_TITLE = StringKey.of("buttons.currency.decrease.title", "&cDecrease Price Requested");
+	public static final ConfigKey<List<String>> BUTTONS_DECREASE_CURRENCY_LORE = ListKey.of("buttons.currency.decrease.lore", Lists.newArrayList(
+			"&7Left Click: &c-{{gts_button_currency_left_click}}",
+			"&7Right Click: &c-{{gts_button_currency_right_click}}",
+			"&7Shift + Left Click: &c-{{gts_button_currency_shift_left_click}}",
+			"&7Shift + Right Click: &c-{{gts_button_currency_shift_right_click}}"
+	));
+
+	public static final ConfigKey<String> BUTTONS_INCREASE_TIME_TITLE = StringKey.of("buttons.time.increase.title", "&aIncrease Time");
+	public static final ConfigKey<List<String>> BUTTONS_INCREASE_TIME_LORE = ListKey.of("buttons.time.increase.lore", Lists.newArrayList(
+			"&7Left Click: &b+{{gts_button_time_left_click}}",
+			"&7Right Click: &b+{{gts_button_time_right_click}}",
+			"&7Shift + Left Click: &b+{{gts_button_time_shift_left_click}}",
+			"&7Shift + Right Click: &b+{{gts_button_time_shift_right_click}}"
+	));
+
+	public static final ConfigKey<String> BUTTONS_DECREASE_TIME_TITLE = StringKey.of("buttons.time.decrease.title", "&cDecrease Time");
+	public static final ConfigKey<List<String>> BUTTONS_DECREASE_TIME_LORE = ListKey.of("buttons.time.decrease.lore", Lists.newArrayList(
+			"&7Left Click: &c-{{gts_button_time_left_click}}",
+			"&7Right Click: &c-{{gts_button_time_right_click}}",
+			"&7Shift + Left Click: &c-{{gts_button_time_shift_left_click}}",
+			"&7Shift + Right Click: &c-{{gts_button_time_shift_right_click}}"
+	));
+
+	public static final ConfigKey<String> TIME_DISPLAY_TITLE = StringKey.of("buttons.time.display.title", "&eListing Time");
+	public static final ConfigKey<List<String>> TIME_DISPLAY_LORE = ListKey.of("buttons.time.display.lore", Lists.newArrayList(
+			"&7Target Time: &a{{gts_time}}",
+			"",
+			"&7Min Time: &a{{gts_min_time}}",
+			"&7Max Time: &a{{gts_max_time}}"
+	));
+
+	public static final ConfigKey<String> PRICE_DISPLAY_TITLE = StringKey.of("buttons.currency.display.title", "&eListing Price");
+	public static final ConfigKey<List<String>> PRICE_DISPLAY_LORE = ListKey.of("buttons.currency.display.lore", Lists.newArrayList(
+			"&7Target Price: &a{{gts_price}}",
+			"",
+			"&7Min Price: &a{{gts_min_price}}",
+			"&7Max Price: &a{{gts_max_price}}"
+	));
+
+	public static final ConfigKey<String> COMMANDS_ERROR_TIMEARG_IMPROPER = StringKey.of("commands.time.argument.improper", "The specified time is of an incorrect format, or breaches time constraints...");
+
+	public static final ConfigKey<String> ITEMS_NONE_IN_HAND = StringKey.of("entries.items.command.none-in-hand", "{{gts_error}} Your hand has no item in it!");
+	public static final ConfigKey<String> ITEMS_NO_CUSTOM_NAMES = StringKey.of("entries.items.generic.custom-name-restricted", "{{gts_error}} Your can't sell items with custom names!");
+	public static final ConfigKey<String> ITEMS_INVENTORY_FULL = StringKey.of("entries.items.generic.inventory-full", "{{gts_error}} Your inventory is full, so we'll hold onto this item for you!");
+
+	public static final ConfigKey<List<String>> DISCORD_PUBLISH_TEMPLATE = ListKey.of("discord.templates.publish", Lists.newArrayList(
+			"Publisher: {{gts_publisher}}",
+			"Publisher Identifier: {{gts_publisher_id}}",
+			"",
+			"Published Item: {{gts_published_item}}",
+			"Item Details: {{gts_published_item_details}}",
+			"Requested Price: {{gts_publishing_price}}",
+			"Expiration Time: {{gts_publishing_expiration}}"
+	));
+	public static final ConfigKey<List<String>> DISCORD_PURCHASE_TEMPLATE = ListKey.of("discord.templates.purchase", Lists.newArrayList(
+			"Buyer: {{gts_buyer}}",
+			"Buyer Identifier: {{gts_buyer_id}}",
+			"",
+			"Seller: {{gts_seller}}",
+			"Seller Identifier: {{gts_seller_id}}",
+			"",
+			"Item: {{gts_published_item}}",
+			"Item Details: {{gts_published_item_details}}",
+			"Price: {{gts_publishing_price}}"
+	));
+	public static final ConfigKey<List<String>> DISCORD_EXPIRATION_TEMPLATE = ListKey.of("discord.templates.expiration", Lists.newArrayList(
+			"Publisher: {{gts_publisher}}",
+			"Publisher Identifier: {{gts_publisher_id}}",
+			"",
+			"Item: {{gts_published_item}}",
+			"Price: {{gts_publishing_price}}"
+	));
+	public static final ConfigKey<List<String>> DISCORD_REMOVAL_TEMPLATE = ListKey.of("discord.templates.removal", Lists.newArrayList(
+			"Publisher: {{gts_publisher}}",
+			"Publisher Identifier: {{gts_publisher_id}}",
+			"",
+			"Item: {{gts_published_item}}",
+			"Item Details: {{gts_published_item_details}}"
+	));
 
 	private static Map<String, ConfigKey<?>> KEYS = null;
 	@Override

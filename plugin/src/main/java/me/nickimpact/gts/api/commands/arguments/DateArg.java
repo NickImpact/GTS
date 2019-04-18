@@ -1,6 +1,8 @@
 package me.nickimpact.gts.api.commands.arguments;
 
 import com.google.common.collect.Lists;
+import me.nickimpact.gts.configuration.MsgConfigKeys;
+import me.nickimpact.gts.internal.TextParsingUtils;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.ArgumentParseException;
 import org.spongepowered.api.command.args.CommandArgs;
@@ -63,11 +65,11 @@ public class DateArg extends CommandElement {
 			if(this.validate(month, day, year, hour, minute)) {
 				return new GregorianCalendar(year, month, day, hour != -1 ? hour : 0, minute != -1 ? minute : 0).getTime();
 			} else {
-				throw args.createError(Text.of("The specified time is of an incorrect format, or breaches time constraints..."));
+				throw args.createError(TextParsingUtils.fetchAndParseMsg(source, MsgConfigKeys.COMMANDS_ERROR_TIMEARG_IMPROPER, null, null));
 			}
 		}
 
-		throw args.createError(Text.of("The specified time is of an incorrect format, or breaches time constraints..."));
+		throw args.createError(TextParsingUtils.fetchAndParseMsg(source, MsgConfigKeys.COMMANDS_ERROR_TIMEARG_IMPROPER, null, null));
 	}
 
 	@Override
@@ -86,10 +88,10 @@ public class DateArg extends CommandElement {
 			return false;
 		}
 
-		if(h != -1 && h > 23) {
+		if(h > 23) {
 			return false;
 		}
 
-		return min == -1 || min <= 59;
+		return min <= 59;
 	}
 }

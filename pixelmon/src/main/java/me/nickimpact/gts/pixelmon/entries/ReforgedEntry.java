@@ -12,7 +12,6 @@ import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.GTSInfo;
 import me.nickimpact.gts.api.json.Typing;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
@@ -38,13 +37,11 @@ import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Typing("reforged")
@@ -97,6 +94,11 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 	}
 
 	@Override
+	public List<String> getDetails() {
+		return Lists.newArrayList();
+	}
+
+	@Override
 	public ItemStack baseItemStack(Player player, Listing listing) {
 		ItemStack icon = getPicture(this.decode());
 		Map<String, Object> variables = Maps.newHashMap();
@@ -107,7 +109,7 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 
 		List<String> template = Lists.newArrayList();
 		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LORE));
-		this.addLore(icon, template, player, listing, variables);
+		this.addLore(icon, template, player, variables);
 
 		return icon;
 	}
@@ -119,28 +121,24 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 		variables.put("listing", listing);
 		variables.put("pokemon", this.decode());
 
-		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE_AUCTION, null, variables));
+		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE, null, variables));
 
 		List<String> template = Lists.newArrayList();
-		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE_AUCTION));
-		this.addLore(icon, template, player, listing, variables);
+		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE));
+		this.addLore(icon, template, player, variables);
 
 		return icon;
 	}
 
-	private void addLore(ItemStack icon, List<String> template, Player player, Listing listing, Map<String, Object> variables) {
+	private void addLore(ItemStack icon, List<String> template, Player player, Map<String, Object> variables) {
 		for (EnumHidableDetail detail : EnumHidableDetail.values()) {
 			if (detail.getCondition().test(this.decode())) {
 				template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(detail.getField()));
 			}
 		}
 
-		if (listing.getAucData() != null) {
-			template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_INFO));
-		} else {
-			template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
-		}
 
+		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
 		List<Text> translated = template.stream().map(str -> TextParsingUtils.fetchAndParseMsg(player, str, null, variables)).collect(Collectors.toList());
 		icon.offer(Keys.ITEM_LORE, translated);
 	}
@@ -291,5 +289,27 @@ public class ReforgedEntry extends Entry<String, Pokemon> implements Minable {
 		listing.publish(player);
 
 		return CommandResult.success();
+	}
+
+	public enum LakeTrio {
+		Mesprit(EnumSpecies.Mesprit),
+		Azelf(EnumSpecies.Azelf),
+		Uxie(EnumSpecies.Uxie);
+
+		private EnumSpecies species;
+
+		LakeTrio(EnumSpecies species) {
+			this.species = species;
+		}
+
+		public static boolean isMember(EnumSpecies species) {
+			for(LakeTrio guardian : values()) {
+				if(guardian.species == species) {
+					return true;
+				}
+			}
+
+			return false;
+		}
 	}
 }
