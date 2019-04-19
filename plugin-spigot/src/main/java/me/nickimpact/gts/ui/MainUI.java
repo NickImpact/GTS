@@ -15,6 +15,7 @@ import me.nickimpact.gts.spigot.SpigotListing;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -107,6 +108,8 @@ public class MainUI {
 		ItemMeta pMeta = pListings.getItemMeta();
 		pMeta.setDisplayName(ChatColor.YELLOW + "Your Listings");
 		pMeta.setLore(Lists.newArrayList(ChatColor.GRAY + "Status: " + ChatColor.RED + "Disabled"));
+		pMeta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES);
+		pMeta.hasItemFlag(ItemFlag.HIDE_ENCHANTS);
 		pListings.setItemMeta(pMeta);
 		SpigotIcon pIcon = new SpigotIcon(pListings);
 		pIcon.addListener(clickable -> {
@@ -170,9 +173,10 @@ public class MainUI {
 				"",
 				ChatColor.AQUA + "NOTE:",
 				ChatColor.GRAY + "This option will be overridden by",
-				ChatColor.GRAY + "the" + ChatColor.YELLOW + "Your Listings " + ChatColor.GRAY + "option",
+				ChatColor.GRAY + "the " + ChatColor.YELLOW + "Your Listings " + ChatColor.GRAY + "option",
 				ChatColor.GRAY + "if it is enabled."
 		));
+		rep.setItemMeta(repMeta);
 
 		SpigotIcon icon = new SpigotIcon(rep);
 		icon.addListener(clickable -> {
@@ -189,13 +193,16 @@ public class MainUI {
 					}
 				}
 
+				List<String> lore = repMeta.getLore();
 				if(classification.getClassification().equals(this.classSelection)) {
 					this.classSelection = null;
-					repMeta.getLore().set(0, ChatColor.GRAY + "Status: " + ChatColor.RED + "Disabled");
+					lore.set(0, ChatColor.GRAY + "Status: " + ChatColor.RED + "Disabled");
+					repMeta.setLore(lore);
 					rep.setItemMeta(repMeta);
 				} else {
 					this.classSelection = classification.getClassification();
-					repMeta.getLore().set(0, ChatColor.GRAY + "Status: " + ChatColor.GREEN + "Enabled");
+					lore.set(0, ChatColor.GRAY + "Status: " + ChatColor.GREEN + "Enabled");
+					repMeta.setLore(lore);
 					rep.setItemMeta(repMeta);
 				}
 

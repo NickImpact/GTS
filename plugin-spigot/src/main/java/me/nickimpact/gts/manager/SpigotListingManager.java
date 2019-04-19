@@ -22,21 +22,22 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class SpigotListingManager implements ListingManager<SpigotListing> {
 
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy '-' hh:mm:ss a z");
 
-	private List<Listing> listings = Lists.newArrayList();
+	private List<SpigotListing> listings = Lists.newArrayList();
 
 	@Override
 	public Optional<SpigotListing> getListingByID(UUID uuid) {
-		return Optional.empty();
+		return this.getListings().stream().filter(listing -> listing.getUuid().equals(uuid)).findAny();
 	}
 
 	@Override
 	public List<SpigotListing> getListings() {
-		return null;
+		return this.listings;
 	}
 
 	@Override
@@ -127,11 +128,14 @@ public class SpigotListingManager implements ListingManager<SpigotListing> {
 	@Override
 	public void readStorage() {
 		IGtsStorage storage = GTS.getInstance().getAPIService().getStorage();
-		storage.getListings().thenAccept(x -> this.listings = x).exceptionally(throwable -> {
-			GTS.getInstance().getPluginLogger().error("Unable to read in listings, a stacktrace is available below:");
-			throwable.printStackTrace();
-			return null;
-		});
+		storage.getListings()
+				.thenApply(listings -> listings.stream().map(listing -> (SpigotListing) listing).collect(Collectors.toList()))
+				.thenAccept(x -> this.listings = x)
+				.exceptionally(throwable -> {
+					GTS.getInstance().getPluginLogger().error("Unable to read in listings, a stacktrace is available below:");
+					throwable.printStackTrace();
+					return null;
+				});
 	}
 
 	private String[] asArray(List<String> input) {
