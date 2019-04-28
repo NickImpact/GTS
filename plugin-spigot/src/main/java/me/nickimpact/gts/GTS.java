@@ -14,6 +14,7 @@ import com.nickimpact.impactor.api.plugin.Configurable;
 import com.nickimpact.impactor.api.plugin.ImpactorPlugin;
 import com.nickimpact.impactor.api.plugin.PluginInfo;
 import com.nickimpact.impactor.api.plugin.Translatable;
+import com.nickimpact.impactor.api.registry.BuilderRegistry;
 import com.nickimpact.impactor.spigot.configuration.SpigotConfig;
 import com.nickimpact.impactor.spigot.configuration.SpigotConfigAdapter;
 import com.nickimpact.impactor.spigot.logging.SpigotLogger;
@@ -22,6 +23,7 @@ import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.dependencies.classloader.PluginClassLoader;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
+import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
 import me.nickimpact.gts.commands.EntryClassificationContextHandler;
@@ -34,6 +36,7 @@ import me.nickimpact.gts.listings.SpigotItemEntry;
 import me.nickimpact.gts.manager.SpigotListingManager;
 import me.nickimpact.gts.service.SpigotGtsService;
 import me.nickimpact.gts.manager.TextParsingUtils;
+import me.nickimpact.gts.spigot.SpigotListing;
 import me.nickimpact.gts.storage.StorageFactory;
 import me.nickimpact.gts.api.storage.StorageType;
 import me.nickimpact.gts.api.dependencies.Dependency;
@@ -106,6 +109,9 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 		this.service.setRegistry(new EntryRegistry(this));
 		this.service.registerEntry(Lists.newArrayList("items", "item"), SpigotItemEntry.class, null, Material.DIAMOND.name(), null);
 		Bukkit.getPluginManager().callEvent(new ServiceReadyEvent(this.service));
+
+		this.service.setBuilders(new BuilderRegistry());
+		this.service.getBuilderRegistry().register(Listing.ListingBuilder.class, SpigotListing.SpigotListingBuilder.class);
 
 		this.textParsingUtils = new TextParsingUtils();
 

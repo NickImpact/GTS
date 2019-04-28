@@ -27,9 +27,11 @@ package me.nickimpact.gts.storage.implementation.sql;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonSyntaxException;
+import com.nickimpact.impactor.api.json.JsonTyping;
+import com.nickimpact.impactor.api.platform.Platform;
+import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
 import me.nickimpact.gts.storage.implementation.StorageImplementation;
 import me.nickimpact.gts.storage.implementation.sql.connection.ConnectionFactory;
@@ -40,7 +42,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -49,15 +50,15 @@ import java.util.regex.Pattern;
 
 public class SqlImplementation implements StorageImplementation {
 
-	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM `{prefix}listings_v3`";
-	private static final String ADD_LISTING = "INSERT INTO `{prefix}listings_v3` VALUES ('%s', '%s', '%s', '%s', %.2f, '%s')";
-	private static final String REMOVE_LISTING = "DELETE FROM `{prefix}listings_v3` WHERE UUID='%s'";
+	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM {prefix}listings_v3";
+	private static final String ADD_LISTING = "INSERT INTO {prefix}listings_v3 (id, owner, entry, price, expiration) VALUES (?, ?, ?, ?, ?)";
+	private static final String REMOVE_LISTING = "DELETE FROM {prefix}listings_v3 WHERE UUID=?";
 	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES ('%s')";
 	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID='%s'";
 	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";
 
 	@Deprecated
-	private static final String FETCH_OLD = "SELECT * FROM `{prefix}listings_v2";
+	private static final String FETCH_OLD = "SELECT * FROM {prefix}listings_v2";
 
 	private final IGTSPlugin plugin;
 
@@ -146,9 +147,20 @@ public class SqlImplementation implements StorageImplementation {
 
 	@Override
 	public boolean addListing(Listing listing) throws Exception {
+		Connection connection = connectionFactory.getConnection();
+		Clob clob = connection.createClob();
+
 		String stmt = processor.apply(ADD_LISTING);
-		stmt = String.format(stmt, listing.getUuid(), listing.getOwnerUUID(), this.plugin.getGson().toJson(listing.getEntry()), listing.getPrice().getPrice(), listing.getExpiration().toString());
-		this.sqlUpdate(stmt);
+		PreparedStatement ps = connection.prepareStatement(stmt);
+		ps.setString(1, listing.getUuid().toString());
+		ps.setString(2, listing.getOwnerUUID().toString());
+
+		clob.setString(1, this.plugin.getGson().toJson(listing.getEntry(), Entry.class));
+		ps.setClob(3, clob);
+		ps.setDouble(4, listing.getPrice().getPrice());
+		ps.setTimestamp(5, new Timestamp(listing.getExpiration().getTime()));
+		ps.executeUpdate();
+
 		return true;
 	}
 
@@ -164,12 +176,13 @@ public class SqlImplementation implements StorageImplementation {
 	public List<Listing> getListings() throws Exception {
 		List<Listing> entries = Lists.newArrayList();
 
-		if(tableExists(this.processor.apply("{prefix}listings_v2"))) {
+		if(tableExists(this.processor.apply("{prefix}listings_v2")) && this.plugin.getPlatform().equals(Platform.Sponge)) {
 			this.plugin.getPluginLogger().warn("Detected old database, collecting and updating data...");
 
 			Connection connection = this.connectionFactory.getConnection();
 			PreparedStatement ps = connection.prepareStatement(this.processor.apply(FETCH_OLD));
 			ResultSet results = ps.executeQuery();
+			int failed = 0;
 			while(results.next()) {
 				String json = results.getString("listing");
 
@@ -185,16 +198,31 @@ public class SqlImplementation implements StorageImplementation {
 				}
 
 				try {
-					entries.add(this.plugin.getGson().fromJson(json, Listing.class));
+					me.nickimpact.gts.deprecated.Listing old = this.plugin.getGson().fromJson(json, me.nickimpact.gts.deprecated.Listing.class);
+					Listing updated = Listing.builder(this.plugin)
+							.entry(this.convert(old.getEntry()))
+							.price(old.getEntry().getPrice().getPrice().doubleValue())
+							.id(old.getUuid())
+							.owner(old.getOwnerUUID())
+							.expiration(old.getExpiration())
+							.build();
+					entries.add(updated);
 				} catch (JsonSyntaxException e) {
 					this.plugin.getPluginLogger().error("Unable to read listing data for listing with ID: " + results.getString("uuid"));
 					this.plugin.getPluginLogger().error("Listing JSON: \n" + json);
+					++failed;
 				}
 			}
 			results.close();
 
 			this.plugin.getPluginLogger().warn(String.format("Read in %d listings, attempting to convert...", entries.size()));
 			this.transfer(entries);
+
+			if(failed == 0) {
+				this.plugin.getPluginLogger().warn("Purging old table...");
+				PreparedStatement p = connection.prepareStatement(processor.apply("DROP TABLE {prefix}listings_v2"));
+				p.executeUpdate();
+			}
 
 			return entries;
 		}
@@ -206,11 +234,11 @@ public class SqlImplementation implements StorageImplementation {
 		while(results.next()) {
 			UUID id = UUID.fromString(results.getString("id"));
 			UUID owner = UUID.fromString(results.getString("owner"));
-			String entry = results.getString("listing");
+			String entry = results.getString("entry");
 			double price = results.getDouble("price");
 			Date date = results.getDate("expiration");
 
-			Listing listing = Listing.builder()
+			Listing listing = Listing.builder(this.plugin)
 					.id(id)
 					.owner(owner)
 					.entry(this.plugin.getGson().fromJson(entry, Entry.class))
@@ -264,5 +292,12 @@ public class SqlImplementation implements StorageImplementation {
 				this.transfer(listings);
 			}
 		});
+	}
+
+	@Deprecated
+	private Entry convert(me.nickimpact.gts.deprecated.Entry old) throws Exception {
+		EntryClassification classification = this.plugin.getAPIService().getEntryRegistry().getForIdentifier(old.getClass().getAnnotation(JsonTyping.class).value()).get();
+		Entry entry = (Entry) classification.getClassification().newInstance();
+		return entry.setEntry(old.getEntry());
 	}
 }

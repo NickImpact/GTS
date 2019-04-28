@@ -34,7 +34,6 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.Driver;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.EnumSet;
 import java.util.Properties;

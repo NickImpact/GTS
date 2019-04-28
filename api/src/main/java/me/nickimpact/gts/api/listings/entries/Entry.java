@@ -1,6 +1,7 @@
 package me.nickimpact.gts.api.listings.entries;
 
 import com.nickimpact.impactor.api.json.JsonTyping;
+import lombok.Setter;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.prices.Price;
 
@@ -20,6 +21,12 @@ public abstract class Entry<T, D, P, U, I> {
 	protected T element;
 
 	public Entry() {}
+
+	@Deprecated
+	public Entry setEntry(T backing) {
+		this.element = backing;
+		return this;
+	}
 
 	public Entry(T element) {
 		this.element = element;

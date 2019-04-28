@@ -16,6 +16,7 @@ import me.nickimpact.gts.spigot.SpigotListing;
 import me.xanium.gemseconomy.api.GemsEconomyAPI;
 import me.xanium.gemseconomy.economy.Currency;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.text.SimpleDateFormat;
@@ -97,7 +98,10 @@ public class SpigotListingManager implements ListingManager<SpigotListing> {
 		source.ifPresent(src -> src.sendMessage(this.parse(String.format("Your &a%s &7has been added to the market!", listing.getName()), false)));
 
 		// TODO - Add listing, and broadcast out to the many
-		GTS.getInstance().getAPIService().getStorage().addListing(listing);
+		GTS.getInstance().getAPIService().getStorage().addListing(listing).exceptionally(throwable -> {
+			throwable.printStackTrace();
+			return false;
+		});
 		this.listings.add(listing);
 
 		List<String> details = Lists.newArrayList("");
@@ -130,7 +134,10 @@ public class SpigotListingManager implements ListingManager<SpigotListing> {
 		IGtsStorage storage = GTS.getInstance().getAPIService().getStorage();
 		storage.getListings()
 				.thenApply(listings -> listings.stream().map(listing -> (SpigotListing) listing).collect(Collectors.toList()))
-				.thenAccept(x -> this.listings = x)
+				.thenAccept(x -> {
+					this.listings = x;
+					GTS.getInstance().getPluginLogger().info("Successfully read in " + ChatColor.AQUA + this.listings.size() + " listings!");
+				})
 				.exceptionally(throwable -> {
 					GTS.getInstance().getPluginLogger().error("Unable to read in listings, a stacktrace is available below:");
 					throwable.printStackTrace();

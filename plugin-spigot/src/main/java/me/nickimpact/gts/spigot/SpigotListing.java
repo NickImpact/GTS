@@ -1,9 +1,9 @@
 package me.nickimpact.gts.spigot;
 
-import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.prices.Price;
+import me.nickimpact.gts.listings.MoneyPrice;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,7 +25,11 @@ public class SpigotListing extends Listing<SpigotEntry, Player, ItemStack> {
 		return confirm ? (ItemStack) this.getEntry().confirmItemStack(player, this) : (ItemStack) this.getEntry().baseItemStack(player, this);
 	}
 
-	public class SpigotListingBuilder implements ListingBuilder {
+	public static SpigotListingBuilder builder() {
+		return new SpigotListingBuilder();
+	}
+
+	public static class SpigotListingBuilder implements ListingBuilder {
 
 		private UUID id;
 		private UUID owner;
@@ -34,34 +38,38 @@ public class SpigotListing extends Listing<SpigotEntry, Player, ItemStack> {
 		private Date expiration;
 
 		@Override
-		public ListingBuilder id(UUID id) {
-			return null;
+		public SpigotListingBuilder id(UUID id) {
+			this.id = id;
+			return this;
 		}
 
 		@Override
-		public ListingBuilder owner(UUID owner) {
-			return null;
+		public SpigotListingBuilder owner(UUID owner) {
+			this.owner = owner;
+			return this;
 		}
 
 		@Override
-		public <E extends Entry> ListingBuilder entry(E entry) {
+		public <E extends Entry> SpigotListingBuilder entry(E entry) {
 			this.entry = (SpigotEntry) entry;
 			return this;
 		}
 
 		@Override
-		public ListingBuilder price(double price) {
-			return null;
+		public SpigotListingBuilder price(double price) {
+			this.price = new MoneyPrice(price);
+			return this;
 		}
 
 		@Override
-		public ListingBuilder expiration(Date expiration) {
-			return null;
+		public SpigotListingBuilder expiration(Date expiration) {
+			this.expiration = expiration;
+			return this;
 		}
 
 		@Override
-		public Listing build() {
-			return null;
+		public SpigotListing build() {
+			return new SpigotListing(this);
 		}
 	}
 }

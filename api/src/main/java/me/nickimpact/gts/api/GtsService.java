@@ -1,5 +1,6 @@
 package me.nickimpact.gts.api;
 
+import com.nickimpact.impactor.api.registry.BuilderRegistry;
 import me.nickimpact.gts.api.holders.EntryRegistry;
 import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
@@ -35,4 +36,6 @@ public interface GtsService<CS extends CmdSourceWrapper, CR extends CmdResultWra
 	 * @param rep The ItemStack representation accompanying the entry
 	 */
 	void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CS, String[], CR> cmd);
+
+	BuilderRegistry getBuilderRegistry();
 }

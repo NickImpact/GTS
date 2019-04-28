@@ -4,7 +4,6 @@ import com.nickimpact.impactor.api.ImpactorService;
 import com.nickimpact.impactor.api.building.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
@@ -74,8 +73,8 @@ public abstract class Listing<E extends Entry, P, I> {
 		return this.price;
 	}
 
-	public static ListingBuilder builder() {
-		return ImpactorService.getInstance().getBuilderRegistry().createFor(ListingBuilder.class);
+	public static ListingBuilder builder(IGTSPlugin plugin) {
+		return plugin.getAPIService().getBuilderRegistry().createFor(ListingBuilder.class);
 	}
 
 	public interface ListingBuilder extends Builder<Listing> {
