@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -52,7 +53,7 @@ public class SqlImplementation implements StorageImplementation {
 
 	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM {prefix}listings_v3";
 	private static final String ADD_LISTING = "INSERT INTO {prefix}listings_v3 (id, owner, entry, price, expiration) VALUES (?, ?, ?, ?, ?)";
-	private static final String REMOVE_LISTING = "DELETE FROM {prefix}listings_v3 WHERE UUID=?";
+	private static final String REMOVE_LISTING = "DELETE FROM {prefix}listings_v3 WHERE id=?";
 	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES ('%s')";
 	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID='%s'";
 	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";
@@ -139,12 +140,6 @@ public class SqlImplementation implements StorageImplementation {
 		return this.connectionFactory.getMeta();
 	}
 
-	private void sqlUpdate(String statement) throws Exception {
-		Connection connection = connectionFactory.getConnection();
-		PreparedStatement ps = connection.prepareStatement(statement);
-		ps.executeUpdate();
-	}
-
 	@Override
 	public boolean addListing(Listing listing) throws Exception {
 		Connection connection = connectionFactory.getConnection();
@@ -158,7 +153,7 @@ public class SqlImplementation implements StorageImplementation {
 		clob.setString(1, this.plugin.getGson().toJson(listing.getEntry(), Entry.class));
 		ps.setClob(3, clob);
 		ps.setDouble(4, listing.getPrice().getPrice());
-		ps.setTimestamp(5, new Timestamp(listing.getExpiration().getTime()));
+		ps.setTimestamp(5, Timestamp.valueOf(listing.getExpiration()));
 		ps.executeUpdate();
 
 		return true;
@@ -166,9 +161,13 @@ public class SqlImplementation implements StorageImplementation {
 
 	@Override
 	public boolean deleteListing(UUID uuid) throws Exception {
+		Connection connection = connectionFactory.getConnection();
+
 		String stmt = processor.apply(REMOVE_LISTING);
-		stmt = String.format(stmt, uuid);
-		this.sqlUpdate(stmt);
+		PreparedStatement ps = connection.prepareStatement(stmt);
+		ps.setString(1, uuid.toString());
+		ps.executeUpdate();
+
 		return true;
 	}
 
@@ -204,7 +203,7 @@ public class SqlImplementation implements StorageImplementation {
 							.price(old.getEntry().getPrice().getPrice().doubleValue())
 							.id(old.getUuid())
 							.owner(old.getOwnerUUID())
-							.expiration(old.getExpiration())
+							.expiration(LocalDateTime.from(old.getExpiration().toInstant()))
 							.build();
 					entries.add(updated);
 				} catch (JsonSyntaxException e) {
@@ -236,7 +235,7 @@ public class SqlImplementation implements StorageImplementation {
 			UUID owner = UUID.fromString(results.getString("owner"));
 			String entry = results.getString("entry");
 			double price = results.getDouble("price");
-			Date date = results.getDate("expiration");
+			LocalDateTime date = results.getTimestamp("expiration").toLocalDateTime();
 
 			Listing listing = Listing.builder(this.plugin)
 					.id(id)

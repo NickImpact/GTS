@@ -234,7 +234,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	static {
 		Map<String, ConfigKey<?>> keys = new LinkedHashMap<>();
-		Field[] values = ConfigKeys.class.getFields();
+		Field[] values = MsgConfigKeys.class.getFields();
 		int i = 0;
 
 		for (Field f : values) {

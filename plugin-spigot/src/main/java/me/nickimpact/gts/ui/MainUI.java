@@ -12,6 +12,7 @@ import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.spigot.SpigotListing;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -31,7 +32,7 @@ public class MainUI {
 
 	private static Map<UUID, Instant> delays = Maps.newHashMap();
 
-	private SpigotPage<Listing> page;
+	private SpigotPage<SpigotListing> page;
 	private Player viewer;
 
 	private Collection<Predicate<Listing>> searchConditions = Lists.newArrayList();
@@ -43,6 +44,8 @@ public class MainUI {
 	private static final SpigotIcon GRAY_BORDER;
 	private static List<EntryClassification> classifications = GTS.getInstance().getAPIService().getEntryRegistry().getClassifications();
 	private int index = 0;
+
+	private int runner;
 
 	static {
 		GRAY_BORDER = new SpigotIcon(new ItemStack(Material.STAINED_GLASS_PANE, 1, (short)15));
@@ -81,10 +84,14 @@ public class MainUI {
 			return icon;
 		});
 		this.page.define(this.getListings());
+		this.page.getView().attachCloseListener(e -> {
+			Bukkit.getScheduler().cancelTask(this.runner);
+		});
 	}
 
 	public void open() {
 		this.page.open();
+		this.runner = Bukkit.getScheduler().runTaskTimer(GTS.getInstance(), this::apply, 0, 20).getTaskId();
 	}
 
 	private SpigotLayout design() {
@@ -139,17 +146,17 @@ public class MainUI {
 		this.page.define(this.getListings());
 	}
 
-	private List<Listing> getListings() {
-		List<Listing> listings = Lists.newArrayList();
+	private List<SpigotListing> getListings() {
+		List<SpigotListing> listings = Lists.newArrayList();
 		ListingManager<SpigotListing> manager = GTS.getInstance().getAPIService().getListingManager();
 		if(justPlayer) {
 			listings = manager.getListings().stream().filter(listing -> listing.getOwnerUUID().equals(this.viewer.getUniqueId())).collect(Collectors.toList());
 		} else {
 			if(!this.searchConditions.isEmpty()) {
 				listings = manager.getListings().stream().filter(listing -> {
-					boolean passed = false;
+					boolean passed = true;
 					for(Predicate<Listing> predicate : this.searchConditions) {
-						passed = predicate.test(listing);
+						passed = passed && predicate.test(listing);
 					}
 
 					return passed;
@@ -192,6 +199,8 @@ public class MainUI {
 						return;
 					}
 				}
+
+				GTS.getInstance().getPluginLogger().debug("" + this.classSelection);
 
 				List<String> lore = repMeta.getLore();
 				if(classification.getClassification().equals(this.classSelection)) {

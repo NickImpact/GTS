@@ -9,4 +9,6 @@ include (
 )
 include 'plugin-sponge'
 include 'plugin-spigot'
+include 'reforged-spigot'
+include 'spigot'
 

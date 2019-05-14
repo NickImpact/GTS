@@ -12,6 +12,10 @@ public interface ListingManager<E extends Listing> {
 
 	boolean addToMarket(UUID lister, E listing);
 
+	boolean purchase(UUID buyer, E listing);
+
+	void deleteListing(E listing);
+
 	boolean hasMaxListings(UUID lister);
 
 	void readStorage();

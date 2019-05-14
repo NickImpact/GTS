@@ -1,4 +1,4 @@
-package me.nickimpact.gts.events;
+package me.nickimpact.gts.spigot.events;
 
 import me.nickimpact.gts.api.GtsService;
 import org.bukkit.event.Event;

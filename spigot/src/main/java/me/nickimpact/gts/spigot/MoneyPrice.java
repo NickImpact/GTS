@@ -1,8 +1,6 @@
-package me.nickimpact.gts.listings;
+package me.nickimpact.gts.spigot;
 
-import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.prices.Price;
-import me.nickimpact.gts.config.ConfigKeys;
 import me.xanium.gemseconomy.api.GemsEconomyAPI;
 import me.xanium.gemseconomy.economy.Currency;
 
@@ -21,7 +19,7 @@ public class MoneyPrice implements Price<String> {
 
 	@Override
 	public String getText() {
-		return currency.format(price);
+		return currency.format(price).split(" ")[0];
 	}
 
 	@Override
@@ -50,6 +48,6 @@ public class MoneyPrice implements Price<String> {
 
 	@Override
 	public double calcTax() {
-		return price * GTS.getInstance().getConfiguration().get(ConfigKeys.TAX_MONEY_TAX);
+		return price * 0.08;
 	}
 }

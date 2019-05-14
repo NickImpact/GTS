@@ -1,0 +1,7 @@
+main: me.nickimpact.gts.reforged.ReforgedBridge
+name: GTS-Reforged-Extension
+version: 4.2.0-DEV
+author: NickImpact
+depend:
+  - Impactor
+  - GTS

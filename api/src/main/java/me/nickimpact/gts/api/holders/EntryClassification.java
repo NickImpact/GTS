@@ -2,6 +2,7 @@ package me.nickimpact.gts.api.holders;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.wrappers.CmdResultWrapper;
@@ -12,7 +13,7 @@ import java.util.function.BiFunction;
 
 @Getter
 @AllArgsConstructor
-public class EntryClassification<CS extends CmdSourceWrapper, CR extends CmdResultWrapper> {
+public abstract class EntryClassification<T> {
 	/** Represents the classification of an entry */
 	private Class<? extends Entry> classification;
 
@@ -26,7 +27,7 @@ public class EntryClassification<CS extends CmdSourceWrapper, CR extends CmdResu
 	private EntryUI ui;
 
 	/** Represents the command functionality for an entry */
-	private BiFunction<CS, String[], CR> cmdHandler;
+	private BiFunction<T, String[], CommandResults> cmdHandler;
 
 	public String getPrimaryIdentifier() {
 		return identifers.size() > 0 ? identifers.get(0) : "???";

@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SpigotItemUI implements EntryUI<Player> {
@@ -52,9 +53,21 @@ public class SpigotItemUI implements EntryUI<Player> {
 		ui.attachListener((player, event) -> {
 			if(event.getClickedInventory() != null) {
 				int clicked = event.getRawSlot();
-				GTS.getInstance().getPluginLogger().debug("Clicked slot = " + clicked);
 				if (clicked >= 54) {
+					Optional<ItemStack> item = Optional.ofNullable(event.getCurrentItem());
+					item.ifPresent(i -> {
+						if(i.getType().equals(Material.AIR) || i.equals(this.selection)) {
+							return;
+						}
 
+						this.selection = i;
+						if(this.size > i.getAmount()) {
+							this.size = i.getAmount();
+						}
+
+						this.display.setSlot(13, new SpigotIcon(i));
+						//this.update();
+					});
 				}
 			}
 		});

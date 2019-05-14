@@ -1,29 +1,34 @@
-package me.nickimpact.gts.service;
+package me.nickimpact.gts.spigot;
 
 import com.nickimpact.impactor.api.registry.BuilderRegistry;
 import lombok.Setter;
-import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.GtsService;
+import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
 import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
+import me.nickimpact.gts.api.plugin.IGTSPlugin;
 import me.nickimpact.gts.api.storage.IGtsStorage;
-import me.nickimpact.gts.api.wrappers.CmdResultWrapper;
-import me.nickimpact.gts.api.wrappers.CmdSourceWrapper;
 import org.bukkit.command.CommandSender;
 
 import java.util.List;
 import java.util.function.BiFunction;
 
 @Setter
-public class SpigotGtsService implements GtsService<SpigotGtsService.SpigotCmdSource, SpigotGtsService.SpigotCmdResult> {
+public class SpigotGtsService implements GtsService<CommandSender> {
+
+	private final IGTSPlugin plugin;
 
 	private ListingManager manager;
 	private IGtsStorage storage;
 	private EntryRegistry registry;
 	private BuilderRegistry builders;
+
+	public SpigotGtsService(IGTSPlugin plugin) {
+		this.plugin = plugin;
+	}
 
 	@Override
 	public ListingManager getListingManager() {
@@ -41,14 +46,14 @@ public class SpigotGtsService implements GtsService<SpigotGtsService.SpigotCmdSo
 	}
 
 	@Override
-	public void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<SpigotCmdSource, String[], SpigotCmdResult> cmd) {
+	public void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CommandSender, String[], CommandResults> cmd) {
 		try {
 			this.registry.getRegistry().register(entry);
-			this.registry.getClassifications().add(new EntryClassification<>(entry, identifier, rep, ui, cmd));
+			this.registry.getClassifications().add(new SpigotEntryClassification(entry, identifier, rep, ui, cmd));
 
-			GTS.getInstance().getPluginLogger().info("Loaded element type: " + entry.getSimpleName());
+			plugin.getPluginLogger().info("Loaded element type: " + entry.getSimpleName());
 		} catch (Exception e) {
-			GTS.getInstance().getPluginLogger().info("Failed to register type (" + entry.getSimpleName() + ") with reason: " + e.getMessage());
+			plugin.getPluginLogger().info("Failed to register type (" + entry.getSimpleName() + ") with reason: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
@@ -58,7 +63,9 @@ public class SpigotGtsService implements GtsService<SpigotGtsService.SpigotCmdSo
 		return this.builders;
 	}
 
-	public class SpigotCmdSource extends CmdSourceWrapper<CommandSender> {}
-
-	public class SpigotCmdResult extends CmdResultWrapper<Boolean> {}
+	static class SpigotEntryClassification extends EntryClassification<CommandSender> {
+		SpigotEntryClassification(Class<? extends Entry> classification, List<String> identifers, String itemRep, EntryUI ui, BiFunction<CommandSender, String[], CommandResults> cmdHandler) {
+			super(classification, identifers, itemRep, ui, cmdHandler);
+		}
+	}
 }

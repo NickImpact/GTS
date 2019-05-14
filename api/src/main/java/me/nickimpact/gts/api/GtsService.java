@@ -1,7 +1,9 @@
 package me.nickimpact.gts.api;
 
 import com.nickimpact.impactor.api.registry.BuilderRegistry;
+import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.holders.EntryRegistry;
+import me.nickimpact.gts.api.holders.ServiceInstance;
 import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
@@ -12,7 +14,11 @@ import me.nickimpact.gts.api.wrappers.CmdSourceWrapper;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public interface GtsService<CS extends CmdSourceWrapper, CR extends CmdResultWrapper> {
+public interface GtsService<T> {
+
+	static GtsService getInstance() {
+		return ServiceInstance.getService();
+	}
 
 	ListingManager getListingManager();
 
@@ -35,7 +41,7 @@ public interface GtsService<CS extends CmdSourceWrapper, CR extends CmdResultWra
 	 * @param ui The UI accompanying the entry
 	 * @param rep The ItemStack representation accompanying the entry
 	 */
-	void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CS, String[], CR> cmd);
+	void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<T, String[], CommandResults> cmd);
 
 	BuilderRegistry getBuilderRegistry();
 }

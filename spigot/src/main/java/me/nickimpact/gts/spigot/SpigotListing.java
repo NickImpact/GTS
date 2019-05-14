@@ -3,16 +3,15 @@ package me.nickimpact.gts.spigot;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.prices.Price;
-import me.nickimpact.gts.listings.MoneyPrice;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class SpigotListing extends Listing<SpigotEntry, Player, ItemStack> {
 
-	public SpigotListing(UUID id, UUID owner, SpigotEntry entry, Price price, Date expiration) {
+	public SpigotListing(UUID id, UUID owner, SpigotEntry entry, Price price, LocalDateTime expiration) {
 		super(id, owner, entry, price, expiration);
 	}
 
@@ -35,7 +34,7 @@ public class SpigotListing extends Listing<SpigotEntry, Player, ItemStack> {
 		private UUID owner;
 		private SpigotEntry entry;
 		private Price price;
-		private Date expiration;
+		private LocalDateTime expiration;
 
 		@Override
 		public SpigotListingBuilder id(UUID id) {
@@ -62,7 +61,7 @@ public class SpigotListing extends Listing<SpigotEntry, Player, ItemStack> {
 		}
 
 		@Override
-		public SpigotListingBuilder expiration(Date expiration) {
+		public SpigotListingBuilder expiration(LocalDateTime expiration) {
 			this.expiration = expiration;
 			return this;
 		}

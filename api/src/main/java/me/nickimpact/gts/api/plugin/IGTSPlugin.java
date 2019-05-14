@@ -11,9 +11,7 @@ import me.nickimpact.gts.api.dependencies.classloader.PluginClassLoader;
 import java.io.InputStream;
 import java.util.concurrent.ScheduledExecutorService;
 
-public interface IGTSPlugin extends ImpactorPlugin, Configurable, Translatable {
-
-	GtsService getAPIService();
+public interface IGTSPlugin extends ImpactorPlugin, Configurable, Translatable, IGTSBacking {
 
 	ScheduledExecutorService getAsyncExecutor();
 

@@ -43,6 +43,12 @@ repositories {
     }
 }
 
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+    }
+}
+
 dependencies {
     shadow project(':api')
     shadow project(':sponge')

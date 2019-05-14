@@ -51,14 +51,14 @@ subprojects {
 task copyJars(type: Copy) {
     from subprojects.collect { it.tasks.withType(Jar) }
     into "$buildDir/allJars"
-//    exclude '*-all.jar'
-//    exclude '*-sources.jar'
-//    exclude 'api*.jar'
-//    exclude 'common*.jar'
-//    exclude 'spigot*.jar'
-//    exclude 'sponge*.jar'
-//    exclude '*API.jar'
-//    exclude '*Common.jar'
+    exclude '*-all.jar'
+    exclude '*-sources.jar'
+    exclude 'api*.jar'
+    exclude 'common*.jar'
+    exclude 'spigot*.jar'
+    exclude 'sponge*.jar'
+    exclude 'plugin*.jar'
+    exclude 'reforged*.jar'
 }
 
 build.dependsOn shadowJar

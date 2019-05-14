@@ -1,6 +1,5 @@
 package me.nickimpact.gts;
 
-import co.aikar.commands.BukkitCommandManager;
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -23,6 +22,7 @@ import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.dependencies.classloader.PluginClassLoader;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
+import me.nickimpact.gts.api.holders.ServiceInstance;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
@@ -30,11 +30,13 @@ import me.nickimpact.gts.commands.EntryClassificationContextHandler;
 import me.nickimpact.gts.commands.GtsCmd;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
-import me.nickimpact.gts.events.ServiceReadyEvent;
+import me.nickimpact.gts.discord.DiscordNotifier;
+import me.nickimpact.gts.spigot.events.ServiceReadyEvent;
 import me.nickimpact.gts.json.EntryAdapter;
 import me.nickimpact.gts.listings.SpigotItemEntry;
+import me.nickimpact.gts.listings.SpigotItemUI;
 import me.nickimpact.gts.manager.SpigotListingManager;
-import me.nickimpact.gts.service.SpigotGtsService;
+import me.nickimpact.gts.spigot.SpigotGtsService;
 import me.nickimpact.gts.manager.TextParsingUtils;
 import me.nickimpact.gts.spigot.SpigotListing;
 import me.nickimpact.gts.storage.StorageFactory;
@@ -42,6 +44,7 @@ import me.nickimpact.gts.api.storage.StorageType;
 import me.nickimpact.gts.api.dependencies.Dependency;
 import me.nickimpact.gts.api.dependencies.DependencyManager;
 import me.nickimpact.gts.api.dependencies.classloader.ReflectionClassLoader;
+import me.nickimpact.gts.tasks.SpigotListingTasks;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -54,7 +57,6 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Translatable {
@@ -78,14 +80,36 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 	private PluginClassLoader loader;
 	private DependencyManager dependencyManager;
 
-	private BukkitCommandManager cmdManager;
+	private PaperCommandManager cmdManager;
+
+	private DiscordNotifier discordNotifier;
+
+	@Override
+	public void onLoad() {
+		instance = this;
+		this.logger = new SpigotLogger(this);
+		logger.info(ChatColor.GREEN + "Loading GTS...");
+		logger.info(ChatColor.GREEN + "Initializing API service...");
+		this.service = new SpigotGtsService(this);
+		ServiceInstance.setService(this.service);
+
+		this.service.setBuilders(new BuilderRegistry());
+		this.service.getBuilderRegistry().register(Listing.ListingBuilder.class, SpigotListing.SpigotListingBuilder.class);
+
+		logger.info("Loading default entry types...");
+		this.service.setRegistry(new EntryRegistry(this));
+		this.service.registerEntry(
+				Lists.newArrayList("items", "item"),
+				SpigotItemEntry.class,
+				new SpigotItemUI(),
+				Material.DIAMOND.name(),
+				SpigotItemEntry::cmdExecutor
+		);
+	}
 
 	@Override
 	public void onEnable() {
-		instance = this;
-		this.logger = new SpigotLogger(this);
-		logger.info(ChatColor.GREEN + "Initializing GTS...");
-		this.service = new SpigotGtsService();
+		logger.info(ChatColor.GREEN + "Enabling GTS...");
 
 		logger.info("Loading configuration...");
 		this.configDir = this.getDataFolder().toPath();
@@ -100,20 +124,16 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 		StorageType st = StorageType.parse(this.config.get(ConfigKeys.STORAGE_METHOD));
 		this.dependencyManager.loadStorageDependencies(ImmutableSet.of(st != null ? st : StorageType.H2));
 
+		logger.info("Initializing internal handlers...");
 		this.gson = new GsonBuilder()
 				.setPrettyPrinting()
 				.registerTypeAdapter(Entry.class, new EntryAdapter(this))
 				.create();
 
-		logger.info("Loading default entry types...");
-		this.service.setRegistry(new EntryRegistry(this));
-		this.service.registerEntry(Lists.newArrayList("items", "item"), SpigotItemEntry.class, null, Material.DIAMOND.name(), null);
-		Bukkit.getPluginManager().callEvent(new ServiceReadyEvent(this.service));
-
-		this.service.setBuilders(new BuilderRegistry());
-		this.service.getBuilderRegistry().register(Listing.ListingBuilder.class, SpigotListing.SpigotListingBuilder.class);
-
 		this.textParsingUtils = new TextParsingUtils();
+
+		logger.info("Setting up discord notifier...");
+		this.discordNotifier = new DiscordNotifier(this);
 
 		logger.info("Initializing the Listing Manager...");
 		this.service.setManager(new SpigotListingManager());
@@ -140,6 +160,10 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 		logger.info("Initializing and reading storage...");
 		this.service.setStorage(new StorageFactory(this).getInstance(StorageType.JSON));
 		this.service.getListingManager().readStorage();
+
+		logger.info("Deploying running tasks...");
+		new SpigotListingTasks().createExpirationTask();
+
 		logger.info(ChatColor.GREEN + "Startup complete!");
 	}
 
@@ -260,5 +284,9 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 	@Override
 	public Config getMsgConfig() {
 		return this.msgConfig;
+	}
+
+	public DiscordNotifier getDiscordNotifier() {
+		return discordNotifier;
 	}
 }

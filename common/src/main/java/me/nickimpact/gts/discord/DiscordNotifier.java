@@ -27,18 +27,20 @@ public class DiscordNotifier {
 
 	public CompletableFuture<Void> sendMessage(Message message) {
 		return makeFuture(() -> {
-			final List<String> URLS = message.getWebhooks();
+			if(plugin.getConfiguration().get(ConfigKeys.DISCORD_ENABLED)) {
+				final List<String> URLS = message.getWebhooks();
 
-			for(final String URL : URLS) {
-				if (plugin.getConfiguration().get(ConfigKeys.DISCORD_DEBUG)) {
-					plugin.getPluginLogger().info("[WebHook-Debug] Sending webhook payload to " + URL);
-					plugin.getPluginLogger().info("[WebHook-Debug] Payload: " + message.getJsonString());
-				}
+				for (final String URL : URLS) {
+					if (plugin.getConfiguration().get(ConfigKeys.DISCORD_DEBUG)) {
+						plugin.getPluginLogger().info("[WebHook-Debug] Sending webhook payload to " + URL);
+						plugin.getPluginLogger().info("[WebHook-Debug] Payload: " + message.getJsonString());
+					}
 
-				HttpsURLConnection connection = message.send(URL);
-				int status = connection.getResponseCode();
-				if (plugin.getConfiguration().get(ConfigKeys.DISCORD_DEBUG)) {
-					plugin.getPluginLogger().info("[WebHook-Debug] Payload info received, status code: " + status);
+					HttpsURLConnection connection = message.send(URL);
+					int status = connection.getResponseCode();
+					if (plugin.getConfiguration().get(ConfigKeys.DISCORD_DEBUG)) {
+						plugin.getPluginLogger().info("[WebHook-Debug] Payload info received, status code: " + status);
+					}
 				}
 			}
 		});

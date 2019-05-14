@@ -1,15 +1,15 @@
 package me.nickimpact.gts.api.listings;
 
-import com.nickimpact.impactor.api.ImpactorService;
 import com.nickimpact.impactor.api.building.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.prices.Price;
+import me.nickimpact.gts.api.plugin.IGTSBacking;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
 
 import java.time.Instant;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public abstract class Listing<E extends Entry, P, I> {
@@ -27,9 +27,9 @@ public abstract class Listing<E extends Entry, P, I> {
 	protected Price price;
 
 	/** When the lot will expire, if the above is true */
-	@Getter private Date expiration;
+	@Getter private LocalDateTime expiration;
 
-	public Listing(UUID id, UUID owner, E entry, Price price, Date expiration) {
+	public Listing(UUID id, UUID owner, E entry, Price price, LocalDateTime expiration) {
 		this.uuid = id;
 		this.price = price;
 		this.ownerUUID = owner;
@@ -37,7 +37,7 @@ public abstract class Listing<E extends Entry, P, I> {
 		this.entry = entry;
 	}
 
-	public boolean publish(IGTSPlugin plugin, UUID uuid) {
+	public boolean publish(IGTSBacking plugin, UUID uuid) {
 		return plugin.getAPIService().getListingManager().addToMarket(uuid,this);
 	}
 
@@ -47,7 +47,7 @@ public abstract class Listing<E extends Entry, P, I> {
 	 * @return Whether or not a listing has expired
 	 */
 	public boolean hasExpired() {
-		return getExpiration().before(Date.from(Instant.now()));
+		return getExpiration().isBefore(LocalDateTime.now());
 	}
 
 	/**
@@ -87,6 +87,6 @@ public abstract class Listing<E extends Entry, P, I> {
 
 		ListingBuilder price(double price);
 
-		ListingBuilder expiration(Date expiration);
+		ListingBuilder expiration(LocalDateTime expiration);
 	}
 }
