@@ -28,7 +28,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class MainUI {
+public class SpigotMainUI {
 
 	private static Map<UUID, Instant> delays = Maps.newHashMap();
 
@@ -54,7 +54,7 @@ public class MainUI {
 		GRAY_BORDER.getDisplay().setItemMeta(meta);
 	}
 
-	public MainUI(Player viewer) {
+	public SpigotMainUI(Player viewer) {
 		this.viewer = viewer;
 		this.searchConditions.add(listing -> !listing.hasExpired());
 		this.searchConditions.add(listing -> {
@@ -71,13 +71,12 @@ public class MainUI {
 				.nextPage(Material.matchMaterial("pixelmon_trade_holder_right"), 50)
 				.build();
 		this.page.applier(listing -> {
-			SpigotListing sp = (SpigotListing) listing;
-			SpigotIcon icon = new SpigotIcon(sp.getDisplay(this.viewer, false));
+			SpigotIcon icon = new SpigotIcon(listing.getDisplay(this.viewer, false));
 			icon.addListener(clickable -> {
 				UUID uuid = listing.getUuid();
 				if(GTS.getInstance().getAPIService().getListingManager().getListingByID(uuid).isPresent()) {
 					this.page.close();
-					new ConfirmUI(this.viewer, listing).open();
+					new SpigotConfirmUI(this.viewer, listing).open();
 				}
 			});
 
@@ -199,8 +198,6 @@ public class MainUI {
 						return;
 					}
 				}
-
-				GTS.getInstance().getPluginLogger().debug("" + this.classSelection);
 
 				List<String> lore = repMeta.getLore();
 				if(classification.getClassification().equals(this.classSelection)) {

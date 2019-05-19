@@ -1,8 +1,8 @@
 package me.nickimpact.gts.api.listings.prices;
 
-public interface Minable<M extends Number & Comparable> {
+public interface Minable<T extends Price> {
 
-	Price<M> calcMinPrice();
+	T calcMinPrice();
 
 	default boolean isValid(double proposed) {
 		return proposed >= this.calcMinPrice().getPrice();

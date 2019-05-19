@@ -3,17 +3,17 @@ package me.nickimpact.gts.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.*;
 import me.nickimpact.gts.api.holders.EntryClassification;
-import me.nickimpact.gts.ui.MainUI;
+import me.nickimpact.gts.ui.SpigotMainUI;
 import org.bukkit.entity.Player;
 
 @CommandAlias("gts")
 @Description("Controls the functionality of GTS")
 @CommandPermission("gts.command.gts.base")
-public class GtsCmd extends BaseCommand {
+public class SpigotGtsCmd extends BaseCommand {
 
 	@Default
 	public void execute(Player player) {
-		new MainUI(player).open();
+		new SpigotMainUI(player).open();
 	}
 
 	@Subcommand("sell|add")

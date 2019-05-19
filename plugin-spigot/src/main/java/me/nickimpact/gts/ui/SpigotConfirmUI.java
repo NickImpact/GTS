@@ -5,12 +5,11 @@ import com.nickimpact.impactor.spigot.ui.SpigotIcon;
 import com.nickimpact.impactor.spigot.ui.SpigotLayout;
 import com.nickimpact.impactor.spigot.ui.SpigotUI;
 import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.discord.DiscordNotifier;
 import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.spigot.SpigotListing;
-import me.nickimpact.gts.utils.MessageUtils;
+import me.nickimpact.gts.spigot.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -20,7 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
 
-public class ConfirmUI {
+public class SpigotConfirmUI {
 
 	private SpigotUI view;
 	private Player viewer;
@@ -28,7 +27,7 @@ public class ConfirmUI {
 
 	private boolean confirmed;
 
-	public ConfirmUI(Player viewer, SpigotListing focus) {
+	public SpigotConfirmUI(Player viewer, SpigotListing focus) {
 		this.viewer = viewer;
 		this.focus = focus;
 		this.view = SpigotUI.builder()
@@ -129,7 +128,7 @@ public class ConfirmUI {
 		SpigotIcon icon = new SpigotIcon(cancel);
 		icon.addListener(clickable -> {
 			this.view.close(this.viewer);
-			new MainUI(this.viewer).open();
+			new SpigotMainUI(this.viewer).open();
 		});
 		builder.slots(icon, 50, 51, 52);
 

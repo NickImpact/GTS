@@ -1,39 +1,30 @@
 package me.nickimpact.gts.reforged.entry;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.utilities.Time;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
-import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.comm.EnumUpdateType;
-import com.pixelmonmod.pixelmon.config.PixelmonConfig;
-import com.pixelmonmod.pixelmon.config.PixelmonItems;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
-import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
-import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
-import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.reforged.ReforgedBridge;
+import me.nickimpact.gts.reforged.config.ReforgedKeys;
 import me.nickimpact.gts.reforged.utils.Flags;
+import me.nickimpact.gts.reforged.utils.SpriteItemUtil;
+import me.nickimpact.gts.spigot.MessageUtils;
 import me.nickimpact.gts.spigot.SpigotEntry;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -42,7 +33,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -78,7 +68,7 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 	public String getSpecsTemplate() {
 		String out = "";
 		if(!this.getEntry().isEgg()) {
-			out += String.format("%s %.2f%% IV ", this.formattedAbility().toLowerCase(), this.calcIVPercent(pokemon.getIVs()));
+			out += String.format("%s %.2f%% IV ", SpriteItemUtil.formattedAbility(pokemon).toLowerCase(), SpriteItemUtil.calcIVPercent(pokemon.getIVs()));
 			if(this.pokemon.isShiny()) {
 				out += "shiny ";
 			}
@@ -131,12 +121,11 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 		if(pokemon.isShiny()) output.add("|  Shiny");
 		if(pokemon.isEgg()) {
 			output.add("|  Egg");
-			output.add("|  - Steps Remaining: " + this.formattedStepsRemainingOnEgg(pokemon));
-			output.add("|  - Status: " + pokemon.getEggDescription());
+			output.add("|  - Steps Walked: " + SpriteItemUtil.formattedStepsRemainingOnEgg(pokemon));
 		}
 		if(pokemon.getPokerus() != null) output.add("|  Infected w/ Pok\u00e9rus");
-		if(pokemon.getSpecialTexture() != null) output.add("|  Special Texture: " + pokemon.getSpecialTexture().name());
-		if(pokemon.getCustomTexture() != null){
+		if(pokemon.getSpecialTexture() != null && pokemon.getSpecialTexture() != EnumSpecialTexture.None) output.add("|  Special Texture: " + pokemon.getSpecialTexture().name());
+		if(pokemon.getCustomTexture() != null && !pokemon.getCustomTexture().isEmpty()) {
 			StringBuilder sb = new StringBuilder();
 			String[] split = pokemon.getCustomTexture().split("\\s+");
 
@@ -153,7 +142,7 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 
 		output.add("");
 
-		output.add("- Ability: " + this.formattedAbility());
+		output.add("- Ability: " + SpriteItemUtil.formattedAbility(pokemon));
 		output.add("- Nature: " + pokemon.getNature().getLocalizedName());
 		output.add("- Gender: " + pokemon.getGender().getLocalizedName());
 		output.add("- Growth: " + pokemon.getGrowth().getLocalizedName());
@@ -167,7 +156,7 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 				evs.specialAttack,
 				evs.specialDefence,
 				evs.speed,
-				this.calcEVPercent(evs)
+				SpriteItemUtil.calcEVPercent(evs)
 		));
 
 		IVStore ivs = pokemon.getIVs();
@@ -179,17 +168,17 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 				ivs.specialAttack,
 				ivs.specialDefence,
 				ivs.speed,
-				this.calcIVPercent(ivs)
+				SpriteItemUtil.calcIVPercent(ivs)
 		));
 
-		output.add("Moveset: " + this.moveset());
+		output.add("Moveset: " + SpriteItemUtil.moveset(pokemon));
 
 		return output;
 	}
 
 	@Override
 	public ItemStack baseItemStack(Player player, Listing listing) {
-		ItemStack icon = this.getPicture(this.getEntry());
+		ItemStack icon = SpriteItemUtil.createPicture(this.getEntry());
 		ItemMeta meta = icon.getItemMeta();
 		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', String.format(
 				!this.getEntry().isEgg() ? "&3%s &7| &aLvl %d" : "&3%s Egg",
@@ -197,46 +186,9 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 				this.getEntry().getLevel()))
 		);
 
-
-
-		Gender gender = this.getEntry().getGender();
-		EVStore evs = this.getEntry().getEVs();
-		IVStore ivs = this.getEntry().getIVs();
-
 		List<String> lore = Lists.newArrayList();
-		lore.addAll(Lists.newArrayList(
-				"&7Seller: &e" + Bukkit.getServer().getOfflinePlayer(listing.getOwnerUUID()).getName(),
-				"",
-				"&7Ability: &e" + this.formattedAbility(),
-				"&7Gender: " + (gender == Gender.Male ? "&bMale" : gender == Gender.Female ? "&dFemale" : "&fNone"),
-				"&7Nature: &e" + this.getEntry().getNature(),
-				"&7Size: &e" + this.getEntry().getGrowth().name(),
-				"&7EVs: " + String.format(
-						"&e%d&7/&e%d&7/&e%d&7/&e%d&7/&e%d&7/&e%d &7(&a%.2f%%&7)",
-						evs.hp,
-						evs.attack,
-						evs.defence,
-						evs.specialAttack,
-						evs.specialDefence,
-						evs.speed,
-						this.calcEVPercent(evs)
-				),
-				"&7IVs: " + String.format(
-						"&e%d&7/&e%d&7/&e%d&7/&e%d&7/&e%d&7/&e%d &7(&a%.2f%%&7)",
-						ivs.hp,
-						ivs.attack,
-						ivs.defence,
-						ivs.specialAttack,
-						ivs.specialDefence,
-						ivs.speed,
-						this.calcIVPercent(ivs)
-				),
-				""
-
-		));
-		if(this.addLore(lore)) {
-			lore.add("");
-		}
+		lore.addAll(Lists.newArrayList("&7Seller: &e" + Bukkit.getOfflinePlayer(listing.getOwnerUUID()).getName()));
+		lore.addAll(SpriteItemUtil.getDetails(this.getEntry()));
 		lore.addAll(Lists.newArrayList(
 				"&7Price: &e" + listing.getPrice().getText(),
 				"&7Time Remaining: &e" + new Time(Duration.between(LocalDateTime.now(), listing.getExpiration()).getSeconds()).toString()
@@ -245,28 +197,6 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 		icon.setItemMeta(meta);
 
 		return icon;
-	}
-
-	@Override
-	public ItemStack confirmItemStack(Player player, Listing listing) {
-		ItemStack paper = new ItemStack(Material.PAPER);
-		ItemMeta meta = paper.getItemMeta();
-		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&ePurchase " + this.getName() + "?"));
-		paper.setItemMeta(meta);
-
-		return paper;
-	}
-
-	private boolean addLore(List<String> template) {
-		boolean any = false;
-		for (EnumHidableDetail detail : EnumHidableDetail.values()) {
-			if (detail.getCondition().test(this.getEntry())) {
-				template.add(detail.getField().apply(this.getEntry()));
-				any = true;
-			}
-		}
-
-		return any;
 	}
 
 	@Override
@@ -285,25 +215,29 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 	public boolean doTakeAway(Player player) {
 		PlayerPartyStorage storage = Pixelmon.storageManager.getParty(player.getUniqueId());
 		if(BattleRegistry.getBattle(storage.getPlayer()) != null) {
-			// TODO - Message
+			player.sendMessage(MessageUtils.parse("You can't sell a pokemon while in battle...", true));
 			return false;
 		}
 
 		if(Flags.UNTRADABLE.matches(this.getEntry())) {
-			// TODO - Message
+			player.sendMessage(MessageUtils.parse("That pokemon is marked as untradable...", true));
 			return false;
 		}
 
-		// TODO - Check for blacklist
+		List<EnumSpecies> blacklisted = ReforgedBridge.getInstance().getConfiguration()
+				.get(ReforgedKeys.BLACKLISTED_POKEMON)
+				.stream()
+				.map(EnumSpecies::getFromNameAnyCase)
+				.collect(Collectors.toList());
+		if(blacklisted.contains(this.getEntry().getSpecies())) {
+			player.sendMessage(MessageUtils.parse("That pokemon has been blacklisted from being added on the GTS...", true));
+			return false;
+		}
 
 		storage.retrieveAll();
 		storage.set(storage.getPosition(this.getEntry()), null);
 
 		return true;
-	}
-
-	private ItemStack getPicture(Pokemon pokemon) {
-		return CraftItemStack.asBukkitCopy((net.minecraft.server.v1_12_R1.ItemStack) (Object) ItemPixelmonSprite.getPhoto(pokemon));
 	}
 
 	public enum LakeTrio {
@@ -326,50 +260,5 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 
 			return false;
 		}
-	}
-
-	private double calcEVPercent(EVStore evs) {
-		return (evs.hp + evs.attack + evs.defence + evs.specialAttack + evs.specialDefence + evs.speed) / 510.0 * 100;
-	}
-
-	private double calcIVPercent(IVStore ivs) {
-		return (ivs.hp + ivs.attack + ivs.defence + ivs.specialAttack + ivs.specialDefence + ivs.speed) / 186.0 * 100;
-	}
-
-	private String formattedAbility() {
-		boolean first = false;
-		StringBuilder ability = new StringBuilder();
-		String initial = this.getEntry().getAbilityName();
-		for(int i = 0; i < initial.length(); i++) {
-			char c = initial.charAt(i);
-			if(c >= 'A' && c <= 'Z') {
-				if (first) {
-					ability.append(" ").append(c);
-				} else {
-					ability.append(c);
-					first = true;
-				}
-			} else {
-				ability.append(c);
-			}
-		}
-
-		return ability.toString();
-	}
-
-	private String formattedStepsRemainingOnEgg(Pokemon pokemon) {
-		int total = (pokemon.getEggCycles() + 1) * PixelmonConfig.stepsPerEggCycle;
-		int walked = pokemon.getEggSteps();
-		return String.format("%d/%d", walked, total);
-	}
-
-	private String moveset() {
-		Moveset moves = pokemon.getMoveset();
-		StringBuilder out = new StringBuilder();
-		for(Attack attack : moves.attacks) {
-			out.append(attack.baseAttack.getTranslatedName().getFormattedText()).append("-");
-		}
-
-		return out.substring(0, out.length() - 1);
 	}
 }

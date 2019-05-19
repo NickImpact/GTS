@@ -49,6 +49,7 @@ subprojects {
 }
 
 task copyJars(type: Copy) {
+    dependsOn subprojects.build
     from subprojects.collect { it.tasks.withType(Jar) }
     into "$buildDir/allJars"
     exclude '*-all.jar'

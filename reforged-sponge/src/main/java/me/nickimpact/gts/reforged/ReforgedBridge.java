@@ -20,8 +20,10 @@ import me.nickimpact.gts.api.dependencies.classloader.PluginClassLoader;
 import me.nickimpact.gts.reforged.config.PokemonConfigKeys;
 import me.nickimpact.gts.reforged.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.reforged.entries.ReforgedEntry;
+import me.nickimpact.gts.reforged.entries.ReforgedUI;
 import me.nickimpact.gts.sponge.SpongePlugin;
 import me.nickimpact.gts.sponge.TextParsingUtils;
+import me.nickimpact.gts.sponge.service.SpongeGtsService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
@@ -42,7 +44,7 @@ import java.util.function.Consumer;
 public class ReforgedBridge extends AbstractSpongePlugin implements SpongePlugin {
 
 	@Getter private static ReforgedBridge instance;
-	private GtsService service;
+	private SpongeGtsService service;
 
 	@Inject
 	private org.slf4j.Logger fallback;
@@ -62,21 +64,21 @@ public class ReforgedBridge extends AbstractSpongePlugin implements SpongePlugin
 		instance = this;
 		this.logger = new SpongeLogger(fallback);
 
-		this.config = new SpongeConfig(new SpongeConfigAdapter(configDir.resolve("reforged.conf")), new PokemonConfigKeys());
-		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(configDir.resolve("lang/reforged-en_us.conf")), new PokemonMsgConfigKeys());
+		this.config = new SpongeConfig(new SpongeConfigAdapter(this, configDir.resolve("reforged.conf").toFile()), new PokemonConfigKeys());
+		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, configDir.resolve("lang/reforged-en_us.conf").toFile()), new PokemonMsgConfigKeys());
 
 		this.textParsingUtils = new TextParsingUtils(this);
 	}
 
 	@Listener
 	public void onInit(GameInitializationEvent e) {
-		service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
+		service = (SpongeGtsService) Sponge.getServiceManager().provideUnchecked(GtsService.class);
 		service.registerEntry(
 				this.msgConfig.get(PokemonMsgConfigKeys.REFERENCE_TITLES),
 				ReforgedEntry.class,
-				null,
+				new ReforgedUI(),
 				"pixelmon:gs_ball",
-				null
+				ReforgedEntry::execute
 		);
 	}
 

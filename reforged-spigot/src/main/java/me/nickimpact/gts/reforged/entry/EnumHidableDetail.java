@@ -7,6 +7,7 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.stats.extraStats.MewStats;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import me.nickimpact.gts.reforged.utils.SpriteItemUtil;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -34,6 +35,7 @@ public enum EnumHidableDetail {
 	POKERUS(pokemon -> pokemon.getPokerus() != null, poke -> "&dInflicted with Pok\u00e9rus"),
 	CLONES(pokemon -> pokemon.getSpecies().equals(EnumSpecies.Mew), mew -> "&7Clones Left: &e" + (3 - ((MewStats) mew.getExtraStats()).numCloned)),
 	ENCHANTED(pokemon -> ReforgedEntry.LakeTrio.isMember(pokemon.getSpecies()), lakey -> "&7Enchants Left: &e" + (3 - ((LakeTrioStats) lakey.getExtraStats()).numEnchanted)),
+	EGG(Pokemon::isEgg, egg -> "&7Steps Walked: &e" + SpriteItemUtil.formattedStepsRemainingOnEgg(egg)),
 	;
 
 	private Predicate<Pokemon> condition;

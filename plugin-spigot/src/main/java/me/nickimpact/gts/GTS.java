@@ -26,12 +26,12 @@ import me.nickimpact.gts.api.holders.ServiceInstance;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
-import me.nickimpact.gts.commands.EntryClassificationContextHandler;
-import me.nickimpact.gts.commands.GtsCmd;
+import me.nickimpact.gts.commands.SpigotEntryClassificationContextHandler;
+import me.nickimpact.gts.commands.SpigotGtsCmd;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.discord.DiscordNotifier;
-import me.nickimpact.gts.spigot.events.ServiceReadyEvent;
+import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.json.EntryAdapter;
 import me.nickimpact.gts.listings.SpigotItemEntry;
 import me.nickimpact.gts.listings.SpigotItemUI;
@@ -45,7 +45,6 @@ import me.nickimpact.gts.api.dependencies.Dependency;
 import me.nickimpact.gts.api.dependencies.DependencyManager;
 import me.nickimpact.gts.api.dependencies.classloader.ReflectionClassLoader;
 import me.nickimpact.gts.tasks.SpigotListingTasks;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -87,6 +86,7 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 	@Override
 	public void onLoad() {
 		instance = this;
+		PluginInstance.setInstance(this);
 		this.logger = new SpigotLogger(this);
 		logger.info(ChatColor.GREEN + "Loading GTS...");
 		logger.info(ChatColor.GREEN + "Initializing API service...");
@@ -152,10 +152,10 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 		this.cmdManager.getCommandReplacements().addReplacement("entryType", pipedEntryTypes.toString());
 		this.cmdManager.getCommandContexts().registerContext(
 				EntryClassification.class,
-				EntryClassificationContextHandler.getContextResolver()
+				SpigotEntryClassificationContextHandler.getContextResolver()
 		);
 
-		this.cmdManager.registerCommand(new GtsCmd());
+		this.cmdManager.registerCommand(new SpigotGtsCmd());
 
 		logger.info("Initializing and reading storage...");
 		this.service.setStorage(new StorageFactory(this).getInstance(StorageType.JSON));

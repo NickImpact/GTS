@@ -15,13 +15,13 @@ public class SpigotListing extends Listing<SpigotEntry, Player, ItemStack> {
 		super(id, owner, entry, price, expiration);
 	}
 
-	public SpigotListing(SpigotListingBuilder builder) {
+	private SpigotListing(SpigotListingBuilder builder) {
 		super(builder.id, builder.owner, builder.entry, builder.price, builder.expiration);
 	}
 
 	@Override
 	public ItemStack getDisplay(Player player, boolean confirm) {
-		return confirm ? (ItemStack) this.getEntry().confirmItemStack(player, this) : (ItemStack) this.getEntry().baseItemStack(player, this);
+		return (ItemStack) this.getEntry().baseItemStack(player, this);
 	}
 
 	public static SpigotListingBuilder builder() {

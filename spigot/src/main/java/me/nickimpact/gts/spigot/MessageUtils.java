@@ -1,6 +1,7 @@
-package me.nickimpact.gts.utils;
+package me.nickimpact.gts.spigot;
 
-import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.api.plugin.PluginInstance;
+import org.bukkit.ChatColor;
 
 import java.util.List;
 
@@ -8,14 +9,14 @@ public class MessageUtils {
 
 	public static String parse(String input, boolean error) {
 		if(error) {
-			return GTS.getInstance().getTextParsingUtils().error(input);
+			return PluginInstance.getInstance().getAPIService().getTextService().getErrorPrefix() + ChatColor.translateAlternateColorCodes('&', input);
 		} else {
-			return GTS.getInstance().getTextParsingUtils().normal(input);
+			return PluginInstance.getInstance().getAPIService().getTextService().getPrefix() + ChatColor.translateAlternateColorCodes('&', input);
 		}
 	}
 
 	public static String[] asArray(List<String> input) {
-		return GTS.getInstance().getTextParsingUtils().convertFromList(input);
+		return input.toArray(new String[]{});
 	}
 
 	public static String asSingleWithNewlines(List<String> list) {

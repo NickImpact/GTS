@@ -1,7 +1,6 @@
-package me.nickimpact.gts.spigot;
+package me.nickimpact.gts.sponge.service;
 
 import com.nickimpact.impactor.api.registry.BuilderRegistry;
-import lombok.AllArgsConstructor;
 import lombok.Setter;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.enums.CommandResults;
@@ -13,14 +12,14 @@ import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
 import me.nickimpact.gts.api.storage.IGtsStorage;
 import me.nickimpact.gts.api.text.TextService;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
+import org.spongepowered.api.command.CommandSource;
+import org.spongepowered.api.text.Text;
 
 import java.util.List;
 import java.util.function.BiFunction;
 
 @Setter
-public class SpigotGtsService implements GtsService<CommandSender, String> {
+public class SpongeGtsService implements GtsService<CommandSource, Text> {
 
 	private final IGTSPlugin plugin;
 
@@ -28,11 +27,9 @@ public class SpigotGtsService implements GtsService<CommandSender, String> {
 	private IGtsStorage storage;
 	private EntryRegistry registry;
 	private BuilderRegistry builders;
-	private SpigotTextService textService;
 
-	public SpigotGtsService(IGTSPlugin plugin) {
+	public SpongeGtsService(IGTSPlugin plugin) {
 		this.plugin = plugin;
-		this.textService = new SpigotTextService();
 	}
 
 	@Override
@@ -51,10 +48,10 @@ public class SpigotGtsService implements GtsService<CommandSender, String> {
 	}
 
 	@Override
-	public void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CommandSender, String[], CommandResults> cmd) {
+	public void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CommandSource, String[], CommandResults> cmd) {
 		try {
 			this.registry.getRegistry().register(entry);
-			this.registry.getClassifications().add(new SpigotEntryClassification(entry, identifier, rep, ui, cmd));
+			this.registry.getClassifications().add(new SpongeEntryClassification(entry, identifier, rep, ui, cmd));
 
 			plugin.getPluginLogger().info("Loaded element type: " + entry.getSimpleName());
 		} catch (Exception e) {
@@ -69,27 +66,13 @@ public class SpigotGtsService implements GtsService<CommandSender, String> {
 	}
 
 	@Override
-	public SpigotTextService getTextService() {
-		return this.textService;
+	public TextService<Text> getTextService() {
+		return null;
 	}
 
-	public static class SpigotEntryClassification extends EntryClassification<CommandSender> {
-		SpigotEntryClassification(Class<? extends Entry> classification, List<String> identifers, String itemRep, EntryUI ui, BiFunction<CommandSender, String[], CommandResults> cmdHandler) {
+	public static class SpongeEntryClassification extends EntryClassification<CommandSource> {
+		SpongeEntryClassification(Class<? extends Entry> classification, List<String> identifers, String itemRep, EntryUI ui, BiFunction<CommandSource, String[], CommandResults> cmdHandler) {
 			super(classification, identifers, itemRep, ui, cmdHandler);
 		}
-	}
-
-	public static class SpigotTextService implements TextService<String> {
-
-		@Override
-		public String getPrefix() {
-			return ChatColor.YELLOW + "GTS " + ChatColor.GRAY + "\u00bb ";
-		}
-
-		@Override
-		public String getErrorPrefix() {
-			return ChatColor.YELLOW + "GTS " + ChatColor.GRAY + "(" + ChatColor.RED + "Error" + ChatColor.GRAY + ") ";
-		}
-
 	}
 }

@@ -62,15 +62,6 @@ public abstract class Entry<T, D, P, U, I> {
 	public abstract I baseItemStack(P player, Listing listing);
 
 	/**
-	 * Represents an item stack that will be shown during the confirmation accepting of an element.
-	 * This display can often be the same as the original display, but for other times, be used to
-	 * help display extra data the original element did not.
-	 *
-	 * @return An ItemStack built to represent an element during confirmation.
-	 */
-	public abstract I confirmItemStack(P player, Listing listing);
-
-	/**
 	 * States whether or not a listing can be handled for an offline player.
 	 * By default, this setting is set to true for all com.nickimpact.gts.api.listings. However,
 	 * things like ItemStacks, since they require an online player to go

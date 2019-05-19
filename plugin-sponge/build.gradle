@@ -12,6 +12,13 @@ repositories {
         name 'drnaylor'
         url 'http://repo.drnaylor.co.uk/artifactory/list/quickstart'
     }
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+    maven { url = "https://hub.spigotmc.org/nexus/content/groups/public/" }
+}
+
+shadowJar {
+    archiveName = "GTS-Sponge-1.12.2-4.2.0-DEV.jar"
+    exclude 'Impactor*.jar'
 }
 
 dependencies {
@@ -19,5 +26,6 @@ dependencies {
     shadow project(':common')
     shadow project(':sponge')
     shadow 'org.spongepowered:spongeapi:7.1.0'
-    shadow 'io.github.nucleuspowered:nucleus-api:1.7.0-S7.1'
+    shadow 'io.github.nucleuspowered:nucleus-api:1.10.0-S7.1'
+    compile "co.aikar:acf-sponge:0.5.0-SNAPSHOT"
 }

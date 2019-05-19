@@ -43,6 +43,11 @@ repositories {
     }
 }
 
+shadowJar {
+    archiveName = "GTS-Sponge-Reforged-7.0.5-4.2.0-DEV.jar"
+    exclude 'Impactor*.jar'
+}
+
 reobf {
     shadowJar {
         mappingType = 'SEARGE'
@@ -52,7 +57,7 @@ reobf {
 dependencies {
     shadow project(':api')
     shadow project(':sponge')
-    compile project(':common')
+    shadow project(':common')
     shadow 'org.spongepowered:spongeapi:7.1.0'
     shadow 'io.github.nucleuspowered:nucleus-api:1.7.0-S7.1'
     shadow 'reforged:server:7.0.5@Pixelmon-1.12.2-7.0.5-server.jar'

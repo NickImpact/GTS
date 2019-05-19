@@ -43,24 +43,6 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<List<String>> PURCHASE_RECEIVE = listKey("general.prices.receive", Lists.newArrayList(
 			"{{gts_prefix}} &a{{buyer}} &7purchased your &a{{listing_name}} &7listing for &a{{price}}&7!"
 	));
-	public static final ConfigKey<List<String>> AUCTION_BID_BROADCAST = listKey("general.auctions.bid", Lists.newArrayList(
-			"{{gts_prefix}} &e{{player}} &7has placed a bid on the &a{{listing_specifics}}!"
-	));
-	public static final ConfigKey<List<String>> AUCTION_BID = listKey("general.auctions.bid-personal", Lists.newArrayList(
-			"{{gts_prefix}} &7Your bid has been placed! If you win, you will pay &e{{price}}&7!"
-	));
-	public static final ConfigKey<List<String>> AUCTION_WIN_BROADCAST = listKey("general.auctions.win", Lists.newArrayList(
-			"{{gts_prefix}} &e{{player}} &7has won the auction for the &a{{listing_specifics}}!"
-	));
-	public static final ConfigKey<List<String>> AUCTION_WIN = listKey("general.auctions.win-personal", Lists.newArrayList(
-			"{{gts_prefix}} &7Congrats! You've won the auction on the &e{{listing_specifics}} &7for &a{{price}}&7!"
-	));
-	public static final ConfigKey<List<String>> AUCTION_SOLD = listKey("general.auctions.sold", Lists.newArrayList(
-			"{{gts_prefix}} &7Your &e{{listing_specifics}} &7auction was sold to &e{{high_bidder}} &7for &a{{price}}&7!"
-	));
-	public static final ConfigKey<List<String>> AUCTION_IS_HIGH_BIDDER = listKey("general.auctions.is-high-bidder", Lists.newArrayList(
-			"{{gts_prefix}} &cHold off! You wouldn't want to bid against yourself!"
-	));
 	public static final ConfigKey<List<String>> REMOVAL_CHOICE = listKey("general.removal.choice", Lists.newArrayList(
 			"{{gts_prefix}} &7Your &a{{listing_name}} &7listing has been returned!"
 	));
@@ -81,17 +63,11 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Price: &e{{price}}",
 			"&7Time Left: &e{{time_left}}"
 	));
-	public static final ConfigKey<List<String>> AUCTION_INFO = listKey("entries.auction-info", Lists.newArrayList(
-			"",
-			"&7High Bidder: &e{{high_bidder}}",
-			"&7Current Price: &e{{auc_price}}",
-			"&7Increment: &e{{increment}}",
-			"&7Time Left: &e{{time_left}}"
-	));
 
 	// Error messages
 	public static final ConfigKey<List<String>> NOT_ENOUGH_FUNDS = listKey("general.purchase.not-enough-funds", Lists.newArrayList("&cUnfortunately, you were unable to afford the price of {{price}}"));
 	public static final ConfigKey<List<String>> ALREADY_CLAIMED = listKey("general.purchase.already-claimed", Lists.newArrayList("&cUnfortunately, this listing has already been claimed..."));
+	public static final ConfigKey<List<String>> EXPIRED = listKey("general.purchase.expired", Lists.newArrayList("&cUnfortunately, this listing has since expired..."));
 	public static final ConfigKey<List<String>> ITEM_ENTRY_BASE_LORE = listKey("entries.item.base.lore", Lists.newArrayList(
 			"&7Seller: &e{{seller}}"
 	));
@@ -155,30 +131,6 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Shift + Right Click: &c-{{gts_button_currency_shift_right_click}}"
 	));
 
-	public static final ConfigKey<String> BUTTONS_INCREASE_TIME_TITLE = stringKey("buttons.time.increase.title", "&aIncrease Time");
-	public static final ConfigKey<List<String>> BUTTONS_INCREASE_TIME_LORE = listKey("buttons.time.increase.lore", Lists.newArrayList(
-			"&7Left Click: &b+{{gts_button_time_left_click}}",
-			"&7Right Click: &b+{{gts_button_time_right_click}}",
-			"&7Shift + Left Click: &b+{{gts_button_time_shift_left_click}}",
-			"&7Shift + Right Click: &b+{{gts_button_time_shift_right_click}}"
-	));
-
-	public static final ConfigKey<String> BUTTONS_DECREASE_TIME_TITLE = stringKey("buttons.time.decrease.title", "&cDecrease Time");
-	public static final ConfigKey<List<String>> BUTTONS_DECREASE_TIME_LORE = listKey("buttons.time.decrease.lore", Lists.newArrayList(
-			"&7Left Click: &c-{{gts_button_time_left_click}}",
-			"&7Right Click: &c-{{gts_button_time_right_click}}",
-			"&7Shift + Left Click: &c-{{gts_button_time_shift_left_click}}",
-			"&7Shift + Right Click: &c-{{gts_button_time_shift_right_click}}"
-	));
-
-	public static final ConfigKey<String> TIME_DISPLAY_TITLE = stringKey("buttons.time.display.title", "&eListing Time");
-	public static final ConfigKey<List<String>> TIME_DISPLAY_LORE = listKey("buttons.time.display.lore", Lists.newArrayList(
-			"&7Target Time: &a{{gts_time}}",
-			"",
-			"&7Min Time: &a{{gts_min_time}}",
-			"&7Max Time: &a{{gts_max_time}}"
-	));
-
 	public static final ConfigKey<String> PRICE_DISPLAY_TITLE = stringKey("buttons.currency.display.title", "&eListing Price");
 	public static final ConfigKey<List<String>> PRICE_DISPLAY_LORE = listKey("buttons.currency.display.lore", Lists.newArrayList(
 			"&7Target Price: &a{{gts_price}}",
@@ -187,10 +139,8 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Max Price: &a{{gts_max_price}}"
 	));
 
-	public static final ConfigKey<String> COMMANDS_ERROR_TIMEARG_IMPROPER = stringKey("commands.time.argument.improper", "The specified time is of an incorrect format, or breaches time constraints...");
-
 	public static final ConfigKey<String> ITEMS_NONE_IN_HAND = stringKey("entries.items.command.none-in-hand", "{{gts_error}} Your hand has no item in it!");
-	public static final ConfigKey<String> ITEMS_NO_CUSTOM_NAMES = stringKey("entries.items.generic.custom-name-restricted", "{{gts_error}} Your can't sell items with custom names!");
+	public static final ConfigKey<String> ITEMS_NO_CUSTOM_NAMES = stringKey("entries.items.generic.custom-name-restricted", "{{gts_error}} You can't sell items with custom names!");
 	public static final ConfigKey<String> ITEMS_INVENTORY_FULL = stringKey("entries.items.generic.inventory-full", "{{gts_error}} Your inventory is full, so we'll hold onto this item for you!");
 
 	public static final ConfigKey<List<String>> DISCORD_PUBLISH_TEMPLATE = listKey("discord.templates.publish", Lists.newArrayList(
@@ -228,6 +178,17 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"Item Details: {{gts_published_item_details}}"
 	));
 	public static final ConfigKey<String> LISTING_EVENT_CANCELLED = stringKey("general.listings.event-cancelled", "{{gts_error}} Your listing was blocked by an administrative source...");
+
+	public static final ConfigKey<String> PLUGIN_ERROR = stringKey("general.errors.unexpected", "{{gts_error}} Due to an internal server error, your action request was cancelled...");
+	public static final ConfigKey<String> UNABLE_TO_TAKE_LISTING = stringKey("general.listings.unable-to-take", "{{gts_error}} Your listing failed to be taken, so we returned the tax you paid!");
+	public static final ConfigKey<String> UI_ITEMS_PLAYER_LISTINGS_LORE_DISABLED = stringKey("ui.main.items.player-listings.disabled", "&7Status: &cDisabled");
+	public static final ConfigKey<String> UI_ITEMS_PLAYER_LISTINGS_LORE_ENABLED = stringKey("ui.main.items.player-listings.enabled", "&7Status: &aEnabled");
+	public static final ConfigKey<String> UI_ITEMS_REFRESH_TITLE = stringKey("ui.main.items.refresh.title", "&eRefresh Listings");
+	public static final ConfigKey<String> BLACKLISTED = stringKey("general.errors.blacklisted", "{{gts_error}} Unfortunately, that object has been blacklisted from being placed on the GTS...");
+	public static final ConfigKey<String> NOT_PLAYER = stringKey("general.errors.commands.not-player", "{{gts_error}} You must be a player to use that command...");
+	public static final ConfigKey<String> INVALID_ARGS = stringKey("general.errors.commands.not-enough-args", "{{gts_error}} Invalid syntax...");
+	public static final ConfigKey<String> CONFIRM_SELECTION = stringKey("buttons.general.confirm-selection.title", "&aConfirm Selection");
+	public static final ConfigKey<String> CANCEL = stringKey("buttons.general.cancel.title", "&cCancel");
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

@@ -10,6 +10,12 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.List;
 
 public class GTSInfo implements PluginInfo {
+
+	public static final String ID = "gts";
+	public static final String NAME = "GTS";
+	public static final String VERSION = "4.2.0";
+	public static final String DESCRIPTION = "A marketing plugin set to allow players to sell there belongings";
+
 	@Override
 	public String getID() {
 		return "gts";

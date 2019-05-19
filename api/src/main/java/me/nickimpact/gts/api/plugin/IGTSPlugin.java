@@ -24,4 +24,5 @@ public interface IGTSPlugin extends ImpactorPlugin, Configurable, Translatable, 
 	PluginClassLoader getPluginClassLoader();
 
 	DependencyManager getDependencyManager();
+
 }

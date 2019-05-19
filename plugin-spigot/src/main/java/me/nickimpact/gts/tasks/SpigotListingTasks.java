@@ -9,7 +9,7 @@ import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.discord.DiscordNotifier;
 import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.spigot.SpigotListing;
-import me.nickimpact.gts.utils.MessageUtils;
+import me.nickimpact.gts.spigot.MessageUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -42,8 +42,9 @@ public class SpigotListingTasks implements ListingTasks<SpigotListing> {
 			return false;
 		}
 
-		if(!listing.getEntry().giveEntry(owner))
+		if(!listing.getEntry().giveEntry(owner)) {
 			return false;
+		}
 
 		Config config = GTS.getInstance().getMsgConfig();
 		owner.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("%s Your %s listing has expired, and has been returned to you!", config.get(MsgConfigKeys.PREFIX), listing.getName())));

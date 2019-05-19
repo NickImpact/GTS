@@ -8,13 +8,14 @@ import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.storage.IGtsStorage;
+import me.nickimpact.gts.api.text.TextService;
 import me.nickimpact.gts.api.wrappers.CmdResultWrapper;
 import me.nickimpact.gts.api.wrappers.CmdSourceWrapper;
 
 import java.util.List;
 import java.util.function.BiFunction;
 
-public interface GtsService<T> {
+public interface GtsService<T, E> {
 
 	static GtsService getInstance() {
 		return ServiceInstance.getService();
@@ -44,4 +45,6 @@ public interface GtsService<T> {
 	void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<T, String[], CommandResults> cmd);
 
 	BuilderRegistry getBuilderRegistry();
+
+	TextService<E> getTextService();
 }

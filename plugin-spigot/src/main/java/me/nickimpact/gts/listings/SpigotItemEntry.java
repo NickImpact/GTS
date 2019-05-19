@@ -9,7 +9,7 @@ import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.spigot.SpigotEntry;
 import me.nickimpact.gts.spigot.SpigotListing;
-import me.nickimpact.gts.utils.MessageUtils;
+import me.nickimpact.gts.spigot.MessageUtils;
 import org.apache.commons.lang.WordUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -95,16 +95,6 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 	}
 
 	@Override
-	public ItemStack confirmItemStack(Player player, Listing listing) {
-		ItemStack paper = new ItemStack(Material.PAPER);
-		ItemMeta meta = paper.getItemMeta();
-		meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', "&ePurchase " + this.getName() + "?"));
-		paper.setItemMeta(meta);
-
-		return paper;
-	}
-
-	@Override
 	public boolean supportsOffline() {
 		return false;
 	}
@@ -117,8 +107,8 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 			if(!messageSent) {
 				Optional.ofNullable(user.getPlayer()).ifPresent(p -> p.sendMessage(MessageUtils.parse("Your inventory is full, so your item couldn't be returned...", true)));
 				messageSent = true;
-				return false;
 			}
+			return false;
 		}
 		inv.addItem(this.getEntry());
 		return true;
