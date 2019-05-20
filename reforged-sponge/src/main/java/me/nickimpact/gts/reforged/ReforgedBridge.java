@@ -17,6 +17,7 @@ import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.dependencies.DependencyManager;
 import me.nickimpact.gts.api.dependencies.classloader.PluginClassLoader;
+import me.nickimpact.gts.api.plugin.Extension;
 import me.nickimpact.gts.reforged.config.PokemonConfigKeys;
 import me.nickimpact.gts.reforged.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.reforged.entries.ReforgedEntry;
@@ -27,6 +28,7 @@ import me.nickimpact.gts.sponge.service.SpongeGtsService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
@@ -41,7 +43,7 @@ import java.util.function.Consumer;
 
 @Getter
 @Plugin(id = "gts_reforged", name = "GTS Reforged Bridge", version = "1.1.2", dependencies = @Dependency(id = "gts"))
-public class ReforgedBridge extends AbstractSpongePlugin implements SpongePlugin {
+public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 
 	@Getter private static ReforgedBridge instance;
 	private SpongeGtsService service;
@@ -57,9 +59,8 @@ public class ReforgedBridge extends AbstractSpongePlugin implements SpongePlugin
 	private Config msgConfig;
 
 	private EconomyService ecomony;
-	private TextParsingUtils textParsingUtils;
 
-	@Listener
+	@Listener(order = Order.LATE)
 	public void onPreInit(GamePreInitializationEvent e) {
 		instance = this;
 		this.logger = new SpongeLogger(fallback);
@@ -67,11 +68,6 @@ public class ReforgedBridge extends AbstractSpongePlugin implements SpongePlugin
 		this.config = new SpongeConfig(new SpongeConfigAdapter(this, configDir.resolve("reforged.conf").toFile()), new PokemonConfigKeys());
 		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, configDir.resolve("lang/reforged-en_us.conf").toFile()), new PokemonMsgConfigKeys());
 
-		this.textParsingUtils = new TextParsingUtils(this);
-	}
-
-	@Listener
-	public void onInit(GameInitializationEvent e) {
 		service = (SpongeGtsService) Sponge.getServiceManager().provideUnchecked(GtsService.class);
 		service.registerEntry(
 				this.msgConfig.get(PokemonMsgConfigKeys.REFERENCE_TITLES),
@@ -92,26 +88,6 @@ public class ReforgedBridge extends AbstractSpongePlugin implements SpongePlugin
 	@Override
 	public GtsService getAPIService() {
 		return this.service;
-	}
-
-	@Override
-	public ScheduledExecutorService getAsyncExecutor() {
-		return null;
-	}
-
-	@Override
-	public Gson getGson() {
-		return null;
-	}
-
-	@Override
-	public PluginClassLoader getPluginClassLoader() {
-		return null;
-	}
-
-	@Override
-	public DependencyManager getDependencyManager() {
-		return null;
 	}
 
 	@Override
@@ -167,16 +143,6 @@ public class ReforgedBridge extends AbstractSpongePlugin implements SpongePlugin
 	@Override
 	public Consumer<ImpactorPlugin> onReload() {
 		return plugin -> {};
-	}
-
-	@Override
-	public TextParsingUtils getTextParsingUtils() {
-		return this.textParsingUtils;
-	}
-
-	@Override
-	public EconomyService getEconomy() {
-		return null;
 	}
 
 	@Override

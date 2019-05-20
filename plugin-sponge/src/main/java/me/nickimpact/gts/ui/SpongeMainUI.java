@@ -73,7 +73,7 @@ public class SpongeMainUI {
 				.nextPage(SpongeItemTypeUtil.getOrDefaultItemTypeFromID("pixelmon:trade_holder_right"), 50)
 				.build();
 		this.page.applier(listing -> {
-			SpongeIcon icon = new SpongeIcon(listing.getDisplay(this.viewer, false));
+			SpongeIcon icon = new SpongeIcon(listing.getDisplay(this.viewer));
 			icon.addListener(clickable -> {
 				UUID uuid = listing.getUuid();
 				if(GTS.getInstance().getAPIService().getListingManager().getListingByID(uuid).isPresent()) {

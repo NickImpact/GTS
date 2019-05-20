@@ -20,8 +20,8 @@ public class SpongeListing extends Listing<SpongeEntry, Player, ItemStack> {
 	}
 
 	@Override
-	public ItemStack getDisplay(Player player, boolean confirm) {
-		return null;
+	public ItemStack getDisplay(Player player) {
+		return (ItemStack) this.getEntry().baseItemStack(player, this);
 	}
 
 	public static SpongeListingBuilder builder() {

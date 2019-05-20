@@ -7,6 +7,7 @@ import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.prices.Minable;
 import me.nickimpact.gts.api.listings.prices.Price;
+import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.api.storage.IGtsStorage;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
@@ -14,6 +15,7 @@ import me.nickimpact.gts.discord.DiscordNotifier;
 import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.events.SpongeListingEvent;
 import me.nickimpact.gts.sponge.SpongeListing;
+import me.nickimpact.gts.sponge.SpongePlugin;
 import me.nickimpact.gts.sponge.TextParsingUtils;
 import me.nickimpact.gts.sponge.utils.MessageUtils;
 import org.spongepowered.api.Sponge;
@@ -133,11 +135,11 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 		tokens.put("gts_published_item_details", src -> Optional.of(Text.of(MessageUtils.asSingleWithNewlines(details))));
 
 		String discord = MessageUtils.asSingleWithNewlines(GTS.getInstance().getTextParsingUtils().fetchAndParseMsgs(
-				null, GTS.getInstance().getMsgConfig(), MsgConfigKeys.DISCORD_REMOVAL_TEMPLATE, null, variables
+				null, GTS.getInstance().getMsgConfig(), MsgConfigKeys.DISCORD_PUBLISH_TEMPLATE, null, variables
 		).stream().map(Text::toPlain).collect(Collectors.toList()));
 
 		DiscordNotifier notifier = new DiscordNotifier(GTS.getInstance());
-		Message message = notifier.forgeMessage(GTS.getInstance().getConfiguration().get(ConfigKeys.DISCORD_EXPIRE), discord);
+		Message message = notifier.forgeMessage(GTS.getInstance().getConfiguration().get(ConfigKeys.DISCORD_NEW_LISTING), discord);
 		notifier.sendMessage(message);
 
 		return true;
@@ -176,22 +178,27 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 
 			price.reward(listing.getOwnerUUID());
 			Optional<Player> owner = Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(listing.getOwnerUUID()).map(User::getPlayer).get();
-			player.ifPresent(p -> p.sendMessages(parser.fetchAndParseMsgs(player.get(), msgConfig, MsgConfigKeys.PURCHASE_RECEIVE, null, variables)));
+			owner.ifPresent(p -> p.sendMessages(parser.fetchAndParseMsgs(player.get(), msgConfig, MsgConfigKeys.PURCHASE_RECEIVE, null, variables)));
 
 			this.deleteListing(listing);
 
 			List<String> details = Lists.newArrayList("");
 			details.addAll(listing.getEntry().getDetails());
-			String discord = MessageUtils.asSingleWithNewlines(Lists.newArrayList(
-					"Publisher: " + Bukkit.getOfflinePlayer(listing.getOwnerUUID()).getName(),
-					"Publisher Identifier: " + listing.getOwnerUUID().toString(),
-					"",
-					"Buyer: " + Bukkit.getOfflinePlayer(buyer).getName(),
-					"Buyer Identifier: " + buyer.toString(),
-					"",
-					"Published Item: " + listing.getName(),
-					"Item Details: " + MessageUtils.asSingleWithNewlines(details)
-			));
+
+			EconomyService economy = ((SpongePlugin) PluginInstance.getInstance()).getEconomy();
+
+			Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+			tokens.put("gts_seller", src -> Optional.of(Text.of(Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(listing.getOwnerUUID()).map(User::getName).orElse(""))));
+			tokens.put("gts_seller_id", src -> Optional.of(Text.of(listing.getOwnerUUID().toString())));
+			tokens.put("gts_published_item", src -> Optional.of(Text.of(listing.getEntry().getName())));
+			tokens.put("gts_published_item_details", src -> Optional.of(Text.of(MessageUtils.asSingleWithNewlines(details))));
+			tokens.put("gts_publishing_price", src -> Optional.of(economy.getDefaultCurrency().format(new BigDecimal(listing.getPrice().getPrice()))));
+			tokens.put("gts_buyer", src -> Optional.of(Text.of(player.get().getName())));
+			tokens.put("gts_buyer_id", src -> Optional.of(Text.of(buyer.toString())));
+
+			String discord = MessageUtils.asSingleWithNewlines(GTS.getInstance().getTextParsingUtils().fetchAndParseMsgs(
+					null, GTS.getInstance().getMsgConfig(), MsgConfigKeys.DISCORD_PURCHASE_TEMPLATE, null, variables
+			).stream().map(Text::toPlain).collect(Collectors.toList()));
 
 			DiscordNotifier notifier = new DiscordNotifier(GTS.getInstance());
 			Message message = notifier.forgeMessage(GTS.getInstance().getConfiguration().get(ConfigKeys.DISCORD_SELL_LISTING), discord);
@@ -199,7 +206,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 			return true;
 		}
 
-		player.ifPresent(p -> p.sendMessage(MessageUtils.parse("You don't have enough to afford that listing...", true)));
+		player.ifPresent(p -> p.sendMessages(parser.fetchAndParseMsgs(player.get(), msgConfig, MsgConfigKeys.NOT_ENOUGH_FUNDS, null, variables)));
 		return false;
 	}
 

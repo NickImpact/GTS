@@ -1,15 +1,18 @@
 package me.nickimpact.gts.spigot;
 
+import lombok.Setter;
 import me.nickimpact.gts.api.listings.prices.Price;
 import me.xanium.gemseconomy.api.GemsEconomyAPI;
 import me.xanium.gemseconomy.economy.Currency;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 
 import java.util.UUID;
 
 public class MoneyPrice implements Price<String> {
 
-	private GemsEconomyAPI api = new GemsEconomyAPI();
-	private Currency currency = api.getCurrency("dollars");
+	@Setter
+	private static Economy economy;
 
 	private double price;
 
@@ -19,7 +22,7 @@ public class MoneyPrice implements Price<String> {
 
 	@Override
 	public String getText() {
-		return currency.format(price).split(" ")[0];
+		return economy.format(price).split(" ")[0];
 	}
 
 	@Override
@@ -29,13 +32,13 @@ public class MoneyPrice implements Price<String> {
 
 	@Override
 	public boolean canPay(UUID uuid) {
-		return api.getBalance(uuid, currency) >= price;
+		return economy.getBalance(Bukkit.getOfflinePlayer(uuid)) >= price;
 	}
 
 	@Override
 	public boolean pay(UUID uuid) {
 		if(this.canPay(uuid)) {
-			api.withdraw(uuid, price, currency);
+			economy.withdrawPlayer(Bukkit.getOfflinePlayer(uuid), price);
 			return true;
 		}
 		return false;
@@ -43,7 +46,7 @@ public class MoneyPrice implements Price<String> {
 
 	@Override
 	public void reward(UUID uuid) {
-		api.deposit(uuid, price, currency);
+		economy.depositPlayer(Bukkit.getOfflinePlayer(uuid), price);
 	}
 
 	@Override

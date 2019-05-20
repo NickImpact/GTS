@@ -192,7 +192,7 @@ public class ReforgedUI implements EntryUI<Player> {
 		}
 
 		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
-		List<Text> translated = template.stream().map(str -> ReforgedBridge.getInstance().getTextParsingUtils().fetchAndParseMsg(player, str, tokens, variables)).collect(Collectors.toList());
+		List<Text> translated = template.stream().map(str -> ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils().fetchAndParseMsg(player, str, tokens, variables)).collect(Collectors.toList());
 		icon.offer(Keys.ITEM_LORE, translated);
 	}
 

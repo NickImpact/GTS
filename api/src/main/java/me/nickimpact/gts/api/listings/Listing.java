@@ -64,10 +64,9 @@ public abstract class Listing<E extends Entry, P, I> {
 	 * Retrieves the ItemStack display for the {@link Entry} attached to this listing
 	 *
 	 * @param player The player to create the item stack for
-	 * @param confirm Whether or not the display requested is a confirmation display
 	 * @return An itemstack representation of the entry
 	 */
-	public abstract I getDisplay(P player, boolean confirm);
+	public abstract I getDisplay(P player);
 
 	public Price getPrice() {
 		return this.price;

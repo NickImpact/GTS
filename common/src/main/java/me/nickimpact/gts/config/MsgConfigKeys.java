@@ -187,8 +187,14 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> BLACKLISTED = stringKey("general.errors.blacklisted", "{{gts_error}} Unfortunately, that object has been blacklisted from being placed on the GTS...");
 	public static final ConfigKey<String> NOT_PLAYER = stringKey("general.errors.commands.not-player", "{{gts_error}} You must be a player to use that command...");
 	public static final ConfigKey<String> INVALID_ARGS = stringKey("general.errors.commands.not-enough-args", "{{gts_error}} Invalid syntax...");
-	public static final ConfigKey<String> CONFIRM_SELECTION = stringKey("buttons.general.confirm-selection.title", "&aConfirm Selection");
+	public static final ConfigKey<String> CONFIRM_SELECTION = stringKey("buttons.general.confirm-selection", "&aConfirm Selection");
+	public static final ConfigKey<String> CONFIRM_PURCHASE = stringKey("buttons.general.confirm-purchase", "&aConfirm Purchase");
 	public static final ConfigKey<String> CANCEL = stringKey("buttons.general.cancel.title", "&cCancel");
+	public static final ConfigKey<String> CLICK_TO_CONFIRM = stringKey("buttons.confirming.click-to-confirm", "&cClick to Confirm");
+	public static final ConfigKey<String> CONFIRMED = stringKey("buttons.confirming.confirmed", "&aConfirmed!");
+	public static final ConfigKey<String> REQUIRES_CONFIRMATION = stringKey("buttons.confirming.requires", "&cRequires Confirmation");
+	public static final ConfigKey<String> REMOVE_BUTTON = stringKey("buttons.remove", "&cClick to Remove your Listing");
+	public static final ConfigKey<List<String>> REMOVED_MISSING = listKey("general.errors.remove-listing.not-available", Lists.newArrayList("{{gts_error}} Unfortunately, your listing has either been purchased, or already expired..."));
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

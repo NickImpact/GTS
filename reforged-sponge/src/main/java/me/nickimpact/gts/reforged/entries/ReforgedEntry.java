@@ -25,7 +25,6 @@ import io.netty.buffer.Unpooled;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.prices.Minable;
-import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
@@ -34,19 +33,14 @@ import me.nickimpact.gts.reforged.config.PokemonConfigKeys;
 import me.nickimpact.gts.reforged.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.reforged.utils.Flags;
 import me.nickimpact.gts.sponge.*;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.nbt.NBTException;
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
-import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -176,7 +170,7 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 		variables.put("listing", listing);
 		variables.put("pokemon", this.getEntry());
 
-		icon.offer(Keys.DISPLAY_NAME, ReforgedBridge.getInstance().getTextParsingUtils().fetchAndParseMsg(player, this.getEntry().isEgg() ? PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE_EGG : PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
+		icon.offer(Keys.DISPLAY_NAME, ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils().fetchAndParseMsg(player, this.getEntry().isEgg() ? PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE_EGG : PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
 
 		List<String> template = Lists.newArrayList();
 		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LORE));
@@ -196,7 +190,7 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 		}
 
 		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
-		List<Text> translated = template.stream().map(str -> ReforgedBridge.getInstance().getTextParsingUtils().fetchAndParseMsg(player, str, tokens, variables)).collect(Collectors.toList());
+		List<Text> translated = template.stream().map(str -> ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils().fetchAndParseMsg(player, str, tokens, variables)).collect(Collectors.toList());
 		icon.offer(Keys.ITEM_LORE, translated);
 	}
 

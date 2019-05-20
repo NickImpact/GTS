@@ -20,7 +20,7 @@ public class SpigotListing extends Listing<SpigotEntry, Player, ItemStack> {
 	}
 
 	@Override
-	public ItemStack getDisplay(Player player, boolean confirm) {
+	public ItemStack getDisplay(Player player) {
 		return (ItemStack) this.getEntry().baseItemStack(player, this);
 	}
 

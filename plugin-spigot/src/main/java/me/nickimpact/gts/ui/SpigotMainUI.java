@@ -71,7 +71,7 @@ public class SpigotMainUI {
 				.nextPage(Material.matchMaterial("pixelmon_trade_holder_right"), 50)
 				.build();
 		this.page.applier(listing -> {
-			SpigotIcon icon = new SpigotIcon(listing.getDisplay(this.viewer, false));
+			SpigotIcon icon = new SpigotIcon(listing.getDisplay(this.viewer));
 			icon.addListener(clickable -> {
 				UUID uuid = listing.getUuid();
 				if(GTS.getInstance().getAPIService().getListingManager().getListingByID(uuid).isPresent()) {

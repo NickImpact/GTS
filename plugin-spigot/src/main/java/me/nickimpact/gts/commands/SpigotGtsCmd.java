@@ -1,9 +1,11 @@
 package me.nickimpact.gts.commands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.ui.SpigotMainUI;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 @CommandAlias("gts")
@@ -21,6 +23,7 @@ public class SpigotGtsCmd extends BaseCommand {
 	public class SellSub extends BaseCommand {
 
 		@Default
+		@Syntax("(type) (additional arguments) - Allows you to sell something. No type = User GUI")
 		public void execute(Player player, @Optional EntryClassification classification, @Optional String... additionals) {
 			if(classification == null) {
 				// TODO - Entry UI base
@@ -34,5 +37,10 @@ public class SpigotGtsCmd extends BaseCommand {
 				}
 			}
 		}
+	}
+
+	@HelpCommand
+	public void onHelp(CommandSender sender, CommandHelp help) {
+		help.showHelp();
 	}
 }

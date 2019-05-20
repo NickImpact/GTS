@@ -1,6 +1,7 @@
 package me.nickimpact.gts.commands;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.ui.SpongeMainUI;
@@ -21,6 +22,7 @@ public class SpongeGtsCmd extends BaseCommand {
 	public class SellSub extends BaseCommand {
 
 		@Default
+		@Syntax("(type) (additional arguments) - Allows you to sell something. No type = User GUI")
 		public void execute(Player player, @Optional EntryClassification classification, @Optional String... additionals) {
 			if(classification == null) {
 				// TODO - Entry UI base
@@ -36,4 +38,8 @@ public class SpongeGtsCmd extends BaseCommand {
 		}
 	}
 
+	@HelpCommand
+	public void onHelp(Player player, CommandHelp help) {
+
+	}
 }

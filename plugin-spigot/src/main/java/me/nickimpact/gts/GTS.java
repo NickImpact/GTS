@@ -36,6 +36,7 @@ import me.nickimpact.gts.json.EntryAdapter;
 import me.nickimpact.gts.listings.SpigotItemEntry;
 import me.nickimpact.gts.listings.SpigotItemUI;
 import me.nickimpact.gts.manager.SpigotListingManager;
+import me.nickimpact.gts.spigot.MoneyPrice;
 import me.nickimpact.gts.spigot.SpigotGtsService;
 import me.nickimpact.gts.manager.TextParsingUtils;
 import me.nickimpact.gts.spigot.SpigotListing;
@@ -45,8 +46,11 @@ import me.nickimpact.gts.api.dependencies.Dependency;
 import me.nickimpact.gts.api.dependencies.DependencyManager;
 import me.nickimpact.gts.api.dependencies.classloader.ReflectionClassLoader;
 import me.nickimpact.gts.tasks.SpigotListingTasks;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -131,6 +135,15 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 				.create();
 
 		this.textParsingUtils = new TextParsingUtils();
+
+		logger.info("Integrating with Vault...");
+		RegisteredServiceProvider<Economy> economy = Bukkit.getServer().getServicesManager().getRegistration(Economy.class);
+		if(economy == null) {
+			logger.error("No economy service available, plugin shutting down...");
+			Bukkit.getPluginManager().disablePlugin(this);
+			return;
+		}
+		MoneyPrice.setEconomy(economy.getProvider());
 
 		logger.info("Setting up discord notifier...");
 		this.discordNotifier = new DiscordNotifier(this);

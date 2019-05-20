@@ -125,7 +125,7 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 			this.economy = (EconomyService) e.getNewProviderRegistration().getProvider();
 			MoneyPrice.setEconomy(this.economy);
 		} else if(e.getService().equals(NucleusMessageTokenService.class)) {
-
+			this.textParsingUtils = new TextParsingUtils(this);
 		}
 	}
 

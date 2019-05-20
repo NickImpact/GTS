@@ -47,7 +47,7 @@ public class SpigotConfirmUI {
 		builder.columns(SpigotIcon.BORDER, 0, 8);
 		builder.slot(SpigotIcon.BORDER, 49);
 
-		builder.slot(new SpigotIcon(focus.getDisplay(this.viewer, false)), 22);
+		builder.slot(new SpigotIcon(focus.getDisplay(this.viewer)), 22);
 
 		if(!this.viewer.getUniqueId().equals(this.focus.getOwnerUUID())) {
 			ItemStack item = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
@@ -97,7 +97,7 @@ public class SpigotConfirmUI {
 			icon.addListener(clickable -> {
 				this.view.close(clickable.getPlayer());
 				if(!GTS.getInstance().getAPIService().getListingManager().getListingByID(this.focus.getUuid()).isPresent()) {
-					clickable.getPlayer().sendMessage("");
+					clickable.getPlayer().sendMessage(MessageUtils.parse("Unfortunately, someone has purchased your listing, or it already expired!", true));
 					return;
 				}
 
