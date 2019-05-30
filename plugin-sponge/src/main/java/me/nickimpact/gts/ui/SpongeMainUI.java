@@ -86,13 +86,13 @@ public class SpongeMainUI {
 		});
 		this.page.define(this.getListings());
 		this.page.getView().attachCloseListener(e -> {
-			this.runner.cancel();
+			//this.runner.cancel();
 		});
 	}
 
 	public void open() {
 		this.page.open();
-		this.runner = Sponge.getScheduler().createTaskBuilder().execute(this::apply).interval(1, TimeUnit.SECONDS).submit(GTS.getInstance());
+		//this.runner = Sponge.getScheduler().createTaskBuilder().execute(this::apply).interval(1, TimeUnit.SECONDS).submit(GTS.getInstance());
 	}
 
 	private SpongeLayout design() {

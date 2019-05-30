@@ -57,7 +57,7 @@ public class ReforgedBridge extends JavaPlugin implements Extension, Listener {
 		this.config = new SpigotConfig(new SpigotConfigAdapter(this, new File(this.configDir.toFile(), "reforged.conf")), new ReforgedKeys());
 
 		this.service.registerEntry(
-				Lists.newArrayList("pokemon"),
+				Lists.newArrayList("pokemon", "reforged"),
 				ReforgedEntry.class,
 				new ReforgedUI(),
 				"PIXELMON_GS_BALL",

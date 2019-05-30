@@ -6,13 +6,13 @@ import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.reforged.entries.EnumPokemonFields;
 import me.nickimpact.gts.reforged.entries.ReforgedEntry;
 import me.nickimpact.gts.sponge.Translator;
+import me.nickimpact.gts.sponge.text.TokenHolder;
 import org.spongepowered.api.text.Text;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class PokemonTokens
-{
+public class PokemonTokens implements TokenHolder {
 	private static Map<String, Translator> tokens = Maps.newHashMap();
 
 	static {
@@ -72,7 +72,7 @@ public class PokemonTokens
 		tokens.put("pokeball_name", (p, v, m) -> Optional.of(getPokemonInfo(getPokemonFromVariableIfExists(m), EnumPokemonFields.POKE_BALL_NAME)));
 	}
 
-	public static Map<String, Translator> getTokens() {
+	public Map<String, Translator> getTokens() {
 		return tokens;
 	}
 
@@ -93,14 +93,6 @@ public class PokemonTokens
 
 	private static Text getPokemonInfo(Pokemon pokemon, EnumPokemonFields field) {
 		if (pokemon != null) {
-			if (pokemon.isEgg()) {
-				if (field.equals(EnumPokemonFields.NAME) || field.equals(EnumPokemonFields.LEVEL)) {
-					return Text.of(field.function.apply(pokemon));
-				}
-
-				return Text.EMPTY;
-			}
-
 			return Text.of(field.function.apply(pokemon));
 		}
 		return Text.EMPTY;

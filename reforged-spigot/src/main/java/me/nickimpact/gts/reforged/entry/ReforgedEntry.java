@@ -15,12 +15,16 @@ import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.reforged.ReforgedBridge;
 import me.nickimpact.gts.reforged.config.ReforgedKeys;
 import me.nickimpact.gts.reforged.utils.Flags;
+import me.nickimpact.gts.reforged.utils.GsonUtils;
 import me.nickimpact.gts.reforged.utils.SpriteItemUtil;
 import me.nickimpact.gts.spigot.MessageUtils;
 import me.nickimpact.gts.spigot.SpigotEntry;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -40,28 +44,22 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 
 	private transient Pokemon pokemon;
 
-	private static final Function<Pokemon, String> TO_BASE_64 = poke -> {
-		ByteBuf buffer = Unpooled.buffer();
-		poke.writeToByteBuffer(buffer, EnumUpdateType.ALL);
-		return Base64.getEncoder().encodeToString(buffer.array());
-	};
-
-	private static final Function<String, Pokemon> FROM_BASE_64 = base64 -> {
-		byte[] bytes = Base64.getDecoder().decode(base64);
-		ByteBuf buffer = Unpooled.copiedBuffer(bytes);
-		Pokemon out = Pixelmon.pokemonFactory.create(EnumSpecies.Bidoof);
-		out.readFromByteBuffer(buffer, EnumUpdateType.ALL);
-		return out;
-	};
-
 	public ReforgedEntry(Pokemon element) {
-		super(TO_BASE_64.apply(element));
+		super(GsonUtils.serialize(element.writeToNBT(new NBTTagCompound())));
+		PluginInstance.getInstance().getPluginLogger().debug(this.element);
 		this.pokemon = element;
 	}
 
 	@Override
+	public Entry setEntry(Pokemon backing) {
+		this.pokemon = backing;
+		this.element = GsonUtils.serialize(backing.writeToNBT(new NBTTagCompound()));
+		return this;
+	}
+
+	@Override
 	public Pokemon getEntry() {
-		return pokemon != null ? pokemon : (pokemon = FROM_BASE_64.apply(this.element));
+		return pokemon != null ? pokemon : (pokemon = Pixelmon.pokemonFactory.create(GsonUtils.deserialize(this.element)));
 	}
 
 	@Override

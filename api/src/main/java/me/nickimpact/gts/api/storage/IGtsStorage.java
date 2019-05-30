@@ -25,7 +25,7 @@ public interface IGtsStorage {
 
 	CompletableFuture<Boolean> removeIgnorer(UUID uuid);
 
-	CompletableFuture<Boolean> isIgnoring(UUID uuid);
+	CompletableFuture<List<UUID>> getAllIgnorers();
 
 	CompletableFuture<Boolean> purge();
 }

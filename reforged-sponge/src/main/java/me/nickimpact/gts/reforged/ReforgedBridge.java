@@ -18,10 +18,13 @@ import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.dependencies.DependencyManager;
 import me.nickimpact.gts.api.dependencies.classloader.PluginClassLoader;
 import me.nickimpact.gts.api.plugin.Extension;
+import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.reforged.config.PokemonConfigKeys;
 import me.nickimpact.gts.reforged.config.PokemonMsgConfigKeys;
+import me.nickimpact.gts.reforged.deprecated.PokemonEntry;
 import me.nickimpact.gts.reforged.entries.ReforgedEntry;
 import me.nickimpact.gts.reforged.entries.ReforgedUI;
+import me.nickimpact.gts.reforged.text.PokemonTokens;
 import me.nickimpact.gts.sponge.SpongePlugin;
 import me.nickimpact.gts.sponge.TextParsingUtils;
 import me.nickimpact.gts.sponge.service.SpongeGtsService;
@@ -31,6 +34,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -52,8 +56,6 @@ public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 	private org.slf4j.Logger fallback;
 	private Logger logger;
 
-	@Inject
-	@ConfigDir(sharedRoot = false)
 	private Path configDir;
 	private Config config;
 	private Config msgConfig;
@@ -63,19 +65,30 @@ public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 	@Listener(order = Order.LATE)
 	public void onPreInit(GamePreInitializationEvent e) {
 		instance = this;
-		this.logger = new SpongeLogger(fallback);
+		this.logger = new SpongeLogger(this, fallback);
 
+		this.configDir = PluginInstance.getInstance().getConfigDir();
 		this.config = new SpongeConfig(new SpongeConfigAdapter(this, configDir.resolve("reforged.conf").toFile()), new PokemonConfigKeys());
 		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, configDir.resolve("lang/reforged-en_us.conf").toFile()), new PokemonMsgConfigKeys());
 
 		service = (SpongeGtsService) Sponge.getServiceManager().provideUnchecked(GtsService.class);
+
+		List<String> identifiers = Lists.newArrayList(this.msgConfig.get(PokemonMsgConfigKeys.REFERENCE_TITLES));
+		identifiers.add("reforged");
 		service.registerEntry(
-				this.msgConfig.get(PokemonMsgConfigKeys.REFERENCE_TITLES),
+				identifiers,
 				ReforgedEntry.class,
 				new ReforgedUI(),
 				"pixelmon:gs_ball",
 				ReforgedEntry::execute
 		);
+
+		service.getAllDeprecatedTypes().add(PokemonEntry.class);
+	}
+
+	@Listener
+	public void onServerStart(GameStartedServerEvent e) {
+		service.registerTokens(new PokemonTokens());
 	}
 
 	@Listener
@@ -147,6 +160,6 @@ public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 
 	@Override
 	public Config getConfiguration() {
-		return null;
+		return this.config;
 	}
 }

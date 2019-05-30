@@ -23,10 +23,7 @@ public abstract class Entry<T, D, P, U, I> {
 	public Entry() {}
 
 	@Deprecated
-	public Entry setEntry(T backing) {
-		this.element = backing;
-		return this;
-	}
+	public abstract Entry setEntry(D backing);
 
 	public Entry(T element) {
 		this.element = element;

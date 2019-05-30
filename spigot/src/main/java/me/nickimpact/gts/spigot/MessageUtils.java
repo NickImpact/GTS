@@ -9,9 +9,9 @@ public class MessageUtils {
 
 	public static String parse(String input, boolean error) {
 		if(error) {
-			return PluginInstance.getInstance().getAPIService().getTextService().getErrorPrefix() + ChatColor.translateAlternateColorCodes('&', input);
+			return ChatColor.YELLOW + "GTS " + ChatColor.GRAY + "(" + ChatColor.RED + "Error" + ChatColor.GRAY + ") " + ChatColor.translateAlternateColorCodes('&', input);
 		} else {
-			return PluginInstance.getInstance().getAPIService().getTextService().getPrefix() + ChatColor.translateAlternateColorCodes('&', input);
+			return ChatColor.YELLOW + "GTS " + ChatColor.GRAY + "\u00bb " + ChatColor.translateAlternateColorCodes('&', input);
 		}
 	}
 

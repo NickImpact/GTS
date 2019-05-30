@@ -1,6 +1,8 @@
 package me.nickimpact.gts.deprecated;
 
 import lombok.Getter;
+import me.nickimpact.gts.api.deprecated.Entry;
+
 import java.util.Date;
 import java.util.UUID;
 

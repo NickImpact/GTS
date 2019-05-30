@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.listings.SpongeItemEntry;
 import me.nickimpact.gts.sponge.Translator;
+import me.nickimpact.gts.sponge.text.TokenHolder;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.item.ItemTypes;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class ItemTokens {
+public class ItemTokens implements TokenHolder {
 
 	private static Map<String, Translator> tokens = Maps.newHashMap();
 
@@ -53,7 +54,7 @@ public class ItemTokens {
 		});
 	}
 
-	static Map<String, Translator> getTokens() {
+	public Map<String, Translator> getTokens() {
 		return tokens;
 	}
 

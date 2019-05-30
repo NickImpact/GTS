@@ -27,10 +27,6 @@ import java.util.function.Function;
 public enum EnumPokemonFields {
 
 	NAME(pokemon -> {
-		if(pokemon.isEgg()) {
-			return "Pokemon Egg";
-		}
-
 		return pokemon.getSpecies().getLocalizedName();
 	}),
 	ABILITY(pokemon -> pokemon.getAbility().getLocalizedName()),

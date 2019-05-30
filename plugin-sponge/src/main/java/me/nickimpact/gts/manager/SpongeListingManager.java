@@ -14,10 +14,12 @@ import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.discord.DiscordNotifier;
 import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.events.SpongeListingEvent;
+import me.nickimpact.gts.sponge.MoneyPrice;
 import me.nickimpact.gts.sponge.SpongeListing;
 import me.nickimpact.gts.sponge.SpongePlugin;
 import me.nickimpact.gts.sponge.TextParsingUtils;
 import me.nickimpact.gts.sponge.utils.MessageUtils;
+import me.nickimpact.gts.utils.DateTimeFormatUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
@@ -38,6 +40,7 @@ import java.util.stream.Collectors;
 public class SpongeListingManager implements ListingManager<SpongeListing> {
 
 	private List<SpongeListing> listings = Lists.newArrayList();
+	private List<UUID> ignorers = Lists.newArrayList();
 
 	@Override
 	public Optional<SpongeListing> getListingByID(UUID uuid) {
@@ -47,6 +50,11 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 	@Override
 	public List<SpongeListing> getListings() {
 		return this.listings;
+	}
+
+	@Override
+	public List<UUID> getIgnorers() {
+		return this.ignorers;
 	}
 
 	@Override
@@ -121,7 +129,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 		source.ifPresent(src -> src.sendMessages(parser.parse(msgConfig.get(MsgConfigKeys.TAX_APPLICATION), source.get(), tokens, variables)));
 
 		for(Player player : Sponge.getServer().getOnlinePlayers()) {
-			if(!source.get().getUniqueId().equals(player.getUniqueId())) {
+			if(!source.get().getUniqueId().equals(player.getUniqueId()) && !ignorers.contains(player.getUniqueId())) {
 				player.sendMessages(parser.parse(msgConfig.get(MsgConfigKeys.ADD_BROADCAST), source.get(), tokens, variables));
 			}
 		}
@@ -133,9 +141,11 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 		tokens.put("gts_publisher_id", src -> Optional.of(Text.of(lister.toString())));
 		tokens.put("gts_published_item", src -> Optional.of(Text.of(listing.getEntry().getName())));
 		tokens.put("gts_published_item_details", src -> Optional.of(Text.of(MessageUtils.asSingleWithNewlines(details))));
+		tokens.put("gts_publishing_price", src -> Optional.of(((MoneyPrice) listing.getPrice()).getText()));
+		tokens.put("gts_publishing_expiration", src -> Optional.of(Text.of(DateTimeFormatUtils.formatExpiration(listing))));
 
 		String discord = MessageUtils.asSingleWithNewlines(GTS.getInstance().getTextParsingUtils().fetchAndParseMsgs(
-				null, GTS.getInstance().getMsgConfig(), MsgConfigKeys.DISCORD_PUBLISH_TEMPLATE, null, variables
+				null, GTS.getInstance().getMsgConfig(), MsgConfigKeys.DISCORD_PUBLISH_TEMPLATE, tokens, variables
 		).stream().map(Text::toPlain).collect(Collectors.toList()));
 
 		DiscordNotifier notifier = new DiscordNotifier(GTS.getInstance());
@@ -147,7 +157,6 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 
 	@Override
 	public boolean purchase(UUID buyer, SpongeListing listing) {
-		Config config = GTS.getInstance().getConfiguration();
 		Config msgConfig = GTS.getInstance().getMsgConfig();
 		TextParsingUtils parser = GTS.getInstance().getTextParsingUtils();
 
@@ -197,7 +206,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 			tokens.put("gts_buyer_id", src -> Optional.of(Text.of(buyer.toString())));
 
 			String discord = MessageUtils.asSingleWithNewlines(GTS.getInstance().getTextParsingUtils().fetchAndParseMsgs(
-					null, GTS.getInstance().getMsgConfig(), MsgConfigKeys.DISCORD_PURCHASE_TEMPLATE, null, variables
+					null, GTS.getInstance().getMsgConfig(), MsgConfigKeys.DISCORD_PURCHASE_TEMPLATE, tokens, variables
 			).stream().map(Text::toPlain).collect(Collectors.toList()));
 
 			DiscordNotifier notifier = new DiscordNotifier(GTS.getInstance());
@@ -238,8 +247,9 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 						throwable.printStackTrace();
 						return null;
 					}).get();
-		} catch (InterruptedException | ExecutionException e) {
-			GTS.getInstance().getPluginLogger().error("Unable to read in listings, a stacktrace is available below:");
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
 			e.printStackTrace();
 		}
 	}

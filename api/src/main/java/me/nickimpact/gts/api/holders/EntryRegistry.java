@@ -8,6 +8,7 @@ import me.nickimpact.gts.api.listings.entries.Entry;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Getter
 public class EntryRegistry {
@@ -21,6 +22,6 @@ public class EntryRegistry {
 	private List<EntryClassification> classifications = Lists.newArrayList();
 
 	public Optional<EntryClassification> getForIdentifier(String id) {
-		return this.getClassifications().stream().filter(classification -> classification.getPrimaryIdentifier().equalsIgnoreCase(id)).findAny();
+		return this.getClassifications().stream().filter(classification -> ((Stream<String>)classification.getIdentifers().stream()).anyMatch(i -> i.equalsIgnoreCase(id))).findAny();
 	}
 }

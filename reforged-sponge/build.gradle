@@ -60,5 +60,5 @@ dependencies {
     shadow project(':common')
     shadow 'org.spongepowered:spongeapi:7.1.0'
     shadow 'io.github.nucleuspowered:nucleus-api:1.7.0-S7.1'
-    shadow 'reforged:server:7.0.5@Pixelmon-1.12.2-7.0.5-server.jar'
+    shadow 'reforged:server:7.0.6@Pixelmon-1.12.2-7.0.6-server.jar'
 }

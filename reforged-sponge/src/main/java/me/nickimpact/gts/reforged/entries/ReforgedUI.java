@@ -1,5 +1,6 @@
 package me.nickimpact.gts.reforged.entries;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
@@ -8,10 +9,14 @@ import com.nickimpact.impactor.sponge.ui.SpongeUI;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import com.pixelmonmod.pixelmon.enums.forms.EnumGreninja;
+import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
+import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
-import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
@@ -117,7 +122,7 @@ public class ReforgedUI implements EntryUI<Player> {
 					null,
 					variables
 			));
-			this.addLore(pokemon, display, ReforgedBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_PREVIEW_LORE), this.viewer, variables);
+			this.addLore(pokemon, display, Lists.newArrayList(ReforgedBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_PREVIEW_LORE)), this.viewer, variables);
 			SpongeIcon icon = new SpongeIcon(display);
 			icon.addListener(clickable -> {
 				this.selection = pokemon;
@@ -126,7 +131,7 @@ public class ReforgedUI implements EntryUI<Player> {
 				this.amount = this.min;
 				this.display.setSlot(39, this.moneyIcon(tokens));
 			});
-			slb.slot(icon, 10 + index);
+			slb.slot(icon, 10 + index++);
 		}
 
 		SpongeIcon confirm = new SpongeIcon(ItemStack.builder().itemType(ItemTypes.DYE)
@@ -191,7 +196,6 @@ public class ReforgedUI implements EntryUI<Player> {
 			}
 		}
 
-		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
 		List<Text> translated = template.stream().map(str -> ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils().fetchAndParseMsg(player, str, tokens, variables)).collect(Collectors.toList());
 		icon.offer(Keys.ITEM_LORE, translated);
 	}
@@ -215,15 +219,15 @@ public class ReforgedUI implements EntryUI<Player> {
 			ClickInventoryEvent event = clickable.getEvent();
 			if(event instanceof ClickInventoryEvent.Shift) {
 				if(event instanceof ClickInventoryEvent.Shift.Secondary) {
-					this.amount = Math.max(config.get(ConfigKeys.MAX_MONEY_PRICE), this.amount + config.get(ConfigKeys.PRICING_RIGHTCLICK_SHIFT));
+					this.amount = Math.min(PluginInstance.getInstance().getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE), this.amount + config.get(PokemonConfigKeys.PRICING_RIGHTCLICK_SHIFT));
 				} else {
-					this.amount = Math.max(config.get(ConfigKeys.MAX_MONEY_PRICE), this.amount + config.get(ConfigKeys.PRICING_LEFTCLICK_SHIFT));
+					this.amount = Math.min(PluginInstance.getInstance().getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE), this.amount + config.get(PokemonConfigKeys.PRICING_LEFTCLICK_SHIFT));
 				}
 			} else {
 				if(event instanceof ClickInventoryEvent.Secondary) {
-					this.amount = Math.max(config.get(ConfigKeys.MAX_MONEY_PRICE), this.amount + config.get(ConfigKeys.PRICING_RIGHTCLICK_BASE));
+					this.amount = Math.min(PluginInstance.getInstance().getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE), this.amount + config.get(PokemonConfigKeys.PRICING_RIGHTCLICK_BASE));
 				} else {
-					this.amount = Math.max(config.get(ConfigKeys.MAX_MONEY_PRICE), this.amount + config.get(ConfigKeys.PRICING_LEFTCLICK_BASE));
+					this.amount = Math.min(PluginInstance.getInstance().getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE), this.amount + config.get(PokemonConfigKeys.PRICING_LEFTCLICK_BASE));
 				}
 			}
 			this.display.setSlot(39, this.moneyIcon(tokens));
@@ -268,15 +272,15 @@ public class ReforgedUI implements EntryUI<Player> {
 			ClickInventoryEvent event = clickable.getEvent();
 			if(event instanceof ClickInventoryEvent.Shift) {
 				if(event instanceof ClickInventoryEvent.Shift.Secondary) {
-					this.amount = Math.min(min, this.amount - config.get(ConfigKeys.PRICING_RIGHTCLICK_SHIFT));
+					this.amount = Math.max(min, this.amount - config.get(PokemonConfigKeys.PRICING_RIGHTCLICK_SHIFT));
 				} else {
-					this.amount = Math.min(min, this.amount - config.get(ConfigKeys.PRICING_LEFTCLICK_SHIFT));
+					this.amount = Math.max(min, this.amount - config.get(PokemonConfigKeys.PRICING_LEFTCLICK_SHIFT));
 				}
 			} else {
 				if(event instanceof ClickInventoryEvent.Secondary) {
-					this.amount = Math.min(min, this.amount - config.get(ConfigKeys.PRICING_RIGHTCLICK_BASE));
+					this.amount = Math.max(min, this.amount - config.get(PokemonConfigKeys.PRICING_RIGHTCLICK_BASE));
 				} else {
-					this.amount = Math.min(min, this.amount - config.get(ConfigKeys.PRICING_LEFTCLICK_BASE));
+					this.amount = Math.max(min, this.amount - config.get(PokemonConfigKeys.PRICING_LEFTCLICK_BASE));
 				}
 			}
 			this.display.setSlot(39, this.moneyIcon(tokens));
@@ -327,12 +331,32 @@ public class ReforgedUI implements EntryUI<Player> {
 			}
 		} else {
 			if (pokemon.isShiny()) {
-				nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.getBaseStats().pixelmonName, form));
+				nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
 			} else {
-				nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.getBaseStats().pixelmonName, form));
+				nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
 			}
 		}
 		nativeItem.setTagCompound(nbt);
 		return (ItemStack) (Object) (nativeItem);
+	}
+
+	private static String getSpriteExtraProperly(EnumSpecies species, IEnumForm form, Gender gender, EnumSpecialTexture specialTexture) {
+		if (species == EnumSpecies.Greninja && (form == EnumGreninja.BASE || form == EnumGreninja.BATTLE_BOND) && specialTexture.id > 0 && species.hasSpecialTexture()) {
+			return "-special";
+		}
+
+		if(form != EnumNoForm.NoForm) {
+			return species.getFormEnum(form.getForm()).getSpriteSuffix();
+		}
+
+		if(EnumSpecies.mfSprite.contains(species)) {
+			return "-" + gender.name().toLowerCase();
+		}
+
+		if(specialTexture.id > 0 && species.hasSpecialTexture()) {
+			return "-special";
+		}
+
+		return "";
 	}
 }

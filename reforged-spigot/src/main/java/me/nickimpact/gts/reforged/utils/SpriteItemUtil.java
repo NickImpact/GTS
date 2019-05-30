@@ -5,15 +5,18 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
+import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import com.pixelmonmod.pixelmon.enums.forms.EnumGreninja;
+import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
+import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
-import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
 import me.nickimpact.gts.reforged.entry.EnumHidableDetail;
 import net.minecraft.nbt.NBTTagCompound;
-import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
@@ -38,11 +41,9 @@ public class SpriteItemUtil {
 		} else {
 			if (pokemon.isShiny()) {
 				nbt.setString(NbtKeys.SPRITE_NAME,
-						"pixelmon:sprites/shinypokemon/" + idValue + SpriteHelper.getSpriteExtra(
-								pokemon.getBaseStats().pixelmonName, pokemon.getForm()));
+						"pixelmon:sprites/shinypokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
 			} else {
-				nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + SpriteHelper.getSpriteExtra(
-						pokemon.getBaseStats().pixelmonName, pokemon.getForm()));
+				nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
 			}
 		}
 		nativeItem.setTagCompound(nbt);
@@ -146,5 +147,25 @@ public class SpriteItemUtil {
 		}
 
 		return out.substring(0, out.length() - 3);
+	}
+
+	private static String getSpriteExtraProperly(EnumSpecies species, IEnumForm form, Gender gender, EnumSpecialTexture specialTexture) {
+		if (species == EnumSpecies.Greninja && (form == EnumGreninja.BASE || form == EnumGreninja.BATTLE_BOND) && specialTexture.id > 0 && species.hasSpecialTexture()) {
+			return "-special";
+		}
+
+		if(form != EnumNoForm.NoForm) {
+			return species.getFormEnum(form.getForm()).getSpriteSuffix();
+		}
+
+		if(EnumSpecies.mfSprite.contains(species)) {
+			return "-" + gender.name().toLowerCase();
+		}
+
+		if(specialTexture.id > 0 && species.hasSpecialTexture()) {
+			return "-special";
+		}
+
+		return "";
 	}
 }

@@ -1,4 +1,4 @@
-package me.nickimpact.gts.text;
+package me.nickimpact.gts.sponge.text;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -6,12 +6,12 @@ import com.nickimpact.impactor.api.utilities.Time;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
 import io.github.nucleuspowered.nucleus.api.exceptions.PluginAlreadyRegisteredException;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
-import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.sponge.MoneyPrice;
+import me.nickimpact.gts.sponge.SpongePlugin;
 import me.nickimpact.gts.sponge.Translator;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
@@ -31,17 +31,20 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 
 	private final Map<String, Translator> translatorMap = Maps.newHashMap();
 
-	public TokenService() {
+	private SpongePlugin plugin;
+
+	public TokenService(SpongePlugin plugin) {
+		this.plugin = plugin;
 		translatorMap.put("gts_prefix", (p, v, m) -> Optional.of(TextSerializers.FORMATTING_CODE.deserialize(
-				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.PREFIX)
+				plugin.getMsgConfig().get(MsgConfigKeys.PREFIX)
 		)));
 		translatorMap.put("gts_error", (p, v, m) -> Optional.of(TextSerializers.FORMATTING_CODE.deserialize(
-				GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ERROR_PREFIX)
+				plugin.getMsgConfig().get(MsgConfigKeys.ERROR_PREFIX)
 		)));
-		translatorMap.put("balance", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getBalance(
+		translatorMap.put("balance", (p, v, m) -> Optional.of(plugin.getTextParsingUtils().getBalance(
 				getSourceFromVariableIfExists(p, v, m))
 		));
-		translatorMap.put("buyer", (p, v, m) -> Optional.of(GTS.getInstance().getTextParsingUtils().getNameFromUser(
+		translatorMap.put("buyer", (p, v, m) -> Optional.of(plugin.getTextParsingUtils().getNameFromUser(
 				getSourceFromVariableIfExists(p, v, m))
 		));
 		translatorMap.put("seller", (p, v, m) -> {
@@ -66,7 +69,7 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 			Price price = listing.getPrice();
 			return Optional.of(Text.of(price.getText()));
 		});
-		translatorMap.put("max_listings", (p, v, m) -> Optional.of(Text.of(GTS.getInstance().getConfig().get(ConfigKeys.MAX_LISTINGS))));
+		translatorMap.put("max_listings", (p, v, m) -> Optional.of(Text.of(plugin.getConfiguration().get(ConfigKeys.MAX_LISTINGS))));
 		translatorMap.put("id", (p, v, m) -> {
 			Listing listing = getListingFromVaribleIfExists(m);
 			return Optional.of(listing != null ? Text.of(listing.getUuid()) : Text.EMPTY);
@@ -86,7 +89,7 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 				return Optional.empty();
 			}
 
-			return Optional.of(GTS.getInstance().getTextParsingUtils().parse(listing.getEntry().getSpecsTemplate(), p, null, m));
+			return Optional.of(plugin.getTextParsingUtils().parse(listing.getEntry().getSpecsTemplate(), p, null, m));
 		});
 		translatorMap.put("listing_name", (p, v, m) -> {
 			Listing listing = getListingFromVaribleIfExists(m);
@@ -96,21 +99,20 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 
 			return Optional.of(TextSerializers.FORMATTING_CODE.deserialize(listing.getName()));
 		});
-		translatorMap.putAll(ItemTokens.getTokens());
 
 		try {
 			NucleusAPI.getMessageTokenService().register(
-					GTS.getInstance().getPluginContainer(),
+					plugin.getPluginContainer(),
 					this
 			);
-			this.getTokenNames().forEach(x -> NucleusAPI.getMessageTokenService().registerPrimaryToken(x.toLowerCase(), GTS.getInstance().getPluginContainer(), x.toLowerCase()));
+			this.getTokenNames().forEach(x -> NucleusAPI.getMessageTokenService().registerPrimaryToken(x.toLowerCase(), plugin.getPluginContainer(), x.toLowerCase()));
 		} catch (PluginAlreadyRegisteredException e) {
 			e.printStackTrace();
 		}
 	}
 
 	public boolean register(String key, Translator translator) {
-		if(NucleusAPI.getMessageTokenService().registerPrimaryToken(key.toLowerCase(), GTS.getInstance().getPluginContainer(), key.toLowerCase())) {
+		if(NucleusAPI.getMessageTokenService().registerPrimaryToken(key.toLowerCase(), plugin.getPluginContainer(), key.toLowerCase())) {
 			translatorMap.put(key, translator);
 			return true;
 		}

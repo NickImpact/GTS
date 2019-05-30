@@ -26,6 +26,7 @@
 package me.nickimpact.gts.storage.implementation.sql;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 import com.nickimpact.impactor.api.json.JsonTyping;
 import com.nickimpact.impactor.api.platform.Platform;
@@ -43,9 +44,11 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
@@ -54,8 +57,8 @@ public class SqlImplementation implements StorageImplementation {
 	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM {prefix}listings_v3";
 	private static final String ADD_LISTING = "INSERT INTO {prefix}listings_v3 (id, owner, entry, price, expiration) VALUES (?, ?, ?, ?, ?)";
 	private static final String REMOVE_LISTING = "DELETE FROM {prefix}listings_v3 WHERE id=?";
-	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES ('%s')";
-	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID='%s'";
+	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES (?)";
+	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID=?";
 	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";
 
 	@Deprecated
@@ -116,7 +119,14 @@ public class SqlImplementation implements StorageImplementation {
 									sb.deleteCharAt(sb.length() - 1);
 
 									String result = this.processor.apply(sb.toString().trim());
-									if (!result.isEmpty()) s.addBatch(result);
+
+
+									if (!result.isEmpty()) {
+										int start = result.indexOf('`');
+										if(!tableExists(result.substring(start + 1, result.indexOf('`', start + 1)))) {
+											s.addBatch(result);
+										}
+									}
 
 									// reset
 									sb = new StringBuilder();
@@ -151,6 +161,7 @@ public class SqlImplementation implements StorageImplementation {
 		ps.setString(2, listing.getOwnerUUID().toString());
 
 		clob.setString(1, this.plugin.getGson().toJson(listing.getEntry(), Entry.class));
+
 		ps.setClob(3, clob);
 		ps.setDouble(4, listing.getPrice().getPrice());
 		ps.setTimestamp(5, Timestamp.valueOf(listing.getExpiration()));
@@ -197,30 +208,35 @@ public class SqlImplementation implements StorageImplementation {
 				}
 
 				try {
-					me.nickimpact.gts.deprecated.Listing old = this.plugin.getGson().fromJson(json, me.nickimpact.gts.deprecated.Listing.class);
+					me.nickimpact.gts.deprecated.Listing old = this.plugin.getAPIService().getDeprecatedGson().fromJson(json, me.nickimpact.gts.deprecated.Listing.class);
 					Listing updated = Listing.builder(this.plugin)
 							.entry(this.convert(old.getEntry()))
 							.price(old.getEntry().getPrice().getPrice().doubleValue())
 							.id(old.getUuid())
 							.owner(old.getOwnerUUID())
-							.expiration(LocalDateTime.from(old.getExpiration().toInstant()))
+							.expiration(LocalDateTime.ofInstant(old.getExpiration().toInstant(), ZoneId.systemDefault()))
 							.build();
 					entries.add(updated);
-				} catch (JsonSyntaxException e) {
+				} catch (Exception e) {
 					this.plugin.getPluginLogger().error("Unable to read listing data for listing with ID: " + results.getString("uuid"));
 					this.plugin.getPluginLogger().error("Listing JSON: \n" + json);
+					e.printStackTrace();
 					++failed;
 				}
 			}
 			results.close();
 
 			this.plugin.getPluginLogger().warn(String.format("Read in %d listings, attempting to convert...", entries.size()));
-			this.transfer(entries);
-
-			if(failed == 0) {
-				this.plugin.getPluginLogger().warn("Purging old table...");
-				PreparedStatement p = connection.prepareStatement(processor.apply("DROP TABLE {prefix}listings_v2"));
-				p.executeUpdate();
+			if(this.transfer(Lists.newArrayList(entries))) {
+				if (failed == 0) {
+					this.plugin.getPluginLogger().warn("Purging old table...");
+					PreparedStatement p = connection.prepareStatement(processor.apply("DROP TABLE {prefix}listings_v2"));
+					p.executeUpdate();
+				} else {
+					if(entries.size() != 0) {
+						this.plugin.getPluginLogger().warn(String.format("Failed to read %d listings, will preserve database for now...", failed));
+					}
+				}
 			}
 
 			return entries;
@@ -230,21 +246,30 @@ public class SqlImplementation implements StorageImplementation {
 		PreparedStatement query = connection.prepareStatement(this.processor.apply(SELECT_ALL_LISTINGS));
 		ResultSet results = query.executeQuery();
 
+		int failed = 0;
 		while(results.next()) {
-			UUID id = UUID.fromString(results.getString("id"));
-			UUID owner = UUID.fromString(results.getString("owner"));
-			String entry = results.getString("entry");
-			double price = results.getDouble("price");
-			LocalDateTime date = results.getTimestamp("expiration").toLocalDateTime();
+			try {
+				UUID id = UUID.fromString(results.getString("id"));
+				UUID owner = UUID.fromString(results.getString("owner"));
+				String entry = results.getString("entry");
+				double price = results.getDouble("price");
+				LocalDateTime date = results.getTimestamp("expiration").toLocalDateTime();
 
-			Listing listing = Listing.builder(this.plugin)
-					.id(id)
-					.owner(owner)
-					.entry(this.plugin.getGson().fromJson(entry, Entry.class))
-					.price(price)
-					.expiration(date)
-					.build();
-			entries.add(listing);
+				Listing listing = Listing.builder(this.plugin)
+						.id(id)
+						.owner(owner)
+						.entry(this.plugin.getGson().fromJson(entry, Entry.class))
+						.price(price)
+						.expiration(date)
+						.build();
+				entries.add(listing);
+			} catch (JsonParseException e) {
+				++failed;
+			}
+		}
+
+		if(failed != 0) {
+			plugin.getPluginLogger().error("Failed to read in &c" + failed + " &7listings...");
 		}
 
 		return entries;
@@ -252,17 +277,40 @@ public class SqlImplementation implements StorageImplementation {
 
 	@Override
 	public boolean addIgnorer(UUID uuid) throws Exception {
-		return false;
+		Connection connection = connectionFactory.getConnection();
+
+		String stmt = processor.apply(ADD_IGNORER);
+		PreparedStatement ps = connection.prepareStatement(stmt);
+		ps.setString(1, uuid.toString());
+		ps.executeUpdate();
+
+		return true;
 	}
 
 	@Override
 	public boolean removeIgnorer(UUID uuid) throws Exception {
-		return false;
+		Connection connection = connectionFactory.getConnection();
+
+		String stmt = processor.apply(REMOVE_IGNORER);
+		PreparedStatement ps = connection.prepareStatement(stmt);
+		ps.setString(1, uuid.toString());
+		ps.executeUpdate();
+
+		return true;
 	}
 
 	@Override
-	public boolean isIgnoring(UUID uuid) throws Exception {
-		return false;
+	public List<UUID> getAllIgnorers() throws Exception {
+		List<UUID> ignorers = Lists.newArrayList();
+		Connection connection = this.connectionFactory.getConnection();
+		PreparedStatement query = connection.prepareStatement(this.processor.apply(GET_IGNORERS));
+		ResultSet results = query.executeQuery();
+
+		while(results.next()) {
+			ignorers.add(UUID.fromString(results.getString("uuid")));
+		}
+
+		return ignorers;
 	}
 
 	@Override
@@ -284,17 +332,22 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Deprecated
-	private void transfer(List<Listing> listings) {
-		Listing focus = listings.remove(0);
-		this.plugin.getAPIService().getStorage().addListing(focus).thenAccept(x -> {
-			if(listings.size() != 0) {
-				this.transfer(listings);
-			}
-		});
+	private boolean transfer(List<Listing> listings) {
+		AtomicBoolean result = new AtomicBoolean(true);
+		if(listings.size() > 0) {
+			Listing focus = listings.remove(0);
+			this.plugin.getAPIService().getStorage().addListing(focus).thenAccept(x -> this.transfer(listings)).exceptionally(x -> {
+				x.printStackTrace();
+				result.set(false);
+				return null;
+			});
+		}
+
+		return result.get();
 	}
 
 	@Deprecated
-	private Entry convert(me.nickimpact.gts.deprecated.Entry old) throws Exception {
+	private Entry convert(me.nickimpact.gts.api.deprecated.Entry old) throws Exception {
 		EntryClassification classification = this.plugin.getAPIService().getEntryRegistry().getForIdentifier(old.getClass().getAnnotation(JsonTyping.class).value()).get();
 		Entry entry = (Entry) classification.getClassification().newInstance();
 		return entry.setEntry(old.getEntry());

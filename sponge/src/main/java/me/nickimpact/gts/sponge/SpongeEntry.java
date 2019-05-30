@@ -8,6 +8,9 @@ import org.spongepowered.api.item.inventory.ItemStack;
 
 public abstract class SpongeEntry<T, D> extends Entry<T, D, Player, User, ItemStack> {
 
+	@Deprecated
+	public SpongeEntry() {}
+
 	public SpongeEntry(T element) {
 		super(element);
 	}

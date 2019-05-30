@@ -12,6 +12,7 @@ import com.nickimpact.impactor.api.logging.Logger;
 import com.nickimpact.impactor.api.platform.Platform;
 import com.nickimpact.impactor.api.plugin.ImpactorPlugin;
 import com.nickimpact.impactor.api.plugin.PluginInfo;
+import com.nickimpact.impactor.api.registry.BuilderRegistry;
 import com.nickimpact.impactor.sponge.AbstractSpongePlugin;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfig;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
@@ -24,29 +25,38 @@ import me.nickimpact.gts.api.dependencies.classloader.PluginClassLoader;
 import me.nickimpact.gts.api.dependencies.classloader.ReflectionClassLoader;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
+import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.api.storage.StorageType;
 import me.nickimpact.gts.commands.SpongeEntryClassificationContextHandler;
 import me.nickimpact.gts.commands.SpongeGtsCmd;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
+import me.nickimpact.gts.deprecated.ItemEntry;
+import me.nickimpact.gts.deprecated.adapters.OldEntryAdapter;
+import me.nickimpact.gts.deprecated.adapters.OldPriceAdapter;
 import me.nickimpact.gts.discord.DiscordNotifier;
+import me.nickimpact.gts.json.DataContainerAdapter;
 import me.nickimpact.gts.json.EntryAdapter;
+import me.nickimpact.gts.listeners.JoinListener;
 import me.nickimpact.gts.listings.SpongeItemEntry;
 import me.nickimpact.gts.listings.SpongeItemUI;
 import me.nickimpact.gts.manager.SpongeListingManager;
-import me.nickimpact.gts.sponge.MoneyPrice;
-import me.nickimpact.gts.sponge.SpongeEntry;
-import me.nickimpact.gts.sponge.SpongePlugin;
-import me.nickimpact.gts.sponge.TextParsingUtils;
+import me.nickimpact.gts.sponge.*;
 import me.nickimpact.gts.sponge.service.SpongeGtsService;
 import me.nickimpact.gts.storage.StorageFactory;
 import me.nickimpact.gts.tasks.SpongeListingTasks;
+import me.nickimpact.gts.sponge.text.TokenService;
+import me.nickimpact.gts.text.ItemTokens;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.event.Listener;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Dependency;
@@ -76,8 +86,6 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 
 	@Inject
 	private PluginContainer pluginContainer;
-
-	private GTSInfo info = new GTSInfo();
 
 	@Inject
 	private org.slf4j.Logger fallback;
@@ -110,8 +118,8 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 
 	public GTS() {
 		instance = this;
+		PluginInstance.setInstance(this);
 	}
-
 
 	@Listener
 	public void onReload(GameReloadEvent e) {
@@ -131,8 +139,8 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 
 	@Listener
 	public void onPreInit(GamePreInitializationEvent e) {
-		this.logger = new SpongeLogger(this.fallback);
-		this.info.displayBanner();
+		this.logger = new SpongeLogger(this, this.fallback);
+		((GTSInfo)this.getPluginInfo()).displayBanner();
 		this.logger.info("Initializing GTS...");
 		this.logger.info("Registering Service with Sponge...");
 		Sponge.getServiceManager().setProvider(this, GtsService.class, service = new SpongeGtsService(this));
@@ -140,16 +148,25 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 		this.logger.info("Loading default entry types...");
 		this.service.setRegistry(new EntryRegistry(this));
 		this.service.registerEntry(
-				Lists.newArrayList("items", "item"),
-				SpongeEntry.class,
+				Lists.newArrayList("Items", "Item"),
+				SpongeItemEntry.class,
 				new SpongeItemUI(),
 				"diamond",
 				SpongeItemEntry::cmdExecutor
 		);
+
+		logger.info("Registering tokens with Nucleus...");
+		this.service.setTokenService(new TokenService(this));
+		this.service.registerTokens(new ItemTokens());
+
+		this.service.setBuilders(new BuilderRegistry());
+		this.service.getBuilderRegistry().register(Listing.ListingBuilder.class, SpongeListing.SpongeListingBuilder.class);
+
+		this.service.getAllDeprecatedTypes().add(ItemEntry.class);
 	}
 
 	@Listener
-	public void onInit(GameInitializationEvent e) {
+	public void onInit(GamePostInitializationEvent e) {
 		logger.info("&aEnabling GTS...");
 
 		logger.info("Loading configuration...");
@@ -167,9 +184,12 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 		logger.info("Initializing internal handlers...");
 		gson = new GsonBuilder().setPrettyPrinting()
 				.registerTypeAdapter(Entry.class, new EntryAdapter(this))
+				.registerTypeAdapter(DataContainer.class, new DataContainerAdapter())
 				.create();
 
 		this.textParsingUtils = new TextParsingUtils(this);
+
+		Sponge.getEventManager().registerListeners(this, new JoinListener());
 
 		logger.info("Setting up discord notifier...");
 		this.discordNotifier = new DiscordNotifier(this);
@@ -195,6 +215,26 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 		);
 
 		this.cmdManager.registerCommand(new SpongeGtsCmd());
+
+		OldEntryAdapter oea = new OldEntryAdapter(this);
+		for(Class<? extends me.nickimpact.gts.api.deprecated.Entry> clazz : this.service.getAllDeprecatedTypes()) {
+			try {
+				oea.getRegistry().register(clazz);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+
+		OldPriceAdapter opa = new OldPriceAdapter(this);
+		try {
+			opa.getRegistry().register(me.nickimpact.gts.api.deprecated.MoneyPrice.class);
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
+
+		this.getAPIService().registerOldTypeAdapter(me.nickimpact.gts.api.deprecated.Entry.class, oea);
+		this.getAPIService().registerOldTypeAdapter(me.nickimpact.gts.api.deprecated.Price.class, opa);
+		this.getAPIService().registerOldTypeAdapter(DataContainer.class, new DataContainerAdapter());
 
 		logger.info("Initializing and reading storage...");
 		this.service.setStorage(new StorageFactory(this).getInstance(StorageType.JSON));
@@ -238,7 +278,7 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 
 	@Override
 	public PluginInfo getPluginInfo() {
-		return this.info;
+		return new GTSInfo();
 	}
 
 	@Override

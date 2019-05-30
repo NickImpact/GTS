@@ -41,7 +41,7 @@ public class GTSInfo implements PluginInfo {
 				"",
 				"&3     _________________",
 				"&3    / ____/_  __/ ___/       &aGTS " + this.getVersion(),
-				"&3   / / __  / /  \\__ \\        &aRunning on: &e" + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName(), " ", Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse("Unknown"),
+				"&3   / / __  / /  \\__ \\        &aRunning on: &e" + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName() + " " + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse(""),
 				"&3  / /_/ / / /  ___/ /        &aAuthor: &3NickImpact",
 				"&3  \\____/ /_/  /____/",
 				""

@@ -32,4 +32,8 @@ public abstract class EntryClassification<T> {
 	public String getPrimaryIdentifier() {
 		return identifers.size() > 0 ? identifers.get(0) : "???";
 	}
+
+	public List<String> getAllIdentifiers() {
+		return identifers;
+	}
 }

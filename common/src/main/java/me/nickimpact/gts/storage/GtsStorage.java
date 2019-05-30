@@ -129,8 +129,8 @@ public class GtsStorage implements IGtsStorage {
         return this.makeFuture(() -> this.implementation.removeIgnorer(uuid));
     }
 
-    public CompletableFuture<Boolean> isIgnoring(UUID uuid) {
-        return this.makeFuture(() -> this.implementation.isIgnoring(uuid));
+    public CompletableFuture<List<UUID>> getAllIgnorers() {
+        return this.makeFuture(() -> this.implementation.getAllIgnorers());
     }
 
     public CompletableFuture<Boolean> purge() {

@@ -79,7 +79,7 @@ public interface StorageImplementation {
 
     boolean removeIgnorer(UUID uuid) throws Exception;
 
-    boolean isIgnoring(UUID uuid) throws Exception;
+    List<UUID> getAllIgnorers() throws Exception;
 
     boolean purge() throws Exception;
 }

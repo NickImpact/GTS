@@ -41,6 +41,11 @@ public class SpigotListingManager implements ListingManager<SpigotListing> {
 	}
 
 	@Override
+	public List<UUID> getIgnorers() {
+		return null;
+	}
+
+	@Override
 	@SuppressWarnings("unchecked")
 	public boolean addToMarket(UUID lister, SpigotListing listing) {
 		Optional<Player> source = Optional.ofNullable(Bukkit.getServer().getPlayer(lister));

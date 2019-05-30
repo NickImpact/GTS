@@ -129,8 +129,8 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     @Override
-    public boolean isIgnoring(UUID uuid) throws Exception {
-        return false;
+    public List<UUID> getAllIgnorers() throws Exception {
+        return null;
     }
 
     @Override

@@ -3,9 +3,11 @@ package me.nickimpact.gts.listings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
+import com.nickimpact.impactor.api.json.JsonTyping;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.sponge.SpongeEntry;
@@ -35,12 +37,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+@JsonTyping("item")
 public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 
 	private transient ItemStack item;
 	private transient boolean messageSent;
 
 	private String name;
+
+	public SpongeItemEntry() {}
+
+	@Override
+	public Entry setEntry(ItemStack backing) {
+		this.item = backing;
+		this.element = backing.toContainer();
+		return this;
+	}
 
 	public SpongeItemEntry(ItemStack element) {
 		super(element.toContainer());
@@ -128,6 +140,7 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 				lore.addAll(l.stream().map(TextSerializers.FORMATTING_CODE::serialize).collect(Collectors.toList()));
 			}
 		});
+		lore.addAll(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
 
 		icon.offer(Keys.ITEM_LORE, GTS.getInstance().getTextParsingUtils().parse(lore, player, null, variables));
 
@@ -185,7 +198,7 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 
 	public static CommandResults cmdExecutor(CommandSource src, String[] args) {
 		if(args.length < 2) {
-			//src.sendMessage(MessageUtils.parse("Not enough arguments...", true));
+			src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.INVALID_ARGS, null, null));
 			return CommandResults.FAILED;
 		}
 
@@ -196,33 +209,32 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 			amount = Integer.parseInt(args[0]);
 			price = Double.parseDouble(args[1]);
 		} catch (Exception e) {
-			//src.sendMessage(MessageUtils.parse("Invalid arguments supplied, check usage below...", true));
-			//src.sendMessage(MessageUtils.parse("/gts sell items <amount | ex: 2> <price | ex: 1000, 100.50>", true));
+			src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.INVALID_ARGS, null, null));
 			return CommandResults.FAILED;
 		}
 
 		if(price <= 0) {
-			//src.sendMessage(MessageUtils.parse("Invalid price supplied, price must be positive...", true));
+			src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.PRICE_NOT_POSITIVE, null, null));
 			return CommandResults.FAILED;
 		}
 
 
 		if(src instanceof Player) {
 			if(!src.hasPermission("gts.command.sell.items.base")) {
-				//src.sendMessage(MessageUtils.parse("Unfortunately, you don't have permission to sell items...", true));
+				src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.NO_PERMISSION, null, null));
 				return CommandResults.FAILED;
 			}
 
 			Player player = (Player) src;
 			Optional<ItemStack> hand = player.getItemInHand(HandTypes.MAIN_HAND);
 			if(!hand.isPresent()) {
-				//player.sendMessage(MessageUtils.parse("You have no item in your hand to sell...", true));
+				src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.ITEMS_NONE_IN_HAND, null, null));
 				return CommandResults.FAILED;
 			}
 
 			if(GTS.getInstance().getConfiguration().get(ConfigKeys.BLACKLISTED_ITEMS).contains(hand.get().getType().getName().toLowerCase())) {
 				if(!src.hasPermission("gts.command.sell.items.bypass")) {
-					//player.sendMessage(MessageUtils.parse("That item is blacklisted from being sold...", true));
+					src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.BLACKLISTED, null, null));
 					return CommandResults.FAILED;
 				}
 			}
@@ -237,12 +249,12 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 					.entry(new SpongeItemEntry(item))
 					.id(UUID.randomUUID())
 					.owner(player.getUniqueId())
-					.expiration(LocalDateTime.now().plusDays(1))
+					.expiration(LocalDateTime.now().plusSeconds(GTS.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME)))
 					.price(price)
 					.build();
 			listing.publish(GTS.getInstance(), player.getUniqueId());
 		} else {
-			//src.sendMessage(MessageUtils.parse("You must be a player to use this command...", true));
+			src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.NOT_PLAYER, null, null));
 			return CommandResults.FAILED;
 		}
 

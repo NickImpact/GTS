@@ -10,6 +10,8 @@ public interface ListingManager<E extends Listing> {
 
 	List<E> getListings();
 
+	List<UUID> getIgnorers();
+
 	boolean addToMarket(UUID lister, E listing);
 
 	boolean purchase(UUID buyer, E listing);

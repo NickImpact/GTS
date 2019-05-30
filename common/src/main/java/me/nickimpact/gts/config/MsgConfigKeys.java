@@ -55,7 +55,6 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	// Items
 	public static final ConfigKey<String> UI_ITEMS_PLAYER_LISTINGS_TITLE = stringKey("item-displays.player-listings.title", "&eYour Listings");
-	public static final ConfigKey<List<String>> UI_ITEMS_PLAYER_LISTINGS_LORE = listKey("item-displays.player-listings.lore", Lists.newArrayList());
 
 	// Entries
 	public static final ConfigKey<List<String>> ENTRY_INFO = listKey("entries.base-info", Lists.newArrayList(
@@ -71,17 +70,8 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<List<String>> ITEM_ENTRY_BASE_LORE = listKey("entries.item.base.lore", Lists.newArrayList(
 			"&7Seller: &e{{seller}}"
 	));
-	public static final ConfigKey<List<String>> ITEM_ENTRY_CONFIRM_LORE = listKey("entries.item.confirm.lore", Lists.newArrayList(
-			"&7Seller: &e{{seller}}"
-	));
-	public static final ConfigKey<String> ITEM_ENTRY_CONFIRM_TITLE = stringKey("entries.item.confirm.title", "&ePurchase {{item_title}}?");
 	public static final ConfigKey<String> ITEM_ENTRY_BASE_TITLE = stringKey("entries.item.base.title", "{{item_title}}");
 	public static final ConfigKey<String> ITEM_ENTRY_SPEC_TEMPLATE = stringKey("entries.item.spec-template", "{{item_title}}");
-
-	public static final ConfigKey<String> DISCORD_PURCHASE = stringKey("discord.purchase", "{{buyer}} just purchased a {{listing_specifics}} from {{seller}} for {{price}}");
-	public static final ConfigKey<String> DISCORD_REMOVE = stringKey("discord.purchase", "{{player}} has removed their {{listing_specifics}} from the GTS!");
-
-	public static final ConfigKey<String> REFRESH_ICON = stringKey("item-displays.refresh-icon.title", "&eRefresh Listings");
 
 	// -----------------------------------------------------------------------------
 	// As of 4.1.4
@@ -104,8 +94,10 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	public static final ConfigKey<String> UI_TITLES_MAIN = stringKey("ui.main.title", "&cGTS &7\u00bb &3Listings");
 	public static final ConfigKey<String> UI_TITLES_ITEMS = stringKey("ui.items.title", "&cGTS &7(&3Items&7)");
+	public static final ConfigKey<String> UI_ITEMS_SELLOPTION_NOT_SELECTED = stringKey("ui.items.icons.not-selected", "&cSelect an Item...");
 	public static final ConfigKey<String> UI_TITLES_CONFIRMATION = stringKey("ui.confirm.title", "&cGTS &7\u00bb &3Confirmation");
 	public static final ConfigKey<String> UI_MAIN_NO_ENTRIES_AVAILABLE = stringKey("ui.main.no-entries-available", "&cNo Listing Types Available");
+	public static final ConfigKey<String> UI_SELL_ITEMS_TITLE = stringKey("ui.sell-options.title", "&cSelect What to Sell");
 
 	public static final ConfigKey<String> TRANSLATIONS_YES = stringKey("translations.yes", "Yes");
 	public static final ConfigKey<String> TRANSLATIONS_NO = stringKey("translations.no", "No");
@@ -139,9 +131,34 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Max Price: &a{{gts_max_price}}"
 	));
 
+	public static final ConfigKey<String> BUTTONS_INCREASE_AMOUNT_TITLE = stringKey("buttons.amount.increase.title", "&aIncrease Amount To Be Listed");
+	public static final ConfigKey<List<String>> BUTTONS_INCREASE_AMOUNT_LORE = listKey("buttons.amount.increase.lore", Lists.newArrayList(
+			"&7Left Click: &b+{{gts_button_amount_left_click}}",
+			"&7Right Click: &b+{{gts_button_amount_right_click}}",
+			"&7Shift + Left Click: &b+{{gts_button_amount_shift_left_click}}",
+			"&7Shift + Right Click: &b+{{gts_button_amount_shift_right_click}}"
+	));
+
+	public static final ConfigKey<String> BUTTONS_DECREASE_AMOUNT_TITLE = stringKey("buttons.amount.decrease.title", "&cDecrease Amount To Be Listed");
+	public static final ConfigKey<List<String>> BUTTONS_DECREASE_AMOUNT_LORE = listKey("buttons.amount.decrease.lore", Lists.newArrayList(
+			"&7Left Click: &c-{{gts_button_amount_left_click}}",
+			"&7Right Click: &c-{{gts_button_amount_right_click}}",
+			"&7Shift + Left Click: &c-{{gts_button_amount_shift_left_click}}",
+			"&7Shift + Right Click: &c-{{gts_button_amount_shift_right_click}}"
+	));
+
+	public static final ConfigKey<String> AMOUNT_DISPLAY_TITLE = stringKey("buttons.amount.display.title", "&eListing Amount");
+	public static final ConfigKey<List<String>> AMOUNT_DISPLAY_LORE = listKey("buttons.amount.display.lore", Lists.newArrayList(
+			"&7Target amount: &a{{gts_amount}}",
+			"",
+			"&7Min Size: &a{{gts_min_amount}}",
+			"&7Max Size: &a{{gts_max_amount}}"
+	));
+
 	public static final ConfigKey<String> ITEMS_NONE_IN_HAND = stringKey("entries.items.command.none-in-hand", "{{gts_error}} Your hand has no item in it!");
 	public static final ConfigKey<String> ITEMS_NO_CUSTOM_NAMES = stringKey("entries.items.generic.custom-name-restricted", "{{gts_error}} You can't sell items with custom names!");
 	public static final ConfigKey<String> ITEMS_INVENTORY_FULL = stringKey("entries.items.generic.inventory-full", "{{gts_error}} Your inventory is full, so we'll hold onto this item for you!");
+	public static final ConfigKey<String> ITEMS_MAX_STACK = stringKey("ui.items.icons.max-stack-size", "Max Stack Size");
 
 	public static final ConfigKey<List<String>> DISCORD_PUBLISH_TEMPLATE = listKey("discord.templates.publish", Lists.newArrayList(
 			"Publisher: {{gts_publisher}}",
@@ -195,6 +212,8 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> REQUIRES_CONFIRMATION = stringKey("buttons.confirming.requires", "&cRequires Confirmation");
 	public static final ConfigKey<String> REMOVE_BUTTON = stringKey("buttons.remove", "&cClick to Remove your Listing");
 	public static final ConfigKey<List<String>> REMOVED_MISSING = listKey("general.errors.remove-listing.not-available", Lists.newArrayList("{{gts_error}} Unfortunately, your listing has either been purchased, or already expired..."));
+	public static final ConfigKey<String> IGNORE_ON = stringKey("general.ignoring-broadcasts.on", "{{gts_prefix}} Now ignoring broadcasts");
+	public static final ConfigKey<String> IGNORE_OFF = stringKey("general.ignoring-broadcasts.off", "{{gts_prefix}} No longer ignoring broadcasts");
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

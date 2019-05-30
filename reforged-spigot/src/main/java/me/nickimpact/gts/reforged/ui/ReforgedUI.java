@@ -1,6 +1,5 @@
 package me.nickimpact.gts.reforged.ui;
 
-import com.google.common.collect.Lists;
 import com.nickimpact.impactor.spigot.ui.SpigotIcon;
 import com.nickimpact.impactor.spigot.ui.SpigotLayout;
 import com.nickimpact.impactor.spigot.ui.SpigotUI;
@@ -70,7 +69,9 @@ public class ReforgedUI implements EntryUI<Player> {
 			item.setItemMeta(meta);
 			SpigotIcon icon = new SpigotIcon(item);
 			icon.addListener(clickable -> {
-
+				this.selection = pokemon;
+				SpigotIcon i = new SpigotIcon(item);
+				this.getDisplay().setSlot(17, i);
 			});
 			slb.slot(icon, 10 + index++);
 		}

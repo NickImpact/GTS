@@ -38,6 +38,8 @@ import me.nickimpact.gts.storage.implementation.sql.connection.file.H2Connection
 import me.nickimpact.gts.storage.implementation.sql.connection.hikari.MariaDBConnectionFactory;
 import me.nickimpact.gts.storage.implementation.sql.connection.hikari.MySQLConnectionFactory;
 
+import java.io.File;
+
 public class StorageFactory {
 
     private final IGTSPlugin plugin;
@@ -81,7 +83,7 @@ public class StorageFactory {
             case H2:
                 return new SqlImplementation(
                         this.plugin,
-                        new H2ConnectionFactory(this.plugin, this.plugin.getConfigDir().resolve("h2").resolve("gts-h2")),
+                        new H2ConnectionFactory(this.plugin, new File("gts").toPath().resolve("gts-h2")),
                         this.plugin.getConfiguration().get(ConfigKeys.SQL_TABLE_PREFIX)
                 );
             case YAML:

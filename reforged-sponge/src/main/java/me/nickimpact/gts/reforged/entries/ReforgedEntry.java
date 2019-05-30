@@ -8,22 +8,22 @@ import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
-import com.pixelmonmod.pixelmon.comm.EnumUpdateType;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import com.pixelmonmod.pixelmon.enums.forms.EnumGreninja;
 import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
+import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
-import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.prices.Minable;
 import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
@@ -32,6 +32,7 @@ import me.nickimpact.gts.reforged.ReforgedBridge;
 import me.nickimpact.gts.reforged.config.PokemonConfigKeys;
 import me.nickimpact.gts.reforged.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.reforged.utils.Flags;
+import me.nickimpact.gts.reforged.utils.GsonUtils;
 import me.nickimpact.gts.sponge.*;
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.command.CommandSource;
@@ -51,28 +52,23 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 
 	private transient Pokemon pokemon;
 
-	private static final Function<Pokemon, String> TO_BASE_64 = poke -> {
-		ByteBuf buffer = Unpooled.buffer();
-		poke.writeToByteBuffer(buffer, EnumUpdateType.ALL);
-		return Base64.getEncoder().encodeToString(buffer.array());
-	};
+	public ReforgedEntry() {}
 
-	private static final Function<String, Pokemon> FROM_BASE_64 = base64 -> {
-		byte[] bytes = Base64.getDecoder().decode(base64);
-		ByteBuf buffer = Unpooled.copiedBuffer(bytes);
-		Pokemon out = Pixelmon.pokemonFactory.create(EnumSpecies.Bidoof);
-		out.readFromByteBuffer(buffer, EnumUpdateType.ALL);
-		return out;
-	};
+	@Override
+	public Entry setEntry(Pokemon backing) {
+		this.pokemon = backing;
+		this.element = GsonUtils.serialize(backing.writeToNBT(new NBTTagCompound()));
+		return this;
+	}
 
 	public ReforgedEntry(Pokemon element) {
-		super(TO_BASE_64.apply(element));
+		super(GsonUtils.serialize(element.writeToNBT(new NBTTagCompound())));
 		this.pokemon = element;
 	}
 
 	@Override
 	public Pokemon getEntry() {
-		return pokemon != null ? pokemon : (pokemon = FROM_BASE_64.apply(this.element));
+		return pokemon != null ? pokemon : (pokemon = Pixelmon.pokemonFactory.create(GsonUtils.deserialize(this.element)));
 	}
 
 	@Override
@@ -170,7 +166,7 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 		variables.put("listing", listing);
 		variables.put("pokemon", this.getEntry());
 
-		icon.offer(Keys.DISPLAY_NAME, ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils().fetchAndParseMsg(player, this.getEntry().isEgg() ? PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE_EGG : PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
+		icon.offer(Keys.DISPLAY_NAME, ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils().fetchAndParseMsg(player, ReforgedBridge.getInstance().getMsgConfig(), this.getEntry().isEgg() ? PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE_EGG : PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
 
 		List<String> template = Lists.newArrayList();
 		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LORE));
@@ -189,7 +185,7 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 			}
 		}
 
-		template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
+		template.addAll(PluginInstance.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
 		List<Text> translated = template.stream().map(str -> ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils().fetchAndParseMsg(player, str, tokens, variables)).collect(Collectors.toList());
 		icon.offer(Keys.ITEM_LORE, translated);
 	}
@@ -213,12 +209,12 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 
 		PlayerPartyStorage storage = Pixelmon.storageManager.getParty(player.getUniqueId());
 		if(BattleRegistry.getBattle(storage.getPlayer()) != null) {
-			player.sendMessage(parser.fetchAndParseMsg(player, msgs, PokemonMsgConfigKeys.ERROR_IN_BATTLE, null, null));
+			player.sendMessage(parser.fetchAndParseMsg(player, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_IN_BATTLE, null, null));
 			return false;
 		}
 
 		if(Flags.UNTRADABLE.matches(this.getEntry())) {
-			player.sendMessage(parser.fetchAndParseMsg(player, msgs, PokemonMsgConfigKeys.ERROR_UNTRADABLE, null, null));
+			player.sendMessage(parser.fetchAndParseMsg(player, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_UNTRADABLE, null, null));
 			return false;
 		}
 
@@ -228,7 +224,7 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 				.map(EnumSpecies::getFromNameAnyCase)
 				.collect(Collectors.toList());
 		if(blacklisted.contains(this.getEntry().getSpecies())) {
-			player.sendMessage(parser.fetchAndParseMsg(player, msgs, PokemonMsgConfigKeys.ERROR_IN_BATTLE, null, null));
+			player.sendMessage(parser.fetchAndParseMsg(player, msgs, MsgConfigKeys.ERROR_BLACKLISTED, null, null));
 			return false;
 		}
 
@@ -254,9 +250,9 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 					break;
 			}
 		} else if (pokemon.isShiny()) {
-			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.getSpecies().name, pokemon.getForm()));
+			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
 		} else {
-			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.getSpecies().name, pokemon.getForm()));
+			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
 		}
 
 		item.setTagCompound(nbt);
@@ -428,5 +424,25 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 
 		src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.NOT_PLAYER, null, null));
 		return CommandResults.FAILED;
+	}
+
+	private static String getSpriteExtraProperly(EnumSpecies species, IEnumForm form, Gender gender, EnumSpecialTexture specialTexture) {
+		if (species == EnumSpecies.Greninja && (form == EnumGreninja.BASE || form == EnumGreninja.BATTLE_BOND) && specialTexture.id > 0 && species.hasSpecialTexture()) {
+			return "-special";
+		}
+
+		if(form != EnumNoForm.NoForm) {
+			return species.getFormEnum(form.getForm()).getSpriteSuffix();
+		}
+
+		if(EnumSpecies.mfSprite.contains(species)) {
+			return "-" + gender.name().toLowerCase();
+		}
+
+		if(specialTexture.id > 0 && species.hasSpecialTexture()) {
+			return "-special";
+		}
+
+		return "";
 	}
 }

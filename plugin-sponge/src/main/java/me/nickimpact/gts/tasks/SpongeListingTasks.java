@@ -87,7 +87,7 @@ public class SpongeListingTasks implements ListingTasks<SpongeListing> {
 		tokens.put("gts_published_item_details", src -> Optional.of(Text.of(MessageUtils.asSingleWithNewlines(details))));
 
 		String discord = MessageUtils.asSingleWithNewlines(GTS.getInstance().getTextParsingUtils().fetchAndParseMsgs(
-				null, GTS.getInstance().getMsgConfig(), MsgConfigKeys.DISCORD_EXPIRATION_TEMPLATE, null, variables
+				null, GTS.getInstance().getMsgConfig(), MsgConfigKeys.DISCORD_EXPIRATION_TEMPLATE, tokens, variables
 		).stream().map(Text::toPlain).collect(Collectors.toList()));
 
 		DiscordNotifier notifier = new DiscordNotifier(GTS.getInstance());

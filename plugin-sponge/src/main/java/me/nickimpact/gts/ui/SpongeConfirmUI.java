@@ -129,6 +129,8 @@ public class SpongeConfirmUI {
 				List<String> details = Lists.newArrayList("");
 				details.addAll(this.focus.getEntry().getDetails());
 
+				clickable.getPlayer().sendMessages(GTS.getInstance().getTextParsingUtils().fetchAndParseMsgs(clickable.getPlayer(), MsgConfigKeys.REMOVAL_CHOICE, null, null));
+
 				Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
 				tokens.put("gts_publisher", src -> Optional.of(Text.of(clickable.getPlayer().getName())));
 				tokens.put("gts_publisher_id", src -> Optional.of(Text.of(clickable.getPlayer().getUniqueId().toString())));
@@ -136,15 +138,14 @@ public class SpongeConfirmUI {
 				tokens.put("gts_published_item_details", src -> Optional.of(Text.of(MessageUtils.asSingleWithNewlines(details))));
 
 				String discord = MessageUtils.asSingleWithNewlines(GTS.getInstance().getTextParsingUtils().fetchAndParseMsgs(
-						null, GTS.getInstance().getMsgConfig(), MsgConfigKeys.DISCORD_REMOVAL_TEMPLATE, null, variables
+						null, GTS.getInstance().getMsgConfig(), MsgConfigKeys.DISCORD_REMOVAL_TEMPLATE, tokens, variables
 				).stream().map(Text::toPlain).collect(Collectors.toList()));
 
 				DiscordNotifier notifier = new DiscordNotifier(GTS.getInstance());
 				Message message = notifier.forgeMessage(GTS.getInstance().getConfiguration().get(ConfigKeys.DISCORD_REMOVE), discord);
 				notifier.sendMessage(message);
-
 			});
-
+			slb.slots(remover, 46, 47, 48);
 		}
 
 		SpongeIcon cancel = new SpongeIcon(ItemStack.builder()

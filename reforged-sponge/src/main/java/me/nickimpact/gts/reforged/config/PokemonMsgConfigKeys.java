@@ -20,22 +20,22 @@ public class PokemonMsgConfigKeys implements ConfigKeyHolder {
 			"&7Gender: &e{{gender}}",
 			"&7Nature: &e{{nature}}",
 			"&7Size: &e{{growth}}",
-			"&7EVs: &e{{evhp}}&7/&e{{evhp}}&7/&e{{evhp}}&7/&e{{evhp}}&7/&e{{evhp}}&7/&e{{evspeed}",
-			""
+			"&7EVs: &e{{evhp}}&7/&e{{evatk}}&7/&e{{evdef}}&7/&e{{evspatk}}&7/&e{{evspdef}}&7/&e{{evspeed}} &7(&a{{evs_percent}}&7)",
+			"&7IVs: &e{{ivhp}}&7/&e{{ivatk}}&7/&e{{ivdef}}&7/&e{{ivspatk}}&7/&e{{ivspdef}}&7/&e{{ivspeed}} &7(&a{{ivs_percent}}&7)"
 	));
 	public static final ConfigKey<String> POKEMON_ENTRY_SPEC_TEMPLATE = stringKey("entry.spec-template", "{{ability:s}}{{ivs_percent:s}}{{ivs_stat:s}}{{shiny:s}}{{texture:s}}&a{{pokemon}}");
 	public static final ConfigKey<String> POKEMON_ENTRY_SPEC_TEMPLATE_EGG = stringKey("entry.egg-spec-template", "&a{{pokemon}}");
-	public static final ConfigKey<String> POKEMON_ENTRY_BASE_TITLE = stringKey("entry.display.title", "&3{{pokemon}} {{shiny:s}}&7| &bLvl {{level}}");
-	public static final ConfigKey<String> POKEMON_ENTRY_BASE_TITLE_EGG = stringKey("entry.display.title", "&3{{pokemon}} {{shiny:s}}");
-	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_LORE = listKey("entry.display.lore", Lists.newArrayList(
+	public static final ConfigKey<String> POKEMON_ENTRY_BASE_TITLE = stringKey("entry.display.title.base", "&3{{pokemon}} {{shiny:s}}&7| &bLvl {{level}}");
+	public static final ConfigKey<String> POKEMON_ENTRY_BASE_TITLE_EGG = stringKey("entry.display.title.egg", "&3{{pokemon}} Egg{{shiny:p}}");
+	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_LORE = listKey("entry.display.lore.base", Lists.newArrayList(
 			"&7Seller: &e{{seller}}",
 			"",
 			"&7Ability: &e{{ability}}",
 			"&7Gender: &e{{gender}}",
 			"&7Nature: &e{{nature}}",
 			"&7Size: &e{{growth}}",
-			"&7EVs: &e{{evhp}}&7/&e{{evhp}}&7/&e{{evhp}}&7/&e{{evhp}}&7/&e{{evhp}}&7/&e{{evspeed}",
-			""
+			"&7EVs: &e{{evhp}}&7/&e{{evatk}}&7/&e{{evdef}}&7/&e{{evspatk}}&7/&e{{evspdef}}&7/&e{{evspeed}} &7(&a{{evs_percent}}&7)",
+			"&7IVs: &e{{ivhp}}&7/&e{{ivatk}}&7/&e{{ivdef}}&7/&e{{ivspatk}}&7/&e{{ivspdef}}&7/&e{{ivspeed}} &7(&a{{ivs_percent}}&7)"
 	));
 	public static final ConfigKey<List<String>> POKEMON_ENTRY_BASE_MEW_CLONES = listKey("entry.display.lore.mew-clones", Lists.newArrayList(
 			"&7Clones: &e{{clones}}"

@@ -6,6 +6,7 @@ import com.nickimpact.impactor.api.utilities.Time;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.spigot.SpigotEntry;
 import me.nickimpact.gts.spigot.SpigotListing;
@@ -37,6 +38,13 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 		super(element.serialize());
 		GTS.getInstance().getPluginLogger().debug(GTS.getInstance().getGson().toJson(element.serialize().toString()));
 		this.itemStack = element;
+	}
+
+	@Override
+	public Entry setEntry(ItemStack backing) {
+		this.itemStack = backing;
+		this.element = backing.serialize();
+		return this;
 	}
 
 	@Override

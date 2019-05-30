@@ -22,9 +22,9 @@ shadowJar {
 }
 
 dependencies {
-    shadow project(':api')
-    shadow project(':common')
-    shadow project(':sponge')
+    compile project(':api')
+    compile project(':common')
+    compile project(':sponge')
     shadow 'org.spongepowered:spongeapi:7.1.0'
     shadow 'io.github.nucleuspowered:nucleus-api:1.10.0-S7.1'
     compile "co.aikar:acf-sponge:0.5.0-SNAPSHOT"
