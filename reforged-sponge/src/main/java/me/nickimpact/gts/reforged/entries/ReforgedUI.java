@@ -192,7 +192,9 @@ public class ReforgedUI implements EntryUI<Player> {
 			if (detail.getCondition().test(pokemon)) {
 				KeyDetailHolder holder = detail.getField().apply(pokemon);
 				template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(holder.getKey()));
-				tokens.putAll(holder.getTokens());
+				if(holder.getTokens() != null) {
+					tokens.putAll(holder.getTokens());
+				}
 			}
 		}
 

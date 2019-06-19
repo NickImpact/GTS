@@ -27,6 +27,7 @@ package me.nickimpact.gts.storage.implementation.file;
 
 import com.google.common.base.Throwables;
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
 import me.nickimpact.gts.storage.implementation.StorageImplementation;
 import me.nickimpact.gts.storage.implementation.file.loaders.ConfigurateLoader;
@@ -130,6 +131,16 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public List<UUID> getAllIgnorers() throws Exception {
+        return null;
+    }
+
+    @Override
+    public boolean addToSoldListings(UUID owner, SoldListing listing) {
+        return false;
+    }
+
+    @Override
+    public List<SoldListing> getAllSoldListingsForPlayer(UUID uuid) {
         return null;
     }
 

@@ -15,7 +15,7 @@ repositories {
 }
 
 shadowJar {
-    archiveName = "GTS-Spigot-1.12.2-4.2.0-DEV.jar"
+    archiveName = "GTS-Spigot-1.12.2-5.0.0.jar"
     exclude 'GemsEconomy.jar'
     exclude 'Impactor*.jar'
 }

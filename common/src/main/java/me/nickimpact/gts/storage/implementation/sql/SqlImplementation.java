@@ -27,11 +27,11 @@ package me.nickimpact.gts.storage.implementation.sql;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonParseException;
-import com.google.gson.JsonSyntaxException;
 import com.nickimpact.impactor.api.json.JsonTyping;
 import com.nickimpact.impactor.api.platform.Platform;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
 import me.nickimpact.gts.storage.implementation.StorageImplementation;
@@ -60,6 +60,10 @@ public class SqlImplementation implements StorageImplementation {
 	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES (?)";
 	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID=?";
 	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";
+
+	private static final String ADD_SOLD_LISTING = "INSERT INTO {prefix}sold VALUES (?, ?, ?, ?)";
+	private static final String GET_SOLD_LISTINGS = "SELECT name, price FROM {prefix}sold WHERE owner = ?";
+	private static final String REMOVE_SOLD_LISTING = "DELETE FROM {prefix}sold WHERE id = ? AND owner = ?";
 
 	@Deprecated
 	private static final String FETCH_OLD = "SELECT * FROM {prefix}listings_v2";
@@ -97,43 +101,41 @@ public class SqlImplementation implements StorageImplementation {
 	public void init() throws Exception {
 		this.connectionFactory.init();
 
-		if (!tableExists(this.processor.apply("{prefix}listings_v3"))) {
-			String schemaFileName = "me/nickimpact/gts/schema/" + this.connectionFactory.getImplementationName().toLowerCase() + ".sql";
-			try (InputStream is = plugin.getResourceStream(schemaFileName)) {
-				if (is == null) {
-					throw new Exception("Couldn't locate schema file for " + this.connectionFactory.getImplementationName());
-				}
+		String schemaFileName = "me/nickimpact/gts/schema/" + this.connectionFactory.getImplementationName().toLowerCase() + ".sql";
+		try (InputStream is = plugin.getResourceStream(schemaFileName)) {
+			if (is == null) {
+				throw new Exception("Couldn't locate schema file for " + this.connectionFactory.getImplementationName());
+			}
 
-				try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-					try (Connection connection = this.connectionFactory.getConnection()) {
-						try (Statement s = connection.createStatement()) {
-							StringBuilder sb = new StringBuilder();
-							String line;
-							while ((line = reader.readLine()) != null) {
-								if (line.startsWith("--") || line.startsWith("#")) continue;
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+				try (Connection connection = this.connectionFactory.getConnection()) {
+					try (Statement s = connection.createStatement()) {
+						StringBuilder sb = new StringBuilder();
+						String line;
+						while ((line = reader.readLine()) != null) {
+							if (line.startsWith("--") || line.startsWith("#")) continue;
 
-								sb.append(line);
+							sb.append(line);
 
-								// check for end of declaration
-								if (line.endsWith(";")) {
-									sb.deleteCharAt(sb.length() - 1);
+							// check for end of declaration
+							if (line.endsWith(";")) {
+								sb.deleteCharAt(sb.length() - 1);
 
-									String result = this.processor.apply(sb.toString().trim());
+								String result = this.processor.apply(sb.toString().trim());
 
 
-									if (!result.isEmpty()) {
-										int start = result.indexOf('`');
-										if(!tableExists(result.substring(start + 1, result.indexOf('`', start + 1)))) {
-											s.addBatch(result);
-										}
+								if (!result.isEmpty()) {
+									int start = result.indexOf('`');
+									if(!tableExists(result.substring(start + 1, result.indexOf('`', start + 1)))) {
+										s.addBatch(result);
 									}
-
-									// reset
-									sb = new StringBuilder();
 								}
+
+								// reset
+								sb = new StringBuilder();
 							}
-							s.executeBatch();
 						}
+						s.executeBatch();
 					}
 				}
 			}
@@ -311,6 +313,45 @@ public class SqlImplementation implements StorageImplementation {
 		}
 
 		return ignorers;
+	}
+
+	@Override
+	public boolean addToSoldListings(UUID owner, SoldListing listing) throws Exception {
+		Connection connection = this.connectionFactory.getConnection();
+		PreparedStatement ps = connection.prepareStatement(this.processor.apply(ADD_SOLD_LISTING));
+		ps.setString(1, listing.getId().toString());
+		ps.setString(2, owner.toString());
+		ps.setString(3, listing.getNameOfEntry());
+		ps.setDouble(4, listing.getMoneyReceived());
+		ps.executeUpdate();
+
+		return true;
+	}
+
+	@Override
+	public List<SoldListing> getAllSoldListingsForPlayer(UUID uuid) throws Exception {
+		List<SoldListing> sold = Lists.newArrayList();
+
+		Connection connection = this.connectionFactory.getConnection();
+		PreparedStatement ps = connection.prepareStatement(this.processor.apply(GET_SOLD_LISTINGS));
+		ps.setString(1, uuid.toString());
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()) {
+			sold.add(SoldListing.builder().name(rs.getString("name")).money(rs.getDouble("price")).build());
+		}
+
+		return sold;
+	}
+
+	@Override
+	public boolean deleteSoldListing(UUID id, UUID owner) throws Exception {
+		Connection connection = this.connectionFactory.getConnection();
+		PreparedStatement ps = connection.prepareStatement(this.processor.apply(REMOVE_SOLD_LISTING));
+		ps.setString(1, id.toString());
+		ps.setString(2, owner.toString());
+		ps.executeUpdate();
+
+		return true;
 	}
 
 	@Override

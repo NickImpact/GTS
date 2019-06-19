@@ -158,7 +158,7 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 		TextParsingUtils parser = GTS.getInstance().getTextParsingUtils();
 
 		// User will always be a player here due to the offline support check
-		Player player = (Player)user;
+		Player player = user.getPlayer().get();
 		if(player.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).size() == 36) {
 			if(!messageSent) {
 				player.sendMessage(parser.fetchAndParseMsg(player, config, MsgConfigKeys.ITEMS_INVENTORY_FULL, null, null));

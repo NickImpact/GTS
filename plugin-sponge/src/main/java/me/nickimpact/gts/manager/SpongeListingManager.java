@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.ListingManager;
+import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.listings.prices.Minable;
 import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.plugin.PluginInstance;
@@ -188,6 +189,11 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 			price.reward(listing.getOwnerUUID());
 			Optional<Player> owner = Sponge.getServiceManager().provideUnchecked(UserStorageService.class).get(listing.getOwnerUUID()).map(User::getPlayer).get();
 			owner.ifPresent(p -> p.sendMessages(parser.fetchAndParseMsgs(player.get(), msgConfig, MsgConfigKeys.PURCHASE_RECEIVE, null, variables)));
+
+			if(!owner.isPresent()) {
+				SoldListing sl = new SoldListing(listing.getEntry().getName(), listing.getPrice().getPrice());
+				GTS.getInstance().getAPIService().getStorage().addToSoldListings(listing.getOwnerUUID(), sl);
+			}
 
 			this.deleteListing(listing);
 

@@ -392,14 +392,14 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 			}
 
 			PlayerPartyStorage party = Pixelmon.storageManager.getParty(((Player) src).getUniqueId());
-			if(party.getTeam().size() <= 1) {
-				src.sendMessage(parser.fetchAndParseMsg(src, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_LAST_MEMBER, null, null));
-				return CommandResults.FAILED;
-			}
-
 			Pokemon pokemon = party.get(slot - 1);
 			if(pokemon == null) {
 				src.sendMessage(parser.fetchAndParseMsg(src, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_EMPTY_SLOT, null, null));
+				return CommandResults.FAILED;
+			}
+
+			if(!pokemon.isEgg() && party.getTeam().size() <= 1) {
+				src.sendMessage(parser.fetchAndParseMsg(src, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_LAST_MEMBER, null, null));
 				return CommandResults.FAILED;
 			}
 

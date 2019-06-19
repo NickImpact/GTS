@@ -1,6 +1,7 @@
 package me.nickimpact.gts.api.storage;
 
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.SoldListing;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,12 @@ public interface IGtsStorage {
 	CompletableFuture<Boolean> removeIgnorer(UUID uuid);
 
 	CompletableFuture<List<UUID>> getAllIgnorers();
+
+	CompletableFuture<Boolean> addToSoldListings(UUID owner, SoldListing listing);
+
+	CompletableFuture<List<SoldListing>> getAllSoldListingsForPlayer(UUID uuid);
+
+	CompletableFuture<Boolean> deleteSoldListing(UUID id, UUID owner);
 
 	CompletableFuture<Boolean> purge();
 }

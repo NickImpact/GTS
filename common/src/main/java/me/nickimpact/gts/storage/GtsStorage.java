@@ -26,6 +26,7 @@
 package me.nickimpact.gts.storage;
 
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
 import me.nickimpact.gts.api.storage.IGtsStorage;
 import me.nickimpact.gts.api.util.ThrowingRunnable;
@@ -130,7 +131,20 @@ public class GtsStorage implements IGtsStorage {
     }
 
     public CompletableFuture<List<UUID>> getAllIgnorers() {
-        return this.makeFuture(() -> this.implementation.getAllIgnorers());
+        return this.makeFuture(this.implementation::getAllIgnorers);
+    }
+
+    public CompletableFuture<Boolean> addToSoldListings(UUID owner, SoldListing listing) {
+        return this.makeFuture(() -> this.implementation.addToSoldListings(owner, listing));
+    }
+
+    public CompletableFuture<List<SoldListing>> getAllSoldListingsForPlayer(UUID uuid) {
+        return this.makeFuture(() -> this.implementation.getAllSoldListingsForPlayer(uuid));
+    }
+
+    @Override
+    public CompletableFuture<Boolean> deleteSoldListing(UUID id, UUID owner) {
+        return null;
     }
 
     public CompletableFuture<Boolean> purge() {

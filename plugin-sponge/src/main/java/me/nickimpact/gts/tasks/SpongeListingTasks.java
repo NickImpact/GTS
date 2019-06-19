@@ -51,6 +51,8 @@ public class SpongeListingTasks implements ListingTasks<SpongeListing> {
 					}
 
 					return state;
+				} else {
+					return false;
 				}
 			}
 

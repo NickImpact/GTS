@@ -26,6 +26,7 @@
 package me.nickimpact.gts.storage.implementation;
 
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
 
 import java.util.Collections;
@@ -80,6 +81,12 @@ public interface StorageImplementation {
     boolean removeIgnorer(UUID uuid) throws Exception;
 
     List<UUID> getAllIgnorers() throws Exception;
+
+    boolean addToSoldListings(UUID owner, SoldListing listing) throws Exception;
+
+    List<SoldListing> getAllSoldListingsForPlayer(UUID uuid) throws Exception;
+
+    boolean deleteSoldListing(UUID id, UUID owner) throws Exception;
 
     boolean purge() throws Exception;
 }

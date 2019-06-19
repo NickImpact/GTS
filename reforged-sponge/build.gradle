@@ -44,7 +44,7 @@ repositories {
 }
 
 shadowJar {
-    archiveName = "GTS-Sponge-Reforged-7.0.5-4.2.0-DEV.jar"
+    archiveName = "GTS-Sponge-Reforged-7.0.5-5.0.0.jar"
     exclude 'Impactor*.jar'
 }
 

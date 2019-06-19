@@ -22,7 +22,7 @@ minecraft {
 }
 
 shadowJar {
-    archiveName = "GTS-Spigot-Reforged-7.0.5-4.2.0-DEV.jar"
+    archiveName = "GTS-Spigot-Reforged-7.0.6-5.0.0.jar"
     exclude 'GemsEconomy.jar'
     exclude 'Impactor*.jar'
 }
