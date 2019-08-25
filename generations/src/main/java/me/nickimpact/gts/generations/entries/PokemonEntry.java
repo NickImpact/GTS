@@ -2,50 +2,54 @@ package me.nickimpact.gts.generations.entries;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
+import com.nickimpact.impactor.api.configuration.Config;
+import com.nickimpact.impactor.api.json.JsonTyping;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
+import com.pixelmonmod.pixelmon.battles.attacks.Attack;
+import com.pixelmonmod.pixelmon.config.PixelmonConfig;
+import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVsStore;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
+import com.pixelmonmod.pixelmon.enums.forms.EnumForms;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
-import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.GTSInfo;
-import me.nickimpact.gts.api.json.Typing;
+import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.listings.entries.Minable;
-import me.nickimpact.gts.api.time.Time;
-import me.nickimpact.gts.configuration.ConfigKeys;
-import me.nickimpact.gts.configuration.MsgConfigKeys;
-import me.nickimpact.gts.entries.prices.MoneyPrice;
+import me.nickimpact.gts.api.listings.prices.Minable;
+import me.nickimpact.gts.api.plugin.PluginInstance;
+import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.generations.GenerationsBridge;
 import me.nickimpact.gts.generations.config.PokemonConfigKeys;
 import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
-import me.nickimpact.gts.internal.TextParsingUtils;
+import me.nickimpact.gts.generations.utils.GsonUtils;
+import me.nickimpact.gts.sponge.MoneyPrice;
+import me.nickimpact.gts.sponge.SpongeEntry;
+import me.nickimpact.gts.sponge.SpongePlugin;
+import me.nickimpact.gts.sponge.TextParsingUtils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.entity.living.player.User;
-import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -53,26 +57,30 @@ import java.util.stream.Collectors;
  *
  * @author NickImpact
  */
-@Typing("Pokemon")
-public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Minable {
+@JsonTyping("pokemon")
+public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements Minable<MoneyPrice> {
 
-	private static final PokemonSpec UNTRADABLE = new PokemonSpec("untradeable");
+	private transient EntityPixelmon pokemon;
 
 	public PokemonEntry() {
 		super();
 	}
 
-	public PokemonEntry(EntityPixelmon pokemon, MoneyPrice price) {
-		this(new Pokemon(pokemon), price);
-	}
-
-	public PokemonEntry(Pokemon pokemon, MoneyPrice price) {
-		super(pokemon, price);
+	@Override
+	public Entry setEntry(EntityPixelmon backing) {
+		this.pokemon = backing;
+		this.element = GsonUtils.serialize(backing.writeToNBT(new NBTTagCompound()));
+		return this;
 	}
 
 	@Override
-	protected EntityPixelmon handle() {
-		return this.element.getPokemon();
+	public EntityPixelmon getEntry() {
+		return pokemon != null ? pokemon : (pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(GsonUtils.deserialize(this.element), (World) Sponge.getServer().getWorlds().iterator().next()));
+	}
+
+	public PokemonEntry(EntityPixelmon pokemon) {
+		super(GsonUtils.serialize(pokemon.writeToNBT(new NBTTagCompound())));
+		this.pokemon = pokemon;
 	}
 
 	@Override
@@ -90,13 +98,86 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 	}
 
 	@Override
+	public List<String> getDetails() {
+		EntityPixelmon pokemon = this.getEntry();
+		List<String> output = Lists.newArrayList();
+
+		if(pokemon.getNickname() != null && !pokemon.getNickname().isEmpty()) {
+			output.add("- Nickname: " + pokemon.getNickname());
+		}
+
+		output.add("- Level: " + pokemon.getLvl().getLevel());
+
+		if(pokemon.getFormEnum() != EnumForms.NoForm) {
+			output.add("- Form: " + pokemon.getForm());
+		}
+
+		output.add("- Traits:");
+		if(pokemon.getIsShiny()) output.add("|  Shiny");
+		if(pokemon.isEgg) {
+			output.add("|  Egg");
+			output.add("|  - Steps Walked: " + this.formattedStepsRemainingOnEgg(pokemon));
+		}
+//		if(pokemon.getSpecialTexture() != null && pokemon.getSpecialTexture() != EnumSpecialTexture.None) output.add("|  Special Texture: " + pokemon.getSpecialTexture().name());
+//		if(pokemon.getCustomTexture() != null && !pokemon.getCustomTexture().isEmpty()) {
+//			StringBuilder sb = new StringBuilder();
+//			String[] split = pokemon.getCustomTexture().split("\\s+");
+//
+//			boolean first = true;
+//			for(String word : split) {
+//				if(!first) {
+//					sb.append(" ");
+//				}
+//				sb.append(word.substring(0, 1).toUpperCase()).append(word.substring(1).toLowerCase());
+//				first = false;
+//			}
+//			output.add("|  Custom Texture: " + sb.toString());
+//		}
+
+		output.add("");
+
+		output.add("- Ability: " + pokemon.ability.getLocalizedName());
+		output.add("- Nature: " + pokemon.getNature().getLocalizedName());
+		output.add("- Gender: " + pokemon.getGender().name());
+		output.add("- Growth: " + pokemon.getGrowth().getLocalizedName());
+
+		EVsStore evs = pokemon.stats.EVs;
+		output.add("- EVs: " + String.format(
+				"%d/%d/%d/%d/%d/%d (%.2f%%)",
+				evs.HP,
+				evs.Attack,
+				evs.Defence,
+				evs.SpecialAttack,
+				evs.SpecialDefence,
+				evs.Speed,
+				this.calcEVPercent(evs)
+		));
+
+		IVStore ivs = pokemon.stats.IVs;
+		output.add("- IVs: " + String.format(
+				"%d/%d/%d/%d/%d/%d (%.2f%%)",
+				ivs.HP,
+				ivs.Attack,
+				ivs.Defence,
+				ivs.SpAtt,
+				ivs.SpDef,
+				ivs.Speed,
+				this.calcIVPercent(ivs)
+		));
+
+		output.add("Moveset: " + this.moveset(pokemon));
+
+		return output;
+	}
+
+	@Override
 	public ItemStack baseItemStack(Player player, Listing listing) {
 		ItemStack icon = getPicture(this.getEntry());
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
 		variables.put("pokemon", this.getEntry());
 
-		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
+		icon.offer(Keys.DISPLAY_NAME, ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils().fetchAndParseMsg(player, GenerationsBridge.getInstance().getMsgConfig(), this.getEntry().isEgg ? PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE_EGG : PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
 
 		List<String> template = Lists.newArrayList();
 		template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LORE));
@@ -105,36 +186,20 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 		return icon;
 	}
 
-	@Override
-	public ItemStack confirmItemStack(Player player, Listing listing) {
-		ItemStack icon = ItemStack.builder().itemType(ItemTypes.PAPER).build();
-		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("listing", listing);
-		variables.put("pokemon", this.getEntry());
-
-		icon.offer(Keys.DISPLAY_NAME, TextParsingUtils.fetchAndParseMsg(player, listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_TITLE_AUCTION, null, variables));
-
-		List<String> template = Lists.newArrayList();
-		template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(listing.getAucData() == null ? PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LORE : PokemonMsgConfigKeys.POKEMON_ENTRY_CONFIRM_LORE_AUCTION));
-		this.addLore(icon, template, player, listing, variables);
-
-		return icon;
-	}
-
 	private void addLore(ItemStack icon, List<String> template, Player player, Listing listing, Map<String, Object> variables) {
-		for(EnumHidableDetail detail : EnumHidableDetail.values()) {
-			if(detail.getCondition().test(this.getEntry())) {
-				template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(detail.getField()));
+		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+		for (EnumHidableDetail detail : EnumHidableDetail.values()) {
+			if (detail.getCondition().test(this.getEntry())) {
+				KeyDetailHolder holder = detail.getField().apply(this.getEntry());
+				template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(holder.getKey()));
+				if(holder.getTokens() != null) {
+					tokens.putAll(holder.getTokens());
+				}
 			}
 		}
 
-		if(listing.getAucData() != null) {
-			template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(MsgConfigKeys.AUCTION_INFO));
-		} else {
-			template.addAll(GenerationsBridge.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
-		}
-
-		List<Text> translated = template.stream().map(str -> TextParsingUtils.fetchAndParseMsg(player, str, null, variables)).collect(Collectors.toList());
+		template.addAll(PluginInstance.getInstance().getMsgConfig().get(MsgConfigKeys.ENTRY_INFO));
+		List<Text> translated = template.stream().map(str -> ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils().fetchAndParseMsg(player, str, tokens, variables)).collect(Collectors.toList());
 		icon.offer(Keys.ITEM_LORE, translated);
 	}
 
@@ -161,8 +226,11 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 
 	@Override
 	public boolean doTakeAway(Player player) {
+		Config msgs = PluginInstance.getInstance().getMsgConfig();
+		TextParsingUtils parser = ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils();
+
 		if(BattleRegistry.getBattle((EntityPlayer) player) != null) {
-			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "You are in battle, you can't sell any pokemon currently..."));
+			player.sendMessage(parser.fetchAndParseMsg(player, GenerationsBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_IN_BATTLE, null, null));
 			return false;
 		}
 
@@ -171,8 +239,13 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 //			return false;
 //		}
 
-		if(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED).stream().anyMatch(name -> name.equalsIgnoreCase(this.getEntry().getName()))){
-			player.sendMessage(Text.of(GTSInfo.ERROR, TextColors.GRAY, "Sorry, but ", TextColors.YELLOW, this.getName(), TextColors.GRAY, " has been blacklisted from the GTS..."));
+		List<EnumPokemon> blacklisted = GenerationsBridge.getInstance().getConfiguration()
+				.get(PokemonConfigKeys.BLACKLISTED_POKEMON)
+				.stream()
+				.map(EnumPokemon::getFromNameAnyCase)
+				.collect(Collectors.toList());
+		if(blacklisted.contains(this.getEntry().getSpecies())) {
+			player.sendMessage(parser.fetchAndParseMsg(player, msgs, MsgConfigKeys.ERROR_BLACKLISTED, null, null));
 			return false;
 		}
 
@@ -216,86 +289,63 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 	public MoneyPrice calcMinPrice() {
 		MoneyPrice price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_BASE));
 		EntityPixelmon pokemon = this.getEntry();
+
 		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getName());
 		if (isLegend && pokemon.getIsShiny()) {
-			price.add(new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY)));
+			price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY) + price.getPrice());
 		} else if (isLegend) {
-			price.add(new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND)));
+			price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND) + price.getPrice());
 		} else if (pokemon.getIsShiny()) {
-			price.add(new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY)));
+			price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY) + price.getPrice());
+
 		}
 
 		for (int iv : pokemon.stats.IVs.getArray()) {
 			if (iv >= GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_IVS_MINVAL)) {
-				price.add(new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_IVS_PRICE)));
+				price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_IVS_PRICE) + price.getPrice());
 			}
 		}
 
 		if (pokemon.getAbilitySlot() == 2) {
-			price.add(new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_HA)));
+			price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_HA) + price.getPrice());
 		}
 
 		return price;
 	}
 
-	public static CommandResult handleCommand(CommandSource src, String[] args) {
+	public static CommandResults execute(CommandSource src, String[] args) {
+		Config config = PluginInstance.getInstance().getMsgConfig();
+		TextParsingUtils parser = ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils();
+
 		if(args.length < 2) {
-			return CommandResult.empty();
+			return CommandResults.FAILED;
 		}
 
-		Player player = (Player) src;
+		if(src instanceof Player) {
 
-		if(!player.hasPermission("gts.command.sell.pokemon")) {
-			player.sendMessage(Text.of(TextColors.RED, "You don't have permission to use this command!"));
-			return CommandResult.success();
-		}
+			int slot;
+			double price;
 
-		int pos = Integer.parseInt(args[0]) - 1;
-		BigDecimal price = new BigDecimal(Double.parseDouble(args[1]));
-		Time time = null;
-		if(args.length == 3) {
-			time = new Time(args[2]);
-			if(time.getTime() > GTS.getInstance().getConfig().get(ConfigKeys.LISTING_MAX_TIME)) {
-				time = new Time(GTS.getInstance().getConfig().get(ConfigKeys.LISTING_MAX_TIME).longValue());
+			try {
+				slot = Integer.parseInt(args[0]);
+				price = Double.parseDouble(args[1]);
+			} catch (Exception e) {
+				src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.INVALID_ARGS, null, null));
+				return CommandResults.FAILED;
+			}
+
+			if (slot < 1 || slot > 6) {
+				src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.INVALID_ARGS, null, null));
+				return CommandResults.FAILED;
+			}
+
+			if (price <= 0) {
+				src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.PRICE_NOT_POSITIVE, null, null));
+				return CommandResults.FAILED;
 			}
 		}
 
-		if(price.signum() <= 0) {
-			player.sendMessage(Text.of(TextColors.RED, "Invalid price! Price values must be positive!"));
-			return CommandResult.empty();
-		}
-
-		Optional<PlayerStorage> storage = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID(player.getUniqueId());
-		if(storage.isPresent()) {
-			EntityPixelmon pokemon = storage.get().getPokemon(storage.get().getIDFromPosition(pos), (World) player.getWorld());
-			if (pokemon == null) {
-				player.sendMessage(Text.of(TextColors.RED, "Unable to find a pokemon in the specified slot..."));
-				return CommandResult.success();
-			}
-
-			if (storage.get().countTeam() == 1) {
-				if (!pokemon.isEgg) {
-					player.sendMessage(Text.of(TextColors.RED, "You can't sell your last non-egg party member..."));
-					return CommandResult.success();
-				}
-			}
-
-			MoneyPrice mp = new MoneyPrice(price);
-			if (!mp.isLowerOrEqual()) {
-				player.sendMessage(Text.of(TextColors.RED, "Your request is above the max amount of ", new MoneyPrice(mp.getMax()).getText()));
-				return CommandResult.success();
-			}
-
-			Listing listing = Listing.builder()
-					.player(player)
-					.entry(new PokemonEntry(pokemon, mp))
-					.doesExpire()
-					.expiration(time != null ? time.getTime() : GTS.getInstance().getConfig().get(ConfigKeys.LISTING_TIME))
-					.build();
-			listing.publish(player);
-		}
-
-		return CommandResult.success();
+		return CommandResults.SUCCESSFUL;
 	}
 
 	public enum LakeTrio {
@@ -318,5 +368,30 @@ public class PokemonEntry extends Entry<Pokemon, EntityPixelmon> implements Mina
 
 			return false;
 		}
+	}
+
+	private double calcEVPercent(EVsStore evs) {
+		return (evs.HP + evs.Attack + evs.Defence + evs.SpecialAttack + evs.SpecialDefence + evs.Speed) / 510.0 * 100;
+	}
+
+	private double calcIVPercent(IVStore ivs) {
+		return (ivs.HP + ivs.Attack + ivs.Defence + ivs.SpAtt + ivs.SpDef + ivs.Speed) / 186.0 * 100;
+	}
+
+	private String formattedStepsRemainingOnEgg(EntityPixelmon pokemon) {
+		int total = (pokemon.baseStats.eggCycles + 1) * PixelmonConfig.stepsPerEggCycle;
+		int walked = pokemon.writeToNBT(new NBTTagCompound()).getInteger("steps") + ((pokemon.baseStats.eggCycles - pokemon.eggCycles) * PixelmonConfig.stepsPerEggCycle);
+		return String.format("%d/%d", walked, total);
+	}
+
+	private String moveset(EntityPixelmon pokemon) {
+		Moveset moves = pokemon.getMoveset();
+		StringBuilder out = new StringBuilder();
+		for(Attack attack : moves.attacks) {
+			if(attack == null) continue;
+			out.append(attack.baseAttack.getLocalizedName()).append(" - ");
+		}
+
+		return out.substring(0, out.length() - 3);
 	}
 }

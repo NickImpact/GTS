@@ -2,44 +2,41 @@ package me.nickimpact.gts.generations;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
-import com.nickimpact.impactor.api.commands.SpongeCommand;
-import com.nickimpact.impactor.api.configuration.AbstractConfig;
-import com.nickimpact.impactor.api.configuration.AbstractConfigAdapter;
-import com.nickimpact.impactor.api.configuration.ConfigBase;
-import com.nickimpact.impactor.api.logger.Logger;
-import com.nickimpact.impactor.api.plugins.PluginInfo;
-import com.nickimpact.impactor.api.plugins.SpongePlugin;
-import com.nickimpact.impactor.api.services.plan.PlanData;
-import com.nickimpact.impactor.logging.ConsoleLogger;
-import com.nickimpact.impactor.logging.SpongeLogger;
+import com.nickimpact.impactor.api.commands.Command;
+import com.nickimpact.impactor.api.configuration.Config;
+import com.nickimpact.impactor.api.logging.Logger;
+import com.nickimpact.impactor.api.platform.Platform;
+import com.nickimpact.impactor.api.plugin.ImpactorPlugin;
+import com.nickimpact.impactor.api.plugin.PluginInfo;
+import com.nickimpact.impactor.sponge.AbstractSpongePlugin;
+import com.nickimpact.impactor.sponge.configuration.SpongeConfig;
+import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
+import com.nickimpact.impactor.sponge.logging.SpongeLogger;
 import lombok.Getter;
-import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.GtsService;
-import me.nickimpact.gts.api.text.Translator;
-import me.nickimpact.gts.api.utils.ItemUtils;
+import me.nickimpact.gts.api.plugin.Extension;
+import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.generations.config.PokemonConfigKeys;
 import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.generations.entries.PokemonEntry;
 import me.nickimpact.gts.generations.text.NucleusPokemonTokens;
 import me.nickimpact.gts.generations.ui.PixelmonUI;
+import me.nickimpact.gts.sponge.service.SpongeGtsService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.game.state.GameInitializationEvent;
+import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartingServerEvent;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.function.Consumer;
 
 @Getter
-@Plugin(id = "gts_generations", name = "GTS Generations Bridge", version = "1.1.2", dependencies = @Dependency(id = "gts"))
-public class GenerationsBridge extends SpongePlugin {
+@Plugin(id = "gts_generations", name = "GTS Generations Bridge", version = "5.0.3", dependencies = @Dependency(id = "gts"))
+public class GenerationsBridge extends AbstractSpongePlugin implements Extension {
 
 	@Getter private static GenerationsBridge instance;
 
@@ -47,40 +44,44 @@ public class GenerationsBridge extends SpongePlugin {
     private org.slf4j.Logger fallback;
 	private Logger logger;
 
-	private GtsService service;
+	private SpongeGtsService service;
 
-	private File configDir = new File("config/gts/");
-	private ConfigBase config;
-	private ConfigBase msgConfig;
+	private Path configDir;
+	private Config config;
+	private Config msgConfig;
 
-    @Listener
+	@Listener(order = Order.LATE)
     public void onPreInit(GamePreInitializationEvent e) {
     	instance = this;
-        this.logger = new ConsoleLogger(GTS.getInstance(), new SpongeLogger(GTS.getInstance(), fallback));
+        this.logger = new SpongeLogger(this, fallback);
 
-	    this.config = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonConfigKeys(), "generations.conf");
-	    this.config.init();
-	    this.msgConfig = new AbstractConfig(this, new AbstractConfigAdapter(this), new PokemonMsgConfigKeys(), "lang/generations-en_us.conf");
-	    this.msgConfig.init();
-    }
+	    this.configDir = PluginInstance.getInstance().getConfigDir();
+	    this.config = new SpongeConfig(new SpongeConfigAdapter(this, configDir.resolve("generations.conf").toFile()), new PokemonConfigKeys());
+	    this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, configDir.resolve("lang/generations-en_us.conf").toFile()), new PokemonMsgConfigKeys());
 
-    @Listener
-    public void onInit(GameInitializationEvent e) {
-	    this.service = Sponge.getServiceManager().provideUnchecked(GtsService.class);
-	    this.service.registerEntry(
-			    Lists.newArrayList("Pokemon"),
+	    service = (SpongeGtsService) Sponge.getServiceManager().provideUnchecked(GtsService.class);
+
+	    List<String> identifiers = Lists.newArrayList(this.msgConfig.get(PokemonMsgConfigKeys.REFERENCE_TITLES));
+	    identifiers.add("generations");
+	    service.registerEntry(
+			    identifiers,
 			    PokemonEntry.class,
 			    new PixelmonUI(),
 			    "pixelmon:gs_ball",
-			    PokemonEntry::handleCommand
+			    PokemonEntry::execute
 	    );
+
+	    service.getAllDeprecatedTypes().add(me.nickimpact.gts.generations.deprecated.PokemonEntry.class);
     }
 
 	@Listener
 	public void onServerStarted(GameStartingServerEvent e) {
-		for(Map.Entry<String, Translator> token : NucleusPokemonTokens.getTokens().entrySet()) {
-			service.getTokensService().register(token.getKey(), token.getValue());
-		}
+		service.registerTokens(new NucleusPokemonTokens());
+	}
+
+	@Override
+	public Platform getPlatform() {
+		return Platform.Sponge;
 	}
 
 	@Override
@@ -98,7 +99,7 @@ public class GenerationsBridge extends SpongePlugin {
 
 			@Override
 			public String getVersion() {
-				return "1.0.0";
+				return "5.0.3";
 			}
 
 			@Override
@@ -109,17 +110,17 @@ public class GenerationsBridge extends SpongePlugin {
 	}
 
 	@Override
-	public Optional<PlanData> getPlanData() {
-		return Optional.empty();
+	public Logger getPluginLogger() {
+		return this.logger;
 	}
 
 	@Override
-	public List<ConfigBase> getConfigs() {
+	public List<Config> getConfigs() {
 		return Lists.newArrayList();
 	}
 
 	@Override
-	public List<SpongeCommand> getCommands() {
+	public List<Command> getCommands() {
 		return Lists.newArrayList();
 	}
 
@@ -129,16 +130,24 @@ public class GenerationsBridge extends SpongePlugin {
 	}
 
 	@Override
-	public void onDisconnect() {}
-
-	@Override
-	public void onReload() {
-		this.config.reload();
-		this.msgConfig.reload();
+	public Consumer<ImpactorPlugin> onReload() {
+    	return x -> {};
+//		this.config.reload();
+//		this.msgConfig.reload();
 	}
 
 	@Override
 	public Path getConfigDir() {
-		return this.configDir.toPath();
+		return this.configDir;
+	}
+
+	@Override
+	public Config getConfiguration() {
+		return this.config;
+	}
+
+	@Override
+	public GtsService getAPIService() {
+		return this.service;
 	}
 }

@@ -13,28 +13,53 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-ext {
-    pixelmon = '2.5.1'
+minecraft {
+    version = "1.12.2-14.23.5.2768"
+    runDir = "run"
+    mappings = "snapshot_20180324"
+    useDepAts = true
+    makeObfSourceJar = false
 }
 
-jar {
-    archiveName = "GTS-Generations-${pixelmon}-${project.ext.sponge}-1.1.2.jar"
+shadowJar {
+    archiveName = "GTS-Generations-2.6.2-${project.ext.sponge}-${project.version}.jar"
+    exclude 'Impactor*.jar'
+    exclude 'Pixelmon*.jar'
 }
 
 repositories {
     mavenCentral()
-
+    maven {
+        name 'sponge-repo'
+        url 'https://repo.spongepowered.org/maven'
+    }
+    maven {
+        name 'drnaylor-minecraft'
+        url 'http://repo.drnaylor.co.uk/artifactory/list/minecraft'
+    }
+    maven {
+        name 'drnaylor'
+        url 'http://repo.drnaylor.co.uk/artifactory/list/quickstart'
+    }
+    ivy {
+        url "https://download.nodecdn.net/containers"
+        layout "pattern", {
+            artifact "/[organisation]/[module]/release/[revision]/[ext]"
+        }
+    }
 }
 
 dependencies {
-    compile project(':plugin')
+    shadow project(':api')
+    shadow project(':sponge')
+    shadow project(':common')
+    shadow 'org.spongepowered:spongeapi:7.1.0'
+    shadow 'io.github.nucleuspowered:nucleus-api:1.11.0-S7.1'
     compile fileTree(dir: '/libs', include: '*.jar')
 }
 
-minecraft {
-    version = "1.12.2-14.23.3.2678"
-    runDir = "run"
-    mappings = "snapshot_20171007"
-    useDepAts = true
-    makeObfSourceJar = false
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+    }
 }

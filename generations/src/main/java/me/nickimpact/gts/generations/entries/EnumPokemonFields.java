@@ -1,17 +1,15 @@
 package me.nickimpact.gts.generations.entries;
 
-import com.nickimpact.impactor.api.configuration.ConfigBase;
+import com.nickimpact.impactor.api.configuration.Config;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.battles.attacks.specialAttacks.basic.HiddenPower;
+import com.pixelmonmod.pixelmon.entities.pixelmon.Entity4Textures;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVsStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
-import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.configuration.ConfigKeys;
 import me.nickimpact.gts.generations.GenerationsBridge;
 import me.nickimpact.gts.generations.config.PokemonConfigKeys;
 import net.minecraft.nbt.NBTTagCompound;
@@ -27,16 +25,6 @@ public enum EnumPokemonFields {
 	NAME(pokemon -> {
 		if(pokemon.isEgg) {
 			return "Pokemon Egg";
-		}
-
-		if(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MEMES)) {
-			if (pokemon.getSpecies().equals(EnumPokemon.Psyduck)) {
-				return "AnDwHaT5 (Psyduck)";
-			}
-
-			if (pokemon.getSpecies().equals(EnumPokemon.Bidoof)) {
-				return "God himself (Bidoof)";
-			}
 		}
 
 		return pokemon.getName();
@@ -113,7 +101,7 @@ public enum EnumPokemonFields {
 
 		String texture = nbt.getString(NbtKeys.CUSTOM_TEXTURE);
 		if(!texture.isEmpty()) {
-			ConfigBase config = GenerationsBridge.getInstance().getConfig();
+			Config config = GenerationsBridge.getInstance().getConfig();
 			if(config.get(PokemonConfigKeys.TEXTUREFLAG_CAPITALIZE)) {
 				StringBuilder sb = new StringBuilder();
 				String[] split = texture.split("\\s+");
@@ -139,9 +127,7 @@ public enum EnumPokemonFields {
 
 		return pokemon.getIsShiny() ? "Shiny" : "Normal";
 	}),
-	SPECIAL_TEXTURE(pokemon -> {
-		return EnumSpecialTexture.fromIndex(pokemon.getSpecialTextureIndex()).name();
-	}),
+	SPECIAL_TEXTURE(Entity4Textures::getSpecialTexture),
 	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.stats.IVs).name()),
 	MOVES_1(pokemon -> pokemon.getMoveset().attacks[0].baseAttack.getLocalizedName()),
 	MOVES_2(pokemon -> pokemon.getMoveset().attacks[1].baseAttack.getLocalizedName()),
