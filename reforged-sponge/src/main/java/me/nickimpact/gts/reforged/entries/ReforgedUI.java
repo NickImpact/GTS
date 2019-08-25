@@ -292,6 +292,10 @@ public class ReforgedUI implements EntryUI<Player> {
 	}
 
 	private double calcMin(Pokemon pokemon) {
+		if(!PluginInstance.getInstance().getConfiguration().get(ConfigKeys.MIN_PRICING_ENABLED)) {
+			return 1.0;
+		}
+
 		double price = ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_BASE);
 		boolean isLegend = EnumSpecies.legendaries.contains(pokemon.getSpecies().name());
 		if (isLegend && pokemon.isShiny()) {

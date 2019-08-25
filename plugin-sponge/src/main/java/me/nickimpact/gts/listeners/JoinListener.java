@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class JoinListener {
@@ -42,7 +43,10 @@ public class JoinListener {
 				tokens.put("gts_price", src -> Optional.of(GTS.getInstance().getEconomy().getDefaultCurrency().format(new BigDecimal(l.getMoneyReceived()))));
 				player.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(player, MsgConfigKeys.SOLD_LISTING_INFORM, tokens, null));
 
-				GTS.getInstance().getAPIService().getStorage().deleteSoldListing(l.getId(), player.getUniqueId());
+				GTS.getInstance().getAPIService().getStorage().deleteSoldListing(l.getId(), player.getUniqueId()).exceptionally(e1 -> {
+					e1.printStackTrace();
+					return false;
+				});
 			});
 		});
 	}

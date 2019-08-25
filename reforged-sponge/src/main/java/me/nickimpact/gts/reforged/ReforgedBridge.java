@@ -13,6 +13,15 @@ import com.nickimpact.impactor.sponge.AbstractSpongePlugin;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfig;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
 import com.nickimpact.impactor.sponge.logging.SpongeLogger;
+import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.battles.attacks.Attack;
+import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.WonderGuard;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import com.pixelmonmod.pixelmon.enums.forms.EnumBidoof;
+import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.dependencies.DependencyManager;
@@ -30,11 +39,14 @@ import me.nickimpact.gts.sponge.TextParsingUtils;
 import me.nickimpact.gts.sponge.service.SpongeGtsService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -42,11 +54,12 @@ import org.spongepowered.api.service.economy.EconomyService;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 
 @Getter
-@Plugin(id = "gts_reforged", name = "GTS Reforged Bridge", version = "1.1.2", dependencies = @Dependency(id = "gts"))
+@Plugin(id = "gts_reforged", name = "GTS Reforged Bridge", version = "5.0.3", dependencies = @Dependency(id = "gts"))
 public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 
 	@Getter private static ReforgedBridge instance;
@@ -123,7 +136,7 @@ public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 
 			@Override
 			public String getVersion() {
-				return "1.1.0";
+				return "5.0.3";
 			}
 
 			@Override

@@ -14,6 +14,7 @@ import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
+import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.api.storage.IGtsStorage;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -89,6 +90,11 @@ public class SpigotGtsService implements GtsService<CommandSender> {
 	@Override
 	public List<Class<? extends me.nickimpact.gts.api.deprecated.Entry>> getAllDeprecatedTypes() {
 		return null;
+	}
+
+	@Override
+	public void addSearcher(Searcher searcher) {
+
 	}
 
 	public static class SpigotEntryClassification extends EntryClassification<CommandSender> {

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
 import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.listings.prices.Minable;
@@ -100,22 +101,37 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 			}
 		}
 
+		if(listing.getPrice().getPrice() <= 0) {
+			source.ifPresent(src -> src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.PRICE_NOT_POSITIVE, null, null)));
+			return false;
+		}
+
+		if(listing.getPrice().getPrice() > config.get(ConfigKeys.MAX_MONEY_PRICE)) {
+			source.ifPresent(src -> src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.PRICE_MAX_INVALID, null, null)));
+			return false;
+		}
+
 		EconomyService economy = GTS.getInstance().getEconomy();
 		double tax = listing.getPrice().calcTax();
-		tokens.put("tax", src -> Optional.of(economy.getDefaultCurrency().format(new BigDecimal(tax), 2)));
-		if(tax > 0) {
-			if(economy.getOrCreateAccount(lister).get().getBalance(economy.getDefaultCurrency()).doubleValue() < tax) {
-				tokens.put("tax", src -> Optional.of(Text.of(String.format("%.2f", tax))));
+		if(config.get(ConfigKeys.TAX_ENABLED)) {
+			tokens.put("tax", src -> Optional.of(economy.getDefaultCurrency().format(new BigDecimal(tax), 2)));
+			if (tax > 0) {
+				if (economy.getOrCreateAccount(lister).get().getBalance(economy.getDefaultCurrency()).doubleValue() < tax) {
+					tokens.put("tax", src -> Optional.of(Text.of(String.format("%.2f", tax))));
+					source.ifPresent(src -> src.sendMessages(parser.parse(msgConfig.get(MsgConfigKeys.TAX_INVALID), source.get(), tokens, variables)));
+					return false;
+				}
 
-				source.ifPresent(src -> src.sendMessages(parser.parse(msgConfig.get(MsgConfigKeys.TAX_INVALID), source.get(), tokens, variables)));
-				return false;
+				economy.getOrCreateAccount(lister).get().withdraw(economy.getDefaultCurrency(), new BigDecimal(tax), Sponge.getCauseStackManager().getCurrentCause());
 			}
 		}
 
 		if(listing.getOwnerUUID() != null) {
 			if(!listing.getEntry().doTakeAway(source.get())) {
 				source.ifPresent(src -> src.sendMessages(parser.parse(msgConfig.get(MsgConfigKeys.UNABLE_TO_TAKE_LISTING), source.get(), null, null)));
-				economy.getOrCreateAccount(lister).get().deposit(economy.getDefaultCurrency(), new BigDecimal(tax), Sponge.getCauseStackManager().getCurrentCause());
+				if(config.get(ConfigKeys.TAX_ENABLED)) {
+					economy.getOrCreateAccount(lister).get().deposit(economy.getDefaultCurrency(), new BigDecimal(tax), Sponge.getCauseStackManager().getCurrentCause());
+				}
 				return false;
 			}
 		}
@@ -127,7 +143,10 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 		this.listings.add(listing);
 
 		source.ifPresent(src -> src.sendMessages(parser.parse(msgConfig.get(MsgConfigKeys.ADD_TEMPLATE), source.get(), tokens, variables)));
-		source.ifPresent(src -> src.sendMessages(parser.parse(msgConfig.get(MsgConfigKeys.TAX_APPLICATION), source.get(), tokens, variables)));
+
+		if(config.get(ConfigKeys.TAX_ENABLED)) {
+			source.ifPresent(src -> src.sendMessages(parser.parse(msgConfig.get(MsgConfigKeys.TAX_APPLICATION), source.get(), tokens, variables)));
+		}
 
 		for(Player player : Sponge.getServer().getOnlinePlayers()) {
 			if(!source.get().getUniqueId().equals(player.getUniqueId()) && !ignorers.contains(player.getUniqueId())) {

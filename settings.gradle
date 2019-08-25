@@ -5,10 +5,10 @@ include (
         'common',
         'spigot',
         'sponge',
-        'reforged-sponge'
+        'plugin-spigot',
+        'plugin-sponge',
+        'reforged-spigot',
+        'reforged-sponge',
+        'generations'
 )
-include 'plugin-sponge'
-include 'plugin-spigot'
-include 'reforged-spigot'
-include 'spigot'
 

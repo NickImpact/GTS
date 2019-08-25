@@ -34,6 +34,7 @@ import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
+import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.storage.implementation.StorageImplementation;
 import me.nickimpact.gts.storage.implementation.sql.connection.ConnectionFactory;
 import me.nickimpact.gts.storage.implementation.sql.connection.hikari.MySQLConnectionFactory;
@@ -61,9 +62,9 @@ public class SqlImplementation implements StorageImplementation {
 	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID=?";
 	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";
 
-	private static final String ADD_SOLD_LISTING = "INSERT INTO {prefix}sold VALUES (?, ?, ?, ?)";
-	private static final String GET_SOLD_LISTINGS = "SELECT name, price FROM {prefix}sold WHERE owner = ?";
-	private static final String REMOVE_SOLD_LISTING = "DELETE FROM {prefix}sold WHERE id = ? AND owner = ?";
+	private static final String ADD_SOLD_LISTING = "INSERT INTO `{prefix}sold` VALUES (?, ?, ?, ?)";
+	private static final String GET_SOLD_LISTINGS = "SELECT name, price FROM `{prefix}sold` WHERE owner = ?";
+	private static final String REMOVE_SOLD_LISTING = "DELETE FROM `{prefix}sold` WHERE id = ? AND owner = ?";
 
 	@Deprecated
 	private static final String FETCH_OLD = "SELECT * FROM {prefix}listings_v2";
@@ -261,7 +262,7 @@ public class SqlImplementation implements StorageImplementation {
 						.id(id)
 						.owner(owner)
 						.entry(this.plugin.getGson().fromJson(entry, Entry.class))
-						.price(price)
+						.price(Math.min(this.plugin.getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE), price))
 						.expiration(date)
 						.build();
 				entries.add(listing);
@@ -337,7 +338,7 @@ public class SqlImplementation implements StorageImplementation {
 		ps.setString(1, uuid.toString());
 		ResultSet rs = ps.executeQuery();
 		while(rs.next()) {
-			sold.add(SoldListing.builder().name(rs.getString("name")).money(rs.getDouble("price")).build());
+			sold.add(SoldListing.builder().id(UUID.fromString(rs.getString("id"))).name(rs.getString("name")).money(rs.getDouble("price")).build());
 		}
 
 		return sold;

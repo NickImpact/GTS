@@ -15,6 +15,7 @@ import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
+import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.api.storage.IGtsStorage;
 import me.nickimpact.gts.sponge.text.TokenHolder;
 import me.nickimpact.gts.sponge.text.TokenService;
@@ -94,6 +95,11 @@ public class SpongeGtsService implements ExtendedGtsService<CommandSource> {
 	@Override
 	public List<Class<? extends me.nickimpact.gts.api.deprecated.Entry>> getAllDeprecatedTypes() {
 		return this.types;
+	}
+
+	@Override
+	public void addSearcher(Searcher searcher) {
+
 	}
 
 	@Override

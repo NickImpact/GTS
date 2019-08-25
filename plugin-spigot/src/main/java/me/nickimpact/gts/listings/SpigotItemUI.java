@@ -26,7 +26,6 @@ public class SpigotItemUI implements EntryUI<Player> {
 	private int size = 1;
 
 	private double price;
-	private long time;
 
 	public SpigotItemUI() {}
 

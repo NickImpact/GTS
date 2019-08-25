@@ -1,11 +1,11 @@
 package me.nickimpact.gts;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.nickimpact.impactor.api.commands.Command;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.logging.Logger;
 import com.nickimpact.impactor.api.platform.Platform;
@@ -251,7 +251,7 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 	}
 
 	@Override
-	public List<Command> getCommands() {
+	public List<BaseCommand> getCommands() {
 		return null;
 	}
 

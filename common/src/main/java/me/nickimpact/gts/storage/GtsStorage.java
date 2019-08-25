@@ -144,7 +144,7 @@ public class GtsStorage implements IGtsStorage {
 
     @Override
     public CompletableFuture<Boolean> deleteSoldListing(UUID id, UUID owner) {
-        return null;
+        return this.makeFuture(() -> this.implementation.deleteSoldListing(id, owner));
     }
 
     public CompletableFuture<Boolean> purge() {

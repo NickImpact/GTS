@@ -145,6 +145,11 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     @Override
+    public boolean deleteSoldListing(UUID id, UUID owner) throws Exception {
+        return false;
+    }
+
+    @Override
     public boolean purge() throws Exception {
         return false;
     }

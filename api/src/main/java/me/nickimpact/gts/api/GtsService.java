@@ -11,6 +11,7 @@ import me.nickimpact.gts.api.holders.ServiceInstance;
 import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
+import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.api.storage.IGtsStorage;
 
 import java.util.List;
@@ -63,4 +64,12 @@ public interface GtsService<T> {
 
 	@Deprecated
 	List<Class<? extends me.nickimpact.gts.api.deprecated.Entry>> getAllDeprecatedTypes();
+
+	/**
+	 * Registers a searching option for all listings in the listing manager.
+	 *
+	 * @param searcher The searcher
+	 * @since 5.1.0
+	 */
+	void addSearcher(Searcher searcher);
 }

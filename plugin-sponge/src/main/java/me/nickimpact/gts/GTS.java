@@ -153,10 +153,6 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 				SpongeItemEntry::cmdExecutor
 		);
 
-		logger.info("Registering tokens with Nucleus...");
-		this.service.setTokenService(new TokenService(this));
-		this.service.registerTokens(new ItemTokens());
-
 		this.service.setBuilders(new BuilderRegistry());
 		this.service.getBuilderRegistry().register(Listing.ListingBuilder.class, SpongeListing.SpongeListingBuilder.class);
 
@@ -185,8 +181,6 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 				.registerTypeAdapter(DataContainer.class, new DataContainerAdapter())
 				.create();
 
-		this.textParsingUtils = new TextParsingUtils(this);
-
 		Sponge.getEventManager().registerListeners(this, new JoinListener());
 
 		logger.info("Setting up discord notifier...");
@@ -194,6 +188,10 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 
 		logger.info("Initializing the Listing Manager...");
 		this.service.setManager(new SpongeListingManager());
+
+		logger.info("Registering tokens with Nucleus...");
+		this.service.setTokenService(new TokenService(this));
+		this.service.registerTokens(new ItemTokens());
 
 		logger.info("Registering commands with ACF...");
 		this.cmdManager = new SpongeCommandManager(this.getPluginContainer());

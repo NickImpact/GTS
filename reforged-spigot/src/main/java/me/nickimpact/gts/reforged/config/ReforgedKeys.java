@@ -14,11 +14,24 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.nickimpact.impactor.api.configuration.ConfigKeyTypes.listKey;
+import static com.nickimpact.impactor.api.configuration.ConfigKeyTypes.*;
+import static com.nickimpact.impactor.api.configuration.ConfigKeyTypes.doubleKey;
 
 public class ReforgedKeys implements ConfigKeyHolder {
 
 	public static ConfigKey<List<String>> BLACKLISTED_POKEMON = listKey("blacklist", Lists.newArrayList());
+
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_BASE = doubleKey("min-pricing.base", 5000.0);
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_IVS_PRICE = doubleKey("min-pricing.ivs.price", 5000.0);
+	public static final ConfigKey<Integer> MIN_PRICING_POKEMON_IVS_MINVAL = intKey("min-pricing.ivs.min-iv", 28);
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_LEGEND = doubleKey("min-pricing.legends", 5000.0);
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_SHINY = doubleKey("min-pricing.shiny", 2500.0);
+	public static final ConfigKey<Double> MIN_PRICING_POKEMON_HA = doubleKey("min-pricing.hidden-ability", 5000.0);
+
+	public static final ConfigKey<Double> PRICING_LEFTCLICK_BASE = doubleKey("pricing.left-click.base", 1.0);
+	public static final ConfigKey<Double> PRICING_RIGHTCLICK_BASE = doubleKey("pricing.right-click.base", 10.0);
+	public static final ConfigKey<Double> PRICING_LEFTCLICK_SHIFT = doubleKey("pricing.left-click.shift", 100.0);
+	public static final ConfigKey<Double> PRICING_RIGHTCLICK_SHIFT = doubleKey("pricing.right-click.shift", 1000.0);
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

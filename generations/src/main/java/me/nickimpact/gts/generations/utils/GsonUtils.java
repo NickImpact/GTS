@@ -1,7 +1,7 @@
 package me.nickimpact.gts.generations.utils;
 
 import com.google.common.collect.Lists;
-import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.api.plugin.PluginInstance;
 import net.minecraft.nbt.*;
 
 import java.util.HashMap;
@@ -17,12 +17,12 @@ public class GsonUtils {
 
 	public static String serialize(NBTTagCompound nbt) {
 		Map<String, Object> map = nbtToMap(nbt);
-		return GTS.prettyGson.toJson(map);
+		return PluginInstance.getInstance().getGson().toJson(map);
 	}
 
 	@SuppressWarnings("unchecked")
 	public static NBTTagCompound deserialize(String json) {
-		Map<String, Object> map = GTS.prettyGson.fromJson(json, Map.class);
+		Map<String, Object> map = PluginInstance.getInstance().getGson().fromJson(json, Map.class);
 		return nbtFromMap(map);
 	}
 

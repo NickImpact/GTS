@@ -2,6 +2,8 @@ package me.nickimpact.gts.sponge;
 
 import lombok.Setter;
 import me.nickimpact.gts.api.listings.prices.Price;
+import me.nickimpact.gts.api.plugin.PluginInstance;
+import me.nickimpact.gts.config.ConfigKeys;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.Text;
@@ -48,6 +50,6 @@ public class MoneyPrice implements Price<Text> {
 
 	@Override
 	public double calcTax() {
-		return price.doubleValue() * 0.08;
+		return price.doubleValue() * PluginInstance.getInstance().getConfiguration().get(ConfigKeys.TAX_MONEY_TAX);
 	}
 }

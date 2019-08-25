@@ -27,8 +27,14 @@ public class SoldListing {
 
 	public static class SoldListingBuilder {
 
+		private UUID uuid;
 		private String name;
 		private double money;
+
+		public SoldListingBuilder id(UUID id) {
+			this.uuid = id;
+			return this;
+		}
 
 		public SoldListingBuilder name(String name) {
 			this.name = name;
@@ -41,7 +47,9 @@ public class SoldListing {
 		}
 
 		public SoldListing build() {
-			return new SoldListing(name, money);
+			SoldListing sl = new SoldListing(name, money);
+			sl.id = this.uuid;
+			return sl;
 		}
 	}
 

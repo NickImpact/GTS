@@ -4,7 +4,9 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
 import me.nickimpact.gts.api.holders.EntryClassification;
+import me.nickimpact.gts.spigot.MessageUtils;
 import me.nickimpact.gts.ui.SpigotMainUI;
+import me.nickimpact.gts.ui.SpigotSellUI;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -26,14 +28,11 @@ public class SpigotGtsCmd extends BaseCommand {
 		@Syntax("(type) (additional arguments) - Allows you to sell something. No type = User GUI")
 		public void execute(Player player, @Optional EntryClassification classification, @Optional String... additionals) {
 			if(classification == null) {
-				// TODO - Entry UI base
+				//new SpigotSellUI(player).open();
+				player.sendMessage(MessageUtils.parse("You must specify the type of thing you wish to sell!", true));
 			} else {
 				if(player.hasPermission("gts.command.sell." + classification.getPrimaryIdentifier().toLowerCase())) {
-					if(additionals.length == 0) {
-						classification.getUi().createFor(player).getDisplay().open(player);
-					} else {
-						classification.getCmdHandler().apply(player, additionals);
-					}
+					classification.getCmdHandler().apply(player, additionals);
 				}
 			}
 		}

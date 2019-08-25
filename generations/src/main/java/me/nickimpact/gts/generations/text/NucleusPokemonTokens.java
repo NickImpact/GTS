@@ -3,9 +3,9 @@ package me.nickimpact.gts.generations.text;
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.text.Translator;
 import me.nickimpact.gts.generations.entries.EnumPokemonFields;
-import me.nickimpact.gts.generations.entries.Pokemon;
+import me.nickimpact.gts.sponge.Translator;
+import me.nickimpact.gts.sponge.text.TokenHolder;
 import org.spongepowered.api.text.Text;
 
 import java.util.Map;
@@ -16,7 +16,7 @@ import java.util.Optional;
  *
  * @author NickImpact
  */
-public class NucleusPokemonTokens {
+public class NucleusPokemonTokens implements TokenHolder {
 
 	private static Map<String, Translator> tokens = Maps.newHashMap();
 
@@ -76,7 +76,7 @@ public class NucleusPokemonTokens {
 		tokens.put("pokeball_name", (p, v, m) -> Optional.of(getPokemonInfo(getPokemonFromVariableIfExists(m), EnumPokemonFields.POKE_BALL_NAME)));
 	}
 
-	public static Map<String, Translator> getTokens() {
+	public Map<String, Translator> getTokens() {
 		return tokens;
 	}
 
@@ -84,8 +84,8 @@ public class NucleusPokemonTokens {
 		Optional<Object> optPoke = m.values().stream().filter(val -> val instanceof Listing || val instanceof EntityPixelmon).findAny();
 		if (optPoke.isPresent()) {
 			if(optPoke.get() instanceof Listing) {
-				if (((Listing) optPoke.get()).getEntry().getEntry() instanceof Pokemon)
-					return ((Pokemon) ((Listing) optPoke.get()).getEntry().getEntry()).getPokemon();
+				if (((Listing) optPoke.get()).getEntry().getEntry() instanceof EntityPixelmon)
+					return ((EntityPixelmon) ((Listing) optPoke.get()).getEntry().getEntry());
 
 				return (EntityPixelmon) ((Listing) optPoke.get()).getEntry().getEntry();
 			} else {

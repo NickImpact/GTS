@@ -143,7 +143,7 @@ public class SpriteItemUtil {
 		StringBuilder out = new StringBuilder();
 		for(Attack attack : moves.attacks) {
 			if(attack == null) continue;
-			out.append(attack.baseAttack.getLocalizedName()).append(" - ");
+			out.append(attack.getActualMove().getLocalizedName()).append(" - ");
 		}
 
 		return out.substring(0, out.length() - 3);

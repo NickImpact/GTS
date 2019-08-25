@@ -17,12 +17,15 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
+import org.spongepowered.api.effect.potion.PotionEffect;
+import org.spongepowered.api.effect.potion.PotionEffectTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
+import org.spongepowered.api.item.potion.PotionTypes;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 
@@ -69,8 +72,18 @@ public class SpongeMainUI {
 				.view(this.design())
 				.title(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(this.viewer, GTS.getInstance().getMsgConfig(), MsgConfigKeys.UI_TITLES_MAIN, null, null))
 				.contentZone(InventoryDimension.of(9, 4))
-				.previousPage(SpongeItemTypeUtil.getOrDefaultItemTypeFromID("pixelmon:trade_holder_left"), 48)
-				.nextPage(SpongeItemTypeUtil.getOrDefaultItemTypeFromID("pixelmon:trade_holder_right"), 50)
+				.previousPage(
+						Sponge.getPluginManager().isLoaded("pixelmon") ?
+								SpongeItemTypeUtil.getOrDefaultItemTypeFromID("pixelmon:trade_holder_left") :
+								ItemTypes.ARROW,
+						48
+				)
+				.nextPage(
+						Sponge.getPluginManager().isLoaded("pixelmon") ?
+								SpongeItemTypeUtil.getOrDefaultItemTypeFromID("pixelmon:trade_holder_right") :
+								ItemTypes.SPECTRAL_ARROW,
+						50
+				)
 				.build();
 		this.page.applier(listing -> {
 			SpongeIcon icon = new SpongeIcon(listing.getDisplay(this.viewer));

@@ -181,7 +181,9 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 			if (detail.getCondition().test(this.getEntry())) {
 				KeyDetailHolder holder = detail.getField().apply(this.getEntry());
 				template.addAll(ReforgedBridge.getInstance().getMsgConfig().get(holder.getKey()));
-				tokens.putAll(holder.getTokens());
+				if(holder.getTokens() != null) {
+					tokens.putAll(holder.getTokens());
+				}
 			}
 		}
 
@@ -349,7 +351,7 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 		StringBuilder out = new StringBuilder();
 		for(Attack attack : moves.attacks) {
 			if(attack == null) continue;
-			out.append(attack.baseAttack.getLocalizedName()).append(" - ");
+			out.append(attack.getActualMove().getLocalizedName()).append(" - ");
 		}
 
 		return out.substring(0, out.length() - 3);
@@ -383,6 +385,11 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 
 			if(price <= 0) {
 				src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.PRICE_NOT_POSITIVE, null, null));
+				return CommandResults.FAILED;
+			}
+
+			if(price > PluginInstance.getInstance().getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE)) {
+				src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.PRICE_MAX_INVALID, null, null));
 				return CommandResults.FAILED;
 			}
 

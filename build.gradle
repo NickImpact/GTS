@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'me.nickimpact.gts'
-version = '5.0.0'
+version = '5.0.3'
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
@@ -33,6 +33,8 @@ subprojects {
         sponge = "7.1.5"
         spigot = "1.12.2"
     }
+
+    version = '5.0.3'
 
     repositories {
         mavenCentral()
@@ -68,6 +70,7 @@ task copyJars(type: Copy) {
     exclude 'sponge*.jar'
     exclude 'plugin*.jar'
     exclude 'reforged*.jar'
+    exclude 'generations*.jar'
 }
 
 build.dependsOn shadowJar
