@@ -35,13 +35,25 @@ public class SpongeGtsCmd extends BaseCommand {
 					if(additionals.length == 0) {
 						classification.getUi().createFor(player).getDisplay().open(player);
 					} else {
-						classification.getCmdHandler().apply(player, additionals);
+						Config config = GTS.getInstance().getConfiguration();
+						Config msgConfig = GTS.getInstance().getMsgConfig();
+						TextParsingUtils parser = GTS.getInstance().getTextParsingUtils();
+
+						if(config.get(ConfigKeys.MIN_PRICING_ENABLED)) {
+							// Should be MIN_MONEY_PRICE. Not sure where that is or if its handled elsewhere
+							if(Integer.parseInt(additionals[0]) >= config.get(ConfigKeys.MAX_MONEY_PRICE)) {
+								player.sendMessage(parser.fetchAndParseMsg(player, MsgConfigKeys.MIN_PRICE_ERROR, null, null));
+							} else {
+								classification.getCmdHandler().apply(player, additionals);
+							}
+						} else {
+							classification.getCmdHandler().apply(player, additionals);
+						}
 					}
 				}
 			}
 		}
 	}
-
 	@Subcommand("ignore")
 	@CommandPermission("gts.command.ignore.base")
 	public class IgnoreSub extends BaseCommand {
