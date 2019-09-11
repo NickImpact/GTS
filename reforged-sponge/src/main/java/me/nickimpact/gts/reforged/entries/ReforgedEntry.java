@@ -51,6 +51,7 @@ import java.util.stream.Collectors;
 public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minable<MoneyPrice> {
 
 	private transient Pokemon pokemon;
+	private static Collection<Function<Pokemon, MoneyPrice>> extraMinPriceOptions = Lists.newArrayList();
 
 	public ReforgedEntry() {}
 
@@ -286,6 +287,14 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 			price = new MoneyPrice(ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_HA) + price.getPrice());
 		}
 
+		if (!extraMinPriceOptions.isEmpty()) {
+			double p = 0;
+			for (Function<Pokemon, MoneyPrice> function : extraMinPriceOptions) {
+				p += function.apply(pokemon).getPrice();
+			}
+			price = new MoneyPrice(p);
+		}
+
 		return price;
 	}
 
@@ -452,4 +461,5 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 
 		return "";
 	}
+
 }

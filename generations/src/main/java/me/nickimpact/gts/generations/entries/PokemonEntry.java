@@ -46,6 +46,7 @@ import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -61,6 +62,7 @@ import java.util.stream.Collectors;
 public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements Minable<MoneyPrice> {
 
 	private transient EntityPixelmon pokemon;
+	private static Collection<Function<EntityPixelmon, MoneyPrice>> extraMinPriceOptions = Lists.newArrayList();
 
 	public PokemonEntry() {
 		super();
@@ -308,6 +310,14 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 
 		if (pokemon.getAbilitySlot() == 2) {
 			price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_HA) + price.getPrice());
+		}
+
+		if (!extraMinPriceOptions.isEmpty()) {
+			double p = 0;
+			for (Function<EntityPixelmon, MoneyPrice> function : extraMinPriceOptions) {
+				p += function.apply(pokemon).getPrice();
+			}
+			price = new MoneyPrice(p);
 		}
 
 		return price;
