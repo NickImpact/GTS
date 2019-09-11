@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minable<MoneyPrice> {
 
 	private transient Pokemon pokemon;
-	private static Collection<Function<Pokemon, MoneyPrice>> extraMinPriceOptions = Lists.newArrayList();
+	public static Collection<Function<Pokemon, MoneyPrice>> extraMinPriceOptions = Lists.newArrayList();
 
 	public ReforgedEntry() {}
 

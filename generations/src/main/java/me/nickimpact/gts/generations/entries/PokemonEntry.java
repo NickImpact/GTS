@@ -62,7 +62,7 @@ import java.util.stream.Collectors;
 public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements Minable<MoneyPrice> {
 
 	private transient EntityPixelmon pokemon;
-	private static Collection<Function<EntityPixelmon, MoneyPrice>> extraMinPriceOptions = Lists.newArrayList();
+	public static Collection<Function<EntityPixelmon, MoneyPrice>> extraMinPriceOptions = Lists.newArrayList();
 
 	public PokemonEntry() {
 		super();
