@@ -7,7 +7,7 @@ stages:
 build:
   stage: build
   script:
-    - gradle clean :api:build
+    - gradle :api:clean :api:build
   artifacts:
     name: GTS-${CI_COMMIT_REF_NAME}
     paths:
