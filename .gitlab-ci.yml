@@ -17,4 +17,4 @@ build:
 deploy:
   stage: deploy
   script:
-    - gradle publish -Pnexus-username=${NEXUS_USERNAME} -Pnexus-password=${NEXUS_PASSWORD} --configure-on-demand
+    - gradle :api:publish -Pnexus-username=${NEXUS_USERNAME} -Pnexus-password=${NEXUS_PASSWORD} --configure-on-demand

@@ -5,3 +5,29 @@ repositories {
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
+
+apply plugin: 'maven-publish'
+apply plugin: 'maven-publish-auth'
+
+publishing {
+    repositories {
+        maven {
+            name = "Unbound-Public"
+            url = "https://nexus.unboundnetwork.net/repository/unbound-public/"
+            credentials {
+                username project.hasProperty('nexus-username') ? project.property('nexus-username') : ''
+                password project.hasProperty('nexus-password') ? project.property('nexus-password') : ''
+            }
+        }
+    }
+
+    publications {
+        api(MavenPublication) {
+            def project = project(':api')
+            from project.components.java
+            groupId project.group
+            artifactId "api"
+            version project.version
+        }
+    }
+}
