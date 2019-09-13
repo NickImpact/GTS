@@ -1,7 +1,7 @@
 package me.nickimpact.gts.reforged;
 
+import co.aikar.commands.BaseCommand;
 import com.google.common.collect.Lists;
-import com.nickimpact.impactor.api.commands.Command;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.logging.Logger;
 import com.nickimpact.impactor.api.platform.Platform;
@@ -139,7 +139,7 @@ public class ReforgedBridge extends JavaPlugin implements Extension, Listener {
 	}
 
 	@Override
-	public List<Command> getCommands() {
+	public List<BaseCommand> getCommands() {
 		return Lists.newArrayList();
 
 	}

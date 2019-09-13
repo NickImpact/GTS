@@ -1,9 +1,8 @@
 package me.nickimpact.gts.reforged;
 
+import co.aikar.commands.BaseCommand;
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
 import com.google.inject.Inject;
-import com.nickimpact.impactor.api.commands.Command;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.logging.Logger;
 import com.nickimpact.impactor.api.platform.Platform;
@@ -13,19 +12,8 @@ import com.nickimpact.impactor.sponge.AbstractSpongePlugin;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfig;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
 import com.nickimpact.impactor.sponge.logging.SpongeLogger;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.battles.attacks.Attack;
-import com.pixelmonmod.pixelmon.entities.pixelmon.abilities.WonderGuard;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
-import com.pixelmonmod.pixelmon.enums.EnumSpecies;
-import com.pixelmonmod.pixelmon.enums.forms.EnumBidoof;
-import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
-import me.nickimpact.gts.api.dependencies.DependencyManager;
-import me.nickimpact.gts.api.dependencies.classloader.PluginClassLoader;
 import me.nickimpact.gts.api.plugin.Extension;
 import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.reforged.config.PokemonConfigKeys;
@@ -34,19 +22,12 @@ import me.nickimpact.gts.reforged.deprecated.PokemonEntry;
 import me.nickimpact.gts.reforged.entries.ReforgedEntry;
 import me.nickimpact.gts.reforged.entries.ReforgedUI;
 import me.nickimpact.gts.reforged.text.PokemonTokens;
-import me.nickimpact.gts.sponge.SpongePlugin;
-import me.nickimpact.gts.sponge.TextParsingUtils;
 import me.nickimpact.gts.sponge.service.SpongeGtsService;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.config.ConfigDir;
-import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
-import org.spongepowered.api.event.filter.cause.First;
-import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -54,8 +35,6 @@ import org.spongepowered.api.service.economy.EconomyService;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 
 @Getter
@@ -157,7 +136,7 @@ public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 	}
 
 	@Override
-	public List<Command> getCommands() {
+	public List<BaseCommand> getCommands() {
 		return Lists.newArrayList();
 	}
 

@@ -90,7 +90,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 			return false;
 		}
 
-		if(config.get(ConfigKeys.MIN_PRICING_ENABLED) && listing instanceof Minable) {
+		if(config.get(ConfigKeys.MIN_PRICING_ENABLED) && listing.getEntry() instanceof Minable) {
 			Price price = listing.getPrice();
 			Price min = ((Minable) listing.getEntry()).calcMinPrice();
 			tokens.put("min_price", src -> Optional.of((Text) min.getText()));
