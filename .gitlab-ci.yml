@@ -1,0 +1,20 @@
+image: gradle:4.4.1-jdk8
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - gradle clean build
+  artifacts:
+    name: GTS-${CI_COMMIT_REF_NAME}
+    paths:
+      - build/
+  tags:
+    - build
+deploy:
+  stage: deploy
+  script:
+    - gradle publish -Pnexus-username=${NEXUS_USERNAME} -Pnexus-password=${NEXUS_PASSWORD}

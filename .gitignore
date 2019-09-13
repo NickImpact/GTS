@@ -28,5 +28,5 @@ gradlew
 *.png
 *.gif
 
-.git*
+.git/*
 
