@@ -7,8 +7,7 @@ stages:
 build:
   stage: build
   script:
-    - gradle setupDecompWorkspace
-    - gradle :api:clean :api:build
+    - gradle :api:clean :api:build --configure-on-demand
   artifacts:
     name: GTS-${CI_COMMIT_REF_NAME}
     paths:

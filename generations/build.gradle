@@ -22,7 +22,7 @@ minecraft {
 }
 
 shadowJar {
-    archiveName = "GTS-Generations-2.6.2-${project.ext.sponge}-${project.version}.jar"
+    archiveName = "GTS-Generations-2.8.0-${project.ext.sponge}-${project.version}.jar"
     exclude 'Impactor*.jar'
     exclude 'Pixelmon*.jar'
 }
