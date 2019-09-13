@@ -23,23 +23,20 @@ public class SpongeGtsCmd extends BaseCommand {
 
 	@Subcommand("sell|add")
 	@CommandPermission("gts.command.sell.base")
-	public class SellSub extends BaseCommand {
-
-		@Default
-		@Syntax("(type) (additional arguments) - Allows you to sell something. No type = User GUI")
-		public void execute(Player player, @Optional EntryClassification classification, @Optional String... additionals) {
-			if(classification == null) {
-				new SellUI(player).open();
-			} else {
-				if(player.hasPermission("gts.command.sell." + classification.getPrimaryIdentifier().toLowerCase())) {
-					if(additionals.length == 0) {
-						classification.getUi().createFor(player).getDisplay().open(player);
-					} else {
-						classification.getCmdHandler().apply(player, additionals);
-					}
+	@Syntax("(type) (additional arguments) - Allows you to sell something. No type = User GUI")
+	public void sell(Player player, @Optional EntryClassification classification, @Optional String... additionals) {
+		if(classification == null) {
+			new SellUI(player).open();
+		} else {
+			if(player.hasPermission("gts.command.sell." + classification.getPrimaryIdentifier().toLowerCase())) {
+				if(additionals.length == 0) {
+					classification.getUi().createFor(player).getDisplay().open(player);
+				} else {
+					classification.getCmdHandler().apply(player, additionals);
 				}
 			}
 		}
+
 	}
 
 	@Subcommand("ignore")

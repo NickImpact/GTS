@@ -1,12 +1,12 @@
 package me.nickimpact.gts;
 
+import co.aikar.commands.BaseCommand;
 import co.aikar.commands.SpongeCommandManager;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.inject.Inject;
-import com.nickimpact.impactor.api.commands.Command;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.logging.Logger;
 import com.nickimpact.impactor.api.platform.Platform;
@@ -143,15 +143,24 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 		this.logger.info("Registering Service with Sponge...");
 		Sponge.getServiceManager().setProvider(this, GtsService.class, service = new SpongeGtsService(this));
 
+		logger.info("Loading configuration...");
+		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.configDir.toFile(), "gts.conf")), new ConfigKeys());
+		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.configDir.toFile(), "lang/en_us.conf")), new MsgConfigKeys());
+
 		this.logger.info("Loading default entry types...");
 		this.service.setRegistry(new EntryRegistry(this));
-		this.service.registerEntry(
-				Lists.newArrayList("Items", "Item"),
-				SpongeItemEntry.class,
-				new SpongeItemUI(),
-				"diamond",
-				SpongeItemEntry::cmdExecutor
-		);
+
+		if(this.config.get(ConfigKeys.ITEMS_ENABLED)) {
+			this.service.registerEntry(
+					Lists.newArrayList("Items", "Item"),
+					SpongeItemEntry.class,
+					new SpongeItemUI(),
+					"diamond",
+					SpongeItemEntry::cmdExecutor
+			);
+		} else {
+			this.logger.info("Ignoring item entry type (disabled in configuration)");
+		}
 
 		this.service.setBuilders(new BuilderRegistry());
 		this.service.getBuilderRegistry().register(Listing.ListingBuilder.class, SpongeListing.SpongeListingBuilder.class);
@@ -162,10 +171,6 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 	@Listener
 	public void onInit(GamePostInitializationEvent e) {
 		logger.info("&aEnabling GTS...");
-
-		logger.info("Loading configuration...");
-		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.configDir.toFile(), "gts.conf")), new ConfigKeys());
-		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.configDir.toFile(), "lang/en_us.conf")), new MsgConfigKeys());
 
 		logger.info("Initializing additional dependencies...");
 		this.loader = new ReflectionClassLoader(this);
@@ -288,7 +293,7 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 	}
 
 	@Override
-	public List<Command> getCommands() {
+	public List<BaseCommand> getCommands() {
 		return Lists.newArrayList();
 	}
 
