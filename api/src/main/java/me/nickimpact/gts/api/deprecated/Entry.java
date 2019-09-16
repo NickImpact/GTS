@@ -16,5 +16,9 @@ public abstract class Entry<T, U> {
 	}
 
 	public abstract U getEntry();
+
+	public Object getInnerElementOrDefault() {
+		return this.getElement();
+	}
 }
 

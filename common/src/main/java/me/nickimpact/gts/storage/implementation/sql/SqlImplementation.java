@@ -29,6 +29,8 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonParseException;
 import com.nickimpact.impactor.api.json.JsonTyping;
 import com.nickimpact.impactor.api.platform.Platform;
+import com.nickimpact.impactor.api.storage.sql.ConnectionFactory;
+import com.nickimpact.impactor.api.storage.sql.hikari.MySQLConnectionFactory;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
@@ -36,8 +38,7 @@ import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.storage.implementation.StorageImplementation;
-import me.nickimpact.gts.storage.implementation.sql.connection.ConnectionFactory;
-import me.nickimpact.gts.storage.implementation.sql.connection.hikari.MySQLConnectionFactory;
+import org.spongepowered.api.Sponge;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -230,15 +231,20 @@ public class SqlImplementation implements StorageImplementation {
 			results.close();
 
 			this.plugin.getPluginLogger().warn(String.format("Read in %d listings, attempting to convert...", entries.size()));
+			final int f = failed;
 			if(this.transfer(Lists.newArrayList(entries))) {
-				if (failed == 0) {
-					this.plugin.getPluginLogger().warn("Purging old table...");
-					PreparedStatement p = connection.prepareStatement(processor.apply("DROP TABLE {prefix}listings_v2"));
-					p.executeUpdate();
-				} else {
-					if(entries.size() != 0) {
-						this.plugin.getPluginLogger().warn(String.format("Failed to read %d listings, will preserve database for now...", failed));
+				try {
+					if (f == 0) {
+						this.plugin.getPluginLogger().warn("Purging old table...");
+						PreparedStatement p = connection.prepareStatement(processor.apply("DROP TABLE {prefix}listings_v2"));
+						p.executeUpdate();
+					} else {
+						if (entries.size() != 0) {
+							this.plugin.getPluginLogger().warn(String.format("Failed to read %d listings, will preserve database for now...", f));
+						}
 					}
+				} catch (Exception e) {
+					this.plugin.getPluginLogger().warn(String.format("Failed to read %d listings, will preserve database for now...", f));
 				}
 			}
 
@@ -392,6 +398,6 @@ public class SqlImplementation implements StorageImplementation {
 	private Entry convert(me.nickimpact.gts.api.deprecated.Entry old) throws Exception {
 		EntryClassification classification = this.plugin.getAPIService().getEntryRegistry().getForIdentifier(old.getClass().getAnnotation(JsonTyping.class).value()).get();
 		Entry entry = (Entry) classification.getClassification().newInstance();
-		return entry.setEntry(old.getEntry());
+		return entry.setEntry(old.getInnerElementOrDefault());
 	}
 }

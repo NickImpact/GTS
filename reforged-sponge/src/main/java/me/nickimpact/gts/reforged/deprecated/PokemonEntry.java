@@ -4,6 +4,7 @@ import com.nickimpact.impactor.api.json.JsonTyping;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import me.nickimpact.gts.api.deprecated.Entry;
+import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.reforged.utils.GsonUtils;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.nbt.NBTException;

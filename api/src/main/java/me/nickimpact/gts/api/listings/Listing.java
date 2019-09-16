@@ -47,6 +47,9 @@ public abstract class Listing<E extends Entry, P, I> {
 	 * @return Whether or not a listing has expired
 	 */
 	public boolean hasExpired() {
+		if(this.getExpiration() == null) {
+			return false;
+		}
 		return getExpiration().isBefore(LocalDateTime.now());
 	}
 

@@ -13,6 +13,10 @@ import com.nickimpact.impactor.api.platform.Platform;
 import com.nickimpact.impactor.api.plugin.ImpactorPlugin;
 import com.nickimpact.impactor.api.plugin.PluginInfo;
 import com.nickimpact.impactor.api.registry.BuilderRegistry;
+import com.nickimpact.impactor.api.storage.StorageType;
+import com.nickimpact.impactor.api.storage.dependencies.DependencyManager;
+import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
+import com.nickimpact.impactor.api.storage.dependencies.classloader.ReflectionClassLoader;
 import com.nickimpact.impactor.sponge.AbstractSpongePlugin;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfig;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
@@ -20,15 +24,11 @@ import com.nickimpact.impactor.sponge.logging.SpongeLogger;
 import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
 import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
-import me.nickimpact.gts.api.dependencies.DependencyManager;
-import me.nickimpact.gts.api.dependencies.classloader.PluginClassLoader;
-import me.nickimpact.gts.api.dependencies.classloader.ReflectionClassLoader;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.plugin.PluginInstance;
-import me.nickimpact.gts.api.storage.StorageType;
 import me.nickimpact.gts.commands.SpongeEntryClassificationContextHandler;
 import me.nickimpact.gts.commands.SpongeGtsCmd;
 import me.nickimpact.gts.config.ConfigKeys;
@@ -56,6 +56,7 @@ import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GamePostInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
+import org.spongepowered.api.event.game.state.GameStartedServerEvent;
 import org.spongepowered.api.event.service.ChangeServiceProviderEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
@@ -175,7 +176,7 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 		logger.info("Initializing additional dependencies...");
 		this.loader = new ReflectionClassLoader(this);
 		this.dependencyManager = new DependencyManager(this);
-		this.dependencyManager.loadDependencies(EnumSet.of(me.nickimpact.gts.api.dependencies.Dependency.CONFIGURATE_CORE, me.nickimpact.gts.api.dependencies.Dependency.CONFIGURATE_HOCON, me.nickimpact.gts.api.dependencies.Dependency.HOCON_CONFIG, me.nickimpact.gts.api.dependencies.Dependency.CONFIGURATE_GSON, me.nickimpact.gts.api.dependencies.Dependency.CONFIGURATE_YAML));
+		this.dependencyManager.loadDependencies(EnumSet.of(com.nickimpact.impactor.api.storage.dependencies.Dependency.CONFIGURATE_CORE,com.nickimpact.impactor.api.storage.dependencies.Dependency.CONFIGURATE_HOCON, com.nickimpact.impactor.api.storage.dependencies.Dependency.HOCON_CONFIG, com.nickimpact.impactor.api.storage.dependencies.Dependency.CONFIGURATE_GSON, com.nickimpact.impactor.api.storage.dependencies.Dependency.CONFIGURATE_YAML));
 
 		StorageType st = StorageType.parse(this.config.get(ConfigKeys.STORAGE_METHOD));
 		this.dependencyManager.loadStorageDependencies(ImmutableSet.of(st != null ? st : StorageType.H2));
@@ -237,14 +238,19 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 		this.getAPIService().registerOldTypeAdapter(me.nickimpact.gts.api.deprecated.Price.class, opa);
 		this.getAPIService().registerOldTypeAdapter(DataContainer.class, new DataContainerAdapter());
 
-		logger.info("Initializing and reading storage...");
+		logger.info("Initializing storage...");
 		this.service.setStorage(new StorageFactory(this).getInstance(StorageType.JSON));
-		this.service.getListingManager().readStorage();
 
 		logger.info("Deploying running tasks...");
 		new SpongeListingTasks().createExpirationTask();
 
 		logger.info("&aStartup complete!");
+	}
+
+	@Listener
+	public void onStart(GameStartedServerEvent event) {
+		logger.info("Reading storage...");
+		this.service.getListingManager().readStorage();
 	}
 
 	@Override
@@ -270,6 +276,11 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 	@Override
 	public DependencyManager getDependencyManager() {
 		return this.dependencyManager;
+	}
+
+	@Override
+	public List<StorageType> getStorageTypes() {
+		return Lists.newArrayList();
 	}
 
 	@Override

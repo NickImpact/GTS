@@ -272,9 +272,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 						throwable.printStackTrace();
 						return null;
 					}).get();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		} catch (ExecutionException e) {
+		} catch (InterruptedException | ExecutionException e) {
 			e.printStackTrace();
 		}
 	}

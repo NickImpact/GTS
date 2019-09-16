@@ -25,8 +25,11 @@
 
 package me.nickimpact.gts.storage;
 
+import com.nickimpact.impactor.api.storage.StorageType;
+import com.nickimpact.impactor.api.storage.sql.file.H2ConnectionFactory;
+import com.nickimpact.impactor.api.storage.sql.hikari.MariaDBConnectionFactory;
+import com.nickimpact.impactor.api.storage.sql.hikari.MySQLConnectionFactory;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
-import me.nickimpact.gts.api.storage.StorageType;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.storage.implementation.StorageImplementation;
 import me.nickimpact.gts.storage.implementation.file.ConfigurateStorage;
@@ -34,9 +37,6 @@ import me.nickimpact.gts.storage.implementation.file.loaders.HoconLoader;
 import me.nickimpact.gts.storage.implementation.file.loaders.JsonLoader;
 import me.nickimpact.gts.storage.implementation.file.loaders.YamlLoader;
 import me.nickimpact.gts.storage.implementation.sql.SqlImplementation;
-import me.nickimpact.gts.storage.implementation.sql.connection.file.H2ConnectionFactory;
-import me.nickimpact.gts.storage.implementation.sql.connection.hikari.MariaDBConnectionFactory;
-import me.nickimpact.gts.storage.implementation.sql.connection.hikari.MySQLConnectionFactory;
 
 import java.io.File;
 

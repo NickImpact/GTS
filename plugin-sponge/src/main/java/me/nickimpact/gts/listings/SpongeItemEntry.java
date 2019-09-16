@@ -48,9 +48,8 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 	public SpongeItemEntry() {}
 
 	@Override
-	public Entry setEntry(ItemStack backing) {
-		this.item = backing;
-		this.element = backing.toContainer();
+	public Entry setEntry(DataContainer backing) {
+		this.element = backing;
 		return this;
 	}
 
@@ -196,8 +195,8 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 		return false;
 	}
 
-	public static CommandResults cmdExecutor(CommandSource src, String[] args) {
-		if(args.length < 2) {
+	public static CommandResults cmdExecutor(CommandSource src, List<String> args, boolean permanent) {
+		if(args.size() < 2) {
 			src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.INVALID_ARGS, null, null));
 			return CommandResults.FAILED;
 		}
@@ -206,8 +205,8 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 		double price;
 
 		try {
-			amount = Integer.parseInt(args[0]);
-			price = Double.parseDouble(args[1]);
+			amount = Integer.parseInt(args.get(0));
+			price = Double.parseDouble(args.get(1));
 		} catch (Exception e) {
 			src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.INVALID_ARGS, null, null));
 			return CommandResults.FAILED;
@@ -249,7 +248,7 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 					.entry(new SpongeItemEntry(item))
 					.id(UUID.randomUUID())
 					.owner(player.getUniqueId())
-					.expiration(LocalDateTime.now().plusSeconds(GTS.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME)))
+					.expiration(permanent ? LocalDateTime.MAX : LocalDateTime.now().plusSeconds(GTS.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME)))
 					.price(price)
 					.build();
 			listing.publish(GTS.getInstance(), player.getUniqueId());

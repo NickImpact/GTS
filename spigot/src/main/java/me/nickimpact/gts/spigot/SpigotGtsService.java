@@ -1,5 +1,6 @@
 package me.nickimpact.gts.spigot;
 
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSerializer;
@@ -16,6 +17,7 @@ import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.api.storage.IGtsStorage;
+import me.nickimpact.gts.api.util.TriFunction;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -33,6 +35,7 @@ public class SpigotGtsService implements GtsService<CommandSender> {
 	private EntryRegistry registry;
 	private BuilderRegistry builders;
 
+	private List<Class<? extends me.nickimpact.gts.api.deprecated.Entry>> types = Lists.newArrayList();
 	private GsonBuilder gson = new GsonBuilder().setPrettyPrinting();
 
 	public SpigotGtsService(IGTSPlugin plugin) {
@@ -55,7 +58,7 @@ public class SpigotGtsService implements GtsService<CommandSender> {
 	}
 
 	@Override
-	public void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CommandSender, String[], CommandResults> cmd) {
+	public void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, TriFunction<CommandSender, List<String>, Boolean, CommandResults> cmd) {
 		try {
 			this.registry.getRegistry().register(entry);
 			this.registry.getClassifications().add(new SpigotEntryClassification(entry, identifier, rep, ui, cmd));
@@ -89,7 +92,7 @@ public class SpigotGtsService implements GtsService<CommandSender> {
 
 	@Override
 	public List<Class<? extends me.nickimpact.gts.api.deprecated.Entry>> getAllDeprecatedTypes() {
-		return null;
+		return types;
 	}
 
 	@Override
@@ -98,7 +101,7 @@ public class SpigotGtsService implements GtsService<CommandSender> {
 	}
 
 	public static class SpigotEntryClassification extends EntryClassification<CommandSender> {
-		SpigotEntryClassification(Class<? extends Entry> classification, List<String> identifers, String itemRep, EntryUI ui, BiFunction<CommandSender, String[], CommandResults> cmdHandler) {
+		SpigotEntryClassification(Class<? extends Entry> classification, List<String> identifers, String itemRep, EntryUI ui, TriFunction<CommandSender, List<String>, Boolean, CommandResults> cmdHandler) {
 			super(classification, identifers, itemRep, ui, cmdHandler);
 		}
 	}

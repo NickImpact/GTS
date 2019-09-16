@@ -14,12 +14,16 @@ import com.nickimpact.impactor.api.plugin.ImpactorPlugin;
 import com.nickimpact.impactor.api.plugin.PluginInfo;
 import com.nickimpact.impactor.api.plugin.Translatable;
 import com.nickimpact.impactor.api.registry.BuilderRegistry;
+import com.nickimpact.impactor.api.storage.StorageType;
+import com.nickimpact.impactor.api.storage.dependencies.Dependency;
+import com.nickimpact.impactor.api.storage.dependencies.DependencyManager;
+import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
+import com.nickimpact.impactor.api.storage.dependencies.classloader.ReflectionClassLoader;
 import com.nickimpact.impactor.spigot.configuration.SpigotConfig;
 import com.nickimpact.impactor.spigot.configuration.SpigotConfigAdapter;
 import com.nickimpact.impactor.spigot.logging.SpigotLogger;
 import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
-import me.nickimpact.gts.api.dependencies.classloader.PluginClassLoader;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
 import me.nickimpact.gts.api.holders.ServiceInstance;
@@ -41,10 +45,6 @@ import me.nickimpact.gts.spigot.SpigotGtsService;
 import me.nickimpact.gts.manager.TextParsingUtils;
 import me.nickimpact.gts.spigot.SpigotListing;
 import me.nickimpact.gts.storage.StorageFactory;
-import me.nickimpact.gts.api.storage.StorageType;
-import me.nickimpact.gts.api.dependencies.Dependency;
-import me.nickimpact.gts.api.dependencies.DependencyManager;
-import me.nickimpact.gts.api.dependencies.classloader.ReflectionClassLoader;
 import me.nickimpact.gts.tasks.SpigotListingTasks;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -208,6 +208,11 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 	@Override
 	public DependencyManager getDependencyManager() {
 		return this.dependencyManager;
+	}
+
+	@Override
+	public List<StorageType> getStorageTypes() {
+		return null;
 	}
 
 	@Override

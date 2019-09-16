@@ -1,6 +1,7 @@
 package me.nickimpact.gts.reforged.entry;
 
 import com.google.common.collect.Lists;
+import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.utilities.Time;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
@@ -14,9 +15,12 @@ import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.plugin.PluginInstance;
+import me.nickimpact.gts.config.ConfigKeys;
+import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.reforged.ReforgedBridge;
 import me.nickimpact.gts.reforged.config.ReforgedKeys;
 import me.nickimpact.gts.reforged.utils.Flags;
@@ -24,11 +28,14 @@ import me.nickimpact.gts.reforged.utils.GsonUtils;
 import me.nickimpact.gts.reforged.utils.SpriteItemUtil;
 import me.nickimpact.gts.spigot.MessageUtils;
 import me.nickimpact.gts.spigot.SpigotEntry;
+import me.nickimpact.gts.spigot.SpigotListing;
+import net.milkbowl.vault.economy.Economy;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -37,6 +44,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -46,14 +54,12 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 
 	public ReforgedEntry(Pokemon element) {
 		super(GsonUtils.serialize(element.writeToNBT(new NBTTagCompound())));
-		PluginInstance.getInstance().getPluginLogger().debug(this.element);
 		this.pokemon = element;
 	}
 
 	@Override
-	public Entry setEntry(Pokemon backing) {
-		this.pokemon = backing;
-		this.element = GsonUtils.serialize(backing.writeToNBT(new NBTTagCompound()));
+	public Entry setEntry(String backing) {
+		this.element = backing;
 		return this;
 	}
 
@@ -187,10 +193,10 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 		List<String> lore = Lists.newArrayList();
 		lore.addAll(Lists.newArrayList("&7Seller: &e" + Bukkit.getOfflinePlayer(listing.getOwnerUUID()).getName()));
 		lore.addAll(SpriteItemUtil.getDetails(this.getEntry()));
-		lore.addAll(Lists.newArrayList(
-				"&7Price: &e" + listing.getPrice().getText(),
-				"&7Time Remaining: &e" + new Time(Duration.between(LocalDateTime.now(), listing.getExpiration()).getSeconds()).toString()
-		));
+		lore.add("&7Price: &e" + listing.getPrice().getText());
+		if(!listing.getExpiration().equals(LocalDateTime.MAX)) {
+			lore.add("&7Time Remaining: &e" + new Time(Duration.between(LocalDateTime.now(), listing.getExpiration()).getSeconds()).toString());
+		}
 		meta.setLore(lore.stream().map(s -> ChatColor.translateAlternateColorCodes('&', s)).collect(Collectors.toList()));
 		icon.setItemMeta(meta);
 
@@ -258,5 +264,79 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 
 			return false;
 		}
+	}
+
+	public static CommandResults execute(CommandSender src, List<String> args, boolean permanent) {
+		if(args.size() < 2) {
+			src.sendMessage(MessageUtils.parse("Not enough arguments...", true));
+			return CommandResults.FAILED;
+		}
+
+		if(src instanceof Player) {
+			int slot;
+			double price;
+
+			try {
+				slot = Integer.parseInt(args.get(0));
+				price = Double.parseDouble(args.get(1));
+			} catch (Exception e) {
+				src.sendMessage(MessageUtils.parse("Invalid arguments supplied, check usage below...", true));
+				src.sendMessage(MessageUtils.parse("/gts sell items <slot | ex: 2> <price | ex: 1000, 100.50>", true));
+				return CommandResults.FAILED;
+			}
+
+			if(slot < 1 || slot > 6) {
+				src.sendMessage(MessageUtils.parse("Invalid arguments supplied, must supply a slot between 1-6...", true));
+				return CommandResults.FAILED;
+			}
+
+			if(price <= 0) {
+				src.sendMessage(MessageUtils.parse("Invalid price supplied, price must be positive...", true));
+				return CommandResults.FAILED;
+			}
+
+			if(price > PluginInstance.getInstance().getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE)) {
+				src.sendMessage(MessageUtils.parse("Invalid price supplied, price must not exceed the set max of " + Bukkit.getServicesManager().getRegistration(Economy.class).getProvider().format(PluginInstance.getInstance().getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE)) + "...", true));
+				return CommandResults.FAILED;
+			}
+
+			if(!src.hasPermission("gts.command.sell.pokemon.base")) {
+				src.sendMessage(MessageUtils.parse("Unfortunately, you don't have permission to sell pokemon...", true));
+				return CommandResults.FAILED;
+			}
+
+			PlayerPartyStorage party = Pixelmon.storageManager.getParty(((Player) src).getUniqueId());
+			Pokemon pokemon = party.get(slot - 1);
+			if(pokemon == null) {
+				src.sendMessage(MessageUtils.parse("Unfortunately, that slot is empty...", true));
+				return CommandResults.FAILED;
+			}
+
+			if(!pokemon.isEgg() && party.getTeam().size() <= 1) {
+				src.sendMessage(MessageUtils.parse("Unfortunately, you can't sell your last non-egg party memeber...", true));
+				return CommandResults.FAILED;
+			}
+
+//			if(ReforgedBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED_POKEMON).stream().anyMatch(species -> species.toLowerCase().equals(pokemon.getSpecies().getPokemonName().toLowerCase()))) {
+//				if(!src.hasPermission("gts.command.sell.pokemon.bypass")) {
+//					src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.BLACKLISTED, null, null));
+//					return CommandResults.FAILED;
+//				}
+//			}
+
+			SpigotListing listing = SpigotListing.builder()
+					.entry(new ReforgedEntry(pokemon))
+					.id(UUID.randomUUID())
+					.owner(((Player) src).getUniqueId())
+					.price(price)
+					.expiration(permanent ? LocalDateTime.MAX : LocalDateTime.now().plusSeconds(PluginInstance.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME)))
+					.build();
+			listing.publish(PluginInstance.getInstance(), ((Player) src).getUniqueId());
+
+			return CommandResults.SUCCESSFUL;
+		}
+
+		src.sendMessage(MessageUtils.parse("Unfortunately, you must be a player to use this command...", true));
+		return CommandResults.FAILED;
 	}
 }

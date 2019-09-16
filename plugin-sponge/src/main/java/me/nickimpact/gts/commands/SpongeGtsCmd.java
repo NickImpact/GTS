@@ -3,6 +3,7 @@ package me.nickimpact.gts.commands;
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
 import co.aikar.commands.annotation.*;
+import com.google.common.collect.Lists;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.listings.ListingManager;
@@ -10,6 +11,10 @@ import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.ui.SellUI;
 import me.nickimpact.gts.ui.SpongeMainUI;
 import org.spongepowered.api.entity.living.player.Player;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CommandAlias("gts")
 @Description("Controls the functionality of GTS")
@@ -32,7 +37,13 @@ public class SpongeGtsCmd extends BaseCommand {
 				if(additionals.length == 0) {
 					classification.getUi().createFor(player).getDisplay().open(player);
 				} else {
-					classification.getCmdHandler().apply(player, additionals);
+					boolean perm = false;
+					List<String> addons = Arrays.stream(additionals).map(String::toLowerCase).collect(Collectors.toList());
+					if(addons.contains("-p")) {
+						perm = true;
+					}
+
+					classification.getCmdHandler().apply(player, addons, perm);
 				}
 			}
 		}

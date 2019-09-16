@@ -61,24 +61,7 @@ public class ReforgedBridge extends JavaPlugin implements Extension, Listener {
 				ReforgedEntry.class,
 				new ReforgedUI(),
 				"PIXELMON_GS_BALL",
-				(src, args) -> {
-					if(src instanceof Player) {
-						Player player = (Player) src;
-						PlayerPartyStorage storage = Pixelmon.storageManager.getParty(player.getUniqueId());
-						Pokemon first = storage.get(0);
-						SpigotListing listing = SpigotListing.builder()
-								.id(UUID.randomUUID())
-								.owner(player.getUniqueId())
-								.entry(new ReforgedEntry(first))
-								.price(50000)
-								.expiration(LocalDateTime.now().plusDays(1))
-								.build();
-						listing.publish(this, player.getUniqueId());
-						return CommandResults.SUCCESSFUL;
-					}
-
-					return CommandResults.FAILED;
-				}
+				ReforgedEntry::execute
 		);
 		this.logger.info("Integration successful!");
 	}

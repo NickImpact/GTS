@@ -78,6 +78,9 @@ public final class TokenService implements NucleusMessageTokenService.TokenParse
 			Listing listing = getListingFromVaribleIfExists(m);
 			if(listing == null)
 				return Optional.of(Text.EMPTY);
+			if(listing.getExpiration().equals(LocalDateTime.MAX)) {
+				return Optional.of(Text.of("Infinite"));
+			}
 
 			LocalDateTime expiration = listing.getExpiration();
 			LocalDateTime now = LocalDateTime.now();

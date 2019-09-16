@@ -5,6 +5,7 @@ import lombok.Getter;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
+import me.nickimpact.gts.api.util.TriFunction;
 import me.nickimpact.gts.api.wrappers.CmdResultWrapper;
 import me.nickimpact.gts.api.wrappers.CmdSourceWrapper;
 
@@ -27,7 +28,7 @@ public abstract class EntryClassification<T> {
 	private EntryUI ui;
 
 	/** Represents the command functionality for an entry */
-	private BiFunction<T, String[], CommandResults> cmdHandler;
+	private TriFunction<T, List<String>, Boolean, CommandResults> cmdHandler;
 
 	public String getPrimaryIdentifier() {
 		return identifers.size() > 0 ? identifers.get(0) : "???";

@@ -17,6 +17,7 @@ import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.plugin.IGTSPlugin;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.api.storage.IGtsStorage;
+import me.nickimpact.gts.api.util.TriFunction;
 import me.nickimpact.gts.sponge.text.TokenHolder;
 import me.nickimpact.gts.sponge.text.TokenService;
 import org.spongepowered.api.command.CommandSource;
@@ -60,7 +61,7 @@ public class SpongeGtsService implements ExtendedGtsService<CommandSource> {
 	}
 
 	@Override
-	public void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<CommandSource, String[], CommandResults> cmd) {
+	public void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, TriFunction<CommandSource, List<String>, Boolean, CommandResults> cmd) {
 		try {
 			this.registry.getRegistry().register(entry);
 			this.registry.getClassifications().add(new SpongeEntryClassification(entry, identifier, rep, ui, cmd));
@@ -108,7 +109,7 @@ public class SpongeGtsService implements ExtendedGtsService<CommandSource> {
 	}
 
 	public static class SpongeEntryClassification extends EntryClassification<CommandSource> {
-		SpongeEntryClassification(Class<? extends Entry> classification, List<String> identifers, String itemRep, EntryUI ui, BiFunction<CommandSource, String[], CommandResults> cmdHandler) {
+		SpongeEntryClassification(Class<? extends Entry> classification, List<String> identifers, String itemRep, EntryUI ui, TriFunction<CommandSource, List<String>, Boolean, CommandResults> cmdHandler) {
 			super(classification, identifers, itemRep, ui, cmdHandler);
 		}
 	}

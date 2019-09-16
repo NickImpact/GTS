@@ -13,6 +13,7 @@ import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.api.storage.IGtsStorage;
+import me.nickimpact.gts.api.util.TriFunction;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,7 +46,7 @@ public interface GtsService<T> {
 	 * @param ui The UI accompanying the entry
 	 * @param rep The ItemStack representation accompanying the entry
 	 */
-	void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, BiFunction<T, String[], CommandResults> cmd);
+	void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, TriFunction<T, List<String>, Boolean, CommandResults> cmd);
 
 	BuilderRegistry getBuilderRegistry();
 

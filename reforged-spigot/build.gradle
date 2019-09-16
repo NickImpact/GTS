@@ -44,6 +44,9 @@ repositories {
     }
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
     maven { url = "https://hub.spigotmc.org/nexus/content/groups/public/" }
+    maven {
+        url "http://nexus.hc.to/content/repositories/pub_releases"
+    }
 }
 
 reobf {
@@ -57,8 +60,10 @@ dependencies {
     shadow project(':common')
     shadow project(':spigot')
     shadow 'reforged:server:7.0.7@Pixelmon-1.12.2-7.0.7-server.jar'
+    shadow "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
     shadow "org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT"
     shadow 'io.netty:netty-buffer:4.1.36.Final'
+    shadow "net.milkbowl.vault:VaultAPI:1.7"
 }
 
 build.dependsOn reobfShadowJar

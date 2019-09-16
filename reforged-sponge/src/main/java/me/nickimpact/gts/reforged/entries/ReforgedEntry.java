@@ -55,9 +55,8 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 	public ReforgedEntry() {}
 
 	@Override
-	public Entry setEntry(Pokemon backing) {
-		this.pokemon = backing;
-		this.element = GsonUtils.serialize(backing.writeToNBT(new NBTTagCompound()));
+	public Entry setEntry(String backing) {
+		this.element = backing;
 		return this;
 	}
 
@@ -357,11 +356,11 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 		return out.substring(0, out.length() - 3);
 	}
 
-	public static CommandResults execute(CommandSource src, String[] args) {
+	public static CommandResults execute(CommandSource src, List<String> args, boolean permanent) {
 		Config config = PluginInstance.getInstance().getMsgConfig();
 		TextParsingUtils parser = ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils();
 
-		if(args.length < 2) {
+		if(args.size() < 2) {
 			src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.INVALID_ARGS, null, null));
 			return CommandResults.FAILED;
 		}
@@ -371,8 +370,8 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 			double price;
 
 			try {
-				slot = Integer.parseInt(args[0]);
-				price = Double.parseDouble(args[1]);
+				slot = Integer.parseInt(args.get(0));
+				price = Double.parseDouble(args.get(1));
 			} catch (Exception e) {
 				src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.INVALID_ARGS, null, null));
 				return CommandResults.FAILED;
@@ -422,7 +421,7 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 					.id(UUID.randomUUID())
 					.owner(((Player) src).getUniqueId())
 					.price(price)
-					.expiration(LocalDateTime.now().plusSeconds(PluginInstance.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME)))
+					.expiration(permanent ? LocalDateTime.MAX : LocalDateTime.now().plusSeconds(PluginInstance.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME)))
 					.build();
 			listing.publish(PluginInstance.getInstance(), ((Player) src).getUniqueId());
 

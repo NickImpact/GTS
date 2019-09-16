@@ -41,9 +41,8 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 	}
 
 	@Override
-	public Entry setEntry(ItemStack backing) {
-		this.itemStack = backing;
-		this.element = backing.serialize();
+	public Entry setEntry(Map<String, Object> backing) {
+		this.element = backing;
 		return this;
 	}
 
@@ -90,13 +89,15 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 		ItemMeta meta = stack.getItemMeta();
 		meta.setDisplayName(ChatColor.DARK_AQUA + this.materialToName(itemStack.getType().name()));
 
-		meta.setLore(Lists.newArrayList(
+		List<String> lore = Lists.newArrayList(
 				"&7Seller: &e" + Bukkit.getServer().getOfflinePlayer(listing.getOwnerUUID()).getName(),
 				"",
-				"&7Price: &e" + listing.getPrice().getText(),
-				"&7Time Remaining: &e" + new Time(Duration.between(LocalDateTime.now(), listing.getExpiration()).getSeconds()).toString()
-		).stream().map(str -> ChatColor.translateAlternateColorCodes('&', str)).collect(Collectors.toList()));
-
+				"&7Price: &e" + listing.getPrice().getText()
+		).stream().map(str -> ChatColor.translateAlternateColorCodes('&', str)).collect(Collectors.toList());
+		if(!listing.getExpiration().equals(LocalDateTime.MAX)) {
+			lore.add(ChatColor.translateAlternateColorCodes('&', "&7Time Remaining: &e" + new Time(Duration.between(LocalDateTime.now(), listing.getExpiration()).getSeconds()).toString()));
+		}
+		meta.setLore(lore);
 		stack.setItemMeta(meta);
 
 		return stack;
@@ -149,8 +150,8 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 		return WordUtils.capitalizeFully(input, delimiters);
 	}
 
-	public static CommandResults cmdExecutor(CommandSender src, String[] args) {
-		if(args.length < 2) {
+	public static CommandResults cmdExecutor(CommandSender src, List<String> args, boolean permanent) {
+		if(args.size() < 2) {
 			src.sendMessage(MessageUtils.parse("Not enough arguments...", true));
 			return CommandResults.FAILED;
 		}
@@ -159,8 +160,8 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 		double price;
 
 		try {
-			amount = Integer.parseInt(args[0]);
-			price = Double.parseDouble(args[1]);
+			amount = Integer.parseInt(args.get(0));
+			price = Double.parseDouble(args.get(1));
 		} catch (Exception e) {
 			src.sendMessage(MessageUtils.parse("Invalid arguments supplied, check usage below...", true));
 			src.sendMessage(MessageUtils.parse("/gts sell items <amount | ex: 2> <price | ex: 1000, 100.50>", true));
@@ -210,7 +211,7 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 					.entry(new SpigotItemEntry(item))
 					.id(UUID.randomUUID())
 					.owner(player.getUniqueId())
-					.expiration(LocalDateTime.now().plusDays(1))
+					.expiration(permanent ? LocalDateTime.MAX : LocalDateTime.now().plusDays(1))
 					.price(price)
 					.build();
 			listing.publish(GTS.getInstance(), player.getUniqueId());
