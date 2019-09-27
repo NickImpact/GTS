@@ -18,6 +18,7 @@ import com.nickimpact.impactor.api.storage.dependencies.DependencyManager;
 import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
 import com.nickimpact.impactor.api.storage.dependencies.classloader.ReflectionClassLoader;
 import com.nickimpact.impactor.sponge.AbstractSpongePlugin;
+import com.nickimpact.impactor.sponge.SpongeImpactorPlugin;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfig;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
 import com.nickimpact.impactor.sponge.logging.SpongeLogger;
@@ -42,6 +43,7 @@ import me.nickimpact.gts.json.EntryAdapter;
 import me.nickimpact.gts.listeners.JoinListener;
 import me.nickimpact.gts.listings.SpongeItemEntry;
 import me.nickimpact.gts.listings.SpongeItemUI;
+import me.nickimpact.gts.listings.searching.ItemSearcher;
 import me.nickimpact.gts.manager.SpongeListingManager;
 import me.nickimpact.gts.sponge.*;
 import me.nickimpact.gts.sponge.service.SpongeGtsService;
@@ -118,6 +120,7 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 	public GTS() {
 		instance = this;
 		PluginInstance.setInstance(this);
+		this.connect();
 	}
 
 	@Listener
@@ -167,6 +170,8 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 		this.service.getBuilderRegistry().register(Listing.ListingBuilder.class, SpongeListing.SpongeListingBuilder.class);
 
 		this.service.getAllDeprecatedTypes().add(ItemEntry.class);
+
+		this.service.addSearcher("item", new ItemSearcher());
 	}
 
 	@Listener
@@ -270,17 +275,19 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 
 	@Override
 	public PluginClassLoader getPluginClassLoader() {
-		return this.loader;
+		return SpongeImpactorPlugin.getInstance().getPluginClassLoader();
 	}
 
 	@Override
 	public DependencyManager getDependencyManager() {
-		return this.dependencyManager;
+		return SpongeImpactorPlugin.getInstance().getDependencyManager();
 	}
 
 	@Override
 	public List<StorageType> getStorageTypes() {
-		return Lists.newArrayList();
+		return Lists.newArrayList(
+				StorageType.parse(this.config.get(ConfigKeys.STORAGE_METHOD))
+		);
 	}
 
 	@Override

@@ -1,8 +1,10 @@
 package me.nickimpact.gts.listings;
 
+import co.aikar.commands.CommandIssuer;
 import com.google.common.collect.Lists;
 import com.nickimpact.impactor.api.json.JsonTyping;
 import com.nickimpact.impactor.api.utilities.Time;
+import com.nickimpact.impactor.spigot.utils.ItemStackUtils;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.Listing;
@@ -36,7 +38,6 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 
 	public SpigotItemEntry(ItemStack element) {
 		super(element.serialize());
-		GTS.getInstance().getPluginLogger().debug(GTS.getInstance().getGson().toJson(element.serialize().toString()));
 		this.itemStack = element;
 	}
 
@@ -85,10 +86,6 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 
 	@Override
 	public ItemStack baseItemStack(Player player, Listing listing) {
-		ItemStack stack = new ItemStack(this.getEntry().getType(), this.getEntry().getAmount(), this.getEntry().getDurability());
-		ItemMeta meta = stack.getItemMeta();
-		meta.setDisplayName(ChatColor.DARK_AQUA + this.materialToName(itemStack.getType().name()));
-
 		List<String> lore = Lists.newArrayList(
 				"&7Seller: &e" + Bukkit.getServer().getOfflinePlayer(listing.getOwnerUUID()).getName(),
 				"",
@@ -97,10 +94,12 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 		if(!listing.getExpiration().equals(LocalDateTime.MAX)) {
 			lore.add(ChatColor.translateAlternateColorCodes('&', "&7Time Remaining: &e" + new Time(Duration.between(LocalDateTime.now(), listing.getExpiration()).getSeconds()).toString()));
 		}
-		meta.setLore(lore);
-		stack.setItemMeta(meta);
 
-		return stack;
+		return ItemStackUtils.itemBuilder()
+				.fromItem(this.getEntry().clone())
+				.name(ChatColor.DARK_AQUA + this.materialToName(itemStack.getType().name()))
+				.lore(lore)
+				.build();
 	}
 
 	@Override
@@ -127,7 +126,9 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 	public boolean doTakeAway(Player player) {
 		Inventory inv = player.getInventory();
 		Optional<ItemStack> item = Arrays.stream(inv.getContents()).filter(i -> i != null && i.isSimilar(this.getEntry())).findAny();
-		item.ifPresent(inv::remove);
+		item.ifPresent(i -> {
+			i.setAmount(i.getAmount() - this.getEntry().getAmount());
+		});
 		return true;
 	}
 
@@ -144,13 +145,13 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 				return "PC";
 			}
 
-			return WordUtils.capitalizeFully(sb.toString(), delimiters).replace("Poke", "Pok\u00e9");
+			return WordUtils.capitalizeFully(sb.toString(), delimiters).replace("Poke", "Pok\u00e9").replaceAll("_", " ");
 		}
 
-		return WordUtils.capitalizeFully(input, delimiters);
+		return WordUtils.capitalizeFully(input, delimiters).replaceAll("_", " ");
 	}
 
-	public static CommandResults cmdExecutor(CommandSender src, List<String> args, boolean permanent) {
+	public static CommandResults cmdExecutor(CommandIssuer src, List<String> args, boolean permanent) {
 		if(args.size() < 2) {
 			src.sendMessage(MessageUtils.parse("Not enough arguments...", true));
 			return CommandResults.FAILED;
@@ -174,13 +175,13 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 		}
 
 
-		if(src instanceof Player) {
+		if(src.getIssuer() instanceof Player) {
 			if(!src.hasPermission("gts.command.sell.items.base")) {
 				src.sendMessage(MessageUtils.parse("Unfortunately, you don't have permission to sell items...", true));
 				return CommandResults.FAILED;
 			}
 
-			Player player = (Player) src;
+			Player player = src.getIssuer();
 			Optional<ItemStack> hand = Optional.ofNullable(player.getInventory().getItemInMainHand());
 			if(!hand.isPresent()) {
 				player.sendMessage(MessageUtils.parse("You have no item in your hand to sell...", true));
@@ -198,15 +199,10 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 				amount = amount < 1 ? 1 : hand.get().getAmount();
 			}
 
-			ItemStack item = new ItemStack(hand.get().getType(), amount);
-			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(hand.get().getItemMeta().getDisplayName());
-			meta.setLore(hand.get().getItemMeta().getLore());
-			hand.get().getItemMeta().getEnchants().forEach((e, l) -> meta.addEnchant(e, l, true));
-			meta.setUnbreakable(hand.get().getItemMeta().isUnbreakable());
-			hand.get().getItemMeta().getItemFlags().forEach(meta::addItemFlags);
-			item.setItemMeta(meta);
-
+			ItemStack item = ItemStackUtils.itemBuilder()
+					.fromItem(hand.get().clone())
+					.amount(amount)
+					.build();
 			SpigotListing listing = SpigotListing.builder()
 					.entry(new SpigotItemEntry(item))
 					.id(UUID.randomUUID())

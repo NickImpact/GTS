@@ -1,5 +1,6 @@
 package me.nickimpact.gts.generations.entries;
 
+import co.aikar.commands.CommandIssuer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
@@ -317,7 +318,8 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 		return price;
 	}
 
-	public static CommandResults execute(CommandSource src, List<String> args, boolean permanent) {
+	public static CommandResults execute(CommandIssuer src, List<String> args, boolean permanent) {
+		CommandSource source = src.getIssuer();
 		Config config = PluginInstance.getInstance().getMsgConfig();
 		TextParsingUtils parser = ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils();
 
@@ -325,7 +327,7 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 			return CommandResults.FAILED;
 		}
 
-		if(src instanceof Player) {
+		if(source instanceof Player) {
 
 			int slot;
 			double price;
@@ -334,45 +336,45 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 				slot = Integer.parseInt(args.get(0));
 				price = Double.parseDouble(args.get(1));
 			} catch (Exception e) {
-				src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.INVALID_ARGS, null, null));
+				source.sendMessage(parser.fetchAndParseMsg(source, config, MsgConfigKeys.INVALID_ARGS, null, null));
 				return CommandResults.FAILED;
 			}
 
 			if (slot < 1 || slot > 6) {
-				src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.INVALID_ARGS, null, null));
+				source.sendMessage(parser.fetchAndParseMsg(source, config, MsgConfigKeys.INVALID_ARGS, null, null));
 				return CommandResults.FAILED;
 			}
 
 			if (price <= 0) {
-				src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.PRICE_NOT_POSITIVE, null, null));
+				source.sendMessage(parser.fetchAndParseMsg(source, config, MsgConfigKeys.PRICE_NOT_POSITIVE, null, null));
 				return CommandResults.FAILED;
 			}
 
 			if(price > PluginInstance.getInstance().getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE)) {
-				src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.PRICE_MAX_INVALID, null, null));
+				source.sendMessage(parser.fetchAndParseMsg(source, config, MsgConfigKeys.PRICE_MAX_INVALID, null, null));
 				return CommandResults.FAILED;
 			}
 
-			if(!src.hasPermission("gts.command.sell.pokemon.base")) {
-				src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.NO_PERMISSION, null, null));
+			if(!source.hasPermission("gts.command.sell.pokemon.base")) {
+				source.sendMessage(parser.fetchAndParseMsg(source, config, MsgConfigKeys.NO_PERMISSION, null, null));
 				return CommandResults.FAILED;
 			}
 
-			PlayerStorage party = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID(((Player) src).getUniqueId()).get();
-			EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(party.partyPokemon[slot - 1], (World) ((Player) src).getWorld());
+			PlayerStorage party = PixelmonStorage.pokeBallManager.getPlayerStorageFromUUID(((Player) source).getUniqueId()).get();
+			EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(party.partyPokemon[slot - 1], (World) ((Player) source).getWorld());
 			if(pokemon == null) {
-				src.sendMessage(parser.fetchAndParseMsg(src, GenerationsBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_EMPTY_SLOT, null, null));
+				source.sendMessage(parser.fetchAndParseMsg(source, GenerationsBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_EMPTY_SLOT, null, null));
 				return CommandResults.FAILED;
 			}
 
 			if(!pokemon.isEgg && party.getTeam().size() <= 1) {
-				src.sendMessage(parser.fetchAndParseMsg(src, GenerationsBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_LAST_MEMBER, null, null));
+				source.sendMessage(parser.fetchAndParseMsg(source, GenerationsBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.ERROR_LAST_MEMBER, null, null));
 				return CommandResults.FAILED;
 			}
 
 			if(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.BLACKLISTED_POKEMON).stream().anyMatch(species -> species.toLowerCase().equals(pokemon.getLocalizedName().toLowerCase()))) {
-				if(!src.hasPermission("gts.command.sell.pokemon.bypass")) {
-					src.sendMessage(parser.fetchAndParseMsg(src, config, MsgConfigKeys.BLACKLISTED, null, null));
+				if(!source.hasPermission("gts.command.sell.pokemon.bypass")) {
+					source.sendMessage(parser.fetchAndParseMsg(source, config, MsgConfigKeys.BLACKLISTED, null, null));
 					return CommandResults.FAILED;
 				}
 			}
@@ -380,11 +382,11 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 			SpongeListing listing = SpongeListing.builder()
 					.entry(new PokemonEntry(pokemon))
 					.id(UUID.randomUUID())
-					.owner(((Player) src).getUniqueId())
+					.owner(((Player) source).getUniqueId())
 					.price(price)
 					.expiration(permanent ? LocalDateTime.MAX : LocalDateTime.now().plusSeconds(PluginInstance.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME)))
 					.build();
-			listing.publish(PluginInstance.getInstance(), ((Player) src).getUniqueId());
+			listing.publish(PluginInstance.getInstance(), ((Player) source).getUniqueId());
 
 			return CommandResults.SUCCESSFUL;
 		}

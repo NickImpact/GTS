@@ -7,6 +7,7 @@ import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
 import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.discord.DiscordNotifier;
@@ -23,6 +24,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.text.Text;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,9 +39,15 @@ public class SpongeConfirmUI {
 
 	private boolean confirmed;
 
-	public SpongeConfirmUI(Player player, SpongeListing focus) {
+	/** These settings are for search specific settings */
+	private Searcher searcher;
+	private String input;
+
+	public SpongeConfirmUI(Player player, SpongeListing focus, @Nullable Searcher searcher, @Nullable String input) {
 		this.viewer = player;
 		this.focus = focus;
+		this.searcher = searcher;
+		this.input = input;
 		this.view = SpongeUI.builder()
 				.dimension(InventoryDimension.of(9, 6))
 				.title(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(this.viewer, GTS.getInstance().getMsgConfig(), MsgConfigKeys.UI_TITLES_CONFIRMATION, null, null))
@@ -156,7 +164,7 @@ public class SpongeConfirmUI {
 		);
 		cancel.addListener(clickable -> {
 			this.view.close(this.viewer);
-			new SpongeMainUI(this.viewer).open();
+			new SpongeMainUI(this.viewer, this.searcher, this.input).open();
 		});
 		return slb.slots(cancel, 50, 51, 52).build();
 	}

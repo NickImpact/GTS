@@ -106,12 +106,12 @@ public enum EnumPokemonFields {
 	EV_SPATK(pokemon -> pokemon.getStats().evs.specialAttack),
 	EV_SPDEF(pokemon -> pokemon.getStats().evs.specialDefence),
 	EV_SPEED(pokemon -> pokemon.getStats().evs.speed),
-	IV_HP(pokemon -> pokemon.getStats().ivs.hp),
-	IV_ATK(pokemon -> pokemon.getStats().ivs.attack),
-	IV_DEF(pokemon -> pokemon.getStats().ivs.defence),
-	IV_SPATK(pokemon -> pokemon.getStats().ivs.specialAttack),
-	IV_SPDEF(pokemon -> pokemon.getStats().ivs.specialDefence),
-	IV_SPEED(pokemon -> pokemon.getStats().ivs.speed),
+	IV_HP(pokemon -> getIV(pokemon.getStats().ivs, StatsType.HP)),
+	IV_ATK(pokemon -> getIV(pokemon.getStats().ivs, StatsType.Attack)),
+	IV_DEF(pokemon -> getIV(pokemon.getStats().ivs, StatsType.Defence)),
+	IV_SPATK(pokemon -> getIV(pokemon.getStats().ivs, StatsType.SpecialAttack)),
+	IV_SPDEF(pokemon -> getIV(pokemon.getStats().ivs, StatsType.SpecialDefence)),
+	IV_SPEED(pokemon -> getIV(pokemon.getStats().ivs, StatsType.Speed)),
 	TEXTURE(pokemon -> {
 		NBTTagCompound nbt = new NBTTagCompound();
 		pokemon.writeToNBT(nbt);
@@ -174,12 +174,16 @@ public enum EnumPokemonFields {
 		this.function = function;
 	}
 
+	public static int getIV(IVStore ivs, StatsType type) {
+		return ivs.isHyperTrained(type) ? 31 : ivs.get(type);
+	}
+
 	private static double totalEVs(EVStore evs) {
 		return evs.hp + evs.attack + evs.defence + evs.specialAttack + evs.specialDefence + evs.speed;
 	}
 
 	private static double totalIVs(IVStore ivs) {
-		return ivs.hp + ivs.attack + ivs.defence + ivs.specialAttack + ivs.specialDefence + ivs.speed;
+		return getIV(ivs, StatsType.HP) + getIV(ivs, StatsType.Attack) + getIV(ivs, StatsType.Defence) + getIV(ivs, StatsType.SpecialAttack) + getIV(ivs, StatsType.SpecialDefence) + getIV(ivs, StatsType.Speed);
 	}
 
 	private static String toRep(StatsType stat) {

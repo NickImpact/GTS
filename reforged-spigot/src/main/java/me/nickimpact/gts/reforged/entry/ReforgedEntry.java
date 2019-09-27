@@ -1,5 +1,6 @@
 package me.nickimpact.gts.reforged.entry;
 
+import co.aikar.commands.CommandIssuer;
 import com.google.common.collect.Lists;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.utilities.Time;
@@ -10,6 +11,7 @@ import com.pixelmonmod.pixelmon.comm.EnumUpdateType;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
+import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
@@ -166,12 +168,12 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 		IVStore ivs = pokemon.getIVs();
 		output.add("- IVs: " + String.format(
 				"%d/%d/%d/%d/%d/%d (%.2f%%)",
-				ivs.hp,
-				ivs.attack,
-				ivs.defence,
-				ivs.specialAttack,
-				ivs.specialDefence,
-				ivs.speed,
+				SpriteItemUtil.getIV(ivs, StatsType.HP),
+				SpriteItemUtil.getIV(ivs, StatsType.Attack),
+				SpriteItemUtil.getIV(ivs, StatsType.Defence),
+				SpriteItemUtil.getIV(ivs, StatsType.SpecialAttack),
+				SpriteItemUtil.getIV(ivs, StatsType.SpecialDefence),
+				SpriteItemUtil.getIV(ivs, StatsType.Speed),
 				SpriteItemUtil.calcIVPercent(ivs)
 		));
 
@@ -266,13 +268,13 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 		}
 	}
 
-	public static CommandResults execute(CommandSender src, List<String> args, boolean permanent) {
+	public static CommandResults execute(CommandIssuer src, List<String> args, boolean permanent) {
 		if(args.size() < 2) {
 			src.sendMessage(MessageUtils.parse("Not enough arguments...", true));
 			return CommandResults.FAILED;
 		}
 
-		if(src instanceof Player) {
+		if(src.getIssuer() instanceof Player) {
 			int slot;
 			double price;
 
@@ -305,7 +307,7 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 				return CommandResults.FAILED;
 			}
 
-			PlayerPartyStorage party = Pixelmon.storageManager.getParty(((Player) src).getUniqueId());
+			PlayerPartyStorage party = Pixelmon.storageManager.getParty(((Player) src.getIssuer()).getUniqueId());
 			Pokemon pokemon = party.get(slot - 1);
 			if(pokemon == null) {
 				src.sendMessage(MessageUtils.parse("Unfortunately, that slot is empty...", true));
@@ -327,11 +329,11 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 			SpigotListing listing = SpigotListing.builder()
 					.entry(new ReforgedEntry(pokemon))
 					.id(UUID.randomUUID())
-					.owner(((Player) src).getUniqueId())
+					.owner(((Player) src.getIssuer()).getUniqueId())
 					.price(price)
 					.expiration(permanent ? LocalDateTime.MAX : LocalDateTime.now().plusSeconds(PluginInstance.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME)))
 					.build();
-			listing.publish(PluginInstance.getInstance(), ((Player) src).getUniqueId());
+			listing.publish(PluginInstance.getInstance(), ((Player) src.getIssuer()).getUniqueId());
 
 			return CommandResults.SUCCESSFUL;
 		}

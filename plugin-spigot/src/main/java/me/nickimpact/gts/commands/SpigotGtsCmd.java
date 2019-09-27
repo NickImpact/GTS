@@ -2,8 +2,12 @@ package me.nickimpact.gts.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;
+import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.*;
+import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.holders.EntryClassification;
+import me.nickimpact.gts.api.searching.Searcher;
+import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.spigot.MessageUtils;
 import me.nickimpact.gts.ui.SpigotMainUI;
 import me.nickimpact.gts.ui.SpigotSellUI;
@@ -21,7 +25,7 @@ public class SpigotGtsCmd extends BaseCommand {
 
 	@Default
 	public void execute(Player player) {
-		new SpigotMainUI(player).open();
+		new SpigotMainUI(player, null, null).open();
 	}
 
 	@Subcommand("sell|add")
@@ -30,7 +34,7 @@ public class SpigotGtsCmd extends BaseCommand {
 
 		@Default
 		@Syntax("(type) (additional arguments) - Allows you to sell something. No type = User GUI")
-		public void execute(Player player, @Optional EntryClassification classification, @Optional String... additionals) {
+		public void execute(CommandIssuer player, @Optional EntryClassification classification, @Optional String... additionals) {
 			if(classification == null) {
 				//new SpigotSellUI(player).open();
 				player.sendMessage(MessageUtils.parse("You must specify the type of thing you wish to sell!", true));
@@ -46,6 +50,23 @@ public class SpigotGtsCmd extends BaseCommand {
 				}
 			}
 		}
+	}
+
+	@Subcommand("search")
+	@CommandPermission("gts.command.search.base")
+	public class Search extends BaseCommand {
+
+		@Default
+		@Description("Searches the GTS for a set of listings matching the specified conditions")
+		public void execute(Player player, String key, @Split(" ") String criteria) {
+			java.util.Optional<Searcher> searcher = GTS.getInstance().getAPIService().getSearcher(key);
+			if(searcher.isPresent()) {
+				new SpigotMainUI(player, searcher.get(), criteria).open();
+			} else {
+				player.sendMessage(MessageUtils.parse("No search option exists under that typing...", true));
+			}
+		}
+
 	}
 
 	@HelpCommand

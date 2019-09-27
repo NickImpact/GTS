@@ -1,5 +1,6 @@
 package me.nickimpact.gts.listings;
 
+import co.aikar.commands.CommandIssuer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
@@ -195,9 +196,10 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 		return false;
 	}
 
-	public static CommandResults cmdExecutor(CommandSource src, List<String> args, boolean permanent) {
+	public static CommandResults cmdExecutor(CommandIssuer src, List<String> args, boolean permanent) {
+		CommandSource source = src.getIssuer();
 		if(args.size() < 2) {
-			src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.INVALID_ARGS, null, null));
+			source.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(source, MsgConfigKeys.INVALID_ARGS, null, null));
 			return CommandResults.FAILED;
 		}
 
@@ -208,32 +210,32 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 			amount = Integer.parseInt(args.get(0));
 			price = Double.parseDouble(args.get(1));
 		} catch (Exception e) {
-			src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.INVALID_ARGS, null, null));
+			source.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(source, MsgConfigKeys.INVALID_ARGS, null, null));
 			return CommandResults.FAILED;
 		}
 
 		if(price <= 0) {
-			src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.PRICE_NOT_POSITIVE, null, null));
+			source.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(source, MsgConfigKeys.PRICE_NOT_POSITIVE, null, null));
 			return CommandResults.FAILED;
 		}
 
 
-		if(src instanceof Player) {
-			if(!src.hasPermission("gts.command.sell.items.base")) {
-				src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.NO_PERMISSION, null, null));
+		if(source instanceof Player) {
+			if(!source.hasPermission("gts.command.sell.items.base")) {
+				source.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(source, MsgConfigKeys.NO_PERMISSION, null, null));
 				return CommandResults.FAILED;
 			}
 
-			Player player = (Player) src;
+			Player player = (Player) source;
 			Optional<ItemStack> hand = player.getItemInHand(HandTypes.MAIN_HAND);
 			if(!hand.isPresent()) {
-				src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.ITEMS_NONE_IN_HAND, null, null));
+				source.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(source, MsgConfigKeys.ITEMS_NONE_IN_HAND, null, null));
 				return CommandResults.FAILED;
 			}
 
 			if(GTS.getInstance().getConfiguration().get(ConfigKeys.BLACKLISTED_ITEMS).contains(hand.get().getType().getName().toLowerCase())) {
-				if(!src.hasPermission("gts.command.sell.items.bypass")) {
-					src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.BLACKLISTED, null, null));
+				if(!source.hasPermission("gts.command.sell.items.bypass")) {
+					source.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(source, MsgConfigKeys.BLACKLISTED, null, null));
 					return CommandResults.FAILED;
 				}
 			}
@@ -253,7 +255,7 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 					.build();
 			listing.publish(GTS.getInstance(), player.getUniqueId());
 		} else {
-			src.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(src, MsgConfigKeys.NOT_PLAYER, null, null));
+			source.sendMessage(GTS.getInstance().getTextParsingUtils().fetchAndParseMsg(source, MsgConfigKeys.NOT_PLAYER, null, null));
 			return CommandResults.FAILED;
 		}
 

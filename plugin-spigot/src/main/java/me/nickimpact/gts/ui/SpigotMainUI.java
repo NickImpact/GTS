@@ -11,6 +11,7 @@ import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.spigot.SpigotListing;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,6 +21,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
@@ -47,6 +49,10 @@ public class SpigotMainUI {
 
 	private int runner;
 
+	/** These settings are for search specific settings */
+	private Searcher searcher;
+	private String input;
+
 	static {
 		GRAY_BORDER = new SpigotIcon(new ItemStack(Material.STAINED_GLASS_PANE, 1, (short)15));
 		ItemMeta meta = GRAY_BORDER.getDisplay().getItemMeta();
@@ -54,8 +60,11 @@ public class SpigotMainUI {
 		GRAY_BORDER.getDisplay().setItemMeta(meta);
 	}
 
-	public SpigotMainUI(Player viewer) {
+	public SpigotMainUI(Player viewer, @Nullable Searcher searcher, @Nullable String input) {
 		this.viewer = viewer;
+		this.searcher = searcher;
+		this.input = input;
+
 		this.searchConditions.add(listing -> !listing.hasExpired());
 		this.searchConditions.add(listing -> {
 			if(this.classSelection == null) return true;
@@ -76,7 +85,7 @@ public class SpigotMainUI {
 				UUID uuid = listing.getUuid();
 				if(GTS.getInstance().getAPIService().getListingManager().getListingByID(uuid).isPresent()) {
 					this.page.close();
-					new SpigotConfirmUI(this.viewer, listing).open();
+					new SpigotConfirmUI(this.viewer, listing, this.searcher, this.input).open();
 				}
 			});
 
@@ -149,7 +158,15 @@ public class SpigotMainUI {
 		List<SpigotListing> listings = Lists.newArrayList();
 		ListingManager<SpigotListing> manager = GTS.getInstance().getAPIService().getListingManager();
 		if(justPlayer) {
-			listings = manager.getListings().stream().filter(listing -> listing.getOwnerUUID().equals(this.viewer.getUniqueId())).collect(Collectors.toList());
+			listings = manager.getListings().stream()
+					.filter(listing -> listing.getOwnerUUID().equals(this.viewer.getUniqueId()))
+					.filter(listing -> {
+						if(searcher == null) {
+							return true;
+						}
+
+						return searcher.parse(listing, this.input);
+					}).collect(Collectors.toList());
 		} else {
 			if(!this.searchConditions.isEmpty()) {
 				listings = manager.getListings().stream().filter(listing -> {
@@ -159,6 +176,12 @@ public class SpigotMainUI {
 					}
 
 					return passed;
+				}).filter(listing -> {
+					if(searcher == null) {
+						return true;
+					}
+
+					return searcher.parse(listing, this.input);
 				}).collect(Collectors.toList());
 			}
 		}

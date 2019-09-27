@@ -1,6 +1,10 @@
 package me.nickimpact.gts.sponge.service;
 
+import co.aikar.commands.CommandIssuer;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSerializer;
@@ -24,10 +28,14 @@ import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Setter
-public class SpongeGtsService implements ExtendedGtsService<CommandSource> {
+public class SpongeGtsService implements ExtendedGtsService {
 
 	private final IGTSPlugin plugin;
 
@@ -40,6 +48,9 @@ public class SpongeGtsService implements ExtendedGtsService<CommandSource> {
 
 	private List<Class<? extends me.nickimpact.gts.api.deprecated.Entry>> types = Lists.newArrayList();
 	private GsonBuilder gson = new GsonBuilder().setPrettyPrinting();
+
+	private Map<String, Searcher> searcherMap = Maps.newHashMap();
+	private Multimap<Class<? extends Entry>, Function<?, Double>> minPriceExtras = ArrayListMultimap.create();
 
 	public SpongeGtsService(IGTSPlugin plugin) {
 		this.plugin = plugin;
@@ -61,7 +72,7 @@ public class SpongeGtsService implements ExtendedGtsService<CommandSource> {
 	}
 
 	@Override
-	public void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, TriFunction<CommandSource, List<String>, Boolean, CommandResults> cmd) {
+	public void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, TriFunction<CommandIssuer, List<String>, Boolean, CommandResults> cmd) {
 		try {
 			this.registry.getRegistry().register(entry);
 			this.registry.getClassifications().add(new SpongeEntryClassification(entry, identifier, rep, ui, cmd));
@@ -99,8 +110,27 @@ public class SpongeGtsService implements ExtendedGtsService<CommandSource> {
 	}
 
 	@Override
-	public void addSearcher(Searcher searcher) {
+	public void addSearcher(String key, Searcher searcher) {
+		this.searcherMap.put(key, searcher);
+	}
 
+	@Override
+	public Optional<Searcher> getSearcher(String key) {
+		return Optional.ofNullable(this.searcherMap.get(key));
+	}
+
+	@Override
+	public <T> void addMinPriceOption(Class<? extends Entry<?, T, ?, ?, ?>> type, Function<T, Double> function) {
+		this.minPriceExtras.put(type, function);
+	}
+
+	@Override
+	public <T> List<Function<T, Double>> getMinPriceOptionsForEntryType(Class<? extends Entry<?, T, ?, ?, ?>> type) {
+		return this.minPriceExtras.entries().stream()
+				.filter(entry -> entry.getKey().equals(type))
+				.map(Map.Entry::getValue)
+				.map(function -> (Function<T, Double>) function)
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -108,8 +138,8 @@ public class SpongeGtsService implements ExtendedGtsService<CommandSource> {
 		holder.getTokens().forEach((key, translator) -> tokenService.register(key, translator));
 	}
 
-	public static class SpongeEntryClassification extends EntryClassification<CommandSource> {
-		SpongeEntryClassification(Class<? extends Entry> classification, List<String> identifers, String itemRep, EntryUI ui, TriFunction<CommandSource, List<String>, Boolean, CommandResults> cmdHandler) {
+	public static class SpongeEntryClassification extends EntryClassification<CommandIssuer> {
+		SpongeEntryClassification(Class<? extends Entry> classification, List<String> identifers, String itemRep, EntryUI ui, TriFunction<CommandIssuer, List<String>, Boolean, CommandResults> cmdHandler) {
 			super(classification, identifers, itemRep, ui, cmdHandler);
 		}
 	}

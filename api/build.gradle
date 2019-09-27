@@ -12,9 +12,11 @@ buildscript {
 
 repositories {
     mavenCentral()
+    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
 }
 
 dependencies {
+    shadow "co.aikar:acf-core:0.5.0-SNAPSHOT"
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 

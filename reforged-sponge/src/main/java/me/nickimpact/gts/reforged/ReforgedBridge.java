@@ -21,6 +21,7 @@ import me.nickimpact.gts.reforged.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.reforged.deprecated.PokemonEntry;
 import me.nickimpact.gts.reforged.entries.ReforgedEntry;
 import me.nickimpact.gts.reforged.entries.ReforgedUI;
+import me.nickimpact.gts.reforged.entries.searching.ReforgedSearcher;
 import me.nickimpact.gts.reforged.text.PokemonTokens;
 import me.nickimpact.gts.sponge.service.SpongeGtsService;
 import org.spongepowered.api.Sponge;
@@ -74,7 +75,7 @@ public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 				"pixelmon:gs_ball",
 				ReforgedEntry::execute
 		);
-
+		service.addSearcher("pokemon", new ReforgedSearcher());
 		service.getAllDeprecatedTypes().add(PokemonEntry.class);
 	}
 

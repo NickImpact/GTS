@@ -5,6 +5,7 @@ import com.nickimpact.impactor.spigot.ui.SpigotIcon;
 import com.nickimpact.impactor.spigot.ui.SpigotLayout;
 import com.nickimpact.impactor.spigot.ui.SpigotUI;
 import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.discord.DiscordNotifier;
 import me.nickimpact.gts.discord.Message;
@@ -17,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public class SpigotConfirmUI {
@@ -27,9 +29,15 @@ public class SpigotConfirmUI {
 
 	private boolean confirmed;
 
-	public SpigotConfirmUI(Player viewer, SpigotListing focus) {
+	/** These settings are for search specific settings */
+	private Searcher searcher;
+	private String input;
+
+	public SpigotConfirmUI(Player viewer, SpigotListing focus, @Nullable Searcher searcher, @Nullable String input) {
 		this.viewer = viewer;
 		this.focus = focus;
+		this.searcher = searcher;
+		this.input = input;
 		this.view = SpigotUI.builder()
 				.size(54)
 				.title(ChatColor.RED + "GTS " + ChatColor.GRAY + "(" + ChatColor.DARK_AQUA + "Confirmation" + ChatColor.GRAY + ")")
@@ -128,7 +136,7 @@ public class SpigotConfirmUI {
 		SpigotIcon icon = new SpigotIcon(cancel);
 		icon.addListener(clickable -> {
 			this.view.close(this.viewer);
-			new SpigotMainUI(this.viewer).open();
+			new SpigotMainUI(this.viewer, this.searcher, this.input).open();
 		});
 		builder.slots(icon, 50, 51, 52);
 

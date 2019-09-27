@@ -10,6 +10,7 @@ import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.sponge.SpongeListing;
 import me.nickimpact.gts.utils.SpongeItemTypeUtil;
@@ -29,6 +30,7 @@ import org.spongepowered.api.item.potion.PotionTypes;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 
+import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -55,12 +57,19 @@ public class SpongeMainUI {
 
 	private Task runner;
 
+	/** These settings are for search specific settings */
+	private Searcher searcher;
+	private String input;
+
 	static {
 		GRAY_BORDER = new SpongeIcon(ItemStack.builder().itemType(ItemTypes.STAINED_GLASS_PANE).add(Keys.DISPLAY_NAME, Text.EMPTY).add(Keys.DYE_COLOR, DyeColors.GRAY).build());
 	}
 
-	public SpongeMainUI(Player viewer) {
+	public SpongeMainUI(Player viewer, @Nullable Searcher searcher, @Nullable String input) {
 		this.viewer = viewer;
+		this.searcher = searcher;
+		this.input = input;
+
 		this.searchConditions.add(listing -> !listing.hasExpired());
 		this.searchConditions.add(listing -> {
 			if(this.classSelection == null) return true;
@@ -91,7 +100,7 @@ public class SpongeMainUI {
 				UUID uuid = listing.getUuid();
 				if(GTS.getInstance().getAPIService().getListingManager().getListingByID(uuid).isPresent()) {
 					this.page.close();
-					new SpongeConfirmUI(this.viewer, listing).open();
+					new SpongeConfirmUI(this.viewer, listing, searcher, input).open();
 				}
 			});
 
@@ -161,7 +170,15 @@ public class SpongeMainUI {
 		List<SpongeListing> listings = Lists.newArrayList();
 		ListingManager<SpongeListing> manager = GTS.getInstance().getAPIService().getListingManager();
 		if(justPlayer) {
-			listings = manager.getListings().stream().filter(listing -> listing.getOwnerUUID().equals(this.viewer.getUniqueId())).collect(Collectors.toList());
+			listings = manager.getListings().stream()
+					.filter(listing -> listing.getOwnerUUID().equals(this.viewer.getUniqueId()))
+					.filter(listing -> {
+						if(searcher == null) {
+							return true;
+						}
+
+						return searcher.parse(listing, this.input);
+					}).collect(Collectors.toList());
 		} else {
 			if(!this.searchConditions.isEmpty()) {
 				listings = manager.getListings().stream().filter(listing -> {
@@ -171,6 +188,12 @@ public class SpongeMainUI {
 					}
 
 					return passed;
+				}).filter(listing -> {
+					if(searcher == null) {
+						return true;
+					}
+
+					return searcher.parse(listing, this.input);
 				}).collect(Collectors.toList());
 			}
 		}

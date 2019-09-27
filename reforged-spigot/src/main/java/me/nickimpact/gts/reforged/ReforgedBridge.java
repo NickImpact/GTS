@@ -19,6 +19,7 @@ import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.plugin.Extension;
 import me.nickimpact.gts.reforged.config.ReforgedKeys;
 import me.nickimpact.gts.reforged.entry.ReforgedEntry;
+import me.nickimpact.gts.reforged.entry.searching.ReforgedSearcher;
 import me.nickimpact.gts.reforged.ui.ReforgedUI;
 import me.nickimpact.gts.spigot.SpigotGtsService;
 import me.nickimpact.gts.spigot.SpigotListing;
@@ -63,6 +64,7 @@ public class ReforgedBridge extends JavaPlugin implements Extension, Listener {
 				"PIXELMON_GS_BALL",
 				ReforgedEntry::execute
 		);
+		this.service.addSearcher("pokemon", new ReforgedSearcher());
 		this.logger.info("Integration successful!");
 	}
 

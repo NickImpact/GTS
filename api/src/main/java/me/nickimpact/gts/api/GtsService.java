@@ -1,5 +1,6 @@
 package me.nickimpact.gts.api;
 
+import co.aikar.commands.CommandIssuer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSerializer;
@@ -18,8 +19,9 @@ import me.nickimpact.gts.api.util.TriFunction;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
-public interface GtsService<T> {
+public interface GtsService {
 
 	static GtsService getInstance() {
 		return ServiceInstance.getService();
@@ -46,7 +48,7 @@ public interface GtsService<T> {
 	 * @param ui The UI accompanying the entry
 	 * @param rep The ItemStack representation accompanying the entry
 	 */
-	void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, TriFunction<T, List<String>, Boolean, CommandResults> cmd);
+	void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, TriFunction<CommandIssuer, List<String>, Boolean, CommandResults> cmd);
 
 	BuilderRegistry getBuilderRegistry();
 
@@ -69,8 +71,15 @@ public interface GtsService<T> {
 	/**
 	 * Registers a searching option for all listings in the listing manager.
 	 *
+	 * @param key The key for the search operation
 	 * @param searcher The searcher
 	 * @since 5.1.0
 	 */
-	void addSearcher(Searcher searcher);
+	void addSearcher(String key, Searcher searcher);
+
+	Optional<Searcher> getSearcher(String key);
+
+	<T> void addMinPriceOption(Class<? extends Entry<?, T, ?, ?, ?>> type, Function<T, Double> function);
+
+	<T> List<Function<T, Double>> getMinPriceOptionsForEntryType(Class<? extends Entry<?, T, ?, ?, ?>> type);
 }
