@@ -16,6 +16,7 @@ import me.nickimpact.gts.utils.DateTimeFormatUtils;
 import me.nickimpact.gts.spigot.MessageUtils;
 import me.xanium.gemseconomy.api.GemsEconomyAPI;
 import me.xanium.gemseconomy.economy.Currency;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -68,23 +69,22 @@ public class SpigotListingManager implements ListingManager<SpigotListing> {
 			return false;
 		}
 
-		GemsEconomyAPI api = new GemsEconomyAPI();
-		Currency currency = api.getCurrency("dollars");
+		Economy economy = Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
 
 		if(config.get(ConfigKeys.MIN_PRICING_ENABLED) && listing instanceof Minable) {
 			Price price = listing.getPrice();
 			Price min = ((Minable) listing.getEntry()).calcMinPrice();
 
 			if(!((Minable) listing.getEntry()).isValid(price.getPrice())) {
-				source.ifPresent(src -> src.sendMessage(MessageUtils.parse(String.format("&7In order to sell your &a%s&7, you need to list it for the price of &a%s&7...", listing.getEntry().getName(), currency.format(min.getPrice())), true)));
+				source.ifPresent(src -> src.sendMessage(MessageUtils.parse(String.format("&7In order to sell your &a%s&7, you need to list it for the price of &a%s&7...", listing.getEntry().getName(), economy.format(min.getPrice())), true)));
 				return false;
 			}
 		}
 
 		double tax = listing.getPrice().calcTax();
 		if(tax > 0) {
-			if(api.getBalance(lister, currency) < tax) {
-				source.ifPresent(src -> src.sendMessage(MessageUtils.parse(String.format("&7Unable to afford the tax of &a%s &7for this listing...", currency.format(tax)), true)));
+			if(economy.getBalance(Bukkit.getOfflinePlayer(lister)) < tax) {
+				source.ifPresent(src -> src.sendMessage(MessageUtils.parse(String.format("&7Unable to afford the tax of &a%s &7for this listing...", economy.format(tax)), true)));
 				return false;
 			}
 		}

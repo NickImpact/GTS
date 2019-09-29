@@ -106,12 +106,12 @@ public enum EnumPokemonFields {
 	EV_SPATK(pokemon -> pokemon.getStats().evs.specialAttack),
 	EV_SPDEF(pokemon -> pokemon.getStats().evs.specialDefence),
 	EV_SPEED(pokemon -> pokemon.getStats().evs.speed),
-	IV_HP(pokemon -> getIV(pokemon.getStats().ivs, StatsType.HP)),
-	IV_ATK(pokemon -> getIV(pokemon.getStats().ivs, StatsType.Attack)),
-	IV_DEF(pokemon -> getIV(pokemon.getStats().ivs, StatsType.Defence)),
-	IV_SPATK(pokemon -> getIV(pokemon.getStats().ivs, StatsType.SpecialAttack)),
-	IV_SPDEF(pokemon -> getIV(pokemon.getStats().ivs, StatsType.SpecialDefence)),
-	IV_SPEED(pokemon -> getIV(pokemon.getStats().ivs, StatsType.Speed)),
+	IV_HP(pokemon -> (pokemon.getStats().ivs.isHyperTrained(StatsType.HP) ? "&6" : "&e") + getIV(pokemon.getStats().ivs, StatsType.HP)),
+	IV_ATK(pokemon -> (pokemon.getStats().ivs.isHyperTrained(StatsType.Attack) ? "&6" : "&e") + getIV(pokemon.getStats().ivs, StatsType.Attack)),
+	IV_DEF(pokemon -> (pokemon.getStats().ivs.isHyperTrained(StatsType.Defence) ? "&6" : "&e") + getIV(pokemon.getStats().ivs, StatsType.Defence)),
+	IV_SPATK(pokemon -> (pokemon.getStats().ivs.isHyperTrained(StatsType.SpecialAttack) ? "&6" : "&e") + getIV(pokemon.getStats().ivs, StatsType.SpecialAttack)),
+	IV_SPDEF(pokemon -> (pokemon.getStats().ivs.isHyperTrained(StatsType.SpecialDefence) ? "&6" : "&e") + getIV(pokemon.getStats().ivs, StatsType.SpecialDefence)),
+	IV_SPEED(pokemon -> (pokemon.getStats().ivs.isHyperTrained(StatsType.Speed) ? "&6" : "&e") + getIV(pokemon.getStats().ivs, StatsType.Speed)),
 	TEXTURE(pokemon -> {
 		NBTTagCompound nbt = new NBTTagCompound();
 		pokemon.writeToNBT(nbt);

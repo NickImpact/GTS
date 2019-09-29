@@ -33,6 +33,10 @@ public abstract class Entry<T, D, P, U, I> {
 		return this.getClass().getAnnotation(JsonTyping.class).value();
 	}
 
+	public T getElement() {
+		return this.element;
+	}
+
 	public abstract D getEntry();
 
 	public abstract String getSpecsTemplate();

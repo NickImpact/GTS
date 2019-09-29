@@ -55,6 +55,9 @@ public class PokemonMsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<List<String>> PE_BASE_EGGSTEPS = listKey("entry.display.lore.egg", Lists.newArrayList(
 			"&7Steps Walked: &e{{gts_egg_steps_walked}}"
 	));
+	public static final ConfigKey<List<String>> PE_BASE_HYPERTRAINED = listKey("entry.display.lore.hypertrained", Lists.newArrayList(
+			"&cHyper Trained"
+	));
 
 	// -----------------------------------------------------------------------------
 	// As of 1.1.3

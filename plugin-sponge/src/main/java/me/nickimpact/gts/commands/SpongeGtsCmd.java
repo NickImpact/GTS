@@ -6,6 +6,7 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.*;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.holders.EntryClassification;
+import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.config.MsgConfigKeys;
@@ -30,7 +31,8 @@ public class SpongeGtsCmd extends BaseCommand {
 
 	@Subcommand("sell|add")
 	@CommandPermission("gts.command.sell.base")
-	@Syntax("(type) (additional arguments) - Allows you to sell something. No type = User GUI")
+	@Description("Allows you to sell something. No type specified = User GUI")
+	@Syntax("(type) (additional arguments)")
 	public void sell(CommandIssuer issuer, @Optional EntryClassification classification, @Optional String... additionals) {
 		if(issuer.isPlayer()) {
 			Player player = issuer.getIssuer();
@@ -70,6 +72,7 @@ public class SpongeGtsCmd extends BaseCommand {
 	}
 
 	@Subcommand("ignore")
+	@Description("Allows you to ignore GTS broadcasts")
 	@CommandPermission("gts.command.ignore.base")
 	public class IgnoreSub extends BaseCommand {
 
@@ -88,6 +91,7 @@ public class SpongeGtsCmd extends BaseCommand {
 	}
 
 	@Subcommand("search")
+	@Description("Allows you to search the GTS for specific options")
 	@CommandPermission("gts.command.search.base")
 	public class Search extends BaseCommand {
 
@@ -105,6 +109,7 @@ public class SpongeGtsCmd extends BaseCommand {
 	}
 
 	@Subcommand("admin")
+	@Description("Admin functionality to GTS")
 	@CommandPermission("gts.command.admin.base")
 	public class Admin extends BaseCommand {
 
@@ -119,10 +124,17 @@ public class SpongeGtsCmd extends BaseCommand {
 			player.sendMessage(GTS.getInstance().getTextParsingUtils().parse("{{gts_error}} Functionality coming soon...", player, null, null));
 		}
 
+		@Subcommand("fix")
+		@CommandPermission("gts.command.admin.fix")
+		public void fix(CommandSource issuer) {
+			((List<Listing>) GTS.getInstance().getAPIService().getListingManager().getListings()).removeIf(listing -> listing.getEntry().getElement() == null);
+			issuer.sendMessage(GTS.getInstance().getTextParsingUtils().parse("{{gts_prefix}} Removed any broken listings!", issuer, null, null));
+		}
+
 	}
 
 	@HelpCommand
 	public void onHelp(Player player, CommandHelp help) {
-
+		help.showHelp();
 	}
 }

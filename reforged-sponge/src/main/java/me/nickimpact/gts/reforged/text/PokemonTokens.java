@@ -8,6 +8,7 @@ import me.nickimpact.gts.reforged.entries.ReforgedEntry;
 import me.nickimpact.gts.sponge.Translator;
 import me.nickimpact.gts.sponge.text.TokenHolder;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Map;
 import java.util.Optional;
@@ -93,7 +94,12 @@ public class PokemonTokens implements TokenHolder {
 
 	private static Text getPokemonInfo(Pokemon pokemon, EnumPokemonFields field) {
 		if (pokemon != null) {
-			return Text.of(field.function.apply(pokemon));
+			Object out = field.function.apply(pokemon);
+			if(out instanceof String) {
+				return Text.of(TextSerializers.FORMATTING_CODE.deserialize((String) field.function.apply(pokemon)));
+			} else {
+				return Text.of(field.function.apply(pokemon));
+			}
 		}
 		return Text.EMPTY;
 	}
