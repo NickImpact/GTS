@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 public class SpigotListingManager implements ListingManager<SpigotListing> {
 
 	private List<SpigotListing> listings = Lists.newArrayList();
+	private List<UUID> ignorers = Lists.newArrayList();
 
 	@Override
 	public Optional<SpigotListing> getListingByID(UUID uuid) {
@@ -43,7 +44,7 @@ public class SpigotListingManager implements ListingManager<SpigotListing> {
 
 	@Override
 	public List<UUID> getIgnorers() {
-		return null;
+		return this.ignorers;
 	}
 
 	@Override

@@ -23,6 +23,7 @@ import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
+import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.reforged.ReforgedBridge;
 import me.nickimpact.gts.reforged.config.ReforgedKeys;
 import me.nickimpact.gts.reforged.utils.Flags;
@@ -53,6 +54,7 @@ import java.util.stream.Collectors;
 public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 
 	private transient Pokemon pokemon;
+	private transient boolean messaged;
 
 	public ReforgedEntry(Pokemon element) {
 		super(GsonUtils.serialize(element.writeToNBT(new NBTTagCompound())));
@@ -213,7 +215,13 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 	@Override
 	public boolean giveEntry(OfflinePlayer user) {
 		PlayerPartyStorage storage = Pixelmon.storageManager.getParty(user.getUniqueId());
-		storage.add(this.getEntry());
+		if(!storage.add(this.getEntry())) {
+			if(!messaged) {
+				user.getPlayer().sendMessage(MessageUtils.parse("Your pokemon storage is unfortunately full...", true));
+				messaged = true;
+			}
+			return false;
+		}
 		return true;
 	}
 

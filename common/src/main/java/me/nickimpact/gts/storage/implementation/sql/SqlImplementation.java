@@ -154,36 +154,55 @@ public class SqlImplementation implements StorageImplementation {
 		return this.connectionFactory.getMeta();
 	}
 
+	@FunctionalInterface
+	private interface SQLPrepared<T> {
+		T prepare(Connection connection, PreparedStatement ps) throws Exception;
+	}
+
+	private <T> T query(String key, SQLPrepared<T> action) throws Exception {
+		try(Connection connection = this.connectionFactory.getConnection()) {
+			try(PreparedStatement ps = connection.prepareStatement(this.processor.apply(key))) {
+				return action.prepare(connection, ps);
+			}
+		}
+	}
+
+	@FunctionalInterface
+	private interface SQLResults<T> {
+		T results(ResultSet rs) throws Exception;
+	}
+
+	private <T> T results(PreparedStatement ps, SQLResults<T> action) throws Exception {
+		try(ResultSet rs = ps.executeQuery()) {
+			return action.results(rs);
+		}
+	}
+
 	@Override
 	public boolean addListing(Listing listing) throws Exception {
-		Connection connection = connectionFactory.getConnection();
-		Clob clob = connection.createClob();
+		return this.query(ADD_LISTING, (connection, ps) -> {
+			ps.setString(1, listing.getUuid().toString());
+			ps.setString(2, listing.getOwnerUUID().toString());
 
-		String stmt = processor.apply(ADD_LISTING);
-		PreparedStatement ps = connection.prepareStatement(stmt);
-		ps.setString(1, listing.getUuid().toString());
-		ps.setString(2, listing.getOwnerUUID().toString());
+			Clob clob = connection.createClob();
+			clob.setString(1, this.plugin.getGson().toJson(listing.getEntry(), Entry.class));
 
-		clob.setString(1, this.plugin.getGson().toJson(listing.getEntry(), Entry.class));
+			ps.setClob(3, clob);
+			ps.setDouble(4, listing.getPrice().getPrice());
+			ps.setTimestamp(5, Timestamp.valueOf(listing.getExpiration()));
+			ps.executeUpdate();
 
-		ps.setClob(3, clob);
-		ps.setDouble(4, listing.getPrice().getPrice());
-		ps.setTimestamp(5, Timestamp.valueOf(listing.getExpiration()));
-		ps.executeUpdate();
-
-		return true;
+			return true;
+		});
 	}
 
 	@Override
 	public boolean deleteListing(UUID uuid) throws Exception {
-		Connection connection = connectionFactory.getConnection();
-
-		String stmt = processor.apply(REMOVE_LISTING);
-		PreparedStatement ps = connection.prepareStatement(stmt);
-		ps.setString(1, uuid.toString());
-		ps.executeUpdate();
-
-		return true;
+		return this.query(REMOVE_LISTING, (connection, ps) -> {
+			ps.setString(1, uuid.toString());
+			ps.executeUpdate();
+			return true;
+		});
 	}
 
 	@Override
@@ -193,172 +212,163 @@ public class SqlImplementation implements StorageImplementation {
 		if(tableExists(this.processor.apply("{prefix}listings_v2")) && this.plugin.getPlatform().equals(Platform.Sponge)) {
 			this.plugin.getPluginLogger().warn("Detected old database, collecting and updating data...");
 
-			Connection connection = this.connectionFactory.getConnection();
-			PreparedStatement ps = connection.prepareStatement(this.processor.apply(FETCH_OLD));
-			ResultSet results = ps.executeQuery();
-			int failed = 0;
-			while(results.next()) {
-				String json = results.getString("listing");
+			int failed = this.query(FETCH_OLD, (connection, ps) -> this.results(ps, results -> {
+				int f = 0;
+				while(results.next()) {
+					String json = results.getString("listing");
 
-				if(this.connectionFactory instanceof MySQLConnectionFactory) {
-					String before = json.substring(0, json.indexOf("\"{") + 2);
-					String toConvert = json.substring(before.length(), json.indexOf("\"price\"", before.length()) - 8);
-					String after = json.substring(before.length() + toConvert.length());
-					String reformatted = before;
-					reformatted += Pattern.compile("\"").matcher(toConvert).replaceAll("\\\\\"");
-					reformatted += after;
+					if(this.connectionFactory instanceof MySQLConnectionFactory) {
+						String before = json.substring(0, json.indexOf("\"{") + 2);
+						String toConvert = json.substring(before.length(), json.indexOf("\"price\"", before.length()) - 8);
+						String after = json.substring(before.length() + toConvert.length());
+						String reformatted = before;
+						reformatted += Pattern.compile("\"").matcher(toConvert).replaceAll("\\\\\"");
+						reformatted += after;
 
-					json = reformatted;
+						json = reformatted;
+					}
+
+					try {
+						me.nickimpact.gts.deprecated.Listing old = this.plugin.getAPIService().getDeprecatedGson().fromJson(json, me.nickimpact.gts.deprecated.Listing.class);
+						Listing updated = Listing.builder(this.plugin)
+								.entry(this.convert(old.getEntry()))
+								.price(old.getEntry().getPrice().getPrice().doubleValue())
+								.id(old.getUuid())
+								.owner(old.getOwnerUUID())
+								.expiration(LocalDateTime.ofInstant(old.getExpiration().toInstant(), ZoneId.systemDefault()))
+								.build();
+						entries.add(updated);
+					} catch (Exception e) {
+						this.plugin.getPluginLogger().error("Unable to read listing data for listing with ID: " + results.getString("uuid"));
+						this.plugin.getPluginLogger().error("Listing JSON: \n" + json);
+						e.printStackTrace();
+						++f;
+					}
 				}
-
-				try {
-					me.nickimpact.gts.deprecated.Listing old = this.plugin.getAPIService().getDeprecatedGson().fromJson(json, me.nickimpact.gts.deprecated.Listing.class);
-					Listing updated = Listing.builder(this.plugin)
-							.entry(this.convert(old.getEntry()))
-							.price(old.getEntry().getPrice().getPrice().doubleValue())
-							.id(old.getUuid())
-							.owner(old.getOwnerUUID())
-							.expiration(LocalDateTime.ofInstant(old.getExpiration().toInstant(), ZoneId.systemDefault()))
-							.build();
-					entries.add(updated);
-				} catch (Exception e) {
-					this.plugin.getPluginLogger().error("Unable to read listing data for listing with ID: " + results.getString("uuid"));
-					this.plugin.getPluginLogger().error("Listing JSON: \n" + json);
-					e.printStackTrace();
-					++failed;
-				}
-			}
-			results.close();
+				return f;
+			}));
 
 			this.plugin.getPluginLogger().warn(String.format("Read in %d listings, attempting to convert...", entries.size()));
-			final int f = failed;
 			if(this.transfer(Lists.newArrayList(entries))) {
 				try {
-					if (f == 0) {
+					if (failed == 0) {
 						this.plugin.getPluginLogger().warn("Purging old table...");
-						PreparedStatement p = connection.prepareStatement(processor.apply("DROP TABLE {prefix}listings_v2"));
-						p.executeUpdate();
+						this.query("DROP TABLE {prefix}listings_v2", (connection, ps) -> {
+							ps.executeUpdate();
+							return null;
+						});
 					} else {
 						if (entries.size() != 0) {
-							this.plugin.getPluginLogger().warn(String.format("Failed to read %d listings, will preserve database for now...", f));
+							this.plugin.getPluginLogger().warn(String.format("Failed to read %d listings, will preserve database for now...", failed));
 						}
 					}
 				} catch (Exception e) {
-					this.plugin.getPluginLogger().warn(String.format("Failed to read %d listings, will preserve database for now...", f));
+					this.plugin.getPluginLogger().warn(String.format("Failed to read %d listings, will preserve database for now...", failed));
 				}
 			}
 
 			return entries;
 		}
 
-		Connection connection = this.connectionFactory.getConnection();
-		PreparedStatement query = connection.prepareStatement(this.processor.apply(SELECT_ALL_LISTINGS));
-		ResultSet results = query.executeQuery();
+		return this.query(SELECT_ALL_LISTINGS, (connection, ps) -> this.results(ps, results -> {
+			int failed = 0;
+			while(results.next()) {
+				try {
+					UUID id = UUID.fromString(results.getString("id"));
+					UUID owner = UUID.fromString(results.getString("owner"));
+					String entry = results.getString("entry");
+					double price = results.getDouble("price");
+					LocalDateTime date = results.getTimestamp("expiration").toLocalDateTime();
 
-		int failed = 0;
-		while(results.next()) {
-			try {
-				UUID id = UUID.fromString(results.getString("id"));
-				UUID owner = UUID.fromString(results.getString("owner"));
-				String entry = results.getString("entry");
-				double price = results.getDouble("price");
-				LocalDateTime date = results.getTimestamp("expiration").toLocalDateTime();
-
-				Listing listing = Listing.builder(this.plugin)
-						.id(id)
-						.owner(owner)
-						.entry(this.plugin.getGson().fromJson(entry, Entry.class))
-						.price(Math.min(this.plugin.getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE), price))
-						.expiration(date)
-						.build();
-				entries.add(listing);
-			} catch (JsonParseException e) {
-				++failed;
+					Listing listing = Listing.builder(this.plugin)
+							.id(id)
+							.owner(owner)
+							.entry(this.plugin.getGson().fromJson(entry, Entry.class))
+							.price(Math.min(this.plugin.getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE), price))
+							.expiration(date)
+							.build();
+					entries.add(listing);
+				} catch (JsonParseException e) {
+					++failed;
+				}
 			}
-		}
 
-		if(failed != 0) {
-			plugin.getPluginLogger().error("Failed to read in &c" + failed + " &7listings...");
-		}
+			if(failed != 0) {
+				plugin.getPluginLogger().error("Failed to read in &c" + failed + " &7listings...");
+			}
 
-		return entries;
+			return entries;
+		}));
 	}
 
 	@Override
 	public boolean addIgnorer(UUID uuid) throws Exception {
-		Connection connection = connectionFactory.getConnection();
+		return this.query(ADD_IGNORER, (connection, ps) -> {
+			ps.setString(1, uuid.toString());
+			ps.executeUpdate();
 
-		String stmt = processor.apply(ADD_IGNORER);
-		PreparedStatement ps = connection.prepareStatement(stmt);
-		ps.setString(1, uuid.toString());
-		ps.executeUpdate();
-
-		return true;
+			return true;
+		});
 	}
 
 	@Override
 	public boolean removeIgnorer(UUID uuid) throws Exception {
-		Connection connection = connectionFactory.getConnection();
+		return this.query(REMOVE_IGNORER, (connection, ps) -> {
+			ps.setString(1, uuid.toString());
+			ps.executeUpdate();
 
-		String stmt = processor.apply(REMOVE_IGNORER);
-		PreparedStatement ps = connection.prepareStatement(stmt);
-		ps.setString(1, uuid.toString());
-		ps.executeUpdate();
-
-		return true;
+			return true;
+		});
 	}
 
 	@Override
 	public List<UUID> getAllIgnorers() throws Exception {
-		List<UUID> ignorers = Lists.newArrayList();
-		Connection connection = this.connectionFactory.getConnection();
-		PreparedStatement query = connection.prepareStatement(this.processor.apply(GET_IGNORERS));
-		ResultSet results = query.executeQuery();
-
-		while(results.next()) {
-			ignorers.add(UUID.fromString(results.getString("uuid")));
-		}
-
-		return ignorers;
+		return this.query(GET_IGNORERS, (connection, ps) -> this.results(ps, results -> {
+			List<UUID> ignorers = Lists.newArrayList();
+			while(results.next()) {
+				ignorers.add(UUID.fromString(results.getString("uuid")));
+			}
+			return ignorers;
+		}));
 	}
 
 	@Override
 	public boolean addToSoldListings(UUID owner, SoldListing listing) throws Exception {
-		Connection connection = this.connectionFactory.getConnection();
-		PreparedStatement ps = connection.prepareStatement(this.processor.apply(ADD_SOLD_LISTING));
-		ps.setString(1, listing.getId().toString());
-		ps.setString(2, owner.toString());
-		ps.setString(3, listing.getNameOfEntry());
-		ps.setDouble(4, listing.getMoneyReceived());
-		ps.executeUpdate();
+		return this.query(ADD_SOLD_LISTING, (connection, ps) -> {
+			ps.setString(1, listing.getId().toString());
+			ps.setString(2, owner.toString());
+			ps.setString(3, listing.getNameOfEntry());
+			ps.setDouble(4, listing.getMoneyReceived());
+			ps.executeUpdate();
 
-		return true;
+			return true;
+		});
 	}
 
 	@Override
 	public List<SoldListing> getAllSoldListingsForPlayer(UUID uuid) throws Exception {
-		List<SoldListing> sold = Lists.newArrayList();
+		return this.query(GET_SOLD_LISTINGS, (connection, ps) -> {
+			ps.setString(1, uuid.toString());
+			return this.results(ps, rs -> {
+				List<SoldListing> sold = Lists.newArrayList();
+				while(rs.next()) {
+					sold.add(SoldListing.builder().id(UUID.fromString(rs.getString("id"))).name(rs.getString("name")).money(rs.getDouble("price")).build());
+				}
 
-		Connection connection = this.connectionFactory.getConnection();
-		PreparedStatement ps = connection.prepareStatement(this.processor.apply(GET_SOLD_LISTINGS));
-		ps.setString(1, uuid.toString());
-		ResultSet rs = ps.executeQuery();
-		while(rs.next()) {
-			sold.add(SoldListing.builder().id(UUID.fromString(rs.getString("id"))).name(rs.getString("name")).money(rs.getDouble("price")).build());
-		}
-
-		return sold;
+				return sold;
+			});
+		});
 	}
 
 	@Override
 	public boolean deleteSoldListing(UUID id, UUID owner) throws Exception {
-		Connection connection = this.connectionFactory.getConnection();
-		PreparedStatement ps = connection.prepareStatement(this.processor.apply(REMOVE_SOLD_LISTING));
-		ps.setString(1, id.toString());
-		ps.setString(2, owner.toString());
-		ps.executeUpdate();
+		return this.query(REMOVE_SOLD_LISTING, (connection, ps) -> {
+			ps.setString(1, id.toString());
+			ps.setString(2, owner.toString());
+			ps.executeUpdate();
 
-		return true;
+			return true;
+		});
 	}
 
 	@Override

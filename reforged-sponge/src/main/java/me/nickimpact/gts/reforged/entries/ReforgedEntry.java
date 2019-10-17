@@ -53,6 +53,7 @@ import java.util.stream.Collectors;
 public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minable<MoneyPrice> {
 
 	private transient Pokemon pokemon;
+	private transient boolean messaged;
 
 	public ReforgedEntry() {}
 
@@ -201,7 +202,15 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 	@Override
 	public boolean giveEntry(User user) {
 		PlayerPartyStorage storage = Pixelmon.storageManager.getParty(user.getUniqueId());
-		storage.add(this.getEntry());
+		if(!storage.add(this.getEntry())) {
+			if(!messaged) {
+				TextParsingUtils parser = ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils();
+				user.getPlayer().ifPresent(player -> player.sendMessage(parser.fetchAndParseMsg(player, ReforgedBridge.getInstance().getMsgConfig(), PokemonMsgConfigKeys.STORAGE_FULL, null, null)));
+				messaged = true;
+			}
+
+			return false;
+		}
 		return true;
 	}
 

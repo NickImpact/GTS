@@ -7,7 +7,8 @@ stages:
 build:
   stage: build
   script:
-    - gradle :api:clean :api:build --configure-on-demand
+    - gradle setupDecompWorkspace
+    - gradle clean build
   artifacts:
     name: GTS-${CI_COMMIT_REF_NAME}
     paths:
@@ -17,4 +18,4 @@ build:
 deploy:
   stage: deploy
   script:
-    - gradle :api:publish -Pnexus-username=${NEXUS_USERNAME} -Pnexus-password=${NEXUS_PASSWORD} --configure-on-demand
+    - gradle publish -Pnexus-username=${NEXUS_USERNAME} -Pnexus-password=${NEXUS_PASSWORD} --configure-on-demand

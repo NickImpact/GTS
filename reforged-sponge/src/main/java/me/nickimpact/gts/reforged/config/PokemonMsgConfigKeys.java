@@ -74,6 +74,7 @@ public class PokemonMsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> ERROR_UNTRADABLE = stringKey("general.errors.untradable", "{{gts_error}} That pokemon is marked as untradable, and cannot be sold...");
 	public static final ConfigKey<String> ERROR_IN_BATTLE = stringKey("general.errors.in-battle", "{{gts_error}} You are in battle, so you can't sell any pokemon currently...");
 	public static final ConfigKey<List<String>> REFERENCE_TITLES = listKey("general.reference.titles", Lists.newArrayList("Pokemon"));
+	public static final ConfigKey<String> STORAGE_FULL = stringKey("general.errors.storage-full", "{[gts_error}} Your pokemon storage is currently full...");
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
