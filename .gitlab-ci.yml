@@ -7,8 +7,7 @@ stages:
 build:
   stage: build
   script:
-    - gradle setupDecompWorkspace
-    - gradle clean build
+    - gradle clean build --stacktrace
   artifacts:
     name: GTS-${CI_COMMIT_REF_NAME}
     paths:
