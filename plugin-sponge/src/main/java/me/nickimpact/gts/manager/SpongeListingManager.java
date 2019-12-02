@@ -3,6 +3,7 @@ package me.nickimpact.gts.manager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
+import com.nickimpact.impactor.api.utilities.Time;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.ListingManager;
@@ -31,6 +32,8 @@ import org.spongepowered.api.service.user.UserStorageService;
 import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,6 +46,8 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 
 	private List<SpongeListing> listings = Lists.newArrayList();
 	private List<UUID> ignorers = Lists.newArrayList();
+
+	private Map<UUID, LocalDateTime> cooldowns = Maps.newHashMap();
 
 	@Override
 	public Optional<SpongeListing> getListingByID(UUID uuid) {
@@ -70,11 +75,23 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 			return false;
 		}
 
+		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+		if(config.get(ConfigKeys.COOLDOWNS_ENABLED)) {
+			if (cooldowns.containsKey(lister)) {
+				LocalDateTime last = cooldowns.get(lister);
+				long seconds = Duration.between(last, LocalDateTime.now()).getSeconds();
+				if (seconds < config.get(ConfigKeys.COOLDOWN_WAIT)) {
+					tokens.put("gts_cooldown_wait_time", src -> Optional.of(Text.of(new Time(config.get(ConfigKeys.COOLDOWN_WAIT) - seconds).toString())));
+
+					source.ifPresent(src -> src.sendMessage(parser.parse(msgConfig.get(MsgConfigKeys.COOLDOWN_COOLING), src, tokens, null)));
+					return false;
+				}
+			}
+		}
+
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
 		variables.put("entry", listing.getEntry().getEntry());
-
-		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
 
 		if(this.hasMaxListings(lister)) {
 			source.ifPresent(src -> src.sendMessages(parser.parse(
@@ -152,6 +169,10 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 			if(!source.get().getUniqueId().equals(player.getUniqueId()) && !ignorers.contains(player.getUniqueId())) {
 				player.sendMessages(parser.parse(msgConfig.get(MsgConfigKeys.ADD_BROADCAST), source.get(), tokens, variables));
 			}
+		}
+
+		if(config.get(ConfigKeys.COOLDOWNS_ENABLED)) {
+			cooldowns.put(lister, LocalDateTime.now());
 		}
 
 		List<String> details = Lists.newArrayList("");

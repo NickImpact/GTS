@@ -22,7 +22,7 @@ minecraft {
 }
 
 shadowJar {
-    archiveName = "GTS-Spigot-Reforged-7.0.7-${project.version}.jar"
+    archiveName = "GTS-Spigot-Reforged-7.1.1-${project.version}.jar"
     exclude 'GemsEconomy.jar'
     exclude 'Impactor*.jar'
 }
@@ -59,7 +59,7 @@ dependencies {
     shadow project(':api')
     shadow project(':common')
     shadow project(':spigot')
-    shadow 'reforged:server:7.0.8@Pixelmon-1.12.2-7.0.8-server.jar'
+    shadow 'reforged:server:7.1.1@Pixelmon-1.12.2-7.1.1-server.jar'
     shadow "org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT"
     shadow "org.spigotmc:spigot:1.12.2-R0.1-SNAPSHOT"
     shadow 'io.netty:netty-buffer:4.1.36.Final'

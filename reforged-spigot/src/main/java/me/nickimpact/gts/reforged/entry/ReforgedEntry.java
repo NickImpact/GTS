@@ -234,7 +234,7 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 		}
 
 		if(Flags.UNTRADABLE.matches(this.getEntry())) {
-			player.sendMessage(MessageUtils.parse("That pokemon is marked as untradable...", true));
+			player.sendMessage(MessageUtils.parse("That pokemon is marked as untradeable...", true));
 			return false;
 		}
 

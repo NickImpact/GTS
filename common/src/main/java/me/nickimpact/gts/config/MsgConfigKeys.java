@@ -216,6 +216,8 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> IGNORE_OFF = stringKey("general.ignoring-broadcasts.off", "{{gts_prefix}} No longer ignoring broadcasts");
 	public static final ConfigKey<String> SOLD_LISTING_INFORM = stringKey("general.listings.inform-of-sell", "{{gts_prefix}} Your &e{{listing_name}} &7has been sold for &a{{gts_price}}&7!");
 	public static final ConfigKey<String> SEARCH_NO_OPTION = stringKey("general.errors.searching.no-option", "{{gts_error}} No search option exists for that typing...");
+	public static final ConfigKey<String> COOLDOWN_COOLING = stringKey("general.errors.cooldowns.cooling", "{{gts_error}} &7You must wait an additional &a{{gts_cooldown_wait_time}} &7before listing another listing!");
+
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

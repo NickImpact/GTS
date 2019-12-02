@@ -28,16 +28,19 @@ public class GsonUtils {
 			try {
 				NBTBase base = nbt.getTag(key);
 				map.put(key, fetch(base));
-			} catch (Exception ignored) {}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		return map;
 	}
 
-	@SuppressWarnings("unchecked")
-	private static List<Map<String, Object>> nbtToList(NBTTagList base) {
-		List<Map<String, Object>> result = Lists.newArrayList();
-		base.iterator().forEachRemaining(b -> result.add((Map<String, Object>) fetch(b)));
+	private static List<Object> nbtToList(NBTTagList base) {
+		List<Object> result = Lists.newArrayList();
+		base.iterator().forEachRemaining(b -> {
+			result.add(fetch(b));
+		});
 		return result;
 	}
 
@@ -61,16 +64,30 @@ public class GsonUtils {
 		for (String key : map.keySet()) {
 			try {
 				apply(nbt, key, map.get(key));
-			} catch (Exception ignored) {}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		return nbt;
 	}
 
-	private static NBTTagList nbtFromList(List<Map<String, Object>> list) {
+	private static NBTTagList nbtFromList(List<Object> list) {
 		NBTTagList nList = new NBTTagList();
-		list.forEach(entry -> nList.appendTag(nbtFromMap(entry)));
+		list.forEach(entry -> nList.appendTag(read(entry)));
 		return nList;
+	}
+
+	private static NBTBase read(Object in) {
+		if(in instanceof String) {
+			return new NBTTagString((String) in);
+		} else if(in instanceof Map) {
+			return nbtFromMap((Map<String, Object>) in);
+		} else if(in instanceof List) {
+			return nbtFromList((List<Object>) in);
+		} else {
+			return new NBTTagDouble((Double) in);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -80,7 +97,7 @@ public class GsonUtils {
 		else if (obj instanceof Map)
 			nbt.setTag(key, nbtFromMap((Map<String, Object>) obj));
 		else if (obj instanceof List)
-			nbt.setTag(key, nbtFromList((List<Map<String, Object>>) obj));
+			nbt.setTag(key, nbtFromList((List<Object>) obj));
 		else
 			nbt.setDouble(key, (Double) obj);
 	}

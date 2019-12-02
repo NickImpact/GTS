@@ -187,6 +187,8 @@ public class SqlImplementation implements StorageImplementation {
 			Clob clob = connection.createClob();
 			clob.setString(1, this.plugin.getGson().toJson(listing.getEntry(), Entry.class));
 
+			plugin.getPluginLogger().debug(this.plugin.getGson().toJson(listing.getEntry(), Entry.class));
+
 			ps.setClob(3, clob);
 			ps.setDouble(4, listing.getPrice().getPrice());
 			ps.setTimestamp(5, Timestamp.valueOf(listing.getExpiration()));

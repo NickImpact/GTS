@@ -27,9 +27,19 @@ import java.util.function.Function;
 public enum EnumPokemonFields {
 
 	NAME(pokemon -> {
+		if(pokemon.getSpecies().getPokemonName().equals("Yamper")) {
+			return "Corgi";
+		}
 		return pokemon.getSpecies().getLocalizedName();
 	}),
-	ABILITY(pokemon -> pokemon.getAbility().getLocalizedName()),
+	ABILITY(pokemon -> {
+		boolean ha = pokemon.getAbilitySlot() == 2;
+		if(ha) {
+			return Text.of(pokemon.getAbility().getLocalizedName(), " ", TextColors.GRAY, "(", TextColors.GOLD, "HA", TextColors.GRAY, ")");
+		} else {
+			return Text.of(pokemon.getAbility().getLocalizedName());
+		}
+	}),
 	NATURE(pokemon -> pokemon.getNature().getLocalizedName()),
 	NATURE_INCREASED(pokemon -> "+" + toRep(pokemon.getNature().increasedStat)),
 	NATURE_DECREASED(pokemon -> "-" + toRep(pokemon.getNature().decreasedStat)),

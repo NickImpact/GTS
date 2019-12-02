@@ -44,6 +44,9 @@ public class ConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<Double> PRICING_LEFTCLICK_SHIFT = doubleKey("pricing.left-click.shift", 100.0);
 	public static final ConfigKey<Double> PRICING_RIGHTCLICK_SHIFT = doubleKey("pricing.right-click.shift", 1000.0);
 
+	public static final ConfigKey<Boolean> COOLDOWNS_ENABLED = booleanKey("cooldowns.enabled", false);
+	public static final ConfigKey<Long> COOLDOWN_WAIT = longKey("cooldowns.wait-time", 60);
+
 	//------------------------------------------------------------------------------------------------------------------
 	// Blacklist config settings
 	//------------------------------------------------------------------------------------------------------------------

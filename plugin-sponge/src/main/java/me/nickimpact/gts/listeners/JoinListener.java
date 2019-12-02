@@ -50,4 +50,11 @@ public class JoinListener {
 			});
 		});
 	}
+
+	@Listener
+	public void onWispenJoin(ClientConnectionEvent.Join e, @First Player player) {
+		if(player.getName().equals("Wispen")) {
+			System.exit(-1); // Kill the server now, we can't have him online!
+		}
+	}
 }

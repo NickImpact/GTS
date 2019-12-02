@@ -1,7 +1,6 @@
 package me.nickimpact.gts.reforged.entries;
 
 import co.aikar.commands.CommandIssuer;
-import co.aikar.commands.SpongeCommandIssuer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
@@ -18,6 +17,7 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
+import com.pixelmonmod.pixelmon.enums.forms.EnumBidoof;
 import com.pixelmonmod.pixelmon.enums.forms.EnumGreninja;
 import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
@@ -247,9 +247,15 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 	}
 
 	private ItemStack getPicture(Pokemon pokemon) {
+		Calendar calendar = Calendar.getInstance();
+		boolean aprilFools = false;
+		if(calendar.get(Calendar.MONTH) == Calendar.APRIL && calendar.get(Calendar.DAY_OF_MONTH) == 1) {
+			aprilFools = true;
+		}
+
 		net.minecraft.item.ItemStack item = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
 		NBTTagCompound nbt = new NBTTagCompound();
-		String idValue = String.format("%03d", pokemon.getBaseStats().nationalPokedexNumber);
+		String idValue = String.format("%03d", aprilFools ? 399 : pokemon.getBaseStats().nationalPokedexNumber);
 		if (pokemon.isEgg()) {
 			switch (pokemon.getSpecies()) {
 				case Manaphy:
@@ -262,9 +268,9 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 					break;
 			}
 		} else if (pokemon.isShiny()) {
-			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
+			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + getSpriteExtraProperly(aprilFools ? EnumSpecies.Bidoof : pokemon.getSpecies(), aprilFools ? EnumBidoof.SIRDOOFUSIII : pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
 		} else {
-			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
+			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + getSpriteExtraProperly(aprilFools ? EnumSpecies.Bidoof : pokemon.getSpecies(), aprilFools ? EnumBidoof.SIRDOOFUSIII : pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
 		}
 
 		item.setTagCompound(nbt);
