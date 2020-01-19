@@ -22,7 +22,7 @@ minecraft {
 }
 
 shadowJar {
-    archiveName = "GTS-Generations-2.8.0-${project.ext.sponge}-${project.version}.jar"
+    archiveName = "GTS-Generations-2.9.2-${project.ext.sponge}-${project.version}.jar"
     exclude 'Impactor*.jar'
     exclude 'Pixelmon*.jar'
 }
@@ -42,7 +42,7 @@ repositories {
         url 'http://repo.drnaylor.co.uk/artifactory/list/quickstart'
     }
     ivy {
-        url "https://download.nodecdn.net/containers"
+        url "https://drive.google.com/file/d/"
         layout "pattern", {
             artifact "/[organisation]/[module]/release/[revision]/[ext]"
         }
@@ -55,7 +55,7 @@ dependencies {
     shadow project(':common')
     shadow 'org.spongepowered:spongeapi:7.1.0'
     shadow 'io.github.nucleuspowered:nucleus-api:1.11.0-S7.1'
-    compile fileTree(dir: '/libs', include: '*.jar')
+    compile fileTree(dir: 'libs', include: '*.jar')
 }
 
 reobf {

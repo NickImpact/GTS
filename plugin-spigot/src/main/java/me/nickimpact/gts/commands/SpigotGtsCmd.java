@@ -37,7 +37,7 @@ public class SpigotGtsCmd extends BaseCommand {
 		public void execute(CommandIssuer player, @Optional EntryClassification classification, @Optional String... additionals) {
 			if(classification == null) {
 				//new SpigotSellUI(player).open();
-				player.sendMessage(MessageUtils.parse("You must specify the type of thing you wish to sell!", true));
+				player.sendMessage(GTS.getInstance().getTokenService().process(MsgConfigKeys.SELL_CMD_INVALID, player.getIssuer(), null, null));
 			} else {
 				if(player.hasPermission("gts.command.sell." + classification.getPrimaryIdentifier().toLowerCase())) {
 					boolean perm = false;

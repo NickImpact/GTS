@@ -11,7 +11,9 @@ import com.nickimpact.impactor.spigot.configuration.SpigotConfig;
 import com.nickimpact.impactor.spigot.configuration.SpigotConfigAdapter;
 import com.nickimpact.impactor.spigot.logging.SpigotLogger;
 import com.pixelmonmod.pixelmon.Pixelmon;
+import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
+import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
@@ -23,6 +25,7 @@ import me.nickimpact.gts.reforged.entry.searching.ReforgedSearcher;
 import me.nickimpact.gts.reforged.ui.ReforgedUI;
 import me.nickimpact.gts.spigot.SpigotGtsService;
 import me.nickimpact.gts.spigot.SpigotListing;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -103,7 +106,7 @@ public class ReforgedBridge extends JavaPlugin implements Extension, Listener {
 
 			@Override
 			public String getVersion() {
-				return "4.2.0";
+				return "@version@";
 			}
 
 			@Override
@@ -158,4 +161,5 @@ public class ReforgedBridge extends JavaPlugin implements Extension, Listener {
 	public Config getMsgConfig() {
 		return null;
 	}
+
 }

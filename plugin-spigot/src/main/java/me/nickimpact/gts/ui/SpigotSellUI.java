@@ -11,6 +11,7 @@ import com.nickimpact.impactor.sponge.ui.SpongeUI;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
+import me.nickimpact.gts.config.MsgConfigKeys;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -34,7 +35,7 @@ public class SpigotSellUI {
 		}
 
 		this.ui = SpigotUI.builder()
-				.title("&cSelect What to Sell")
+				.title(GTS.getInstance().getTokenService().process(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.UI_SELL_ITEMS_TITLE), viewer, null, null))
 				.size(45)
 				.build();
 		this.ui.define(this.forgeDesign(icons, height));
@@ -69,19 +70,17 @@ public class SpigotSellUI {
 
 		EntryRegistry er = GTS.getInstance().getAPIService().getEntryRegistry();
 		for(EntryClassification classification : er.getClassifications()) {
-			if(viewer.hasPermission("gts.command.sell." + classification.getPrimaryIdentifier().toLowerCase())) {
-				ItemStack display = new ItemStack(Material.matchMaterial(classification.getItemRep()));
-				ItemMeta meta = display.getItemMeta();
-				meta.setDisplayName(ChatColor.YELLOW + classification.getPrimaryIdentifier());
-				display.setItemMeta(meta);
+			ItemStack display = new ItemStack(Material.matchMaterial(classification.getItemRep()));
+			ItemMeta meta = display.getItemMeta();
+			meta.setDisplayName(ChatColor.YELLOW + classification.getPrimaryIdentifier());
+			display.setItemMeta(meta);
 
-				SpigotIcon icon = new SpigotIcon(display);
-				icon.addListener(clickable -> {
-					this.ui.close(this.viewer);
-					classification.getUi().createFor(viewer).getDisplay().open(viewer);
-				});
-				icons.add(icon);
-			}
+			SpigotIcon icon = new SpigotIcon(display);
+			icon.addListener(clickable -> {
+				this.ui.close(this.viewer);
+				classification.getUi().createFor(viewer).getDisplay().open(viewer);
+			});
+			icons.add(icon);
 		}
 
 		return icons;

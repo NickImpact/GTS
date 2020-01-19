@@ -2,6 +2,7 @@ package me.nickimpact.gts.tasks;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.config.ConfigKeys;
@@ -16,6 +17,7 @@ import org.bukkit.OfflinePlayer;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public class SpigotListingTasks implements ListingTasks<SpigotListing> {
 
@@ -46,8 +48,9 @@ public class SpigotListingTasks implements ListingTasks<SpigotListing> {
 			return false;
 		}
 
-		Config config = GTS.getInstance().getMsgConfig();
-		owner.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', String.format("%s Your %s listing has expired, and has been returned to you!", config.get(MsgConfigKeys.PREFIX), listing.getName())));
+		Map<String, Object> variables = Maps.newHashMap();
+		variables.put("listing", listing);
+		owner.getPlayer().sendMessage(GTS.getInstance().getTokenService().process(MsgConfigKeys.REMOVAL_EXPIRES, owner.getPlayer(), null, variables).toArray(new String[]{}));
 
 		List<String> details = Lists.newArrayList("");
 		details.addAll(listing.getEntry().getDetails());

@@ -113,7 +113,7 @@ public class SpriteItemUtil {
 	}
 
 	public static double calcIVPercent(IVStore ivs) {
-		return getIV(ivs, StatsType.HP) + getIV(ivs, StatsType.Attack) + getIV(ivs, StatsType.Defence) + getIV(ivs, StatsType.SpecialAttack) + getIV(ivs, StatsType.SpecialDefence) + getIV(ivs, StatsType.Speed) / 186.0 * 100;
+		return (getIV(ivs, StatsType.HP) + getIV(ivs, StatsType.Attack) + getIV(ivs, StatsType.Defence) + getIV(ivs, StatsType.SpecialAttack) + getIV(ivs, StatsType.SpecialDefence) + getIV(ivs, StatsType.Speed)) / 186.0 * 100;
 	}
 
 	public static String formattedAbility(Pokemon pokemon) {

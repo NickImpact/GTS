@@ -13,7 +13,7 @@ public class GTSInfo implements PluginInfo {
 
 	public static final String ID = "gts";
 	public static final String NAME = "GTS";
-	public static final String VERSION = "5.0.3";
+	public static final String VERSION = "@version@";
 	public static final String DESCRIPTION = "A marketing plugin set to allow players to sell there belongings";
 
 	@Override
@@ -28,7 +28,7 @@ public class GTSInfo implements PluginInfo {
 
 	@Override
 	public String getVersion() {
-		return "5.0.3";
+		return "@version@";
 	}
 
 	@Override

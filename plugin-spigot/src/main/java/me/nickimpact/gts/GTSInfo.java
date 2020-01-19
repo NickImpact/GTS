@@ -19,7 +19,7 @@ public class GTSInfo implements PluginInfo {
 
 	@Override
 	public String getVersion() {
-		return "5.0.3";
+		return "@version@";
 	}
 
 	@Override

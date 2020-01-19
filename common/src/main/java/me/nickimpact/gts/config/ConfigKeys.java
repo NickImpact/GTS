@@ -105,6 +105,9 @@ public class ConfigKeys implements ConfigKeyHolder {
 			d.getStringList("discord.notifications.listing-remove.webhooks", Lists.newArrayList())
 	));
 
+	public static final ConfigKey<String> LANG_OPTION = stringKey("language", "en-us");
+
+
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
 

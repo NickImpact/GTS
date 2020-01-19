@@ -12,10 +12,12 @@ import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.searching.Searcher;
+import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.spigot.SpigotListing;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -26,7 +28,9 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -74,7 +78,7 @@ public class SpigotMainUI {
 		this.page = SpigotPage.builder()
 				.viewer(viewer)
 				.view(this.design())
-				.title(ChatColor.RED + "GTS " + ChatColor.GRAY + "(" + ChatColor.DARK_AQUA + "Listings" + ChatColor.GRAY + ")")
+				.title(GTS.getInstance().getTokenService().process(MsgConfigKeys.UI_TITLES_MAIN, viewer, null, null))
 				.contentZone(new InventoryDimensions(9, 4))
 				.previousPage(Material.matchMaterial("pixelmon_trade_holder_left"), 48)
 				.nextPage(Material.matchMaterial("pixelmon_trade_holder_right"), 50)
@@ -110,7 +114,7 @@ public class SpigotMainUI {
 
 		ItemStack refresher = new ItemStack(Material.WATCH);
 		ItemMeta rMeta = refresher.getItemMeta();
-		rMeta.setDisplayName(ChatColor.YELLOW + "Refresh Listings");
+		rMeta.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.UI_ITEMS_REFRESH_TITLE, viewer, null, null));
 		refresher.setItemMeta(rMeta);
 		SpigotIcon rIcon = new SpigotIcon(refresher);
 		rIcon.addListener(clickable -> {
@@ -121,15 +125,15 @@ public class SpigotMainUI {
 
 		ItemStack pListings = new ItemStack(Material.WRITTEN_BOOK);
 		ItemMeta pMeta = pListings.getItemMeta();
-		pMeta.setDisplayName(ChatColor.YELLOW + "Your Listings");
-		pMeta.setLore(Lists.newArrayList(ChatColor.GRAY + "Status: " + ChatColor.RED + "Disabled"));
+		pMeta.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.UI_ITEMS_PLAYER_LISTINGS_TITLE, viewer, null, null));
+		pMeta.setLore(Lists.newArrayList(GTS.getInstance().getTokenService().process(MsgConfigKeys.UI_ITEMS_PLAYER_LISTINGS_LORE_DISABLED, viewer, null, null)));
 		pMeta.hasItemFlag(ItemFlag.HIDE_ATTRIBUTES);
 		pMeta.hasItemFlag(ItemFlag.HIDE_ENCHANTS);
 		pListings.setItemMeta(pMeta);
 		SpigotIcon pIcon = new SpigotIcon(pListings);
 		pIcon.addListener(clickable -> {
 			this.justPlayer = !this.justPlayer;
-			pMeta.setLore(Lists.newArrayList(ChatColor.GRAY + "Status: " + (this.justPlayer ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled")));
+			pMeta.setLore(Lists.newArrayList(GTS.getInstance().getTokenService().process(this.justPlayer ? MsgConfigKeys.UI_ITEMS_PLAYER_LISTINGS_LORE_ENABLED : MsgConfigKeys.UI_ITEMS_PLAYER_LISTINGS_LORE_DISABLED, viewer, null, null)));
 			pListings.setItemMeta(pMeta);
 			this.page.getView().setSlot(45, pIcon);
 			this.apply();
@@ -142,7 +146,7 @@ public class SpigotMainUI {
 		} else {
 			ItemStack empty = new ItemStack(Material.BARRIER);
 			ItemMeta eMeta = empty.getItemMeta();
-			eMeta.setDisplayName(ChatColor.RED + "No Entry Types Available");
+			eMeta.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.UI_MAIN_NO_ENTRIES_AVAILABLE, viewer, null, null));
 			empty.setItemMeta(eMeta);
 			builder.slot(new SpigotIcon(empty), 53);
 		}
@@ -192,19 +196,14 @@ public class SpigotMainUI {
 	private SpigotIcon classificationToIcon(EntryClassification classification) {
 		ItemStack rep = new ItemStack(Material.matchMaterial(classification.getItemRep()));
 		ItemMeta repMeta = rep.getItemMeta();
-		repMeta.setDisplayName(ChatColor.YELLOW + "Show only " + classification.getPrimaryIdentifier() + "?");
-		repMeta.setLore(Lists.newArrayList(
-				ChatColor.GRAY + "Status: " + (classification.getClassification().equals(this.classSelection) ? ChatColor.GREEN + "Enabled" : ChatColor.RED + "Disabled"),
-				"",
-				ChatColor.AQUA + "Controls:",
-				ChatColor.GRAY + "Left Click: " + ChatColor.GREEN + "Apply filter",
-				ChatColor.GRAY + "Right Click: " + ChatColor.GREEN + "Switch filter",
-				"",
-				ChatColor.AQUA + "NOTE:",
-				ChatColor.GRAY + "This option will be overridden by",
-				ChatColor.GRAY + "the " + ChatColor.YELLOW + "Your Listings " + ChatColor.GRAY + "option",
-				ChatColor.GRAY + "if it is enabled."
-		));
+
+		Map<String, Function<CommandSender, Optional<String>>> tokens = Maps.newHashMap();
+		tokens.put("gts_classifier", src -> Optional.of(classification.getPrimaryIdentifier()));
+		repMeta.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.FILTER_TITLE, viewer, tokens, null));
+
+		List<String> lore = Lists.newArrayList(GTS.getInstance().getTokenService().process(classification.getClassification().equals(this.classSelection) ? MsgConfigKeys.FILTER_STATUS_ENABLED : MsgConfigKeys.FILTER_STATUS_DISABLED, this.viewer, null, null));
+		lore.addAll(GTS.getInstance().getTokenService().process(MsgConfigKeys.FILTER_NOTES, this.viewer, null, null));
+		repMeta.setLore(lore);
 		rep.setItemMeta(repMeta);
 
 		SpigotIcon icon = new SpigotIcon(rep);
@@ -222,16 +221,16 @@ public class SpigotMainUI {
 					}
 				}
 
-				List<String> lore = repMeta.getLore();
+				List<String> l = repMeta.getLore();
 				if(classification.getClassification().equals(this.classSelection)) {
 					this.classSelection = null;
-					lore.set(0, ChatColor.GRAY + "Status: " + ChatColor.RED + "Disabled");
-					repMeta.setLore(lore);
+					lore.set(0, GTS.getInstance().getTokenService().process(MsgConfigKeys.FILTER_STATUS_DISABLED, viewer, null, null));
+					repMeta.setLore(l);
 					rep.setItemMeta(repMeta);
 				} else {
 					this.classSelection = classification.getClassification();
-					lore.set(0, ChatColor.GRAY + "Status: " + ChatColor.GREEN + "Enabled");
-					repMeta.setLore(lore);
+					lore.set(0, GTS.getInstance().getTokenService().process(MsgConfigKeys.FILTER_STATUS_ENABLED, viewer, null, null));
+					repMeta.setLore(l);
 					rep.setItemMeta(repMeta);
 				}
 

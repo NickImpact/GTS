@@ -2,6 +2,7 @@ package me.nickimpact.gts.listings;
 
 import co.aikar.commands.CommandIssuer;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.json.JsonTyping;
 import com.nickimpact.impactor.api.utilities.Time;
 import com.nickimpact.impactor.spigot.utils.ItemStackUtils;
@@ -10,6 +11,7 @@ import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.config.ConfigKeys;
+import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.spigot.SpigotEntry;
 import me.nickimpact.gts.spigot.SpigotListing;
 import me.nickimpact.gts.spigot.MessageUtils;
@@ -54,7 +56,7 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 
 	@Override
 	public String getSpecsTemplate() {
-		return "Testing";
+		return GTS.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_SPEC_TEMPLATE);
 	}
 
 	@Override
@@ -86,6 +88,11 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 
 	@Override
 	public ItemStack baseItemStack(Player player, Listing listing) {
+		Map<String, Object> variables = Maps.newHashMap();
+		variables.put("listing", listing);
+
+		List<String> lore = GTS.getInstance().getTokenService().process(MsgConfigKeys.ENTRY_INFO)
+
 		List<String> lore = Lists.newArrayList(
 				"&7Seller: &e" + Bukkit.getServer().getOfflinePlayer(listing.getOwnerUUID()).getName(),
 				"",
@@ -218,4 +225,5 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 
 		return CommandResults.SUCCESSFUL;
 	}
+
 }

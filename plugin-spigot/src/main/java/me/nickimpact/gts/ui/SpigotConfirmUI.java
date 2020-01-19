@@ -7,12 +7,12 @@ import com.nickimpact.impactor.spigot.ui.SpigotUI;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.config.ConfigKeys;
+import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.discord.DiscordNotifier;
 import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.spigot.SpigotListing;
 import me.nickimpact.gts.spigot.MessageUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -40,7 +40,7 @@ public class SpigotConfirmUI {
 		this.input = input;
 		this.view = SpigotUI.builder()
 				.size(54)
-				.title(ChatColor.RED + "GTS " + ChatColor.GRAY + "(" + ChatColor.DARK_AQUA + "Confirmation" + ChatColor.GRAY + ")")
+				.title(GTS.getInstance().getTokenService().process(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.UI_TITLES_CONFIRMATION), viewer, null, null))
 				.build()
 				.define(this.design());
 	}
@@ -60,7 +60,7 @@ public class SpigotConfirmUI {
 		if(!this.viewer.getUniqueId().equals(this.focus.getOwnerUUID())) {
 			ItemStack item = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 14);
 			ItemMeta meta = item.getItemMeta();
-			meta.setDisplayName(ChatColor.RED + "Click here to confirm!");
+			meta.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.CONFIRM_SELECTION, viewer, null, null));
 			item.setItemMeta(meta);
 			SpigotIcon confirm = new SpigotIcon(item);
 			confirm.addListener(clickable -> {
@@ -70,14 +70,14 @@ public class SpigotConfirmUI {
 				this.confirmed = true;
 				ItemStack confirmed = new ItemStack(Material.STAINED_GLASS_PANE, 1, (short) 5);
 				ItemMeta m = confirmed.getItemMeta();
-				m.setDisplayName(ChatColor.GREEN + "Confirmed!");
+				m.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.CONFIRMED, viewer, null, null));
 				confirmed.setItemMeta(m);
 				SpigotIcon conf = new SpigotIcon(confirmed);
 				slb.hollowSquare(conf, 22);
 
 				ItemStack click = new ItemStack(Material.INK_SACK, 1, (short) 10);
 				ItemMeta c = click.getItemMeta();
-				c.setDisplayName(ChatColor.GREEN + "Confirm Purchase");
+				c.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.CONFIRM_PURCHASE, viewer, null, null));
 				click.setItemMeta(c);
 				SpigotIcon cl = new SpigotIcon(click);
 				cl.addListener(c2 -> {
@@ -93,19 +93,19 @@ public class SpigotConfirmUI {
 
 			ItemStack require = new ItemStack(Material.BARRIER);
 			ItemMeta rMeta = require.getItemMeta();
-			rMeta.setDisplayName(ChatColor.RED + "Requires Confirmation...");
+			rMeta.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.REQUIRES_CONFIRMATION, viewer, null, null));
 			require.setItemMeta(rMeta);
 			builder.slots(new SpigotIcon(require), 46, 47, 48);
 		} else {
 			ItemStack remover = new ItemStack(Material.ANVIL);
 			ItemMeta m = remover.getItemMeta();
-			m.setDisplayName(ChatColor.RED + "Remove Your Listing");
+			m.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.REMOVE_BUTTON, viewer, null, null));
 			remover.setItemMeta(m);
 			SpigotIcon icon = new SpigotIcon(remover);
 			icon.addListener(clickable -> {
 				this.view.close(clickable.getPlayer());
 				if(!GTS.getInstance().getAPIService().getListingManager().getListingByID(this.focus.getUuid()).isPresent()) {
-					clickable.getPlayer().sendMessage(MessageUtils.parse("Unfortunately, someone has purchased your listing, or it already expired!", true));
+					clickable.getPlayer().sendMessage(GTS.getInstance().getTokenService().process(MsgConfigKeys.REMOVED_MISSING, viewer, null, null).toArray(new String[]{}));
 					return;
 				}
 
@@ -131,7 +131,7 @@ public class SpigotConfirmUI {
 
 		ItemStack cancel = new ItemStack(Material.INK_SACK, 1, (short) 8);
 		ItemMeta cMeta = cancel.getItemMeta();
-		cMeta.setDisplayName(ChatColor.RED + "Cancel Action");
+		cMeta.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.CANCEL, viewer, null, null));
 		cancel.setItemMeta(cMeta);
 		SpigotIcon icon = new SpigotIcon(cancel);
 		icon.addListener(clickable -> {

@@ -41,11 +41,13 @@ import me.nickimpact.gts.listings.SpigotItemEntry;
 import me.nickimpact.gts.listings.SpigotItemUI;
 import me.nickimpact.gts.manager.SpigotListingManager;
 import me.nickimpact.gts.spigot.MoneyPrice;
+import me.nickimpact.gts.spigot.SpigotGTSPlugin;
 import me.nickimpact.gts.spigot.SpigotGtsService;
 import me.nickimpact.gts.manager.TextParsingUtils;
 import me.nickimpact.gts.spigot.SpigotListing;
 import me.nickimpact.gts.storage.StorageFactory;
 import me.nickimpact.gts.tasks.SpigotListingTasks;
+import me.nickimpact.gts.spigot.tokens.TokenService;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -62,7 +64,7 @@ import java.util.concurrent.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Translatable {
+public class GTS extends JavaPlugin implements SpigotGTSPlugin, Configurable, Translatable {
 
 	@Getter private static GTS instance;
 
@@ -87,6 +89,8 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 
 	private DiscordNotifier discordNotifier;
 
+	@Getter private TokenService tokenService;
+
 	@Override
 	public void onLoad() {
 		instance = this;
@@ -109,6 +113,8 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 				Material.DIAMOND.name(),
 				SpigotItemEntry::cmdExecutor
 		);
+
+		this.tokenService = new TokenService(this);
 	}
 
 	@Override
@@ -118,7 +124,7 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 		logger.info("Loading configuration...");
 		this.configDir = this.getDataFolder().toPath();
 		this.config = new SpigotConfig(new SpigotConfigAdapter(this, new File(this.configDir.toFile(), "gts.conf")), new ConfigKeys());
-		this.msgConfig = new SpigotConfig(new SpigotConfigAdapter(this, new File(this.configDir.toFile(), "lang/en_us.conf")), new MsgConfigKeys());
+		this.msgConfig = new SpigotConfig(new SpigotConfigAdapter(this, new File(this.configDir.toFile(), "lang/" + this.config.get(ConfigKeys.LANG_OPTION) + ".conf")), new MsgConfigKeys());
 
 		logger.info("Initializing additional dependencies...");
 		this.loader = new ReflectionClassLoader(this);
@@ -222,27 +228,7 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 
 	@Override
 	public PluginInfo getPluginInfo() {
-		return new PluginInfo() {
-			@Override
-			public String getID() {
-				return "gts";
-			}
-
-			@Override
-			public String getName() {
-				return "GTS";
-			}
-
-			@Override
-			public String getVersion() {
-				return "4.2.0";
-			}
-
-			@Override
-			public String getDescription() {
-				return "XXX";
-			}
-		};
+		return new GTSInfo();
 	}
 
 	@Override
@@ -252,22 +238,22 @@ public class GTS extends JavaPlugin implements IGTSPlugin, Configurable, Transla
 
 	@Override
 	public List<Config> getConfigs() {
-		return null;
+		return Lists.newArrayList();
 	}
 
 	@Override
 	public List<BaseCommand> getCommands() {
-		return null;
+		return Lists.newArrayList();
 	}
 
 	@Override
-	public List<Object> getListeners() {
-		return null;
+	public List<Object> getListeners(){
+		return Lists.newArrayList();
 	}
 
 	@Override
 	public Consumer<ImpactorPlugin> onReload() {
-		return null;
+		return plugin -> {};
 	}
 
 	@Override

@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Getter
-@Plugin(id = "gts_generations", name = "GTS Generations Bridge", version = "5.0.3", dependencies = @Dependency(id = "gts"))
+@Plugin(id = "gts_generations", name = "GTS Generations Bridge", version = "@version@", dependencies = @Dependency(id = "gts"))
 public class GenerationsBridge extends AbstractSpongePlugin implements Extension {
 
 	@Getter private static GenerationsBridge instance;
@@ -99,7 +99,7 @@ public class GenerationsBridge extends AbstractSpongePlugin implements Extension
 
 			@Override
 			public String getVersion() {
-				return "5.0.3";
+				return "@version@";
 			}
 
 			@Override

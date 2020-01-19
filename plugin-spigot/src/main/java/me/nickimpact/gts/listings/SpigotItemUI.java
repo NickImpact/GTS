@@ -8,6 +8,7 @@ import com.nickimpact.impactor.spigot.ui.SpigotUI;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.config.ConfigKeys;
+import me.nickimpact.gts.config.MsgConfigKeys;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -47,7 +48,7 @@ public class SpigotItemUI implements EntryUI<Player> {
 	private SpigotUI createUI() {
 		SpigotUI ui = SpigotUI.builder()
 				.size(54)
-				.title("&cGTS &7(&3Items&7)")
+				.title(GTS.getInstance().getTokenService().process(MsgConfigKeys.UI_TITLES_ITEMS, this.player, null, null))
 				.build();
 		ui.attachListener((player, event) -> {
 			if(event.getClickedInventory() != null) {
@@ -83,14 +84,14 @@ public class SpigotItemUI implements EntryUI<Player> {
 
 		ItemStack marker = new ItemStack(Material.BARRIER);
 		ItemMeta m = marker.getItemMeta();
-		m.setDisplayName(ChatColor.GRAY + "Select an Item...");
+		m.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.UI_SELL_ITEMS_TITLE, this.player, null, null));
 		marker.setItemMeta(m);
 
 		slb.slot(new SpigotIcon(marker), 13);
 
 		ItemStack money_inc = new ItemStack(Material.INK_SACK, 1, (short) 10);
 		ItemMeta miMeta = money_inc.getItemMeta();
-		miMeta.setDisplayName(ChatColor.GREEN + "Increase Price Requested");
+		miMeta.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.PRICE_DISPLAY_TITLE, this.player, null, null));
 		miMeta.setLore(Lists.newArrayList(
 			"&7Left Click: &e+" + config.get(ConfigKeys.PRICING_LEFTCLICK_BASE),
 			"&7Right Click: &e+" + config.get(ConfigKeys.PRICING_RIGHTCLICK_BASE),

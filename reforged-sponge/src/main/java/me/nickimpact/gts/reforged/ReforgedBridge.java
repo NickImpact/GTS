@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 @Getter
-@Plugin(id = "gts_reforged", name = "GTS Reforged Bridge", version = "5.0.3", dependencies = @Dependency(id = "gts"))
+@Plugin(id = "gts_reforged", name = "GTS Reforged Bridge", version = "@version@", dependencies = @Dependency(id = "gts"))
 public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 
 	@Getter private static ReforgedBridge instance;
@@ -116,7 +116,7 @@ public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 
 			@Override
 			public String getVersion() {
-				return "5.0.3";
+				return "@version@";
 			}
 
 			@Override

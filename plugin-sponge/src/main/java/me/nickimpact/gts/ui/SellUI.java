@@ -68,18 +68,16 @@ public class SellUI {
 
 		EntryRegistry er = GTS.getInstance().getService().getEntryRegistry();
 		for(EntryClassification classification : er.getClassifications()) {
-			if(viewer.hasPermission("gts.command.sell." + classification.getPrimaryIdentifier().toLowerCase())) {
-				SpongeIcon icon = new SpongeIcon(ItemStack.builder()
-						.itemType(SpongeItemTypeUtil.getOrDefaultItemTypeFromID(classification.getItemRep()))
-						.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, classification.getPrimaryIdentifier()))
-						.build()
-				);
-				icon.addListener(clickable -> {
-					this.ui.close(this.viewer);
-					classification.getUi().createFor(viewer).getDisplay().open(viewer);
-				});
-				icons.add(icon);
-			}
+			SpongeIcon icon = new SpongeIcon(ItemStack.builder()
+					.itemType(SpongeItemTypeUtil.getOrDefaultItemTypeFromID(classification.getItemRep()))
+					.add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, classification.getPrimaryIdentifier()))
+					.build()
+			);
+			icon.addListener(clickable -> {
+				this.ui.close(this.viewer);
+				classification.getUi().createFor(viewer).getDisplay().open(viewer);
+			});
+			icons.add(icon);
 		}
 
 		return icons;

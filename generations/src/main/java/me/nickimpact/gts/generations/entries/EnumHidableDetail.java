@@ -3,6 +3,7 @@ package me.nickimpact.gts.generations.entries;
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmonmod.pixelmon.enums.EnumNature;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,8 +33,14 @@ public enum EnumHidableDetail {
 		tokens.put("gts_egg_steps_walked", src -> Optional.of(Text.of(out)));
 		return new KeyDetailHolder(PokemonMsgConfigKeys.PE_BASE_EGGSTEPS, tokens);
 	}),
+	MINT(pokemon -> pokemon.serializeNBT().hasKey("PseudoNature"), pokemon -> {
+		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
+		tokens.put("gts_mint", src -> Optional.of(Text.of(EnumNature.getNatureFromIndex(pokemon.serializeNBT().getShort("PseudoNature")).getLocalizedName())));
+		return new KeyDetailHolder(PokemonMsgConfigKeys.PE_BASE_MINT, tokens);
+	})
 	;
 
 	private Predicate<EntityPixelmon> condition;
 	private Function<EntityPixelmon, KeyDetailHolder> field;
+
 }
