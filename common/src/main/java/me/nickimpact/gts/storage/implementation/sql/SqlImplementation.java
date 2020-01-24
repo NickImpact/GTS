@@ -209,67 +209,6 @@ public class SqlImplementation implements StorageImplementation {
 	public List<Listing> getListings() throws Exception {
 		List<Listing> entries = Lists.newArrayList();
 
-		if(tableExists(this.processor.apply("{prefix}listings_v2")) && this.plugin.getPlatform().equals(Platform.Sponge)) {
-			this.plugin.getPluginLogger().warn("Detected old database, collecting and updating data...");
-
-			int failed = this.query(FETCH_OLD, (connection, ps) -> this.results(ps, results -> {
-				int f = 0;
-				while(results.next()) {
-					String json = results.getString("listing");
-
-					if(this.connectionFactory instanceof MySQLConnectionFactory) {
-						String before = json.substring(0, json.indexOf("\"{") + 2);
-						String toConvert = json.substring(before.length(), json.indexOf("\"price\"", before.length()) - 8);
-						String after = json.substring(before.length() + toConvert.length());
-						String reformatted = before;
-						reformatted += Pattern.compile("\"").matcher(toConvert).replaceAll("\\\\\"");
-						reformatted += after;
-
-						json = reformatted;
-					}
-
-					try {
-						me.nickimpact.gts.deprecated.Listing old = this.plugin.getAPIService().getDeprecatedGson().fromJson(json, me.nickimpact.gts.deprecated.Listing.class);
-						Listing updated = Listing.builder(this.plugin)
-								.entry(this.convert(old.getEntry()))
-								.price(old.getEntry().getPrice().getPrice().doubleValue())
-								.id(old.getUuid())
-								.owner(old.getOwnerUUID())
-								.expiration(LocalDateTime.ofInstant(old.getExpiration().toInstant(), ZoneId.systemDefault()))
-								.build();
-						entries.add(updated);
-					} catch (Exception e) {
-						this.plugin.getPluginLogger().error("Unable to read listing data for listing with ID: " + results.getString("uuid"));
-						this.plugin.getPluginLogger().error("Listing JSON: \n" + json);
-						e.printStackTrace();
-						++f;
-					}
-				}
-				return f;
-			}));
-
-			this.plugin.getPluginLogger().warn(String.format("Read in %d listings, attempting to convert...", entries.size()));
-			if(this.transfer(Lists.newArrayList(entries))) {
-				try {
-					if (failed == 0) {
-						this.plugin.getPluginLogger().warn("Purging old table...");
-						this.query("DROP TABLE {prefix}listings_v2", (connection, ps) -> {
-							ps.executeUpdate();
-							return null;
-						});
-					} else {
-						if (entries.size() != 0) {
-							this.plugin.getPluginLogger().warn(String.format("Failed to read %d listings, will preserve database for now...", failed));
-						}
-					}
-				} catch (Exception e) {
-					this.plugin.getPluginLogger().warn(String.format("Failed to read %d listings, will preserve database for now...", failed));
-				}
-			}
-
-			return entries;
-		}
-
 		return this.query(SELECT_ALL_LISTINGS, (connection, ps) -> this.results(ps, results -> {
 			int failed = 0;
 			while(results.next()) {
@@ -389,25 +328,4 @@ public class SqlImplementation implements StorageImplementation {
 		}
 	}
 
-	@Deprecated
-	private boolean transfer(List<Listing> listings) {
-		AtomicBoolean result = new AtomicBoolean(true);
-		if(listings.size() > 0) {
-			Listing focus = listings.remove(0);
-			this.plugin.getAPIService().getStorage().addListing(focus).thenAccept(x -> this.transfer(listings)).exceptionally(x -> {
-				x.printStackTrace();
-				result.set(false);
-				return null;
-			});
-		}
-
-		return result.get();
-	}
-
-	@Deprecated
-	private Entry convert(me.nickimpact.gts.api.deprecated.Entry old) throws Exception {
-		EntryClassification classification = this.plugin.getAPIService().getEntryRegistry().getForIdentifier(old.getClass().getAnnotation(JsonTyping.class).value()).get();
-		Entry entry = (Entry) classification.getClassification().newInstance();
-		return entry.setEntry(old.getInnerElementOrDefault());
-	}
 }

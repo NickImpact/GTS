@@ -1,11 +1,7 @@
 package me.nickimpact.gts.api;
 
 import co.aikar.commands.CommandIssuer;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSerializer;
 import com.nickimpact.impactor.api.registry.BuilderRegistry;
-import me.nickimpact.gts.api.deprecated.OldAdapter;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.holders.EntryRegistry;
 import me.nickimpact.gts.api.holders.ServiceInstance;
@@ -18,7 +14,6 @@ import me.nickimpact.gts.api.util.TriFunction;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public interface GtsService {
@@ -51,22 +46,6 @@ public interface GtsService {
 	void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, TriFunction<CommandIssuer, List<String>, Boolean, CommandResults> cmd);
 
 	BuilderRegistry getBuilderRegistry();
-
-	/**
-	 * Please just don't use this. This is here purely to aid in the data conversion efforts of 4.2.0
-	 *
-	 * @since 4.2.0
-	 * @deprecated It is simply required to aid in update efforts
-	 * @return The GSON structure which contains old classes
-	 */
-	@Deprecated
-	Gson getDeprecatedGson();
-
-	<E> void registerOldTypeAdapter(Class<E> clazz, OldAdapter<E> adapter);
-	<E> void registerOldTypeAdapter(Class<E> clazz, JsonSerializer<E> adapter);
-
-	@Deprecated
-	List<Class<? extends me.nickimpact.gts.api.deprecated.Entry>> getAllDeprecatedTypes();
 
 	/**
 	 * Registers a searching option for all listings in the listing manager.

@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.json.JsonTyping;
+import io.github.nucleuspowered.nucleus.api.placeholder.PlaceholderVariables;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.Listing;
@@ -14,6 +15,8 @@ import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.sponge.SpongeEntry;
 import me.nickimpact.gts.sponge.SpongeListing;
 import me.nickimpact.gts.sponge.TextParsingUtils;
+import me.nickimpact.gts.sponge.text.placeholders.ListingPlaceholderVariableKey;
+import me.nickimpact.gts.text.ItemTokens;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
@@ -114,9 +117,10 @@ public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
 
 		List<String> lore = Lists.newArrayList();
 
-		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("listing", listing);
-		variables.put("item", this.getEntry());
+		PlaceholderVariables variables = PlaceholderVariables.builder()
+				.put(new ListingPlaceholderVariableKey(), listing)
+				.put(new ItemTokens.ItemStackKey(), this.getEntry())
+				.build();
 
 		if(this.getEntry().get(Keys.DISPLAY_NAME).isPresent()) {
 			Pattern pattern = Pattern.compile("[&][a-fk-or0-9]");

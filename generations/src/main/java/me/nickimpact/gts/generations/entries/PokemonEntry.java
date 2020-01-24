@@ -21,6 +21,7 @@ import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
 import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
+import io.github.nucleuspowered.nucleus.api.placeholder.PlaceholderVariables;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
@@ -31,12 +32,14 @@ import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.generations.GenerationsBridge;
 import me.nickimpact.gts.generations.config.PokemonConfigKeys;
 import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
+import me.nickimpact.gts.generations.text.NucleusPokemonTokens;
 import me.nickimpact.gts.generations.utils.GsonUtils;
 import me.nickimpact.gts.sponge.MoneyPrice;
 import me.nickimpact.gts.sponge.SpongeEntry;
 import me.nickimpact.gts.sponge.SpongeListing;
 import me.nickimpact.gts.sponge.SpongePlugin;
 import me.nickimpact.gts.sponge.TextParsingUtils;
+import me.nickimpact.gts.sponge.text.placeholders.ListingPlaceholderVariableKey;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -178,9 +181,10 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 	@Override
 	public ItemStack baseItemStack(Player player, Listing listing) {
 		ItemStack icon = getPicture(this.getEntry());
-		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("listing", listing);
-		variables.put("pokemon", this.getEntry());
+		PlaceholderVariables variables = PlaceholderVariables.builder()
+				.put(new ListingPlaceholderVariableKey(), listing)
+				.put(new NucleusPokemonTokens.PokemonKey(), this.getEntry())
+				.build();
 
 		icon.offer(Keys.DISPLAY_NAME, ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils().fetchAndParseMsg(player, GenerationsBridge.getInstance().getMsgConfig(), this.getEntry().isEgg ? PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE_EGG : PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
 
@@ -191,7 +195,7 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 		return icon;
 	}
 
-	private void addLore(ItemStack icon, List<String> template, Player player, Listing listing, Map<String, Object> variables) {
+	private void addLore(ItemStack icon, List<String> template, Player player, Listing listing, PlaceholderVariables variables) {
 		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
 		for (EnumHidableDetail detail : EnumHidableDetail.values()) {
 			if (detail.getCondition().test(this.getEntry())) {

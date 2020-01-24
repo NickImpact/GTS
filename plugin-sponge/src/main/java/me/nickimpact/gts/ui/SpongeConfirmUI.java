@@ -6,6 +6,7 @@ import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
+import io.github.nucleuspowered.nucleus.api.placeholder.PlaceholderVariables;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.config.ConfigKeys;
@@ -14,6 +15,7 @@ import me.nickimpact.gts.discord.DiscordNotifier;
 import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.sponge.SpongeListing;
 import me.nickimpact.gts.sponge.TextParsingUtils;
+import me.nickimpact.gts.sponge.text.placeholders.ListingPlaceholderVariableKey;
 import me.nickimpact.gts.sponge.utils.MessageUtils;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
@@ -120,9 +122,9 @@ public class SpongeConfirmUI {
 					.build()
 			);
 
-			Map<String, Object> variables = Maps.newHashMap();
-			variables.put("listing", this.focus);
-			variables.put("entry", this.focus.getEntry().getEntry());
+			PlaceholderVariables variables = PlaceholderVariables.builder()
+					.put(new ListingPlaceholderVariableKey(), this.focus)
+					.build();
 
 			remover.addListener(clickable -> {
 				this.view.close(clickable.getPlayer());

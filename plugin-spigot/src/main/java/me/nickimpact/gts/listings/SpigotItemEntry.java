@@ -91,7 +91,7 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
 
-		List<String> lore = GTS.getInstance().getTokenService().process(MsgConfigKeys.ENTRY_INFO)
+		//List<String> lore = GTS.getInstance().getTokenService().process(MsgConfigKeys.ENTRY_INFO)
 
 		List<String> lore = Lists.newArrayList(
 				"&7Seller: &e" + Bukkit.getServer().getOfflinePlayer(listing.getOwnerUUID()).getName(),

@@ -22,7 +22,7 @@ import com.nickimpact.impactor.sponge.SpongeImpactorPlugin;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfig;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
 import com.nickimpact.impactor.sponge.logging.SpongeLogger;
-import io.github.nucleuspowered.nucleus.api.service.NucleusMessageTokenService;
+import io.github.nucleuspowered.nucleus.api.service.NucleusPlaceholderService;
 import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.holders.EntryClassification;
@@ -34,9 +34,6 @@ import me.nickimpact.gts.commands.SpongeEntryClassificationContextHandler;
 import me.nickimpact.gts.commands.SpongeGtsCmd;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
-import me.nickimpact.gts.deprecated.ItemEntry;
-import me.nickimpact.gts.deprecated.adapters.OldEntryAdapter;
-import me.nickimpact.gts.deprecated.adapters.OldPriceAdapter;
 import me.nickimpact.gts.discord.DiscordNotifier;
 import me.nickimpact.gts.json.DataContainerAdapter;
 import me.nickimpact.gts.json.EntryAdapter;
@@ -49,7 +46,7 @@ import me.nickimpact.gts.sponge.*;
 import me.nickimpact.gts.sponge.service.SpongeGtsService;
 import me.nickimpact.gts.storage.StorageFactory;
 import me.nickimpact.gts.tasks.SpongeListingTasks;
-import me.nickimpact.gts.sponge.text.TokenService;
+import me.nickimpact.gts.sponge.text.SpongeTokenService;
 import me.nickimpact.gts.text.ItemTokens;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
@@ -113,6 +110,8 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 	private PluginClassLoader loader;
 	private DependencyManager dependencyManager;
 
+	private SpongeTokenService tokenService;
+
 	@Inject
 	@AsynchronousExecutor
 	private SpongeExecutorService async;
@@ -134,7 +133,7 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 		if(e.getService().equals(EconomyService.class)) {
 			this.economy = (EconomyService) e.getNewProviderRegistration().getProvider();
 			MoneyPrice.setEconomy(this.economy);
-		} else if(e.getService().equals(NucleusMessageTokenService.class)) {
+		} else if(e.getService().equals(NucleusPlaceholderService.class)) {
 			this.textParsingUtils = new TextParsingUtils(this);
 		}
 	}
@@ -168,9 +167,6 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 
 		this.service.setBuilders(new BuilderRegistry());
 		this.service.getBuilderRegistry().register(Listing.ListingBuilder.class, SpongeListing.SpongeListingBuilder.class);
-
-		this.service.getAllDeprecatedTypes().add(ItemEntry.class);
-
 		this.service.addSearcher("item", new ItemSearcher());
 	}
 
@@ -201,8 +197,8 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 		this.service.setManager(new SpongeListingManager());
 
 		logger.info("Registering tokens with Nucleus...");
-		this.service.setTokenService(new TokenService(this));
-		this.service.registerTokens(new ItemTokens());
+		this.service.setTokenService(new SpongeTokenService(this));
+		new ItemTokens();
 
 		logger.info("Registering commands with ACF...");
 		this.cmdManager = new SpongeCommandManager(this.getPluginContainer());
@@ -222,26 +218,6 @@ public class GTS extends AbstractSpongePlugin implements SpongePlugin {
 		);
 
 		this.cmdManager.registerCommand(new SpongeGtsCmd());
-
-		OldEntryAdapter oea = new OldEntryAdapter(this);
-		for(Class<? extends me.nickimpact.gts.api.deprecated.Entry> clazz : this.service.getAllDeprecatedTypes()) {
-			try {
-				oea.getRegistry().register(clazz);
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
-
-		OldPriceAdapter opa = new OldPriceAdapter(this);
-		try {
-			opa.getRegistry().register(me.nickimpact.gts.api.deprecated.MoneyPrice.class);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-
-		this.getAPIService().registerOldTypeAdapter(me.nickimpact.gts.api.deprecated.Entry.class, oea);
-		this.getAPIService().registerOldTypeAdapter(me.nickimpact.gts.api.deprecated.Price.class, opa);
-		this.getAPIService().registerOldTypeAdapter(DataContainer.class, new DataContainerAdapter());
 
 		logger.info("Initializing storage...");
 		this.service.setStorage(new StorageFactory(this).getInstance(StorageType.JSON));

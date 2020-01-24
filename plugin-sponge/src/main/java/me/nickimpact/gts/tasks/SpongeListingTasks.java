@@ -4,12 +4,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
+import io.github.nucleuspowered.nucleus.api.placeholder.PlaceholderVariables;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.discord.DiscordNotifier;
 import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.sponge.SpongeListing;
+import me.nickimpact.gts.sponge.text.placeholders.ListingPlaceholderVariableKey;
 import me.nickimpact.gts.sponge.utils.MessageUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
@@ -60,8 +62,9 @@ public class SpongeListingTasks implements ListingTasks<SpongeListing> {
 				return false;
 			}
 
-			Map<String, Object> variables = Maps.newHashMap();
-			variables.put("listing", listing);
+			PlaceholderVariables variables = PlaceholderVariables.builder()
+					.put(new ListingPlaceholderVariableKey(), listing)
+					.build();
 
 			if(user.get().getPlayer().isPresent()) {
 				Player player = user.get().getPlayer().get();
@@ -77,8 +80,10 @@ public class SpongeListingTasks implements ListingTasks<SpongeListing> {
 	}
 
 	private void sendDiscordMessage(SpongeListing listing, User user) {
-		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("listing", listing);
+		PlaceholderVariables variables = PlaceholderVariables.builder()
+				.put(new ListingPlaceholderVariableKey(), listing)
+				.build();
+
 		List<String> details = Lists.newArrayList("");
 		details.addAll(listing.getEntry().getDetails());
 

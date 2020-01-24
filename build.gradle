@@ -58,9 +58,6 @@ subprojects {
         mavenCentral()
         maven { url = 'https://jitpack.io' }
         maven { url = "https://repo.aikar.co/content/groups/aikar/" }
-        maven {
-            url "https://nexus.unboundnetwork.net/repository/unbound-public/"
-        }
     }
 
     jar {
@@ -72,8 +69,7 @@ subprojects {
     }
     
     dependencies {
-        shadow "com.nickimpact.impactor:spigot:2.1.0"
-        shadow "com.nickimpact.impactor:sponge:2.1.0"
+        shadow fileTree(dir: '../../Impactor/build/allJars', include: '*.jar')
         shadow "org.projectlombok:lombok:1.18.4"
         shadow 'com.google.guava:guava:27.1-jre'
         shadow 'com.google.code.gson:gson:2.8.5'

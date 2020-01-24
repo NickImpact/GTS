@@ -2,9 +2,11 @@ package me.nickimpact.gts.listeners;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
+import io.github.nucleuspowered.nucleus.api.placeholder.PlaceholderVariables;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.sponge.SpongeListing;
+import me.nickimpact.gts.sponge.text.placeholders.ListingPlaceholderVariableKey;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -26,11 +28,9 @@ public class JoinListener {
 		ImmutableList.copyOf((List<SpongeListing>)GTS.getInstance().getAPIService().getListingManager().getListings()).stream()
 				.filter(listing -> listing.getOwnerUUID().equals(player.getUniqueId()) && listing.hasExpired())
 				.forEach(listing -> {
-					Map<String, Object> variables = Maps.newHashMap();
-					variables.put("listing_specifics", listing);
-					variables.put("listing_name", listing);
-					variables.put("time_left", listing);
-					variables.put("id", listing);
+					PlaceholderVariables variables = PlaceholderVariables.builder()
+							.put(new ListingPlaceholderVariableKey(), listing)
+							.build();
 					if(listing.getEntry().giveEntry(player)) {
 						GTS.getInstance().getAPIService().getListingManager().deleteListing(listing);
 						player.sendMessages(GTS.getInstance().getTextParsingUtils().parse(GTS.getInstance().getMsgConfig().get(MsgConfigKeys.REMOVAL_EXPIRES), player, null, variables));

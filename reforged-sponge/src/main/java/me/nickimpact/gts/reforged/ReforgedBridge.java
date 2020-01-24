@@ -18,7 +18,6 @@ import me.nickimpact.gts.api.plugin.Extension;
 import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.reforged.config.PokemonConfigKeys;
 import me.nickimpact.gts.reforged.config.PokemonMsgConfigKeys;
-import me.nickimpact.gts.reforged.deprecated.PokemonEntry;
 import me.nickimpact.gts.reforged.entries.ReforgedEntry;
 import me.nickimpact.gts.reforged.entries.ReforgedUI;
 import me.nickimpact.gts.reforged.entries.searching.ReforgedSearcher;
@@ -53,7 +52,7 @@ public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 	private Config config;
 	private Config msgConfig;
 
-	private EconomyService ecomony;
+	private EconomyService economy;
 
 	@Listener(order = Order.LATE)
 	public void onPreInit(GamePreInitializationEvent e) {
@@ -76,18 +75,17 @@ public class ReforgedBridge extends AbstractSpongePlugin implements Extension {
 				ReforgedEntry::execute
 		);
 		service.addSearcher("pokemon", new ReforgedSearcher());
-		service.getAllDeprecatedTypes().add(PokemonEntry.class);
 	}
 
 	@Listener
 	public void onServerStart(GameStartedServerEvent e) {
-		service.registerTokens(new PokemonTokens());
+		new PokemonTokens();
 	}
 
 	@Listener
 	public void onEconomyRegistration(ChangeServiceProviderEvent e) {
 		if(e.getService().equals(EconomyService.class)) {
-			this.ecomony = (EconomyService) e.getNewProviderRegistration().getProvider();
+			this.economy = (EconomyService) e.getNewProviderRegistration().getProvider();
 		}
 	}
 

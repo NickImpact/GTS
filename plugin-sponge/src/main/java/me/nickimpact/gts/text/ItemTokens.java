@@ -1,80 +1,53 @@
 package me.nickimpact.gts.text;
 
-import com.google.common.collect.Maps;
-import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.listings.SpongeItemEntry;
-import me.nickimpact.gts.sponge.Translator;
-import me.nickimpact.gts.sponge.text.TokenHolder;
-import org.spongepowered.api.data.DataContainer;
+import com.google.common.reflect.TypeToken;
+import io.github.nucleuspowered.nucleus.api.placeholder.PlaceholderVariables;
+import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.sponge.text.SpongeTokenService;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-public class ItemTokens implements TokenHolder {
+public class ItemTokens {
 
-	private static Map<String, Translator> tokens = Maps.newHashMap();
-
-	static {
-		tokens.put("item_type", (p, v, m) -> {
-			ItemStack item = getItemStackFromVariableIfExists(m);
-			if(item == null)
-				return Optional.empty();
-
-			return Optional.of(Text.of(item.getType().getTranslation().get()));
-		});
-		tokens.put("item_title", (p, v, m) -> {
-			Listing listing = getListingFromVaribleIfExists(m);
-			if(listing == null)
-				return Optional.empty();
-
-			return Optional.of(Text.of(TextColors.DARK_AQUA, listing.getEntry().getName()));
-		});
-		tokens.put("item_lore", (p, v, m) -> {
-			ItemStack item = getItemStackFromVariableIfExists(m);
-			if(!item.get(Keys.ITEM_LORE).isPresent())
-				return Optional.of(Text.EMPTY);
-
-			Text.Builder tb = Text.builder();
-			List<Text> lore = item.get(Keys.ITEM_LORE).get();
-			lore.add(0, Text.of(TextColors.GREEN, "Item Lore: "));
-			for(Text line : lore) {
-				if(!lore.get(lore.size() - 1).equals(line))
-					tb.append(line).append(Text.NEW_LINE);
-				else
-					tb.append(line);
+	public ItemTokens() {
+		SpongeTokenService service = GTS.getInstance().getTokenService();
+		ItemStackKey key = new ItemStackKey();
+		service.register("item_type", placeholder -> service.getOrDefault(placeholder, key, item -> Text.of(item.getType().getTranslation().get())));
+		service.register("item_title", placeholder -> service.getOrDefault(placeholder, SpongeTokenService.listingKey, listing -> Text.of(listing.getEntry().getName())));
+		service.register("item_lore", placeholder -> service.getOrDefault(placeholder, key, item -> {
+			if(item.get(Keys.ITEM_LORE).isPresent()) {
+				Text.Builder tb = Text.builder();
+				List<Text> lore = item.get(Keys.ITEM_LORE).get();
+				lore.add(0, Text.of(TextColors.GREEN, "Item Lore: "));
+				for(Text line : lore) {
+					if(!lore.get(lore.size() - 1).equals(line))
+						tb.append(line).append(Text.NEW_LINE);
+					else
+						tb.append(line);
+				}
+				return tb.build();
 			}
 
-			return Optional.of(tb.build());
-		});
+			return Text.EMPTY;
+		}));
 	}
 
-	public Map<String, Translator> getTokens() {
-		return tokens;
-	}
+	public static class ItemStackKey implements PlaceholderVariables.Key<ItemStack> {
 
-	private static Listing getListingFromVaribleIfExists(Map<String, Object> m) {
-		Optional<Object> opt = m.values().stream().filter(val -> val instanceof Listing && ((Listing) val).getEntry() instanceof SpongeItemEntry).findAny();
-		return (Listing) opt.orElse(null);
-	}
+		@Override
+		public String key() {
+			return "GTS ItemStack";
+		}
 
-	private static ItemStack getItemStackFromVariableIfExists(Map<String, Object> m) {
-		Optional<ItemStack> opt = m.values().stream()
-				.filter(val -> val instanceof DataContainer || val instanceof ItemStack)
-				.map(val -> {
-					if(val instanceof ItemStack) {
-						return (ItemStack) val;
-					} else {
-						return ItemStack.builder().fromContainer((DataContainer) val).build();
-					}
-				})
-				.findAny();
-		return opt.orElse(ItemStack.builder().itemType(ItemTypes.BARRIER).add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "ERROR")).build());
+		@Override
+		public TypeToken<ItemStack> getValueClass() {
+			return new TypeToken<ItemStack>(){};
+		}
+
 	}
 
 }
