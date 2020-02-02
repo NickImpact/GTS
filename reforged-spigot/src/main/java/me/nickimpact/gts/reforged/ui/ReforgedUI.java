@@ -14,9 +14,11 @@ import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.reforged.ReforgedBridge;
+import me.nickimpact.gts.reforged.config.ReforgedMsgConfigKeys;
 import me.nickimpact.gts.reforged.entry.ReforgedEntry;
 import me.nickimpact.gts.reforged.utils.SpriteItemUtil;
 import me.nickimpact.gts.spigot.MessageUtils;
+import me.nickimpact.gts.spigot.SpigotGTSPlugin;
 import me.nickimpact.gts.spigot.SpigotListing;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -63,7 +65,13 @@ public class ReforgedUI implements EntryUI<Player> {
 	}
 
 	private SpigotUI createDisplay() {
-		return SpigotUI.builder().title("&cGTS &7(&3Pokemon&7)").size(54).build().define(this.formatDisplay());
+		return SpigotUI.builder()
+				.title(((SpigotGTSPlugin) PluginInstance.getInstance()).getTokenService().process(
+						ReforgedBridge.getInstance().getMsgConfig(), ReforgedMsgConfigKeys.UI_TITLES_POKEMON, this.viewer, null, null
+				))
+				.size(54)
+				.build()
+				.define(this.formatDisplay());
 	}
 
 	private SpigotLayout formatDisplay() {

@@ -1,6 +1,7 @@
 package me.nickimpact.gts.reforged.utils;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
@@ -16,12 +17,19 @@ import com.pixelmonmod.pixelmon.enums.forms.EnumGreninja;
 import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
+import me.nickimpact.gts.api.plugin.PluginInstance;
+import me.nickimpact.gts.reforged.ReforgedBridge;
+import me.nickimpact.gts.reforged.config.ReforgedMsgConfigKeys;
 import me.nickimpact.gts.reforged.entry.EnumHidableDetail;
+import me.nickimpact.gts.reforged.entry.KeyDetailHolder;
+import me.nickimpact.gts.spigot.SpigotGTSPlugin;
+import me.nickimpact.gts.spigot.SpigotGtsService;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Map;
 
 public class SpriteItemUtil {
 
@@ -52,37 +60,11 @@ public class SpriteItemUtil {
 	}
 
 	public static List<String> getDetails(Pokemon pokemon) {
-		Gender gender = pokemon.getGender();
-		EVStore evs = pokemon.getEVs();
-		IVStore ivs = pokemon.getIVs();
+		Map<String, Object> variables = Maps.newHashMap();
+		variables.put("pokemon", pokemon);
 
-		List<String> lore = Lists.newArrayList(
-				"&7Ability: &e" + formattedAbility(pokemon),
-				"&7Gender: " + (gender == Gender.Male ? "&bMale" : gender == Gender.Female ? "&dFemale" : "&fNone"),
-				"&7Nature: &e" + pokemon.getNature(),
-				"&7Size: &e" + pokemon.getGrowth().name(),
-				"&7EVs: " + String.format(
-						"&e%d&7/&e%d&7/&e%d&7/&e%d&7/&e%d&7/&e%d &7(&a%.2f%%&7)",
-						evs.hp,
-						evs.attack,
-						evs.defence,
-						evs.specialAttack,
-						evs.specialDefence,
-						evs.speed,
-						calcEVPercent(evs)
-				),
-				"&7IVs: " + String.format(
-						"&e%d&7/&e%d&7/&e%d&7/&e%d&7/&e%d&7/&e%d &7(&a%.2f%%&7)",
-						ivs.hp,
-						ivs.attack,
-						ivs.defence,
-						ivs.specialAttack,
-						ivs.specialDefence,
-						ivs.speed,
-						calcIVPercent(ivs)
-				),
-				""
-
+		List<String> lore = ((SpigotGTSPlugin) PluginInstance.getInstance()).getTokenService().process(
+				ReforgedBridge.getInstance().getMsgConfig(), ReforgedMsgConfigKeys.POKEMON_PREVIEW_LORE, null, null, variables
 		);
 
 		if(addLore(pokemon, lore)) {
@@ -93,10 +75,14 @@ public class SpriteItemUtil {
 	}
 
 	private static boolean addLore(Pokemon pokemon, List<String> template) {
+		Map<String, Object> variables = Maps.newHashMap();
+		variables.put("pokemon", pokemon);
+
 		boolean any = false;
 		for (EnumHidableDetail detail : EnumHidableDetail.values()) {
 			if (detail.getCondition().test(pokemon)) {
-				template.add(detail.getField().apply(pokemon));
+				KeyDetailHolder d = detail.getField().apply(pokemon);
+				template.addAll(((SpigotGTSPlugin) PluginInstance.getInstance()).getTokenService().process(ReforgedBridge.getInstance().getMsgConfig(), d.getKey(), null, d.getTokens(), variables));
 				any = true;
 			}
 		}

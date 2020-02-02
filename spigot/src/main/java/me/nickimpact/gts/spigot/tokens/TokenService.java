@@ -3,10 +3,12 @@ package me.nickimpact.gts.spigot.tokens;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.nickimpact.impactor.api.utilities.Time;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.prices.Price;
+import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.spigot.MoneyPrice;
@@ -17,6 +19,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -29,8 +32,8 @@ import java.util.regex.Pattern;
 
 public class TokenService {
 
-	private static final Pattern token = Pattern.compile("([\\w ]+)?(\\{\\{[\\w-]+}})([\\w {}]+)?");
-	private static final Pattern suffixPattern = Pattern.compile(":([sp]+)$", Pattern.CASE_INSENSITIVE);
+	private static final Pattern TOKEN = Pattern.compile("(^[^{]+)?([{][{][\\w-:]+[}][}])(.+)?");
+	private static final Pattern SUFFIX_PATTERN = Pattern.compile(":([sp]+)$", Pattern.CASE_INSENSITIVE);
 	private static final Function<String, Optional<String>> translate = str -> Optional.of(ChatColor.translateAlternateColorCodes('&', str));
 
 	private final SpigotGTSPlugin plugin;
@@ -38,6 +41,13 @@ public class TokenService {
 
 	public TokenService(SpigotGTSPlugin plugin) {
 		this.plugin = plugin;
+		translators.put("player", (p, v, m) -> {
+			if(p instanceof Player) {
+				return Optional.of(Bukkit.getPlayer(((Player) p).getUniqueId()).getDisplayName());
+			} else {
+				return Optional.of("-"); // Console or Command Block, typically
+			}
+		});
 		translators.put("gts_prefix", (p, v, m) -> translate.apply(plugin.getMsgConfig().get(MsgConfigKeys.PREFIX)));
 		translators.put("gts_error", (p, v, m) -> translate.apply(plugin.getMsgConfig().get(MsgConfigKeys.ERROR_PREFIX)));
 		translators.put("balance", (p, v, m) -> Optional.of(getBalance(getSourceFromVariableIfExists(p, v, m))));
@@ -97,11 +107,16 @@ public class TokenService {
 
 			return translate.apply(listing.getName());
 		});
+		translators.put("gts_max_price", (p, v, m) -> Optional.of(Bukkit.getServicesManager().getRegistration(Economy.class).getProvider().format(PluginInstance.getInstance().getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE))));
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> T process(ConfigKey<T> key, CommandSender source, Map<String, Function<CommandSender, Optional<String>>> tokens, Map<String, Object> variables) {
-		T base = plugin.getMsgConfig().get(key);
+		return process(plugin.getMsgConfig(), key, source, tokens, variables);
+	}
+
+	public <T> T process(Config config, ConfigKey<T> key, CommandSender source, Map<String, Function<CommandSender, Optional<String>>> tokens, Map<String, Object> variables) {
+		T base = config.get(key);
 		if(base instanceof List) {
 			List<String> out = Lists.newArrayList();
 			for(String line : ((List<String>) base)) {
@@ -117,18 +132,20 @@ public class TokenService {
 	public String process(String input, CommandSender source, Map<String, Function<CommandSender, Optional<String>>> tokens, Map<String, Object> variables) {
 		String reference = input;
 		List<String> arguments = Lists.newArrayList();
-		Matcher m = token.matcher(input);
 		while(!reference.isEmpty()) {
+			Matcher m = TOKEN.matcher(reference);
 			if(m.find()) {
-				arguments.add(m.group(1));
-				reference = reference.replaceFirst(m.group(1), "");
+				if(m.group(1) != null) {
+					arguments.add(m.group(1));
+					reference = reference.replaceFirst("^[^{]+", "");
+				}
 
 				String token = m.group(2);
 				String out = tokens != null && tokens.containsKey(token.replace("{{", "").replace("}}", "")) ?
 						tokens.get(token.replace("{{", "").replace("}}", "")).apply(source).orElse(token) :
 						this.parse(source, token, variables).orElse(token);
 				arguments.add(out);
-				reference = reference.replaceFirst(token, "");
+				reference = reference.replaceFirst("[{][{][\\w-:]+[}][}]", "");
 			} else {
 				arguments.add(reference);
 				break;
@@ -166,7 +183,7 @@ public class TokenService {
 
 	private Optional<String> parse(CommandSender source, String token, Map<String, Object> variables) {
 		token = token.toLowerCase().trim().replace("{{", "").replace("}}", "");
-		Matcher m = suffixPattern.matcher(token);
+		Matcher m = SUFFIX_PATTERN.matcher(token);
 		boolean appendSpace = false;
 		boolean prependSpace = false;
 
@@ -175,7 +192,7 @@ public class TokenService {
 			appendSpace = match.contains("s");
 			prependSpace = match.contains("p");
 
-			token = token.replaceAll(suffixPattern.pattern(), "");
+			token = token.replaceAll(SUFFIX_PATTERN.pattern(), "");
 		}
 
 		Optional<String> result = parseToken(token, source, variables);

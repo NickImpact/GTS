@@ -20,6 +20,8 @@ import static com.nickimpact.impactor.api.configuration.ConfigKeyTypes.doubleKey
 public class ReforgedKeys implements ConfigKeyHolder {
 
 	public static ConfigKey<List<String>> BLACKLISTED_POKEMON = listKey("blacklist", Lists.newArrayList());
+	public static final ConfigKey<Boolean> TEXTUREFLAG_CAPITALIZE = booleanKey("variables.texture.capitalize", true);
+	public static final ConfigKey<Boolean> TEXTUREFLAG_TRIM_TRAILING_NUMS = booleanKey("variables.texture.trim-trailing-numbers", true);
 
 	public static final ConfigKey<Double> MIN_PRICING_POKEMON_BASE = doubleKey("min-pricing.base", 5000.0);
 	public static final ConfigKey<Double> MIN_PRICING_POKEMON_IVS_PRICE = doubleKey("min-pricing.ivs.price", 5000.0);

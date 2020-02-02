@@ -19,10 +19,15 @@ import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.plugin.Extension;
+import me.nickimpact.gts.api.plugin.PluginInstance;
+import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.reforged.config.ReforgedKeys;
+import me.nickimpact.gts.reforged.config.ReforgedMsgConfigKeys;
 import me.nickimpact.gts.reforged.entry.ReforgedEntry;
 import me.nickimpact.gts.reforged.entry.searching.ReforgedSearcher;
+import me.nickimpact.gts.reforged.text.PokemonTokens;
 import me.nickimpact.gts.reforged.ui.ReforgedUI;
+import me.nickimpact.gts.spigot.SpigotGTSPlugin;
 import me.nickimpact.gts.spigot.SpigotGtsService;
 import me.nickimpact.gts.spigot.SpigotListing;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -49,6 +54,7 @@ public class ReforgedBridge extends JavaPlugin implements Extension, Listener {
 
 	private Path configDir;
 	private Config config;
+	private Config msgConfig;
 
 	@Override
 	public void onLoad() {
@@ -59,6 +65,7 @@ public class ReforgedBridge extends JavaPlugin implements Extension, Listener {
 
 		this.configDir = Paths.get("./plugins/config/GTS");
 		this.config = new SpigotConfig(new SpigotConfigAdapter(this, new File(this.configDir.toFile(), "reforged.conf")), new ReforgedKeys());
+		this.msgConfig = new SpigotConfig(new SpigotConfigAdapter(this, new File(this.configDir.toFile(), "lang/" + PluginInstance.getInstance().getConfiguration().get(ConfigKeys.LANG_OPTION) + ".conf")), new ReforgedMsgConfigKeys());
 
 		this.service.registerEntry(
 				Lists.newArrayList("pokemon", "reforged"),
@@ -68,6 +75,7 @@ public class ReforgedBridge extends JavaPlugin implements Extension, Listener {
 				ReforgedEntry::execute
 		);
 		this.service.addSearcher("pokemon", new ReforgedSearcher());
+		new PokemonTokens(((SpigotGTSPlugin) PluginInstance.getInstance()).getTokenService());
 		this.logger.info("Integration successful!");
 	}
 
@@ -159,7 +167,7 @@ public class ReforgedBridge extends JavaPlugin implements Extension, Listener {
 
 	@Override
 	public Config getMsgConfig() {
-		return null;
+		return this.msgConfig;
 	}
 
 }

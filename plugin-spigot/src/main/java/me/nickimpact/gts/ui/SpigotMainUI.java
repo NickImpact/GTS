@@ -14,6 +14,7 @@ import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.spigot.SpigotListing;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -198,7 +199,7 @@ public class SpigotMainUI {
 		ItemMeta repMeta = rep.getItemMeta();
 
 		Map<String, Function<CommandSender, Optional<String>>> tokens = Maps.newHashMap();
-		tokens.put("gts_classifier", src -> Optional.of(classification.getPrimaryIdentifier()));
+		tokens.put("gts_entry_classification", src -> Optional.of(StringUtils.capitalize(classification.getPrimaryIdentifier())));
 		repMeta.setDisplayName(GTS.getInstance().getTokenService().process(MsgConfigKeys.FILTER_TITLE, viewer, tokens, null));
 
 		List<String> lore = Lists.newArrayList(GTS.getInstance().getTokenService().process(classification.getClassification().equals(this.classSelection) ? MsgConfigKeys.FILTER_STATUS_ENABLED : MsgConfigKeys.FILTER_STATUS_DISABLED, this.viewer, null, null));

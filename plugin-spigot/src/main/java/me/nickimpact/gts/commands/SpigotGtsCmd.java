@@ -5,6 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.*;
 import me.nickimpact.gts.GTS;
+import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.config.MsgConfigKeys;
@@ -63,7 +64,7 @@ public class SpigotGtsCmd extends BaseCommand {
 			if(searcher.isPresent()) {
 				new SpigotMainUI(player, searcher.get(), criteria).open();
 			} else {
-				player.sendMessage(MessageUtils.parse("No search option exists under that typing...", true));
+				player.sendMessage(GTS.getInstance().getTokenService().process(MsgConfigKeys.SEARCH_NO_OPTION, player, null, null));
 			}
 		}
 

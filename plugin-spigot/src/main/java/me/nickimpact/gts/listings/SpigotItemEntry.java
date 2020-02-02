@@ -91,16 +91,9 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 		Map<String, Object> variables = Maps.newHashMap();
 		variables.put("listing", listing);
 
-		List<String> lore = GTS.getInstance().getTokenService().process(MsgConfigKeys.ENTRY_INFO)
+		List<String> lore = GTS.getInstance().getTokenService().process(MsgConfigKeys.ITEM_ENTRY_BASE_LORE, player, null, variables);
 
-		List<String> lore = Lists.newArrayList(
-				"&7Seller: &e" + Bukkit.getServer().getOfflinePlayer(listing.getOwnerUUID()).getName(),
-				"",
-				"&7Price: &e" + listing.getPrice().getText()
-		).stream().map(str -> ChatColor.translateAlternateColorCodes('&', str)).collect(Collectors.toList());
-		if(!listing.getExpiration().equals(LocalDateTime.MAX)) {
-			lore.add(ChatColor.translateAlternateColorCodes('&', "&7Time Remaining: &e" + new Time(Duration.between(LocalDateTime.now(), listing.getExpiration()).getSeconds()).toString()));
-		}
+		lore.addAll(GTS.getInstance().getTokenService().process(MsgConfigKeys.ENTRY_INFO, player, null, variables));
 
 		return ItemStackUtils.itemBuilder()
 				.fromItem(this.getEntry().clone())
@@ -120,7 +113,7 @@ public class SpigotItemEntry extends SpigotEntry<Map<String, Object>, ItemStack>
 		Inventory inv = player.getInventory();
 		if(Arrays.stream(inv.getContents()).filter(i -> i != null && i.getType() != Material.AIR).count() >= 36) {
 			if(!messageSent) {
-				Optional.ofNullable(user.getPlayer()).ifPresent(p -> p.sendMessage(MessageUtils.parse("Your inventory is full, so your item couldn't be returned...", true)));
+				Optional.ofNullable(user.getPlayer()).ifPresent(p -> p.sendMessage(GTS.getInstance().getTokenService().process(MsgConfigKeys.ITEMS_INVENTORY_FULL, player, null, null)));
 				messageSent = true;
 			}
 			return false;

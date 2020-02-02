@@ -104,6 +104,11 @@ public class GTS extends JavaPlugin implements SpigotGTSPlugin, Configurable, Tr
 		this.service.setBuilders(new BuilderRegistry());
 		this.service.getBuilderRegistry().register(Listing.ListingBuilder.class, SpigotListing.SpigotListingBuilder.class);
 
+		logger.info("Loading configuration...");
+		this.configDir = this.getDataFolder().toPath();
+		this.config = new SpigotConfig(new SpigotConfigAdapter(this, new File(this.configDir.toFile(), "gts.conf")), new ConfigKeys());
+		this.msgConfig = new SpigotConfig(new SpigotConfigAdapter(this, new File(this.configDir.toFile(), "lang/" + this.config.get(ConfigKeys.LANG_OPTION) + ".conf")), new MsgConfigKeys());
+
 		logger.info("Loading default entry types...");
 		this.service.setRegistry(new EntryRegistry(this));
 		this.service.registerEntry(
@@ -120,12 +125,6 @@ public class GTS extends JavaPlugin implements SpigotGTSPlugin, Configurable, Tr
 	@Override
 	public void onEnable() {
 		logger.info(ChatColor.GREEN + "Enabling GTS...");
-
-		logger.info("Loading configuration...");
-		this.configDir = this.getDataFolder().toPath();
-		this.config = new SpigotConfig(new SpigotConfigAdapter(this, new File(this.configDir.toFile(), "gts.conf")), new ConfigKeys());
-		this.msgConfig = new SpigotConfig(new SpigotConfigAdapter(this, new File(this.configDir.toFile(), "lang/" + this.config.get(ConfigKeys.LANG_OPTION) + ".conf")), new MsgConfigKeys());
-
 		logger.info("Initializing additional dependencies...");
 		this.loader = new ReflectionClassLoader(this);
 		this.dependencyManager = new DependencyManager(this);
