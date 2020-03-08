@@ -80,7 +80,11 @@ public interface Listing {
 
 		ListingBuilder lister(UUID lister);
 
+		ListingBuilder entry(Entry entry);
 
+		ListingBuilder price(Price price);
+
+		ListingBuilder expiration(LocalDateTime expiration);
 
 	}
 }

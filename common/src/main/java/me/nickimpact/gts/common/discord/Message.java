@@ -1,4 +1,4 @@
-package me.nickimpact.gts.discord;
+package me.nickimpact.gts.common.discord;
 
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;

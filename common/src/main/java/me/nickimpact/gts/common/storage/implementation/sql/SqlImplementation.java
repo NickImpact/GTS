@@ -31,9 +31,8 @@ import com.nickimpact.impactor.api.storage.sql.ConnectionFactory;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.common.config.ConfigKeys;
+import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
-import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
 
 import java.io.BufferedReader;
@@ -181,8 +180,8 @@ public class SqlImplementation implements StorageImplementation {
 			clob.setString(1, this.plugin.getGson().toJson(listing.getEntry(), Entry.class));
 
 			ps.setClob(3, clob);
-			ps.setDouble(4, listing.getPrice().getPrice());
-			ps.setTimestamp(5, Timestamp.valueOf(listing.getExpiration()));
+			//ps.setDouble(4, listing.getPrice().getPrice());
+			//ps.setTimestamp(5, Timestamp.valueOf(listing.getExpiration()));
 			ps.executeUpdate();
 
 			return true;
@@ -209,14 +208,14 @@ public class SqlImplementation implements StorageImplementation {
 					UUID id = UUID.fromString(results.getString("id"));
 					UUID owner = UUID.fromString(results.getString("owner"));
 					String entry = results.getString("entry");
-					double price = results.getDouble("price");
+					String price = results.getString("price");
 					LocalDateTime date = results.getTimestamp("expiration").toLocalDateTime();
 
-					Listing listing = Listing.builder(this.plugin)
+					Listing listing = Listing.builder()
 							.id(id)
-							.owner(owner)
+							.lister(owner)
 							.entry(this.plugin.getGson().fromJson(entry, Entry.class))
-							.price(Math.min(this.plugin.getConfiguration().get(ConfigKeys.MAX_MONEY_PRICE), price))
+							.price(this.plugin.getGson().fromJson(price, Price.class))
 							.expiration(date)
 							.build();
 					entries.add(listing);

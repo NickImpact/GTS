@@ -1,4 +1,4 @@
-package me.nickimpact.gts.discord;
+package me.nickimpact.gts.common.discord;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

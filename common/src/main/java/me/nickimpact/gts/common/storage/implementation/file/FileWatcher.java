@@ -54,9 +54,9 @@ public class FileWatcher {
         this.watchedLocations = Collections.synchronizedMap(new HashMap<>());
         this.basePath = basePath;
         this.watchService = basePath.getFileSystem().newWatchService();
-
-        plugin.getAsyncExecutor().schedule(this::initLocations, 5, TimeUnit.SECONDS);
-        plugin.getAsyncExecutor().scheduleAtFixedRate(this::tick, 0, 1, TimeUnit.SECONDS);
+//
+//        plugin.getAsyncExecutor().schedule(this::initLocations, 5, TimeUnit.SECONDS);
+//        plugin.getAsyncExecutor().scheduleAtFixedRate(this::tick, 0, 1, TimeUnit.SECONDS);
     }
 
     public WatchedLocation getWatcher(Path path) {

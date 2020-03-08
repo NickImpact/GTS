@@ -1,8 +1,8 @@
-package me.nickimpact.gts.discord;
+package me.nickimpact.gts.common.discord;
 
 import com.google.common.base.Throwables;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
-import me.nickimpact.gts.config.ConfigKeys;
+import me.nickimpact.gts.common.config.ConfigKeys;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.util.List;
