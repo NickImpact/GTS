@@ -1,94 +1,86 @@
 package me.nickimpact.gts.api.listings;
 
-import com.nickimpact.impactor.api.building.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.prices.Price;
-import me.nickimpact.gts.api.plugin.IGTSBacking;
-import me.nickimpact.gts.api.plugin.IGTSPlugin;
+import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.api.listings.makeup.Display;
+import me.nickimpact.gts.api.registry.GTSRegistry;
+import me.nickimpact.gts.api.util.Builder;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
-public abstract class Listing<E extends Entry, P, I> {
+/**
+ * A listing represents the overall information of something listed onto the GTS.
+ */
+public interface Listing {
 
-	/** The Unique ID of the element */
-	@Getter
-	private UUID uuid;
+	/** The UUID to use when the server itself creates a listing */
+	UUID SERVER_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
-	/** The uuid of the element owner */
-	@Getter private final UUID ownerUUID;
+	/**
+	 * Represents the ID of this listing. This is independent of the lister's UUID, which serves as a reference
+	 * to the player or system that listed the listing.
+	 *
+	 * @return The unique ID of this listing
+	 */
+	UUID getID();
 
-	@Getter @Setter
-	private E entry;
+	/**
+	 * Represents the UUID of the user listing this Listing. If this is a player, the UUID will be that of the player.
+	 * If the server creates the listing, then this UUID will match the generic zeroed out ID.
+	 *
+	 * @return The ID of the lister who created this listing
+	 */
+	UUID getLister();
 
-	protected Price price;
+	/**
+	 * Represents the actual component of the listing that will be contained by this listing. This is what a user will
+	 * be purchasing should they purchase the listing.
+	 *
+	 * @return The entry making up this listing.
+	 */
+	Entry getEntry();
 
-	/** When the lot will expire, if the above is true */
-	@Getter private LocalDateTime expiration;
-
-	public Listing(UUID id, UUID owner, E entry, Price price, LocalDateTime expiration) {
-		this.uuid = id;
-		this.price = price;
-		this.ownerUUID = owner;
-		this.expiration = expiration;
-		this.entry = entry;
-	}
-
-	public boolean publish(IGTSBacking plugin, UUID uuid) {
-		return plugin.getAPIService().getListingManager().addToMarket(uuid,this);
+	/**
+	 * Represents the display of the listing. This is essentially how the listing will be displayed to the user
+	 * when queried in-game.
+	 *
+	 * @return The display parameters of this listing
+	 */
+	default Display getDisplay() {
+		return this.getEntry().getDisplay();
 	}
 
 	/**
-	 * Checks whether or not a listing has exceeded its allocated listing time.
+	 * Represents the time where this listing will expire. In general, each listing will have this option specified.
+	 * However, a listing that has been made permanent can avoid this check, and simply stay in the system until
+	 * it is either purchased or removed.
 	 *
-	 * @return Whether or not a listing has expired
+	 * @return An optional value containing the exact point in time in which this listing will expire, or empty to
+	 * represent that this listing will never expire.
 	 */
-	public boolean hasExpired() {
-		if(this.getExpiration() == null) {
-			return false;
-		}
-		return getExpiration().isBefore(LocalDateTime.now());
-	}
+	Optional<LocalDateTime> getExpiration();
 
 	/**
-	 * Returns the name of a lot element. Common uses of this method might be its use in messages displayed
-	 * to users.
+	 * Represents the price of this listing. This will be what a purchasing player must pay in order to buy this
+	 * listing off the GTS.
 	 *
-	 * @return The name of a lot element.
+	 * @return The price of the listing
 	 */
-	public String getName() {
-		return entry.getName();
+	Price getPrice();
+
+	static ListingBuilder builder() {
+		return GTSRegistry.createBuilder(ListingBuilder.class);
 	}
 
-	/**
-	 * Retrieves the ItemStack display for the {@link Entry} attached to this listing
-	 *
-	 * @param player The player to create the item stack for
-	 * @return An itemstack representation of the entry
-	 */
-	public abstract I getDisplay(P player);
-
-	public Price getPrice() {
-		return this.price;
-	}
-
-	public static ListingBuilder builder(IGTSPlugin plugin) {
-		return plugin.getAPIService().getBuilderRegistry().createFor(ListingBuilder.class);
-	}
-
-	public interface ListingBuilder extends Builder<Listing> {
+	interface ListingBuilder extends Builder<Listing, ListingBuilder> {
 
 		ListingBuilder id(UUID id);
 
-		ListingBuilder owner(UUID owner);
+		ListingBuilder lister(UUID lister);
 
-		<E extends Entry> ListingBuilder entry(E entry);
 
-		ListingBuilder price(double price);
 
-		ListingBuilder expiration(LocalDateTime expiration);
 	}
 }

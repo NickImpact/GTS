@@ -22,6 +22,7 @@ public class EntryRegistry {
 	private List<EntryClassification> classifications = Lists.newArrayList();
 
 	public Optional<EntryClassification> getForIdentifier(String id) {
-		return this.getClassifications().stream().filter(classification -> ((Stream<String>)classification.getIdentifers().stream()).anyMatch(i -> i.equalsIgnoreCase(id))).findAny();
+		return this.getClassifications().stream().filter(classification -> ((Stream<String>)classification.getIdentifiers().stream()).anyMatch(i -> i.equalsIgnoreCase(id))).findAny();
 	}
+
 }

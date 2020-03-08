@@ -2,53 +2,46 @@ package me.nickimpact.gts.spigot;
 
 import co.aikar.commands.CommandIssuer;
 import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSerializer;
 import com.nickimpact.impactor.api.registry.BuilderRegistry;
 import lombok.Setter;
 import me.nickimpact.gts.api.GtsService;
-import me.nickimpact.gts.api.deprecated.OldAdapter;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
-import me.nickimpact.gts.api.listings.ListingManager;
+import me.nickimpact.gts.api.listings.manager.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
-import me.nickimpact.gts.api.plugin.IGTSPlugin;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.api.storage.IGtsStorage;
 import me.nickimpact.gts.api.util.TriFunction;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.Material;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Setter
 public class SpigotGtsService implements GtsService {
 
-	private final IGTSPlugin plugin;
+	private final GTSPlugin plugin;
 
 	private ListingManager manager;
 	private IGtsStorage storage;
 	private EntryRegistry registry;
 	private BuilderRegistry builders;
 
-	private List<Class<? extends me.nickimpact.gts.api.deprecated.Entry>> types = Lists.newArrayList();
 	private GsonBuilder gson = new GsonBuilder().setPrettyPrinting();
 
 	private Map<String, Searcher> searcherMap = Maps.newHashMap();
 	private Multimap<Class<? extends Entry>, Function<?, Double>> minPriceExtras = ArrayListMultimap.create();
 
-	public SpigotGtsService(IGTSPlugin plugin) {
+	public SpigotGtsService(GTSPlugin plugin) {
 		this.plugin = plugin;
 	}
 
@@ -86,26 +79,6 @@ public class SpigotGtsService implements GtsService {
 	}
 
 	@Override
-	public Gson getDeprecatedGson() {
-		return gson.create();
-	}
-
-	@Override
-	public <E> void registerOldTypeAdapter(Class<E> clazz, OldAdapter<E> adapter) {
-		gson = gson.registerTypeAdapter(clazz, adapter);
-	}
-
-	@Override
-	public <E> void registerOldTypeAdapter(Class<E> clazz, JsonSerializer<E> adapter) {
-		gson = gson.registerTypeAdapter(clazz, adapter);
-	}
-
-	@Override
-	public List<Class<? extends me.nickimpact.gts.api.deprecated.Entry>> getAllDeprecatedTypes() {
-		return types;
-	}
-
-	@Override
 	public void addSearcher(String key, Searcher searcher) {
 		this.searcherMap.put(key, searcher);
 	}
@@ -129,9 +102,63 @@ public class SpigotGtsService implements GtsService {
 				.collect(Collectors.toList());
 	}
 
-	public static class SpigotEntryClassification extends EntryClassification<CommandIssuer> {
-		SpigotEntryClassification(Class<? extends Entry> classification, List<String> identifers, String itemRep, EntryUI ui, TriFunction<CommandIssuer, List<String>, Boolean, CommandResults> cmdHandler) {
-			super(classification, identifers, itemRep, ui, cmdHandler);
+	public static class SpigotEntryClassification implements EntryClassification<CommandIssuer, Material> {
+
+		SpigotEntryClassification(SpigotEntryClassificationBuilder builder) {
+
+		}
+
+		@Override
+		public Class<? extends Entry> getClassType() {
+			return null;
+		}
+
+		@Override
+		public List<String> getIdentifiers() {
+			return null;
+		}
+
+		@Override
+		public Material getMaterial() {
+			return null;
+		}
+
+		@Override
+		public EntryUI getUI() {
+			return null;
+		}
+
+		@Override
+		public CommandProcessor<CommandIssuer> getCommandHandler() {
+			return null;
+		}
+
+		public static class SpigotEntryClassificationBuilder implements EntryClassificationBuilder {
+
+			@Override
+			public EntryClassificationBuilder classification(Class<? extends Entry> type) {
+				return null;
+			}
+
+			@Override
+			public EntryClassificationBuilder identifiers(String... identifiers) {
+				return null;
+			}
+
+			@Override
+			public EntryClassificationBuilder material(String material) {
+				return null;
+			}
+
+			@Override
+			public EntryClassificationBuilder ui(EntryUI ui) {
+				return null;
+			}
+
+			@Override
+			public EntryClassification build() {
+				return null;
+			}
 		}
 	}
 }

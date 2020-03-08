@@ -4,13 +4,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.utilities.Time;
+import io.github.nucleuspowered.nucleus.api.placeholder.PlaceholderVariables;
 import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.api.enums.CommandResults;
-import me.nickimpact.gts.api.listings.ListingManager;
+import me.nickimpact.gts.api.listings.manager.ListingManager;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.listings.prices.Minable;
 import me.nickimpact.gts.api.listings.prices.Price;
-import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.api.storage.IGtsStorage;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
@@ -21,8 +20,9 @@ import me.nickimpact.gts.sponge.MoneyPrice;
 import me.nickimpact.gts.sponge.SpongeListing;
 import me.nickimpact.gts.sponge.SpongePlugin;
 import me.nickimpact.gts.sponge.TextParsingUtils;
+import me.nickimpact.gts.sponge.text.placeholders.ListingPlaceholderVariableKey;
 import me.nickimpact.gts.sponge.utils.MessageUtils;
-import me.nickimpact.gts.utils.DateTimeFormatUtils;
+import me.nickimpact.gts.common.utils.DateTimeFormatUtils;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
@@ -89,9 +89,9 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 			}
 		}
 
-		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("listing", listing);
-		variables.put("entry", listing.getEntry().getEntry());
+		PlaceholderVariables variables = PlaceholderVariables.builder()
+				.put(new ListingPlaceholderVariableKey(), listing)
+				.build();
 
 		if(this.hasMaxListings(lister)) {
 			source.ifPresent(src -> src.sendMessages(parser.parse(
@@ -201,9 +201,9 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 		Config msgConfig = GTS.getInstance().getMsgConfig();
 		TextParsingUtils parser = GTS.getInstance().getTextParsingUtils();
 
-		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("listing", listing);
-		variables.put("entry", listing.getEntry().getEntry());
+		PlaceholderVariables variables = PlaceholderVariables.builder()
+				.put(new ListingPlaceholderVariableKey(), listing)
+				.build();
 
 		Optional<Player> player = Sponge.getServer().getPlayer(buyer);
 		if(!this.listings.contains(listing)) {

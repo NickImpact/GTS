@@ -1,6 +1,5 @@
 package me.nickimpact.gts.spigot;
 
-import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.prices.Price;
 import org.bukkit.entity.Player;

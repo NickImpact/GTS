@@ -8,7 +8,7 @@ import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
 import me.nickimpact.gts.config.MsgConfigKeys;
-import me.nickimpact.gts.utils.SpongeItemTypeUtil;
+import me.nickimpact.gts.common.utils.SpongeItemTypeUtil;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;

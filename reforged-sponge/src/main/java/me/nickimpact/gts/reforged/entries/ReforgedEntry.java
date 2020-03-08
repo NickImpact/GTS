@@ -23,19 +23,20 @@ import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
+import io.github.nucleuspowered.nucleus.api.placeholder.PlaceholderVariables;
 import me.nickimpact.gts.api.enums.CommandResults;
-import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.prices.Minable;
-import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.reforged.ReforgedBridge;
 import me.nickimpact.gts.reforged.config.PokemonConfigKeys;
 import me.nickimpact.gts.reforged.config.PokemonMsgConfigKeys;
+import me.nickimpact.gts.reforged.text.PokemonTokens;
 import me.nickimpact.gts.reforged.utils.Flags;
 import me.nickimpact.gts.reforged.utils.GsonUtils;
 import me.nickimpact.gts.sponge.*;
+import me.nickimpact.gts.sponge.text.placeholders.ListingPlaceholderVariableKey;
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.data.key.Keys;
@@ -164,9 +165,11 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 	@Override
 	public ItemStack baseItemStack(Player player, Listing listing) {
 		ItemStack icon = this.getPicture(this.getEntry());
-		Map<String, Object> variables = Maps.newHashMap();
-		variables.put("listing", listing);
-		variables.put("pokemon", this.getEntry());
+
+		PlaceholderVariables variables = PlaceholderVariables.builder()
+				.put(new ListingPlaceholderVariableKey(), listing)
+				.put(new PokemonTokens.PokemonKey(), pokemon)
+				.build();
 
 		icon.offer(Keys.DISPLAY_NAME, ((SpongePlugin) PluginInstance.getInstance()).getTextParsingUtils().fetchAndParseMsg(player, ReforgedBridge.getInstance().getMsgConfig(), this.getEntry().isEgg() ? PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE_EGG : PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_TITLE, null, variables));
 
@@ -177,7 +180,7 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 		return icon;
 	}
 
-	private void addLore(ItemStack icon, List<String> template, Player player, Map<String, Object> variables) {
+	private void addLore(ItemStack icon, List<String> template, Player player, PlaceholderVariables variables) {
 		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
 		for (EnumHidableDetail detail : EnumHidableDetail.values()) {
 			if (detail.getCondition().test(this.getEntry())) {

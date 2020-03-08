@@ -2,7 +2,6 @@ package me.nickimpact.gts.sponge;
 
 import lombok.Setter;
 import me.nickimpact.gts.api.listings.prices.Price;
-import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.service.economy.EconomyService;
@@ -47,6 +46,8 @@ public class MoneyPrice implements Price<Text> {
 	public void reward(UUID uuid) {
 		economy.getOrCreateAccount(uuid).get().deposit(economy.getDefaultCurrency(), price, Sponge.getCauseStackManager().getCurrentCause());
 	}
+
+	Sponge
 
 	@Override
 	public double calcTax() {

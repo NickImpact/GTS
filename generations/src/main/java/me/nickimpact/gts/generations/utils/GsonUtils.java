@@ -1,7 +1,6 @@
 package me.nickimpact.gts.generations.utils;
 
 import com.google.common.collect.Lists;
-import me.nickimpact.gts.api.plugin.PluginInstance;
 import net.minecraft.nbt.*;
 
 import java.util.HashMap;

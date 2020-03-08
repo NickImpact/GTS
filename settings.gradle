@@ -11,3 +11,5 @@ include (
         'reforged-sponge',
         'generations'
 )
+include 'pixelmon'
+

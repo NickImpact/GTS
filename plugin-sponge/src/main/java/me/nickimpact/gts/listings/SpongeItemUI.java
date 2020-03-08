@@ -2,13 +2,11 @@ package me.nickimpact.gts.listings;
 
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
-import com.nickimpact.impactor.api.gui.UI;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
-import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.sponge.SpongeListing;

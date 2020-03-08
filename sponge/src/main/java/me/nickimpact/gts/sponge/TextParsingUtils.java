@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
 import io.github.nucleuspowered.nucleus.api.NucleusAPI;
-import io.github.nucleuspowered.nucleus.api.exceptions.NucleusException;
+import io.github.nucleuspowered.nucleus.api.placeholder.PlaceholderVariables;
 import io.github.nucleuspowered.nucleus.api.text.NucleusTextTemplate;
 import me.nickimpact.gts.api.listings.prices.Price;
 import org.spongepowered.api.command.CommandSource;
@@ -16,11 +16,11 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 
 import javax.annotation.Nullable;
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class TextParsingUtils {
 
@@ -30,11 +30,11 @@ public class TextParsingUtils {
 		this.plugin = plugin;
 	}
 
-	private NucleusTextTemplate getTemplate(String text) throws NucleusException {
-		return NucleusAPI.getMessageTokenService().createFromString(text);
+	private NucleusTextTemplate getTemplate(String text) {
+		return NucleusAPI.getTextTemplateFactory().createFromString(text);
 	}
 
-	private List<NucleusTextTemplate> getTemplates(List<String> text) throws NucleusException {
+	private List<NucleusTextTemplate> getTemplates(List<String> text) {
 		List<NucleusTextTemplate> templates = Lists.newArrayList();
 		for(String str : text) {
 			templates.add(getTemplate(str));
@@ -43,33 +43,32 @@ public class TextParsingUtils {
 		return templates;
 	}
 
-	public Text parse(String template, CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
-		try {
-			return parse(getTemplate(template), source, tokens, variables);
-		} catch (NucleusException e) {
-			return Text.EMPTY;
-		}
+	public Text parse(String template, CommandSource source) {
+		return this.parse(template, source, null);
 	}
 
-	public List<Text> parse(Collection<String> templates, CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
-		try {
-			return parse(getTemplates(Lists.newArrayList(templates)), source, tokens, variables);
-		} catch (NucleusException e) {
-			return Lists.newArrayList();
-		}
+	public Text parse(String template, CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens) {
+		return this.parse(template, source, tokens, PlaceholderVariables.empty());
 	}
 
-	public Text parse(NucleusTextTemplate template, CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
-		return template.getForCommandSource(source, tokens, variables);
+	public Text parse(String template, CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, PlaceholderVariables variables) {
+		NucleusTextTemplate ntt = this.getTemplate(template);
+		if(variables == null) {
+			variables = PlaceholderVariables.empty();
+		}
+		return ntt.getForCommandSource(source, tokens, variables);
 	}
 
-	public List<Text> parse(List<NucleusTextTemplate> templates, CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
-		List<Text> output = Lists.newArrayList();
-		for(NucleusTextTemplate template : templates) {
-			output.add(parse(template, source, tokens, variables));
-		}
+	public List<Text> parse(List<String> templates, CommandSource source) {
+		return this.parse(templates, source, null);
+	}
 
-		return output;
+	public List<Text> parse(List<String> templates, CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens) {
+		return this.parse(templates, source, tokens, PlaceholderVariables.empty());
+	}
+
+	public List<Text> parse(List<String> templates, CommandSource source, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, PlaceholderVariables variables) {
+		return this.getTemplates(templates).stream().map(ntt -> ntt.getForCommandSource(source, tokens, variables)).collect(Collectors.toList());
 	}
 
 	public Text getNameFromUser(CommandSource source) {
@@ -88,58 +87,23 @@ public class TextParsingUtils {
 		return Text.of(plugin.getEconomy().getDefaultCurrency().format(BigDecimal.ZERO));
 	}
 
-	public Text getPriceInfo(Price<Text> price) {
-		if(price == null)
-			return Text.EMPTY;
-
-		return price.getText();
-	}
-
-	public Text fetchMsg(String def) {
-		return TextSerializers.FORMATTING_CODE.deserialize(def);
-	}
-
-	public Text fetchMsg(ConfigKey<String> key) {
-		return TextSerializers.FORMATTING_CODE.deserialize(plugin.getMsgConfig().get(key));
-	}
-
-	public Text fetchMsg(CommandSource source, String def) {
-		return fetchAndParseMsg(source, def, null, null);
-	}
-
-	public Text fetchMsg(CommandSource source, ConfigKey<String> key) {
-		return fetchAndParseMsg(source, key, null, null);
-	}
-
-	public Text fetchAndParseMsg(CommandSource source, String def, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
+	public Text fetchAndParseMsg(CommandSource source, String def, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, PlaceholderVariables variables) {
 		return parse(def, source, tokens, variables);
 	}
 
-	public Text fetchAndParseMsg(CommandSource source, ConfigKey<String> key, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
+	public Text fetchAndParseMsg(CommandSource source, ConfigKey<String> key, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, PlaceholderVariables variables) {
 		return parse(this.plugin.getMsgConfig().get(key), source, tokens, variables);
 	}
 
-	public List<Text> fetchMsgs(ConfigKey<List<String>> key) {
-		List<Text> output = Lists.newArrayList();
-		for(String str : this.plugin.getMsgConfig().get(key)) {
-			output.add(TextSerializers.FORMATTING_CODE.deserialize(str));
-		}
-		return output;
-	}
-
-	public List<Text> fetchMsgs(CommandSource source, ConfigKey<List<String>> key) {
-		return fetchAndParseMsgs(source, key, null, null);
-	}
-
-	public List<Text> fetchAndParseMsgs(CommandSource source, ConfigKey<List<String>> key, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
+	public List<Text> fetchAndParseMsgs(CommandSource source, ConfigKey<List<String>> key, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, PlaceholderVariables variables) {
 		return parse(this.plugin.getMsgConfig().get(key), source, tokens, variables);
 	}
 
-	public Text fetchAndParseMsg(CommandSource source, Config config, ConfigKey<String> key, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
+	public Text fetchAndParseMsg(CommandSource source, Config config, ConfigKey<String> key, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, PlaceholderVariables variables) {
 		return parse(config.get(key), source, tokens, variables);
 	}
 
-	public List<Text> fetchAndParseMsgs(CommandSource source, Config config, ConfigKey<List<String>> key, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, @Nullable Map<String, Object> variables) {
+	public List<Text> fetchAndParseMsgs(CommandSource source, Config config, ConfigKey<List<String>> key, @Nullable Map<String, Function<CommandSource, Optional<Text>>> tokens, PlaceholderVariables variables) {
 		return parse(config.get(key), source, tokens, variables);
 	}
 

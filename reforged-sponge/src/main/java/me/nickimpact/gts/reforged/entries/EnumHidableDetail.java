@@ -6,6 +6,7 @@ import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
+import com.pixelmonmod.pixelmon.entities.pixelmon.specs.UnbreedableFlag;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ import java.util.function.Predicate;
 public enum EnumHidableDetail {
 
 	TEXTURE(pokemon -> pokemon.getCustomTexture() != null && !pokemon.getCustomTexture().isEmpty(), pokemon -> new KeyDetailHolder(PokemonMsgConfigKeys.PE_BASE_TEXTURE, null)),
-	UNBREEDABLE(pokemon -> new PokemonSpec("unbreedable").matches(pokemon), pokemon -> new KeyDetailHolder(PokemonMsgConfigKeys.PE_BASE_UNBREEDABLE, null)),
+	UNBREEDABLE(pokemon -> UnbreedableFlag.UNBREEDABLE.matches(pokemon), pokemon -> new KeyDetailHolder(PokemonMsgConfigKeys.PE_BASE_UNBREEDABLE, null)),
 	POKERUS(pokemon -> pokemon.getPokerus() != null, pokemon -> new KeyDetailHolder(PokemonMsgConfigKeys.PE_BASE_POKERUS, null)),
 	BOTTLE_CAPPED(pokemon -> {
 		for(StatsType type : Lists.newArrayList(StatsType.HP, StatsType.Attack, StatsType.Defence, StatsType.SpecialAttack, StatsType.SpecialDefence, StatsType.Speed)) {

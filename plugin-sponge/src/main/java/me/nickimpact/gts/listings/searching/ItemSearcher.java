@@ -1,6 +1,5 @@
 package me.nickimpact.gts.listings.searching;
 
-import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.listings.SpongeItemEntry;
 import me.nickimpact.gts.sponge.SpongeListing;

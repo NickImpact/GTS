@@ -1,6 +1,5 @@
 package me.nickimpact.gts.spigot;
 
-import me.nickimpact.gts.api.plugin.PluginInstance;
 import org.bukkit.ChatColor;
 
 import java.util.List;

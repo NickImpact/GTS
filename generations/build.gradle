@@ -54,7 +54,7 @@ dependencies {
     shadow project(':sponge')
     shadow project(':common')
     shadow 'org.spongepowered:spongeapi:7.1.0'
-    shadow 'io.github.nucleuspowered:nucleus-api:1.11.0-S7.1'
+    shadow 'io.github.nucleuspowered:nucleus-api:2.0.0-SNAPSHOT-S7.1'
     compile fileTree(dir: 'libs', include: '*.jar')
 }
 

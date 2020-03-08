@@ -1,7 +1,6 @@
 package me.nickimpact.gts.reforged.text;
 
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.reforged.entry.EnumPokemonFields;
 import me.nickimpact.gts.reforged.entry.ReforgedEntry;
 import me.nickimpact.gts.spigot.tokens.TokenService;

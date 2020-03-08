@@ -1,24 +1,19 @@
 package me.nickimpact.gts.api;
 
 import co.aikar.commands.CommandIssuer;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSerializer;
 import com.nickimpact.impactor.api.registry.BuilderRegistry;
-import me.nickimpact.gts.api.deprecated.OldAdapter;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.holders.EntryRegistry;
 import me.nickimpact.gts.api.holders.ServiceInstance;
-import me.nickimpact.gts.api.listings.ListingManager;
+import me.nickimpact.gts.api.listings.manager.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.listings.entries.EntryUI;
+import me.nickimpact.gts.api.listings.ui.EntryUI;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.api.storage.IGtsStorage;
 import me.nickimpact.gts.api.util.TriFunction;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public interface GtsService {
@@ -53,22 +48,6 @@ public interface GtsService {
 	BuilderRegistry getBuilderRegistry();
 
 	/**
-	 * Please just don't use this. This is here purely to aid in the data conversion efforts of 4.2.0
-	 *
-	 * @since 4.2.0
-	 * @deprecated It is simply required to aid in update efforts
-	 * @return The GSON structure which contains old classes
-	 */
-	@Deprecated
-	Gson getDeprecatedGson();
-
-	<E> void registerOldTypeAdapter(Class<E> clazz, OldAdapter<E> adapter);
-	<E> void registerOldTypeAdapter(Class<E> clazz, JsonSerializer<E> adapter);
-
-	@Deprecated
-	List<Class<? extends me.nickimpact.gts.api.deprecated.Entry>> getAllDeprecatedTypes();
-
-	/**
 	 * Registers a searching option for all listings in the listing manager.
 	 *
 	 * @param key The key for the search operation
@@ -79,7 +58,7 @@ public interface GtsService {
 
 	Optional<Searcher> getSearcher(String key);
 
-	<T> void addMinPriceOption(Class<? extends Entry<?, T, ?, ?, ?>> type, Function<T, Double> function);
-
-	<T> List<Function<T, Double>> getMinPriceOptionsForEntryType(Class<? extends Entry<?, T, ?, ?, ?>> type);
+//	<T> void addMinPriceOption(Class<? extends Entry<?, T, ?, ?, ?>> type, Function<T, Double> function);
+//
+//	<T> List<Function<T, Double>> getMinPriceOptionsForEntryType(Class<? extends Entry<?, T, ?, ?, ?>> type);
 }

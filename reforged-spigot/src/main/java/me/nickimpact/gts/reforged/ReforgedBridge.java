@@ -10,16 +10,9 @@ import com.nickimpact.impactor.api.plugin.PluginInfo;
 import com.nickimpact.impactor.spigot.configuration.SpigotConfig;
 import com.nickimpact.impactor.spigot.configuration.SpigotConfigAdapter;
 import com.nickimpact.impactor.spigot.logging.SpigotLogger;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.api.events.CaptureEvent;
-import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.enums.EnumSpecies;
-import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
-import me.nickimpact.gts.api.enums.CommandResults;
-import me.nickimpact.gts.api.plugin.Extension;
-import me.nickimpact.gts.api.plugin.PluginInstance;
+import me.nickimpact.gts.api.extensions.Extension;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.reforged.config.ReforgedKeys;
 import me.nickimpact.gts.reforged.config.ReforgedMsgConfigKeys;
@@ -29,18 +22,13 @@ import me.nickimpact.gts.reforged.text.PokemonTokens;
 import me.nickimpact.gts.reforged.ui.ReforgedUI;
 import me.nickimpact.gts.spigot.SpigotGTSPlugin;
 import me.nickimpact.gts.spigot.SpigotGtsService;
-import me.nickimpact.gts.spigot.SpigotListing;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.function.Consumer;
 
 public class ReforgedBridge extends JavaPlugin implements Extension, Listener {

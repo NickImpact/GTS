@@ -4,12 +4,10 @@ import co.aikar.commands.CommandIssuer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
-import com.nickimpact.impactor.api.utilities.Time;
 import com.nickimpact.impactor.spigot.utils.ItemStackUtils;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.BattleRegistry;
-import com.pixelmonmod.pixelmon.comm.EnumUpdateType;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
@@ -17,41 +15,26 @@ import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import me.nickimpact.gts.api.enums.CommandResults;
-import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
-import me.nickimpact.gts.discord.Message;
 import me.nickimpact.gts.reforged.ReforgedBridge;
 import me.nickimpact.gts.reforged.config.ReforgedKeys;
 import me.nickimpact.gts.reforged.config.ReforgedMsgConfigKeys;
 import me.nickimpact.gts.reforged.utils.Flags;
-import me.nickimpact.gts.reforged.utils.GsonUtils;
 import me.nickimpact.gts.reforged.utils.SpriteItemUtil;
 import me.nickimpact.gts.spigot.MessageUtils;
 import me.nickimpact.gts.spigot.SpigotEntry;
 import me.nickimpact.gts.spigot.SpigotGTSPlugin;
 import me.nickimpact.gts.spigot.SpigotListing;
 import me.nickimpact.gts.spigot.tokens.TokenService;
-import net.milkbowl.vault.economy.Economy;
-import net.minecraft.nbt.NBTTagCompound;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
-import java.sql.Ref;
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -59,25 +42,25 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
+public class ReforgedEntry extends SpigotEntry<GTSPokemonReforged, Pokemon> {
 
 	private transient Pokemon pokemon;
 	private transient boolean messaged;
 
 	public ReforgedEntry(Pokemon element) {
-		super(GsonUtils.serialize(element.writeToNBT(new NBTTagCompound())));
+		super(GTSPokemonReforged.from(element));
 		this.pokemon = element;
 	}
 
 	@Override
-	public Entry setEntry(String backing) {
+	public Entry setEntry(GTSPokemonReforged backing) {
 		this.element = backing;
 		return this;
 	}
 
 	@Override
 	public Pokemon getEntry() {
-		return pokemon != null ? pokemon : (pokemon = Pixelmon.pokemonFactory.create(GsonUtils.deserialize(this.element)));
+		return pokemon != null ? pokemon : (pokemon = this.element.construct());
 	}
 
 	@Override
@@ -372,4 +355,5 @@ public class ReforgedEntry extends SpigotEntry<String, Pokemon> {
 		src.sendMessage(service.process(MsgConfigKeys.NOT_PLAYER, src.getIssuer(), null, null));
 		return CommandResults.FAILED;
 	}
+
 }

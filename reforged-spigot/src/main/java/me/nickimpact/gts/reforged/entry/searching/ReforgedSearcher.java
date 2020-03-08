@@ -2,7 +2,6 @@ package me.nickimpact.gts.reforged.entry.searching;
 
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
-import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.reforged.entry.ReforgedEntry;
 import me.nickimpact.gts.spigot.SpigotListing;

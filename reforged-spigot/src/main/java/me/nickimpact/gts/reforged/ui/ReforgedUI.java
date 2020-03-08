@@ -4,15 +4,11 @@ import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.spigot.ui.SpigotIcon;
 import com.nickimpact.impactor.spigot.ui.SpigotLayout;
 import com.nickimpact.impactor.spigot.ui.SpigotUI;
-import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
-import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
-import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
-import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.reforged.ReforgedBridge;
 import me.nickimpact.gts.reforged.config.ReforgedMsgConfigKeys;
 import me.nickimpact.gts.reforged.entry.ReforgedEntry;
@@ -23,17 +19,12 @@ import me.nickimpact.gts.spigot.SpigotListing;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ReforgedUI implements EntryUI<Player> {

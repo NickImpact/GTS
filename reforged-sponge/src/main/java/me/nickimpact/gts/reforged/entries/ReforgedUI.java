@@ -17,13 +17,14 @@ import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
+import io.github.nucleuspowered.nucleus.api.placeholder.PlaceholderVariables;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
-import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.reforged.ReforgedBridge;
 import me.nickimpact.gts.reforged.config.PokemonConfigKeys;
 import me.nickimpact.gts.reforged.config.PokemonMsgConfigKeys;
+import me.nickimpact.gts.reforged.text.PokemonTokens;
 import me.nickimpact.gts.sponge.SpongeListing;
 import me.nickimpact.gts.sponge.SpongePlugin;
 import me.nickimpact.gts.sponge.TextParsingUtils;
@@ -111,8 +112,9 @@ public class ReforgedUI implements EntryUI<Player> {
 				continue;
 			}
 
-			Map<String, Object> variables = Maps.newHashMap();
-			variables.put("pokemon", pokemon);
+			PlaceholderVariables variables = PlaceholderVariables.builder()
+					.put(new PokemonTokens.PokemonKey(), pokemon)
+					.build();
 
 			ItemStack display = this.pokemonDisplay(pokemon, pokemon.getForm());
 			display.offer(Keys.DISPLAY_NAME, parser.fetchAndParseMsg(
@@ -186,7 +188,7 @@ public class ReforgedUI implements EntryUI<Player> {
 		return slb.build();
 	}
 
-	private void addLore(Pokemon pokemon, ItemStack icon, List<String> template, Player player, Map<String, Object> variables) {
+	private void addLore(Pokemon pokemon, ItemStack icon, List<String> template, Player player, PlaceholderVariables variables) {
 		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
 		for (EnumHidableDetail detail : EnumHidableDetail.values()) {
 			if (detail.getCondition().test(pokemon)) {

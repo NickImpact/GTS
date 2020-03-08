@@ -1,40 +1,49 @@
 package me.nickimpact.gts.api.holders;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import me.nickimpact.gts.api.enums.CommandResults;
+import me.nickimpact.gts.api.flags.CommandFlag;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.listings.entries.EntryUI;
-import me.nickimpact.gts.api.util.TriFunction;
-import me.nickimpact.gts.api.wrappers.CmdResultWrapper;
-import me.nickimpact.gts.api.wrappers.CmdSourceWrapper;
+import me.nickimpact.gts.api.listings.ui.EntryUI;
 
 import java.util.List;
-import java.util.function.BiFunction;
 
-@Getter
-@AllArgsConstructor
-public abstract class EntryClassification<T> {
-	/** Represents the classification of an entry */
-	private Class<? extends Entry> classification;
-
-	/** Represents the identifiable name for an entry classification */
-	private List<String> identifers;
-
-	/** Represents the item type that will serve as the representation for this classification */
-	private String itemRep;
-
-	/** Represents the UI that'll be used to handle necessary functionality of the selling operations */
-	private EntryUI ui;
+public interface EntryClassification<Source, Material> {
 
 	/** Represents the command functionality for an entry */
-	private TriFunction<T, List<String>, Boolean, CommandResults> cmdHandler;
+	//private TriFunction<T, List<String>, Boolean, CommandResults> cmdHandler;
 
-	public String getPrimaryIdentifier() {
-		return identifers.size() > 0 ? identifers.get(0) : "???";
+	Class<? extends Entry> getClassType();
+
+	List<String> getIdentifiers();
+
+	Material getMaterial();
+
+	EntryUI getUI();
+
+	CommandProcessor<Source> getCommandHandler();
+
+	default String getPrimaryIdentifier() {
+		return this.getIdentifiers().size() > 0 ? this.getIdentifiers().get(0) : "???";
 	}
 
-	public List<String> getAllIdentifiers() {
-		return identifers;
+	interface EntryClassificationBuilder {
+
+		EntryClassificationBuilder classification(Class<? extends Entry> type);
+
+		EntryClassificationBuilder identifiers(String... identifiers);
+
+		EntryClassificationBuilder material(String material);
+
+		EntryClassificationBuilder ui(EntryUI ui);
+
+		EntryClassification build();
+
+	}
+
+	@FunctionalInterface
+	interface CommandProcessor<Source> {
+
+		CommandResults process(Source source, List<String> arguments, List<CommandFlag> flags);
+
 	}
 }

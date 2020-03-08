@@ -1,6 +1,5 @@
 package me.nickimpact.gts.reforged.utils;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
@@ -17,13 +16,11 @@ import com.pixelmonmod.pixelmon.enums.forms.EnumGreninja;
 import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
-import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.reforged.ReforgedBridge;
 import me.nickimpact.gts.reforged.config.ReforgedMsgConfigKeys;
 import me.nickimpact.gts.reforged.entry.EnumHidableDetail;
 import me.nickimpact.gts.reforged.entry.KeyDetailHolder;
 import me.nickimpact.gts.spigot.SpigotGTSPlugin;
-import me.nickimpact.gts.spigot.SpigotGtsService;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;

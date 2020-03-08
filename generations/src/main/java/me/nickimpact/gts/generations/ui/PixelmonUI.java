@@ -6,14 +6,13 @@ import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
-import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
 import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
 import com.pixelmonmod.pixelmon.enums.EnumPokemon;
 import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
 import com.pixelmonmod.pixelmon.storage.PlayerStorage;
+import io.github.nucleuspowered.nucleus.api.placeholder.PlaceholderVariables;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
-import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.generations.GenerationsBridge;
@@ -22,6 +21,7 @@ import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.generations.entries.EnumHidableDetail;
 import me.nickimpact.gts.generations.entries.KeyDetailHolder;
 import me.nickimpact.gts.generations.entries.PokemonEntry;
+import me.nickimpact.gts.generations.text.NucleusPokemonTokens;
 import me.nickimpact.gts.sponge.SpongeListing;
 import me.nickimpact.gts.sponge.SpongePlugin;
 import me.nickimpact.gts.sponge.TextParsingUtils;
@@ -112,8 +112,9 @@ public class PixelmonUI implements EntryUI<Player> {
 
 			EntityPixelmon pokemon = (EntityPixelmon) PixelmonEntityList.createEntityFromNBT(nbt, (World) this.viewer.getWorld());
 
-			Map<String, Object> variables = Maps.newHashMap();
-			variables.put("pokemon", pokemon);
+			PlaceholderVariables variables = PlaceholderVariables.builder()
+					.put(new NucleusPokemonTokens.PokemonKey(), pokemon)
+					.build();
 
 			ItemStack display = PixelmonIcons.pokemonDisplay(pokemon, pokemon.getForm());
 			display.offer(Keys.DISPLAY_NAME, parser.fetchAndParseMsg(
@@ -187,7 +188,7 @@ public class PixelmonUI implements EntryUI<Player> {
 		return slb.build();
 	}
 
-	private void addLore(EntityPixelmon pokemon, ItemStack icon, List<String> template, Player player, Map<String, Object> variables) {
+	private void addLore(EntityPixelmon pokemon, ItemStack icon, List<String> template, Player player, PlaceholderVariables variables) {
 		Map<String, Function<CommandSource, Optional<Text>>> tokens = Maps.newHashMap();
 		for (EnumHidableDetail detail : EnumHidableDetail.values()) {
 			if (detail.getCondition().test(pokemon)) {

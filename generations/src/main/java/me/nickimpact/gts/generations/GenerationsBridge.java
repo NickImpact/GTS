@@ -14,8 +14,7 @@ import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
 import com.nickimpact.impactor.sponge.logging.SpongeLogger;
 import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
-import me.nickimpact.gts.api.plugin.Extension;
-import me.nickimpact.gts.api.plugin.PluginInstance;
+import me.nickimpact.gts.api.extensions.Extension;
 import me.nickimpact.gts.generations.config.PokemonConfigKeys;
 import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.generations.entries.PokemonEntry;
@@ -70,13 +69,11 @@ public class GenerationsBridge extends AbstractSpongePlugin implements Extension
 			    "pixelmon:gs_ball",
 			    PokemonEntry::execute
 	    );
-
-	    service.getAllDeprecatedTypes().add(me.nickimpact.gts.generations.deprecated.PokemonEntry.class);
-    }
+	}
 
 	@Listener
 	public void onServerStarted(GameStartingServerEvent e) {
-		service.registerTokens(new NucleusPokemonTokens());
+		new NucleusPokemonTokens();
 	}
 
 	@Override

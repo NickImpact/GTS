@@ -58,9 +58,6 @@ subprojects {
         mavenCentral()
         maven { url = 'https://jitpack.io' }
         maven { url = "https://repo.aikar.co/content/groups/aikar/" }
-        maven {
-            url "https://nexus.unboundnetwork.net/repository/unbound-public/"
-        }
     }
 
     jar {
