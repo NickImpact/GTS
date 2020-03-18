@@ -11,7 +11,7 @@ import me.nickimpact.gts.api.listings.manager.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.config.MsgConfigKeys;
-import me.nickimpact.gts.sponge.SpongeListing;
+import me.nickimpact.gts.sponge.listings.SpongeListing;
 import me.nickimpact.gts.common.utils.SpongeItemTypeUtil;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandSource;

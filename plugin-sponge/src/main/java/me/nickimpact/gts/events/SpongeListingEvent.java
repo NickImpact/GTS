@@ -1,7 +1,7 @@
 package me.nickimpact.gts.events;
 
 import me.nickimpact.gts.api.events.ListEvent;
-import me.nickimpact.gts.sponge.SpongeListing;
+import me.nickimpact.gts.sponge.listings.SpongeListing;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Event;

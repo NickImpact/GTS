@@ -10,7 +10,7 @@ import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.discord.DiscordNotifier;
 import me.nickimpact.gts.discord.Message;
-import me.nickimpact.gts.sponge.SpongeListing;
+import me.nickimpact.gts.sponge.listings.SpongeListing;
 import me.nickimpact.gts.sponge.text.placeholders.ListingPlaceholderVariableKey;
 import me.nickimpact.gts.sponge.utils.MessageUtils;
 import org.spongepowered.api.Sponge;

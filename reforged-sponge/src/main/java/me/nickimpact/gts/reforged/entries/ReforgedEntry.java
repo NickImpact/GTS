@@ -36,6 +36,8 @@ import me.nickimpact.gts.reforged.text.PokemonTokens;
 import me.nickimpact.gts.reforged.utils.Flags;
 import me.nickimpact.gts.reforged.utils.GsonUtils;
 import me.nickimpact.gts.sponge.*;
+import me.nickimpact.gts.sponge.listings.SpongeListing;
+import me.nickimpact.gts.sponge.pricing.provided.MoneyPrice;
 import me.nickimpact.gts.sponge.text.placeholders.ListingPlaceholderVariableKey;
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.command.CommandSource;
@@ -51,7 +53,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @JsonTyping("pokemon")
-public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minable<MoneyPrice> {
+public class ReforgedEntry implements Minable<MoneyPrice>, Entry<String, Pokemon> {
 
 	private transient Pokemon pokemon;
 	private transient boolean messaged;

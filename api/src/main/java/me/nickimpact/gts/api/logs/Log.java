@@ -1,5 +1,6 @@
 package me.nickimpact.gts.api.logs;
 
+import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.registry.GTSRegistry;
 import me.nickimpact.gts.api.util.Builder;
@@ -13,7 +14,7 @@ import java.util.UUID;
 public interface Log {
 
 	static LogBuilder builder() {
-		return GTSRegistry.createBuilder(LogBuilder.class);
+		return GtsService.getInstance().getRegistry().createBuilder(LogBuilder.class);
 	}
 
 	interface LogBuilder extends Builder<Log, LogBuilder> {

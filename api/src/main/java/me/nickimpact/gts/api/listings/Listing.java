@@ -1,5 +1,6 @@
 package me.nickimpact.gts.api.listings;
 
+import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.makeup.Display;
@@ -71,7 +72,7 @@ public interface Listing {
 	Price getPrice();
 
 	static ListingBuilder builder() {
-		return GTSRegistry.createBuilder(ListingBuilder.class);
+		return GtsService.getInstance().getRegistry().createBuilder(ListingBuilder.class);
 	}
 
 	interface ListingBuilder extends Builder<Listing, ListingBuilder> {

@@ -2,7 +2,7 @@ package me.nickimpact.gts.listings.searching;
 
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.listings.SpongeItemEntry;
-import me.nickimpact.gts.sponge.SpongeListing;
+import me.nickimpact.gts.sponge.listings.SpongeListing;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.item.inventory.ItemStack;
 

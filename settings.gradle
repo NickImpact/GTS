@@ -5,11 +5,13 @@ include (
         'common',
         'spigot',
         'sponge',
-        'plugin-spigot',
-        'plugin-sponge',
-        'reforged-spigot',
-        'reforged-sponge',
-        'generations'
+        'plugin',
+        'plugin:sponge',
+        'plugin:spigot',
+        'pixelmon',
+        'pixelmon:reforged',
+        'pixelmon:reforged:spigot',
+        'pixelmon:reforged:sponge',
+        'pixelmon:generations'
 )
-include 'pixelmon'
 

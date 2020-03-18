@@ -4,7 +4,7 @@ import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.reforged.entries.ReforgedEntry;
-import me.nickimpact.gts.sponge.SpongeListing;
+import me.nickimpact.gts.sponge.listings.SpongeListing;
 
 public class ReforgedSearcher implements Searcher {
 

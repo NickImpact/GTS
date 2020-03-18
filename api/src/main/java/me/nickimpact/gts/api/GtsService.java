@@ -4,25 +4,28 @@ import co.aikar.commands.CommandIssuer;
 import com.nickimpact.impactor.api.registry.BuilderRegistry;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.holders.EntryRegistry;
-import me.nickimpact.gts.api.holders.ServiceInstance;
 import me.nickimpact.gts.api.listings.manager.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.ui.EntryUI;
+import me.nickimpact.gts.api.placeholders.PlaceholderParser;
+import me.nickimpact.gts.api.registry.GTSRegistry;
 import me.nickimpact.gts.api.searching.Searcher;
+import me.nickimpact.gts.api.services.ServiceManager;
 import me.nickimpact.gts.api.storage.IGtsStorage;
 import me.nickimpact.gts.api.util.TriFunction;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public interface GtsService {
 
 	static GtsService getInstance() {
-		return ServiceInstance.getService();
+		return GtsServiceProvider.get();
 	}
 
-	ListingManager getListingManager();
+	ServiceManager getServiceManager();
+
+	GTSRegistry getRegistry();
 
 	IGtsStorage getStorage();
 
@@ -45,8 +48,6 @@ public interface GtsService {
 	 */
 	void registerEntry(List<String> identifier, Class<? extends Entry> entry, EntryUI ui, String rep, TriFunction<CommandIssuer, List<String>, Boolean, CommandResults> cmd);
 
-	BuilderRegistry getBuilderRegistry();
-
 	/**
 	 * Registers a searching option for all listings in the listing manager.
 	 *
@@ -57,6 +58,8 @@ public interface GtsService {
 	void addSearcher(String key, Searcher searcher);
 
 	Optional<Searcher> getSearcher(String key);
+
+	void registerPlaceholder(String token, PlaceholderParser parser);
 
 //	<T> void addMinPriceOption(Class<? extends Entry<?, T, ?, ?, ?>> type, Function<T, Double> function);
 //

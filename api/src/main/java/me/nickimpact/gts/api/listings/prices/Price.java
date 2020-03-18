@@ -1,19 +1,19 @@
 package me.nickimpact.gts.api.listings.prices;
 
 import me.nickimpact.gts.api.listings.makeup.Display;
-import net.kyori.text.TextComponent;
 
 import java.util.UUID;
 
 /**
  * A price is essentially the makeup of a price that a user can request in return for purchasing their listing.
  * A price can realistically be anything, and therefore, this wrapper should ultimately differ any generic usage
- * to its sub-option, {@link Pricable}. This will ensure we provide type safety during compilation, and avoid
+ * to its sub-option, {@link PriceValue}. This will ensure we provide type safety during compilation, and avoid
  * any compile warnings.
  *
- * @param <T> Represents the option a pricable must employ for display representation
+ * @param <Text>
+ * @param <Item> Represents the option a pricable must employ for display representation
  */
-public interface Price<T> {
+public interface Price<V extends PriceValue, Text, Item> {
 
 	/**
 	 * Represents the output of the price as it is to be displayed to the user querying the listing. In more general terms,
@@ -21,7 +21,7 @@ public interface Price<T> {
 	 *
 	 * @return The textual representation of the price
 	 */
-	TextComponent getText();
+	Text getText();
 
 	/**
 	 * Represents the look of a price should it be held in reserve for a player to accept or log back in, depending
@@ -29,7 +29,7 @@ public interface Price<T> {
 	 *
 	 * @return The displayable representation of a price
 	 */
-	Display<T> getDisplay();
+	Display<Item> getDisplay();
 
 	/**
 	 * The instance being setup as the price. So this might be a double or BigDecimal to represent some form of monetary
@@ -37,7 +37,7 @@ public interface Price<T> {
 	 *
 	 * @return The instance being used as the mark for the price
 	 */
-	Pricable<?> getPrice();
+	V getPrice();
 
 	/**
 	 * Determines whether or not the user paying for the listing can actually pay the price. If they can, this call will

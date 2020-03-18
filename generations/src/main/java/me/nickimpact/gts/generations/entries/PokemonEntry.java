@@ -31,11 +31,9 @@ import me.nickimpact.gts.generations.config.PokemonConfigKeys;
 import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.generations.text.NucleusPokemonTokens;
 import me.nickimpact.gts.generations.utils.GsonUtils;
-import me.nickimpact.gts.sponge.MoneyPrice;
-import me.nickimpact.gts.sponge.SpongeEntry;
-import me.nickimpact.gts.sponge.SpongeListing;
+import me.nickimpact.gts.sponge.pricing.provided.MoneyPrice;
+import me.nickimpact.gts.sponge.listings.SpongeListing;
 import me.nickimpact.gts.sponge.SpongePlugin;
-import me.nickimpact.gts.sponge.TextParsingUtils;
 import me.nickimpact.gts.sponge.text.placeholders.ListingPlaceholderVariableKey;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -64,7 +62,7 @@ import java.util.stream.Collectors;
  * @author NickImpact
  */
 @JsonTyping("Pokemon")
-public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements Minable<MoneyPrice> {
+public class PokemonEntry implements Minable<MoneyPrice>, Entry<String, EntityPixelmon> {
 
 	private transient EntityPixelmon pokemon;
 

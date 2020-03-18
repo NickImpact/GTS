@@ -26,7 +26,6 @@ import lombok.Getter;
 import me.nickimpact.gts.api.GtsService;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
-import me.nickimpact.gts.api.holders.ServiceInstance;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.commands.SpigotEntryClassificationContextHandler;
 import me.nickimpact.gts.commands.SpigotGtsCmd;

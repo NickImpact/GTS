@@ -10,9 +10,7 @@ import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.config.ConfigKeys;
 import me.nickimpact.gts.config.MsgConfigKeys;
-import me.nickimpact.gts.sponge.SpongeEntry;
-import me.nickimpact.gts.sponge.SpongeListing;
-import me.nickimpact.gts.sponge.TextParsingUtils;
+import me.nickimpact.gts.sponge.listings.SpongeListing;
 import me.nickimpact.gts.sponge.text.placeholders.ListingPlaceholderVariableKey;
 import me.nickimpact.gts.text.ItemTokens;
 import org.spongepowered.api.command.CommandSource;
@@ -39,7 +37,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @JsonTyping("item")
-public class SpongeItemEntry extends SpongeEntry<DataContainer, ItemStack> {
+public class SpongeItemEntry implements Entry<DataContainer, ItemStack> {
 
 	private transient ItemStack item;
 	private transient boolean messageSent;

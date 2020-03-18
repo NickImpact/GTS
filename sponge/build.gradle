@@ -4,21 +4,20 @@ repositories {
         name 'sponge-repo'
         url 'https://repo.spongepowered.org/maven'
     }
-    maven {
-        name 'drnaylor-minecraft'
-        url 'http://repo.drnaylor.co.uk/artifactory/list/minecraft'
-    }
-    maven {
-        name 'drnaylor'
-        url 'http://repo.drnaylor.co.uk/artifactory/list/quickstart'
-    }
 }
 
 dependencies {
     compile project(':api')
     shadow project(':common')
     shadow 'org.spongepowered:spongeapi:7.1.0'
-    shadow 'io.github.nucleuspowered:nucleus-api:2.0.0-SNAPSHOT-S7.1'
+    shadow('net.kyori:text-api:3.0.2') {
+        exclude(module: 'checker-qual')
+    }
+    shadow('net.kyori:text-serializer-legacy:3.0.2') {
+        exclude(module: 'text-api')
+    }
+    shadow('net.kyori:text-serializer-gson:3.0.2') {
+        exclude(module: 'text-api')
+        exclude(module: 'gson')
+    }
 }
-
-
