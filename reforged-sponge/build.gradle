@@ -44,7 +44,7 @@ repositories {
 }
 
 shadowJar {
-    archiveName = "GTS-Sponge-Reforged-7.1.1-${project.version}.jar"
+    archiveName = "GTS-Sponge-Reforged-7.2.1-${project.version}.jar"
     exclude 'Impactor*.jar'
 }
 
@@ -60,5 +60,5 @@ dependencies {
     shadow project(':common')
     shadow 'org.spongepowered:spongeapi:7.1.0'
     shadow 'io.github.nucleuspowered:nucleus-api:1.11.0-S7.1'
-    shadow 'reforged:server:7.2.0@Pixelmon-1.12.2-7.2.0-server.jar'
+    shadow 'reforged:server:7.2.1@Pixelmon-1.12.2-7.2.1-server.jar'
 }
