@@ -3,6 +3,7 @@ package me.nickimpact.gts.sponge.listings;
 import com.google.common.base.Preconditions;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.api.listings.interactors.Seller;
 import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.sponge.pricing.SpongePrice;
 
@@ -13,7 +14,7 @@ import java.util.UUID;
 public class SpongeListing implements Listing {
 
 	private UUID id;
-	private UUID lister;
+	private Seller lister;
 	private Entry entry;
 	private LocalDateTime expiration;
 	private SpongePrice price;
@@ -32,7 +33,7 @@ public class SpongeListing implements Listing {
 	}
 
 	@Override
-	public UUID getLister() {
+	public Seller getLister() {
 		return this.lister;
 	}
 
@@ -54,7 +55,7 @@ public class SpongeListing implements Listing {
 	public static class SpongeListingBuilder implements ListingBuilder {
 
 		private UUID id;
-		private UUID lister;
+		private Seller lister;
 		private Entry entry;
 		private Price price;
 		private LocalDateTime expiration;
@@ -66,7 +67,7 @@ public class SpongeListing implements Listing {
 		}
 
 		@Override
-		public ListingBuilder lister(UUID lister) {
+		public ListingBuilder lister(Seller lister) {
 			this.lister = lister;
 			return this;
 		}

@@ -23,7 +23,7 @@
  *  SOFTWARE.
  */
 
-package me.nickimpact.gts.messaging;
+package me.nickimpact.gts.common.messaging;
 
 import me.nickimpact.gts.api.messaging.Messenger;
 import me.nickimpact.gts.api.messaging.MessengerProvider;

@@ -1,7 +1,7 @@
 package me.nickimpact.gts.common.api;
 
-import me.nickimpact.gts.api.GtsService;
-import me.nickimpact.gts.api.GtsServiceProvider;
+import me.nickimpact.gts.api.GTSService;
+import me.nickimpact.gts.api.GTSServiceProvider;
 
 import java.lang.reflect.Method;
 
@@ -12,17 +12,17 @@ public class ApiRegistrationUtil {
 
 	static {
 		try {
-			REGISTER = GtsServiceProvider.class.getDeclaredMethod("register", GtsService.class);
+			REGISTER = GTSServiceProvider.class.getDeclaredMethod("register", GTSService.class);
 			REGISTER.setAccessible(true);
 
-			UNREGISTER = GtsServiceProvider.class.getDeclaredMethod("unregister");
+			UNREGISTER = GTSServiceProvider.class.getDeclaredMethod("unregister");
 			UNREGISTER.setAccessible(true);
 		} catch (NoSuchMethodException e) {
 			throw new ExceptionInInitializerError(e);
 		}
 	}
 
-	public static void register(GtsService service) {
+	public static void register(GTSService service) {
 		try {
 			REGISTER.invoke(null, service);
 		} catch (Exception e) {

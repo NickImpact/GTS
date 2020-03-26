@@ -1,7 +1,3 @@
 package me.nickimpact.gts.api.listings.interactors;
 
-public interface Recipient<T> {
-
-	T getRecipient();
-
-}
+public interface Recipient extends Interactor {}

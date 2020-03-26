@@ -5,8 +5,7 @@
 package me.nickimpact.gts.api.placeholders;
 
 import com.google.common.reflect.TypeToken;
-import me.nickimpact.gts.api.GtsService;
-import me.nickimpact.gts.api.registry.GTSRegistry;
+import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.util.Builder;
 
 import java.util.Optional;
@@ -20,7 +19,7 @@ public interface PlaceholderVariables {
 	 * The empty {@link PlaceholderVariables}
 	 */
 	static PlaceholderVariables empty() {
-		return GtsService.getInstance().getRegistry().createBuilder(PVBuilder.class).build();
+		return GTSService.getInstance().getRegistry().createBuilder(PVBuilder.class).build();
 	}
 
 	/**
@@ -29,7 +28,7 @@ public interface PlaceholderVariables {
 	 * @return The builder
 	 */
 	static PlaceholderVariables.PVBuilder builder() {
-		return GtsService.getInstance().getRegistry().createBuilder(PVBuilder.class);
+		return GTSService.getInstance().getRegistry().createBuilder(PVBuilder.class);
 	}
 
 	/**
@@ -43,7 +42,7 @@ public interface PlaceholderVariables {
 	 * @return The {@link Key}
 	 */
 	static <T> Key<T> key(String name, Class<T> valueType) {
-		return GtsService.getInstance().getRegistry().createBuilder(KeyBuilder.class).build(name, TypeToken.of(valueType));
+		return GTSService.getInstance().getRegistry().createBuilder(KeyBuilder.class).build(name, TypeToken.of(valueType));
 	}
 
 	/**
@@ -57,7 +56,7 @@ public interface PlaceholderVariables {
 	 * @return The {@link Key}
 	 */
 	static <T> Key<T> key(String name, TypeToken<T> valueType) {
-		return GtsService.getInstance().getRegistry().createBuilder(KeyBuilder.class).build(name, valueType);
+		return GTSService.getInstance().getRegistry().createBuilder(KeyBuilder.class).build(name, valueType);
 	}
 
 	/**

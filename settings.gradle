@@ -14,4 +14,6 @@ include (
         'pixelmon:reforged:sponge',
         'pixelmon:generations'
 )
+include 'bungee'
+include 'velocity'
 

@@ -1,9 +1,9 @@
-package me.nickimpact.gts.messaging.messages;
+package me.nickimpact.gts.common.messaging.messages;
 
 import com.google.gson.JsonElement;
 import lombok.Getter;
 import me.nickimpact.gts.api.messaging.message.type.UpdateMessage;
-import me.nickimpact.gts.messaging.GTSMessagingService;
+import me.nickimpact.gts.common.messaging.GTSMessagingService;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.annotation.Nullable;

@@ -7,11 +7,9 @@ import com.google.common.collect.Multimap;
 import com.google.gson.GsonBuilder;
 import com.nickimpact.impactor.api.registry.BuilderRegistry;
 import lombok.Setter;
-import me.nickimpact.gts.api.GtsService;
+import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.enums.CommandResults;
-import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
-import me.nickimpact.gts.api.listings.manager.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.ui.EntryUI;
 import me.nickimpact.gts.api.placeholders.PlaceholderParser;
@@ -19,7 +17,7 @@ import me.nickimpact.gts.api.registry.GTSRegistry;
 import me.nickimpact.gts.api.services.ServiceManager;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.api.searching.Searcher;
-import me.nickimpact.gts.api.storage.IGtsStorage;
+import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.api.util.TriFunction;
 
 import java.util.List;
@@ -28,11 +26,11 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Setter
-public class SpongeGtsService implements GtsService {
+public class SpongeGtsService implements GTSService {
 
 	private final GTSPlugin plugin;
 
-	private IGtsStorage storage;
+	private GTSStorage storage;
 	private EntryRegistry registry;
 	private BuilderRegistry builders;
 
@@ -58,7 +56,7 @@ public class SpongeGtsService implements GtsService {
 	}
 
 	@Override
-	public IGtsStorage getStorage() {
+	public GTSStorage getStorage() {
 		return this.storage;
 	}
 

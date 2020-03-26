@@ -31,6 +31,7 @@ import com.nickimpact.impactor.api.storage.sql.ConnectionFactory;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.api.listings.interactors.Seller;
 import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
@@ -206,7 +207,7 @@ public class SqlImplementation implements StorageImplementation {
 			while(results.next()) {
 				try {
 					UUID id = UUID.fromString(results.getString("id"));
-					UUID owner = UUID.fromString(results.getString("owner"));
+					Seller owner = null; //UUID.fromString(results.getString("owner"));
 					String entry = results.getString("entry");
 					String price = results.getString("price");
 					LocalDateTime date = results.getTimestamp("expiration").toLocalDateTime();

@@ -1,33 +1,31 @@
 package me.nickimpact.gts.api;
 
 import co.aikar.commands.CommandIssuer;
-import com.nickimpact.impactor.api.registry.BuilderRegistry;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.holders.EntryRegistry;
-import me.nickimpact.gts.api.listings.manager.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.ui.EntryUI;
 import me.nickimpact.gts.api.placeholders.PlaceholderParser;
 import me.nickimpact.gts.api.registry.GTSRegistry;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.api.services.ServiceManager;
-import me.nickimpact.gts.api.storage.IGtsStorage;
+import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.api.util.TriFunction;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface GtsService {
+public interface GTSService {
 
-	static GtsService getInstance() {
-		return GtsServiceProvider.get();
+	static GTSService getInstance() {
+		return GTSServiceProvider.get();
 	}
 
 	ServiceManager getServiceManager();
 
 	GTSRegistry getRegistry();
 
-	IGtsStorage getStorage();
+	GTSStorage getStorage();
 
 	/**
 	 * Receives the internal Entry Registry which is used to store things such as the entry type, UI
@@ -61,7 +59,4 @@ public interface GtsService {
 
 	void registerPlaceholder(String token, PlaceholderParser parser);
 
-//	<T> void addMinPriceOption(Class<? extends Entry<?, T, ?, ?, ?>> type, Function<T, Double> function);
-//
-//	<T> List<Function<T, Double>> getMinPriceOptionsForEntryType(Class<? extends Entry<?, T, ?, ?, ?>> type);
 }

@@ -23,7 +23,7 @@
  *  SOFTWARE.
  */
 
-package me.nickimpact.gts.messaging;
+package me.nickimpact.gts.common.messaging;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -35,7 +35,7 @@ import me.nickimpact.gts.api.messaging.MessengerProvider;
 import me.nickimpact.gts.api.messaging.message.Message;
 import me.nickimpact.gts.api.messaging.message.type.UpdateMessage;
 import me.nickimpact.gts.common.cache.BufferedRequest;
-import me.nickimpact.gts.messaging.messages.ListingsUpdateMessage;
+import me.nickimpact.gts.common.messaging.messages.ListingsUpdateMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.utils.gson.JObject;
 import org.checkerframework.checker.nullness.qual.NonNull;

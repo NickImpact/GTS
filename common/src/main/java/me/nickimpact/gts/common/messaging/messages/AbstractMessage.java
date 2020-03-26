@@ -1,4 +1,4 @@
-package me.nickimpact.gts.messaging.messages;
+package me.nickimpact.gts.common.messaging.messages;
 
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
 import me.nickimpact.gts.api.messaging.message.type.UpdateMessage;

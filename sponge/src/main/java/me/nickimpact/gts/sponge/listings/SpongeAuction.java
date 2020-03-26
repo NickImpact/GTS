@@ -9,6 +9,7 @@ import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.SortedMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentNavigableMap;
@@ -21,7 +22,7 @@ public class SpongeAuction implements Auction {
 	private SpongeEntry entry;
 	private LocalDateTime expiration;
 	private double price;
-	private double increment;
+	private float increment;
 
 	/**
 	 * This should feature the top bid at the first key, with lowest being the last key.
@@ -44,11 +45,11 @@ public class SpongeAuction implements Auction {
 
 	@Override
 	public double getCurrentPrice() {
-		return this.price + this.getIncrement();
+		return this.price + Math.ceil(this.price * this.getIncrement());
 	}
 
 	@Override
-	public double getIncrement() {
+	public float getIncrement() {
 		return this.increment * (this.getBids().size() == 0 ? 0 : 1);
 	}
 
@@ -89,6 +90,11 @@ public class SpongeAuction implements Auction {
 	}
 
 	@Override
+	public Optional<Double> getCurrentBid(UUID uuid) {
+		return Optional.empty();
+	}
+
+	@Override
 	public SortedMap<UUID, Double> getBids() {
 		return this.bids;
 	}
@@ -100,7 +106,7 @@ public class SpongeAuction implements Auction {
 		private SpongeEntry entry;
 		private LocalDateTime expiration;
 		private double start;
-		private double increment;
+		private float increment;
 
 		@Override
 		public AuctionBuilder id(UUID id) {
@@ -134,8 +140,8 @@ public class SpongeAuction implements Auction {
 		}
 
 		@Override
-		public AuctionBuilder increment(double amount) {
-			this.increment = amount;
+		public AuctionBuilder increment(float rate) {
+			this.increment = rate;
 			return this;
 		}
 

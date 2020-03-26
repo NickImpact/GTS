@@ -1,6 +1,7 @@
 package me.nickimpact.gts.api.listings.prices;
 
 import me.nickimpact.gts.api.listings.makeup.Display;
+import net.kyori.text.TextComponent;
 
 import java.util.UUID;
 
@@ -10,10 +11,9 @@ import java.util.UUID;
  * to its sub-option, {@link PriceValue}. This will ensure we provide type safety during compilation, and avoid
  * any compile warnings.
  *
- * @param <Text>
- * @param <Item> Represents the option a pricable must employ for display representation
+ * @param <I> Represents the option a pricable must employ for display representation
  */
-public interface Price<V extends PriceValue, Text, Item> {
+public interface Price<V extends PriceValue, I> {
 
 	/**
 	 * Represents the output of the price as it is to be displayed to the user querying the listing. In more general terms,
@@ -21,7 +21,7 @@ public interface Price<V extends PriceValue, Text, Item> {
 	 *
 	 * @return The textual representation of the price
 	 */
-	Text getText();
+	TextComponent getText();
 
 	/**
 	 * Represents the look of a price should it be held in reserve for a player to accept or log back in, depending
@@ -29,7 +29,7 @@ public interface Price<V extends PriceValue, Text, Item> {
 	 *
 	 * @return The displayable representation of a price
 	 */
-	Display<Item> getDisplay();
+	Display<I> getDisplay();
 
 	/**
 	 * The instance being setup as the price. So this might be a double or BigDecimal to represent some form of monetary

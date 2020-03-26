@@ -1,8 +1,9 @@
 package me.nickimpact.gts.api.listings.entries;
 
-import me.nickimpact.gts.api.listings.interactors.Depositor;
+import me.nickimpact.gts.api.listings.interactors.Seller;
 import me.nickimpact.gts.api.listings.interactors.Recipient;
 import me.nickimpact.gts.api.listings.makeup.Display;
+import net.kyori.text.TextComponent;
 
 /**
  * An Entry is the object that contains the essential information of what is being listed on the GTS. More precisely,
@@ -27,7 +28,7 @@ public interface Entry<Store, Out> {
 	 *
 	 * @return The data-store that will be used to represent this entry from a storage provider perspective.
 	 */
-	Store getElement();
+	Store getInternalData();
 
 	/**
 	 * This represents the output element of this entry. As a entry will typically be transient, if not serializable
@@ -36,14 +37,14 @@ public interface Entry<Store, Out> {
 	 *
 	 * @return The output element built from the internal data-store object.
 	 */
-	Out getOrCreateEntry();
+	Out getOrCreateElement();
 
 	/**
 	 * Specifies the name of this entry. This will often just be the name of the entry itself, if it has a name.
 	 *
 	 * @return The name of this entry
 	 */
-	String getName();
+	TextComponent getName();
 
 	/**
 	 * Represents how this entry should be displayed to a user querying this listing.
@@ -82,6 +83,6 @@ public interface Entry<Store, Out> {
 	 * @param depositor The depositor of the entry
 	 * @return True if the listing was taken from the user, false otherwise
 	 */
-	boolean take(Depositor depositor);
+	boolean take(Seller depositor);
 
 }

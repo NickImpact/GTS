@@ -1,4 +1,4 @@
-package me.nickimpact.gts.messaging.redis;
+package me.nickimpact.gts.common.messaging.redis;
 
 import lombok.RequiredArgsConstructor;
 import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;

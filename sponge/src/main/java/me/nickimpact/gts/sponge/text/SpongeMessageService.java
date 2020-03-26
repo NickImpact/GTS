@@ -4,7 +4,7 @@
  */
 package me.nickimpact.gts.sponge.text;
 
-import me.nickimpact.gts.api.GtsService;
+import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.placeholders.Placeholder;
 import me.nickimpact.gts.api.placeholders.PlaceholderMetadata;
 import me.nickimpact.gts.api.placeholders.PlaceholderParser;
@@ -31,7 +31,7 @@ public class SpongeMessageService implements MessageService<Text, SpongeSource> 
 
 	@Override
 	public Text getForSource(String message, SpongeSource source, @Nullable Map<String, PlaceholderParser> tokens, @Nullable PlaceholderVariables variables) {
-		ServiceManager manager = GtsService.getInstance().getServiceManager();
+		ServiceManager manager = GTSService.getInstance().getServiceManager();
 		Text text = Text.EMPTY;
 
 		String reference = message;
@@ -76,7 +76,7 @@ public class SpongeMessageService implements MessageService<Text, SpongeSource> 
 			token = token.replaceAll(GTSPlaceholderService.SUFFIX_PATTERN.pattern(), "");
 		}
 
-		return this.convert(GtsService.getInstance().getRegistry().createBuilder(Placeholder.CustomBuilder.class)
+		return this.convert(GTSService.getInstance().getRegistry().createBuilder(Placeholder.CustomBuilder.class)
 				.setMetadata(new PlaceholderMetadata(token, parser))
 				.setAssociatedSource(source)
 				.setPlaceholderVariables(variables)

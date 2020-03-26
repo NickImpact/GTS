@@ -4,10 +4,11 @@ import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.flags.CommandFlag;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.ui.EntryUI;
+import me.nickimpact.gts.api.user.Source;
 
 import java.util.List;
 
-public interface EntryClassification<Source, Material> {
+public interface EntryClassification {
 
 	/** Represents the command functionality for an entry */
 	//private TriFunction<T, List<String>, Boolean, CommandResults> cmdHandler;
@@ -16,11 +17,11 @@ public interface EntryClassification<Source, Material> {
 
 	List<String> getIdentifiers();
 
-	Material getMaterial();
+	String getMaterial();
 
 	EntryUI getUI();
 
-	CommandProcessor<Source> getCommandHandler();
+	CommandProcessor getCommandHandler();
 
 	default String getPrimaryIdentifier() {
 		return this.getIdentifiers().size() > 0 ? this.getIdentifiers().get(0) : "???";
@@ -41,7 +42,7 @@ public interface EntryClassification<Source, Material> {
 	}
 
 	@FunctionalInterface
-	interface CommandProcessor<Source> {
+	interface CommandProcessor {
 
 		CommandResults process(Source source, List<String> arguments, List<CommandFlag> flags);
 

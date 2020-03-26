@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public interface IGtsStorage {
+public interface GTSStorage {
 
 	void init();
 

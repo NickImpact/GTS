@@ -7,7 +7,7 @@ import com.google.common.collect.Multimap;
 import com.google.gson.GsonBuilder;
 import com.nickimpact.impactor.api.registry.BuilderRegistry;
 import lombok.Setter;
-import me.nickimpact.gts.api.GtsService;
+import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.holders.EntryClassification;
 import me.nickimpact.gts.api.holders.EntryRegistry;
@@ -16,7 +16,7 @@ import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.api.searching.Searcher;
-import me.nickimpact.gts.api.storage.IGtsStorage;
+import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.api.util.TriFunction;
 import org.bukkit.Material;
 
@@ -27,12 +27,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Setter
-public class SpigotGtsService implements GtsService {
+public class SpigotGtsService implements GTSService {
 
 	private final GTSPlugin plugin;
 
 	private ListingManager manager;
-	private IGtsStorage storage;
+	private GTSStorage storage;
 	private EntryRegistry registry;
 	private BuilderRegistry builders;
 
@@ -51,7 +51,7 @@ public class SpigotGtsService implements GtsService {
 	}
 
 	@Override
-	public IGtsStorage getStorage() {
+	public GTSStorage getStorage() {
 		return this.storage;
 	}
 

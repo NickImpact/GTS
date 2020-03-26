@@ -5,13 +5,14 @@ import me.nickimpact.gts.api.listings.makeup.Display;
 import me.nickimpact.gts.common.config.ConfigKeys;
 import me.nickimpact.gts.sponge.SpongePlugin;
 import me.nickimpact.gts.sponge.pricing.SpongePrice;
+import net.kyori.text.TextComponent;
+import net.kyori.text.format.TextColor;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -26,8 +27,10 @@ public class MoneyPrice implements SpongePrice<CurrencyValue> {
 	}
 
 	@Override
-	public Text getText() {
-		return Text.of(TextColors.YELLOW, economy.getDefaultCurrency().format(this.getPrice().getPricable()));
+	public TextComponent getText() {
+		return TextComponent.builder()
+				.append(TextComponent.of(economy.getDefaultCurrency().format(this.getPrice().getPricable()).toPlain()).color(TextColor.YELLOW))
+				.build();
 	}
 
 	@Override

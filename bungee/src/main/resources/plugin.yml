@@ -1,0 +1,6 @@
+name: GTS
+version: @version@
+description: A global market
+author: NickImpact
+main: me.nickimpact.gts.bungee.GTSBungeeBootstrap
+softDepends: ["RedisBungee"]

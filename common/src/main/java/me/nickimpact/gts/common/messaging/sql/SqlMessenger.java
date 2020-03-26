@@ -23,7 +23,7 @@
  *  SOFTWARE.
  */
 
-package me.nickimpact.gts.messaging.sql;
+package me.nickimpact.gts.common.messaging.sql;
 
 import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.common.plugin.GTSPlugin;

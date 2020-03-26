@@ -1,6 +1,6 @@
 package me.nickimpact.gts.sponge.text;
 
-import me.nickimpact.gts.api.GtsService;
+import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.placeholders.GTSPlaceholderService;
 import me.nickimpact.gts.sponge.SpongePlugin;
@@ -20,7 +20,7 @@ public class SpongePlaceholderService extends GTSPlaceholderService {
 	}
 
 	private void register() {
-		GtsService.getInstance().registerPlaceholder("gts_prefix", placeholder -> LegacyComponentSerializer.legacy().deserialize(plugin.getConfiguration().get(MsgConfigKeys.PREFIX)));
+		GTSService.getInstance().registerPlaceholder("gts_prefix", placeholder -> LegacyComponentSerializer.legacy().deserialize(plugin.getConfiguration().get(MsgConfigKeys.PREFIX)));
 
 	}
 }

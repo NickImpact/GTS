@@ -4,8 +4,7 @@
  */
 package me.nickimpact.gts.api.placeholders;
 
-import me.nickimpact.gts.api.GtsService;
-import me.nickimpact.gts.api.registry.GTSRegistry;
+import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.user.Source;
 import me.nickimpact.gts.api.util.Builder;
 import net.kyori.text.TextComponent;
@@ -33,7 +32,7 @@ public interface Placeholder {
 	 * @return A {@link StandardBuilder}
 	 */
 	static StandardBuilder builder() {
-		return GtsService.getInstance().getRegistry().createBuilder(StandardBuilder.class);
+		return GTSService.getInstance().getRegistry().createBuilder(StandardBuilder.class);
 	}
 
 	/**

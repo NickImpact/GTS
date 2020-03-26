@@ -1,10 +1,10 @@
 package me.nickimpact.gts.api.listings;
 
-import me.nickimpact.gts.api.GtsService;
+import me.nickimpact.gts.api.GTSService;
+import me.nickimpact.gts.api.listings.interactors.Seller;
 import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.makeup.Display;
-import me.nickimpact.gts.api.registry.GTSRegistry;
 import me.nickimpact.gts.api.util.Builder;
 
 import java.time.LocalDateTime;
@@ -28,12 +28,12 @@ public interface Listing {
 	UUID getID();
 
 	/**
-	 * Represents the UUID of the user listing this Listing. If this is a player, the UUID will be that of the player.
+	 * Represents the user listing this Listing. If this is a player, the UUID will be that of the player.
 	 * If the server creates the listing, then this UUID will match the generic zeroed out ID.
 	 *
 	 * @return The ID of the lister who created this listing
 	 */
-	UUID getLister();
+	Seller getLister();
 
 	/**
 	 * Represents the actual component of the listing that will be contained by this listing. This is what a user will
@@ -72,14 +72,14 @@ public interface Listing {
 	Price getPrice();
 
 	static ListingBuilder builder() {
-		return GtsService.getInstance().getRegistry().createBuilder(ListingBuilder.class);
+		return GTSService.getInstance().getRegistry().createBuilder(ListingBuilder.class);
 	}
 
 	interface ListingBuilder extends Builder<Listing, ListingBuilder> {
 
 		ListingBuilder id(UUID id);
 
-		ListingBuilder lister(UUID lister);
+		ListingBuilder lister(Seller lister);
 
 		ListingBuilder entry(Entry entry);
 

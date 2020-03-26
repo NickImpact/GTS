@@ -28,7 +28,7 @@ package me.nickimpact.gts.common.storage;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
-import me.nickimpact.gts.api.storage.IGtsStorage;
+import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.api.util.ThrowingRunnable;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
 
@@ -39,7 +39,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
-public class GtsStorage implements IGtsStorage {
+public class GtsStorage implements GTSStorage {
 
     private final GTSPlugin plugin;
     private final StorageImplementation implementation;

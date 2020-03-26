@@ -5,4 +5,4 @@ import me.nickimpact.gts.api.listings.prices.PriceValue;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 
-public interface SpongePrice<T extends PriceValue> extends Price<T, Text, ItemStack> {}
+public interface SpongePrice<T extends PriceValue> extends Price<T, ItemStack> {}

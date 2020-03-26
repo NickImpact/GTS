@@ -2,11 +2,11 @@ package me.nickimpact.gts.api;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-public final class GtsServiceProvider {
+public final class GTSServiceProvider {
 
-	private static GtsService instance;
+	private static GTSService instance;
 
-	public static @NonNull GtsService get() {
+	public static @NonNull GTSService get() {
 		if(instance == null) {
 			throw new IllegalStateException("The GTS API is not loaded");
 		}
@@ -14,7 +14,7 @@ public final class GtsServiceProvider {
 		return instance;
 	}
 
-	static void register(GtsService service) {
+	static void register(GTSService service) {
 		instance = service;
 	}
 
@@ -22,7 +22,7 @@ public final class GtsServiceProvider {
 		instance = null;
 	}
 
-	private GtsServiceProvider() {
+	private GTSServiceProvider() {
 		throw new UnsupportedOperationException("This class cannot be instantiated");
 	}
 }

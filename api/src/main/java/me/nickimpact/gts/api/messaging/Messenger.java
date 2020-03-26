@@ -40,7 +40,7 @@ public interface Messenger extends AutoCloseable {
      *
      * <p>The outgoing message instance is guaranteed to be an instance of one
      * of the interfaces extending {@link Message} in the
-     * 'api.messenger.message.type' package.</p>
+     * 'api.messaging.message.type' package.</p>
      *
      * <p>3rd party implementations are encouraged to implement this method with consideration
      * that new types may be added in the future.</p>
