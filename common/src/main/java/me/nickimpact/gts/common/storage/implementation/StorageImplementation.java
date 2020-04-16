@@ -27,6 +27,7 @@ package me.nickimpact.gts.common.storage.implementation;
 
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
+import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 
 import java.util.Collections;
@@ -89,4 +90,24 @@ public interface StorageImplementation {
     boolean deleteSoldListing(UUID id, UUID owner) throws Exception;
 
     boolean purge() throws Exception;
+
+
+
+    // New methods
+
+    /**
+     * Attempts to process a bid on an auction. This call will generate the response message that'll be sent back
+     * to the servers listening, as a means to inform them all of the success of the bid.
+     *
+     * This should only be called in response to a {@link AuctionMessage.Bid.Request bid} request.
+     *
+     * @param listing The ID of the auction being bid on
+     * @param actor   The user who placed the bid
+     * @param amount  The amount which this player has just bid
+     * @return A response to the call which will contain data that marks the success of the bid,
+     * the seller of the auction, and all other bids currently placed on the auction in a filtered manner.
+     * In other words, all other bids will only contain the highest bid per player who has bid on this
+     * particular auction.
+     */
+    AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request);
 }

@@ -2,6 +2,7 @@ package me.nickimpact.gts.api.logs;
 
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.actions.ListingActionType;
 import me.nickimpact.gts.api.util.Builder;
 
 import java.util.UUID;
@@ -41,7 +42,7 @@ public interface Log {
 		 * @param action The action performed
 		 * @return The current instance of the builder
 		 */
-		LogBuilder action(Action action);
+		LogBuilder action(ListingActionType action);
 
 		/**
 		 * Marks a logged action as an administrative action
@@ -49,15 +50,6 @@ public interface Log {
 		 * @return The current instance of the builder
 		 */
 		LogBuilder administrative();
-
-	}
-
-	enum Action {
-
-		List,
-		Purchase,
-		Removal,
-		Expire,
 
 	}
 

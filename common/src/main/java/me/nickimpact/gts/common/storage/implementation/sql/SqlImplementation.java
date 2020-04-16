@@ -31,8 +31,7 @@ import com.nickimpact.impactor.api.storage.sql.ConnectionFactory;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.listings.interactors.Seller;
-import me.nickimpact.gts.api.listings.prices.Price;
+import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
 
@@ -207,19 +206,18 @@ public class SqlImplementation implements StorageImplementation {
 			while(results.next()) {
 				try {
 					UUID id = UUID.fromString(results.getString("id"));
-					Seller owner = null; //UUID.fromString(results.getString("owner"));
 					String entry = results.getString("entry");
 					String price = results.getString("price");
 					LocalDateTime date = results.getTimestamp("expiration").toLocalDateTime();
 
-					Listing listing = Listing.builder()
-							.id(id)
-							.lister(owner)
-							.entry(this.plugin.getGson().fromJson(entry, Entry.class))
-							.price(this.plugin.getGson().fromJson(price, Price.class))
-							.expiration(date)
-							.build();
-					entries.add(listing);
+//					Listing listing = Listing.builder()
+//							.id(id)
+//							.lister(null)
+//							.entry(this.plugin.getGson().fromJson(entry, Entry.class))
+//							.price(this.plugin.getGson().fromJson(price, Price.class))
+//							.expiration(date)
+//							.build();
+//					entries.add(listing);
 				} catch (JsonParseException e) {
 					++failed;
 				}
@@ -306,6 +304,11 @@ public class SqlImplementation implements StorageImplementation {
 	@Override
 	public boolean purge() throws Exception {
 		return false;
+	}
+
+	@Override
+	public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) {
+		return null;
 	}
 
 	private boolean tableExists(String table) throws SQLException {

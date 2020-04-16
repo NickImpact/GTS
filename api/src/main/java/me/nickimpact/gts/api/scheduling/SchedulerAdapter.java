@@ -31,21 +31,21 @@ import java.util.concurrent.TimeUnit;
 /**
  * A scheduler for running tasks using the systems provided by the platform
  */
-public interface SchedulerAdapter {
+public interface SchedulerAdapter<T extends Executor> {
 
 	/**
 	 * Gets an async executor instance
 	 *
 	 * @return an async executor instance
 	 */
-	Executor async();
+	T async();
 
 	/**
 	 * Gets a sync executor instance
 	 *
 	 * @return a sync executor instance
 	 */
-	Executor sync();
+	T sync();
 
 	/**
 	 * Executes a task async

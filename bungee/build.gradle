@@ -1,0 +1,26 @@
+repositories {
+    mavenCentral()
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://repo.lucko.me/' }
+}
+
+dependencies {
+    compile project(':api')
+    compile project(':common')
+    shadow fileTree(dir: 'libs', include: "*.jar")
+    shadow 'net.md-5:bungeecord-api:1.15-SNAPSHOT'
+    shadow 'com.imaginarycode.minecraft:RedisBungee:0.4'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+shadowJar {
+    archiveName = "GTS-Bungee-${project.version}.jar"
+    exclude 'Impactor*.jar'
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        expand 'pluginVersion': project.version
+        include 'plugin.yml'
+    }
+}

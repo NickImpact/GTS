@@ -28,11 +28,22 @@ package me.nickimpact.gts.api.messaging;
 import me.nickimpact.gts.api.messaging.message.Message;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.net.SocketAddress;
 
 /**
  * Represents an object which dispatches {@link OutgoingMessage}s.
  */
 public interface Messenger extends AutoCloseable {
+
+    /**
+     * Retrieves the bound {@link IncomingMessageConsumer IncomingMessageConsumer} from this messenger.
+     * This is the system that will process all incoming messages from another server
+     *
+     * @return The incoming message consumer
+     */
+    IncomingMessageConsumer getMessageConsumer();
 
     /**
      * Performs the necessary action to dispatch the message using the means

@@ -1,10 +1,10 @@
 package me.nickimpact.gts.api.listings.auctions;
 
 import me.nickimpact.gts.api.GTSService;
+import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.listings.makeup.Display;
 import me.nickimpact.gts.api.util.Builder;
-import me.nickimpact.gts.api.util.Tuple;
+import me.nickimpact.gts.api.util.groupings.Tuple;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -19,49 +19,7 @@ import java.util.UUID;
  * <p>As a note, these types of listings must have an expiration time set. No auction can be marked permanent, as
  * they cannot be directly purchased.</p>
  */
-public interface Auction  {
-
-	/**
-	 * Represents the ID of this listing. This is independent of the lister's UUID, which serves as a reference
-	 * to the player or system that listed the listing.
-	 *
-	 * @return The unique ID of this listing
-	 */
-	UUID getID();
-
-	/**
-	 * Represents the UUID of the user listing this Listing. If this is a player, the UUID will be that of the player.
-	 * If the server creates the listing, then this UUID will match the generic zeroed out ID.
-	 *
-	 * @return The ID of the lister who created this listing
-	 */
-	UUID getLister();
-
-	/**
-	 * Represents the actual component of the listing that will be contained by this listing. This is what a user will
-	 * be purchasing should they purchase the listing.
-	 *
-	 * @return The entry making up this listing.
-	 */
-	Entry getEntry();
-
-	/**
-	 * Represents the display of the listing. This is essentially how the listing will be displayed to the user
-	 * when queried in-game.
-	 *
-	 * @return The display parameters of this listing
-	 */
-	Display getDisplay();
-
-	/**
-	 * Represents the time where this listing will expire. In general, each listing will have this option specified.
-	 * However, a listing that has been made permanent can avoid this check, and simply stay in the system until
-	 * it is either purchased or removed.
-	 *
-	 * @return An optional value containing the exact point in time in which this listing will expire, or empty to
-	 * represent that this listing will never expire.
-	 */
-	LocalDateTime getExpiration();
+public interface Auction extends Listing {
 
 	/**
 	 * Attempts to locate the highest bid, or any bid at all, placed by the user on this auction. Only the highest

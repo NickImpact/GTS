@@ -1,9 +1,9 @@
 package me.nickimpact.gts.api.listings.entries;
 
-import me.nickimpact.gts.api.listings.interactors.Seller;
-import me.nickimpact.gts.api.listings.interactors.Recipient;
 import me.nickimpact.gts.api.listings.makeup.Display;
 import net.kyori.text.TextComponent;
+
+import java.util.UUID;
 
 /**
  * An Entry is the object that contains the essential information of what is being listed on the GTS. More precisely,
@@ -73,7 +73,7 @@ public interface Entry<Store, Out> {
 	 * @param receiver The recipient of the entry
 	 * @return True if the listing was received, false otherwise.
 	 */
-	boolean give(Recipient receiver);
+	boolean give(UUID receiver);
 
 	/**
 	 * Attempts to take the listing from the depositor. If the user doesn't actually have what they are trying to sell,
@@ -83,6 +83,6 @@ public interface Entry<Store, Out> {
 	 * @param depositor The depositor of the entry
 	 * @return True if the listing was taken from the user, false otherwise
 	 */
-	boolean take(Seller depositor);
+	boolean take(UUID depositor);
 
 }

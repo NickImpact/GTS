@@ -27,6 +27,7 @@ package me.nickimpact.gts.common.storage;
 
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
+import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.api.util.ThrowingRunnable;
@@ -149,5 +150,10 @@ public class GtsStorage implements GTSStorage {
 
     public CompletableFuture<Boolean> purge() {
         return this.makeFuture(this.implementation::purge);
+    }
+
+    @Override
+    public CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request) {
+        return this.makeFuture(() -> this.implementation.processBid(request));
     }
 }

@@ -7,6 +7,8 @@ import com.nickimpact.impactor.api.plugin.ImpactorPlugin;
 import com.nickimpact.impactor.api.plugin.Translatable;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.scheduling.SchedulerAdapter;
+import me.nickimpact.gts.api.storage.GTSStorage;
+import me.nickimpact.gts.common.messaging.InternalMessagingService;
 import me.nickimpact.gts.common.plugin.bootstrap.GTSBootstrap;
 import me.nickimpact.gts.common.tasks.SyncTask;
 
@@ -22,7 +24,11 @@ public interface GTSPlugin extends ImpactorPlugin, Configurable, Translatable, D
 
 	Gson getGson();
 
+	GTSStorage getStorage();
+
 	SchedulerAdapter getScheduler();
+
+	InternalMessagingService getMessagingService();
 
 	SyncTask.Buffer getSyncTaskBuffer();
 

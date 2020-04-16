@@ -26,14 +26,28 @@
 package me.nickimpact.gts.api.messaging;
 
 import me.nickimpact.gts.api.messaging.message.Message;
+import me.nickimpact.gts.api.messaging.message.MessageConsumer;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.net.SocketAddress;
+import java.util.UUID;
+import java.util.function.BiFunction;
 
 /**
  * Encapsulates the LuckPerms system which accepts incoming {@link Message}s
  * from implementations of {@link Messenger}.
  */
 public interface IncomingMessageConsumer {
+
+    /**
+     * Caches the ID into the registry of read messages on this instance. This cache will purge out
+     * received message IDs once a set amount of time has elapsed.
+     *
+     * @param id The ID of the message that has been received
+     */
+    void cacheReceivedID(UUID id);
 
     /**
      * Consumes a message instance.
@@ -72,4 +86,7 @@ public interface IncomingMessageConsumer {
      */
     boolean consumeIncomingMessageAsString(@NonNull String encodedString);
 
+    void registerInternalConsumer(Class<?> parent, MessageConsumer consumer);
+
+    MessageConsumer getInternalConsumer(Class<?> parent);
 }

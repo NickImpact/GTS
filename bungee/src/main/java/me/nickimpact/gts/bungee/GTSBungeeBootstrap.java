@@ -2,7 +2,9 @@ package me.nickimpact.gts.bungee;
 
 import com.nickimpact.impactor.api.logging.Logger;
 import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
+import com.nickimpact.impactor.bungee.logging.BungeeLogger;
 import me.nickimpact.gts.api.scheduling.SchedulerAdapter;
+import me.nickimpact.gts.bungee.scheduling.BungeeSchedulerAdapter;
 import me.nickimpact.gts.common.plugin.bootstrap.GTSBootstrap;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -12,9 +14,50 @@ import java.util.Optional;
 
 public class GTSBungeeBootstrap extends Plugin implements GTSBootstrap {
 
+	private GTSBungeePlugin plugin;
+
+	private BungeeLogger logger;
+	private BungeeSchedulerAdapter scheduler;
+
+	private Throwable exception;
+
+	public GTSBungeeBootstrap() {
+		this.scheduler = new BungeeSchedulerAdapter(this);
+		this.plugin = new GTSBungeePlugin(this);
+	}
+
+	@Override
+	public void onLoad() {
+		this.logger = new BungeeLogger(this.getLogger());
+		try {
+			this.plugin.preInit();
+		} catch (Exception e) {
+			exception = e;
+			e.printStackTrace();
+		}
+		this.logger.info("&eTest");
+	}
+
+	@Override
+	public void onEnable() {
+		try {
+			this.plugin.init();
+		} catch (Exception e) {
+			exception = e;
+			e.printStackTrace();
+		}
+
+		try {
+			this.plugin.started();
+		} catch (Exception e) {
+			exception = e;
+			e.printStackTrace();
+		}
+	}
+
 	@Override
 	public Logger getPluginLogger() {
-		return null;
+		return this.logger;
 	}
 
 	@Override
@@ -29,7 +72,7 @@ public class GTSBungeeBootstrap extends Plugin implements GTSBootstrap {
 
 	@Override
 	public SchedulerAdapter getScheduler() {
-		return null;
+		return this.scheduler;
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package me.nickimpact.gts.api.listings;
 
 import me.nickimpact.gts.api.GTSService;
-import me.nickimpact.gts.api.listings.interactors.Seller;
 import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.makeup.Display;
@@ -33,7 +32,7 @@ public interface Listing {
 	 *
 	 * @return The ID of the lister who created this listing
 	 */
-	Seller getLister();
+	UUID getLister();
 
 	/**
 	 * Represents the actual component of the listing that will be contained by this listing. This is what a user will
@@ -63,29 +62,33 @@ public interface Listing {
 	 */
 	Optional<LocalDateTime> getExpiration();
 
-	/**
-	 * Represents the price of this listing. This will be what a purchasing player must pay in order to buy this
-	 * listing off the GTS.
-	 *
-	 * @return The price of the listing
-	 */
-	Price getPrice();
-
 	static ListingBuilder builder() {
 		return GTSService.getInstance().getRegistry().createBuilder(ListingBuilder.class);
 	}
 
-	interface ListingBuilder extends Builder<Listing, ListingBuilder> {
+	interface ListingBuilder<L extends Listing, B extends ListingBuilder> extends Builder<L, B> {
 
-		ListingBuilder id(UUID id);
+		/**
+		 * Represents the ID of a listing. If not specified, this will be auto-generated at the time of constructing.
+		 *
+		 * @param id The ID to use for the listing
+		 * @return The builder modified with this value
+		 */
+		B id(UUID id);
 
-		ListingBuilder lister(Seller lister);
+		/**
+		 * Specifies the seller of this listing. The seller is simply a mapping to a
+		 *
+		 * @param lister The individual creating this listing
+		 * @return The builder modified with this value
+		 */
+		B lister(UUID lister);
 
-		ListingBuilder entry(Entry entry);
+		B entry(Entry entry);
 
-		ListingBuilder price(Price price);
+		B price(Price price);
 
-		ListingBuilder expiration(LocalDateTime expiration);
+		B expiration(LocalDateTime expiration);
 
 	}
 }

@@ -28,6 +28,7 @@ package me.nickimpact.gts.common.storage.implementation.file;
 import com.google.common.base.Throwables;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
+import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
 import me.nickimpact.gts.common.storage.implementation.file.loaders.ConfigurateLoader;
@@ -152,6 +153,11 @@ public class ConfigurateStorage implements StorageImplementation {
     @Override
     public boolean purge() throws Exception {
         return false;
+    }
+
+    @Override
+    public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) {
+        return null;
     }
 
     private ConfigurationNode readFile(String name) throws IOException {

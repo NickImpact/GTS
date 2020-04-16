@@ -10,7 +10,13 @@ import com.nickimpact.impactor.api.plugin.PluginInfo;
 import com.nickimpact.impactor.api.storage.StorageType;
 import com.nickimpact.impactor.api.storage.dependencies.DependencyManager;
 import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
+import lombok.AllArgsConstructor;
+import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.scheduling.SchedulerAdapter;
+import me.nickimpact.gts.api.storage.GTSStorage;
+import me.nickimpact.gts.bungee.messaging.BungeeMessagingFactory;
+import me.nickimpact.gts.common.messaging.MessagingFactory;
+import me.nickimpact.gts.common.plugin.AbstractGTSPlugin;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.tasks.SyncTask;
 
@@ -18,11 +24,21 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class GTSBungeePlugin implements GTSPlugin {
+@AllArgsConstructor
+public class GTSBungeePlugin extends AbstractGTSPlugin implements GTSPlugin {
+
+	private GTSBungeeBootstrap bootstrap;
+
+	@Override
+	public void preInit() {
+		super.preInit();
+
+		GTSService.getInstance().getRegistry().register(GTSPlugin.class, this);
+	}
 
 	@Override
 	public GTSBungeeBootstrap getBootstrap() {
-		return null;
+		return this.bootstrap;
 	}
 
 	@Override
@@ -31,8 +47,13 @@ public class GTSBungeePlugin implements GTSPlugin {
 	}
 
 	@Override
-	public SchedulerAdapter getScheduler() {
+	public GTSStorage getStorage() {
 		return null;
+	}
+
+	@Override
+	public SchedulerAdapter getScheduler() {
+		return this.bootstrap.getScheduler();
 	}
 
 	@Override
@@ -77,7 +98,7 @@ public class GTSBungeePlugin implements GTSPlugin {
 
 	@Override
 	public Logger getPluginLogger() {
-		return null;
+		return this.bootstrap.getPluginLogger();
 	}
 
 	@Override
@@ -118,5 +139,10 @@ public class GTSBungeePlugin implements GTSPlugin {
 	@Override
 	public Config getMsgConfig() {
 		return null;
+	}
+
+	@Override
+	public MessagingFactory<?> getMessagingFactory() {
+		return new BungeeMessagingFactory(this);
 	}
 }

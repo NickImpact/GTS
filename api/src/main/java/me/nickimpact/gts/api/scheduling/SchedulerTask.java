@@ -28,6 +28,7 @@ package me.nickimpact.gts.api.scheduling;
 /**
  * Represents a scheduled task
  */
+@FunctionalInterface
 public interface SchedulerTask {
 
 	/**

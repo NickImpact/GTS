@@ -3,17 +3,18 @@ rootProject.name = 'GTS'
 include (
         'api',
         'common',
-        'spigot',
+//        'spigot',
+        'bungee',
+//        'velocity',
         'sponge',
         'plugin',
-        'plugin:sponge',
-        'plugin:spigot',
-        'pixelmon',
-        'pixelmon:reforged',
-        'pixelmon:reforged:spigot',
-        'pixelmon:reforged:sponge',
-        'pixelmon:generations'
+        'plugin:plugin-sponge',
+//        'plugin:spigot',
+//        'pixelmon',
+//        'pixelmon:reforged',
+//        'pixelmon:reforged:spigot',
+//        'pixelmon:reforged:sponge',
+//        'pixelmon:generations'
 )
-include 'bungee'
-include 'velocity'
+
 

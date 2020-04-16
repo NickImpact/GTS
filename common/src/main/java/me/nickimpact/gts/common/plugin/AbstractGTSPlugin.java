@@ -7,6 +7,9 @@ import me.nickimpact.gts.api.blacklist.Blacklist;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.common.api.ApiRegistrationUtil;
 import me.nickimpact.gts.common.api.GTSAPIProvider;
+import me.nickimpact.gts.common.messaging.InternalMessagingService;
+import me.nickimpact.gts.common.messaging.MessagingFactory;
+import me.nickimpact.gts.common.tasks.SyncTask;
 
 public abstract class AbstractGTSPlugin implements GTSPlugin {
 
@@ -18,13 +21,17 @@ public abstract class AbstractGTSPlugin implements GTSPlugin {
 
 	private GTSStorage storage;
 
+	private InternalMessagingService messagingService;
+	private SyncTask.Buffer syncTaskBuffer;
+
 	public void preInit() {
 		ApiRegistrationUtil.register(new GTSAPIProvider());
-		GTSService.getInstance().getRegistry().register(Blacklist.class, null);
+		//GTSService.getInstance().getRegistry().register(Blacklist.class, null);
 	}
 
 	public void init() {
-
+		this.messagingService = this.getMessagingFactory().getInstance();
+		this.syncTaskBuffer = new SyncTask.Buffer(this);
 	}
 
 	public void postInit() {
@@ -38,5 +45,12 @@ public abstract class AbstractGTSPlugin implements GTSPlugin {
 	public void shutdown() {
 
 	}
+
+	@Override
+	public InternalMessagingService getMessagingService() {
+		return this.messagingService;
+	}
+
+	public abstract MessagingFactory<?> getMessagingFactory();
 
 }

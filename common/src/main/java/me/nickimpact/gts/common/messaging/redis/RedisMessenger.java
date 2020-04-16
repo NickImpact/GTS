@@ -44,6 +44,11 @@ public class RedisMessenger implements Messenger {
 	}
 
 	@Override
+	public IncomingMessageConsumer getMessageConsumer() {
+		return this.consumer;
+	}
+
+	@Override
 	public void sendOutgoingMessage(@NonNull OutgoingMessage outgoingMessage) {
 		try (Jedis jedis = this.jedisPool.getResource()) {
 			jedis.publish(CHANNEL, outgoingMessage.asEncodedString());

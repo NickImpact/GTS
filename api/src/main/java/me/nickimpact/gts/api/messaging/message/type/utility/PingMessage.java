@@ -1,0 +1,33 @@
+package me.nickimpact.gts.api.messaging.message.type.utility;
+
+import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
+import me.nickimpact.gts.api.messaging.message.type.MessageType;
+import me.nickimpact.gts.api.messaging.message.type.UpdateMessage;
+
+/**
+ * Represents a message that GTS can use as a means to ping the proxy and vice versa. These messages are namely
+ * useful in determining the messaging service is properly connected.
+ */
+public interface PingMessage extends UpdateMessage, OutgoingMessage {
+
+	/**
+	 * This message type simply asks the proxy server if it can see this ping. If it does, it'll respond
+	 * to that server with a {@link Pong Pong} message.
+	 */
+	interface Ping extends PingMessage, MessageType.Request<Pong> {}
+
+	/**
+	 * Simply indicates that the proxy has heard the ping sent.
+	 */
+	interface Pong extends PingMessage, MessageType.Response {}
+
+
+	interface ServerDetails {
+
+		String getAddress();
+
+		int getPort();
+
+	}
+
+}

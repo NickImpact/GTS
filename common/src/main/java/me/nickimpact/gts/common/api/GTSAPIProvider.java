@@ -12,11 +12,15 @@ import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.api.services.ServiceManager;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.api.util.TriFunction;
+import me.nickimpact.gts.common.registry.GTSRegisterImpl;
 
 import java.util.List;
 import java.util.Optional;
 
 public class GTSAPIProvider implements GTSService {
+
+	private GTSRegistry registry = new GTSRegisterImpl();
+
 	@Override
 	public ServiceManager getServiceManager() {
 		return null;
@@ -24,7 +28,7 @@ public class GTSAPIProvider implements GTSService {
 
 	@Override
 	public GTSRegistry getRegistry() {
-		return null;
+		return this.registry;
 	}
 
 	@Override

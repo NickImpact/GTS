@@ -123,13 +123,13 @@ publishing {
             artifactId "common"
             version project.version
         }
-        sponge(MavenPublication) {
-            def project = project(':sponge')
-            from project.components.java
-            groupId project.group
-            artifactId "sponge"
-            version project.version
-        }
+//        sponge(MavenPublication) {
+//            def project = project(':sponge')
+//            from project.components.java
+//            groupId project.group
+//            artifactId "sponge"
+//            version project.version
+//        }
 //        pluginSponge(MavenPublication) {
 //            def project = project(':plugin-sponge')
 //            from project.components.java

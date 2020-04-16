@@ -12,13 +12,13 @@ import me.nickimpact.gts.common.plugin.GTSPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @RequiredArgsConstructor
-public class MessagingFactory<P extends GTSPlugin> {
+public abstract class MessagingFactory<P extends GTSPlugin> {
 
 	@Getter(value = AccessLevel.PROTECTED)
 	private final P plugin;
 
 	public final InternalMessagingService getInstance() {
-		String messageType = this.plugin.getConfiguration().get(ConfigKeys.MESSAGE_SERVICE);
+		String messageType = "pluginmsg";//this.plugin.getConfiguration().get(ConfigKeys.MESSAGE_SERVICE);
 		if(messageType.equalsIgnoreCase("none")) {
 			return null;
 		}
@@ -34,23 +34,9 @@ public class MessagingFactory<P extends GTSPlugin> {
 		return null;
 	}
 
-	protected InternalMessagingService getServiceFor(String messageType) {
-		if(messageType.equalsIgnoreCase("redis")) {
-			if(this.plugin.getConfiguration().get(ConfigKeys.REDIS_ENABLED)) {
-				try {
-					return new GTSMessagingService(this.plugin, new RedisMessengerProvider());
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			} else {
-				this.plugin.getPluginLogger().warn("Messaging Service was set to redis, but redis is not enabled!");
-			}
-		}
+	protected abstract InternalMessagingService getServiceFor(String messageType);
 
-		return null;
-	}
-
-	private class RedisMessengerProvider implements MessengerProvider {
+	public class RedisMessengerProvider implements MessengerProvider {
 
 		@Override
 		public @NonNull String getName() {

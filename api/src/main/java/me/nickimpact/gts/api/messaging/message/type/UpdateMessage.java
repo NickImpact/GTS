@@ -32,4 +32,4 @@ import me.nickimpact.gts.api.messaging.message.Message;
  *
  * <p>Used to notify other servers of general changes.</p>
  */
-public interface UpdateMessage  extends Message {}
+public interface UpdateMessage extends Message {}

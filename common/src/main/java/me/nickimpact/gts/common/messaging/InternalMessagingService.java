@@ -25,9 +25,15 @@
 
 package me.nickimpact.gts.common.messaging;
 
+import com.google.gson.JsonElement;
 import me.nickimpact.gts.api.messaging.Messenger;
 import me.nickimpact.gts.api.messaging.MessengerProvider;
+import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
+import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.common.cache.BufferedRequest;
+
+import java.util.UUID;
+import java.util.function.BiFunction;
 
 public interface InternalMessagingService {
 
@@ -47,17 +53,80 @@ public interface InternalMessagingService {
      */
     void close();
 
-    /**
-     * Gets the buffer for sending updates to other servers
-     *
-     * @return the update buffer
-     */
-    BufferedRequest<Void> getUpdateBuffer();
+    <T extends OutgoingMessage> void registerDecoder(final String type, BiFunction<JsonElement, UUID, T> decoder);
+
+    BiFunction<JsonElement, UUID, ? extends OutgoingMessage> getDecoder(final String type);
 
     /**
-     * Uses the messaging service to inform other servers about a general
-     * change.
+     * Generates a ping ID that'll represent the message being sent across the servers.
+     *
+     * @return The ID of the message that is being sent
      */
-    void pushUpdate();
+    UUID generatePingID();
+
+    //------------------------------------------------------------------------------------
+    //
+    //  General Plugin Messages
+    //
+    //------------------------------------------------------------------------------------
+
+    /**
+     * Sends a ping to the proxy controller. The proxy will then respond with a pong message, assuming the message
+     * is properly processed. This message will route between all servers due to its nature, but will only
+     * be parsed by the server that meets the requirements of the pong message. Those being the server
+     * address and port for which they were attached at the time of the message being sent.
+     */
+    void sendPing();
+
+    //------------------------------------------------------------------------------------
+    //
+    //  Auction Based Messages
+    //
+    //------------------------------------------------------------------------------------
+
+    /**
+     *
+     *
+     * @param auction
+     * @param actor
+     * @param broadcast
+     */
+    void publishAuctionListing(UUID auction, UUID actor, String broadcast);
+
+    /**
+     * Attempts to publish a bid to the central database for GTS. This message simply controls the process
+     * of sending the initial message. Afterwords, the proxy handling the message will respond with a
+     * {@link AuctionMessage.Bid.Response Bid Response} that'll
+     * specify all other required information regarding the bid.
+     *
+     * @param listing The listing being bid on
+     * @param actor   The user who placed the bid
+     * @param bid     The amount the user has just bid on the auction for
+     */
+    void publishBid(UUID listing, UUID actor, double bid);
+
+    /**
+     *
+     *
+     * @param listing
+     * @param actor
+     */
+    void requestAuctionCancellation(UUID listing, UUID actor);
+
+    //------------------------------------------------------------------------------------
+    //
+    //  Quick Purchase Based Messages
+    //
+    //------------------------------------------------------------------------------------
+
+    /**
+     *
+     *
+     * @param listing
+     * @param actor
+     * @param broadcast
+     */
+    void publishQuickPurchaseListing(UUID listing, UUID actor, String broadcast);
+
 
 }

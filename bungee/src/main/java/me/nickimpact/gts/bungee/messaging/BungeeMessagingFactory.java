@@ -4,9 +4,14 @@ import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.api.messaging.Messenger;
 import me.nickimpact.gts.api.messaging.MessengerProvider;
 import me.nickimpact.gts.bungee.GTSBungeePlugin;
+import me.nickimpact.gts.bungee.messaging.processor.BungeeIncomingMessageConsumer;
+import me.nickimpact.gts.bungee.messaging.types.PluginMessageMessenger;
+import me.nickimpact.gts.bungee.messaging.types.RedisBungeeMessenger;
+import me.nickimpact.gts.common.config.updated.ConfigKeys;
 import me.nickimpact.gts.common.messaging.GTSMessagingService;
 import me.nickimpact.gts.common.messaging.InternalMessagingService;
 import me.nickimpact.gts.common.messaging.MessagingFactory;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class BungeeMessagingFactory extends MessagingFactory<GTSBungeePlugin> {
@@ -19,7 +24,7 @@ public class BungeeMessagingFactory extends MessagingFactory<GTSBungeePlugin> {
 	protected InternalMessagingService getServiceFor(String messageType) {
 		if(messageType.equalsIgnoreCase("pluginmsg") || messageType.equalsIgnoreCase("bungee")) {
 			try {
-				return new GTSMessagingService(this.getPlugin(), new PluginMessageMessengerProvider());
+				return new GTSMessagingService(this.getPlugin(), new PluginMessageMessengerProvider(), new BungeeIncomingMessageConsumer(this.getPlugin()));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -28,14 +33,26 @@ public class BungeeMessagingFactory extends MessagingFactory<GTSBungeePlugin> {
 				this.getPlugin().getPluginLogger().warn("RedisBungee plugin is not present");
 			} else {
 				try {
-					return new GTSMessagingService(this.getPlugin(), new RedisBungeeMessengerProvider());
+					return new GTSMessagingService(this.getPlugin(), new RedisBungeeMessengerProvider(), new BungeeIncomingMessageConsumer(this.getPlugin()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
 
-		return super.getServiceFor(messageType);
+		if(messageType.equalsIgnoreCase("redis")) {
+			if(this.getPlugin().getConfiguration().get(ConfigKeys.REDIS_ENABLED)) {
+				try {
+					return new GTSMessagingService(this.getPlugin(), new RedisMessengerProvider(), new BungeeIncomingMessageConsumer(this.getPlugin()));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				this.getPlugin().getPluginLogger().warn("Messaging Service was set to redis, but redis is not enabled!");
+			}
+		}
+
+		return null;
 	}
 
 	private class PluginMessageMessengerProvider implements MessengerProvider {

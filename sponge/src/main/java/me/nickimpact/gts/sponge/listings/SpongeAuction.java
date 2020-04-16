@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.makeup.Display;
-import me.nickimpact.gts.api.util.Tuple;
+import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
 
 import java.time.LocalDateTime;
@@ -85,8 +85,8 @@ public class SpongeAuction implements Auction {
 	}
 
 	@Override
-	public LocalDateTime getExpiration() {
-		return this.expiration;
+	public Optional<LocalDateTime> getExpiration() {
+		return Optional.of(this.expiration);
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class SpongeAuction implements Auction {
 			this.id = input.getID();
 			this.lister = input.getLister();
 			this.entry = (SpongeEntry) input.getEntry();
-			this.expiration = input.getExpiration();
+			this.expiration = input.getExpiration().get();
 			this.start = input.getCurrentPrice() - input.getIncrement();
 
 			// Hack around the static 0 for an auction with no bids currently set
