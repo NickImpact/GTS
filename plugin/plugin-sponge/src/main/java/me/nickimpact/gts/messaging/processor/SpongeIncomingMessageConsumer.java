@@ -1,23 +1,22 @@
 package me.nickimpact.gts.messaging.processor;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import me.nickimpact.gts.GTSSpongePlugin;
 import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.api.messaging.message.Message;
-import me.nickimpact.gts.api.messaging.message.type.utility.PingMessage;
+import me.nickimpact.gts.api.messaging.message.MessageConsumer;
 import me.nickimpact.gts.api.messaging.message.type.UpdateMessage;
-import me.nickimpact.gts.common.messaging.messages.listings.auctions.impl.BidMessage;
-import me.nickimpact.gts.common.messaging.messages.listings.auctions.impl.BidResponseMessage;
-import me.nickimpact.gts.common.messaging.messages.testing.TestMessage;
-import me.nickimpact.gts.common.messaging.messages.utility.GTSPongMessage;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.spongepowered.api.Sponge;
 
-import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
@@ -29,9 +28,22 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 	private final GTSSpongePlugin plugin;
 	private final Set<UUID> receivedMessages;
 
+	private final Map<Class<?>, MessageConsumer> consumers = Maps.newHashMap();
+	private List<UUID> requests = Lists.newArrayList();
+
 	public SpongeIncomingMessageConsumer(GTSSpongePlugin plugin) {
 		this.plugin = plugin;
 		this.receivedMessages = Collections.synchronizedSet(new HashSet<>());
+	}
+
+	@Override
+	public void registerRequest(UUID request) {
+		this.requests.add(request);
+	}
+
+	@Override
+	public boolean locateAndFilterRequestIfPresent(UUID incomingID) {
+		return this.requests.removeIf(id -> id.equals(incomingID));
 	}
 
 	@Override
@@ -79,14 +91,9 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 		@Nullable JsonElement content = decodedObject.get("content");
 
 		// decode message
-		Message decoded;
-		if(type.equals(BidMessage.TYPE)) {
-			decoded = BidMessage.decode(content, id);
-		} else if(type.equals(BidResponseMessage.TYPE)) {
-			decoded = BidResponseMessage.decode(content, id);
-		} else if(type.equals(GTSPongMessage.TYPE)) {
-			decoded = GTSPongMessage.decode(content, id);
-		} else {// gracefully return if we just don't recognise the type
+		Message decoded = GTSPlugin.getInstance().getMessagingService().getDecoder(type).apply(content, id);
+		if(decoded == null) {
+			GTSPlugin.getInstance().getPluginLogger().info("No decoder found for incoming message");
 			return false;
 		}
 
@@ -95,17 +102,22 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 		return true;
 	}
 
+	@Override
+	public <T extends Message, V extends T> void registerInternalConsumer(Class<T> parent, MessageConsumer<V> consumer) {
+		this.consumers.put(parent, consumer);
+	}
+
+	@Override
+	public MessageConsumer getInternalConsumer(Class<?> parent) {
+		return this.consumers.get(parent);
+	}
+
+	@SuppressWarnings("unchecked")
 	private void processIncomingMessage(Message message) {
 		if (message instanceof UpdateMessage) {
 			UpdateMessage msg = (UpdateMessage) message;
 			this.plugin.getPluginLogger().info("[Messaging] Received message with id: " + msg.getID());
-			if(msg instanceof PingMessage.Pong) {
-				PingMessage.Pong pong = (PingMessage.Pong) msg;
-				InetSocketAddress address = Sponge.getServer().getBoundAddress().get();
-				if(address.getHostName().equals(pong.getServerAddress()) && address.getPort() == pong.getServerPort()) {
-					this.plugin.getPluginLogger().info("[Messaging] Request has returned a pong message successfully");
-				}
-			}
+			this.getInternalConsumer(msg.getClass()).consume(message);
 		} else {
 			throw new IllegalArgumentException("Unknown message type: " + message.getClass().getName());
 		}

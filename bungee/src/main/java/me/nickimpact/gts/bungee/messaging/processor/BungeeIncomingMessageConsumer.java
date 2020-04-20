@@ -6,13 +6,14 @@ import com.google.gson.JsonObject;
 import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.api.messaging.message.Message;
 import me.nickimpact.gts.api.messaging.message.MessageConsumer;
+import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
+import me.nickimpact.gts.api.messaging.message.type.MessageType;
 import me.nickimpact.gts.api.messaging.message.type.UpdateMessage;
 import me.nickimpact.gts.bungee.GTSBungeePlugin;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.net.SocketAddress;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
@@ -32,6 +33,14 @@ public class BungeeIncomingMessageConsumer implements IncomingMessageConsumer {
 	public BungeeIncomingMessageConsumer(GTSBungeePlugin plugin) {
 		this.plugin = plugin;
 		this.receivedMessages = Collections.synchronizedSet(new HashSet<>());
+	}
+
+	@Override
+	public void registerRequest(UUID request) {}
+
+	@Override
+	public boolean locateAndFilterRequestIfPresent(UUID incomingID) {
+		return false;
 	}
 
 	@Override
@@ -90,7 +99,7 @@ public class BungeeIncomingMessageConsumer implements IncomingMessageConsumer {
 	}
 
 	@Override
-	public void registerInternalConsumer(Class<?> parent, MessageConsumer consumer) {
+	public <T extends Message, V extends T> void registerInternalConsumer(Class<T> parent, MessageConsumer<V> consumer) {
 		this.consumers.put(parent, consumer);
 	}
 
@@ -99,6 +108,7 @@ public class BungeeIncomingMessageConsumer implements IncomingMessageConsumer {
 		return this.consumers.get(parent);
 	}
 
+	@SuppressWarnings("unchecked")
 	private void processIncomingMessage(Message message) {
 		if (message instanceof UpdateMessage) {
 			UpdateMessage msg = (UpdateMessage) message;
@@ -126,7 +136,6 @@ public class BungeeIncomingMessageConsumer implements IncomingMessageConsumer {
 //				}
 //			} else if(message instanceof PingMessage) {
 //				if(message instanceof PingMessage.Ping) {
-//					this.plugin.getPluginLogger().info("[Messaging] Translating ping...");
 //					((PingMessage.Ping) message).respond(target).thenAccept(pong -> {
 //						this.plugin.getPluginLogger().info("[Messaging] Sending response with ID: " + pong.getID());
 //						this.plugin.getMessagingService().getMessenger().sendOutgoingMessage(pong, target);

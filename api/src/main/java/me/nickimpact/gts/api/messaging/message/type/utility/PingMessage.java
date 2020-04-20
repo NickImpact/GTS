@@ -21,13 +21,4 @@ public interface PingMessage extends UpdateMessage, OutgoingMessage {
 	 */
 	interface Pong extends PingMessage, MessageType.Response {}
 
-
-	interface ServerDetails {
-
-		String getAddress();
-
-		int getPort();
-
-	}
-
 }

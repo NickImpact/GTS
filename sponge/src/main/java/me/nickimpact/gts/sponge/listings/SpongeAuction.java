@@ -5,6 +5,7 @@ import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.makeup.Display;
 import me.nickimpact.gts.api.util.groupings.Tuple;
+import me.nickimpact.gts.sponge.listings.makeup.SpongeDisplay;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
 
 import java.time.LocalDateTime;
@@ -15,12 +16,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentNavigableMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
-public class SpongeAuction implements Auction {
+public class SpongeAuction extends SpongeListing implements Auction {
 
-	private UUID id;
-	private UUID lister;
-	private SpongeEntry entry;
-	private LocalDateTime expiration;
 	private double price;
 	private float increment;
 
@@ -30,10 +27,7 @@ public class SpongeAuction implements Auction {
 	private ConcurrentNavigableMap<UUID, Double> bids = new ConcurrentSkipListMap<>(Collections.reverseOrder());
 
 	private SpongeAuction(SpongeAuctionBuilder builder) {
-		this.id = builder.id;
-		this.lister = builder.lister;
-		this.entry = builder.entry;
-		this.expiration = builder.expiration;
+		super(builder.id, builder.lister, builder.entry, builder.expiration);
 		this.price = builder.start;
 		this.increment = builder.increment;
 	}
@@ -65,28 +59,8 @@ public class SpongeAuction implements Auction {
 	}
 
 	@Override
-	public UUID getID() {
-		return this.id;
-	}
-
-	@Override
-	public UUID getLister() {
-		return this.lister;
-	}
-
-	@Override
-	public Entry getEntry() {
-		return this.entry;
-	}
-
-	@Override
-	public Display getDisplay() {
+	public SpongeDisplay getDisplay() {
 		return this.getEntry().getDisplay();
-	}
-
-	@Override
-	public Optional<LocalDateTime> getExpiration() {
-		return Optional.of(this.expiration);
 	}
 
 	@Override

@@ -9,7 +9,6 @@ import me.nickimpact.gts.common.utils.gson.JObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.net.SocketAddress;
 import java.util.Optional;
 import java.util.UUID;
 

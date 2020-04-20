@@ -111,8 +111,7 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 	@Listener
 	public void onLogin(ClientConnectionEvent.Join event) {
 		//this.plugin.getMessagingService().pushTest(String.format("Server on port %d says \"Hello\"!", Sponge.getServer().getBoundAddress().get().getPort()));
-		InetSocketAddress address = Sponge.getServer().getBoundAddress().get();
-		this.plugin.getMessagingService().sendPing(address.getHostName(), address.getPort());
+		this.plugin.getMessagingService().sendPing();
 	}
 
 	@Override

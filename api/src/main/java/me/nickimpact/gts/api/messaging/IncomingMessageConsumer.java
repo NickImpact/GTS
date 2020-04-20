@@ -28,10 +28,12 @@ package me.nickimpact.gts.api.messaging;
 import me.nickimpact.gts.api.messaging.message.Message;
 import me.nickimpact.gts.api.messaging.message.MessageConsumer;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
+import me.nickimpact.gts.api.messaging.message.type.MessageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.net.SocketAddress;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
@@ -40,6 +42,26 @@ import java.util.function.BiFunction;
  * from implementations of {@link Messenger}.
  */
 public interface IncomingMessageConsumer {
+
+    /**
+     /**
+     * Registers a message that is being requested by the calling plugin. This is to allow a server
+     * to ensure a requested message eventually receives a response intended for itself.
+     *
+     * @param request The message working as the request message
+     */
+    void registerRequest(UUID request);
+
+    /**
+     * Attempts to locate a registered request. If one is found, this method will indicate such
+     * by returning true, otherwise false. When found, this method will also remove said matching
+     * request from the cache as preserving the message in that data set past that point is no
+     * longer necessary.
+     *
+     * @param incomingID The ID that was marked on the incoming response message
+     * @return True if a matching request is found, false otherwise
+     */
+    boolean locateAndFilterRequestIfPresent(UUID incomingID);
 
     /**
      * Caches the ID into the registry of read messages on this instance. This cache will purge out
@@ -86,7 +108,7 @@ public interface IncomingMessageConsumer {
      */
     boolean consumeIncomingMessageAsString(@NonNull String encodedString);
 
-    void registerInternalConsumer(Class<?> parent, MessageConsumer consumer);
+    <T extends Message, V extends T> void registerInternalConsumer(Class<T> parent, MessageConsumer<V> consumer);
 
     MessageConsumer getInternalConsumer(Class<?> parent);
 }

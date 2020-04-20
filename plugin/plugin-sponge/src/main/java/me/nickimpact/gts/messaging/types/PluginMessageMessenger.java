@@ -5,6 +5,7 @@ import me.nickimpact.gts.GTSSpongePlugin;
 import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.api.messaging.Messenger;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
+import me.nickimpact.gts.api.messaging.message.type.MessageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
@@ -52,20 +53,20 @@ public class PluginMessageMessenger implements Messenger, RawDataListener {
 
 	@Override
 	public void sendOutgoingMessage(@NonNull OutgoingMessage outgoingMessage) {
-		Sponge.getScheduler().createTaskBuilder().interval(10, TimeUnit.SECONDS).execute(task -> {
-			if (!Sponge.isServerAvailable()) {
-				return;
-			}
+		if (!Sponge.isServerAvailable()) {
+			return;
+		}
 
-			Collection<Player> players = Sponge.getServer().getOnlinePlayers();
-			Player p = Iterables.getFirst(players, null);
-			if (p == null) {
-				return;
-			}
+		Collection<Player> players = Sponge.getServer().getOnlinePlayers();
+		Player p = Iterables.getFirst(players, null);
+		if (p == null) {
+			return;
+		}
 
-			this.channel.sendTo(p, buf -> buf.writeUTF(outgoingMessage.asEncodedString()));
-			task.cancel();
-		}).submit(this.plugin.getBootstrap());
+		this.channel.sendTo(p, buf -> buf.writeUTF(outgoingMessage.asEncodedString()));
+		if(outgoingMessage instanceof MessageType.Request) {
+			this.getMessageConsumer().registerRequest(outgoingMessage.getID());
+		}
 	}
 
 	@Override
@@ -73,4 +74,5 @@ public class PluginMessageMessenger implements Messenger, RawDataListener {
 		String msg = buf.readUTF();
 		this.consumer.consumeIncomingMessageAsString(msg);
 	}
+
 }

@@ -1,8 +1,8 @@
 package me.nickimpact.gts.api.messaging.message;
 
 @FunctionalInterface
-public interface MessageConsumer {
+public interface MessageConsumer<V extends Message> {
 
-	void consume(Message message);
+	void consume(V message);
 
 }

@@ -15,6 +15,7 @@ import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.scheduling.SchedulerAdapter;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.bungee.messaging.BungeeMessagingFactory;
+import me.nickimpact.gts.bungee.messaging.interpreters.BungeePingPongInterpreter;
 import me.nickimpact.gts.common.messaging.MessagingFactory;
 import me.nickimpact.gts.common.plugin.AbstractGTSPlugin;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
@@ -34,6 +35,14 @@ public class GTSBungeePlugin extends AbstractGTSPlugin implements GTSPlugin {
 		super.preInit();
 
 		GTSService.getInstance().getRegistry().register(GTSPlugin.class, this);
+	}
+
+	@Override
+	public void init() {
+		super.init();
+
+		BungeePingPongInterpreter.registerDecoders(this);
+		BungeePingPongInterpreter.registerInterpreters(this);
 	}
 
 	@Override

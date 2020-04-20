@@ -8,18 +8,20 @@ import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.api.messaging.Messenger;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
 import me.nickimpact.gts.bungee.GTSBungeePlugin;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.ServerPing;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.net.SocketAddress;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @RequiredArgsConstructor
@@ -45,16 +47,23 @@ public class PluginMessageMessenger implements Messenger, Listener {
 
 	private void dispatch(byte[] message) {
 		this.plugin.getBootstrap().getProxy().getServers().values().stream()
-				.filter(server -> {
-					AtomicBoolean hasPlayers = new AtomicBoolean(false);
-					Callback<ServerPing> callback = (ping, exception) -> {
-						if(exception == null) {
-							hasPlayers.set(ping.getPlayers().getOnline() > 0);
-						}
-					};
-					server.ping(callback);
-					return hasPlayers.get();
-				})
+//				.filter(server -> {
+//					AtomicBoolean hasPlayers = new AtomicBoolean(false);
+//					Callback<ServerPing> callback = (ping, exception) -> {
+//						if(exception == null) {
+//							hasPlayers.set(ping.getPlayers().getOnline() > 0);
+//						} else {
+//							exception.printStackTrace();
+//						}
+//					};
+//					try {
+//						CompletableFuture.runAsync(() -> server.ping(callback)).get(100, TimeUnit.MILLISECONDS);
+//					} catch (InterruptedException | ExecutionException | TimeoutException e) {
+//						e.printStackTrace();
+//					}
+//					GTSPlugin.getInstance().getPluginLogger().info("Has Players Result: " + hasPlayers.get());
+//					return hasPlayers.get();
+//				})
 				.forEach(server -> server.sendData(CHANNEL, message, true));
 	}
 

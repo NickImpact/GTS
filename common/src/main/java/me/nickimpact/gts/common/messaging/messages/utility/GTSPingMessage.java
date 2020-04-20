@@ -10,7 +10,6 @@ import me.nickimpact.gts.common.utils.gson.JObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.net.SocketAddress;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -38,12 +37,10 @@ public class GTSPingMessage extends AbstractMessage implements PingMessage.Ping 
 
 	@Override
 	public CompletableFuture<Pong> respond() {
-		return CompletableFutureManager.makeFuture(() -> {
-			GTSPlugin.getInstance().getPluginLogger().info("[Messaging] Building response...");
-			return new GTSPongMessage(
-					GTSPlugin.getInstance().getMessagingService().generatePingID(),
-					this.getID()
-			);
-		});
+		return CompletableFutureManager.makeFuture(() -> new GTSPongMessage(
+				GTSPlugin.getInstance().getMessagingService().generatePingID(),
+				this.getID()
+		));
 	}
+
 }

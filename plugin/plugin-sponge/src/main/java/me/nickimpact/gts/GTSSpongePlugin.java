@@ -1,6 +1,7 @@
 package me.nickimpact.gts;
 
 import co.aikar.commands.BaseCommand;
+import co.aikar.commands.SpongeCommandManager;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.nickimpact.impactor.api.configuration.Config;
@@ -13,15 +14,19 @@ import com.nickimpact.impactor.api.storage.dependencies.DependencyManager;
 import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.manager.ListingManager;
 import me.nickimpact.gts.api.scheduling.SchedulerAdapter;
 import me.nickimpact.gts.api.storage.GTSStorage;
+import me.nickimpact.gts.commands.TestCommand;
 import me.nickimpact.gts.common.messaging.MessagingFactory;
 import me.nickimpact.gts.common.plugin.AbstractGTSPlugin;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.tasks.SyncTask;
+import me.nickimpact.gts.manager.SpongeListingManager;
 import me.nickimpact.gts.messaging.SpongeMessagingFactory;
+import me.nickimpact.gts.messaging.interpreters.SpongePingPongInterpreter;
 import me.nickimpact.gts.sponge.SpongePlugin;
-import me.nickimpact.gts.sponge.listings.SpongeListing;
+import me.nickimpact.gts.sponge.listings.SpongeQuickPurchase;
 import me.nickimpact.gts.sponge.service.SpongeGtsService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -49,12 +54,19 @@ public class GTSSpongePlugin extends AbstractGTSPlugin implements SpongePlugin {
 		GTSService.getInstance().getRegistry().register(GTSPlugin.class, this);
 		((GTSInfo) this.getPluginInfo()).displayBanner();
 		Sponge.getServiceManager().setProvider(this.bootstrap, GTSService.class, new SpongeGtsService(this));
-		GTSService.getInstance().getRegistry().registerBuilderSupplier(Listing.ListingBuilder.class, SpongeListing.SpongeListingBuilder::new);
+		GTSService.getInstance().getRegistry().registerBuilderSupplier(Listing.ListingBuilder.class, SpongeQuickPurchase.SpongeListingBuilder::new);
+		GTSService.getInstance().getRegistry().register(SpongeListingManager.class, new SpongeListingManager());
 	}
 
 	@Override
 	public void init() {
 		super.init();
+
+		SpongePingPongInterpreter.registerDecoders(this);
+		SpongePingPongInterpreter.registerInterpreters(this);
+
+		SpongeCommandManager commands = new SpongeCommandManager(this.bootstrap.getContainer());
+		commands.registerCommand(new TestCommand());
 	}
 
 	@Override

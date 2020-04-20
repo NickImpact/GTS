@@ -6,12 +6,9 @@ import me.nickimpact.gts.api.services.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public interface ListingManager<E extends Listing> extends Service {
-
-	Optional<E> getListingByID(UUID uuid);
-
-	List<E> getListings();
 
 	List<UUID> getIgnorers();
 
@@ -23,5 +20,6 @@ public interface ListingManager<E extends Listing> extends Service {
 
 	boolean hasMaxListings(UUID lister);
 
-	void readStorage();
+	CompletableFuture<List<E>> fetchListings();
+
 }

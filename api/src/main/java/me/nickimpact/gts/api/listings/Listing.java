@@ -66,7 +66,7 @@ public interface Listing {
 		return GTSService.getInstance().getRegistry().createBuilder(ListingBuilder.class);
 	}
 
-	interface ListingBuilder<L extends Listing, B extends ListingBuilder> extends Builder<L, B> {
+	interface ListingBuilder<L extends Listing, B extends ListingBuilder, E extends Entry> extends Builder<L, B> {
 
 		/**
 		 * Represents the ID of a listing. If not specified, this will be auto-generated at the time of constructing.
@@ -84,7 +84,7 @@ public interface Listing {
 		 */
 		B lister(UUID lister);
 
-		B entry(Entry entry);
+		B entry(E entry);
 
 		B price(Price price);
 
