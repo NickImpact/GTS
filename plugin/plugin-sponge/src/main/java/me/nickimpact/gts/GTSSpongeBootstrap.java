@@ -51,8 +51,7 @@ import static me.nickimpact.gts.GTSInfo.*;
 		version = VERSION,
 		description = DESCRIPTION,
 		dependencies = {
-				@Dependency(id = "impactor", version = "[2.2.0,)"),
-				@Dependency(id = "nucleus")
+				@Dependency(id = "impactor", version = "[2.2.0,)")
 		})
 public class GTSSpongeBootstrap implements GTSBootstrap {
 

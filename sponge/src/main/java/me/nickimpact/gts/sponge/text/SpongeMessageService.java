@@ -13,24 +13,27 @@ import me.nickimpact.gts.api.placeholders.PlaceholderVariables;
 import me.nickimpact.gts.api.services.ServiceManager;
 import me.nickimpact.gts.api.text.MessageService;
 import me.nickimpact.gts.common.placeholders.GTSPlaceholderService;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.sponge.sources.SpongeSource;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.TextRepresentable;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SpongeMessageService implements MessageService<Text, SpongeSource> {
+public class SpongeMessageService implements MessageService<Text, CommandSource> {
 
 	private static final Pattern TOKEN_LOCATOR = Pattern.compile("(^[^{]+)?([{][{][\\w-:]+[}][}])(.+)?");
 
 	@Override
-	public Text getForSource(String message, SpongeSource source, @Nullable Map<String, PlaceholderParser> tokens, @Nullable PlaceholderVariables variables) {
+	public Text getForSource(String message, CommandSource source, @Nullable Map<String, PlaceholderParser> tokens, @Nullable PlaceholderVariables variables) {
+		SpongeSource spongeSource = new SpongeSource(source);
 		ServiceManager manager = GTSService.getInstance().getServiceManager();
 		Text text = Text.EMPTY;
 
@@ -40,8 +43,8 @@ public class SpongeMessageService implements MessageService<Text, SpongeSource> 
 			if(matcher.find()) {
 				String token = matcher.group(2).replace("{{", "").replace("}}", "");
 				TextRepresentable out = tokens != null && tokens.containsKey(token) ?
-						this.parseToken(source, token, tokens.get(token), variables) :
-						this.convert(manager.get(PlaceholderService.class).get().parse(source, token, variables));
+						this.parseToken(spongeSource, token, tokens.get(token), variables) :
+						this.convert(manager.get(PlaceholderService.class).get().parse(spongeSource, token, variables));
 
 				if(matcher.group(1) != null) {
 					text = Text.of(text, TextSerializers.FORMATTING_CODE.deserialize(matcher.group(1) + TextSerializers.FORMATTING_CODE.serialize(out.toText())));

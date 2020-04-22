@@ -6,7 +6,9 @@ import me.nickimpact.gts.api.services.Service;
 import me.nickimpact.gts.api.user.Source;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -14,7 +16,7 @@ import java.util.Map;
  * @param <T> The output type for a message
  * @param <S> The implementation of a source
  */
-public interface MessageService<T, S extends Source> extends Service {
+public interface MessageService<T, S> extends Service {
 
 	default T getForSource(String message, S source) {
 		return this.getForSource(message, source, null);
@@ -53,5 +55,17 @@ public interface MessageService<T, S extends Source> extends Service {
 	 * @return The resulting Text as an outcome of the input.
 	 */
 	T getForSource(String message, S source, @Nullable Map<String, PlaceholderParser> tokens, @Nullable PlaceholderVariables variables);
+
+	default List<T> getTextListForSource(List<String> input, S source) {
+		return this.getTextListForSource(input, source, null);
+	}
+
+	default List<T> getTextListForSource(List<String> input, S source, @Nullable Map<String, PlaceholderParser> tokens) {
+		return this.getTextListForSource(input, source, tokens, PlaceholderVariables.empty());
+	}
+
+	default List<T> getTextListForSource(List<String> input, S source, @Nullable Map<String, PlaceholderParser> tokens, @Nullable PlaceholderVariables variables) {
+		return input.stream().map(s -> this.getForSource(s, source, tokens, variables)).collect(Collectors.toList());
+	}
 
 }

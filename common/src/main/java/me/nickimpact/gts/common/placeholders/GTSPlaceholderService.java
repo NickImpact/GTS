@@ -44,7 +44,7 @@ public abstract class GTSPlaceholderService implements PlaceholderService {
 			token = token.replaceAll(SUFFIX_PATTERN.pattern(), "");
 		}
 
-		return new GTSPlaceholderBuilder(this)
+		return new GTSPlaceholderBuilder()
 				.setToken(token)
 				.setAssociatedSource(source)
 				.setPlaceholderVariables(variables)

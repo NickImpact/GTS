@@ -9,6 +9,7 @@ import lombok.Getter;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -53,7 +55,11 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	private int rOffset;
 	private int cOffset;
 
-	private Map<PageIconType, PageIcon<M>> pageIcons;
+	protected Collection<Predicate<T>> conditions = Lists.newArrayList();
+
+	protected Map<PageIconType, PageIcon<M>> pageIcons;
+
+	private CompletableFuture<List<T>> future;
 
 	public AsyncPage(GTSPlugin plugin, P viewer, CompletableFuture<List<T>> future) {
 		this.plugin = plugin;
@@ -66,11 +72,7 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 		this.cOffset = offsets.getSecond();
 		this.pageIcons = this.getPageIcons();
 		this.page = 1;
-		this.layout = this.design();
-		this.view = this.build(this.layout);
-		this.doProvidedFill(this.getLoadingIcon());
-		Tuple<Long, TimeUnit> timeout = this.getTimeout();
-		this.queue(future, timeout.getFirst(), timeout.getSecond());
+		this.future = future;
 	}
 
 	@Override
@@ -83,6 +85,14 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 		return this.view;
 	}
 
+	public int getPage() {
+		return this.page;
+	}
+
+	public void setPage(int page) {
+		this.page = page;
+	}
+
 	protected abstract S getTitle();
 
 	protected abstract Map<PageIconType, PageIcon<M>> getPageIcons();
@@ -92,6 +102,8 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	protected abstract Tuple<Integer, Integer> getOffsets();
 
 	protected abstract Tuple<Long, TimeUnit> getTimeout();
+
+	protected abstract L pagedDesign(L from);
 
 	protected abstract L design();
 
@@ -104,9 +116,9 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	}
 
 	private void queue(CompletableFuture<List<T>> future, long timeout, TimeUnit unit) {
-		future.acceptEither(timeoutAfter(timeout, unit), this::define)
+		future.acceptEither(timeoutAfter(timeout, unit), list -> GTSPlugin.getInstance().getScheduler().executeSync(() -> this.define(list)))
 				.exceptionally(ex -> {
-					this.doProvidedFill(this.getTimeoutIcon());
+					GTSPlugin.getInstance().getScheduler().executeSync(() -> this.doProvidedFill(this.getTimeoutIcon()));
 					return null;
 				});
 	}
@@ -143,6 +155,11 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	@Override
 	@SuppressWarnings("unchecked")
 	public void open() {
+		this.layout = this.pagedDesign(this.design());
+		this.view = this.build(this.layout);
+		this.doProvidedFill(this.getLoadingIcon());
+		Tuple<Long, TimeUnit> timeout = this.getTimeout();
+		this.queue(future, timeout.getFirst(), timeout.getSecond());
 		this.view.open(this.viewer);
 	}
 
@@ -180,7 +197,10 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 			return;
 		}
 
-		List<T> viewable = this.contents.subList((this.page - 1) * capacity, this.page == pages ? this.contents.size() : this.page * capacity);
+		List<T> viewable = this.contents.stream()
+				.filter(x -> this.conditions.stream().allMatch(y -> y.test(x)))
+				.collect(Collectors.toList())
+				.subList((this.page - 1) * capacity, this.page == pages ? this.contents.size() : this.page * capacity);
 		List<I> translated = viewable.stream().map(x -> this.applier.apply(x)).collect(Collectors.toList());
 
 		int index = this.cOffset + this.view.getDimension().getColumns() * this.rOffset;

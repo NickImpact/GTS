@@ -64,6 +64,11 @@ public class SpongeAuction extends SpongeListing implements Auction {
 	}
 
 	@Override
+	public LocalDateTime getPublishTime() {
+		return null;
+	}
+
+	@Override
 	public Optional<Double> getCurrentBid(UUID uuid) {
 		return Optional.empty();
 	}

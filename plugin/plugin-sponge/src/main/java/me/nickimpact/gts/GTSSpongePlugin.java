@@ -12,12 +12,16 @@ import com.nickimpact.impactor.api.plugin.PluginInfo;
 import com.nickimpact.impactor.api.storage.StorageType;
 import com.nickimpact.impactor.api.storage.dependencies.DependencyManager;
 import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
+import com.nickimpact.impactor.sponge.configuration.SpongeConfig;
+import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.listings.manager.ListingManager;
+import me.nickimpact.gts.api.placeholders.PlaceholderService;
 import me.nickimpact.gts.api.scheduling.SchedulerAdapter;
 import me.nickimpact.gts.api.storage.GTSStorage;
+import me.nickimpact.gts.api.text.MessageService;
 import me.nickimpact.gts.commands.TestCommand;
+import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.messaging.MessagingFactory;
 import me.nickimpact.gts.common.plugin.AbstractGTSPlugin;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
@@ -28,10 +32,13 @@ import me.nickimpact.gts.messaging.interpreters.SpongePingPongInterpreter;
 import me.nickimpact.gts.sponge.SpongePlugin;
 import me.nickimpact.gts.sponge.listings.SpongeQuickPurchase;
 import me.nickimpact.gts.sponge.service.SpongeGtsService;
+import me.nickimpact.gts.sponge.text.SpongeMessageService;
+import me.nickimpact.gts.sponge.text.SpongePlaceholderService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Consumer;
@@ -42,6 +49,7 @@ public class GTSSpongePlugin extends AbstractGTSPlugin implements SpongePlugin {
 
 	private PluginInfo info = new GTSInfo();
 
+	private Config msgConfig;
 
 	public GTSSpongePlugin(GTSSpongeBootstrap bootstrap) {
 		this.bootstrap = bootstrap;
@@ -56,6 +64,10 @@ public class GTSSpongePlugin extends AbstractGTSPlugin implements SpongePlugin {
 		Sponge.getServiceManager().setProvider(this.bootstrap, GTSService.class, new SpongeGtsService(this));
 		GTSService.getInstance().getRegistry().registerBuilderSupplier(Listing.ListingBuilder.class, SpongeQuickPurchase.SpongeListingBuilder::new);
 		GTSService.getInstance().getRegistry().register(SpongeListingManager.class, new SpongeListingManager());
+		GTSService.getInstance().getServiceManager().register(MessageService.class, new SpongeMessageService());
+		GTSService.getInstance().getServiceManager().register(PlaceholderService.class, new SpongePlaceholderService(this));
+
+		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/en_us.conf")), new MsgConfigKeys());
 	}
 
 	@Override
@@ -185,6 +197,6 @@ public class GTSSpongePlugin extends AbstractGTSPlugin implements SpongePlugin {
 
 	@Override
 	public Config getMsgConfig() {
-		return null;
+		return this.msgConfig;
 	}
 }

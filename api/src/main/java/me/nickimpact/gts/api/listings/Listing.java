@@ -53,6 +53,14 @@ public interface Listing {
 	}
 
 	/**
+	 * Details the exact time at which a listing was published to the GTS market. This is namely helpful
+	 * for tracking purposes.
+	 *
+	 * @return The time this listing was published
+	 */
+	LocalDateTime getPublishTime();
+
+	/**
 	 * Represents the time where this listing will expire. In general, each listing will have this option specified.
 	 * However, a listing that has been made permanent can avoid this check, and simply stay in the system until
 	 * it is either purchased or removed.

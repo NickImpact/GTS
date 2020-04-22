@@ -5,6 +5,8 @@ import com.google.common.collect.Lists;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.nickimpact.impactor.api.configuration.ConfigKeyHolder;
 import com.nickimpact.impactor.api.configuration.keys.BaseConfigKey;
+import me.nickimpact.gts.common.config.wrappers.SortConfigurationOptions;
+import me.nickimpact.gts.common.utils.TitleLorePair;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -218,6 +220,37 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> SEARCH_NO_OPTION = stringKey("general.errors.searching.no-option", "{{gts_error}} No search option exists for that typing...");
 	public static final ConfigKey<String> COOLDOWN_COOLING = stringKey("general.errors.cooldowns.cooling", "{{gts_error}} &7You must wait an additional &a{{gts_cooldown_wait_time}} &7before listing another listing!");
 	public static final ConfigKey<String> SELL_CMD_INVALID = stringKey("general.errors.commands.no-type-specified", "{{gts_error}} You must specify the type of thing you wish to sell!");
+
+	// -----------------------------------------------------------------------------
+	// As of 6.0.0
+	// -----------------------------------------------------------------------------
+	public static final ConfigKey<TitleLorePair> MAIN_MENU_SEARCH = customKey(c -> {
+		String title = c.getString("ui.main-menu.search.title", "&aSearch");
+		List<String> lore = c.getStringList("ui.main-menu.search.lore", Lists.newArrayList(
+				"&7Find items by name, type,",
+				"&7or any other options that",
+				"&7can identify an item.",
+				"",
+				"&aCurrent Query:",
+				"&a{{gts_search_query}}",
+				"",
+				"&bRight Click to add additional",
+				"&bparameters!",
+				"&eClick to begin search!"
+		));
+		return new TitleLorePair(title, lore);
+	});
+	public static final ConfigKey<SortConfigurationOptions> MAIN_MENU_SORT = customKey(c -> new SortConfigurationOptions(
+			c.getString("ui.main-menu.sort.title", "&aSort"),
+			c.getString("ui.main-menu.sort.lore.coloring.selected", "&b"),
+			c.getString("ui.main-menu.sort.lore.coloring.not-selected", "&7"),
+			c.getString("ui.main-menu.sort.lore.quick-purchase.most-recent", "Most Recent"),
+			c.getString("ui.main-menu.sort.lore.quick-purchase.ending-soon", "Ending Soon"),
+			c.getString("ui.main-menu.sort.lore.auctions.highest-bid", "Highest Bid"),
+			c.getString("ui.main-menu.sort.lore.auctions.lowest-bid", "Lowest Bid"),
+			c.getString("ui.main-menu.sort.lore.auctions.ending-soon", "Ending Soon"),
+			c.getString("ui.main-menu.sort.lore.auctions.most-bids", "Most Bids")
+	));
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

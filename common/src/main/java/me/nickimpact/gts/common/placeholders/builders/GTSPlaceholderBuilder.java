@@ -6,13 +6,16 @@ package me.nickimpact.gts.common.placeholders.builders;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.placeholders.Placeholder;
 import me.nickimpact.gts.api.placeholders.PlaceholderMetadata;
+import me.nickimpact.gts.api.placeholders.PlaceholderService;
 import me.nickimpact.gts.api.placeholders.PlaceholderVariables;
 import me.nickimpact.gts.api.user.Source;
 import me.nickimpact.gts.common.placeholders.GTSPlaceholderService;
 import me.nickimpact.gts.common.placeholders.types.GTSPlaceholder;
 import me.nickimpact.gts.common.placeholders.variables.GTSPlaceholderVariables;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
 import net.kyori.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -29,8 +32,8 @@ public class GTSPlaceholderBuilder implements Placeholder.StandardBuilder {
 	private TextComponent append = TextComponent.empty();
 	private PlaceholderVariables placeholderVariables = PlaceholderVariables.empty();
 
-	public GTSPlaceholderBuilder(GTSPlaceholderService service) {
-		this.placeholderService = service;
+	public GTSPlaceholderBuilder() {
+		this.placeholderService = (GTSPlaceholderService) GTSService.getInstance().getRegistry().get(PlaceholderService.class);
 	}
 
 	@Override

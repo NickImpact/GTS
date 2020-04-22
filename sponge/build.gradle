@@ -4,6 +4,14 @@ repositories {
         name 'sponge-repo'
         url 'https://repo.spongepowered.org/maven'
     }
+    maven {
+        name 'drnaylor-minecraft'
+        url 'http://repo.drnaylor.co.uk/artifactory/list/minecraft'
+    }
+    maven {
+        name 'drnaylor'
+        url 'http://repo.drnaylor.co.uk/artifactory/list/quickstart'
+    }
 }
 
 dependencies {
@@ -24,4 +32,5 @@ dependencies {
         exclude(module: 'text-api')
         exclude(module: 'gson')
     }
+    shadow 'io.github.nucleuspowered:nucleus-api:2.0.0-S7.2-SNAPSHOT'
 }

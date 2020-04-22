@@ -25,6 +25,11 @@ public class SpongeQuickPurchase extends SpongeListing implements QuickPurchase 
 		return this.price;
 	}
 
+	@Override
+	public LocalDateTime getPublishTime() {
+		return null;
+	}
+
 	public static class SpongeListingBuilder implements ListingBuilder<SpongeQuickPurchase, SpongeListingBuilder, SpongeEntry> {
 
 		private UUID id;

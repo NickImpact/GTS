@@ -39,7 +39,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing> {
 	public CompletableFuture<List<SpongeListing>> fetchListings() {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				Thread.sleep(6000);
+				Thread.sleep(2500);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
