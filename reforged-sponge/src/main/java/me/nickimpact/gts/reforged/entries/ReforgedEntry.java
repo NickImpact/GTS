@@ -21,6 +21,7 @@ import com.pixelmonmod.pixelmon.enums.forms.EnumBidoof;
 import com.pixelmonmod.pixelmon.enums.forms.EnumGreninja;
 import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
+import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import me.nickimpact.gts.api.enums.CommandResults;
@@ -253,10 +254,9 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 			aprilFools = true;
 		}
 
-		net.minecraft.item.ItemStack item = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
-		NBTTagCompound nbt = new NBTTagCompound();
-		String idValue = String.format("%03d", aprilFools ? 399 : pokemon.getBaseStats().nationalPokedexNumber);
-		if (pokemon.isEgg()) {
+		if(pokemon.isEgg()) {
+			net.minecraft.item.ItemStack item = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
+			NBTTagCompound nbt = new NBTTagCompound();
 			switch (pokemon.getSpecies()) {
 				case Manaphy:
 				case Togepi:
@@ -267,14 +267,11 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 					nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/egg1");
 					break;
 			}
-		} else if (pokemon.isShiny()) {
-			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + getSpriteExtraProperly(aprilFools ? EnumSpecies.Bidoof : pokemon.getSpecies(), aprilFools ? EnumBidoof.SIRDOOFUSIII : pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
+			item.setTagCompound(nbt);
+			return (ItemStack) (Object) item;
 		} else {
-			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + getSpriteExtraProperly(aprilFools ? EnumSpecies.Bidoof : pokemon.getSpecies(), aprilFools ? EnumBidoof.SIRDOOFUSIII : pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
+			return (ItemStack) (Object) (aprilFools ? ItemPixelmonSprite.getPhoto(Pixelmon.pokemonFactory.create(EnumSpecies.Bidoof)) : ItemPixelmonSprite.getPhoto(pokemon));
 		}
-
-		item.setTagCompound(nbt);
-		return (ItemStack) (Object) item;
 	}
 
 	@Override
@@ -456,23 +453,4 @@ public class ReforgedEntry extends SpongeEntry<String, Pokemon> implements Minab
 		return CommandResults.FAILED;
 	}
 
-	private static String getSpriteExtraProperly(EnumSpecies species, IEnumForm form, Gender gender, EnumSpecialTexture specialTexture) {
-		if (species == EnumSpecies.Greninja && (form == EnumGreninja.BASE || form == EnumGreninja.BATTLE_BOND) && specialTexture.id > 0 && species.hasSpecialTexture()) {
-			return "-special";
-		}
-
-		if(form != EnumNoForm.NoForm) {
-			return species.getFormEnum(form.getForm()).getSpriteSuffix();
-		}
-
-		if(EnumSpecies.mfSprite.contains(species)) {
-			return "-" + gender.name().toLowerCase();
-		}
-
-		if(specialTexture.id > 0 && species.hasSpecialTexture()) {
-			return "-special";
-		}
-
-		return "";
-	}
 }

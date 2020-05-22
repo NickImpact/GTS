@@ -15,6 +15,7 @@ import com.pixelmonmod.pixelmon.enums.EnumSpecies;
 import com.pixelmonmod.pixelmon.enums.forms.EnumGreninja;
 import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
 import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
+import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import com.pixelmonmod.pixelmon.storage.PlayerPartyStorage;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
@@ -41,6 +42,7 @@ import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -114,7 +116,7 @@ public class ReforgedUI implements EntryUI<Player> {
 			Map<String, Object> variables = Maps.newHashMap();
 			variables.put("pokemon", pokemon);
 
-			ItemStack display = this.pokemonDisplay(pokemon, pokemon.getForm());
+			ItemStack display = this.pokemonDisplay(pokemon);
 			display.offer(Keys.DISPLAY_NAME, parser.fetchAndParseMsg(
 					this.viewer,
 					ReforgedBridge.getInstance().getMsgConfig(),
@@ -319,50 +321,30 @@ public class ReforgedUI implements EntryUI<Player> {
 		return price;
 	}
 
-	private ItemStack pokemonDisplay(Pokemon pokemon, int form) {
-		net.minecraft.item.ItemStack nativeItem = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
-		NBTTagCompound nbt = new NBTTagCompound();
-		String idValue = String.format("%03d", pokemon.getBaseStats().nationalPokedexNumber);
-		if (pokemon.isEgg()) {
-			switch(pokemon.getSpecies()) {
+	private ItemStack pokemonDisplay(Pokemon pokemon) {
+		Calendar calendar = Calendar.getInstance();
+		boolean aprilFools = false;
+		if(calendar.get(Calendar.MONTH) == Calendar.APRIL && calendar.get(Calendar.DAY_OF_MONTH) == 1) {
+			aprilFools = true;
+		}
+
+		if(pokemon.isEgg()) {
+			net.minecraft.item.ItemStack item = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
+			NBTTagCompound nbt = new NBTTagCompound();
+			switch (pokemon.getSpecies()) {
 				case Manaphy:
-					nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/manaphy1");
-					break;
 				case Togepi:
-					nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/togepi1");
+					nbt.setString(NbtKeys.SPRITE_NAME,
+							String.format("pixelmon:sprites/eggs/%s1", pokemon.getSpecies().name.toLowerCase()));
 					break;
 				default:
 					nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/egg1");
 					break;
 			}
+			item.setTagCompound(nbt);
+			return (ItemStack) (Object) item;
 		} else {
-			if (pokemon.isShiny()) {
-				nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
-			} else {
-				nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
-			}
+			return (ItemStack) (Object) (aprilFools ? ItemPixelmonSprite.getPhoto(Pixelmon.pokemonFactory.create(EnumSpecies.Bidoof)) : ItemPixelmonSprite.getPhoto(pokemon));
 		}
-		nativeItem.setTagCompound(nbt);
-		return (ItemStack) (Object) (nativeItem);
-	}
-
-	private static String getSpriteExtraProperly(EnumSpecies species, IEnumForm form, Gender gender, EnumSpecialTexture specialTexture) {
-		if (species == EnumSpecies.Greninja && (form == EnumGreninja.BASE || form == EnumGreninja.BATTLE_BOND) && specialTexture.id > 0 && species.hasSpecialTexture()) {
-			return "-special";
-		}
-
-		if(form != EnumNoForm.NoForm) {
-			return species.getFormEnum(form.getForm()).getSpriteSuffix();
-		}
-
-		if(EnumSpecies.mfSprite.contains(species)) {
-			return "-" + gender.name().toLowerCase();
-		}
-
-		if(specialTexture.id > 0 && species.hasSpecialTexture()) {
-			return "-special";
-		}
-
-		return "";
 	}
 }

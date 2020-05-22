@@ -1,21 +1,17 @@
 package me.nickimpact.gts.reforged.utils;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.pixelmonmod.pixelmon.Pixelmon;
 import com.pixelmonmod.pixelmon.api.pokemon.Pokemon;
 import com.pixelmonmod.pixelmon.battles.attacks.Attack;
 import com.pixelmonmod.pixelmon.config.PixelmonConfig;
 import com.pixelmonmod.pixelmon.config.PixelmonItems;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EnumSpecialTexture;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVStore;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Gender;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
 import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
 import com.pixelmonmod.pixelmon.enums.EnumSpecies;
-import com.pixelmonmod.pixelmon.enums.forms.EnumGreninja;
-import com.pixelmonmod.pixelmon.enums.forms.EnumNoForm;
-import com.pixelmonmod.pixelmon.enums.forms.IEnumForm;
+import com.pixelmonmod.pixelmon.items.ItemPixelmonSprite;
 import com.pixelmonmod.pixelmon.storage.NbtKeys;
 import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.reforged.ReforgedBridge;
@@ -23,40 +19,41 @@ import me.nickimpact.gts.reforged.config.ReforgedMsgConfigKeys;
 import me.nickimpact.gts.reforged.entry.EnumHidableDetail;
 import me.nickimpact.gts.reforged.entry.KeyDetailHolder;
 import me.nickimpact.gts.spigot.SpigotGTSPlugin;
-import me.nickimpact.gts.spigot.SpigotGtsService;
 import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
 public class SpriteItemUtil {
 
 	public static ItemStack createPicture(Pokemon pokemon) {
-		net.minecraft.item.ItemStack nativeItem = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
-		NBTTagCompound nbt = new NBTTagCompound();
-		String idValue = String.format("%03d", pokemon.getBaseStats().nationalPokedexNumber);
-		if (pokemon.isEgg()){
-			switch(pokemon.getSpecies()) {
+		Calendar calendar = Calendar.getInstance();
+		boolean aprilFools = false;
+		if(calendar.get(Calendar.MONTH) == Calendar.APRIL && calendar.get(Calendar.DAY_OF_MONTH) == 1) {
+			aprilFools = true;
+		}
+
+		if(pokemon.isEgg()) {
+			net.minecraft.item.ItemStack item = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
+			NBTTagCompound nbt = new NBTTagCompound();
+			switch (pokemon.getSpecies()) {
 				case Manaphy:
 				case Togepi:
-					nbt.setString(NbtKeys.SPRITE_NAME, String.format("pixelmon:sprites/eggs/%s%d", pokemon.getSpecies().name.toLowerCase(), pokemon.getEggCycles() > 10 ? 1 : pokemon.getEggCycles() > 5 ? 2 : 3));
+					nbt.setString(NbtKeys.SPRITE_NAME,
+							String.format("pixelmon:sprites/eggs/%s1", pokemon.getSpecies().name.toLowerCase()));
 					break;
 				default:
-					nbt.setString(NbtKeys.SPRITE_NAME, String.format("pixelmon:sprites/eggs/egg%d", pokemon.getEggCycles() > 10 ? 1 : pokemon.getEggCycles() > 5 ? 2 : 3));
+					nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/egg1");
 					break;
 			}
+			item.setTagCompound(nbt);
+			return CraftItemStack.asBukkitCopy((net.minecraft.server.v1_12_R1.ItemStack) (Object) item);
 		} else {
-			if (pokemon.isShiny()) {
-				nbt.setString(NbtKeys.SPRITE_NAME,
-						"pixelmon:sprites/shinypokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
-			} else {
-				nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + getSpriteExtraProperly(pokemon.getSpecies(), pokemon.getFormEnum(), pokemon.getGender(), pokemon.getSpecialTexture()));
-			}
+			return CraftItemStack.asBukkitCopy((net.minecraft.server.v1_12_R1.ItemStack) (Object) (aprilFools ? ItemPixelmonSprite.getPhoto(Pixelmon.pokemonFactory.create(EnumSpecies.Bidoof)) : ItemPixelmonSprite.getPhoto(pokemon)));
 		}
-		nativeItem.setTagCompound(nbt);
-		return CraftItemStack.asBukkitCopy((net.minecraft.server.v1_12_R1.ItemStack) (Object) nativeItem);
 	}
 
 	public static List<String> getDetails(Pokemon pokemon) {
@@ -140,23 +137,4 @@ public class SpriteItemUtil {
 		return out.substring(0, out.length() - 3);
 	}
 
-	private static String getSpriteExtraProperly(EnumSpecies species, IEnumForm form, Gender gender, EnumSpecialTexture specialTexture) {
-		if (species == EnumSpecies.Greninja && (form == EnumGreninja.BASE || form == EnumGreninja.BATTLE_BOND) && specialTexture.id > 0 && species.hasSpecialTexture()) {
-			return "-special";
-		}
-
-		if(form != EnumNoForm.NoForm) {
-			return species.getFormEnum(form.getForm()).getSpriteSuffix();
-		}
-
-		if(EnumSpecies.mfSprite.contains(species)) {
-			return "-" + gender.name().toLowerCase();
-		}
-
-		if(specialTexture.id > 0 && species.hasSpecialTexture()) {
-			return "-special";
-		}
-
-		return "";
-	}
 }
