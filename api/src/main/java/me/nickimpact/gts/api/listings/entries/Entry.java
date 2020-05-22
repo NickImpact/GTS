@@ -1,6 +1,9 @@
 package me.nickimpact.gts.api.listings.entries;
 
+import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.makeup.Display;
+import me.nickimpact.gts.api.user.Source;
+import me.nickimpact.gts.api.util.gson.JObject;
 import net.kyori.text.TextComponent;
 
 import java.util.UUID;
@@ -15,10 +18,9 @@ import java.util.UUID;
  * nature destroy this model. As such, if a listing option hits this barrier, the instance should be broken
  * into two representations, the Store and Out options.</p>
  *
- * @param <Store> The object type that'll be used to serialize the data into the GTS Storage Provider
  * @param <Out> The actual object that is meant to be represented by this entry
  */
-public interface Entry<Store, Out> {
+public interface Entry<Out> {
 
 	/**
 	 * Represents the internal data-store that will be used to create the output element. This is what will
@@ -28,7 +30,7 @@ public interface Entry<Store, Out> {
 	 *
 	 * @return The data-store that will be used to represent this entry from a storage provider perspective.
 	 */
-	Store getInternalData();
+	JObject getInternalData();
 
 	/**
 	 * This represents the output element of this entry. As a entry will typically be transient, if not serializable
@@ -49,18 +51,11 @@ public interface Entry<Store, Out> {
 	/**
 	 * Represents how this entry should be displayed to a user querying this listing.
 	 *
+	 * @param listing This listing so any and all data can be processed that belongs here rather than the entry
+	 * element
 	 * @return The overall display of the listing.
 	 */
-	Display getDisplay();
-
-	/**
-	 * States whether or not this entry supports offline receiving. Some object types may not be able to be retrieved
-	 * when the user is offline, and therefore, this call should specify if they can or can't be received by an offline
-	 * user.
-	 *
-	 * @return True if this listing can be given to an offline user, false otherwise
-	 */
-	boolean supportsOffline();
+	Display getDisplay(Source source, Listing listing);
 
 	/**
 	 * Attempts to give the listing to the recipient. If the recipient doesn't currently meet the requirements to

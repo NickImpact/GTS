@@ -108,23 +108,23 @@ public class ConfigKeys {
 	public static final ConfigKey<Integer> MAX_LISTINGS_PER_USER = intKey("max-listings-per-user", 5);
 	public static final ConfigKey<Time> LISTING_MIN_TIME = customKey(adapter -> {
 		try {
-			return new Time(Long.parseLong(adapter.getString("listing-min-time", "300")));
+			return new Time(Long.parseLong(adapter.getString("listing-min-time", "900")));
 		} catch (NumberFormatException e) {
-			return new Time(adapter.getString("listing-min-time", "5m"));
+			return new Time(adapter.getString("listing-min-time", "15m"));
 		}
 	});
 	public static final ConfigKey<Time> LISTING_MAX_TIME = customKey(adapter -> {
 		try {
-			return new Time(Long.parseLong(adapter.getString("listing-max-time", "86400")));
+			return new Time(Long.parseLong(adapter.getString("listing-max-time", "604800")));
 		} catch (NumberFormatException e) {
-			return new Time(adapter.getString("listing-max-time", "1d"));
+			return new Time(adapter.getString("listing-max-time", "7d"));
 		}
 	});
 	public static final ConfigKey<Time> LISTING_BASE_TIME = customKey(adapter -> {
 		try {
-			return new Time(Long.parseLong(adapter.getString("listing-time", "3600")));
+			return new Time(Long.parseLong(adapter.getString("listing-time", "86400")));
 		} catch (NumberFormatException e) {
-			return new Time(adapter.getString("listing-min-time", "1h"));
+			return new Time(adapter.getString("listing-min-time", "1d"));
 		}
 	});
 	public static final ConfigKey<Long> LISTINGS_MIN_PRICE = longKey("pricing.control.min-price", 1);
@@ -138,4 +138,7 @@ public class ConfigKeys {
 		double in = adapter.getDouble("pricing.auctions.increment-rate", 0.1);
 		return (float) in;
 	});
+
+	// Item Based Configuration Options
+	public static final ConfigKey<Boolean> ITEMS_ALLOW_ANVIL_NAMES = booleanKey("allow-anvil-names", true);
 }

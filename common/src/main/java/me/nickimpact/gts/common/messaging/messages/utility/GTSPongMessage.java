@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import me.nickimpact.gts.api.messaging.message.type.utility.PingMessage;
 import me.nickimpact.gts.common.messaging.GTSMessagingService;
 import me.nickimpact.gts.common.messaging.messages.AbstractMessage;
-import me.nickimpact.gts.common.utils.gson.JObject;
+import me.nickimpact.gts.api.util.gson.JObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

@@ -46,25 +46,7 @@ public class PluginMessageMessenger implements Messenger, Listener {
 	}
 
 	private void dispatch(byte[] message) {
-		this.plugin.getBootstrap().getProxy().getServers().values().stream()
-//				.filter(server -> {
-//					AtomicBoolean hasPlayers = new AtomicBoolean(false);
-//					Callback<ServerPing> callback = (ping, exception) -> {
-//						if(exception == null) {
-//							hasPlayers.set(ping.getPlayers().getOnline() > 0);
-//						} else {
-//							exception.printStackTrace();
-//						}
-//					};
-//					try {
-//						CompletableFuture.runAsync(() -> server.ping(callback)).get(100, TimeUnit.MILLISECONDS);
-//					} catch (InterruptedException | ExecutionException | TimeoutException e) {
-//						e.printStackTrace();
-//					}
-//					GTSPlugin.getInstance().getPluginLogger().info("Has Players Result: " + hasPlayers.get());
-//					return hasPlayers.get();
-//				})
-				.forEach(server -> server.sendData(CHANNEL, message, true));
+		this.plugin.getBootstrap().getProxy().getServers().values().forEach(server -> server.sendData(CHANNEL, message, true));
 	}
 
 	@Override

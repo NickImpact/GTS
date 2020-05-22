@@ -71,7 +71,7 @@ public class GTSBungeeBootstrap extends Plugin implements GTSBootstrap {
 	}
 
 	@Override
-	public SchedulerAdapter getScheduler() {
+	public BungeeSchedulerAdapter getScheduler() {
 		return this.scheduler;
 	}
 

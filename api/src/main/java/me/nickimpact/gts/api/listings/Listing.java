@@ -4,11 +4,13 @@ import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.makeup.Display;
+import me.nickimpact.gts.api.user.Source;
 import me.nickimpact.gts.api.util.Builder;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 /**
  * A listing represents the overall information of something listed onto the GTS.
@@ -17,6 +19,8 @@ public interface Listing {
 
 	/** The UUID to use when the server itself creates a listing */
 	UUID SERVER_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+
+	Predicate<Listing> NON_EXPIRED_LISTINGS = listing -> !listing.hasExpired();
 
 	/**
 	 * Represents the ID of this listing. This is independent of the lister's UUID, which serves as a reference
@@ -40,7 +44,7 @@ public interface Listing {
 	 *
 	 * @return The entry making up this listing.
 	 */
-	Entry getEntry();
+	Entry<?> getEntry();
 
 	/**
 	 * Represents the display of the listing. This is essentially how the listing will be displayed to the user
@@ -48,8 +52,8 @@ public interface Listing {
 	 *
 	 * @return The display parameters of this listing
 	 */
-	default Display getDisplay() {
-		return this.getEntry().getDisplay();
+	default Display<?> getDisplay(Source<?> source) {
+		return this.getEntry().getDisplay(source, this);
 	}
 
 	/**
@@ -70,11 +74,28 @@ public interface Listing {
 	 */
 	Optional<LocalDateTime> getExpiration();
 
-	static ListingBuilder builder() {
+	/**
+	 * Attempts to verify whether or not a listing has expired. If a listing has no expiration, this call will
+	 * always be false. If an expiration does exist, this call will verify its validity based on the marked
+	 * expiration time with the current time at the time of the call.
+	 *
+	 * @return True if the listing has an expiration and said expiration is before the current system time,
+	 * or false if the expiration is still after the current system time, or this listing has no expiration.
+	 */
+	default boolean hasExpired() {
+		if(this.getExpiration().isPresent()) {
+			LocalDateTime expiration = this.getExpiration().get();
+			return LocalDateTime.now().isAfter(expiration);
+		}
+
+		return false;
+	}
+
+	static ListingBuilder<?, ?> builder() {
 		return GTSService.getInstance().getRegistry().createBuilder(ListingBuilder.class);
 	}
 
-	interface ListingBuilder<L extends Listing, B extends ListingBuilder, E extends Entry> extends Builder<L, B> {
+	interface ListingBuilder<L extends Listing, B extends ListingBuilder<?, ?>> extends Builder<L, B> {
 
 		/**
 		 * Represents the ID of a listing. If not specified, this will be auto-generated at the time of constructing.
@@ -92,9 +113,9 @@ public interface Listing {
 		 */
 		B lister(UUID lister);
 
-		B entry(E entry);
+		B entry(Entry entry);
 
-		B price(Price price);
+		B price(Price<?, ?> price);
 
 		B expiration(LocalDateTime expiration);
 

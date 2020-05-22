@@ -30,7 +30,7 @@ public class SpongeQuickPurchase extends SpongeListing implements QuickPurchase 
 		return null;
 	}
 
-	public static class SpongeListingBuilder implements ListingBuilder<SpongeQuickPurchase, SpongeListingBuilder, SpongeEntry> {
+	public static class SpongeListingBuilder implements ListingBuilder<SpongeQuickPurchase, SpongeListingBuilder> {
 
 		private UUID id;
 		private UUID lister;
@@ -51,8 +51,9 @@ public class SpongeQuickPurchase extends SpongeListing implements QuickPurchase 
 		}
 
 		@Override
-		public SpongeListingBuilder entry(SpongeEntry entry) {
-			this.entry = entry;
+		public SpongeListingBuilder entry(Entry entry) {
+			Preconditions.checkArgument(entry instanceof SpongeEntry, "Mixing of incompatible platform types");
+			this.entry = (SpongeEntry) entry;
 			return this;
 		}
 

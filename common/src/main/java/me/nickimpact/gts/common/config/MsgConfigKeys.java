@@ -6,7 +6,7 @@ import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.nickimpact.impactor.api.configuration.ConfigKeyHolder;
 import com.nickimpact.impactor.api.configuration.keys.BaseConfigKey;
 import me.nickimpact.gts.common.config.wrappers.SortConfigurationOptions;
-import me.nickimpact.gts.common.utils.TitleLorePair;
+import me.nickimpact.gts.common.config.wrappers.TitleLorePair;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -224,9 +224,93 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	// -----------------------------------------------------------------------------
 	// As of 6.0.0
 	// -----------------------------------------------------------------------------
-	public static final ConfigKey<TitleLorePair> MAIN_MENU_SEARCH = customKey(c -> {
-		String title = c.getString("ui.main-menu.search.title", "&aSearch");
-		List<String> lore = c.getStringList("ui.main-menu.search.lore", Lists.newArrayList(
+
+	// -----------------------------------------------------------------------------
+	// UI Based Configuration Options
+	// -----------------------------------------------------------------------------
+
+	// General Items
+	public static final ConfigKey<String> UI_GENERAL_BACK = stringKey("ui.general.back", "&cGo Back");
+
+	// Main Menu
+	public static final ConfigKey<String> UI_MAIN_TITLE = stringKey("ui.menus.main.title", "&cGTS");
+	public static final ConfigKey<TitleLorePair> UI_MAIN_BROWSER = customKey(c -> {
+		String title = c.getString("ui.menus.main.browser.title", "&aBrowser");
+		List<String> lore = c.getStringList("ui.menus.main.browser.lore", Lists.newArrayList(
+				"&7Find items and more for sale",
+				"&7by players across the network!",
+				"",
+				"&7Items offered here can be",
+				"&edirectly purchased &7or will",
+				"&7be posted for &eauction&7. If",
+				"&7the item you wish to purchase is",
+				"&7an auction, you must place the",
+				"&7top bid by the time it expires",
+				"&7to acquire the item!",
+				"",
+				"&eLeft click to open the quick purchase browser!",
+				"&bRight click to open the auction browser!"
+		));
+
+		return new TitleLorePair(title, lore);
+	});
+	public static final ConfigKey<TitleLorePair> UI_MAIN_STASH = customKey(c -> {
+		String title = c.getString("ui.menus.main.stash.title", "&aStash");
+		List<String> lore = c.getStringList("ui.menus.main.stash.lore", Lists.newArrayList(
+			"&7Items that you have &eacquired",
+				"&7or &eexpired &7can be found here",
+				"&7in order to be claimed!"
+		));
+		return new TitleLorePair(title, lore);
+	});
+	public static final ConfigKey<List<String>> UI_MAIN_STASH_ITEMS_AVAILABLE = listKey(
+			"ui.menus.main.stash.items-available", Lists.newArrayList(
+					"&b\u2bc8 You have items available for pickup!"
+			)
+	);
+	public static final ConfigKey<String> UI_MAIN_STASH_CLICK_NOTIF = stringKey("ui.menus.main.stash.click-to-open", "&eClick to open your stash!");
+	public static final ConfigKey<TitleLorePair> UI_MAIN_SELL = customKey(c -> {
+		String title = c.getString("ui.menus.main.sell.title", "&aSell a Good");
+		List<String> lore = c.getStringList("ui.menus.main.sell.lore", Lists.newArrayList(
+			"&7Here, you'll be able to directly",
+				"&7sell items on the GTS market.",
+				"&7Items you list here will be",
+				"&7posted for quick purchase by",
+				"&7another player, and will expire",
+				"&7overtime if nobody ever purchases",
+				"&7your listing.",
+				"",
+				"&eClick to become rich!"
+		));
+
+		return new TitleLorePair(title, lore);
+	});
+	public static final ConfigKey<TitleLorePair> UI_MAIN_CREATE_AUCTION = customKey(c -> {
+		String title = c.getString("ui.menus.main.create-auction.title", "&aCreate an Auction");
+		List<String> lore = c.getStringList("ui.menus.main.create-auction.lore", Lists.newArrayList(
+				"&7SPlace your own items for",
+				"&7auction, allowing other players to",
+				"&7place bids and potentially purchase",
+				"&7your item!"
+		));
+
+		return new TitleLorePair(title, lore);
+	});
+
+	public static final ConfigKey<TitleLorePair> UI_MAIN_CURRENT_BIDS = customKey(c -> {
+		String title = c.getString("ui.menus.main.bids.title", "&aView Bids");
+		List<String> lore = c.getStringList("ui.menus.main.bids.lore", Lists.newArrayList(
+				""
+		));
+
+		return new TitleLorePair(title, lore);
+	});
+
+	// Listings Menu
+	public static final ConfigKey<String> UI_MENU_LISTINGS_TITLE = stringKey("ui.menus.listings.title", "&cGTS &7\u00bb &3Listings");
+	public static final ConfigKey<TitleLorePair> UI_MENU_LISTINGS_SEARCH = customKey(c -> {
+		String title = c.getString("ui.menus.listings.search.title", "&aSearch");
+		List<String> lore = c.getStringList("ui.menus.listings.search.lore", Lists.newArrayList(
 				"&7Find items by name, type,",
 				"&7or any other options that",
 				"&7can identify an item.",
@@ -240,17 +324,33 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 		));
 		return new TitleLorePair(title, lore);
 	});
-	public static final ConfigKey<SortConfigurationOptions> MAIN_MENU_SORT = customKey(c -> new SortConfigurationOptions(
-			c.getString("ui.main-menu.sort.title", "&aSort"),
-			c.getString("ui.main-menu.sort.lore.coloring.selected", "&b"),
-			c.getString("ui.main-menu.sort.lore.coloring.not-selected", "&7"),
-			c.getString("ui.main-menu.sort.lore.quick-purchase.most-recent", "Most Recent"),
-			c.getString("ui.main-menu.sort.lore.quick-purchase.ending-soon", "Ending Soon"),
-			c.getString("ui.main-menu.sort.lore.auctions.highest-bid", "Highest Bid"),
-			c.getString("ui.main-menu.sort.lore.auctions.lowest-bid", "Lowest Bid"),
-			c.getString("ui.main-menu.sort.lore.auctions.ending-soon", "Ending Soon"),
-			c.getString("ui.main-menu.sort.lore.auctions.most-bids", "Most Bids")
+	public static final ConfigKey<SortConfigurationOptions> UI_MENU_LISTINGS_SORT = customKey(c -> new SortConfigurationOptions(
+			c.getString("ui.menus.listings.sort.title", "&aSort"),
+			c.getString("ui.menus.listings.sort.lore.coloring.selected", "&b"),
+			c.getString("ui.menus.listings.sort.lore.coloring.not-selected", "&7"),
+			c.getString("ui.menus.listings.sort.lore.quick-purchase.most-recent", "Most Recent"),
+			c.getString("ui.menus.listings.sort.lore.quick-purchase.ending-soon", "Ending Soon"),
+			c.getString("ui.menus.listings.sort.lore.auctions.highest-bid", "Highest Bid"),
+			c.getString("ui.menus.listings.sort.lore.auctions.lowest-bid", "Lowest Bid"),
+			c.getString("ui.menus.listings.sort.lore.auctions.ending-soon", "Ending Soon"),
+			c.getString("ui.menus.listings.sort.lore.auctions.most-bids", "Most Bids")
 	));
+	public static final ConfigKey<String> UI_MENU_LISTINGS_SPECIAL_LOADING = stringKey("ui.menus.listings.special.loading", "&eFetching Listings...");
+	public static final ConfigKey<TitleLorePair> UI_MENU_LISTINGS_SPECIAL_TIMED_OUT = customKey(c -> {
+		String title = c.getString("ui.menus.listings.special.timed-out.title", "&cFetch Timed Out");
+		List<String> lore = c.getStringList("ui.menus.listings.special.timed-out.lore", Lists.newArrayList(
+				"&7GTS failed to lookup the stored",
+				"&7listings in a timely manner...",
+				"",
+				"&7Please retry opening the menu",
+				"&7in a few moments!"
+		));
+
+		return new TitleLorePair(title, lore);
+	});
+
+	public static final ConfigKey<String> UI_LISTINGS_ITEMS_ANVIL_RENAME_PREPEND = stringKey("ui.listings.items.anvil-rename", "&7Item Name: &e");
+	public static final ConfigKey<String> UI_LISTINGS_ITEMS_LORE_DESCRIPTOR = stringKey("ui.listings.items.lore-descriptor", "&aItem Lore:");
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

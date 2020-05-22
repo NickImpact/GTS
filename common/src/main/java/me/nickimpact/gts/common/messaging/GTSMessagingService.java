@@ -37,7 +37,7 @@ import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
 import me.nickimpact.gts.common.messaging.messages.listings.auctions.impl.BidMessage;
 import me.nickimpact.gts.common.messaging.messages.utility.GTSPingMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
-import me.nickimpact.gts.common.utils.gson.JObject;
+import me.nickimpact.gts.api.util.gson.JObject;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Map;

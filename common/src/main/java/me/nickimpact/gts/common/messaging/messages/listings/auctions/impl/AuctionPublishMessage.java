@@ -7,7 +7,7 @@ import me.nickimpact.gts.api.util.groupings.SimilarPair;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.messaging.GTSMessagingService;
 import me.nickimpact.gts.common.messaging.messages.listings.auctions.AuctionMessageOptions;
-import me.nickimpact.gts.common.utils.gson.JObject;
+import me.nickimpact.gts.api.util.gson.JObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

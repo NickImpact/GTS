@@ -28,17 +28,20 @@ package me.nickimpact.gts.common.storage;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
+import me.nickimpact.gts.api.stashes.Stash;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.api.util.ThrowingRunnable;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.function.Predicate;
 
 public class GtsStorage implements GTSStorage {
 
@@ -155,5 +158,15 @@ public class GtsStorage implements GTSStorage {
     @Override
     public CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request) {
         return this.makeFuture(() -> this.implementation.processBid(request));
+    }
+
+    @Override
+    public CompletableFuture<Listing> fetchListings(Collection<Predicate<Listing>> filters) {
+        return null;
+    }
+
+    @Override
+    public CompletableFuture<Stash<?, ?>> fetchStash(UUID user) {
+        return null;
     }
 }

@@ -219,4 +219,10 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 			++index;
 		}
 	}
+
+	public void cancelIfRunning() {
+		if(!this.future.isDone()) {
+			this.future.cancel(false);
+		}
+	}
 }

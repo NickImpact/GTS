@@ -3,12 +3,16 @@ package me.nickimpact.gts.api.storage;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
+import me.nickimpact.gts.api.stashes.Stash;
 
 import java.net.SocketAddress;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 
 public interface GTSStorage {
 
@@ -54,4 +58,33 @@ public interface GTSStorage {
 	 * @return A response indicating the success or failure of the bid request, fit with all necessary information
 	 */
 	CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request);
+
+	/**
+	 * Fetches all listings, with no filters applied. This is to allow all listings to be processed and accessible,
+	 * despite expiration of a listing or another filter that would be typically applied against it.
+	 *
+	 * @return Every listing currently stored in the database
+	 */
+	default CompletableFuture<Listing> fetchListings() {
+		return this.fetchListings(Collections.emptyList());
+	}
+
+	/**
+	 * Retrieves all listings, and applies any filters against the returned set. These filters can be situations
+	 * like retrieving only listings that have not yet expired.
+	 *
+	 * @param filters Any filters to apply against the received set of listings.
+	 * @return Every listing meeting the conditions specified by the passed in filters
+	 */
+	CompletableFuture<Listing> fetchListings(Collection<Predicate<Listing>> filters);
+
+	/**
+	 * Retrieves the stash of the user who holds it. The stash of a user contains items purchased
+	 * that they couldn't receive at the time, or listings of theirs that have expired over time.
+	 *
+	 * @param user The user representing the holder of the stash
+	 * @return The stash as it is currently
+	 */
+	CompletableFuture<Stash<?, ?>> fetchStash(UUID user);
+
 }

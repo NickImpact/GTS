@@ -6,8 +6,8 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
+import me.nickimpact.gts.ui.SpongeListingMenu;
 import me.nickimpact.gts.ui.SpongeMainMenu;
-import org.spongepowered.api.entity.living.player.Player;
 
 @CommandAlias("test")
 public class TestCommand extends BaseCommand {
@@ -24,7 +24,7 @@ public class TestCommand extends BaseCommand {
 
 	@Subcommand("menu")
 	public void menu(CommandIssuer issuer) {
-		new SpongeMainMenu(GTSPlugin.getInstance(), issuer.getIssuer()).open();
+		new SpongeMainMenu(issuer.getIssuer()).open();
 	}
 
 }

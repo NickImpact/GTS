@@ -7,6 +7,7 @@ import me.nickimpact.gts.api.listings.makeup.Display;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeDisplay;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
+import me.nickimpact.gts.sponge.sources.SpongeSource;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -56,11 +57,6 @@ public class SpongeAuction extends SpongeListing implements Auction {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public SpongeDisplay getDisplay() {
-		return this.getEntry().getDisplay();
 	}
 
 	@Override

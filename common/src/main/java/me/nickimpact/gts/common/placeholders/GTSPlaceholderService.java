@@ -10,6 +10,7 @@ import me.nickimpact.gts.api.placeholders.PlaceholderService;
 import me.nickimpact.gts.api.placeholders.PlaceholderVariables;
 import me.nickimpact.gts.api.user.Source;
 import me.nickimpact.gts.common.placeholders.builders.GTSPlaceholderBuilder;
+import me.nickimpact.gts.common.placeholders.keys.options.ListingKey;
 import net.kyori.text.TextComponent;
 
 import javax.annotation.Nullable;

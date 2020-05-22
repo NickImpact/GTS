@@ -1,4 +1,4 @@
-package me.nickimpact.gts.common.utils.gson;
+package me.nickimpact.gts.api.util.gson;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;

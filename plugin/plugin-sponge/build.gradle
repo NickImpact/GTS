@@ -12,14 +12,19 @@ shadowJar {
     archiveName = "GTS-Sponge-1.12.2-${project.version}.jar"
     exclude 'Impactor*.jar'
     
-    relocate 'net.kyori', 'me.nickimpact.gts.relocations.net.kyori'
+    relocate ('net.kyori', 'me.nickimpact.gts.relocations.net.kyori')
+    relocate ('com.github.benmanes', 'me.nickimpact.gts.relocations.com.github.benmanes')
+    relocate ('com.google.errorprone', 'me.nickimpact.gts.relocations.com.google.errorprone')
+    relocate ('org.checkerframework', 'me.nickimpact.gts.relocations.org.checkerframework')
 }
 
 dependencies {
+    compile fileTree(dir: 'libs', include: '*.jar')
     compile project(':api')
     compile project(':common')
     compile project(':sponge')
-    shadow 'org.spongepowered:spongeapi:7.1.0'
+    shadow 'com.nickimpact.impactor:sponge:2.2.0-SNAPSHOT'
+    shadow 'org.spongepowered:spongeapi:7.2.0'
     shadow "co.aikar:acf-sponge:0.5.0-SNAPSHOT"
     compile('net.kyori:text-api:3.0.3') {
         exclude(module: 'checker-qual')

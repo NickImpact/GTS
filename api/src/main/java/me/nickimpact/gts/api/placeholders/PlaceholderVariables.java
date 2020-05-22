@@ -81,7 +81,7 @@ public interface PlaceholderVariables {
 		 * @param <T> The type of value
 		 * @return This, for chaining
 		 */
-		<T> Builder put(Key<T> key, T value);
+		<T> PVBuilder put(Key<T> key, T value);
 
 		/**
 		 * Creates a {@link PlaceholderVariables}

@@ -1,6 +1,7 @@
 package me.nickimpact.gts;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.nickimpact.impactor.api.logging.Logger;
 import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
@@ -16,6 +17,7 @@ import me.nickimpact.gts.scheduling.SpongeSchedulerAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
@@ -108,9 +110,14 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 	}
 
 	@Listener
-	public void onLogin(ClientConnectionEvent.Join event) {
-		//this.plugin.getMessagingService().pushTest(String.format("Server on port %d says \"Hello\"!", Sponge.getServer().getBoundAddress().get().getPort()));
-		this.plugin.getMessagingService().sendPing();
+	public void onStart(GameStartedServerEvent event) {
+		try {
+			this.plugin.started();
+		} catch (Exception e) {
+			this.exception = e;
+			this.disable();
+			e.printStackTrace();
+		}
 	}
 
 	@Override
