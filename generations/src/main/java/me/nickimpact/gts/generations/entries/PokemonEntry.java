@@ -5,22 +5,21 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.json.JsonTyping;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.battles.BattleRegistry;
-import com.pixelmonmod.pixelmon.battles.attacks.Attack;
-import com.pixelmonmod.pixelmon.config.PixelmonConfig;
-import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
-import com.pixelmonmod.pixelmon.config.PixelmonItems;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVsStore;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.Moveset;
-import com.pixelmonmod.pixelmon.enums.EnumPokemon;
-import com.pixelmonmod.pixelmon.enums.forms.EnumForms;
-import com.pixelmonmod.pixelmon.storage.NbtKeys;
-import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
-import com.pixelmonmod.pixelmon.storage.PlayerStorage;
-import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
+import com.pixelmongenerations.common.battle.BattleRegistry;
+import com.pixelmongenerations.common.battle.attacks.Attack;
+import com.pixelmongenerations.common.entity.pixelmon.EntityPixelmon;
+import com.pixelmongenerations.common.entity.pixelmon.stats.EVsStore;
+import com.pixelmongenerations.common.entity.pixelmon.stats.IVStore;
+import com.pixelmongenerations.common.entity.pixelmon.stats.Moveset;
+import com.pixelmongenerations.core.config.PixelmonConfig;
+import com.pixelmongenerations.core.config.PixelmonEntityList;
+import com.pixelmongenerations.core.config.PixelmonItems;
+import com.pixelmongenerations.core.enums.EnumSpecies;
+import com.pixelmongenerations.core.enums.forms.EnumForms;
+import com.pixelmongenerations.core.storage.NbtKeys;
+import com.pixelmongenerations.core.storage.PixelmonStorage;
+import com.pixelmongenerations.core.storage.PlayerStorage;
+import com.pixelmongenerations.core.util.helper.SpriteHelper;
 import me.nickimpact.gts.api.enums.CommandResults;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
@@ -32,11 +31,7 @@ import me.nickimpact.gts.generations.GenerationsBridge;
 import me.nickimpact.gts.generations.config.PokemonConfigKeys;
 import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
 import me.nickimpact.gts.generations.utils.GsonUtils;
-import me.nickimpact.gts.sponge.MoneyPrice;
-import me.nickimpact.gts.sponge.SpongeEntry;
-import me.nickimpact.gts.sponge.SpongeListing;
-import me.nickimpact.gts.sponge.SpongePlugin;
-import me.nickimpact.gts.sponge.TextParsingUtils;
+import me.nickimpact.gts.sponge.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -118,7 +113,7 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 		}
 
 		output.add("- Traits:");
-		if(pokemon.getIsShiny()) output.add("|  Shiny");
+		if(pokemon.isShiny()) output.add("|  Shiny");
 		if(pokemon.isEgg) {
 			output.add("|  Egg");
 			output.add("|  - Steps Walked: " + this.formattedStepsRemainingOnEgg(pokemon));
@@ -244,10 +239,10 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 //			return false;
 //		}
 
-		List<EnumPokemon> blacklisted = GenerationsBridge.getInstance().getConfiguration()
+		List<EnumSpecies> blacklisted = GenerationsBridge.getInstance().getConfiguration()
 				.get(PokemonConfigKeys.BLACKLISTED_POKEMON)
 				.stream()
-				.map(EnumPokemon::getFromNameAnyCase)
+				.map(EnumSpecies::getFromNameAnyCase)
 				.collect(Collectors.toList());
 		if(blacklisted.contains(this.getEntry().getSpecies())) {
 			player.sendMessage(parser.fetchAndParseMsg(player, msgs, MsgConfigKeys.ERROR_BLACKLISTED, null, null));
@@ -274,13 +269,13 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 				case Manaphy:
 				case Togepi:
 					nbt.setString(NbtKeys.SPRITE_NAME,
-					              String.format("pixelmon:sprites/eggs/%s1", pokemon.getSpecies().name.toLowerCase()));
+							String.format("pixelmon:sprites/eggs/%s1", pokemon.getSpecies().name.toLowerCase()));
 					break;
 				default:
 					nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/eggs/egg1");
 					break;
 			}
-		} else if (pokemon.getIsShiny()) {
+		} else if (pokemon.isShiny()) {
 			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/shinypokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.getSpecies().name, pokemon.getForm()));
 		} else {
 			nbt.setString(NbtKeys.SPRITE_NAME, "pixelmon:sprites/pokemon/" + idValue + SpriteHelper.getSpriteExtra(pokemon.getSpecies().name, pokemon.getForm()));
@@ -295,12 +290,12 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 		MoneyPrice price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_BASE));
 		EntityPixelmon pokemon = this.getEntry();
 
-		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getName());
-		if (isLegend && pokemon.getIsShiny()) {
+		boolean isLegend = EnumSpecies.legendaries.contains(pokemon.getName());
+		if (isLegend && pokemon.isShiny()) {
 			price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY) + price.getPrice());
 		} else if (isLegend) {
 			price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND) + price.getPrice());
-		} else if (pokemon.getIsShiny()) {
+		} else if (pokemon.isShiny()) {
 			price = new MoneyPrice(GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY) + price.getPrice());
 
 		}
@@ -395,17 +390,17 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 	}
 
 	public enum LakeTrio {
-		Mesprit(EnumPokemon.Mesprit),
-		Azelf(EnumPokemon.Azelf),
-		Uxie(EnumPokemon.Uxie);
+		Mesprit(EnumSpecies.Mesprit),
+		Azelf(EnumSpecies.Azelf),
+		Uxie(EnumSpecies.Uxie);
 
-		private EnumPokemon species;
+		private EnumSpecies species;
 
-		LakeTrio(EnumPokemon species) {
+		LakeTrio(EnumSpecies species) {
 			this.species = species;
 		}
 
-		public static boolean isMember(EnumPokemon species) {
+		public static boolean isMember(EnumSpecies species) {
 			for(LakeTrio guardian : values()) {
 				if(guardian.species == species) {
 					return true;
@@ -440,4 +435,5 @@ public class PokemonEntry extends SpongeEntry<String, EntityPixelmon> implements
 
 		return out.substring(0, out.length() - 3);
 	}
+
 }

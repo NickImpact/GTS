@@ -1,7 +1,7 @@
 package me.nickimpact.gts.generations.text;
 
 import com.google.common.collect.Maps;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
+import com.pixelmongenerations.common.entity.pixelmon.EntityPixelmon;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.generations.entries.EnumPokemonFields;
 import me.nickimpact.gts.sponge.Translator;

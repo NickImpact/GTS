@@ -6,12 +6,11 @@ import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
-import com.pixelmonmod.pixelmon.Pixelmon;
-import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.enums.EnumPokemon;
-import com.pixelmonmod.pixelmon.storage.PixelmonStorage;
-import com.pixelmonmod.pixelmon.storage.PlayerStorage;
+import com.pixelmongenerations.common.entity.pixelmon.EntityPixelmon;
+import com.pixelmongenerations.core.config.PixelmonEntityList;
+import com.pixelmongenerations.core.enums.EnumSpecies;
+import com.pixelmongenerations.core.storage.PixelmonStorage;
+import com.pixelmongenerations.core.storage.PlayerStorage;
 import me.nickimpact.gts.api.listings.entries.EntryUI;
 import me.nickimpact.gts.api.plugin.PluginInstance;
 import me.nickimpact.gts.config.ConfigKeys;
@@ -294,12 +293,12 @@ public class PixelmonUI implements EntryUI<Player> {
 
 	private double calcMin(EntityPixelmon pokemon) {
 		double price = GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_BASE);
-		boolean isLegend = EnumPokemon.legendaries.contains(pokemon.getSpecies().name());
-		if (isLegend && pokemon.getIsShiny()) {
+		boolean isLegend = EnumSpecies.legendaries.contains(pokemon.getSpecies().name());
+		if (isLegend && pokemon.isShiny()) {
 			price += GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND) + GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY);
 		} else if (isLegend) {
 			price += GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_LEGEND);
-		} else if (pokemon.getIsShiny()) {
+		} else if (pokemon.isShiny()) {
 			price += GenerationsBridge.getInstance().getConfig().get(PokemonConfigKeys.MIN_PRICING_POKEMON_SHINY);
 		}
 

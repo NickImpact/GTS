@@ -1,20 +1,20 @@
 package me.nickimpact.gts.generations.ui;
 
-import com.pixelmonmod.pixelmon.config.PixelmonItems;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.enums.EnumPokemon;
-import com.pixelmonmod.pixelmon.storage.NbtKeys;
-import com.pixelmonmod.pixelmon.util.helpers.SpriteHelper;
+import com.pixelmongenerations.common.entity.pixelmon.EntityPixelmon;
+import com.pixelmongenerations.core.config.PixelmonItems;
+import com.pixelmongenerations.core.enums.EnumSpecies;
+import com.pixelmongenerations.core.storage.NbtKeys;
+import com.pixelmongenerations.core.util.helper.SpriteHelper;
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 public class PixelmonIcons {
 
 	public static ItemStack pokemonDisplay(EntityPixelmon pokemon, int form) {
-		return pokemonDisplay(pokemon.getSpecies(), form, pokemon.isEgg, pokemon.getIsShiny());
+		return pokemonDisplay(pokemon.getSpecies(), form, pokemon.isEgg, pokemon.isShiny());
 	}
 
-	public static ItemStack pokemonDisplay(EnumPokemon species, int form, boolean isEgg, boolean isShiny) {
+	public static ItemStack pokemonDisplay(EnumSpecies species, int form, boolean isEgg, boolean isShiny) {
 		net.minecraft.item.ItemStack nativeItem = new net.minecraft.item.ItemStack(PixelmonItems.itemPixelmonSprite);
 		NBTTagCompound nbt = new NBTTagCompound();
 		String idValue = String.format("%03d", species.getNationalPokedexInteger());
