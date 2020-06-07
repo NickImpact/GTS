@@ -1,14 +1,14 @@
 package me.nickimpact.gts.generations.deprecated;
 
 import com.nickimpact.impactor.api.json.JsonTyping;
-import com.pixelmonmod.pixelmon.config.PixelmonEntityList;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import me.nickimpact.gts.api.deprecated.Entry;
+import com.pixelmongenerations.common.entity.pixelmon.EntityPixelmon;
+import com.pixelmongenerations.core.config.PixelmonEntityList;
 import me.nickimpact.gts.generations.GenerationsBridge;
 import me.nickimpact.gts.generations.utils.GsonUtils;
 import net.minecraft.nbt.JsonToNBT;
 import net.minecraft.world.World;
 import org.spongepowered.api.Sponge;
+import me.nickimpact.gts.api.deprecated.Entry;
 
 @Deprecated
 @JsonTyping("pokemon")

@@ -1,15 +1,15 @@
 package me.nickimpact.gts.generations.entries;
 
 import com.nickimpact.impactor.api.configuration.Config;
-import com.pixelmonmod.pixelmon.api.pokemon.PokemonSpec;
-import com.pixelmonmod.pixelmon.battles.attacks.specialAttacks.basic.HiddenPower;
-import com.pixelmonmod.pixelmon.entities.pixelmon.Entity4Textures;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.EVsStore;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.IVStore;
-import com.pixelmonmod.pixelmon.entities.pixelmon.stats.StatsType;
-import com.pixelmonmod.pixelmon.enums.EnumPokemon;
-import com.pixelmonmod.pixelmon.storage.NbtKeys;
+import com.pixelmongenerations.api.pokemon.PokemonSpec;
+import com.pixelmongenerations.common.battle.attacks.specialAttacks.basic.HiddenPower;
+import com.pixelmongenerations.common.entity.pixelmon.Entity4Textures;
+import com.pixelmongenerations.common.entity.pixelmon.EntityPixelmon;
+import com.pixelmongenerations.common.entity.pixelmon.stats.EVsStore;
+import com.pixelmongenerations.common.entity.pixelmon.stats.IVStore;
+import com.pixelmongenerations.common.entity.pixelmon.stats.StatsType;
+import com.pixelmongenerations.core.enums.EnumSpecies;
+import com.pixelmongenerations.core.storage.NbtKeys;
 import me.nickimpact.gts.generations.GenerationsBridge;
 import me.nickimpact.gts.generations.config.PokemonConfigKeys;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,7 +35,7 @@ public enum EnumPokemonFields {
 	NATURE_DECREASED(pokemon -> "-" + toRep(pokemon.getNature().decreasedStat)),
 	GENDER(pokemon -> pokemon.getGender().name()),
 	SHINY(pokemon -> {
-		if(!pokemon.getIsShiny())
+		if(!pokemon.isShiny())
 			return Text.EMPTY;
 
 		return Text.of(TextColors.GRAY, "(", TextColors.GOLD, "Shiny", TextColors.GRAY, ")");
@@ -59,7 +59,7 @@ public enum EnumPokemonFields {
 		}
 	}),
 	CLONES(pokemon -> {
-		if(pokemon.getSpecies().equals(EnumPokemon.Mew)) {
+		if(pokemon.getSpecies().equals(EnumSpecies.Mew)) {
 			NBTTagCompound nbt = new NBTTagCompound();
 			pokemon.writeToNBT(nbt);
 			return nbt.getShort(NbtKeys.STATS_NUM_CLONED);
@@ -125,7 +125,7 @@ public enum EnumPokemonFields {
 			return texture;
 		}
 
-		return pokemon.getIsShiny() ? "Shiny" : "Normal";
+		return pokemon.isShiny() ? "Shiny" : "Normal";
 	}),
 	SPECIAL_TEXTURE(Entity4Textures::getSpecialTexture),
 	HIDDEN_POWER(pokemon -> HiddenPower.getHiddenPowerType(pokemon.stats.IVs).name()),
@@ -133,7 +133,7 @@ public enum EnumPokemonFields {
 	MOVES_2(pokemon -> pokemon.getMoveset().attacks[1].baseAttack.getLocalizedName()),
 	MOVES_3(pokemon -> pokemon.getMoveset().attacks[2].baseAttack.getLocalizedName()),
 	MOVES_4(pokemon -> pokemon.getMoveset().attacks[3].baseAttack.getLocalizedName()),
-	SHINY_STATE(pokemon -> pokemon.getIsShiny() ? "Yes" : "No"),
+	SHINY_STATE(pokemon -> pokemon.isShiny() ? "Yes" : "No"),
 //	POKERUS_STATE(pokemon -> pokemon.getPokerus().isPresent() ? "Yes" : "No"),
 //	POKERUS(pokemon -> pokemon.getPokerus().isPresent() ? "PKRS" : null),
 	UNBREEDABLE(pokemon -> {

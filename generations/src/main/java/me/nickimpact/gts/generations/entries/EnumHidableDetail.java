@@ -1,10 +1,10 @@
 package me.nickimpact.gts.generations.entries;
 
 import com.google.common.collect.Maps;
-import com.pixelmonmod.pixelmon.config.PixelmonConfig;
-import com.pixelmonmod.pixelmon.entities.pixelmon.EntityPixelmon;
-import com.pixelmonmod.pixelmon.enums.EnumNature;
-import com.pixelmonmod.pixelmon.enums.EnumPokemon;
+import com.pixelmongenerations.common.entity.pixelmon.EntityPixelmon;
+import com.pixelmongenerations.core.config.PixelmonConfig;
+import com.pixelmongenerations.core.enums.EnumNature;
+import com.pixelmongenerations.core.enums.EnumSpecies;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import me.nickimpact.gts.generations.config.PokemonMsgConfigKeys;
@@ -23,7 +23,7 @@ public enum EnumHidableDetail {
 	TEXTURE(pokemon -> !pokemon.getSpecialTexture().isEmpty(), pokemon -> new KeyDetailHolder(PokemonMsgConfigKeys.PE_BASE_TEXTURE, null)),
 	//UNBREEDABLE(pokemon -> new PokemonSpec("unbreedable").matches(pokemon), pokemon -> new KeyDetailHolder(PokemonMsgConfigKeys.PE_BASE_UNBREEDABLE, null)),
 	//POKERUS(pokemon -> pokemon.getPokerus() != null, pokemon -> new KeyDetailHolder(PokemonMsgConfigKeys.PE_BASE_POKERUS, null)),
-	CLONES(pokemon -> pokemon.getSpecies().equals(EnumPokemon.Mew), pokemon -> new KeyDetailHolder(PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_MEW_CLONES, null)),
+	CLONES(pokemon -> pokemon.getSpecies().equals(EnumSpecies.Mew), pokemon -> new KeyDetailHolder(PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_MEW_CLONES, null)),
 	ENCHANTED(pokemon -> PokemonEntry.LakeTrio.isMember(pokemon.getSpecies()), pokemon -> new KeyDetailHolder(PokemonMsgConfigKeys.POKEMON_ENTRY_BASE_LAKE_TRIO, null)),
 	EGG(pokemon -> pokemon.isEgg, egg -> {
 		int total = (egg.baseStats.eggCycles + 1) * PixelmonConfig.stepsPerEggCycle;
