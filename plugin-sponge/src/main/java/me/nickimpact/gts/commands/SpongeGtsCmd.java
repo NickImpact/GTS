@@ -5,7 +5,7 @@ import co.aikar.commands.CommandHelp;
 import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.*;
 import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.api.holders.EntryClassification;
+import me.nickimpact.gts.api.wrappers.EntryClassification;
 import me.nickimpact.gts.api.listings.manager.ListingManager;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.config.MsgConfigKeys;

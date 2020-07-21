@@ -3,11 +3,8 @@ package me.nickimpact.gts.sponge.listings;
 import com.google.common.base.Preconditions;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.listings.makeup.Display;
 import me.nickimpact.gts.api.util.groupings.Tuple;
-import me.nickimpact.gts.sponge.listings.makeup.SpongeDisplay;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
-import me.nickimpact.gts.sponge.sources.SpongeSource;
 
 import java.time.LocalDateTime;
 import java.util.Collections;

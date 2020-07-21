@@ -45,7 +45,7 @@ public abstract class MessagingFactory<P extends GTSPlugin> {
 
 		@Override
 		public @NonNull Messenger obtain(@NonNull IncomingMessageConsumer incomingMessageConsumer) {
-			RedisMessenger redis = new RedisMessenger(getPlugin(), incomingMessageConsumer);
+			RedisMessenger redis = new RedisMessenger(incomingMessageConsumer);
 			redis.init(getPlugin().getConfiguration().get(ConfigKeys.REDIS_ADDRESS), getPlugin().getConfiguration().get(ConfigKeys.REDIS_PASSWORD));
 			return redis;
 		}

@@ -30,6 +30,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.nickimpact.impactor.api.Impactor;
+import com.nickimpact.impactor.api.json.factory.JObject;
 import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.api.messaging.Messenger;
 import me.nickimpact.gts.api.messaging.MessengerProvider;
@@ -37,7 +39,6 @@ import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
 import me.nickimpact.gts.common.messaging.messages.listings.auctions.impl.BidMessage;
 import me.nickimpact.gts.common.messaging.messages.utility.GTSPingMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
-import me.nickimpact.gts.api.util.gson.JObject;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Map;
@@ -103,7 +104,7 @@ public class GTSMessagingService implements InternalMessagingService {
 
     @Override
     public void sendPing() {
-        this.plugin.getScheduler().executeAsync(() -> {
+        Impactor.getInstance().getScheduler().executeAsync(() -> {
             UUID requestID = generatePingID();
             this.plugin.getPluginLogger().info("[Messaging] Sending ping with id: " + requestID);
             this.messenger.sendOutgoingMessage(new GTSPingMessage(requestID));
@@ -117,7 +118,7 @@ public class GTSMessagingService implements InternalMessagingService {
 
     @Override
     public void publishBid(UUID listing, UUID actor, double bid) {
-        this.plugin.getScheduler().executeAsync(() -> {
+        Impactor.getInstance().getScheduler().executeAsync(() -> {
             UUID requestID = generatePingID();
             this.plugin.getPluginLogger().info("[Messaging] Publishing bid with ID: " + requestID + "...");
             this.messenger.sendOutgoingMessage(new BidMessage(requestID, listing, actor, bid));

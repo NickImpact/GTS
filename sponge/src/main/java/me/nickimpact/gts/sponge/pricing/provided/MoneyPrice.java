@@ -3,7 +3,7 @@ package me.nickimpact.gts.sponge.pricing.provided;
 import lombok.Setter;
 import me.nickimpact.gts.api.listings.makeup.Display;
 import me.nickimpact.gts.common.config.ConfigKeys;
-import me.nickimpact.gts.sponge.SpongePlugin;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.sponge.pricing.SpongePrice;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
@@ -63,7 +63,7 @@ public class MoneyPrice implements SpongePrice<CurrencyValue> {
 
 	@Override
 	public double getTax() {
-		return price.getPricable().doubleValue() * SpongePlugin.getInstance().getConfiguration().get(ConfigKeys.TAX_MONEY_TAX);
+		return price.getPricable().doubleValue() * GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.TAX_MONEY_TAX);
 	}
 
 }

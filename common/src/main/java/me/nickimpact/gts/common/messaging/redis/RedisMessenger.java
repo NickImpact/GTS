@@ -1,5 +1,6 @@
 package me.nickimpact.gts.common.messaging.redis;
 
+import com.nickimpact.impactor.api.Impactor;
 import lombok.RequiredArgsConstructor;
 import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.api.messaging.Messenger;
@@ -16,7 +17,6 @@ public class RedisMessenger implements Messenger {
 
 	private static final String CHANNEL = "gts:update";
 
-	private final GTSPlugin plugin;
 	private final IncomingMessageConsumer consumer;
 
 	private JedisPool jedisPool;
@@ -33,7 +33,7 @@ public class RedisMessenger implements Messenger {
 			this.jedisPool = new JedisPool(new JedisPoolConfig(), host, port, 0, password);
 		}
 
-		this.plugin.getScheduler().executeAsync(() -> {
+		Impactor.getInstance().getScheduler().executeAsync(() -> {
 			this.sub = new Subscription(this);
 			try(Jedis jedis = this.jedisPool.getResource()) {
 				jedis.subscribe(this.sub, CHANNEL);

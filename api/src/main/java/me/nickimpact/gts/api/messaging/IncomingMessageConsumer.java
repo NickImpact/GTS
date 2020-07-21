@@ -25,6 +25,7 @@
 
 package me.nickimpact.gts.api.messaging;
 
+import lombok.Synchronized;
 import me.nickimpact.gts.api.messaging.message.Message;
 import me.nickimpact.gts.api.messaging.message.MessageConsumer;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
@@ -44,7 +45,6 @@ import java.util.function.BiFunction;
 public interface IncomingMessageConsumer {
 
     /**
-     /**
      * Registers a message that is being requested by the calling plugin. This is to allow a server
      * to ensure a requested message eventually receives a response intended for itself.
      *
@@ -110,5 +110,5 @@ public interface IncomingMessageConsumer {
 
     <T extends Message, V extends T> void registerInternalConsumer(Class<T> parent, MessageConsumer<V> consumer);
 
-    MessageConsumer getInternalConsumer(Class<?> parent);
+    MessageConsumer<?> getInternalConsumer(Class<?> parent);
 }

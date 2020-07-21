@@ -8,6 +8,5 @@ subprojects {
         compile project(':api')
         compile project(':common')
         compile project(':sponge')
-        shadow fileTree(dir: '../../../Impactor/build/allJars', include: 'Impactor*.jar')
     }
 }

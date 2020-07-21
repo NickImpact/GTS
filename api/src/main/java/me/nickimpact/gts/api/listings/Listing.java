@@ -1,11 +1,10 @@
 package me.nickimpact.gts.api.listings;
 
-import me.nickimpact.gts.api.GTSService;
+import com.nickimpact.impactor.api.Impactor;
+import com.nickimpact.impactor.api.utilities.Builder;
 import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.makeup.Display;
-import me.nickimpact.gts.api.user.Source;
-import me.nickimpact.gts.api.util.Builder;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -44,7 +43,7 @@ public interface Listing {
 	 *
 	 * @return The entry making up this listing.
 	 */
-	Entry<?> getEntry();
+	Entry<?, ?, ?> getEntry();
 
 	/**
 	 * Represents the display of the listing. This is essentially how the listing will be displayed to the user
@@ -52,8 +51,8 @@ public interface Listing {
 	 *
 	 * @return The display parameters of this listing
 	 */
-	default Display<?> getDisplay(Source<?> source) {
-		return this.getEntry().getDisplay(source, this);
+	default Display<?> getDisplay(UUID viewer) {
+		return this.getEntry().getDisplay(viewer, this);
 	}
 
 	/**
@@ -91,8 +90,9 @@ public interface Listing {
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	static ListingBuilder<?, ?> builder() {
-		return GTSService.getInstance().getRegistry().createBuilder(ListingBuilder.class);
+		return Impactor.getInstance().getRegistry().createBuilder(ListingBuilder.class);
 	}
 
 	interface ListingBuilder<L extends Listing, B extends ListingBuilder<?, ?>> extends Builder<L, B> {
@@ -113,7 +113,7 @@ public interface Listing {
 		 */
 		B lister(UUID lister);
 
-		B entry(Entry entry);
+		B entry(Entry<?, ?, ?> entry);
 
 		B price(Price<?, ?> price);
 

@@ -16,9 +16,8 @@ public class DataContainerAdapter implements JsonSerializer<DataContainer>, Json
 
 	@Override
 	public DataContainer deserialize(JsonElement json, Type type, JsonDeserializationContext ctx) throws JsonParseException {
-		String data = GTSPlugin.getInstance().getGson().fromJson(json, String.class);
 		try {
-			return DataFormats.JSON.read(data);
+			return DataFormats.JSON.read(GTSPlugin.getInstance().getGson().fromJson(json, String.class));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -28,8 +27,7 @@ public class DataContainerAdapter implements JsonSerializer<DataContainer>, Json
 	@Override
 	public JsonElement serialize(DataContainer src, Type type, JsonSerializationContext ctx) {
 		try {
-			String data = DataFormats.JSON.write(src);
-			return ctx.serialize(data);
+			return ctx.serialize(DataFormats.JSON.write(src));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

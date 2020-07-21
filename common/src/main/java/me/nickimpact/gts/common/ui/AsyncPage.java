@@ -1,6 +1,8 @@
 package me.nickimpact.gts.common.ui;
 
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.AtomicDouble;
+import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.gui.Icon;
 import com.nickimpact.impactor.api.gui.InventoryDimensions;
 import com.nickimpact.impactor.api.gui.Page;
@@ -116,16 +118,16 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	}
 
 	private void queue(CompletableFuture<List<T>> future, long timeout, TimeUnit unit) {
-		future.acceptEither(timeoutAfter(timeout, unit), list -> GTSPlugin.getInstance().getScheduler().executeSync(() -> this.define(list)))
+		future.acceptEither(timeoutAfter(timeout, unit), list -> Impactor.getInstance().getScheduler().executeSync(() -> this.define(list)))
 				.exceptionally(ex -> {
-					GTSPlugin.getInstance().getScheduler().executeSync(() -> this.doProvidedFill(this.getTimeoutIcon()));
+					Impactor.getInstance().getScheduler().executeSync(() -> this.doProvidedFill(this.getTimeoutIcon()));
 					return null;
 				});
 	}
 
 	private <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
 		CompletableFuture<W> result = new CompletableFuture<>();
-		GTSPlugin.getInstance().getScheduler().asyncLater(() -> result.completeExceptionally(new TimeoutException()), timeout, unit);
+		Impactor.getInstance().getScheduler().asyncLater(() -> result.completeExceptionally(new TimeoutException()), timeout, unit);
 		return result;
 	}
 
@@ -225,4 +227,6 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 			this.future.cancel(false);
 		}
 	}
+
+
 }

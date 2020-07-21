@@ -1,9 +1,10 @@
 package me.nickimpact.gts.api.listings.auctions;
 
+import com.nickimpact.impactor.api.Impactor;
+import com.nickimpact.impactor.api.utilities.Builder;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.util.Builder;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 
 import java.time.LocalDateTime;
@@ -77,7 +78,7 @@ public interface Auction extends Listing {
 	boolean bid(UUID user, double amount);
 
 	static AuctionBuilder builder() {
-		return GTSService.getInstance().getRegistry().createBuilder(AuctionBuilder.class);
+		return Impactor.getInstance().getRegistry().createBuilder(AuctionBuilder.class);
 	}
 
 	interface AuctionBuilder extends Builder<Auction, AuctionBuilder> {

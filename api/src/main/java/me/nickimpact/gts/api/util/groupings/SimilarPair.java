@@ -1,13 +1,13 @@
 package me.nickimpact.gts.api.util.groupings;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SimilarPair<T> {
 
-	private T first;
-	private T second;
+	private final T first;
+	private final T second;
 
 }

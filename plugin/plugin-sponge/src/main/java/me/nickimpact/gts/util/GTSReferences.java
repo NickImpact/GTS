@@ -1,14 +1,15 @@
 package me.nickimpact.gts.util;
 
+import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
-import me.nickimpact.gts.api.GTSService;
-import me.nickimpact.gts.api.text.MessageService;
+import com.nickimpact.impactor.api.services.text.MessageService;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
-import me.nickimpact.gts.sponge.text.SpongeMessageService;
+import org.spongepowered.api.text.Text;
 
 public class GTSReferences {
 
-	public static final SpongeMessageService PARSER = (SpongeMessageService) GTSService.getInstance().getServiceManager().get(MessageService.class).get();
+	@SuppressWarnings("unchecked")
+	public static final MessageService<Text> PARSER = Impactor.getInstance().getRegistry().get(MessageService.class);
 
 	public static <T> T readMessageConfigOption(ConfigKey<T> key) {
 		return GTSPlugin.getInstance().getMsgConfig().get(key);

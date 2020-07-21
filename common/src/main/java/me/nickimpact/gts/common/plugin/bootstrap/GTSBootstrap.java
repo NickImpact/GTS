@@ -1,9 +1,7 @@
 package me.nickimpact.gts.common.plugin.bootstrap;
 
 import com.nickimpact.impactor.api.logging.Logger;
-import com.nickimpact.impactor.api.plugin.Configurable;
 import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
-import me.nickimpact.gts.api.scheduling.SchedulerAdapter;
 
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -22,10 +20,6 @@ public interface GTSBootstrap {
 	Path getDataDirectory();
 
 	Path getConfigDirectory();
-
-	SchedulerAdapter getScheduler();
-
-	PluginClassLoader getPluginClassLoader();
 
 	InputStream getResourceStream(String path);
 

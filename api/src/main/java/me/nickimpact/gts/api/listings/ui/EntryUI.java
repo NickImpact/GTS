@@ -1,12 +1,10 @@
 package me.nickimpact.gts.api.listings.ui;
 
-import com.nickimpact.impactor.api.gui.UI;
+import java.util.Optional;
 
-public interface EntryUI<T> {
+public interface EntryUI<T, E> {
 
-	EntryUI createFor(T user);
-
-	UI getDisplay();
+	Optional<E> getChosenOption();
 
 	void open(T user);
 

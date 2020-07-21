@@ -1,12 +1,12 @@
 package me.nickimpact.gts.common.messaging.messages.utility;
 
 import com.google.gson.JsonElement;
+import com.nickimpact.impactor.api.json.factory.JObject;
 import me.nickimpact.gts.api.messaging.message.type.utility.PingMessage;
 import me.nickimpact.gts.common.messaging.GTSMessagingService;
 import me.nickimpact.gts.common.messaging.messages.AbstractMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.utils.CompletableFutureManager;
-import me.nickimpact.gts.api.util.gson.JObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

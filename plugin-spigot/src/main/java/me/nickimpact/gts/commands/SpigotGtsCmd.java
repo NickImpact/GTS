@@ -6,7 +6,7 @@ import co.aikar.commands.CommandIssuer;
 import co.aikar.commands.annotation.*;
 import me.nickimpact.gts.GTS;
 import me.nickimpact.gts.api.enums.CommandResults;
-import me.nickimpact.gts.api.holders.EntryClassification;
+import me.nickimpact.gts.api.wrappers.EntryClassification;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.config.MsgConfigKeys;
 import me.nickimpact.gts.spigot.MessageUtils;

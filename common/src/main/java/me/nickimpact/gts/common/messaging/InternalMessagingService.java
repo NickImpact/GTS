@@ -26,13 +26,18 @@
 package me.nickimpact.gts.common.messaging;
 
 import com.google.gson.JsonElement;
+import com.nickimpact.impactor.api.Impactor;
 import me.nickimpact.gts.api.messaging.Messenger;
 import me.nickimpact.gts.api.messaging.MessengerProvider;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
-import me.nickimpact.gts.common.cache.BufferedRequest;
+import me.nickimpact.gts.api.messaging.message.type.utility.PingMessage;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
 
 public interface InternalMessagingService {
@@ -63,6 +68,12 @@ public interface InternalMessagingService {
      * @return The ID of the message that is being sent
      */
     UUID generatePingID();
+
+    default <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
+        CompletableFuture<W> result = new CompletableFuture<>();
+        Impactor.getInstance().getScheduler().asyncLater(() -> result.completeExceptionally(new TimeoutException()), timeout, unit);
+        return result;
+    }
 
     //------------------------------------------------------------------------------------
     //

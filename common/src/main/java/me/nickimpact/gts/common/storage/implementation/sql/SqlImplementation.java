@@ -210,6 +210,8 @@ public class SqlImplementation implements StorageImplementation {
 					String price = results.getString("price");
 					LocalDateTime date = results.getTimestamp("expiration").toLocalDateTime();
 
+
+
 //					Listing listing = Listing.builder()
 //							.id(id)
 //							.lister(null)

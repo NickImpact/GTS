@@ -1,28 +1,17 @@
 package me.nickimpact.gts.sponge.listings.makeup;
 
 import lombok.AllArgsConstructor;
-import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.listings.makeup.Display;
-import me.nickimpact.gts.api.user.Source;
-import me.nickimpact.gts.api.util.gson.JObject;
-import me.nickimpact.gts.sponge.listings.SpongeListing;
-import me.nickimpact.gts.sponge.sources.SpongeSource;
+import org.spongepowered.api.item.inventory.ItemStack;
 
 @AllArgsConstructor
-public abstract class SpongeEntry<T> implements Entry<T> {
+public abstract class SpongeEntry<T, D> implements Entry<T, D, ItemStack> {
 
-	private JObject data;
-
-	public JObject getInternalData() {
-		return this.data;
-	}
+	private final D data;
 
 	@Override
-	public Display getDisplay(Source source, Listing listing) {
-		return this.getDisplay((SpongeSource) source, (SpongeListing) listing);
+	public D getInternalData() {
+		return this.data;
 	}
-
-	public abstract SpongeDisplay getDisplay(SpongeSource source, SpongeListing listing);
 
 }

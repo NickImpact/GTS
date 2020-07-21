@@ -65,6 +65,7 @@ public class PluginMessageMessenger implements Messenger, Listener {
 
 	@EventHandler
 	public void onPluginMessage(PluginMessageEvent event) {
+		plugin.getPluginLogger().info("Message received...");
 		if(!event.getTag().equals(CHANNEL)) {
 			return;
 		}

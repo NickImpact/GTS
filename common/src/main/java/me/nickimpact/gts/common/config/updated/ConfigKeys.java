@@ -3,6 +3,7 @@ package me.nickimpact.gts.common.config.updated;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.nickimpact.impactor.api.storage.StorageCredentials;
 import com.nickimpact.impactor.api.storage.StorageType;
@@ -94,14 +95,14 @@ public class ConfigKeys {
 
 	// Listing Management
 	public static final ConfigKey<Blacklist> BLACKLIST = customKey(adapter -> {
-		Blacklist blacklist = GTSService.getInstance().getRegistry().get(Blacklist.class);
+		Blacklist blacklist = Impactor.getInstance().getRegistry().get(Blacklist.class);
 		List<String> blocked = adapter.getKeys("blacklist", Lists.newArrayList());
 		for(String classification : blocked) {
-			GTSService.getInstance().getEntryRegistry().getForIdentifier(classification).ifPresent(base -> {
-				adapter.getStringList("blacklist." + classification, Lists.newArrayList()).forEach(b -> {
-					blacklist.append(base.getClassType(), b);
-				});
-			});
+//			GTSService.getInstance().getEntryRegistry().getForIdentifier(classification).ifPresent(base -> {
+//				adapter.getStringList("blacklist." + classification, Lists.newArrayList()).forEach(b -> {
+//					//blacklist.append(base.getClassType(), b);
+//				});
+//			});
 		}
 		return blacklist;
 	});

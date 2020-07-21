@@ -1,5 +1,8 @@
 package me.nickimpact.gts.api.messaging.message.type;
 
+import me.nickimpact.gts.api.messaging.message.errors.ErrorCode;
+
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -39,6 +42,24 @@ public interface MessageType {
 		 * @return The ID of the request message that generated this response
 		 */
 		UUID getRequestID();
+
+		/**
+		 * States whether or not the request was successful. This could be caused by a number of things,
+		 * and is expected to have an accompanying error code to indicate the failure.
+		 *
+		 * @return True if the initial request was successful, false otherwise.
+		 */
+		boolean wasSuccessful();
+
+		/**
+		 * Indicates a state where this response indicated the request was not successful. In the case where
+		 * we fail to succeed, this field should be populated with a common error code indicating the reason
+		 * for the non-successful request.
+		 *
+		 * @return An empty Optional should this response be handled successfully, otherwise an Error Code
+		 * indicating the reason the initial request failed.
+		 */
+		Optional<ErrorCode> getErrorCode();
 
 	}
 

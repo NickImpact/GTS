@@ -89,15 +89,6 @@ public interface AuctionMessage extends OutgoingMessage {
 		interface Response extends Bid, MessageType.Response {
 
 			/**
-			 * States whether or not the bid was successful. The bid might not be successful only in the case
-			 * of another bid being placed just before this one. If not successful, the user will have their
-			 * money returned, and no notification will be sent out to the other users affiliated with this listing.
-			 *
-			 * @return True if the bid was able to be placed, false otherwise
-			 */
-			boolean wasSuccessful();
-
-			/**
 			 * Specifies the seller of the listing. The seller is the individual who should receive notice of their
 			 * auction being bid on, when a bid is successful.
 			 *
@@ -132,8 +123,6 @@ public interface AuctionMessage extends OutgoingMessage {
 		 * After processing, this is the message that the proxy will attempt to send back to the servers.
 		 */
 		interface Response extends Cancel, MessageType.Response {
-
-			boolean wasSuccessful();
 
 			/**
 			 * Specifies the list of users who have bid on this auction at least once. They should

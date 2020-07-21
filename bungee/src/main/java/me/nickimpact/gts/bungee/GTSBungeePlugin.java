@@ -2,44 +2,44 @@ package me.nickimpact.gts.bungee;
 
 import co.aikar.commands.BaseCommand;
 import com.google.gson.Gson;
+import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.configuration.Config;
-import com.nickimpact.impactor.api.logging.Logger;
-import com.nickimpact.impactor.api.platform.Platform;
-import com.nickimpact.impactor.api.plugin.ImpactorPlugin;
-import com.nickimpact.impactor.api.plugin.PluginInfo;
+import com.nickimpact.impactor.api.plugin.PluginMetadata;
 import com.nickimpact.impactor.api.storage.StorageType;
-import com.nickimpact.impactor.api.storage.dependencies.DependencyManager;
-import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
-import lombok.AllArgsConstructor;
-import me.nickimpact.gts.api.GTSService;
-import me.nickimpact.gts.api.scheduling.SchedulerAdapter;
+import com.nickimpact.impactor.bungee.plugin.AbstractBungeePlugin;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.bungee.messaging.BungeeMessagingFactory;
 import me.nickimpact.gts.bungee.messaging.interpreters.BungeePingPongInterpreter;
+import me.nickimpact.gts.common.messaging.InternalMessagingService;
 import me.nickimpact.gts.common.messaging.MessagingFactory;
-import me.nickimpact.gts.common.plugin.AbstractGTSPlugin;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
-import me.nickimpact.gts.common.tasks.SyncTask;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Consumer;
 
-@AllArgsConstructor
-public class GTSBungeePlugin extends AbstractGTSPlugin implements GTSPlugin {
+public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 
-	private GTSBungeeBootstrap bootstrap;
+	private final GTSBungeeBootstrap bootstrap;
 
-	@Override
-	public void preInit() {
-		super.preInit();
+	private InternalMessagingService messagingService;
 
-		GTSService.getInstance().getRegistry().register(GTSPlugin.class, this);
+	public GTSBungeePlugin(GTSBungeeBootstrap bootstrap) {
+		super(PluginMetadata.builder()
+				.id("gts")
+				.name("GTS")
+				.version("@version@")
+				.description("@gts_description@")
+				.build(), bootstrap.getLogger()
+		);
+		this.bootstrap = bootstrap;
 	}
 
-	@Override
-	public void init() {
-		super.init();
+	public void load() {
+		Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
+	}
+
+	public void enable() {
+		this.messagingService = this.getMessagingFactory().getInstance();
 
 		BungeePingPongInterpreter.registerDecoders(this);
 		BungeePingPongInterpreter.registerInterpreters(this);
@@ -61,13 +61,8 @@ public class GTSBungeePlugin extends AbstractGTSPlugin implements GTSPlugin {
 	}
 
 	@Override
-	public SchedulerAdapter getScheduler() {
-		return this.bootstrap.getScheduler();
-	}
-
-	@Override
-	public SyncTask.Buffer getSyncTaskBuffer() {
-		return null;
+	public InternalMessagingService getMessagingService() {
+		return this.messagingService;
 	}
 
 	@Override
@@ -81,34 +76,10 @@ public class GTSBungeePlugin extends AbstractGTSPlugin implements GTSPlugin {
 	}
 
 	@Override
-	public PluginClassLoader getPluginClassLoader() {
+	public List<StorageType> getStorageRequirements() {
 		return null;
 	}
 
-	@Override
-	public DependencyManager getDependencyManager() {
-		return null;
-	}
-
-	@Override
-	public List<StorageType> getStorageTypes() {
-		return null;
-	}
-
-	@Override
-	public Platform getPlatform() {
-		return null;
-	}
-
-	@Override
-	public PluginInfo getPluginInfo() {
-		return null;
-	}
-
-	@Override
-	public Logger getPluginLogger() {
-		return this.bootstrap.getPluginLogger();
-	}
 
 	@Override
 	public List<Config> getConfigs() {
@@ -126,31 +97,10 @@ public class GTSBungeePlugin extends AbstractGTSPlugin implements GTSPlugin {
 	}
 
 	@Override
-	public Consumer<ImpactorPlugin> onReload() {
-		return null;
-	}
-
-	@Override
-	public boolean isConnected() {
-		return false;
-	}
-
-	@Override
-	public void setConnected() {
-
-	}
-
-	@Override
-	public void handleDisconnect() {
-
-	}
-
-	@Override
 	public Config getMsgConfig() {
 		return null;
 	}
 
-	@Override
 	public MessagingFactory<?> getMessagingFactory() {
 		return new BungeeMessagingFactory(this);
 	}

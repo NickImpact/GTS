@@ -7,7 +7,7 @@ import com.nickimpact.impactor.spigot.ui.SpigotIcon;
 import com.nickimpact.impactor.spigot.ui.SpigotLayout;
 import com.nickimpact.impactor.spigot.ui.SpigotPage;
 import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.api.holders.EntryClassification;
+import me.nickimpact.gts.api.wrappers.EntryClassification;
 import me.nickimpact.gts.api.listings.manager.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.searching.Searcher;

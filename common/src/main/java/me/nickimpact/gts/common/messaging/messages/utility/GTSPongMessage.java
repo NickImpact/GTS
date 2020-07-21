@@ -2,10 +2,11 @@ package me.nickimpact.gts.common.messaging.messages.utility;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.nickimpact.impactor.api.json.factory.JObject;
+import me.nickimpact.gts.api.messaging.message.errors.ErrorCode;
 import me.nickimpact.gts.api.messaging.message.type.utility.PingMessage;
 import me.nickimpact.gts.common.messaging.GTSMessagingService;
 import me.nickimpact.gts.common.messaging.messages.AbstractMessage;
-import me.nickimpact.gts.api.util.gson.JObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -41,6 +42,16 @@ public class GTSPongMessage extends AbstractMessage implements PingMessage.Pong 
 	@Override
 	public UUID getRequestID() {
 		return this.request;
+	}
+
+	@Override
+	public boolean wasSuccessful() {
+		return false;
+	}
+
+	@Override
+	public Optional<ErrorCode> getErrorCode() {
+		return Optional.empty();
 	}
 
 	@Override

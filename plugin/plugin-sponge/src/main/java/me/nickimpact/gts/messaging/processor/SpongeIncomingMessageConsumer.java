@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 import static me.nickimpact.gts.common.messaging.GTSMessagingService.NORMAL;
 
@@ -28,8 +29,8 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 	private final GTSSpongePlugin plugin;
 	private final Set<UUID> receivedMessages;
 
-	private final Map<Class<?>, MessageConsumer> consumers = Maps.newHashMap();
-	private List<UUID> requests = Lists.newArrayList();
+	private final Map<Class<?>, MessageConsumer<?>> consumers = Maps.newHashMap();
+	private final List<UUID> requests = Lists.newArrayList();
 
 	public SpongeIncomingMessageConsumer(GTSSpongePlugin plugin) {
 		this.plugin = plugin;
@@ -108,6 +109,7 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 	}
 
 	@Override
+	@SuppressWarnings("rawtypes")
 	public MessageConsumer getInternalConsumer(Class<?> parent) {
 		return this.consumers.get(parent);
 	}

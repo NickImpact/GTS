@@ -1,25 +1,28 @@
 package me.nickimpact.gts.api.listings.manager;
 
+import com.nickimpact.impactor.api.services.Service;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.services.Service;
+import me.nickimpact.gts.api.listings.auctions.Auction;
+import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public interface ListingManager<E extends Listing> extends Service {
+public interface ListingManager<L extends Listing, A extends Auction, B extends BuyItNow> extends Service {
 
 	List<UUID> getIgnorers();
 
-	boolean addToMarket(UUID lister, E listing);
+	CompletableFuture<Boolean> addToMarket(UUID lister, L listing);
 
-	boolean purchase(UUID buyer, E listing);
+	CompletableFuture<Boolean> bid(UUID bidder, A listing, double amount);
 
-	void deleteListing(E listing);
+	CompletableFuture<Boolean> purchase(UUID buyer, B listing);
 
-	boolean hasMaxListings(UUID lister);
+	CompletableFuture<Boolean> deleteListing(L listing);
 
-	CompletableFuture<List<E>> fetchListings();
+	CompletableFuture<Boolean> hasMaxListings(UUID lister);
+
+	CompletableFuture<List<L>> fetchListings();
 
 }

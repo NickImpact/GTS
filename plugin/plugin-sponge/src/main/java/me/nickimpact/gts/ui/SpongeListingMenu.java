@@ -1,20 +1,21 @@
 package me.nickimpact.gts.ui;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.nickimpact.impactor.api.gui.InventoryDimensions;
+import com.nickimpact.impactor.api.services.text.MessageService;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.listings.auctions.Auction;
-import me.nickimpact.gts.api.listings.direct.QuickPurchase;
+import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.placeholders.PlaceholderParser;
-import me.nickimpact.gts.api.text.MessageService;
+import me.nickimpact.gts.api.query.SignQuery;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.config.wrappers.SortConfigurationOptions;
@@ -23,9 +24,8 @@ import me.nickimpact.gts.common.utils.CircularLinkedList;
 import me.nickimpact.gts.common.config.wrappers.TitleLorePair;
 import me.nickimpact.gts.manager.SpongeListingManager;
 import me.nickimpact.gts.sponge.listings.SpongeListing;
-import me.nickimpact.gts.sponge.text.SpongeMessageService;
 import me.nickimpact.gts.sponge.ui.SpongeAsyncPage;
-import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
+import me.nickimpact.gts.util.GTSReferences;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
@@ -52,7 +52,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private static final QuickPurchaseOnly QUICK_PURCHASE_ONLY = new QuickPurchaseOnly();
 	private static final AuctionsOnly AUCTIONS_ONLY = new AuctionsOnly();
 
-	private static final SpongeMessageService PARSER = (SpongeMessageService) GTSService.getInstance().getServiceManager().get(MessageService.class).get();
+	private static final MessageService<Text> PARSER = GTSReferences.PARSER;
 
 	private Class<? extends Entry> filter;
 
@@ -65,12 +65,12 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private CircularLinkedList<Sorter> sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
 
 	public SpongeListingMenu(Player viewer) {
-		super(GTSPlugin.getInstance(), viewer, GTSService.getInstance().getRegistry().get(SpongeListingManager.class).fetchListings());
+		super(GTSPlugin.getInstance(), viewer, Impactor.getInstance().getRegistry().get(SpongeListingManager.class).fetchListings());
 	}
 
 	@Override
 	protected Text getTitle() {
-		return PARSER.getForSource(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_TITLE), this.getViewer(), null, null);
+		return PARSER.parse(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_TITLE), Lists.newArrayList(this::getViewer));
 	}
 
 	@Override
@@ -120,7 +120,10 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	protected SpongeIcon getLoadingIcon() {
 		return new SpongeIcon(ItemStack.builder()
 				.itemType(ItemTypes.STAINED_GLASS_PANE)
-				.add(Keys.DISPLAY_NAME, PARSER.getForSource(this.getMessageConfigOption(MsgConfigKeys.UI_MENU_LISTINGS_SPECIAL_LOADING), this.getViewer(), null, null))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(
+						this.getMessageConfigOption(MsgConfigKeys.UI_MENU_LISTINGS_SPECIAL_LOADING),
+						Lists.newArrayList(this::getViewer)
+				))
 				.add(Keys.DYE_COLOR, DyeColors.YELLOW)
 				.build()
 		);
@@ -131,9 +134,9 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		TitleLorePair pair = GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SPECIAL_TIMED_OUT);
 		return new SpongeIcon(ItemStack.builder()
 				.itemType(ItemTypes.STAINED_GLASS_PANE)
-				.add(Keys.DISPLAY_NAME, PARSER.getForSource(pair.getTitle(), this.getViewer(), null, null))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(pair.getTitle(), Lists.newArrayList(this::getViewer)))
 				.add(Keys.DYE_COLOR, DyeColors.RED)
-				.add(Keys.ITEM_LORE, PARSER.getTextListForSource(pair.getLore(), this.getViewer(), null, null))
+				.add(Keys.ITEM_LORE, PARSER.parse(pair.getLore(), Lists.newArrayList(this::getViewer)))
 				.build()
 		);
 	}
@@ -175,16 +178,33 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		SpongeIcon aIcon = new SpongeIcon(auctions);
 
 		TitleLorePair pair = GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SEARCH);
-		Map<String, PlaceholderParser> tokens = Maps.newHashMap();
-		tokens.put("gts_search_query", placeholder -> LegacyComponentSerializer.legacy().deserialize("Testing"));
 		ItemStack searcher = ItemStack.builder()
 				.itemType(ItemTypes.SIGN)
-				.add(Keys.DISPLAY_NAME, PARSER.getForSource(pair.getTitle(), this.getViewer()))
-				.add(Keys.ITEM_LORE, PARSER.getTextListForSource(pair.getLore(), this.getViewer(), tokens))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(pair.getTitle(), Lists.newArrayList(this::getViewer)))
+				.add(Keys.ITEM_LORE, PARSER.parse(pair.getLore(), Lists.newArrayList(this::getViewer)))
 				.build();
 		SpongeIcon sIcon = new SpongeIcon(searcher);
 		sIcon.addListener(clickable -> {
-			throw new UnsupportedOperationException("Awaiting implementation");
+			SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
+					.position(new Vector3d(0, 1, 0))
+					.text(Lists.newArrayList(
+
+					))
+					.response(submission -> {
+						try {
+							int value = Integer.parseInt(submission.get(0));
+							if(value > 0) {
+								// Process input price for later
+
+								return true;
+							}
+							return false;
+						} catch (Exception e) {
+							return false;
+						}
+					})
+					.reopenOnFailure(true)
+					.build();
 		});
 		layout.slot(sIcon, 49);
 
@@ -198,7 +218,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 			this.mode = true;
 			this.sorter = Sorter.AUCTION_ONLY.copy();
 			this.sorter.reset();
-			sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.getTextListForSource(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), this.getViewer()));
+			sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), Lists.newArrayList(this::getViewer)));
 			this.getView().setSlot(51, sorter);
 
 			this.getView().setSlot(50, aIcon);
@@ -211,7 +231,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 			this.mode = false;
 			this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
 			this.sorter.reset();
-			sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.getTextListForSource(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), this.getViewer()));
+			sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), Lists.newArrayList(this::getViewer)));
 			this.getView().setSlot(51, sorter);
 
 			this.getView().setSlot(50, qIcon);
@@ -222,7 +242,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 		SpongeIcon back = new SpongeIcon(ItemStack.builder()
 				.itemType(ItemTypes.BARRIER)
-				.add(Keys.DISPLAY_NAME, PARSER.getForSource(readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK), this.getViewer(), null, null))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK), Lists.newArrayList(this::getViewer)))
 				.build()
 		);
 		back.addListener(clickable -> {
@@ -239,13 +259,13 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		this.sorter.next();
 		ItemStack sorter = ItemStack.builder()
 				.itemType(ItemTypes.HOPPER)
-				.add(Keys.DISPLAY_NAME, PARSER.getForSource(options.getTitle(), this.getViewer()))
-				.add(Keys.ITEM_LORE, PARSER.getTextListForSource(this.craftSorterLore(options), this.getViewer()))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(options.getTitle(), Lists.newArrayList(this::getViewer)))
+				.add(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(options), Lists.newArrayList(this::getViewer)))
 				.build();
 		SpongeIcon sortIcon = new SpongeIcon(sorter);
 		sortIcon.addListener(clickable -> {
 			this.sorter.next();
-			sortIcon.getDisplay().offer(Keys.ITEM_LORE, PARSER.getTextListForSource(this.craftSorterLore(options), this.getViewer()));
+			sortIcon.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(options), Lists.newArrayList(this::getViewer)));
 
 			this.getView().setSlot(51, sortIcon);
 		});
@@ -283,7 +303,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 		@Override
 		public boolean test(SpongeListing listing) {
-			return listing instanceof QuickPurchase;
+			return listing instanceof BuyItNow;
 		}
 
 	}
@@ -301,8 +321,8 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	@AllArgsConstructor
 	@SuppressWarnings("OptionalGetWithoutIsPresent")
 	private enum Sorter {
-		QP_MOST_RECENT(SortConfigurationOptions::getQpMostRecent, new Matcher<>(Comparator.comparing(QuickPurchase::getPublishTime).reversed())),
-		QP_ENDING_SOON(SortConfigurationOptions::getQpEndingSoon, new Matcher<QuickPurchase>((x, y) -> {
+		QP_MOST_RECENT(SortConfigurationOptions::getQpMostRecent, new Matcher<>(Comparator.comparing(BuyItNow::getPublishTime).reversed())),
+		QP_ENDING_SOON(SortConfigurationOptions::getQpEndingSoon, new Matcher<BuyItNow>((x, y) -> {
 			if(x.getExpiration().isPresent()) {
 				if(y.getExpiration().isPresent()) {
 					return x.getExpiration().get().compareTo(y.getExpiration().get());

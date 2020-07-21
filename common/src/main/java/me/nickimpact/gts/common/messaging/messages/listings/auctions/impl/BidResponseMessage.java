@@ -5,13 +5,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.nickimpact.impactor.api.json.factory.JObject;
+import me.nickimpact.gts.api.messaging.message.errors.ErrorCode;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.api.util.groupings.SimilarPair;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.messaging.GTSMessagingService;
 import me.nickimpact.gts.common.messaging.messages.listings.auctions.AuctionMessageOptions;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
-import me.nickimpact.gts.api.util.gson.JObject;
 import org.checkerframework.checker.index.qual.Positive;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -19,7 +20,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
 
 @SuppressWarnings("Duplicates")
 public class BidResponseMessage extends AuctionMessageOptions implements AuctionMessage.Bid.Response {
@@ -130,6 +130,11 @@ public class BidResponseMessage extends AuctionMessageOptions implements Auction
 	@Override
 	public boolean wasSuccessful() {
 		return this.successful;
+	}
+
+	@Override
+	public Optional<ErrorCode> getErrorCode() {
+		return Optional.empty();
 	}
 
 	@Override

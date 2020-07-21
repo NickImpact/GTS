@@ -5,6 +5,11 @@ import me.nickimpact.gts.common.plugin.GTSPlugin;
 
 public class SpongePingPongInterpreter {
 
+	public static void register(GTSPlugin plugin) {
+		registerDecoders(plugin);
+		registerInterpreters(plugin);
+	}
+
 	public static void registerDecoders(GTSPlugin plugin) {
 		plugin.getMessagingService().registerDecoder(GTSPongMessage.TYPE, GTSPongMessage::decode);
 	}

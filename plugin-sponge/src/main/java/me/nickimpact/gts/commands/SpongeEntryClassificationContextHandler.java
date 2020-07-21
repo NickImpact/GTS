@@ -3,7 +3,7 @@ package me.nickimpact.gts.commands;
 import co.aikar.commands.SpongeCommandExecutionContext;
 import co.aikar.commands.contexts.ContextResolver;
 import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.api.holders.EntryClassification;
+import me.nickimpact.gts.api.wrappers.EntryClassification;
 
 import java.util.List;
 

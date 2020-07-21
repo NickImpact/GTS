@@ -26,9 +26,9 @@
 package me.nickimpact.gts.common.scheduling;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.nickimpact.impactor.api.scheduler.SchedulerAdapter;
+import com.nickimpact.impactor.api.scheduler.SchedulerTask;
 import lombok.RequiredArgsConstructor;
-import me.nickimpact.gts.api.scheduling.SchedulerAdapter;
-import me.nickimpact.gts.api.scheduling.SchedulerTask;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.concurrent.Executor;

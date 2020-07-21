@@ -83,7 +83,7 @@ public class StorageFactory {
             case H2:
                 return new SqlImplementation(
                         this.plugin,
-                        new H2ConnectionFactory(this.plugin, new File("gts").toPath().resolve("gts-h2")),
+                        new H2ConnectionFactory(new File("gts").toPath().resolve("gts-h2")),
                         this.plugin.getConfiguration().get(ConfigKeys.SQL_TABLE_PREFIX)
                 );
             case YAML:

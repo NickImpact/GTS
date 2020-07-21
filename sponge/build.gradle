@@ -4,21 +4,13 @@ repositories {
         name 'sponge-repo'
         url 'https://repo.spongepowered.org/maven'
     }
-    maven {
-        name 'drnaylor-minecraft'
-        url 'http://repo.drnaylor.co.uk/artifactory/list/minecraft'
-    }
-    maven {
-        name 'drnaylor'
-        url 'http://repo.drnaylor.co.uk/artifactory/list/quickstart'
-    }
 }
 
 dependencies {
     compile project(':api')
     shadow project(':common')
-    shadow 'com.nickimpact.impactor:sponge:2.2.0-SNAPSHOT'
-    shadow 'org.spongepowered:spongeapi:7.2.0'
+    shadow 'com.nickimpact.impactor:sponge:3.0.0-SNAPSHOT'
+    shadow 'org.spongepowered:spongeapi:7.3.0-20200614.093206-8'
     shadow('net.kyori:text-api:3.0.3') {
         exclude(module: 'checker-qual')
     }
@@ -33,5 +25,4 @@ dependencies {
         exclude(module: 'text-api')
         exclude(module: 'gson')
     }
-    shadow 'io.github.nucleuspowered:nucleus-api:2.0.0-S7.2-SNAPSHOT'
 }

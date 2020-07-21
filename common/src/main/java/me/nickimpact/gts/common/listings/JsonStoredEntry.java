@@ -1,11 +1,10 @@
 package me.nickimpact.gts.common.listings;
 
+import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.makeup.Display;
-import me.nickimpact.gts.api.user.Source;
-import me.nickimpact.gts.api.util.gson.JObject;
 import net.kyori.text.TextComponent;
 
 import java.util.UUID;
@@ -20,17 +19,17 @@ import java.util.UUID;
  * will be unsupported, and throw an error during any attempt to call these functions.
  */
 @AllArgsConstructor
-public class JsonStoredEntry implements Entry<JObject> {
+public class JsonStoredEntry implements Entry<JsonObject, JsonObject, Void> {
 
-	private JObject data;
+	private final JsonObject data;
 
 	@Override
-	public JObject getInternalData() {
+	public JsonObject getInternalData() {
 		return this.data;
 	}
 
 	@Override
-	public JObject getOrCreateElement() {
+	public JsonObject getOrCreateElement() {
 		return this.data;
 	}
 
@@ -40,7 +39,7 @@ public class JsonStoredEntry implements Entry<JObject> {
 	}
 
 	@Override
-	public Display getDisplay(Source source, Listing listing) {
+	public Display<Void> getDisplay(UUID viewer, Listing listing) {
 		throw new UnsupportedOperationException();
 	}
 

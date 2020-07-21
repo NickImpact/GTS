@@ -1,12 +1,13 @@
 package me.nickimpact.gts.ui;
 
 import com.google.common.collect.Lists;
+import com.nickimpact.impactor.api.services.text.MessageService;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.config.wrappers.TitleLorePair;
-import me.nickimpact.gts.sponge.text.SpongeMessageService;
+import me.nickimpact.gts.listings.ui.SpongeItemUI;
 import me.nickimpact.gts.util.GTSReferences;
 import me.nickimpact.gts.util.items.SkullCreator;
 import org.spongepowered.api.data.key.Keys;
@@ -23,7 +24,7 @@ import static me.nickimpact.gts.util.GTSReferences.readMessageConfigOption;
 
 public class SpongeMainMenu {
 
-	private static final SpongeMessageService PARSER = GTSReferences.PARSER;
+	private static final MessageService<Text> PARSER = GTSReferences.PARSER;
 
 	private final SpongeUI view;
 	private final Player viewer;
@@ -39,7 +40,7 @@ public class SpongeMainMenu {
 
 	private SpongeUI construct(Player viewer) {
 		return SpongeUI.builder()
-				.title(PARSER.getForSource(readMessageConfigOption(MsgConfigKeys.UI_MAIN_TITLE), viewer, null, null))
+				.title(PARSER.parse(readMessageConfigOption(MsgConfigKeys.UI_MAIN_TITLE), Lists.newArrayList(() -> this.viewer)))
 				.dimension(InventoryDimension.of(9, 5))
 				.build()
 				.define(this.display());
@@ -53,8 +54,8 @@ public class SpongeMainMenu {
 		TitleLorePair browse = readMessageConfigOption(MsgConfigKeys.UI_MAIN_BROWSER);
 		SpongeIcon browser = new SpongeIcon(ItemStack.builder()
 				.from(SkullCreator.fromBase64("MmUyY2M0MjAxNWU2Njc4ZjhmZDQ5Y2NjMDFmYmY3ODdmMWJhMmMzMmJjZjU1OWEwMTUzMzJmYzVkYjUwIn19fQ=="))
-				.add(Keys.DISPLAY_NAME, PARSER.getForSource(browse.getTitle(), this.viewer, null, null))
-				.add(Keys.ITEM_LORE, PARSER.getTextListForSource(browse.getLore(), this.viewer, null, null))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(browse.getTitle(), Lists.newArrayList(() -> this.viewer)))
+				.add(Keys.ITEM_LORE, PARSER.parse(browse.getLore(), Lists.newArrayList(() -> this.viewer)))
 				.build()
 		);
 		browser.addListener(clickable -> {
@@ -66,12 +67,12 @@ public class SpongeMainMenu {
 		TitleLorePair selling = readMessageConfigOption(MsgConfigKeys.UI_MAIN_SELL);
 		SpongeIcon sell = new SpongeIcon(ItemStack.builder()
 				.from(SkullCreator.fromBase64("N2UzZGViNTdlYWEyZjRkNDAzYWQ1NzI4M2NlOGI0MTgwNWVlNWI2ZGU5MTJlZTJiNGVhNzM2YTlkMWY0NjVhNyJ9fX0="))
-				.add(Keys.DISPLAY_NAME, PARSER.getForSource(selling.getTitle(), this.viewer, null, null))
-				.add(Keys.ITEM_LORE, PARSER.getTextListForSource(selling.getLore(), this.viewer, null, null))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(selling.getTitle(), Lists.newArrayList(() -> this.viewer)))
+				.add(Keys.ITEM_LORE, PARSER.parse(selling.getLore(), Lists.newArrayList(() -> this.viewer)))
 				.build()
 		);
 		sell.addListener(clickable -> {
-
+			new SpongeItemUI(this.viewer).open(this.viewer);
 		});
 		slb.slot(sell, 11);
 
@@ -80,8 +81,8 @@ public class SpongeMainMenu {
 		TitleLorePair auctions = readMessageConfigOption(MsgConfigKeys.UI_MAIN_CREATE_AUCTION);
 		SpongeIcon auction = new SpongeIcon(ItemStack.builder()
 				.itemType(ItemTypes.GOLD_BLOCK)
-				.add(Keys.DISPLAY_NAME, PARSER.getForSource(auctions.getTitle(), this.viewer, null, null))
-				.add(Keys.ITEM_LORE, PARSER.getTextListForSource(auctions.getLore(), this.viewer, null, null))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(auctions.getTitle(), Lists.newArrayList(() -> this.viewer)))
+				.add(Keys.ITEM_LORE, PARSER.parse(auctions.getLore(), Lists.newArrayList(() -> this.viewer)))
 				.build()
 		);
 		auction.addListener(clickable -> {
@@ -92,8 +93,8 @@ public class SpongeMainMenu {
 		TitleLorePair cBids = readMessageConfigOption(MsgConfigKeys.UI_MAIN_CURRENT_BIDS);
 		SpongeIcon bids = new SpongeIcon(ItemStack.builder()
 				.itemType(ItemTypes.KNOWLEDGE_BOOK)
-				.add(Keys.DISPLAY_NAME, PARSER.getForSource(cBids.getTitle(), this.viewer, null, null))
-				.add(Keys.ITEM_LORE, PARSER.getTextListForSource(cBids.getLore(), this.viewer, null, null))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(cBids.getTitle(), Lists.newArrayList(() -> this.viewer)))
+				.add(Keys.ITEM_LORE, PARSER.parse(cBids.getLore(), Lists.newArrayList(() -> this.viewer)))
 				.build()
 		);
 		bids.addListener(clickable -> {
@@ -117,7 +118,7 @@ public class SpongeMainMenu {
 		TitleLorePair stashRef = readMessageConfigOption(MsgConfigKeys.UI_MAIN_STASH);
 		ItemStack icon = ItemStack.builder()
 				.itemType(ItemTypes.CHEST)
-				.add(Keys.DISPLAY_NAME, PARSER.getForSource(stashRef.getTitle(), this.viewer, null, null))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(stashRef.getTitle(), Lists.newArrayList(() -> this.viewer)))
 				.build();
 
 		SpongeIcon stash = new SpongeIcon(icon);
@@ -155,6 +156,6 @@ public class SpongeMainMenu {
 //				}
 //		);
 
-		icon.getDisplay().offer(Keys.ITEM_LORE, PARSER.getTextListForSource(lore, this.viewer, null, null));
+		icon.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(lore, Lists.newArrayList(() -> this.viewer)));
 	}
 }

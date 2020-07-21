@@ -2,8 +2,6 @@ package me.nickimpact.gts.api.listings.entries;
 
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.makeup.Display;
-import me.nickimpact.gts.api.user.Source;
-import me.nickimpact.gts.api.util.gson.JObject;
 import net.kyori.text.TextComponent;
 
 import java.util.UUID;
@@ -18,9 +16,9 @@ import java.util.UUID;
  * nature destroy this model. As such, if a listing option hits this barrier, the instance should be broken
  * into two representations, the Store and Out options.</p>
  *
- * @param <Out> The actual object that is meant to be represented by this entry
+ * @param <T> The actual object that is meant to be represented by this entry
  */
-public interface Entry<Out> {
+public interface Entry<T, D, I> {
 
 	/**
 	 * Represents the internal data-store that will be used to create the output element. This is what will
@@ -30,7 +28,7 @@ public interface Entry<Out> {
 	 *
 	 * @return The data-store that will be used to represent this entry from a storage provider perspective.
 	 */
-	JObject getInternalData();
+	D getInternalData();
 
 	/**
 	 * This represents the output element of this entry. As a entry will typically be transient, if not serializable
@@ -39,7 +37,7 @@ public interface Entry<Out> {
 	 *
 	 * @return The output element built from the internal data-store object.
 	 */
-	Out getOrCreateElement();
+	T getOrCreateElement();
 
 	/**
 	 * Specifies the name of this entry. This will often just be the name of the entry itself, if it has a name.
@@ -51,11 +49,12 @@ public interface Entry<Out> {
 	/**
 	 * Represents how this entry should be displayed to a user querying this listing.
 	 *
+	 * @param viewer The ID of the user viewing the display
 	 * @param listing This listing so any and all data can be processed that belongs here rather than the entry
 	 * element
 	 * @return The overall display of the listing.
 	 */
-	Display getDisplay(Source source, Listing listing);
+	Display<I> getDisplay(UUID viewer, Listing listing);
 
 	/**
 	 * Attempts to give the listing to the recipient. If the recipient doesn't currently meet the requirements to

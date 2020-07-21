@@ -5,37 +5,39 @@ import co.aikar.commands.SpongeCommandManager;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.ichorpowered.protocolcontrol.service.ProtocolService;
+import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.configuration.Config;
-import com.nickimpact.impactor.api.logging.Logger;
-import com.nickimpact.impactor.api.platform.Platform;
-import com.nickimpact.impactor.api.plugin.ImpactorPlugin;
-import com.nickimpact.impactor.api.plugin.PluginInfo;
+import com.nickimpact.impactor.api.plugin.PluginMetadata;
 import com.nickimpact.impactor.api.storage.StorageType;
-import com.nickimpact.impactor.api.storage.dependencies.DependencyManager;
-import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfig;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
+import com.nickimpact.impactor.sponge.plugin.AbstractSpongePlugin;
 import me.nickimpact.gts.api.GTSService;
+import me.nickimpact.gts.api.data.registry.StorableRegistry;
+import me.nickimpact.gts.api.events.TestEvent;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.placeholders.PlaceholderService;
-import me.nickimpact.gts.api.scheduling.SchedulerAdapter;
+import me.nickimpact.gts.api.query.SignQuery;
 import me.nickimpact.gts.api.storage.GTSStorage;
-import me.nickimpact.gts.api.text.MessageService;
-import me.nickimpact.gts.commands.TestCommand;
+import me.nickimpact.gts.commands.GTSCommand;
+import me.nickimpact.gts.common.api.ApiRegistrationUtil;
+import me.nickimpact.gts.common.api.GTSAPIProvider;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
+import me.nickimpact.gts.common.messaging.InternalMessagingService;
 import me.nickimpact.gts.common.messaging.MessagingFactory;
-import me.nickimpact.gts.common.plugin.AbstractGTSPlugin;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
-import me.nickimpact.gts.common.tasks.SyncTask;
+import me.nickimpact.gts.listeners.SignListener;
+import me.nickimpact.gts.listeners.TestListener;
 import me.nickimpact.gts.listings.SpongeItemEntry;
+import me.nickimpact.gts.listings.items.SpongeItemManager;
+import me.nickimpact.gts.listings.legacy.SpongeLegacyItemStorable;
 import me.nickimpact.gts.manager.SpongeListingManager;
 import me.nickimpact.gts.messaging.SpongeMessagingFactory;
 import me.nickimpact.gts.messaging.interpreters.SpongePingPongInterpreter;
-import me.nickimpact.gts.sponge.SpongePlugin;
-import me.nickimpact.gts.sponge.listings.SpongeQuickPurchase;
-import me.nickimpact.gts.sponge.service.SpongeGtsService;
-import me.nickimpact.gts.sponge.text.SpongeMessageService;
-import me.nickimpact.gts.sponge.text.SpongePlaceholderService;
+import me.nickimpact.gts.signview.SpongeSignQuery;
+import me.nickimpact.gts.sponge.listings.SpongeBuyItNow;
+import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.item.ItemTypes;
@@ -46,80 +48,77 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Consumer;
 
-public class GTSSpongePlugin extends AbstractGTSPlugin implements SpongePlugin {
+public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
-	private GTSSpongeBootstrap bootstrap;
+	private final GTSSpongeBootstrap bootstrap;
 
-	private PluginInfo info = new GTSInfo();
-
+	private Config config;
 	private Config msgConfig;
 
-	public GTSSpongePlugin(GTSSpongeBootstrap bootstrap) {
+	private InternalMessagingService messagingService;
+
+	public GTSSpongePlugin(GTSSpongeBootstrap bootstrap, org.slf4j.Logger fallback) {
+		super(PluginMetadata.builder()
+				.id("gts")
+				.name("GTS")
+				.version("@version@")
+				.description("@gts_description@")
+				.build(),
+				fallback
+		);
 		this.bootstrap = bootstrap;
 	}
 
-	@Override
 	public void preInit() {
-		super.preInit();
+		ApiRegistrationUtil.register(new GTSAPIProvider());
+		Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
 
-		GTSService.getInstance().getRegistry().register(GTSPlugin.class, this);
-		((GTSInfo) this.getPluginInfo()).displayBanner();
-		Sponge.getServiceManager().setProvider(this.bootstrap, GTSService.class, new SpongeGtsService(this));
-		GTSService.getInstance().getRegistry().registerBuilderSupplier(Listing.ListingBuilder.class, SpongeQuickPurchase.SpongeListingBuilder::new);
-		GTSService.getInstance().getRegistry().register(SpongeListingManager.class, new SpongeListingManager());
-		GTSService.getInstance().getServiceManager().register(MessageService.class, new SpongeMessageService());
-		GTSService.getInstance().getServiceManager().register(PlaceholderService.class, new SpongePlaceholderService(this));
+		this.displayBanner();
+
+		ApiRegistrationUtil.register(new GTSAPIProvider());
+		Sponge.getServiceManager().setProvider(this.bootstrap, GTSService.class, GTSService.getInstance());
+		Impactor.getInstance().getRegistry().registerBuilderSupplier(Listing.ListingBuilder.class, SpongeBuyItNow.SpongeListingBuilder::new);
+		Impactor.getInstance().getRegistry().register(SpongeListingManager.class, new SpongeListingManager());
+
+		Impactor.getInstance().getRegistry().registerBuilderSupplier(SignQuery.SignQueryBuilder.class, SpongeSignQuery.SpongeSignQueryBuilder::new);
+
+		StorableRegistry storables = GTSService.getInstance().getStorableRegistry();
+		storables.register(SpongeItemEntry.class, new SpongeItemManager());
+		storables.registerLegacyStorable("item", new SpongeLegacyItemStorable());
 
 		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/en_us.conf")), new MsgConfigKeys());
 	}
 
-	@Override
 	public void init() {
-		super.init();
+		this.messagingService = this.getMessagingFactory().getInstance();
+		SpongePingPongInterpreter.register(this);
 
-		SpongePingPongInterpreter.registerDecoders(this);
-		SpongePingPongInterpreter.registerInterpreters(this);
+		Sponge.getServiceManager().provideUnchecked(ProtocolService.class).events().register(new SignListener());
 
 		SpongeCommandManager commands = new SpongeCommandManager(this.bootstrap.getContainer());
-		commands.registerCommand(new TestCommand());
+		commands.registerCommand(new GTSCommand());
 	}
 
-	@Override
 	public void started() {
-		super.started();
-
 		ItemStack test = ItemStack.builder()
 				.itemType(ItemTypes.BARRIER)
 				.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Testing"))
 				.build();
-		SpongeItemEntry testing = null;
-		testing = new SpongeItemEntry(test.createSnapshot());
-		this.getPluginLogger().debug(testing.getInternalData().toJson().toString());
+		SpongeItemEntry testing = new SpongeItemEntry(test.createSnapshot());
+		this.getPluginLogger().debug(testing.getInternalData().toString());
+
+		Impactor.getInstance().getEventBus().subscribe(new TestListener());
+		Impactor.getInstance().getEventBus().post(TestEvent.class, TypeToken.get(Integer.class), 5);
+		Impactor.getInstance().getEventBus().post(TestEvent.class, TypeToken.get(String.class), "Hello");
+		Impactor.getInstance().getEventBus().post(TestEvent.class, TypeToken.get(Integer.class), 10);
 
 	}
 
-	@Override
 	public MessagingFactory<?> getMessagingFactory() {
 		return new SpongeMessagingFactory(this);
-	}
-
-	@Override
-	public Platform getPlatform() {
-		return Platform.Sponge;
-	}
-
-	public PluginInfo getPluginInfo() {
-		return this.info;
-	}
-
-	@Override
-	public Logger getPluginLogger() {
-		return this.bootstrap.getPluginLogger();
 	}
 
 	@Override
@@ -137,32 +136,10 @@ public class GTSSpongePlugin extends AbstractGTSPlugin implements SpongePlugin {
 		return Lists.newArrayList();
 	}
 
-	@Override
-	public Consumer<ImpactorPlugin> onReload() {
-		return gts -> {};
-	}
-
-	@Override
-	public boolean isConnected() {
-		return false;
-	}
-
-	@Override
-	public void setConnected() {
-
-	}
-
-	@Override
-	public void handleDisconnect() {
-
-	}
-
-	@Override
 	public EconomyService getEconomy() {
 		return null;
 	}
 
-	@Override
 	public PluginContainer getPluginContainer() {
 		return this.bootstrap.getContainer();
 	}
@@ -183,13 +160,8 @@ public class GTSSpongePlugin extends AbstractGTSPlugin implements SpongePlugin {
 	}
 
 	@Override
-	public SchedulerAdapter getScheduler() {
-		return this.bootstrap.getScheduler();
-	}
-
-	@Override
-	public SyncTask.Buffer getSyncTaskBuffer() {
-		return null;
+	public InternalMessagingService getMessagingService() {
+		return this.messagingService;
 	}
 
 	@Override
@@ -199,26 +171,29 @@ public class GTSSpongePlugin extends AbstractGTSPlugin implements SpongePlugin {
 
 	@Override
 	public Config getConfiguration() {
-		return null;
+		return this.config;
 	}
 
 	@Override
-	public PluginClassLoader getPluginClassLoader() {
-		return this.bootstrap.getPluginClassLoader();
+	public List<StorageType> getStorageRequirements() {
+		return Lists.newArrayList(StorageType.MARIADB);
 	}
 
-	@Override
-	public DependencyManager getDependencyManager() {
-		return null;
-	}
-
-	@Override
-	public List<StorageType> getStorageTypes() {
-		return Lists.newArrayList();
-	}
-
-	@Override
 	public Config getMsgConfig() {
 		return this.msgConfig;
+	}
+
+	private void displayBanner() {
+		List<String> output = Lists.newArrayList(
+				"",
+				"&3     _________________",
+				"&3    / ____/_  __/ ___/       &aGTS " + this.getMetadata().getVersion(),
+				"&3   / / __  / /  \\__ \\        &aRunning on: &e" + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName() + " " + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse(""),
+				"&3  / /_/ / / /  ___/ /        &aAuthor: &3NickImpact",
+				"&3  \\____/ /_/  /____/",
+				""
+		);
+
+		GTSPlugin.getInstance().getPluginLogger().noTag(output);
 	}
 }

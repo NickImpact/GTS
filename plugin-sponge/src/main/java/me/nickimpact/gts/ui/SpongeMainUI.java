@@ -6,7 +6,7 @@ import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongePage;
 import me.nickimpact.gts.GTS;
-import me.nickimpact.gts.api.holders.EntryClassification;
+import me.nickimpact.gts.api.wrappers.EntryClassification;
 import me.nickimpact.gts.api.listings.manager.ListingManager;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.searching.Searcher;

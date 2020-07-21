@@ -1,57 +1,43 @@
 package me.nickimpact.gts;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.inject.Inject;
 import com.nickimpact.impactor.api.logging.Logger;
 import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
-import com.nickimpact.impactor.sponge.logging.SpongeLogger;
 import lombok.Getter;
-import me.nickimpact.gts.api.GTSService;
-import me.nickimpact.gts.api.GTSServiceProvider;
-import me.nickimpact.gts.api.scheduling.SchedulerAdapter;
-import me.nickimpact.gts.common.api.ApiRegistrationUtil;
-import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.plugin.bootstrap.GTSBootstrap;
-import me.nickimpact.gts.scheduling.SpongeSchedulerAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
+import org.spongepowered.api.event.game.GameRegistryEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
-import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.scheduler.AsynchronousExecutor;
-import org.spongepowered.api.scheduler.SpongeExecutorService;
-import org.spongepowered.api.scheduler.SynchronousExecutor;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.text.placeholder.PlaceholderParser;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static me.nickimpact.gts.GTSInfo.*;
-
 @Plugin(
-		id = ID,
-		name = NAME,
-		version = VERSION,
-		description = DESCRIPTION,
+		id = "gts",
+		name = "GTS",
+		version = "@version@",
+		description = "@gts_description",
 		dependencies = {
 				@Dependency(id = "impactor", version = "[2.2.0,)")
 		})
@@ -64,27 +50,14 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 	private PluginContainer container;
 
 	@Inject
-	private org.slf4j.Logger fallback;
-	private Logger logger;
-
-	@Inject
 	@ConfigDir(sharedRoot = false)
 	private Path configDir;
-
-	private SpongeSchedulerAdapter scheduler;
 
 	private Throwable exception;
 
 	@Inject
-	public GTSSpongeBootstrap(@SynchronousExecutor SpongeExecutorService sync, @AsynchronousExecutor SpongeExecutorService async) {
-		this.plugin = new GTSSpongePlugin(this);
-		this.logger = new SpongeLogger(this.plugin, fallback);
-		this.scheduler = SpongeSchedulerAdapter.builder()
-				.bootstrap(this)
-				.scheduler(Sponge.getScheduler())
-				.sync(sync)
-				.async(async)
-				.build();
+	public GTSSpongeBootstrap(org.slf4j.Logger fallback) {
+		this.plugin = new GTSSpongePlugin(this, fallback);
 	}
 
 	@Listener(order = Order.EARLY)
@@ -120,9 +93,14 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 		}
 	}
 
+	@Listener
+	public void registerPlaceholders(GameRegistryEvent.Register<PlaceholderParser> event) {
+		
+	}
+
 	@Override
 	public Logger getPluginLogger() {
-		return this.logger;
+		return this.plugin.getPluginLogger();
 	}
 
 	@Override
@@ -133,16 +111,6 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 	@Override
 	public Path getConfigDirectory() {
 		return this.configDir;
-	}
-
-	@Override
-	public SchedulerAdapter getScheduler() {
-		return this.scheduler;
-	}
-
-	@Override
-	public PluginClassLoader getPluginClassLoader() {
-		return null;
 	}
 
 	@Override
@@ -221,15 +189,15 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 		output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
 		output.add(Text.of(TextColors.YELLOW, "| " + StringUtils.center("Server Information", 26) + " |"));
 		output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-		output.add(Text.of(TextColors.YELLOW, "GTS Version: ", TextColors.AQUA, this.plugin.getPluginInfo().getVersion()));
+		output.add(Text.of(TextColors.YELLOW, "GTS Version: ", TextColors.AQUA, this.plugin.getMetadata().getVersion()));
 		output.add(Text.of(TextColors.YELLOW, "Sponge Version: ", TextColors.AQUA, Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName() + " " + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse("")));
 
-		if(!GTSService.getInstance().getRegistry().getLoadedExtensions().isEmpty()) {
-			output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-			output.add(Text.of(TextColors.YELLOW, "| " + StringUtils.center("Installed Extensions", 26) + " |"));
-			output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-			GTSService.getInstance().getRegistry().getLoadedExtensions().forEach(x -> output.add(Text.of(TextColors.YELLOW, x.getName(), " - ", x.getVersion())));
-		}
+//		if(!GTSService.getInstance().getRegistry().getLoadedExtensions().isEmpty()) {
+//			output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
+//			output.add(Text.of(TextColors.YELLOW, "| " + StringUtils.center("Installed Extensions", 26) + " |"));
+//			output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
+//			GTSService.getInstance().getRegistry().getLoadedExtensions().forEach(x -> output.add(Text.of(TextColors.YELLOW, x.getName(), " - ", x.getVersion())));
+//		}
 
 		output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
 		output.add(Text.of(TextColors.YELLOW, "| " + StringUtils.center("END GTS ERROR REPORT", 26) + " |"));
