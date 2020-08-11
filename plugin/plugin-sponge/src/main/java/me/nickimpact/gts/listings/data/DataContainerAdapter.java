@@ -27,7 +27,8 @@ public class DataContainerAdapter implements JsonSerializer<DataContainer>, Json
 	@Override
 	public JsonElement serialize(DataContainer src, Type type, JsonSerializationContext ctx) {
 		try {
-			return ctx.serialize(DataFormats.JSON.write(src));
+			String data = DataFormats.JSON.write(src);
+			return ctx.serialize(data);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

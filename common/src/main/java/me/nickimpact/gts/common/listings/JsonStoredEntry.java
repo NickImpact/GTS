@@ -1,6 +1,7 @@
 package me.nickimpact.gts.common.listings;
 
 import com.google.gson.JsonObject;
+import com.nickimpact.impactor.api.json.factory.JObject;
 import lombok.AllArgsConstructor;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
@@ -19,18 +20,18 @@ import java.util.UUID;
  * will be unsupported, and throw an error during any attempt to call these functions.
  */
 @AllArgsConstructor
-public class JsonStoredEntry implements Entry<JsonObject, JsonObject, Void> {
+public class JsonStoredEntry implements Entry<JsonObject, Void> {
 
-	private final JsonObject data;
+	private final JObject data;
 
 	@Override
-	public JsonObject getInternalData() {
+	public JObject getInternalData() {
 		return this.data;
 	}
 
 	@Override
 	public JsonObject getOrCreateElement() {
-		return this.data;
+		return this.data.toJson();
 	}
 
 	@Override

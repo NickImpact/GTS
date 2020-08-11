@@ -28,6 +28,8 @@ package me.nickimpact.gts.common.storage;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
+import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import me.nickimpact.gts.api.player.PlayerSettings;
 import me.nickimpact.gts.api.stashes.Stash;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.api.storage.GTSStorage;
@@ -37,18 +39,19 @@ import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.function.Predicate;
 
-public class GtsStorage implements GTSStorage {
+public class GTSStorageImpl implements GTSStorage {
 
     private final GTSPlugin plugin;
     private final StorageImplementation implementation;
 
-    public GtsStorage(GTSPlugin plugin, StorageImplementation implementation) {
+    public GTSStorageImpl(GTSPlugin plugin, StorageImplementation implementation) {
         this.plugin = plugin;
         this.implementation = implementation;
     }
@@ -88,6 +91,11 @@ public class GtsStorage implements GTSStorage {
         return this.implementation.getMeta();
     }
 
+    @Override
+    public CompletableFuture<Boolean> publishListing(Listing listing) {
+        return null;
+    }
+
     private <T> CompletableFuture<T> makeFuture(Callable<T> supplier) {
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -114,45 +122,19 @@ public class GtsStorage implements GTSStorage {
         });
     }
 
-    public CompletableFuture<Boolean> addListing(Listing listing) {
-        return this.makeFuture(() -> this.implementation.addListing(listing));
-    }
-
-    public CompletableFuture<Boolean> deleteListing(UUID uuid) {
-        return this.makeFuture(() -> this.implementation.deleteListing(uuid));
-    }
-
-    public CompletableFuture<List<Listing>> getListings() {
-        return this.makeFuture(this.implementation::getListings);
-    }
-
-    public CompletableFuture<Boolean> addIgnorer(UUID uuid) {
-        return this.makeFuture(() -> this.implementation.addIgnorer(uuid));
-    }
-
-    public CompletableFuture<Boolean> removeIgnorer(UUID uuid) {
-        return this.makeFuture(() -> this.implementation.removeIgnorer(uuid));
-    }
-
-    public CompletableFuture<List<UUID>> getAllIgnorers() {
-        return this.makeFuture(this.implementation::getAllIgnorers);
-    }
-
-    public CompletableFuture<Boolean> addToSoldListings(UUID owner, SoldListing listing) {
-        return this.makeFuture(() -> this.implementation.addToSoldListings(owner, listing));
-    }
-
-    public CompletableFuture<List<SoldListing>> getAllSoldListingsForPlayer(UUID uuid) {
-        return this.makeFuture(() -> this.implementation.getAllSoldListingsForPlayer(uuid));
+    @Override
+    public CompletableFuture<Boolean> purge() {
+        return this.makeFuture(this.implementation::purge);
     }
 
     @Override
-    public CompletableFuture<Boolean> deleteSoldListing(UUID id, UUID owner) {
-        return this.makeFuture(() -> this.implementation.deleteSoldListing(id, owner));
+    public CompletableFuture<Optional<PlayerSettings>> getPlayerSettings(UUID uuid) {
+        return null;
     }
 
-    public CompletableFuture<Boolean> purge() {
-        return this.makeFuture(this.implementation::purge);
+    @Override
+    public CompletableFuture<Boolean> applyPlayerSettings(UUID uuid, PlayerSettings settings) {
+        return null;
     }
 
     @Override
@@ -161,7 +143,12 @@ public class GtsStorage implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<Listing> fetchListings(Collection<Predicate<Listing>> filters) {
+    public CompletableFuture<BuyItNowMessage.Remove.Response> processListingRemoveRequest(BuyItNowMessage.Remove.Request request) {
+        return null;
+    }
+
+    @Override
+    public CompletableFuture<List<Listing>> fetchListings(Collection<Predicate<Listing>> filters) {
         return null;
     }
 

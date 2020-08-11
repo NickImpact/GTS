@@ -6,14 +6,20 @@ import net.kyori.text.TextComponent;
 import java.util.UUID;
 
 /**
- * A price is essentially the makeup of a price that a user can request in return for purchasing their listing.
- * A price can realistically be anything, and therefore, this wrapper should ultimately differ any generic usage
- * to its sub-option, {@link PriceValue}. This will ensure we provide type safety during compilation, and avoid
- * any compile warnings.
+ * Represents a value which a player will pay to purchase (or bid) on a listing.
  *
- * @param <I> Represents the option a pricable must employ for display representation
+ * @param <P> The element that is controlled by this interface
+ * @param <I> The display output type for this price
  */
-public interface Price<V extends PriceValue, I> {
+public interface Price<P, I> {
+
+	/**
+	 * The instance being setup as the price. So this might be a double or BigDecimal to represent some form of monetary
+	 * value, or another instance to represent something more.
+	 *
+	 * @return The instance being used as the mark for the price
+	 */
+	P getPrice();
 
 	/**
 	 * Represents the output of the price as it is to be displayed to the user querying the listing. In more general terms,
@@ -30,14 +36,6 @@ public interface Price<V extends PriceValue, I> {
 	 * @return The displayable representation of a price
 	 */
 	Display<I> getDisplay();
-
-	/**
-	 * The instance being setup as the price. So this might be a double or BigDecimal to represent some form of monetary
-	 * value, or another instance to represent something more.
-	 *
-	 * @return The instance being used as the mark for the price
-	 */
-	V getPrice();
 
 	/**
 	 * Determines whether or not the user paying for the listing can actually pay the price. If they can, this call will
@@ -64,16 +62,5 @@ public interface Price<V extends PriceValue, I> {
 	 * @param recipient The user receiving the payment
 	 */
 	void reward(UUID recipient);
-
-	/**
-	 * Calculates any tax associated with this price. While a tax may not necessarily be applied for a price, where
-	 * taxing is enabled, this call will provide information on exactly what to charge.
-	 *
-	 * <p>Note: Taxes are only monetary, due to the nature of some things really not being really taxable. Currency
-	 * is universally taxable, and therefore, should be what is used when actually applying any tax.</p>
-	 *
-	 * @return The value indicating how much to charge for tax of this price
-	 */
-	double getTax();
 
 }

@@ -50,6 +50,14 @@ public interface Auction extends Listing {
 	Tuple<UUID, Double> getHighBid();
 
 	/**
+	 * Specifies the starting price of this auction. This is mainly here for tracking, and can be represented
+	 * by {@link #getCurrentPrice()}.
+	 *
+	 * @return The price of the auction when initially created
+	 */
+	double getStartingPrice();
+
+	/**
 	 * Specifies the current price of this auction. If no bids are currently placed, this will return the initial
 	 * starting price set on the auction. Otherwise, this will show the highest bid currently placed on the auction.
 	 *
@@ -87,7 +95,7 @@ public interface Auction extends Listing {
 
 		AuctionBuilder lister(UUID lister);
 
-		AuctionBuilder entry(Entry entry);
+		AuctionBuilder entry(Entry<?, ?> entry);
 
 		AuctionBuilder expiration(LocalDateTime expiration);
 

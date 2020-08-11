@@ -1,6 +1,5 @@
 package me.nickimpact.gts.ui;
 
-import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.Impactor;
@@ -12,10 +11,10 @@ import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 import me.nickimpact.gts.api.listings.entries.Entry;
-import me.nickimpact.gts.api.query.SignQuery;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.config.wrappers.SortConfigurationOptions;
@@ -185,26 +184,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 				.build();
 		SpongeIcon sIcon = new SpongeIcon(searcher);
 		sIcon.addListener(clickable -> {
-			SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
-					.position(new Vector3d(0, 1, 0))
-					.text(Lists.newArrayList(
 
-					))
-					.response(submission -> {
-						try {
-							int value = Integer.parseInt(submission.get(0));
-							if(value > 0) {
-								// Process input price for later
-
-								return true;
-							}
-							return false;
-						} catch (Exception e) {
-							return false;
-						}
-					})
-					.reopenOnFailure(true)
-					.build();
 		});
 		layout.slot(sIcon, 49);
 
@@ -323,20 +303,12 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private enum Sorter {
 		QP_MOST_RECENT(SortConfigurationOptions::getQpMostRecent, new Matcher<>(Comparator.comparing(BuyItNow::getPublishTime).reversed())),
 		QP_ENDING_SOON(SortConfigurationOptions::getQpEndingSoon, new Matcher<BuyItNow>((x, y) -> {
-			if(x.getExpiration().isPresent()) {
-				if(y.getExpiration().isPresent()) {
-					return x.getExpiration().get().compareTo(y.getExpiration().get());
-				}
-
-				return -1;
-			} else {
-				return 1;
-			}
+			return x.getExpiration().compareTo(y.getExpiration());
 		})),
 
 		A_HIGHEST_BID(SortConfigurationOptions::getAHighest, new Matcher<>(Comparator.<Auction, Double>comparing(a -> a.getHighBid().getSecond()).reversed())),
 		A_LOWEST_BID(SortConfigurationOptions::getALowest, new Matcher<Auction>(Comparator.comparing(a -> a.getHighBid().getSecond()))),
-		A_ENDING_SOON(SortConfigurationOptions::getAEndingSoon, new Matcher<Auction>(Comparator.comparing(a -> a.getExpiration().get()))),
+		A_ENDING_SOON(SortConfigurationOptions::getAEndingSoon, new Matcher<Auction>(Comparator.comparing(Listing::getExpiration))),
 		A_MOST_BIDS(SortConfigurationOptions::getAMostBids, new Matcher<>(Comparator.<Auction, Integer>comparing(a -> a.getBids().size()).reversed()))
 		;
 

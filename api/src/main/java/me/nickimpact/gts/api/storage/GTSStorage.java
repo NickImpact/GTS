@@ -3,13 +3,17 @@ package me.nickimpact.gts.api.storage;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
+import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import me.nickimpact.gts.api.player.PlayerSettings;
 import me.nickimpact.gts.api.stashes.Stash;
+import me.nickimpact.gts.api.stashes.StashEntry;
 
 import java.net.SocketAddress;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
@@ -22,23 +26,39 @@ public interface GTSStorage {
 
 	Map<String, String> getMeta();
 
-	CompletableFuture<Boolean> addListing(Listing listing);
+	CompletableFuture<Boolean> publishListing(Listing listing);
 
-	CompletableFuture<Boolean> deleteListing(UUID uuid);
+	/**
+	 * Fetches all listings, with no filters applied. This is to allow all listings to be processed and accessible,
+	 * despite expiration of a listing or another filter that would be typically applied against it.
+	 *
+	 * @return Every listing currently stored in the database
+	 */
+	default CompletableFuture<List<Listing>> fetchListings() {
+		return this.fetchListings(Collections.emptyList());
+	}
 
-	CompletableFuture<List<Listing>> getListings();
+	/**
+	 * Retrieves all listings, and applies any filters against the returned set. These filters can be situations
+	 * like retrieving only listings that have not yet expired.
+	 *
+	 * @param filters Any filters to apply against the received set of listings.
+	 * @return Every listing meeting the conditions specified by the passed in filters
+	 */
+	CompletableFuture<List<Listing>> fetchListings(Collection<Predicate<Listing>> filters);
 
-	CompletableFuture<Boolean> addIgnorer(UUID uuid);
+	/**
+	 * Retrieves the stash of the user who holds it. The stash of a user contains items purchased
+	 * that they couldn't receive at the time, or listings of theirs that have expired over time.
+	 *
+	 * @param user The user representing the holder of the stash
+	 * @return The stash as it is currently
+	 */
+	CompletableFuture<Stash<? extends StashEntry<?>, ?>> fetchStash(UUID user);
 
-	CompletableFuture<Boolean> removeIgnorer(UUID uuid);
+	CompletableFuture<Optional<PlayerSettings>> getPlayerSettings(UUID uuid);
 
-	CompletableFuture<List<UUID>> getAllIgnorers();
-
-	CompletableFuture<Boolean> addToSoldListings(UUID owner, SoldListing listing);
-
-	CompletableFuture<List<SoldListing>> getAllSoldListingsForPlayer(UUID uuid);
-
-	CompletableFuture<Boolean> deleteSoldListing(UUID id, UUID owner);
+	CompletableFuture<Boolean> applyPlayerSettings(UUID uuid, PlayerSettings settings);
 
 	CompletableFuture<Boolean> purge();
 
@@ -59,32 +79,6 @@ public interface GTSStorage {
 	 */
 	CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request);
 
-	/**
-	 * Fetches all listings, with no filters applied. This is to allow all listings to be processed and accessible,
-	 * despite expiration of a listing or another filter that would be typically applied against it.
-	 *
-	 * @return Every listing currently stored in the database
-	 */
-	default CompletableFuture<Listing> fetchListings() {
-		return this.fetchListings(Collections.emptyList());
-	}
-
-	/**
-	 * Retrieves all listings, and applies any filters against the returned set. These filters can be situations
-	 * like retrieving only listings that have not yet expired.
-	 *
-	 * @param filters Any filters to apply against the received set of listings.
-	 * @return Every listing meeting the conditions specified by the passed in filters
-	 */
-	CompletableFuture<Listing> fetchListings(Collection<Predicate<Listing>> filters);
-
-	/**
-	 * Retrieves the stash of the user who holds it. The stash of a user contains items purchased
-	 * that they couldn't receive at the time, or listings of theirs that have expired over time.
-	 *
-	 * @param user The user representing the holder of the stash
-	 * @return The stash as it is currently
-	 */
-	CompletableFuture<Stash<?, ?>> fetchStash(UUID user);
+	CompletableFuture<BuyItNowMessage.Remove.Response> processListingRemoveRequest(BuyItNowMessage.Remove.Request request);
 
 }

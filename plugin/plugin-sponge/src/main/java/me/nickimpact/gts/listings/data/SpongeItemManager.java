@@ -1,4 +1,4 @@
-package me.nickimpact.gts.listings.items;
+package me.nickimpact.gts.listings.data;
 
 import com.google.gson.JsonObject;
 import com.nickimpact.impactor.api.json.factory.JObject;
@@ -21,7 +21,7 @@ public class SpongeItemManager implements EntryManager<SpongeItemEntry, Player> 
     }
 
     @Override
-    public Supplier<EntryUI<?, ?>> getSellingUI(Player player) {
+    public Supplier<EntryUI<?, ?, ?>> getSellingUI(Player player) {
         return () -> new SpongeItemUI(player);
     }
 
@@ -32,12 +32,7 @@ public class SpongeItemManager implements EntryManager<SpongeItemEntry, Player> 
 
     @Override
     public JObject serialize(SpongeItemEntry content) {
-        try {
-            return new JObject()
-                    .add("item", DataFormats.JSON.write(content.getInternalData()));
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to serialize item", e);
-        }
+        return content.getInternalData().add("version", this.getVersion());
     }
 
     @Override

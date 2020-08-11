@@ -48,8 +48,8 @@ public class StorageFactory {
         this.plugin = plugin;
     }
 
-    public GtsStorage getInstance(StorageType defaultMethod) {
-        GtsStorage storage;
+    public GTSStorageImpl getInstance(StorageType defaultMethod) {
+        GTSStorageImpl storage;
         String method = plugin.getConfiguration().get(ConfigKeys.STORAGE_METHOD);
         StorageType type = StorageType.parse(method);
         if(type == null) {
@@ -62,8 +62,8 @@ public class StorageFactory {
         return storage;
     }
 
-    private GtsStorage makeInstance(StorageType type) {
-        return new GtsStorage(this.plugin, createNewImplementation(type));
+    private GTSStorageImpl makeInstance(StorageType type) {
+        return new GTSStorageImpl(this.plugin, createNewImplementation(type));
     }
 
     private StorageImplementation createNewImplementation(StorageType type) {

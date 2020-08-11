@@ -1,16 +1,17 @@
 package me.nickimpact.gts.sponge.listings.makeup;
 
+import com.nickimpact.impactor.api.json.factory.JObject;
 import lombok.AllArgsConstructor;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 @AllArgsConstructor
-public abstract class SpongeEntry<T, D> implements Entry<T, D, ItemStack> {
+public abstract class SpongeEntry<T> implements Entry<T, ItemStack> {
 
-	private final D data;
+	private final JObject data;
 
 	@Override
-	public D getInternalData() {
+	public JObject getInternalData() {
 		return this.data;
 	}
 

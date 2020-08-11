@@ -18,6 +18,8 @@ public interface GTSPlugin extends ImpactorPlugin, Configurable, Depending, Tran
 		return Impactor.getInstance().getRegistry().get(GTSPlugin.class);
 	}
 
+	<T extends GTSPlugin> T as(Class<T> type);
+
 	GTSBootstrap getBootstrap();
 
 	Gson getGson();

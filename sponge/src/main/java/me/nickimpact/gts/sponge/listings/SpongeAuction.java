@@ -123,7 +123,7 @@ public class SpongeAuction extends SpongeListing implements Auction {
 			this.id = input.getID();
 			this.lister = input.getLister();
 			this.entry = (SpongeEntry) input.getEntry();
-			this.expiration = input.getExpiration().get();
+			this.expiration = input.getExpiration();
 			this.start = input.getCurrentPrice() - input.getIncrement();
 
 			// Hack around the static 0 for an auction with no bids currently set

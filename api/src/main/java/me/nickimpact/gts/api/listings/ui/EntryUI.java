@@ -2,10 +2,20 @@ package me.nickimpact.gts.api.listings.ui;
 
 import java.util.Optional;
 
-public interface EntryUI<T, E> {
+public interface EntryUI<P, E, I> {
 
 	Optional<E> getChosenOption();
 
-	void open(T user);
+	void open(P user);
+
+	I generateWaitingIcon(boolean auction);
+
+	I generateConfirmIcon();
+
+	I createNoneChosenIcon();
+
+	I createChosenIcon();
+
+	void style(boolean selected);
 
 }

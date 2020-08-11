@@ -5,8 +5,6 @@ import co.aikar.commands.SpongeCommandManager;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.ichorpowered.protocolcontrol.service.ProtocolService;
 import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.plugin.PluginMetadata;
@@ -16,9 +14,7 @@ import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
 import com.nickimpact.impactor.sponge.plugin.AbstractSpongePlugin;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.data.registry.StorableRegistry;
-import me.nickimpact.gts.api.events.TestEvent;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.query.SignQuery;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.commands.GTSCommand;
 import me.nickimpact.gts.common.api.ApiRegistrationUtil;
@@ -27,15 +23,13 @@ import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.messaging.InternalMessagingService;
 import me.nickimpact.gts.common.messaging.MessagingFactory;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
-import me.nickimpact.gts.listeners.SignListener;
-import me.nickimpact.gts.listeners.TestListener;
+import me.nickimpact.gts.listeners.PingListener;
 import me.nickimpact.gts.listings.SpongeItemEntry;
-import me.nickimpact.gts.listings.items.SpongeItemManager;
+import me.nickimpact.gts.listings.data.SpongeItemManager;
 import me.nickimpact.gts.listings.legacy.SpongeLegacyItemStorable;
 import me.nickimpact.gts.manager.SpongeListingManager;
 import me.nickimpact.gts.messaging.SpongeMessagingFactory;
 import me.nickimpact.gts.messaging.interpreters.SpongePingPongInterpreter;
-import me.nickimpact.gts.signview.SpongeSignQuery;
 import me.nickimpact.gts.sponge.listings.SpongeBuyItNow;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
@@ -83,8 +77,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(Listing.ListingBuilder.class, SpongeBuyItNow.SpongeListingBuilder::new);
 		Impactor.getInstance().getRegistry().register(SpongeListingManager.class, new SpongeListingManager());
 
-		Impactor.getInstance().getRegistry().registerBuilderSupplier(SignQuery.SignQueryBuilder.class, SpongeSignQuery.SpongeSignQueryBuilder::new);
-
 		StorableRegistry storables = GTSService.getInstance().getStorableRegistry();
 		storables.register(SpongeItemEntry.class, new SpongeItemManager());
 		storables.registerLegacyStorable("item", new SpongeLegacyItemStorable());
@@ -96,7 +88,9 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		this.messagingService = this.getMessagingFactory().getInstance();
 		SpongePingPongInterpreter.register(this);
 
-		Sponge.getServiceManager().provideUnchecked(ProtocolService.class).events().register(new SignListener());
+		Impactor.getInstance().getEventBus().subscribe(new PingListener());
+
+//		Sponge.getServiceManager().provideUnchecked(ProtocolService.class).events().register(new SignListener());
 
 		SpongeCommandManager commands = new SpongeCommandManager(this.bootstrap.getContainer());
 		commands.registerCommand(new GTSCommand());
@@ -108,13 +102,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Testing"))
 				.build();
 		SpongeItemEntry testing = new SpongeItemEntry(test.createSnapshot());
-		this.getPluginLogger().debug(testing.getInternalData().toString());
-
-		Impactor.getInstance().getEventBus().subscribe(new TestListener());
-		Impactor.getInstance().getEventBus().post(TestEvent.class, TypeToken.get(Integer.class), 5);
-		Impactor.getInstance().getEventBus().post(TestEvent.class, TypeToken.get(String.class), "Hello");
-		Impactor.getInstance().getEventBus().post(TestEvent.class, TypeToken.get(Integer.class), 10);
-
+		this.getPluginLogger().debug(testing.getInternalData().toJson().toString());
 	}
 
 	public MessagingFactory<?> getMessagingFactory() {

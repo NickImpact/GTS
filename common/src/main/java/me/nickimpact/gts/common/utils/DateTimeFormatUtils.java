@@ -11,6 +11,6 @@ public class DateTimeFormatUtils {
 	public static final DateTimeFormatter base = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss a z").withZone(ZoneId.systemDefault());
 
 	public static String formatExpiration(Listing listing) {
-		return !listing.getExpiration().isPresent() || listing.getExpiration().get().equals(LocalDateTime.MAX) ? "Infinite" : listing.getExpiration().get().format(base);
+		return listing.getExpiration().equals(LocalDateTime.MAX) ? "Infinite" : listing.getExpiration().format(base);
 	}
 }

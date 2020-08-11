@@ -43,7 +43,7 @@ public interface Listing {
 	 *
 	 * @return The entry making up this listing.
 	 */
-	Entry<?, ?, ?> getEntry();
+	Entry<?, ?> getEntry();
 
 	/**
 	 * Represents the display of the listing. This is essentially how the listing will be displayed to the user
@@ -64,14 +64,11 @@ public interface Listing {
 	LocalDateTime getPublishTime();
 
 	/**
-	 * Represents the time where this listing will expire. In general, each listing will have this option specified.
-	 * However, a listing that has been made permanent can avoid this check, and simply stay in the system until
-	 * it is either purchased or removed.
+	 * Represents the time where this listing will expire.
 	 *
-	 * @return An optional value containing the exact point in time in which this listing will expire, or empty to
-	 * represent that this listing will never expire.
+	 * @return The time this listing will expire
 	 */
-	Optional<LocalDateTime> getExpiration();
+	LocalDateTime getExpiration();
 
 	/**
 	 * Attempts to verify whether or not a listing has expired. If a listing has no expiration, this call will
@@ -82,12 +79,7 @@ public interface Listing {
 	 * or false if the expiration is still after the current system time, or this listing has no expiration.
 	 */
 	default boolean hasExpired() {
-		if(this.getExpiration().isPresent()) {
-			LocalDateTime expiration = this.getExpiration().get();
-			return LocalDateTime.now().isAfter(expiration);
-		}
-
-		return false;
+		return LocalDateTime.now().isAfter(this.getExpiration());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -113,7 +105,7 @@ public interface Listing {
 		 */
 		B lister(UUID lister);
 
-		B entry(Entry<?, ?, ?> entry);
+		B entry(Entry<?, ?> entry);
 
 		B price(Price<?, ?> price);
 

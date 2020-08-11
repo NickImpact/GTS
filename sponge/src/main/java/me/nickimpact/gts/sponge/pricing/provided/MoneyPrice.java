@@ -17,19 +17,19 @@ import org.spongepowered.api.text.Text;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class MoneyPrice implements SpongePrice<CurrencyValue> {
+public class MoneyPrice implements SpongePrice<BigDecimal> {
 
 	@Setter private static EconomyService economy;
-	private final CurrencyValue price;
+	private final BigDecimal price;
 
 	public MoneyPrice(double price) {
-		this.price = new CurrencyValue(new BigDecimal(price));
+		this.price = new BigDecimal(price);
 	}
 
 	@Override
 	public TextComponent getText() {
 		return TextComponent.builder()
-				.append(TextComponent.of(economy.getDefaultCurrency().format(this.getPrice().getPricable()).toPlain()).color(TextColor.YELLOW))
+				.append(TextComponent.of(economy.getDefaultCurrency().format(this.getPrice()).toPlain()).color(TextColor.YELLOW))
 				.build();
 	}
 
@@ -42,28 +42,23 @@ public class MoneyPrice implements SpongePrice<CurrencyValue> {
 	}
 
 	@Override
-	public CurrencyValue getPrice() {
+	public BigDecimal getPrice() {
 		return this.price;
 	}
 
 	@Override
 	public boolean canPay(UUID payer) {
-		return economy.getOrCreateAccount(payer).get().getBalance(economy.getDefaultCurrency()).compareTo(price.getPricable()) >= 0;
+		return economy.getOrCreateAccount(payer).get().getBalance(economy.getDefaultCurrency()).compareTo(price) >= 0;
 	}
 
 	@Override
 	public void pay(UUID payer) {
-		economy.getOrCreateAccount(payer).get().withdraw(economy.getDefaultCurrency(), price.getPricable(), Sponge.getCauseStackManager().getCurrentCause());
+		economy.getOrCreateAccount(payer).get().withdraw(economy.getDefaultCurrency(), price, Sponge.getCauseStackManager().getCurrentCause());
 	}
 
 	@Override
 	public void reward(UUID recipient) {
-		economy.getOrCreateAccount(recipient).get().deposit(economy.getDefaultCurrency(), price.getPricable(), Sponge.getCauseStackManager().getCurrentCause());
-	}
-
-	@Override
-	public double getTax() {
-		return price.getPricable().doubleValue() * GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.TAX_MONEY_TAX);
+		economy.getOrCreateAccount(recipient).get().deposit(economy.getDefaultCurrency(), price, Sponge.getCauseStackManager().getCurrentCause());
 	}
 
 }

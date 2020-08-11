@@ -22,6 +22,6 @@ public interface EntryManager<T, P> extends Storable<T> {
      *
      * @return The UI responsible for creating a new listing based on the type managed by this Entry Manager
      */
-    Supplier<EntryUI<?, ?>> getSellingUI(P player);
+    Supplier<EntryUI<?, ?, ?>> getSellingUI(P player);
 
 }

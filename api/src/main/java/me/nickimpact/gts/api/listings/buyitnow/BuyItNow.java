@@ -16,6 +16,6 @@ public interface BuyItNow extends Listing {
 	 *
 	 * @return The price of the listing
 	 */
-	Price getPrice();
+	Price<?, ?> getPrice();
 
 }

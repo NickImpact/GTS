@@ -75,7 +75,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 					.lister(input.getLister())
 					.entry(input.getEntry())
 					.price(input.getPrice())
-					.expiration(input.getExpiration().orElse(null));
+					.expiration(input.getExpiration());
 		}
 
 		@Override

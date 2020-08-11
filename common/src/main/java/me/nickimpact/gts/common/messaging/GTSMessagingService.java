@@ -32,6 +32,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.json.factory.JObject;
+import me.nickimpact.gts.api.events.PingEvent;
 import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.api.messaging.Messenger;
 import me.nickimpact.gts.api.messaging.MessengerProvider;
@@ -41,6 +42,7 @@ import me.nickimpact.gts.common.messaging.messages.utility.GTSPingMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -108,6 +110,7 @@ public class GTSMessagingService implements InternalMessagingService {
             UUID requestID = generatePingID();
             this.plugin.getPluginLogger().info("[Messaging] Sending ping with id: " + requestID);
             this.messenger.sendOutgoingMessage(new GTSPingMessage(requestID));
+            Impactor.getInstance().getEventBus().postAsync(PingEvent.class, requestID, Instant.now());
         });
     }
 

@@ -6,6 +6,7 @@ import com.nickimpact.impactor.api.logging.Logger;
 import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
 import lombok.Getter;
 import me.nickimpact.gts.common.plugin.bootstrap.GTSBootstrap;
+import me.nickimpact.gts.placeholders.GTSSpongePlaceholderManager;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
@@ -95,7 +96,10 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 
 	@Listener
 	public void registerPlaceholders(GameRegistryEvent.Register<PlaceholderParser> event) {
-		
+		GTSSpongePlaceholderManager manager = new GTSSpongePlaceholderManager();
+		for(PlaceholderParser pasrser : manager.getAllParsers()) {
+			event.register(pasrser);
+		}
 	}
 
 	@Override

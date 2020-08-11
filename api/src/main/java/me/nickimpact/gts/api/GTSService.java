@@ -1,6 +1,7 @@
 package me.nickimpact.gts.api;
 
 import me.nickimpact.gts.api.data.registry.StorableRegistry;
+import me.nickimpact.gts.api.player.PlayerSettingsManager;
 import me.nickimpact.gts.api.searching.Searcher;
 
 import java.util.Optional;
@@ -17,6 +18,8 @@ public interface GTSService {
 	 * storable data.
 	 */
 	StorableRegistry getStorableRegistry();
+
+	PlayerSettingsManager getPlayerSettingsManager();
 
 	/**
 	 * Registers a searching option for all listings in the listing manager.

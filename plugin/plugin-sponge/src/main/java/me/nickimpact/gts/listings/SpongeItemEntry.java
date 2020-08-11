@@ -1,42 +1,46 @@
 package me.nickimpact.gts.listings;
 
+import com.nickimpact.impactor.api.json.factory.JObject;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.makeup.Display;
-import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.persistence.DataFormats;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 
-public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot, DataContainer> {
+public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
-	private transient ItemStackSnapshot item;
+	private static final Function<ItemStackSnapshot, String> writer = snapshot -> {
+		try {
+			return DataFormats.JSON.write(snapshot.toContainer());
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to write JSON data for item snapshot", e);
+		}
+	};
+
+	private ItemStackSnapshot item;
 
 	public SpongeItemEntry(ItemStackSnapshot item) {
-		super(item.toContainer());
+		super(new JObject().add("item", writer.apply(item)));
+		this.item = item;
 	}
 
 	@Override
 	public ItemStackSnapshot getOrCreateElement() {
-		return this.item == null ? this.item = this.deserialize() : this.item;
-	}
-
-	private ItemStackSnapshot deserialize() {
-		return ItemStack.builder()
-				.fromContainer(this.getInternalData())
-				.build()
-				.createSnapshot();
+		return this.item;
 	}
 
 	@Override
@@ -105,6 +109,19 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot, DataContaine
 
 	@Override
 	public boolean take(UUID depositor) {
+		Optional<Player> player = Sponge.getServer().getPlayer(depositor);
+		player.ifPresent(pl -> {
+			ItemStack rep = this.item.createStack();
+			Slot slot = pl.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class))
+					.query(QueryOperationTypes.ITEM_STACK_EXACT.of(rep))
+					.first();
+			if(slot.peek().isPresent()) {
+
+
+				slot.poll();
+			}
+		});
+
 		return false;
 	}
 
