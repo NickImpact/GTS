@@ -1,7 +1,6 @@
 package me.nickimpact.gts.common.plugin.bootstrap;
 
 import com.nickimpact.impactor.api.logging.Logger;
-import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
 
 import java.io.InputStream;
 import java.nio.file.Path;

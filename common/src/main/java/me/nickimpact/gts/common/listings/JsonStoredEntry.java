@@ -25,11 +25,6 @@ public class JsonStoredEntry implements Entry<JsonObject, Void> {
 	private final JObject data;
 
 	@Override
-	public JObject getInternalData() {
-		return this.data;
-	}
-
-	@Override
 	public JsonObject getOrCreateElement() {
 		return this.data.toJson();
 	}
@@ -51,6 +46,16 @@ public class JsonStoredEntry implements Entry<JsonObject, Void> {
 
 	@Override
 	public boolean take(UUID depositor) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int getVersion() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public JObject serialize() {
 		throw new UnsupportedOperationException();
 	}
 

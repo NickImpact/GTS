@@ -1,8 +1,8 @@
 CREATE TABLE `{prefix}listings` (
     `id`                VARCHAR(36)     NOT NULL,
     `lister`            VARCHAR(36)     NOT NULL,
-    `entry`             CLOB            NOT NULL,
-    `price`             CLOB            NOT NULL,
+    `entry`             TEXT            NOT NULL,
+    `price`             TEXT            NOT NULL,
     `expiration`        TIMESTAMP       NOT NULL,
     PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8;
@@ -18,6 +18,6 @@ CREATE TABLE `{prefix}player_settings` (
 
 CREATE TABLE `{prefix}stashes` (
     `uuid`              VARCHAR(36)     NOT NULL,
-    `data`              CLOB            NOT NULL,
+    `data`              TEXT            NOT NULL,
     PRIMARY KEY (`uuid`)
 ) DEFAULT CHARSET = utf8;

@@ -7,17 +7,15 @@ import com.nickimpact.impactor.api.gui.signs.SignQuery;
 import com.nickimpact.impactor.api.services.text.MessageService;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
-import com.nickimpact.impactor.sponge.ui.SpongeUI;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import me.nickimpact.gts.api.listings.ui.EntryUI;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.ui.Historical;
 import me.nickimpact.gts.sponge.listings.ui.AbstractSpongeEntryUI;
 import me.nickimpact.gts.ui.SpongeMainMenu;
-import me.nickimpact.gts.util.GTSReferences;
+import me.nickimpact.gts.ui.components.TimeSelectMenu;
+import me.nickimpact.gts.util.Utilities;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
@@ -36,7 +34,7 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static me.nickimpact.gts.util.GTSReferences.readMessageConfigOption;
+import static me.nickimpact.gts.util.Utilities.readMessageConfigOption;
 
 public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> implements Historical<SpongeMainMenu> {
 
@@ -102,7 +100,7 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
     }
 
     private SpongeLayout design() {
-        final MessageService<Text> PARSER = GTSReferences.PARSER;
+        final MessageService<Text> PARSER = Utilities.PARSER;
 
         SpongeLayout.SpongeLayoutBuilder slb = SpongeLayout.builder();
         slb.dimension(9, 4).border().dimension(9, 5);
@@ -132,6 +130,9 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
                 ))
                 .build();
         SpongeIcon time = new SpongeIcon(duration);
+        time.addListener(clickable -> {
+            new TimeSelectMenu(this.viewer).open();
+        });
         slb.slot(time, 42);
 
         SpongeIcon waiting = this.generateWaitingIcon(false);

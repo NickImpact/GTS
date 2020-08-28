@@ -20,7 +20,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 	}
 
 	@Override
-	public Price getPrice() {
+	public Price<?, ?> getPrice() {
 		return this.price;
 	}
 

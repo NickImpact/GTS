@@ -1,9 +1,8 @@
 package me.nickimpact.gts.sponge.pricing.provided;
 
+import com.nickimpact.impactor.api.json.factory.JObject;
 import lombok.Setter;
 import me.nickimpact.gts.api.listings.makeup.Display;
-import me.nickimpact.gts.common.config.ConfigKeys;
-import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.sponge.pricing.SpongePrice;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
@@ -59,6 +58,17 @@ public class MoneyPrice implements SpongePrice<BigDecimal> {
 	@Override
 	public void reward(UUID recipient) {
 		economy.getOrCreateAccount(recipient).get().deposit(economy.getDefaultCurrency(), price, Sponge.getCauseStackManager().getCurrentCause());
+	}
+
+	@Override
+	public int getVersion() {
+		return 1;
+	}
+
+	@Override
+	public JObject serialize() {
+		return new JObject()
+				.add("value", this.price);
 	}
 
 }

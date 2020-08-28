@@ -24,7 +24,7 @@ import me.nickimpact.gts.common.config.wrappers.TitleLorePair;
 import me.nickimpact.gts.manager.SpongeListingManager;
 import me.nickimpact.gts.sponge.listings.SpongeListing;
 import me.nickimpact.gts.sponge.ui.SpongeAsyncPage;
-import me.nickimpact.gts.util.GTSReferences;
+import me.nickimpact.gts.util.Utilities;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
@@ -44,14 +44,14 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static me.nickimpact.gts.util.GTSReferences.readMessageConfigOption;
+import static me.nickimpact.gts.util.Utilities.readMessageConfigOption;
 
 public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 	private static final QuickPurchaseOnly QUICK_PURCHASE_ONLY = new QuickPurchaseOnly();
 	private static final AuctionsOnly AUCTIONS_ONLY = new AuctionsOnly();
 
-	private static final MessageService<Text> PARSER = GTSReferences.PARSER;
+	private static final MessageService<Text> PARSER = Utilities.PARSER;
 
 	private Class<? extends Entry> filter;
 
@@ -120,7 +120,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		return new SpongeIcon(ItemStack.builder()
 				.itemType(ItemTypes.STAINED_GLASS_PANE)
 				.add(Keys.DISPLAY_NAME, PARSER.parse(
-						this.getMessageConfigOption(MsgConfigKeys.UI_MENU_LISTINGS_SPECIAL_LOADING),
+						Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_LISTINGS_SPECIAL_LOADING),
 						Lists.newArrayList(this::getViewer)
 				))
 				.add(Keys.DYE_COLOR, DyeColors.YELLOW)
@@ -130,7 +130,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 	@Override
 	protected SpongeIcon getTimeoutIcon() {
-		TitleLorePair pair = GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SPECIAL_TIMED_OUT);
+		TitleLorePair pair = Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_LISTINGS_SPECIAL_TIMED_OUT);
 		return new SpongeIcon(ItemStack.builder()
 				.itemType(ItemTypes.STAINED_GLASS_PANE)
 				.add(Keys.DISPLAY_NAME, PARSER.parse(pair.getTitle(), Lists.newArrayList(this::getViewer)))
@@ -302,18 +302,15 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	@SuppressWarnings("OptionalGetWithoutIsPresent")
 	private enum Sorter {
 		QP_MOST_RECENT(SortConfigurationOptions::getQpMostRecent, new Matcher<>(Comparator.comparing(BuyItNow::getPublishTime).reversed())),
-		QP_ENDING_SOON(SortConfigurationOptions::getQpEndingSoon, new Matcher<BuyItNow>((x, y) -> {
-			return x.getExpiration().compareTo(y.getExpiration());
-		})),
-
+		QP_ENDING_SOON(SortConfigurationOptions::getQpEndingSoon, new Matcher<BuyItNow>(Comparator.comparing(Listing::getExpiration))),
 		A_HIGHEST_BID(SortConfigurationOptions::getAHighest, new Matcher<>(Comparator.<Auction, Double>comparing(a -> a.getHighBid().getSecond()).reversed())),
 		A_LOWEST_BID(SortConfigurationOptions::getALowest, new Matcher<Auction>(Comparator.comparing(a -> a.getHighBid().getSecond()))),
 		A_ENDING_SOON(SortConfigurationOptions::getAEndingSoon, new Matcher<Auction>(Comparator.comparing(Listing::getExpiration))),
 		A_MOST_BIDS(SortConfigurationOptions::getAMostBids, new Matcher<>(Comparator.<Auction, Integer>comparing(a -> a.getBids().size()).reversed()))
 		;
 
-		private Function<SortConfigurationOptions, String> key;
-		private Matcher<?> comparator;
+		private final Function<SortConfigurationOptions, String> key;
+		private final Matcher<?> comparator;
 
 		private static final CircularLinkedList<Sorter> QUICK_PURCHASE_ONLY = CircularLinkedList.of(QP_MOST_RECENT, QP_ENDING_SOON);
 		private static final CircularLinkedList<Sorter> AUCTION_ONLY = CircularLinkedList.of(A_HIGHEST_BID, A_LOWEST_BID, A_ENDING_SOON, A_MOST_BIDS);
@@ -326,11 +323,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	@Getter
 	@AllArgsConstructor
 	private static class Matcher<T> {
-		private Comparator<T> comparator;
-	}
-
-	private <T> T getMessageConfigOption(ConfigKey<T> key) {
-		return GTSPlugin.getInstance().getMsgConfig().get(key);
+		private final Comparator<T> comparator;
 	}
 
 }

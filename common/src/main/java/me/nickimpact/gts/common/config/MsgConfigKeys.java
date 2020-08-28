@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.nickimpact.impactor.api.configuration.ConfigKeyHolder;
 import com.nickimpact.impactor.api.configuration.keys.BaseConfigKey;
+import me.nickimpact.gts.common.config.updated.types.time.TimeLanguageOptions;
 import me.nickimpact.gts.common.config.wrappers.SortConfigurationOptions;
 import me.nickimpact.gts.common.config.wrappers.TitleLorePair;
 
@@ -226,6 +227,30 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	// -----------------------------------------------------------------------------
 
 	// -----------------------------------------------------------------------------
+	// Time
+	// -----------------------------------------------------------------------------
+	public static final ConfigKey<TimeLanguageOptions> SECONDS = customKey(c -> new TimeLanguageOptions(
+			c.getString("time.seconds.singular", "Second"),
+			c.getString("time.seconds.plural", "Seconds")
+	));
+	public static final ConfigKey<TimeLanguageOptions> MINUTES = customKey(c -> new TimeLanguageOptions(
+			c.getString("time.minutes.singular", "Minute"),
+			c.getString("time.minutes.plural", "Minutes")
+	));
+	public static final ConfigKey<TimeLanguageOptions> HOURS = customKey(c -> new TimeLanguageOptions(
+			c.getString("time.hour.singular", "Hour"),
+			c.getString("time.hour.plural", "Hours")
+	));
+	public static final ConfigKey<TimeLanguageOptions> DAYS = customKey(c -> new TimeLanguageOptions(
+			c.getString("time.days.singular", "Day"),
+			c.getString("time.days.plural", "Days")
+	));
+	public static final ConfigKey<TimeLanguageOptions> WEEKS = customKey(c -> new TimeLanguageOptions(
+			c.getString("time.weeks.singular", "Week"),
+			c.getString("time.weeks.plural", "Weeks")
+	));
+
+	// -----------------------------------------------------------------------------
 	// UI Based Configuration Options
 	// -----------------------------------------------------------------------------
 
@@ -348,6 +373,27 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 		return new TitleLorePair(title, lore);
 	});
+
+	// Time Selection
+	public static final ConfigKey<String> UI_TIME_SELECT_TITLE = stringKey("ui.time-select.title", "Select a Time");
+
+	// Admin Menus
+	public static final ConfigKey<String> UI_ADMIN_MAIN_TITLE = stringKey("ui.admin.main.title", "GTS - Admin Mode");
+
+	public static final ConfigKey<String> UI_ADMIN_MAIN_MANAGER = stringKey("ui.admin.main.icons.manager", "&aGTS Listing Manager");
+	public static final ConfigKey<String> UI_ADMIN_MAIN_PRICE_MGMT = stringKey("ui.admin.main.icons.price-management", "&aPricing Management");
+	public static final ConfigKey<String> UI_ADMIN_MAIN_DISABLER = stringKey("ui.admin.main.icons.disabler", "&cMaintenance Mode");
+	public static final ConfigKey<String> UI_ADMIN_MAIN_INFO_TITLE = stringKey("ui.admin.main.icons.info.title", "&eGTS Admin Mode");
+	public static final ConfigKey<List<String>> UI_ADMIN_MAIN_INFO_LORE = listKey("ui.admin.main.icons.info.lore", Lists.newArrayList(
+			"&7Welcome to the GTS Admin Interface.",
+			"&7All interactions provided are designed",
+			"&7for server operators to effectively",
+			"&7control the GTS system from in-game.",
+			"",
+			"&7Here, you can control &bpublished listings&7,",
+			"&bprice management&7, and place the system",
+			"&7into &bmaintenance mode&7."
+	));
 
 	public static final ConfigKey<String> UI_LISTINGS_ITEMS_ANVIL_RENAME_PREPEND = stringKey("ui.listings.items.anvil-rename", "&7Item Name: &e");
 	public static final ConfigKey<String> UI_LISTINGS_ITEMS_LORE_DESCRIPTOR = stringKey("ui.listings.items.lore-descriptor", "&aItem Lore:");

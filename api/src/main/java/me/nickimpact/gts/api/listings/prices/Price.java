@@ -1,5 +1,6 @@
 package me.nickimpact.gts.api.listings.prices;
 
+import me.nickimpact.gts.api.data.Storable;
 import me.nickimpact.gts.api.listings.makeup.Display;
 import net.kyori.text.TextComponent;
 
@@ -11,7 +12,7 @@ import java.util.UUID;
  * @param <P> The element that is controlled by this interface
  * @param <I> The display output type for this price
  */
-public interface Price<P, I> {
+public interface Price<P, I> extends Storable {
 
 	/**
 	 * The instance being setup as the price. So this might be a double or BigDecimal to represent some form of monetary

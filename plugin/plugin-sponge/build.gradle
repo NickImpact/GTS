@@ -43,11 +43,10 @@ shadowJar {
     archiveName = "GTS-Sponge-1.12.2-${project.version}.jar"
 
     exclude 'protocolcontrol-*.jar'
+    exclude 'dummyThing'
 
-    relocate ('net.kyori', 'me.nickimpact.gts.relocations.net.kyori')
-    relocate ('com.github.benmanes', 'me.nickimpact.gts.relocations.com.github.benmanes')
-    relocate ('com.google.errorprone', 'me.nickimpact.gts.relocations.com.google.errorprone')
-    relocate ('org.checkerframework', 'me.nickimpact.gts.relocations.org.checkerframework')
+    relocate ('net.kyori.text', 'com.nickimpact.impactor.relocations.text')
+    relocate ('com.github.benmanes.caffeine', 'com.nickimpact.impactor.relocations.caffeine')
 }
 
 reobf {
@@ -64,17 +63,17 @@ dependencies {
     shadow 'org.spongepowered:spongeapi:7.3.0-20200614.093206-8'
     shadow "com.ichorpowered:protocolcontrol:0.0.1"
     //shadow "co.aikar:acf-sponge:0.5.0-SNAPSHOT"
-    compile('net.kyori:text-api:3.0.3') {
+    shadow('net.kyori:text-api:3.0.3') {
         exclude(module: 'checker-qual')
     }
-    compile('net.kyori:text-serializer-legacy:3.0.3') {
+    shadow('net.kyori:text-serializer-legacy:3.0.3') {
         exclude(module: 'text-api')
     }
-    compile('net.kyori:text-serializer-gson:3.0.3') {
+    shadow('net.kyori:text-serializer-gson:3.0.3') {
         exclude(module: 'text-api')
         exclude(module: 'gson')
     }
-    compile('net.kyori:text-adapter-spongeapi:3.0.3') {
+    shadow('net.kyori:text-adapter-spongeapi:3.0.3') {
         exclude(module: 'text-api')
         exclude(module: 'gson')
     }

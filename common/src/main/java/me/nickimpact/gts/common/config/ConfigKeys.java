@@ -6,6 +6,7 @@ import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.nickimpact.impactor.api.configuration.ConfigKeyHolder;
 import com.nickimpact.impactor.api.configuration.keys.BaseConfigKey;
 import com.nickimpact.impactor.api.storage.StorageCredentials;
+import me.nickimpact.gts.common.config.updated.types.time.TimeKey;
 import me.nickimpact.gts.common.discord.DiscordOption;
 
 import java.awt.*;

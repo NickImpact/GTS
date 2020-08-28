@@ -9,7 +9,7 @@ import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.io.IOException;
 
-public class SpongeLegacyItemStorable implements Storable<SpongeItemEntry> {
+public class SpongeLegacyItemStorable implements Storable, Storable.Deserializer<SpongeItemEntry> {
 
     @Override
     public int getVersion() {
@@ -17,7 +17,7 @@ public class SpongeLegacyItemStorable implements Storable<SpongeItemEntry> {
     }
 
     @Override
-    public JObject serialize(SpongeItemEntry content) {
+    public JObject serialize() {
         throw new UnsupportedOperationException("Legacy Storable instances don't attempt to serialize");
     }
 

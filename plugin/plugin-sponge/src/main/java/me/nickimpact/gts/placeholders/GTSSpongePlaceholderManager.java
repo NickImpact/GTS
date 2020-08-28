@@ -9,7 +9,7 @@ import com.nickimpact.impactor.api.utilities.Time;
 import me.nickimpact.gts.GTSSpongePlugin;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.auctions.Auction;
-import me.nickimpact.gts.common.config.updated.MessageConfigKeys;
+import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.placeholders.parsers.SourceSpecificPlaceholderParser;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
@@ -52,8 +52,8 @@ public class GTSSpongePlaceholderManager {
         MessageService<Text> processor = Impactor.getInstance().getRegistry().get(MessageService.class);
         PluginContainer container = GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer();
 
-        this.register(this.create("prefix", "GTS Prefix", container, context -> processor.parse(msgConf.get(MessageConfigKeys.PREFIX))));
-        this.register(this.create("error", "GTS Error Prefix", container, context -> processor.parse(msgConf.get(MessageConfigKeys.ERROR_PREFIX))));
+        this.register(this.create("prefix", "GTS Prefix", container, context -> processor.parse(msgConf.get(MsgConfigKeys.PREFIX))));
+        this.register(this.create("error", "GTS Error Prefix", container, context -> processor.parse(msgConf.get(MsgConfigKeys.ERROR_PREFIX))));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Listing.class,
                 "seller",

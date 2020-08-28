@@ -1,6 +1,7 @@
 package me.nickimpact.gts.api.listings.entries;
 
 import com.nickimpact.impactor.api.json.factory.JObject;
+import me.nickimpact.gts.api.data.Storable;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.makeup.Display;
 import net.kyori.text.TextComponent;
@@ -19,17 +20,7 @@ import java.util.UUID;
  *
  * @param <T> The actual object that is meant to be represented by this entry
  */
-public interface Entry<T, I> {
-
-	/**
-	 * Represents the internal data-store that will be used to create the output element. This is what will
-	 * be saved to the storage system when an entry is written out, whereas the output element should realistically
-	 * be transient. This helps to ensure that objects that can't be serialized properly due to recursive structures
-	 * can be serialized in a safe manner.
-	 *
-	 * @return The data-store that will be used to represent this entry from a storage provider perspective.
-	 */
-	JObject getInternalData();
+public interface Entry<T, I> extends Storable {
 
 	/**
 	 * This represents the output element of this entry. As a entry will typically be transient, if not serializable

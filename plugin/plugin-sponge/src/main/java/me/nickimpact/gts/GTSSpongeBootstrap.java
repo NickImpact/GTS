@@ -3,8 +3,8 @@ package me.nickimpact.gts;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
 import com.nickimpact.impactor.api.logging.Logger;
-import com.nickimpact.impactor.api.storage.dependencies.classloader.PluginClassLoader;
 import lombok.Getter;
+import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.common.plugin.bootstrap.GTSBootstrap;
 import me.nickimpact.gts.placeholders.GTSSpongePlaceholderManager;
 import org.apache.commons.lang3.StringUtils;
@@ -172,7 +172,7 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 		output.add(Text.of(TextColors.RED, "The encountered error will be listed below:"));
 		output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
 		if(!this.getLaunchError().isPresent()) {
-			output.add(Text.of(TextColors.YELLOW, "No exception was logged..."));
+			output.add(Text.of(TextColors.YELLOW, "No exception information was provided..."));
 		} else {
 			Throwable exception = this.getLaunchError().get();
 
@@ -196,12 +196,12 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 		output.add(Text.of(TextColors.YELLOW, "GTS Version: ", TextColors.AQUA, this.plugin.getMetadata().getVersion()));
 		output.add(Text.of(TextColors.YELLOW, "Sponge Version: ", TextColors.AQUA, Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName() + " " + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse("")));
 
-//		if(!GTSService.getInstance().getRegistry().getLoadedExtensions().isEmpty()) {
-//			output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-//			output.add(Text.of(TextColors.YELLOW, "| " + StringUtils.center("Installed Extensions", 26) + " |"));
-//			output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-//			GTSService.getInstance().getRegistry().getLoadedExtensions().forEach(x -> output.add(Text.of(TextColors.YELLOW, x.getName(), " - ", x.getVersion())));
-//		}
+		if(!GTSService.getInstance().getAllExtensions().isEmpty()) {
+			output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
+			output.add(Text.of(TextColors.YELLOW, "| " + StringUtils.center("Installed Extensions", 26) + " |"));
+			output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
+			GTSService.getInstance().getAllExtensions().forEach(x -> output.add(Text.of(TextColors.YELLOW, x.getMetadata().getName(), " - ", x.getMetadata().getVersion())));
+		}
 
 		output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
 		output.add(Text.of(TextColors.YELLOW, "| " + StringUtils.center("END GTS ERROR REPORT", 26) + " |"));

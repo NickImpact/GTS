@@ -3,6 +3,7 @@ package me.nickimpact.gts.common.discord;
 import com.google.common.base.Throwables;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.config.ConfigKeys;
+import me.nickimpact.gts.common.utils.exceptions.ExceptionWriter;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.util.List;
@@ -50,7 +51,8 @@ public class DiscordNotifier {
 			try {
 				return supplier.call();
 			} catch (Exception e) {
-				Throwables.propagateIfPossible(e);
+				ExceptionWriter.write(e);
+				Throwables.throwIfUnchecked(e);
 				throw new CompletionException(e);
 			}
 		});
@@ -61,7 +63,8 @@ public class DiscordNotifier {
 			try {
 				runnable.run();
 			} catch (Exception e) {
-				Throwables.propagateIfPossible(e);
+				ExceptionWriter.write(e);
+				Throwables.throwIfUnchecked(e);
 				throw new CompletionException(e);
 			}
 		});

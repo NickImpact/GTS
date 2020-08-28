@@ -1,7 +1,0 @@
-main: me.nickimpact.gts.GTS
-name: GTS
-version: 4.2.0-DEV
-author: NickImpact
-depend:
-  - Impactor
-  - Vault

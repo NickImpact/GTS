@@ -3,6 +3,7 @@ package me.nickimpact.gts.sponge.listings;
 import com.google.common.base.Preconditions;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
 
@@ -36,6 +37,11 @@ public class SpongeAuction extends SpongeListing implements Auction {
 	}
 
 	@Override
+	public double getStartingPrice() {
+		return 0;
+	}
+
+	@Override
 	public double getCurrentPrice() {
 		return this.price + Math.ceil(this.price * this.getIncrement());
 	}
@@ -54,6 +60,11 @@ public class SpongeAuction extends SpongeListing implements Auction {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public Price<?, ?> getPrice() {
+		return null;
 	}
 
 	@Override

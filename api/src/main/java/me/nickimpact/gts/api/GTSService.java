@@ -1,6 +1,8 @@
 package me.nickimpact.gts.api;
 
-import me.nickimpact.gts.api.data.registry.StorableRegistry;
+import com.google.common.collect.ImmutableList;
+import me.nickimpact.gts.api.extensions.Extension;
+import me.nickimpact.gts.api.listings.entries.registry.EntryManagerRegistry;
 import me.nickimpact.gts.api.player.PlayerSettingsManager;
 import me.nickimpact.gts.api.searching.Searcher;
 
@@ -13,12 +15,21 @@ public interface GTSService {
 	}
 
 	/**
-	 * Represents a registry in which objects that can be serialized and deserialized to and from JSON
-	 * data can be referenced. GTS will employ this registry when it comes to attempting to work with
-	 * storable data.
+	 *
+	 *
+	 * @since 6.0.0
+	 * @return An immutable list of all loaded extensions hooked to GTS
 	 */
-	StorableRegistry getStorableRegistry();
+	ImmutableList<Extension> getAllExtensions();
 
+	EntryManagerRegistry getEntryManagerRegistry();
+
+	/**
+	 *
+	 * @return A mapping manager of all individual player settings
+	 *
+	 * @since 6.0.0
+	 */
 	PlayerSettingsManager getPlayerSettingsManager();
 
 	/**
@@ -30,6 +41,13 @@ public interface GTSService {
 	 */
 	void addSearcher(String key, Searcher searcher);
 
+	/**
+	 *
+	 * @param key The key representing a particular searcher
+	 * @return A matching Searcher if one is found belonging to the input key, or empty if none match
+	 *
+	 * @since 5.1.0
+	 */
 	Optional<Searcher> getSearcher(String key);
 
 }

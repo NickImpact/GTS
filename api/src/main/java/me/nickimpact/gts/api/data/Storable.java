@@ -6,7 +6,7 @@ import com.nickimpact.impactor.api.json.factory.JObject;
 /**
  * Represents an objects that can be translated to and from JSON representable data.
  */
-public interface Storable<T> {
+public interface Storable {
 
     int getVersion();
 
@@ -15,14 +15,13 @@ public interface Storable<T> {
      *
      * @return A JObject that represents which represents the serialized components of the entry
      */
-    JObject serialize(T content);
+    JObject serialize();
 
-    /**
-     * Responsible for deserializing the json data passed in back to the target
-     * entry type.
-     *
-     * @return The representative Entry that is modeled by this json data
-     */
-    T deserialize(JsonObject json);
+    @FunctionalInterface
+    interface Deserializer<T> {
+
+        T deserialize(JsonObject object);
+
+    }
 
 }

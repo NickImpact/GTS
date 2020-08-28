@@ -10,4 +10,5 @@ public interface Blacklist {
 	void append(Class<? extends Entry<?, ?>> registrar, String key);
 
 	boolean isBlacklisted(Class<? extends Entry<?, ?>> registrar, String query);
+
 }

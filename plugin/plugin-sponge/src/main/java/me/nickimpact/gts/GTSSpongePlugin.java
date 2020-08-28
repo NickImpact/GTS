@@ -7,18 +7,21 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.configuration.Config;
+import com.nickimpact.impactor.api.dependencies.Dependency;
 import com.nickimpact.impactor.api.plugin.PluginMetadata;
 import com.nickimpact.impactor.api.storage.StorageType;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfig;
 import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
 import com.nickimpact.impactor.sponge.plugin.AbstractSpongePlugin;
 import me.nickimpact.gts.api.GTSService;
-import me.nickimpact.gts.api.data.registry.StorableRegistry;
+import me.nickimpact.gts.api.blacklist.Blacklist;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.commands.GTSCommand;
 import me.nickimpact.gts.common.api.ApiRegistrationUtil;
 import me.nickimpact.gts.common.api.GTSAPIProvider;
+import me.nickimpact.gts.common.blacklist.BlacklistImpl;
+import me.nickimpact.gts.common.config.updated.ConfigKeys;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.messaging.InternalMessagingService;
 import me.nickimpact.gts.common.messaging.MessagingFactory;
@@ -26,7 +29,6 @@ import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.listeners.PingListener;
 import me.nickimpact.gts.listings.SpongeItemEntry;
 import me.nickimpact.gts.listings.data.SpongeItemManager;
-import me.nickimpact.gts.listings.legacy.SpongeLegacyItemStorable;
 import me.nickimpact.gts.manager.SpongeListingManager;
 import me.nickimpact.gts.messaging.SpongeMessagingFactory;
 import me.nickimpact.gts.messaging.interpreters.SpongePingPongInterpreter;
@@ -69,6 +71,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	public void preInit() {
 		ApiRegistrationUtil.register(new GTSAPIProvider());
 		Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
+		Impactor.getInstance().getRegistry().register(Blacklist.class, new BlacklistImpl());
 
 		this.displayBanner();
 
@@ -77,10 +80,9 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(Listing.ListingBuilder.class, SpongeBuyItNow.SpongeListingBuilder::new);
 		Impactor.getInstance().getRegistry().register(SpongeListingManager.class, new SpongeListingManager());
 
-		StorableRegistry storables = GTSService.getInstance().getStorableRegistry();
-		storables.register(SpongeItemEntry.class, new SpongeItemManager());
-		storables.registerLegacyStorable("item", new SpongeLegacyItemStorable());
+		GTSService.getInstance().getEntryManagerRegistry().register(SpongeItemEntry.class, new SpongeItemManager());
 
+		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
 		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/en_us.conf")), new MsgConfigKeys());
 	}
 
@@ -89,8 +91,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		SpongePingPongInterpreter.register(this);
 
 		Impactor.getInstance().getEventBus().subscribe(new PingListener());
-
-//		Sponge.getServiceManager().provideUnchecked(ProtocolService.class).events().register(new SignListener());
 
 		SpongeCommandManager commands = new SpongeCommandManager(this.bootstrap.getContainer());
 		commands.registerCommand(new GTSCommand());
@@ -102,7 +102,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Testing"))
 				.build();
 		SpongeItemEntry testing = new SpongeItemEntry(test.createSnapshot());
-		this.getPluginLogger().debug(testing.getInternalData().toJson().toString());
+		testing.serialize();
 	}
 
 	public MessagingFactory<?> getMessagingFactory() {
@@ -133,6 +133,15 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends GTSPlugin> T as(Class<T> type) {
+		if(!type.isAssignableFrom(this.getClass())) {
+			throw new RuntimeException("Invalid plugin typing");
+		}
+		return (T) this;
+	}
+
+	@Override
 	public GTSSpongeBootstrap getBootstrap() {
 		return this.bootstrap;
 	}
@@ -160,6 +169,17 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	@Override
 	public Config getConfiguration() {
 		return this.config;
+	}
+
+	@Override
+	public List<Dependency> getAllDependencies() {
+		return Lists.newArrayList(
+				Dependency.KYORI_TEXT,
+				Dependency.KYORI_TEXT_SERIALIZER_LEGACY,
+				Dependency.KYORI_TEXT_SERIALIZER_GSON,
+				Dependency.KYORI_TEXT_ADAPTER_SPONGEAPI,
+				Dependency.CAFFEINE
+		);
 	}
 
 	@Override

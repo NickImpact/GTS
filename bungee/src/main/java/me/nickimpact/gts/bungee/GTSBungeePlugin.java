@@ -46,6 +46,15 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
+	public <T extends GTSPlugin> T as(Class<T> type) {
+		if(!type.isAssignableFrom(this.getClass())) {
+			throw new RuntimeException("Invalid plugin typing");
+		}
+		return (T) this;
+	}
+
+	@Override
 	public GTSBungeeBootstrap getBootstrap() {
 		return this.bootstrap;
 	}
