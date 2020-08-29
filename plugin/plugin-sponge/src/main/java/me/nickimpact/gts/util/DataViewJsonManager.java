@@ -8,6 +8,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nickimpact.impactor.api.json.factory.JArray;
 import com.nickimpact.impactor.api.json.factory.JObject;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataSerializable;
@@ -20,8 +21,6 @@ import java.util.Map;
 
 public class DataViewJsonManager {
 
-    private static final Gson READER = new GsonBuilder().setPrettyPrinting().create();
-
     public static void writeDataViewToJSON(JObject writer, DataView container) {
         for(Map.Entry<DataQuery, Object> entry : container.getValues(false).entrySet()) {
             DataQuery query = entry.getKey();
@@ -33,7 +32,7 @@ public class DataViewJsonManager {
 
     public static DataView readDataViewFromJSON(JsonObject input) {
         try {
-            return DataFormats.JSON.read(READER.fromJson(input, String.class));
+            return DataFormats.JSON.read(input.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

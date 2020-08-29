@@ -23,7 +23,7 @@ public class SpongeItemManager implements EntryManager<SpongeItemEntry, Player> 
     public Storable.Deserializer<SpongeItemEntry> getDeserializer() {
         return json -> {
             ItemStackSnapshot snapshot = ItemStack.builder()
-                    .fromContainer(DataViewJsonManager.readDataViewFromJSON(json))
+                    .fromContainer(DataViewJsonManager.readDataViewFromJSON(json.getAsJsonObject("item")))
                     .build()
                     .createSnapshot();
             return new SpongeItemEntry(snapshot);

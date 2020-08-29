@@ -1,7 +1,9 @@
 package me.nickimpact.gts.sponge.pricing.provided;
 
+import com.google.gson.JsonObject;
 import com.nickimpact.impactor.api.json.factory.JObject;
 import lombok.Setter;
+import me.nickimpact.gts.api.data.registry.GTSKeyMarker;
 import me.nickimpact.gts.api.listings.makeup.Display;
 import me.nickimpact.gts.sponge.pricing.SpongePrice;
 import net.kyori.text.TextComponent;
@@ -16,6 +18,7 @@ import org.spongepowered.api.text.Text;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+@GTSKeyMarker("currency")
 public class MoneyPrice implements SpongePrice<BigDecimal> {
 
 	@Setter private static EconomyService economy;
@@ -68,7 +71,12 @@ public class MoneyPrice implements SpongePrice<BigDecimal> {
 	@Override
 	public JObject serialize() {
 		return new JObject()
+				.add("version", this.getVersion())
 				.add("value", this.price);
+	}
+
+	public static MoneyPrice deserialize(JsonObject json) {
+		return new MoneyPrice(json.get("value").getAsDouble());
 	}
 
 }

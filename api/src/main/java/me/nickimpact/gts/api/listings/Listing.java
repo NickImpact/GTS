@@ -15,7 +15,7 @@ import java.util.function.Predicate;
 /**
  * A listing represents the overall information of something listed onto the GTS.
  */
-public interface Listing extends Storable, Storable.Deserializer<Listing> {
+public interface Listing extends Storable {
 
 	/** The UUID to use when the server itself creates a listing */
 	UUID SERVER_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
@@ -45,8 +45,6 @@ public interface Listing extends Storable, Storable.Deserializer<Listing> {
 	 * @return The entry making up this listing.
 	 */
 	Entry<?, ?> getEntry();
-
-	Price<?, ?> getPrice();
 
 	/**
 	 * Represents the display of the listing. This is essentially how the listing will be displayed to the user

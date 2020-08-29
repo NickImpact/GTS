@@ -1,5 +1,6 @@
 package me.nickimpact.gts.api.listings.buyitnow;
 
+import com.nickimpact.impactor.api.Impactor;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.prices.Price;
 
@@ -17,5 +18,15 @@ public interface BuyItNow extends Listing {
 	 * @return The price of the listing
 	 */
 	Price<?, ?> getPrice();
+
+	static BuyItNowBuilder builder() {
+		return Impactor.getInstance().getRegistry().createBuilder(BuyItNowBuilder.class);
+	}
+
+	interface BuyItNowBuilder extends ListingBuilder<BuyItNow, BuyItNowBuilder> {
+
+		BuyItNowBuilder price(Price<?, ?> price);
+
+	}
 
 }

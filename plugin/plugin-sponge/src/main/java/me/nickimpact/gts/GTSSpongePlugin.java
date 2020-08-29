@@ -16,6 +16,8 @@ import com.nickimpact.impactor.sponge.plugin.AbstractSpongePlugin;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.blacklist.Blacklist;
 import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.auctions.Auction;
+import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.commands.GTSCommand;
 import me.nickimpact.gts.common.api.ApiRegistrationUtil;
@@ -32,7 +34,9 @@ import me.nickimpact.gts.listings.data.SpongeItemManager;
 import me.nickimpact.gts.manager.SpongeListingManager;
 import me.nickimpact.gts.messaging.SpongeMessagingFactory;
 import me.nickimpact.gts.messaging.interpreters.SpongePingPongInterpreter;
+import me.nickimpact.gts.sponge.listings.SpongeAuction;
 import me.nickimpact.gts.sponge.listings.SpongeBuyItNow;
+import me.nickimpact.gts.sponge.pricing.provided.MoneyPrice;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -77,13 +81,19 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		ApiRegistrationUtil.register(new GTSAPIProvider());
 		Sponge.getServiceManager().setProvider(this.bootstrap, GTSService.class, GTSService.getInstance());
-		Impactor.getInstance().getRegistry().registerBuilderSupplier(Listing.ListingBuilder.class, SpongeBuyItNow.SpongeListingBuilder::new);
+		Impactor.getInstance().getRegistry().registerBuilderSupplier(Auction.AuctionBuilder.class, SpongeAuction.SpongeAuctionBuilder::new);
+		Impactor.getInstance().getRegistry().registerBuilderSupplier(BuyItNow.BuyItNowBuilder.class, SpongeBuyItNow.SpongeBuyItNowBuilder::new);
+
 		Impactor.getInstance().getRegistry().register(SpongeListingManager.class, new SpongeListingManager());
 
-		GTSService.getInstance().getEntryManagerRegistry().register(SpongeItemEntry.class, new SpongeItemManager());
+		GTSService.getInstance().getDeserializerManagerRegistry().registerListingDeserializer(BuyItNow.class, SpongeBuyItNow::deserialize);
+		GTSService.getInstance().getDeserializerManagerRegistry().registerListingDeserializer(Auction.class, SpongeAuction::deserialize);
+		GTSService.getInstance().getDeserializerManagerRegistry().registerEntryDeserializer(SpongeItemEntry.class, new SpongeItemManager());
+		GTSService.getInstance().getDeserializerManagerRegistry().registerPriceDeserializer(MoneyPrice.class, MoneyPrice::deserialize);
 
 		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
 		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/en_us.conf")), new MsgConfigKeys());
+
 	}
 
 	public void init() {

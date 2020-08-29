@@ -1,18 +1,15 @@
 package me.nickimpact.gts.listings;
 
-import com.google.gson.JsonObject;
 import com.nickimpact.impactor.api.json.factory.JObject;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.listings.entries.EntryKey;
+import me.nickimpact.gts.api.data.registry.GTSKeyMarker;
 import me.nickimpact.gts.api.listings.makeup.Display;
-import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
 import me.nickimpact.gts.util.DataViewJsonManager;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
-import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -22,33 +19,25 @@ import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 
-@EntryKey("item")
+@GTSKeyMarker("item")
 public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	private static final Function<ItemStackSnapshot, JObject> writer = snapshot -> {
 		try {
 			JObject result = new JObject();
 			DataContainer container = snapshot.toContainer();
-			for(Map.Entry<DataQuery, Object> entry : container.getValues(false).entrySet()) {
-				GTSPlugin.getInstance().getPluginLogger().debug(entry.getKey().asString(".") + ":" + entry.getValue().toString() + "(" + entry.getValue().getClass() + ")");
-			}
-
-			GTSPlugin.getInstance().getPluginLogger().debug("");
 			DataViewJsonManager.writeDataViewToJSON(result, container);
-			GTSPlugin.getInstance().getPluginLogger().debug(result.toJson().toString());
-
 			return result;
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to write JSON data for item snapshot", e);
 		}
 	};
 
-	private ItemStackSnapshot item;
+	private final ItemStackSnapshot item;
 
 	public SpongeItemEntry(ItemStackSnapshot item) {
 		this.item = item;

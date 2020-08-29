@@ -1,5 +1,6 @@
 package me.nickimpact.gts.api.listings.auctions;
 
+import com.google.common.collect.Multimap;
 import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.utilities.Builder;
 import me.nickimpact.gts.api.GTSService;
@@ -8,6 +9,7 @@ import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 
 import java.time.LocalDateTime;
+import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.SortedMap;
 import java.util.UUID;
@@ -39,7 +41,7 @@ public interface Auction extends Listing {
 	 *
 	 * @return A mapping of bids placed on this auction by a user and for how much they bid
 	 */
-	SortedMap<UUID, Double> getBids();
+	NavigableSet<Tuple<UUID, Double>> getBids();
 
 	/**
 	 * Returns the highest bid currently placed on this auction. The high bid at time of expiration marks the winner,
@@ -102,6 +104,8 @@ public interface Auction extends Listing {
 		AuctionBuilder start(double amount);
 
 		AuctionBuilder increment(float rate);
+
+		AuctionBuilder bids(Multimap<UUID, Double> bids);
 
 	}
 

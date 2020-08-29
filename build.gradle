@@ -76,7 +76,7 @@ subprojects {
         shadow "com.nickimpact.impactor:api:3.0.0-SNAPSHOT"
         shadow "org.projectlombok:lombok:1.18.4"
         shadow 'com.google.guava:guava:27.1-jre'
-        shadow 'com.google.code.gson:gson:2.8.5'
+        shadow 'com.google.code.gson:gson:2.8.0'
         shadow 'com.github.ben-manes.caffeine:caffeine:2.8.2'
         testCompile group: 'junit', name: 'junit', version: '4.12'
         testCompile 'com.google.guava:guava:27.1-jre'
