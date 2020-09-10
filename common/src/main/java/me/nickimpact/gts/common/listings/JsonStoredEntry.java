@@ -8,6 +8,8 @@ import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.makeup.Display;
 import net.kyori.text.TextComponent;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -46,6 +48,16 @@ public class JsonStoredEntry implements Entry<JsonObject, Void> {
 
 	@Override
 	public boolean take(UUID depositor) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public Optional<String> getThumbnailURL() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getDetails() {
 		throw new UnsupportedOperationException();
 	}
 

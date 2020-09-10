@@ -1,4 +1,4 @@
-package me.nickimpact.gts.common.utils;
+package me.nickimpact.gts.common.utils.lists;
 
 import com.google.common.collect.Lists;
 

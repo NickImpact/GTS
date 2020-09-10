@@ -8,6 +8,7 @@ import me.nickimpact.gts.api.util.groupings.SimilarPair;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.messaging.GTSMessagingService;
 import me.nickimpact.gts.common.messaging.messages.listings.auctions.AuctionMessageOptions;
+import net.kyori.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -27,10 +28,8 @@ public class AuctionPublishMessage extends AuctionMessageOptions implements Auct
 				.map(JsonElement::getAsString)
 				.orElseThrow(() -> new IllegalStateException("Failed to locate broadcast message"));
 
-		return new AuctionPublishMessage(id, listing, actor, broadcast);
+		return new AuctionPublishMessage(id, listing, actor);
 	}
-
-	private String broadcast;
 
 	/**
 	 * Constructs the message that'll be sent to all other connected servers.
@@ -39,14 +38,8 @@ public class AuctionPublishMessage extends AuctionMessageOptions implements Auct
 	 * @param listing The ID of the listing being bid on
 	 * @param actor   The ID of the user placing the bid
 	 */
-	public AuctionPublishMessage(UUID id, UUID listing, UUID actor, String broadcast) {
+	public AuctionPublishMessage(UUID id, UUID listing, UUID actor) {
 		super(id, listing, actor);
-		this.broadcast = broadcast;
-	}
-
-	@Override
-	public String getBroadcastMessage() {
-		return this.broadcast;
 	}
 
 	@Override
@@ -57,7 +50,6 @@ public class AuctionPublishMessage extends AuctionMessageOptions implements Auct
 				new JObject()
 						.add("listing", this.getAuctionID().toString())
 						.add("actor", this.getActor().toString())
-						.add("broadcast", this.broadcast)
 						.toJson()
 		);
 	}

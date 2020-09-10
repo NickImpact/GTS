@@ -1,4 +1,4 @@
-package me.nickimpact.gts.common.utils;
+package me.nickimpact.gts.common.utils.datetime;
 
 import me.nickimpact.gts.api.listings.Listing;
 

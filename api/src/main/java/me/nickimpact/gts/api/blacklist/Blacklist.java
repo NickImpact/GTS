@@ -5,10 +5,10 @@ import me.nickimpact.gts.api.listings.entries.Entry;
 
 public interface Blacklist {
 
-	Multimap<Class<? extends Entry<?, ?>>, String> getBlacklist();
+	Multimap<Class<?>, String> getBlacklist();
 
-	void append(Class<? extends Entry<?, ?>> registrar, String key);
+	void append(Class<?> registrar, String key);
 
-	boolean isBlacklisted(Class<? extends Entry<?, ?>> registrar, String query);
+	boolean isBlacklisted(Class<?> registrar, String query);
 
 }

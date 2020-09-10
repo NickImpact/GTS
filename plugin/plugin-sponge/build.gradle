@@ -11,6 +11,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'org.spongepowered.plugin' version '0.9.0'
+}
+
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 minecraft {
@@ -47,6 +51,7 @@ shadowJar {
 
     relocate ('net.kyori.text', 'com.nickimpact.impactor.relocations.text')
     relocate ('com.github.benmanes.caffeine', 'com.nickimpact.impactor.relocations.caffeine')
+
 }
 
 reobf {

@@ -1,7 +1,7 @@
 package me.nickimpact.gts.api;
 
 import com.google.common.collect.ImmutableList;
-import me.nickimpact.gts.api.data.registry.DeserializableManagerRegistry;
+import me.nickimpact.gts.api.data.registry.GTSComponentManager;
 import me.nickimpact.gts.api.extensions.Extension;
 import me.nickimpact.gts.api.player.PlayerSettingsManager;
 import me.nickimpact.gts.api.searching.Searcher;
@@ -22,7 +22,7 @@ public interface GTSService {
 	 */
 	ImmutableList<Extension> getAllExtensions();
 
-	DeserializableManagerRegistry getDeserializerManagerRegistry();
+	GTSComponentManager getGTSComponentManager();
 
 	/**
 	 *

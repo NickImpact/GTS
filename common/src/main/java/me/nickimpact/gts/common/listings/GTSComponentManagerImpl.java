@@ -7,17 +7,20 @@ import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.data.registry.GTSKeyMarker;
 import me.nickimpact.gts.api.listings.entries.EntryManager;
-import me.nickimpact.gts.api.data.registry.DeserializableManagerRegistry;
+import me.nickimpact.gts.api.data.registry.GTSComponentManager;
 import me.nickimpact.gts.api.listings.prices.Price;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class DeserializableManagerRegistryImpl implements DeserializableManagerRegistry {
+@SuppressWarnings("unchecked")
+public class GTSComponentManagerImpl implements GTSComponentManager {
 
     private final Map<Class<?>, Storable.Deserializer<?>> listings = Maps.newHashMap();
     private final Map<String, EntryManager<?, ?>> managers = Maps.newHashMap();
     private final Map<String, Storable.Deserializer<?>> prices = Maps.newHashMap();
+
+    private final Map<String, Storable.Deserializer<?>> legacy = Maps.newHashMap();
 
     @Override
     public <T extends Listing> void registerListingDeserializer(Class<T> type, Storable.Deserializer<T> deserializer) {
@@ -25,7 +28,6 @@ public class DeserializableManagerRegistryImpl implements DeserializableManagerR
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends Listing> Optional<Storable.Deserializer<T>> getListingDeserializer(Class<T> type) {
         return Optional.ofNullable((Storable.Deserializer<T>) this.listings.get(type));
     }
@@ -38,8 +40,8 @@ public class DeserializableManagerRegistryImpl implements DeserializableManagerR
     }
 
     @Override
-    public Optional<EntryManager<?, ?>> getEntryDeserializer(String key) {
-        return Optional.ofNullable(this.managers.get(key));
+    public <T extends Entry<?, ?>> Optional<EntryManager<T, ?>> getEntryDeserializer(String key) {
+        return Optional.ofNullable((EntryManager<T, ?>) this.managers.get(key));
     }
 
     @Override
@@ -50,9 +52,18 @@ public class DeserializableManagerRegistryImpl implements DeserializableManagerR
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends Price<?, ?>> Optional<Storable.Deserializer<T>> getPriceDeserializer(String key) {
         return Optional.ofNullable((Storable.Deserializer<T>) this.prices.get(key));
+    }
+
+    @Override
+    public <T extends Entry<?, ?>> void registerLegacyEntryDeserializer(String key, Storable.Deserializer<T> deserializer) {
+        this.legacy.put("legacy_" + key, deserializer);
+    }
+
+    @Override
+    public <T extends Entry<?, ?>> Optional<Storable.Deserializer<T>> getLegacyEntryDeserializer(String key) {
+        return Optional.ofNullable((Storable.Deserializer<T>) this.legacy.get("legacy_" + key));
     }
 
 

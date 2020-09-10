@@ -25,16 +25,17 @@
 
 package me.nickimpact.gts.common.storage;
 
+import com.nickimpact.impactor.api.Impactor;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import me.nickimpact.gts.api.player.PlayerSettings;
 import me.nickimpact.gts.api.stashes.Stash;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.api.storage.GTSStorage;
-import me.nickimpact.gts.api.util.ThrowingRunnable;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
+import me.nickimpact.gts.common.utils.exceptions.ExceptionWriter;
+import me.nickimpact.gts.common.utils.future.CompletableFutureManager;
 
 import java.util.Collection;
 import java.util.List;
@@ -43,7 +44,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.function.Predicate;
 
 public class GTSStorageImpl implements GTSStorage {
@@ -64,7 +64,7 @@ public class GTSStorageImpl implements GTSStorage {
             this.implementation.init();
         } catch (Exception e) {
             // Log the failure
-            e.printStackTrace();
+            ExceptionWriter.write(e);
         }
     }
 
@@ -93,38 +93,12 @@ public class GTSStorageImpl implements GTSStorage {
 
     @Override
     public CompletableFuture<Boolean> publishListing(Listing listing) {
-        return null;
-    }
-
-    private <T> CompletableFuture<T> makeFuture(Callable<T> supplier) {
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                return supplier.call();
-            } catch (Exception e) {
-                if (e instanceof RuntimeException) {
-                    throw (RuntimeException) e;
-                }
-                throw new CompletionException(e);
-            }
-        });
-    }
-
-    private CompletableFuture<Void> makeFuture(ThrowingRunnable runnable) {
-        return CompletableFuture.runAsync(() -> {
-            try {
-                runnable.run();
-            } catch (Exception e) {
-                if (e instanceof RuntimeException) {
-                    throw (RuntimeException) e;
-                }
-                throw new CompletionException(e);
-            }
-        });
+        return this.schedule(() -> this.implementation.addListing(listing));
     }
 
     @Override
     public CompletableFuture<Boolean> purge() {
-        return this.makeFuture(this.implementation::purge);
+        return this.schedule(this.implementation::purge);
     }
 
     @Override
@@ -139,7 +113,7 @@ public class GTSStorageImpl implements GTSStorage {
 
     @Override
     public CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request) {
-        return this.makeFuture(() -> this.implementation.processBid(request));
+        return this.schedule(() -> this.implementation.processBid(request));
     }
 
     @Override
@@ -149,11 +123,15 @@ public class GTSStorageImpl implements GTSStorage {
 
     @Override
     public CompletableFuture<List<Listing>> fetchListings(Collection<Predicate<Listing>> filters) {
-        return null;
+        return this.schedule(this.implementation::getListings);
     }
 
     @Override
     public CompletableFuture<Stash<?, ?>> fetchStash(UUID user) {
         return null;
+    }
+
+    private <T> CompletableFuture<T> schedule(Callable<T> callable) {
+        return CompletableFutureManager.makeFuture(callable, Impactor.getInstance().getScheduler().async());
     }
 }

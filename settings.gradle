@@ -10,10 +10,10 @@ include (
         'plugin',
         'plugin:plugin-sponge',
 //        'plugin:spigot',
-//        'pixelmon',
-//        'pixelmon:reforged',
+        'pixelmon',
+        'pixelmon:reforged',
 //        'pixelmon:reforged:spigot',
-//        'pixelmon:reforged:sponge',
+        'pixelmon:reforged:sponge',
 //        'pixelmon:generations'
 )
 

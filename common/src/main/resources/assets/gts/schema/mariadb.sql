@@ -1,9 +1,7 @@
 CREATE TABLE `{prefix}listings` (
     `id`                VARCHAR(36)     NOT NULL,
     `lister`            VARCHAR(36)     NOT NULL,
-    `entry`             TEXT            NOT NULL,
-    `price`             TEXT            NOT NULL,
-    `expiration`        TIMESTAMP       NOT NULL,
+    `listing`           MEDIUMTEXT      NOT NULL,
     PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8;
 

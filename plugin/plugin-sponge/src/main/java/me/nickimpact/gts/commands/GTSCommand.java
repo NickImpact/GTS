@@ -6,27 +6,21 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
-import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.nickimpact.impactor.api.json.factory.JObject;
-import me.nickimpact.gts.api.GTSService;
-import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.listings.auctions.Auction;
+import com.nickimpact.impactor.api.Impactor;
 import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.listings.SpongeItemEntry;
-import me.nickimpact.gts.sponge.pricing.provided.MoneyPrice;
+import me.nickimpact.gts.manager.SpongeListingManager;
+import me.nickimpact.gts.sponge.listings.SpongeBuyItNow;
+import me.nickimpact.gts.sponge.pricing.provided.MonetaryPrice;
 import me.nickimpact.gts.ui.SpongeMainMenu;
 import me.nickimpact.gts.ui.admin.SpongeAdminMenu;
-import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.enchantment.Enchantment;
-import org.spongepowered.api.item.enchantment.EnchantmentTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
+import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -66,8 +60,21 @@ public class GTSCommand extends BaseCommand {
         }
 
         @Subcommand("test")
-        public void test(CommandIssuer issuer) {
-
+        public void test(Player player) {
+            ItemStack test = ItemStack.builder()
+                    .itemType(ItemTypes.DIAMOND)
+                    .add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Test Item"))
+                    .build();
+            SpongeItemEntry entry = new SpongeItemEntry(test.createSnapshot());
+            BuyItNow bin = BuyItNow.builder()
+                    .id(UUID.randomUUID())
+                    .lister(player.getUniqueId())
+                    .price(new MonetaryPrice(420.00))
+                    .expiration(LocalDateTime.now().plusDays(7))
+                    .entry(entry)
+                    .build();
+            SpongeListingManager manager = Impactor.getInstance().getRegistry().get(SpongeListingManager.class);
+            manager.list(player.getUniqueId(), (SpongeBuyItNow) bin);
         }
 
     }

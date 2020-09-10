@@ -33,6 +33,7 @@ import me.nickimpact.gts.common.plugin.GTSPlugin;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -74,6 +75,8 @@ public interface StorageImplementation {
     boolean addListing(Listing listing) throws Exception;
 
     boolean deleteListing(UUID uuid) throws Exception;
+
+    Optional<Listing> getListing(UUID id) throws Exception;
 
     List<Listing> getListings() throws Exception;
 

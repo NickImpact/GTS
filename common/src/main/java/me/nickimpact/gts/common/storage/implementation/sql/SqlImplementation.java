@@ -26,11 +26,17 @@
 package me.nickimpact.gts.common.storage.implementation.sql;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.nickimpact.impactor.api.json.factory.JObject;
 import com.nickimpact.impactor.api.storage.sql.ConnectionFactory;
+import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
+import me.nickimpact.gts.api.listings.auctions.Auction;
+import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 import me.nickimpact.gts.api.listings.entries.Entry;
+import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
@@ -43,13 +49,18 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 public class SqlImplementation implements StorageImplementation {
 
-	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM {prefix}listings_v3";
-	private static final String ADD_LISTING = "INSERT INTO {prefix}listings_v3 (id, owner, entry, price, expiration) VALUES (?, ?, ?, ?, ?)";
+	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM {prefix}listings";
+	private static final String GET_SPECIFIC_LISTING = "SELECT * FROM {prefix}listings WHERE id=?";
+
+	private static final String ADD_LISTING = "INSERT INTO {prefix}listings (id, lister, listing) VALUES (?, ?, ?)";
 	private static final String REMOVE_LISTING = "DELETE FROM {prefix}listings_v3 WHERE id=?";
 	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES (?)";
 	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID=?";
@@ -95,8 +106,8 @@ public class SqlImplementation implements StorageImplementation {
 	public void init() throws Exception {
 		this.connectionFactory.init();
 
-		String schemaFileName = "me/nickimpact/gts/schema/" + this.connectionFactory.getImplementationName().toLowerCase() + ".sql";
-		try (InputStream is = plugin.getResourceStream(schemaFileName)) {
+		String schemaFileName = "assets/gts/schema/" + this.connectionFactory.getImplementationName().toLowerCase() + ".sql";
+		try (InputStream is = this.plugin.getResourceStream(schemaFileName)) {
 			if (is == null) {
 				throw new Exception("Couldn't locate schema file for " + this.connectionFactory.getImplementationName());
 			}
@@ -117,10 +128,9 @@ public class SqlImplementation implements StorageImplementation {
 
 								String result = this.processor.apply(sb.toString().trim());
 
-
 								if (!result.isEmpty()) {
 									int start = result.indexOf('`');
-									if(!tableExists(result.substring(start + 1, result.indexOf('`', start + 1)))) {
+									if(!this.tableExists(result.substring(start + 1, result.indexOf('`', start + 1)))) {
 										s.addBatch(result);
 									}
 								}
@@ -175,13 +185,7 @@ public class SqlImplementation implements StorageImplementation {
 		return this.query(ADD_LISTING, (connection, ps) -> {
 			ps.setString(1, listing.getID().toString());
 			ps.setString(2, listing.getLister().toString());
-
-			Clob clob = connection.createClob();
-			clob.setString(1, this.plugin.getGson().toJson(listing.getEntry(), Entry.class));
-
-			ps.setClob(3, clob);
-			//ps.setDouble(4, listing.getPrice().getPrice());
-			//ps.setTimestamp(5, Timestamp.valueOf(listing.getExpiration()));
+			ps.setString(3, this.plugin.getGson().toJson(listing.serialize().toJson()));
 			ps.executeUpdate();
 
 			return true;
@@ -198,35 +202,57 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public List<Listing> getListings() throws Exception {
-		List<Listing> entries = Lists.newArrayList();
+	public Optional<Listing> getListing(UUID id) throws Exception {
+		return this.query(GET_SPECIFIC_LISTING, (connection, ps) -> {
+			ps.setString(1, id.toString());
+			return Optional.ofNullable(this.results(ps, results -> {
+				if(results.next()) {
+					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
+					if(!json.has("type")) {
+						throw new JsonParseException("Invalid Listing: Missing type");
+					}
 
+					String type = json.get("type").getAsString();
+					if(type.equals("bin")) {
+						return GTSService.getInstance().getGTSComponentManager().getListingDeserializer(BuyItNow.class).get().deserialize(json);
+					} else {
+						return GTSService.getInstance().getGTSComponentManager().getListingDeserializer(Auction.class).get().deserialize(json);
+					}
+				}
+				return null;
+			}));
+		});
+	}
+
+	@Override
+	public List<Listing> getListings() throws Exception {
+		this.translateLegacy();
 		return this.query(SELECT_ALL_LISTINGS, (connection, ps) -> this.results(ps, results -> {
+			List<Listing> entries = Lists.newArrayList();
+
 			int failed = 0;
 			while(results.next()) {
 				try {
-					UUID id = UUID.fromString(results.getString("id"));
-					String entry = results.getString("entry");
-					String price = results.getString("price");
-					LocalDateTime date = results.getTimestamp("expiration").toLocalDateTime();
+					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
+					if(!json.has("type")) {
+						throw new JsonParseException("Invalid Listing: Missing type");
+					}
 
-
-
-//					Listing listing = Listing.builder()
-//							.id(id)
-//							.lister(null)
-//							.entry(this.plugin.getGson().fromJson(entry, Entry.class))
-//							.price(this.plugin.getGson().fromJson(price, Price.class))
-//							.expiration(date)
-//							.build();
-//					entries.add(listing);
-				} catch (JsonParseException e) {
+					String type = json.get("type").getAsString();
+					if(type.equals("bin")) {
+						BuyItNow bin = GTSService.getInstance().getGTSComponentManager().getListingDeserializer(BuyItNow.class).get().deserialize(json);
+						entries.add(bin);
+					} else {
+						Auction auction = GTSService.getInstance().getGTSComponentManager().getListingDeserializer(Auction.class).get().deserialize(json);
+						entries.add(auction);
+					}
+				} catch (Exception e) {
 					++failed;
 				}
 			}
 
 			if(failed != 0) {
-				plugin.getPluginLogger().error("Failed to read in &c" + failed + " &7listings...");
+				this.plugin.getPluginLogger().error("Failed to read in &c" + failed + " &7listings...");
 			}
 
 			return entries;
@@ -323,6 +349,95 @@ public class SqlImplementation implements StorageImplementation {
 				}
 				return false;
 			}
+		}
+	}
+
+	@Deprecated
+	private boolean ran = false;
+
+	/**
+	 * This will read the old data from our database, and apply the necessary changes required to
+	 * update the data to our new system.
+	 *
+	 * @deprecated This is purely for legacy updating. This will be removed in 6.1
+	 */
+	@Deprecated
+	private void translateLegacy() throws Exception {
+		if(!this.ran && this.tableExists(this.processor.apply("{prefix}listings_v3"))) {
+			GTSPlugin.getInstance().getPluginLogger().info("&6Attempting to translate legacy data...");
+			AtomicInteger successful = new AtomicInteger();
+			AtomicInteger parsed = new AtomicInteger();
+
+			this.ran = true;
+
+			this.query(
+					this.processor.apply("SELECT * from {prefix}listings_v3"),
+					(connection, query) -> this.results(query, incoming -> {
+						connection.setAutoCommit(false);
+						try (PreparedStatement ps = connection.prepareStatement(this.processor.apply(ADD_LISTING))) {
+							while (incoming.next()) {
+								UUID id = UUID.fromString(incoming.getString("id"));
+
+								if(this.getListing(id).isPresent()) {
+									continue;
+								}
+
+								try {
+									UUID lister = UUID.fromString(incoming.getString("owner"));
+									LocalDateTime expiration = incoming.getTimestamp("expiration").toLocalDateTime();
+									Price<?, ?> price = GTSService.getInstance().getGTSComponentManager()
+											.getPriceDeserializer("currency")
+											.orElseThrow(() -> new IllegalStateException("No deserializer for currency available"))
+											.deserialize(new JObject().add("value", incoming.getDouble("price")).toJson());
+
+									JsonObject json = GTSPlugin.getInstance().getGson().fromJson(incoming.getString("entry"), JsonObject.class);
+									Entry<?, ?> entry = GTSService.getInstance().getGTSComponentManager()
+											.getLegacyEntryDeserializer(json.get("type").getAsString())
+											.orElseThrow(() -> new IllegalStateException("No deserializer for legacy entry type: " + json.get("type").getAsString()))
+											.deserialize(json);
+
+									BuyItNow bin = BuyItNow.builder()
+											.id(id)
+											.lister(lister)
+											.expiration(expiration)
+											.price(price)
+											.entry(entry)
+											.build();
+
+									ps.setString(1, id.toString());
+									ps.setString(2, lister.toString());
+									ps.setString(3, GTSPlugin.getInstance().getGson().toJson(bin.serialize().toJson()));
+
+									ps.addBatch();
+									successful.incrementAndGet();
+								} catch (IllegalStateException e) {
+									GTSPlugin.getInstance().getPluginLogger().error("Failed to read listing with ID: " + id.toString());
+									GTSPlugin.getInstance().getPluginLogger().error("  * " + e.getMessage());
+								} finally {
+									parsed.incrementAndGet();
+								}
+							}
+
+							ps.executeBatch();
+						}
+						connection.commit();
+						connection.setAutoCommit(true);
+
+						return null;
+					})
+			);
+
+			if(successful.get() == parsed.get()) {
+				try (Connection connection = this.connectionFactory.getConnection()) {
+					Statement statement = connection.createStatement();
+					statement.executeUpdate(this.processor.apply("DROP TABLE {prefix}listings_v3"));
+				}
+				GTSPlugin.getInstance().getPluginLogger().info("Successfully converted " + successful.get() + " instances of legacy data!");
+			} else {
+				GTSPlugin.getInstance().getPluginLogger().warn("Some data failed to be converted, as such, we preserved the remaining data...");
+				GTSPlugin.getInstance().getPluginLogger().warn("Check the logs above for further information!");
+			}
+
 		}
 	}
 

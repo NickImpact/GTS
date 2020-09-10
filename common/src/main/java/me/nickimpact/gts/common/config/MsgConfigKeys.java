@@ -197,10 +197,9 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"Item: {{gts_published_item}}",
 			"Item Details: {{gts_published_item_details}}"
 	));
-	public static final ConfigKey<String> LISTING_EVENT_CANCELLED = stringKey("general.listings.event-cancelled", "{{gts_error}} Your listing was blocked by an administrative source...");
+	public static final ConfigKey<String> LISTING_EVENT_CANCELLED = stringKey("general.listings.event-cancelled", "{{gts:error}} Your listing was blocked by an administrative source...");
 
-	public static final ConfigKey<String> PLUGIN_ERROR = stringKey("general.errors.unexpected", "{{gts_error}} Due to an internal server error, your action request was cancelled...");
-	public static final ConfigKey<String> UNABLE_TO_TAKE_LISTING = stringKey("general.listings.unable-to-take", "{{gts_error}} Your listing failed to be taken, so we returned the tax you paid!");
+	public static final ConfigKey<String> UNABLE_TO_TAKE_LISTING = stringKey("general.listings.unable-to-take", "{{gts_error}} Your listing failed to be taken...");
 	public static final ConfigKey<String> UI_ITEMS_PLAYER_LISTINGS_LORE_DISABLED = stringKey("ui.main.items.player-listings.disabled", "&7Status: &cDisabled");
 	public static final ConfigKey<String> UI_ITEMS_PLAYER_LISTINGS_LORE_ENABLED = stringKey("ui.main.items.player-listings.enabled", "&7Status: &aEnabled");
 	public static final ConfigKey<String> UI_ITEMS_REFRESH_TITLE = stringKey("ui.main.items.refresh.title", "&eRefresh Listings");
@@ -396,7 +395,35 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	));
 
 	public static final ConfigKey<String> UI_LISTINGS_ITEMS_ANVIL_RENAME_PREPEND = stringKey("ui.listings.items.anvil-rename", "&7Item Name: &e");
-	public static final ConfigKey<String> UI_LISTINGS_ITEMS_LORE_DESCRIPTOR = stringKey("ui.listings.items.lore-descriptor", "&aItem Lore:");
+
+
+	public static final ConfigKey<List<String>> UI_LISTING_DETAIL_SEPARATOR = listKey("ui.listings.detail-separator", Lists.newArrayList(
+			"&8&m-------------------------"
+	));
+	public static final ConfigKey<List<String>> UI_BIN_DETAILS = listKey("ui.listings.buy-it-now.details", Lists.newArrayList(
+			"&7Seller: &e{{gts:seller}}",
+			"&7Buy it now: &a{{gts:bin_price}}",
+			"",
+			"&7Ends in: &e{{gts:time_left}}",
+			"",
+			"&eClick to inspect!"
+	));
+	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS = listKey("ui.listings.auctions.details", Lists.newArrayList(
+			"&7Seller: &e{{gts:seller}}",
+			"&7Bids: &a{{gts:bids}} bids",
+			"",
+			"&7Top bid: &e{{gts:high_bid}}",
+			"&7Bidder: {{gts:high_bidder}}",
+			"",
+			"&7Ends in: &e{{gts:time_left}}",
+			"",
+			"&eClick to inspect!"
+	));
+
+	public static final ConfigKey<String> GENERAL_FEEDBACK_BEGIN_PUBLISH_REQUEST = stringKey("general.feedback.begin-feedback-request", "&7Processing your request...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_FEES_COLLECTION = stringKey("general.feedback.tax-collect", "&7Collecting fees...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_COLLECT_LISTING = stringKey("general.feedback.collect-listing", "&7Collecting your listing...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_RETURN_FEES = stringKey("general.feedback.return-tax-from-failure", "&7Returning fees...");
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

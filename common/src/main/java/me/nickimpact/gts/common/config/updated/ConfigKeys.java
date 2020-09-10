@@ -62,7 +62,8 @@ public class ConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> REDIS_PASSWORD = stringKey("redis.password", "");
 
 	// Discord Logging
-	public static final ConfigKey<Boolean> DISCORD_LOGGING_ENABLED = booleanKey("discord.enabled", false);
+	public static final ConfigKey<Boolean> DISCORD_LOGGING_ENABLED = booleanKey("discord.enabled", true);
+	public static final ConfigKey<Boolean> DISCORD_DEBUG_ENABLED = booleanKey("discord.debug", false);
 	public static final ConfigKey<String> DISCORD_AVATAR = stringKey("discord.avatar", "https://cdn.bulbagarden.net/upload/thumb/f/f5/399Bidoof.png/600px-399Bidoof.png");
 	public static final ConfigKey<String> DISCORD_TITLE = stringKey("discord.title", "GTS Logging");
 	public static final ConfigKey<Map<DiscordOption.Options, DiscordOption>> DISCORD_LINKS = customKey(adapter -> {
@@ -154,6 +155,8 @@ public class ConfigKeys implements ConfigKeyHolder {
 	public static final TimeKey LISTING_TIME_MID = new TimeKey("listing-time-mid", "12h");
 	public static final TimeKey LISTING_TIME_HIGH = new TimeKey("listing-time-high", "1d");
 	public static final TimeKey LISTING_TIME_HIGHEST = new TimeKey("listing-time-highest", "2d");
+
+	public static final ConfigKey<Boolean> PRICE_CONTROL_ENABLED = booleanKey("pricing.control.enabled", true);
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

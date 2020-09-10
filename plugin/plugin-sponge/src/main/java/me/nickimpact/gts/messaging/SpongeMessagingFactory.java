@@ -22,7 +22,7 @@ public class SpongeMessagingFactory extends MessagingFactory<GTSSpongePlugin> {
 	protected InternalMessagingService getServiceFor(String messageType) {
 		if (messageType.equals("pluginmsg") || messageType.equals("bungee") || messageType.equals("velocity")) {
 			try {
-				return new GTSMessagingService(getPlugin(), new PluginMessageMessengerProvider(), new SpongeIncomingMessageConsumer(this.getPlugin()));
+				return new GTSMessagingService(this.getPlugin(), new PluginMessageMessengerProvider(), new SpongeIncomingMessageConsumer(this.getPlugin()));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -52,7 +52,7 @@ public class SpongeMessagingFactory extends MessagingFactory<GTSSpongePlugin> {
 
 		@Override
 		public @NonNull Messenger obtain(@NonNull IncomingMessageConsumer incomingMessageConsumer) {
-			PluginMessageMessenger messenger = new PluginMessageMessenger(getPlugin(), incomingMessageConsumer);
+			PluginMessageMessenger messenger = new PluginMessageMessenger(SpongeMessagingFactory.this.getPlugin(), incomingMessageConsumer);
 			messenger.init();
 			return messenger;
 		}

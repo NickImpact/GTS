@@ -3,7 +3,6 @@ package me.nickimpact.gts.ui;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.Impactor;
-import com.nickimpact.impactor.api.configuration.ConfigKey;
 import com.nickimpact.impactor.api.gui.InventoryDimensions;
 import com.nickimpact.impactor.api.services.text.MessageService;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
@@ -19,12 +18,13 @@ import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.config.wrappers.SortConfigurationOptions;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
-import me.nickimpact.gts.common.utils.CircularLinkedList;
+import me.nickimpact.gts.common.utils.lists.CircularLinkedList;
 import me.nickimpact.gts.common.config.wrappers.TitleLorePair;
 import me.nickimpact.gts.manager.SpongeListingManager;
 import me.nickimpact.gts.sponge.listings.SpongeListing;
 import me.nickimpact.gts.sponge.ui.SpongeAsyncPage;
 import me.nickimpact.gts.util.Utilities;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
@@ -64,7 +64,22 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private CircularLinkedList<Sorter> sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
 
 	public SpongeListingMenu(Player viewer) {
-		super(GTSPlugin.getInstance(), viewer, Impactor.getInstance().getRegistry().get(SpongeListingManager.class).fetchListings());
+		super(GTSPlugin.getInstance(),
+				viewer,
+				Impactor.getInstance().getRegistry().get(SpongeListingManager.class).fetchListings(),
+				listing -> !listing.hasExpired()
+		);
+		this.applier(listing -> {
+			SpongeIcon icon = new SpongeIcon(listing.getEntry().getDisplay(viewer.getUniqueId(), listing).getDisplay());
+			icon.addListener(clickable -> {
+
+			});
+			return icon;
+		});
+		Sponge.getScheduler().createTaskBuilder()
+				.execute(this::apply)
+				.interval(1, TimeUnit.SECONDS)
+				.submit(GTSPlugin.getInstance().getBootstrap());
 	}
 
 	@Override

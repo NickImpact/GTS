@@ -24,7 +24,7 @@ import java.util.function.BiFunction;
 
 public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E, SpongeIcon> {
 
-    private SpongeUI display;
+    private final SpongeUI display;
 
     public AbstractSpongeEntryUI(Player viewer) {
         super(viewer);
@@ -43,7 +43,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
 
     @Override
     public void open(Player user) {
-
+        this.display.open(user);
     }
 
     @Override

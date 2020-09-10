@@ -6,6 +6,7 @@ import com.nickimpact.impactor.api.logging.Logger;
 import lombok.Getter;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.common.plugin.bootstrap.GTSBootstrap;
+import me.nickimpact.gts.common.utils.exceptions.ExceptionWriter;
 import me.nickimpact.gts.placeholders.GTSSpongePlaceholderManager;
 import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.api.Platform;
@@ -65,10 +66,10 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 	public void onPreInit(GamePreInitializationEvent event) {
 		try {
 			this.plugin.preInit();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			this.exception = e;
 			this.disable();
-			e.printStackTrace();
+			ExceptionWriter.write(e);
 		}
 	}
 
@@ -76,10 +77,10 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 	public void onInit(GameInitializationEvent event) {
 		try {
 			this.plugin.init();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			this.exception = e;
 			this.disable();
-			e.printStackTrace();
+			ExceptionWriter.write(e);
 		}
 	}
 
@@ -87,10 +88,10 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 	public void onStart(GameStartedServerEvent event) {
 		try {
 			this.plugin.started();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			this.exception = e;
 			this.disable();
-			e.printStackTrace();
+			ExceptionWriter.write(e);
 		}
 	}
 
@@ -124,7 +125,7 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 
 	@Override
 	public Optional<Throwable> getLaunchError() {
-		return Optional.ofNullable(exception);
+		return Optional.ofNullable(this.exception);
 	}
 
 	@Override

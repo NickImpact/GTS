@@ -2,6 +2,7 @@ package me.nickimpact.gts.api.messaging.message.type.auctions;
 
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
 import me.nickimpact.gts.api.messaging.message.type.MessageType;
+import net.kyori.text.TextComponent;
 import org.checkerframework.checker.index.qual.Positive;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -40,20 +41,7 @@ public interface AuctionMessage extends OutgoingMessage {
 	 * Therefore, this message is simply populated with the message that indicates that the listing
 	 * is actually being published globally, or within the scope of the configuration.
 	 */
-	interface Publish extends AuctionMessage {
-
-		/**
-		 * Represents the message that should be decoded by the receiver to publish to all players
-		 * across the configured landscape. This message will have all placeholders parsed, but
-		 * contain all original color code formatting via ampersands. This is to allow multiple
-		 * different server versions be able to interpret the incoming message as needed for their
-		 * environment. AKA, Sponge versus Spigot.
-		 *
-		 * @return The message with populated placeholders that indicate the publishing of the listing
-		 */
-		String getBroadcastMessage();
-
-	}
+	interface Publish extends AuctionMessage {}
 
 	/**
 	 * Represents a bid action. This message is created whenever a player decides to bid on an auction.

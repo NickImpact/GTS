@@ -11,6 +11,7 @@ import lombok.Getter;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -63,7 +65,7 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 
 	private CompletableFuture<List<T>> future;
 
-	public AsyncPage(GTSPlugin plugin, P viewer, CompletableFuture<List<T>> future) {
+	public AsyncPage(GTSPlugin plugin, P viewer, CompletableFuture<List<T>> future, Predicate<T>... conditions) {
 		this.plugin = plugin;
 		this.viewer = viewer;
 		this.title = this.getTitle();
@@ -75,6 +77,7 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 		this.pageIcons = this.getPageIcons();
 		this.page = 1;
 		this.future = future;
+		this.conditions.addAll(Arrays.asList(conditions));
 	}
 
 	@Override
@@ -118,7 +121,7 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	}
 
 	private void queue(CompletableFuture<List<T>> future, long timeout, TimeUnit unit) {
-		future.acceptEither(timeoutAfter(timeout, unit), list -> Impactor.getInstance().getScheduler().executeSync(() -> this.define(list)))
+		future.acceptEither(this.timeoutAfter(timeout, unit), list -> Impactor.getInstance().getScheduler().executeSync(() -> this.define(list)))
 				.exceptionally(ex -> {
 					Impactor.getInstance().getScheduler().executeSync(() -> this.doProvidedFill(this.getTimeoutIcon()));
 					return null;
@@ -134,6 +137,7 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	@Override
 	public void define(List<T> list) {
 		this.contents = list;
+		this.clean();
 		this.apply();
 	}
 
@@ -161,7 +165,7 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 		this.view = this.build(this.layout);
 		this.doProvidedFill(this.getLoadingIcon());
 		Tuple<Long, TimeUnit> timeout = this.getTimeout();
-		this.queue(future, timeout.getFirst(), timeout.getSecond());
+		this.queue(this.future, timeout.getFirst(), timeout.getSecond());
 		this.view.open(this.viewer);
 	}
 
@@ -187,8 +191,6 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 
 	@Override
 	public void apply() {
-		this.clean();
-
 		int capacity = this.contentZone.getColumns() * this.contentZone.getRows();
 		int pages = this.contents.isEmpty() ? 1 : (this.contents.size() % capacity == 0 ? this.contents.size() / capacity : this.contents.size() / capacity + 1);
 		if (pages < this.page) {
@@ -199,27 +201,34 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 			return;
 		}
 
+		AtomicInteger filtered = new AtomicInteger(this.contents.size());
 		List<T> viewable = this.contents.stream()
 				.filter(x -> this.conditions.stream().allMatch(y -> y.test(x)))
-				.collect(Collectors.toList())
-				.subList((this.page - 1) * capacity, this.page == pages ? this.contents.size() : this.page * capacity);
+				.collect(Collectors.toList());
+		filtered.set(viewable.size());
+		viewable = viewable.subList((this.page - 1) * capacity, this.page == pages ? filtered.get() : this.page * capacity);
 		List<I> translated = viewable.stream().map(x -> this.applier.apply(x)).collect(Collectors.toList());
 
 		int index = this.cOffset + this.view.getDimension().getColumns() * this.rOffset;
-		int r = 0;
+		int c = 0;
 		int cap = index + this.contentZone.getColumns() - 1 + 9 * (this.contentZone.getRows() - 1);
 
-		for (Iterator<I> x = translated.iterator(); x.hasNext() && index <= cap; ++r) {
-			I icon = x.next();
-
-			if (r == this.contentZone.getColumns()) {
+		Iterator<I> iterator = translated.iterator();
+		for (; index <= cap; index++, c++) {
+			if (c == this.contentZone.getColumns()) {
 				index += this.view.getDimension().getColumns() - this.contentZone.getColumns();
-				r = 0;
+				c = 0;
 			}
 
-			this.view.setSlot(index, icon);
-			++index;
+			if(iterator.hasNext()) {
+				I icon = iterator.next();
+				this.view.setSlot(index, icon);
+			} else {
+				this.view.clear(index);
+			}
+
 		}
+
 	}
 
 	public void cancelIfRunning() {

@@ -6,6 +6,8 @@ import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.makeup.Display;
 import net.kyori.text.TextComponent;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -58,6 +60,9 @@ public interface Entry<T, I> extends Storable {
 	 *
 	 * @param receiver The recipient of the entry
 	 * @return True if the listing was received, false otherwise.
+	 *
+	 * https://projectpokemon.org/images/normal-sprite/bulbasaur.gif
+	 * https://projectpokemon.org/images/shiny-sprite/bulbasaur.gif
 	 */
 	boolean give(UUID receiver);
 
@@ -70,5 +75,19 @@ public interface Entry<T, I> extends Storable {
 	 * @return True if the listing was taken from the user, false otherwise
 	 */
 	boolean take(UUID depositor);
+
+	/**
+	 * Represents a URL mapping to an image that can represent the listing
+	 *
+	 * @return A URL representing the listing
+	 */
+	Optional<String> getThumbnailURL();
+
+	/**
+	 * Represents a set of details mapping to the listing
+	 *
+	 * @return A set of details describing the listing
+	 */
+	List<String> getDetails();
 
 }

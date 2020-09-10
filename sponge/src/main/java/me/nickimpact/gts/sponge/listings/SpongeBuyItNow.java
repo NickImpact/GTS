@@ -39,6 +39,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 				.add("key", this.getPrice().getClass().getAnnotation(GTSKeyMarker.class).value())
 				.add("content", this.getPrice().serialize());
 		json.add("price", price);
+		json.add("type", "bin");
 
 		return json;
 	}
@@ -50,13 +51,13 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 				.expiration(LocalDateTime.parse(json.getAsJsonObject("timings").get("expiration").getAsString()));
 
 		JsonObject element = json.getAsJsonObject("entry");
-		EntryManager<?, ?> entryManager = GTSService.getInstance().getDeserializerManagerRegistry()
+		EntryManager<?, ?> entryManager = GTSService.getInstance().getGTSComponentManager()
 				.getEntryDeserializer(element.get("key").getAsString())
 				.orElseThrow(() -> new RuntimeException("JSON Data for entry is missing mapping key"));
 		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));
 
 		JsonObject price = json.getAsJsonObject("price");
-		Storable.Deserializer<Price<?, ?>> deserializer = GTSService.getInstance().getDeserializerManagerRegistry()
+		Storable.Deserializer<Price<?, ?>> deserializer = GTSService.getInstance().getGTSComponentManager()
 				.getPriceDeserializer(price.get("key").getAsString())
 				.orElseThrow(() -> new RuntimeException("JSON Data for price is missing mapping key"));
 		builder.price(deserializer.deserialize(price.getAsJsonObject("content")));

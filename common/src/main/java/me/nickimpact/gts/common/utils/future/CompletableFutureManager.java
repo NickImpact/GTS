@@ -1,24 +1,27 @@
-package me.nickimpact.gts.common.utils;
+package me.nickimpact.gts.common.utils.future;
 
 import me.nickimpact.gts.api.util.ThrowingRunnable;
+import me.nickimpact.gts.common.utils.exceptions.ExceptionWriter;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executor;
 
 public class CompletableFutureManager {
 
-	public static <T> CompletableFuture<T> makeFuture(Callable<T> supplier) {
+	public static <T> CompletableFuture<T> makeFuture(Callable<T> supplier, Executor executor) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				return supplier.call();
 			} catch (Exception e) {
+				ExceptionWriter.write(e);
 				if (e instanceof RuntimeException) {
 					throw (RuntimeException) e;
 				}
 				throw new CompletionException(e);
 			}
-		});
+		}, executor);
 	}
 
 	public static CompletableFuture<Void> makeFuture(ThrowingRunnable runnable) {
@@ -26,6 +29,7 @@ public class CompletableFutureManager {
 			try {
 				runnable.run();
 			} catch (Exception e) {
+				ExceptionWriter.write(e);
 				if (e instanceof RuntimeException) {
 					throw (RuntimeException) e;
 				}

@@ -29,7 +29,7 @@ import com.nickimpact.impactor.api.storage.StorageType;
 import com.nickimpact.impactor.api.storage.sql.file.H2ConnectionFactory;
 import com.nickimpact.impactor.api.storage.sql.hikari.MariaDBConnectionFactory;
 import com.nickimpact.impactor.api.storage.sql.hikari.MySQLConnectionFactory;
-import me.nickimpact.gts.common.config.ConfigKeys;
+import me.nickimpact.gts.common.config.updated.ConfigKeys;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
 import me.nickimpact.gts.common.storage.implementation.file.ConfigurateStorage;
@@ -50,20 +50,19 @@ public class StorageFactory {
 
     public GTSStorageImpl getInstance(StorageType defaultMethod) {
         GTSStorageImpl storage;
-        String method = plugin.getConfiguration().get(ConfigKeys.STORAGE_METHOD);
-        StorageType type = StorageType.parse(method);
+        StorageType type = this.plugin.getConfiguration().get(ConfigKeys.STORAGE_METHOD);
         if(type == null) {
             type = defaultMethod;
         }
 
         this.plugin.getPluginLogger().info("Loading storage provider... [" + type.getName() + "]");
-        storage = makeInstance(type);
+        storage = this.makeInstance(type);
         storage.init();
         return storage;
     }
 
     private GTSStorageImpl makeInstance(StorageType type) {
-        return new GTSStorageImpl(this.plugin, createNewImplementation(type));
+        return new GTSStorageImpl(this.plugin, this.createNewImplementation(type));
     }
 
     private StorageImplementation createNewImplementation(StorageType type) {
@@ -71,13 +70,13 @@ public class StorageFactory {
             case MARIADB:
                 return new SqlImplementation(
                         this.plugin,
-                        new MariaDBConnectionFactory(this.plugin.getConfiguration().get(ConfigKeys.DATABASE_VALUES)),
+                        new MariaDBConnectionFactory(this.plugin.getConfiguration().get(ConfigKeys.STORAGE_CREDENTIALS)),
                         this.plugin.getConfiguration().get(ConfigKeys.SQL_TABLE_PREFIX)
                 );
             case MYSQL:
                 return new SqlImplementation(
                         this.plugin,
-                        new MySQLConnectionFactory(this.plugin.getConfiguration().get(ConfigKeys.DATABASE_VALUES)),
+                        new MySQLConnectionFactory(this.plugin.getConfiguration().get(ConfigKeys.STORAGE_CREDENTIALS)),
                         this.plugin.getConfiguration().get(ConfigKeys.SQL_TABLE_PREFIX)
                 );
             case H2:

@@ -1,6 +1,5 @@
 package me.nickimpact.gts.bungee;
 
-import co.aikar.commands.BaseCommand;
 import com.google.gson.Gson;
 import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.configuration.Config;
@@ -86,22 +85,6 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 
 	@Override
 	public List<StorageType> getStorageRequirements() {
-		return null;
-	}
-
-
-	@Override
-	public List<Config> getConfigs() {
-		return null;
-	}
-
-	@Override
-	public List<BaseCommand> getCommands() {
-		return null;
-	}
-
-	@Override
-	public List<Object> getListeners() {
 		return null;
 	}
 

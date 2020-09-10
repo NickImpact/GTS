@@ -1,7 +1,5 @@
 package me.nickimpact.gts;
 
-import co.aikar.commands.BaseCommand;
-import co.aikar.commands.SpongeCommandManager;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -15,11 +13,11 @@ import com.nickimpact.impactor.sponge.configuration.SpongeConfigAdapter;
 import com.nickimpact.impactor.sponge.plugin.AbstractSpongePlugin;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.blacklist.Blacklist;
-import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.exceptions.LackingServiceException;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 import me.nickimpact.gts.api.storage.GTSStorage;
-import me.nickimpact.gts.commands.GTSCommand;
+import me.nickimpact.gts.commands.GTSCommandManager;
 import me.nickimpact.gts.common.api.ApiRegistrationUtil;
 import me.nickimpact.gts.common.api.GTSAPIProvider;
 import me.nickimpact.gts.common.blacklist.BlacklistImpl;
@@ -28,18 +26,21 @@ import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.messaging.InternalMessagingService;
 import me.nickimpact.gts.common.messaging.MessagingFactory;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
+import me.nickimpact.gts.common.storage.StorageFactory;
 import me.nickimpact.gts.listeners.PingListener;
 import me.nickimpact.gts.listings.SpongeItemEntry;
 import me.nickimpact.gts.listings.data.SpongeItemManager;
+import me.nickimpact.gts.listings.legacy.SpongeLegacyItemStorable;
 import me.nickimpact.gts.manager.SpongeListingManager;
 import me.nickimpact.gts.messaging.SpongeMessagingFactory;
 import me.nickimpact.gts.messaging.interpreters.SpongePingPongInterpreter;
 import me.nickimpact.gts.sponge.listings.SpongeAuction;
 import me.nickimpact.gts.sponge.listings.SpongeBuyItNow;
-import me.nickimpact.gts.sponge.pricing.provided.MoneyPrice;
+import me.nickimpact.gts.sponge.pricing.provided.MonetaryPrice;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -57,6 +58,8 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 	private Config config;
 	private Config msgConfig;
+
+	private GTSStorage storage;
 
 	private InternalMessagingService messagingService;
 
@@ -86,14 +89,14 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		Impactor.getInstance().getRegistry().register(SpongeListingManager.class, new SpongeListingManager());
 
-		GTSService.getInstance().getDeserializerManagerRegistry().registerListingDeserializer(BuyItNow.class, SpongeBuyItNow::deserialize);
-		GTSService.getInstance().getDeserializerManagerRegistry().registerListingDeserializer(Auction.class, SpongeAuction::deserialize);
-		GTSService.getInstance().getDeserializerManagerRegistry().registerEntryDeserializer(SpongeItemEntry.class, new SpongeItemManager());
-		GTSService.getInstance().getDeserializerManagerRegistry().registerPriceDeserializer(MoneyPrice.class, MoneyPrice::deserialize);
+		GTSService.getInstance().getGTSComponentManager().registerListingDeserializer(BuyItNow.class, SpongeBuyItNow::deserialize);
+		GTSService.getInstance().getGTSComponentManager().registerListingDeserializer(Auction.class, SpongeAuction::deserialize);
+		GTSService.getInstance().getGTSComponentManager().registerEntryDeserializer(SpongeItemEntry.class, new SpongeItemManager());
+		GTSService.getInstance().getGTSComponentManager().registerPriceDeserializer(MonetaryPrice.class, MonetaryPrice::deserialize);
+		GTSService.getInstance().getGTSComponentManager().registerLegacyEntryDeserializer("item", new SpongeLegacyItemStorable());
 
 		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
 		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/en_us.conf")), new MsgConfigKeys());
-
 	}
 
 	public void init() {
@@ -102,8 +105,11 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		Impactor.getInstance().getEventBus().subscribe(new PingListener());
 
-		SpongeCommandManager commands = new SpongeCommandManager(this.bootstrap.getContainer());
-		commands.registerCommand(new GTSCommand());
+		new GTSCommandManager(this.bootstrap.getContainer()).register();
+
+		Impactor.getInstance().getRegistry().get(Blacklist.class).append(ItemType.class, ItemTypes.DIAMOND.getName());
+
+		this.storage = new StorageFactory(this).getInstance(StorageType.MARIADB);
 	}
 
 	public void started() {
@@ -113,29 +119,19 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				.build();
 		SpongeItemEntry testing = new SpongeItemEntry(test.createSnapshot());
 		testing.serialize();
+
+		if(!Sponge.getServiceManager().isRegistered(EconomyService.class)) {
+			throw new LackingServiceException(EconomyService.class);
+		}
+		MonetaryPrice.setEconomy(this.getEconomy());
 	}
 
 	public MessagingFactory<?> getMessagingFactory() {
 		return new SpongeMessagingFactory(this);
 	}
 
-	@Override
-	public List<Config> getConfigs() {
-		return Lists.newArrayList();
-	}
-
-	@Override
-	public List<BaseCommand> getCommands() {
-		return Lists.newArrayList();
-	}
-
-	@Override
-	public List<Object> getListeners() {
-		return Lists.newArrayList();
-	}
-
 	public EconomyService getEconomy() {
-		return null;
+		return Sponge.getServiceManager().provideUnchecked(EconomyService.class);
 	}
 
 	public PluginContainer getPluginContainer() {
@@ -163,7 +159,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 	@Override
 	public GTSStorage getStorage() {
-		return null;
+		return this.storage;
 	}
 
 	@Override
@@ -188,15 +184,17 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				Dependency.KYORI_TEXT_SERIALIZER_LEGACY,
 				Dependency.KYORI_TEXT_SERIALIZER_GSON,
 				Dependency.KYORI_TEXT_ADAPTER_SPONGEAPI,
-				Dependency.CAFFEINE
+				Dependency.CAFFEINE,
+				Dependency.ACF_SPONGE
 		);
 	}
 
 	@Override
 	public List<StorageType> getStorageRequirements() {
-		return Lists.newArrayList(StorageType.MARIADB);
+		return Lists.newArrayList(StorageType.H2, StorageType.MARIADB);
 	}
 
+	@Override
 	public Config getMsgConfig() {
 		return this.msgConfig;
 	}

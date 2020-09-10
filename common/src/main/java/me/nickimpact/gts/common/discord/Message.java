@@ -3,30 +3,28 @@ package me.nickimpact.gts.common.discord;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.nickimpact.impactor.api.utilities.Builder;
 import lombok.Getter;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.DataOutputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class Message {
+
 	private List<Embed> embeds = Lists.newArrayList();
 	private String username;
 	private String avatarUrl;
-	private String content;
 
 	@Getter private transient List<String> webhooks = Lists.newArrayList();
 
-	public Message(String content, String username, String avatar, DiscordOption option) {
-		this.content = content;
+	public Message(String username, String avatar, DiscordOption option) {
 		this.username = username;
 		this.avatarUrl = avatar;
 		this.webhooks = option.getWebhookChannels();
-	}
-
-	public Message(String var1) {
-		this.content = var1;
 	}
 
 	public Message addEmbed(Embed embed) {
@@ -44,7 +42,7 @@ public class Message {
 		String json = this.getJsonString();
 		connection.setRequestProperty("Content-length", String.valueOf(json.length()));
 		DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
-		dos.write(json.getBytes("UTF-8"));
+		dos.write(json.getBytes(StandardCharsets.UTF_8));
 		dos.flush();
 		dos.close();
 		return connection;
@@ -60,10 +58,6 @@ public class Message {
 			var1.addProperty("avatar_url", this.avatarUrl);
 		}
 
-		if (this.content != null) {
-			var1.addProperty("content", this.content);
-		}
-
 		if (!this.embeds.isEmpty()) {
 			JsonArray jArray = new JsonArray();
 
@@ -76,4 +70,5 @@ public class Message {
 
 		return var1.toString();
 	}
+
 }

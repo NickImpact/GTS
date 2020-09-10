@@ -15,11 +15,13 @@ import org.spongepowered.api.text.serializer.TextSerializers;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 
 public abstract class SpongeAsyncPage<U> extends AsyncPage<Player, U, SpongeUI, SpongeIcon, SpongeLayout, Text, ItemType> {
 
-	public SpongeAsyncPage(GTSPlugin plugin, Player viewer, CompletableFuture<List<U>> supplier) {
-		super(plugin, viewer, supplier);
+	@SafeVarargs
+	public SpongeAsyncPage(GTSPlugin plugin, Player viewer, CompletableFuture<List<U>> supplier, Predicate<U>... conditions) {
+		super(plugin, viewer, supplier, conditions);
 	}
 
 	@Override

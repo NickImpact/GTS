@@ -11,21 +11,16 @@ import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryManager;
-import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Optional;
-import java.util.SortedMap;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentNavigableMap;
-import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
@@ -121,7 +116,7 @@ public class SpongeAuction extends SpongeListing implements Auction {
 				.add("bids", bids)
 				.add("pricing", pricing)
 		);
-		json.add("type", "Auction");
+		json.add("type", "auction");
 
 		return json;
 	}
@@ -135,7 +130,7 @@ public class SpongeAuction extends SpongeListing implements Auction {
 				.increment(object.getAsJsonObject("auction").getAsJsonObject("pricing").get("increment").getAsFloat());
 
 		JsonObject element = object.getAsJsonObject("entry");
-		EntryManager<?, ?> entryManager = GTSService.getInstance().getDeserializerManagerRegistry()
+		EntryManager<?, ?> entryManager = GTSService.getInstance().getGTSComponentManager()
 				.getEntryDeserializer(element.get("key").getAsString())
 				.orElseThrow(() -> new RuntimeException("JSON Data for entry is missing mapping key"));
 		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));

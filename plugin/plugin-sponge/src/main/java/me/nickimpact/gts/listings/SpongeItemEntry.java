@@ -1,27 +1,44 @@
 package me.nickimpact.gts.listings;
 
+import com.google.common.collect.Lists;
+import com.nickimpact.impactor.api.Impactor;
+import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.json.factory.JObject;
+import com.nickimpact.impactor.api.services.text.MessageService;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.data.registry.GTSKeyMarker;
+import me.nickimpact.gts.api.listings.auctions.Auction;
+import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 import me.nickimpact.gts.api.listings.makeup.Display;
+import me.nickimpact.gts.common.config.MsgConfigKeys;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
+import me.nickimpact.gts.sponge.listings.makeup.SpongeDisplay;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
 import me.nickimpact.gts.util.DataViewJsonManager;
+import me.nickimpact.gts.util.Utilities;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.inventory.InventoryTransformation;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.Slot;
+import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
+import org.spongepowered.api.item.inventory.type.GridInventory;
+import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 @GTSKeyMarker("item")
 public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
@@ -58,55 +75,54 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public Display<ItemStack> getDisplay(UUID viewer, Listing listing) {
-		return null;
-	}
+		final Config lang = GTSPlugin.getInstance().getMsgConfig();
+		final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
-//	@Override
-//	public SpongeDisplay getDisplay(UUID source, SpongeListing listing) {
-//		final Config messages = GTSPlugin.getInstance().getMsgConfig();
-//		final SpongeMessageService service = (SpongeMessageService) GTSService.getInstance().getServiceManager().get(MessageService.class).get();
-//		ItemStack representation = ItemStack.builder()
-//				.fromSnapshot(this.item)
-//				.build();
-//
-//		List<String> lore = Lists.newArrayList();
-//		if(this.getOrCreateElement().get(Keys.DISPLAY_NAME).isPresent()) {
-//			Pattern pattern = Pattern.compile("[&][a-fk-or0-9]");
-//			Matcher matcher = pattern.matcher(TextSerializers.FORMATTING_CODE.serialize(this.getOrCreateElement().get(Keys.DISPLAY_NAME).get()));
-//			if(!matcher.find()) {
-//				representation.offer(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, this.getOrCreateElement().getTranslation().get(source.getSource().getLocale())));
-//				lore.add(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_LISTINGS_ITEMS_ANVIL_RENAME_PREPEND) + this.getOrCreateElement().get(Keys.DISPLAY_NAME).get().toPlain());
-//				lore.add("");
-//			} else {
-//				representation.offer(Keys.DISPLAY_NAME, service.getForSource(messages.get(MsgConfigKeys.ITEM_ENTRY_BASE_TITLE), source.getSource(),null, variables));
-//			}
-//		} else {
-//			representation.offer(Keys.DISPLAY_NAME, service.getForSource(messages.get(MsgConfigKeys.ITEM_ENTRY_BASE_TITLE), source.getSource(),null, variables));
-//		}
-//
-//		this.getOrCreateElement().get(Keys.ITEM_LORE).ifPresent(l -> {
-//			if(l.size() > 0) {
-//				lore.add(messages.get(MsgConfigKeys.UI_LISTINGS_ITEMS_LORE_DESCRIPTOR));
-//				lore.addAll(l.stream().map(TextSerializers.FORMATTING_CODE::serialize).collect(Collectors.toList()));
-//				lore.add("");
-//			}
-//		});
-//		lore.addAll(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.ITEM_ENTRY_BASE_LORE));
-//		lore.addAll(messages.get(MsgConfigKeys.ENTRY_INFO));
-//
-//		representation.offer(Keys.ITEM_LORE, service.getTextListForSource(lore, source.getSource(), null, variables));
-//
-//		return new SpongeDisplay(representation);
-//	}
+		ItemStack.Builder designer = ItemStack.builder();
+		designer.fromSnapshot(this.getOrCreateElement());
+
+		List<Text> lore = Lists.newArrayList();
+		if(this.getOrCreateElement().get(Keys.ITEM_LORE).isPresent()) {
+			lore.addAll(this.getOrCreateElement().get(Keys.ITEM_LORE).get());
+			lore.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR)));
+		}
+
+		if(listing instanceof Auction) {
+			Auction auction = (Auction) listing;
+
+			List<String> input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS);
+			List<Supplier<Object>> sources = Lists.newArrayList(() -> auction);
+			lore.addAll(service.parse(input, sources));
+		} else if(listing instanceof BuyItNow) {
+			BuyItNow bin = (BuyItNow) listing;
+
+			List<String> input = lang.get(MsgConfigKeys.UI_BIN_DETAILS);
+			List<Supplier<Object>> sources = Lists.newArrayList(() -> bin);
+			lore.addAll(service.parse(input, sources));
+		}
+
+		designer.add(Keys.ITEM_LORE, lore);
+
+		return new SpongeDisplay(designer.build());
+	}
 
 	@Override
 	public boolean give(UUID receiver) {
 		Optional<Player> player = Sponge.getServer().getPlayer(receiver);
 		if(player.isPresent()) {
-			if(player.get().getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class)).size() == 36) {
-
+			MainPlayerInventory inventory = player.get().getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
+			if(inventory.size() == inventory.capacity()) {
+				return false;
 			}
+
+			player.get().getInventory()
+					.transform(InventoryTransformation.of(
+							QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
+							QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class))
+					)
+					.offer(this.getOrCreateElement().createStack());
 		}
 
 		return false;
@@ -114,6 +130,7 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	@Override
 	public boolean take(UUID depositor) {
+		AtomicBoolean result = new AtomicBoolean(false);
 		Optional<Player> player = Sponge.getServer().getPlayer(depositor);
 		player.ifPresent(pl -> {
 			ItemStack rep = this.item.createStack();
@@ -121,13 +138,22 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 					.query(QueryOperationTypes.ITEM_STACK_EXACT.of(rep))
 					.first();
 			if(slot.peek().isPresent()) {
-
-
 				slot.poll();
+				result.set(true);
 			}
 		});
 
-		return false;
+		return result.get();
+	}
+
+	@Override
+	public Optional<String> getThumbnailURL() {
+		return Optional.empty();
+	}
+
+	@Override
+	public List<String> getDetails() {
+		return Lists.newArrayList();
 	}
 
 	@Override

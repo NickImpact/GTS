@@ -19,12 +19,12 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 @GTSKeyMarker("currency")
-public class MoneyPrice implements SpongePrice<BigDecimal> {
+public class MonetaryPrice implements SpongePrice<BigDecimal> {
 
 	@Setter private static EconomyService economy;
 	private final BigDecimal price;
 
-	public MoneyPrice(double price) {
+	public MonetaryPrice(double price) {
 		this.price = new BigDecimal(price);
 	}
 
@@ -50,17 +50,17 @@ public class MoneyPrice implements SpongePrice<BigDecimal> {
 
 	@Override
 	public boolean canPay(UUID payer) {
-		return economy.getOrCreateAccount(payer).get().getBalance(economy.getDefaultCurrency()).compareTo(price) >= 0;
+		return economy.getOrCreateAccount(payer).get().getBalance(economy.getDefaultCurrency()).compareTo(this.price) >= 0;
 	}
 
 	@Override
 	public void pay(UUID payer) {
-		economy.getOrCreateAccount(payer).get().withdraw(economy.getDefaultCurrency(), price, Sponge.getCauseStackManager().getCurrentCause());
+		economy.getOrCreateAccount(payer).get().withdraw(economy.getDefaultCurrency(), this.price, Sponge.getCauseStackManager().getCurrentCause());
 	}
 
 	@Override
 	public void reward(UUID recipient) {
-		economy.getOrCreateAccount(recipient).get().deposit(economy.getDefaultCurrency(), price, Sponge.getCauseStackManager().getCurrentCause());
+		economy.getOrCreateAccount(recipient).get().deposit(economy.getDefaultCurrency(), this.price, Sponge.getCauseStackManager().getCurrentCause());
 	}
 
 	@Override
@@ -75,8 +75,8 @@ public class MoneyPrice implements SpongePrice<BigDecimal> {
 				.add("value", this.price);
 	}
 
-	public static MoneyPrice deserialize(JsonObject json) {
-		return new MoneyPrice(json.get("value").getAsDouble());
+	public static MonetaryPrice deserialize(JsonObject json) {
+		return new MonetaryPrice(json.get("value").getAsDouble());
 	}
 
 }

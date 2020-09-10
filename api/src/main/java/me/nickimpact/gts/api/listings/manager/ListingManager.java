@@ -11,9 +11,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface ListingManager<L extends Listing, A extends Auction, B extends BuyItNow> extends Service {
 
-	List<UUID> getIgnorers();
-
-	CompletableFuture<Boolean> addToMarket(UUID lister, L listing);
+	CompletableFuture<Boolean> list(UUID lister, L listing);
 
 	CompletableFuture<Boolean> bid(UUID bidder, A listing, double amount);
 
@@ -24,5 +22,7 @@ public interface ListingManager<L extends Listing, A extends Auction, B extends 
 	CompletableFuture<Boolean> hasMaxListings(UUID lister);
 
 	CompletableFuture<List<L>> fetchListings();
+
+	CompletableFuture<List<UUID>> getIgnorers();
 
 }

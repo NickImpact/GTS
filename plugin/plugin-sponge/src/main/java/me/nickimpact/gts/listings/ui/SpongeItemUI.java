@@ -9,7 +9,9 @@ import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import me.nickimpact.gts.api.blacklist.Blacklist;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.ui.Historical;
 import me.nickimpact.gts.sponge.listings.ui.AbstractSpongeEntryUI;
 import me.nickimpact.gts.ui.SpongeMainMenu;
@@ -17,7 +19,9 @@ import me.nickimpact.gts.ui.components.TimeSelectMenu;
 import me.nickimpact.gts.util.Utilities;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
+import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.InventoryTransformation;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -51,6 +55,13 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
                                     ItemStackSnapshot clicked = transaction.getOriginal();
                                     if(this.chosen != null) {
                                         this.viewer.sendMessage(Text.of(TextColors.RED, "You've already selected an item..."));
+                                        return;
+                                    }
+
+                                    Blacklist blacklist = Impactor.getInstance().getRegistry().get(Blacklist.class);
+                                    if(blacklist.isBlacklisted(ItemType.class, clicked.getType().getName())) {
+                                        this.viewer.sendMessage(Text.of(TextColors.RED, "Blacklisted"));
+                                        this.viewer.playSound(SoundTypes.BLOCK_ANVIL_LAND, this.viewer.getPosition(), 1, 1);
                                         return;
                                     }
 
@@ -104,7 +115,7 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
 
         SpongeLayout.SpongeLayoutBuilder slb = SpongeLayout.builder();
         slb.dimension(9, 4).border().dimension(9, 5);
-        slb.slots(border(DyeColors.RED), 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
+        slb.slots(this.border(DyeColors.RED), 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
         slb.slots(SpongeIcon.BORDER, 19, 20, 24, 25, 37, 43);
 
         slb.slot(this.createNoneChosenIcon(), 13);
