@@ -39,7 +39,7 @@ public class ConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> LANGUAGE = stringKey("language", "en_us");
 
 	// Storage Settings
-	public static final ConfigKey<StorageType> STORAGE_METHOD = enduringKey(customKey(adapter -> StorageType.parse(adapter.getString("storage-method", "JSON"))));
+	public static final ConfigKey<StorageType> STORAGE_METHOD = enduringKey(customKey(adapter -> StorageType.parse(adapter.getString("storage-method", "mariadb"))));
 	public static final ConfigKey<StorageCredentials> STORAGE_CREDENTIALS = enduringKey(customKey(adapter -> {
 		String address = adapter.getString("data.address", "localhost");
 		String database = adapter.getString("data.database", "minecraft");

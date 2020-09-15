@@ -64,9 +64,6 @@ public class PluginMessageMessenger implements Messenger, RawDataListener {
 		}
 
 		this.channel.sendTo(p, buf -> buf.writeUTF(outgoingMessage.asEncodedString()));
-		if(outgoingMessage instanceof MessageType.Request) {
-			this.getMessageConsumer().registerRequest(outgoingMessage.getID());
-		}
 	}
 
 	@Override

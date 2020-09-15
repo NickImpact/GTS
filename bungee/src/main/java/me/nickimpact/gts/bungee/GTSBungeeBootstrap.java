@@ -23,7 +23,7 @@ public class GTSBungeeBootstrap extends Plugin implements GTSBootstrap {
         try {
             this.plugin.load();
         } catch (Exception e) {
-            exception = e;
+            this.exception = e;
             e.printStackTrace();
         }
         this.plugin.getPluginLogger().info("&eTest");
@@ -34,7 +34,7 @@ public class GTSBungeeBootstrap extends Plugin implements GTSBootstrap {
         try {
             this.plugin.enable();
         } catch (Exception e) {
-            exception = e;
+            this.exception = e;
             e.printStackTrace();
         }
     }
@@ -46,12 +46,12 @@ public class GTSBungeeBootstrap extends Plugin implements GTSBootstrap {
 
     @Override
     public Path getDataDirectory() {
-        return null;
+        return this.getDataFolder().toPath();
     }
 
     @Override
     public Path getConfigDirectory() {
-        return null;
+        return this.getDataFolder().toPath();
     }
 
     @Override

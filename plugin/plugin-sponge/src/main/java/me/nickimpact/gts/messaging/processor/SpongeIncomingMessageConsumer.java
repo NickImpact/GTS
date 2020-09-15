@@ -1,6 +1,5 @@
 package me.nickimpact.gts.messaging.processor;
 
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -8,6 +7,7 @@ import me.nickimpact.gts.GTSSpongePlugin;
 import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.api.messaging.message.Message;
 import me.nickimpact.gts.api.messaging.message.MessageConsumer;
+import me.nickimpact.gts.api.messaging.message.type.MessageType;
 import me.nickimpact.gts.api.messaging.message.type.UpdateMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -15,12 +15,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.function.Consumer;
 
 import static me.nickimpact.gts.common.messaging.GTSMessagingService.NORMAL;
 
@@ -30,7 +29,7 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 	private final Set<UUID> receivedMessages;
 
 	private final Map<Class<?>, MessageConsumer<?>> consumers = Maps.newHashMap();
-	private final List<UUID> requests = Lists.newArrayList();
+	private final Map<UUID, Consumer<?>> requests = Maps.newHashMap();
 
 	public SpongeIncomingMessageConsumer(GTSSpongePlugin plugin) {
 		this.plugin = plugin;
@@ -38,13 +37,13 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 	}
 
 	@Override
-	public void registerRequest(UUID request) {
-		this.requests.add(request);
+	public <T extends MessageType.Response> void registerRequest(UUID request, Consumer<T> response) {
+		this.requests.put(request, response);
 	}
 
 	@Override
-	public boolean locateAndFilterRequestIfPresent(UUID incomingID) {
-		return this.requests.removeIf(id -> id.equals(incomingID));
+	public <T extends MessageType.Response> void processRequest(UUID request, T response) {
+		((Consumer<T>) this.requests.get(request)).accept(response);
 	}
 
 	@Override
@@ -99,7 +98,7 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 		}
 
 		// consume the message
-		processIncomingMessage(decoded);
+		this.processIncomingMessage(decoded);
 		return true;
 	}
 
@@ -118,7 +117,7 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 	private void processIncomingMessage(Message message) {
 		if (message instanceof UpdateMessage) {
 			UpdateMessage msg = (UpdateMessage) message;
-			this.plugin.getPluginLogger().info("[Messaging] Received message with id: " + msg.getID());
+			this.plugin.getPluginLogger().debug("[Messaging] Received message with id: " + msg.getID());
 			this.getInternalConsumer(msg.getClass()).consume(message);
 		} else {
 			throw new IllegalArgumentException("Unknown message type: " + message.getClass().getName());

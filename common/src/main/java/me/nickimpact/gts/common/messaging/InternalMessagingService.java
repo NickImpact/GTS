@@ -31,14 +31,17 @@ import me.nickimpact.gts.api.messaging.Messenger;
 import me.nickimpact.gts.api.messaging.MessengerProvider;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
+import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import me.nickimpact.gts.api.messaging.message.type.utility.PingMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public interface InternalMessagingService {
 
@@ -126,7 +129,7 @@ public interface InternalMessagingService {
 
     //------------------------------------------------------------------------------------
     //
-    //  Quick Purchase Based Messages
+    //  BuyItNow Based Messages
     //
     //------------------------------------------------------------------------------------
 
@@ -135,9 +138,12 @@ public interface InternalMessagingService {
      *
      * @param listing
      * @param actor
-     * @param broadcast
+     * @return
      */
-    void publishQuickPurchaseListing(UUID listing, UUID actor, String broadcast);
+    default void publishBINCancellation(UUID listing, UUID actor, Consumer<BuyItNowMessage.Remove.Response> consumer) {
+        this.publishBINCancellation(listing, actor, null, true, consumer);
+    }
 
+    void publishBINCancellation(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive, Consumer<BuyItNowMessage.Remove.Response> consumer);
 
 }

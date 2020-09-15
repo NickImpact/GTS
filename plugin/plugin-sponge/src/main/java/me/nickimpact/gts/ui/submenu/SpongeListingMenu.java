@@ -1,4 +1,4 @@
-package me.nickimpact.gts.ui;
+package me.nickimpact.gts.ui.submenu;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -13,17 +13,18 @@ import lombok.Getter;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
-import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.config.wrappers.SortConfigurationOptions;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.utils.lists.CircularLinkedList;
 import me.nickimpact.gts.common.config.wrappers.TitleLorePair;
-import me.nickimpact.gts.manager.SpongeListingManager;
+import me.nickimpact.gts.sponge.manager.SpongeListingManager;
 import me.nickimpact.gts.sponge.listings.SpongeListing;
 import me.nickimpact.gts.sponge.ui.SpongeAsyncPage;
-import me.nickimpact.gts.util.Utilities;
+import me.nickimpact.gts.ui.SpongeMainMenu;
+import me.nickimpact.gts.ui.submenu.browser.SpongeSelectedListingMenu;
+import me.nickimpact.gts.sponge.utils.Utilities;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
@@ -36,15 +37,17 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static me.nickimpact.gts.util.Utilities.readMessageConfigOption;
+import static me.nickimpact.gts.sponge.utils.Utilities.readMessageConfigOption;
 
 public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
@@ -52,8 +55,6 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private static final AuctionsOnly AUCTIONS_ONLY = new AuctionsOnly();
 
 	private static final MessageService<Text> PARSER = Utilities.PARSER;
-
-	private Class<? extends Entry> filter;
 
 	private Task runner;
 
@@ -70,16 +71,22 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 				listing -> !listing.hasExpired()
 		);
 		this.applier(listing -> {
-			SpongeIcon icon = new SpongeIcon(listing.getEntry().getDisplay(viewer.getUniqueId(), listing).getDisplay());
+			SpongeIcon icon = new SpongeIcon(listing.getEntry().getDisplay(viewer.getUniqueId(), listing).get());
 			icon.addListener(clickable -> {
-
+				new SpongeSelectedListingMenu(this.getViewer(), listing).open();
 			});
 			return icon;
 		});
-		Sponge.getScheduler().createTaskBuilder()
+		this.runner = Sponge.getScheduler().createTaskBuilder()
 				.execute(this::apply)
 				.interval(1, TimeUnit.SECONDS)
 				.submit(GTSPlugin.getInstance().getBootstrap());
+	}
+
+	@Override
+	public void open() {
+		super.open();
+		this.getView().attachCloseListener(close -> this.runner.cancel());
 	}
 
 	@Override
@@ -153,6 +160,12 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 				.add(Keys.ITEM_LORE, PARSER.parse(pair.getLore(), Lists.newArrayList(this::getViewer)))
 				.build()
 		);
+	}
+
+	@Override
+	@SuppressWarnings("OptionalGetWithoutIsPresent")
+	protected Consumer<List<SpongeListing>> applyWhenReady() {
+		return list -> list.sort(this.sorter.getCurrent().get().getComparator());
 	}
 
 	private void createFilterOptions(SpongeLayout.SpongeLayoutBuilder layout) {
@@ -248,6 +261,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		layout.slot(back, 45);
 	}
 
+	@SuppressWarnings("OptionalGetWithoutIsPresent")
 	private SpongeIcon drawSorter() {
 		SortConfigurationOptions options = GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT);
 
@@ -260,6 +274,8 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		SpongeIcon sortIcon = new SpongeIcon(sorter);
 		sortIcon.addListener(clickable -> {
 			this.sorter.next();
+			this.sort(this.sorter.getCurrent().get().getComparator());
+			this.apply();
 			sortIcon.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(options), Lists.newArrayList(this::getViewer)));
 
 			this.getView().setSlot(51, sortIcon);
@@ -314,20 +330,19 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 	@Getter
 	@AllArgsConstructor
-	@SuppressWarnings("OptionalGetWithoutIsPresent")
 	private enum Sorter {
-		QP_MOST_RECENT(SortConfigurationOptions::getQpMostRecent, new Matcher<>(Comparator.comparing(BuyItNow::getPublishTime).reversed())),
-		QP_ENDING_SOON(SortConfigurationOptions::getQpEndingSoon, new Matcher<BuyItNow>(Comparator.comparing(Listing::getExpiration))),
-		A_HIGHEST_BID(SortConfigurationOptions::getAHighest, new Matcher<>(Comparator.<Auction, Double>comparing(a -> a.getHighBid().getSecond()).reversed())),
-		A_LOWEST_BID(SortConfigurationOptions::getALowest, new Matcher<Auction>(Comparator.comparing(a -> a.getHighBid().getSecond()))),
-		A_ENDING_SOON(SortConfigurationOptions::getAEndingSoon, new Matcher<Auction>(Comparator.comparing(Listing::getExpiration))),
-		A_MOST_BIDS(SortConfigurationOptions::getAMostBids, new Matcher<>(Comparator.<Auction, Integer>comparing(a -> a.getBids().size()).reversed()))
+		QP_MOST_RECENT(SortConfigurationOptions::getQpMostRecent, Comparator.<SpongeListing, LocalDateTime>comparing(Listing::getExpiration).reversed()),
+		QP_ENDING_SOON(SortConfigurationOptions::getQpEndingSoon, Comparator.comparing(Listing::getExpiration)),
+		A_HIGHEST_BID(SortConfigurationOptions::getAHighest, Comparator.<SpongeListing, Double>comparing(listing -> ((Auction) listing).getHighBid().getSecond()).reversed()),
+		A_LOWEST_BID(SortConfigurationOptions::getALowest, Comparator.comparing(listing -> ((Auction) listing).getHighBid().getSecond())),
+		A_ENDING_SOON(SortConfigurationOptions::getAEndingSoon, Comparator.comparing(Listing::getExpiration)),
+		A_MOST_BIDS(SortConfigurationOptions::getAMostBids, Comparator.<SpongeListing, Integer>comparing(listing -> ((Auction) listing).getBids().size()).reversed())
 		;
 
 		private final Function<SortConfigurationOptions, String> key;
-		private final Matcher<?> comparator;
+		private final Comparator<SpongeListing> comparator;
 
-		private static final CircularLinkedList<Sorter> QUICK_PURCHASE_ONLY = CircularLinkedList.of(QP_MOST_RECENT, QP_ENDING_SOON);
+		private static final CircularLinkedList<Sorter> QUICK_PURCHASE_ONLY = CircularLinkedList.of(QP_ENDING_SOON, QP_MOST_RECENT);
 		private static final CircularLinkedList<Sorter> AUCTION_ONLY = CircularLinkedList.of(A_HIGHEST_BID, A_LOWEST_BID, A_ENDING_SOON, A_MOST_BIDS);
 
 		public static CircularLinkedList<Sorter> getSortOptions(boolean mode) {

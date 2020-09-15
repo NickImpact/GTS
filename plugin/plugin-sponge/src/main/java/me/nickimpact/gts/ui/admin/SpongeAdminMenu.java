@@ -6,7 +6,7 @@ import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
-import me.nickimpact.gts.util.Utilities;
+import me.nickimpact.gts.sponge.utils.Utilities;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;

@@ -28,6 +28,7 @@ package me.nickimpact.gts.common.storage.implementation;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
+import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 
 import java.util.Collections;
@@ -104,13 +105,13 @@ public interface StorageImplementation {
      *
      * This should only be called in response to a {@link AuctionMessage.Bid.Request bid} request.
      *
-     * @param listing The ID of the auction being bid on
-     * @param actor   The user who placed the bid
-     * @param amount  The amount which this player has just bid
+     * @param request The request sent for processing
      * @return A response to the call which will contain data that marks the success of the bid,
      * the seller of the auction, and all other bids currently placed on the auction in a filtered manner.
      * In other words, all other bids will only contain the highest bid per player who has bid on this
      * particular auction.
      */
-    AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request);
+    AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) throws Exception;
+
+    BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception;
 }

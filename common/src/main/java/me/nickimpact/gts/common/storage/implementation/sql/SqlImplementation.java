@@ -37,7 +37,10 @@ import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.prices.Price;
+import me.nickimpact.gts.api.messaging.message.errors.ErrorCode;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
+import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import me.nickimpact.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveResponseMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
 
@@ -57,11 +60,12 @@ import java.util.function.Function;
 
 public class SqlImplementation implements StorageImplementation {
 
-	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM {prefix}listings";
-	private static final String GET_SPECIFIC_LISTING = "SELECT * FROM {prefix}listings WHERE id=?";
+	private static final String ADD_LISTING = "INSERT INTO `{prefix}listings` (id, lister, listing) VALUES (?, ?, ?)";
+	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM `{prefix}listings`";
+	private static final String GET_SPECIFIC_LISTING = "SELECT * FROM {prefix}listings` WHERE id=?";
+	private static final String DELETE_LISTING = "DELETE FROM `{prefix}listings` WHERE id=?";
 
-	private static final String ADD_LISTING = "INSERT INTO {prefix}listings (id, lister, listing) VALUES (?, ?, ?)";
-	private static final String REMOVE_LISTING = "DELETE FROM {prefix}listings_v3 WHERE id=?";
+
 	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES (?)";
 	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID=?";
 	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";
@@ -69,9 +73,6 @@ public class SqlImplementation implements StorageImplementation {
 	private static final String ADD_SOLD_LISTING = "INSERT INTO `{prefix}sold` VALUES (?, ?, ?, ?)";
 	private static final String GET_SOLD_LISTINGS = "SELECT name, price FROM `{prefix}sold` WHERE owner = ?";
 	private static final String REMOVE_SOLD_LISTING = "DELETE FROM `{prefix}sold` WHERE id = ? AND owner = ?";
-
-	@Deprecated
-	private static final String FETCH_OLD = "SELECT * FROM {prefix}listings_v2";
 
 	private final GTSPlugin plugin;
 
@@ -194,10 +195,9 @@ public class SqlImplementation implements StorageImplementation {
 
 	@Override
 	public boolean deleteListing(UUID uuid) throws Exception {
-		return this.query(REMOVE_LISTING, (connection, ps) -> {
+		return this.query(DELETE_LISTING, (connection, ps) -> {
 			ps.setString(1, uuid.toString());
-			ps.executeUpdate();
-			return true;
+			return ps.executeUpdate() != 0;
 		});
 	}
 
@@ -337,6 +337,27 @@ public class SqlImplementation implements StorageImplementation {
 	@Override
 	public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) {
 		return null;
+	}
+
+	@Override
+	public BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception {
+		BuyItNowRemoveResponseMessage.ResponseBuilder response = BuyItNowRemoveResponseMessage.builder();
+		response.id(GTSPlugin.getInstance().getMessagingService().generatePingID());
+		response.request(request.getID());
+
+		response.listing(request.getListingID());
+		response.actor(request.getActor());
+		response.receiver(request.getRecipient().orElse(null));
+		response.shouldReceive(request.shouldReturnListing());
+
+		if(this.deleteListing(request.getListingID())) {
+			response.successful(true);
+		} else {
+			response.successful(false);
+			response.error(() -> "No listing exists with that ID");
+		}
+
+		return response.build();
 	}
 
 	private boolean tableExists(String table) throws SQLException {

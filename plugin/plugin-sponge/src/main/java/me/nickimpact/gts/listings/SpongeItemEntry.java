@@ -15,8 +15,9 @@ import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeDisplay;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
 import me.nickimpact.gts.util.DataViewJsonManager;
-import me.nickimpact.gts.util.Utilities;
+import me.nickimpact.gts.sponge.utils.Utilities;
 import net.kyori.text.TextComponent;
+import net.kyori.text.event.HoverEvent;
 import net.kyori.text.serializer.legacy.LegacyComponentSerializer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
@@ -67,11 +68,33 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	@Override
 	public TextComponent getName() {
-		return LegacyComponentSerializer.legacy().deserialize(
+		TextComponent.Builder builder = TextComponent.builder();
+		TextComponent.Builder actual = TextComponent.builder();
+		builder.append(LegacyComponentSerializer.legacy().deserialize(
 				this.getOrCreateElement().get(Keys.DISPLAY_NAME)
-						.map(TextSerializers.FORMATTING_CODE::serialize)
+						.map(TextSerializers.LEGACY_FORMATTING_CODE::serialize)
 						.orElse(this.getOrCreateElement().getTranslation().get())
-		);
+		));
+
+		if(this.item.get(Keys.DISPLAY_NAME).isPresent()) {
+			builder.hoverEvent(HoverEvent.showText(
+					TextComponent.builder()
+							.append(this.getOrCreateElement().getTranslation().get())
+							.build()
+			));
+		}
+
+		return actual.append(builder.build()).build();
+	}
+
+	@Override
+	public TextComponent getDescription() {
+		TextComponent.Builder builder = TextComponent.builder();
+		if(this.item.getQuantity() > 1) {
+			builder.append(this.item.getQuantity() + "x ");
+		}
+
+		return builder.append(this.getName()).build();
 	}
 
 	@Override

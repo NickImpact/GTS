@@ -151,7 +151,7 @@ public class SpongeAuction extends SpongeListing implements Auction {
 
 	public static class SpongeAuctionBuilder implements AuctionBuilder {
 
-		private UUID id;
+		private UUID id = UUID.randomUUID();
 		private UUID lister;
 		private SpongeEntry<?> entry;
 		private LocalDateTime expiration;

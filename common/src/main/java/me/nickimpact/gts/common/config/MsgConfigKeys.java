@@ -29,7 +29,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"{{gts_prefix}} &cUnfortunately, you can't deposit another listing, since you already have {{max_listings}} deposited..."
 	));
 	public static final ConfigKey<List<String>> ADD_TEMPLATE = listKey("general.addition-to-seller", Lists.newArrayList(
-			"{{gts_prefix}} &7Your &a{{listing_name}} &7has been added to the market!"
+			"{{gts:prefix}} &7Your &a{{gts:listing_name}} &7has been added to the market!"
 	));
 	public static final ConfigKey<List<String>> TAX_APPLICATION = listKey("general.taxes.applied", Lists.newArrayList(
 			"&c&l- {{tax}} &7(&aTaxes&7)"
@@ -38,7 +38,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"{{gts_prefix}} &cUnable to afford the tax of &e{{tax}} &cfor this listing..."
 	));
 	public static final ConfigKey<List<String>> ADD_BROADCAST = listKey("general.addition-broadcast", Lists.newArrayList(
-			"{{gts_prefix}} &c{{player}} &7has added a &a{{listing_specifics}} &7to the GTS for &a{{price}}&7!"
+			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for &a{{gts:bin_price}}&7!"
 	));
 	public static final ConfigKey<List<String>> PURCHASE_PAY = listKey("general.prices.pay", Lists.newArrayList(
 			"{{gts_prefix}} &7You have purchased a &a{{listing_specifics}} &7for &e{{price}}&7!"
@@ -249,6 +249,14 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			c.getString("time.weeks.plural", "Weeks")
 	));
 
+	public static final ConfigKey<String> CUSTOM_TIME_TITLE = stringKey("time.custom.title", "&aCustom Duration");
+	public static final ConfigKey<List<String>> CUSTOM_TIME_LORE = listKey("time.custom.lore", Lists.newArrayList(
+			"&7Specify how long you want",
+			"&7the listing to last.",
+			"",
+			"&eClick to choose your time!"
+	));
+
 	// -----------------------------------------------------------------------------
 	// UI Based Configuration Options
 	// -----------------------------------------------------------------------------
@@ -375,6 +383,8 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	// Time Selection
 	public static final ConfigKey<String> UI_TIME_SELECT_TITLE = stringKey("ui.time-select.title", "Select a Time");
+
+	public static final ConfigKey<String> UI_TIME_DISPLAY = stringKey("ui.components.time.display", "&fDuration: &e{{gts:time}}");
 
 	// Admin Menus
 	public static final ConfigKey<String> UI_ADMIN_MAIN_TITLE = stringKey("ui.admin.main.title", "GTS - Admin Mode");

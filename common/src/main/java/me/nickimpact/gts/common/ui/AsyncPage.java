@@ -13,6 +13,7 @@ import me.nickimpact.gts.common.plugin.GTSPlugin;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -121,11 +123,13 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	}
 
 	private void queue(CompletableFuture<List<T>> future, long timeout, TimeUnit unit) {
-		future.acceptEither(this.timeoutAfter(timeout, unit), list -> Impactor.getInstance().getScheduler().executeSync(() -> this.define(list)))
-				.exceptionally(ex -> {
-					Impactor.getInstance().getScheduler().executeSync(() -> this.doProvidedFill(this.getTimeoutIcon()));
-					return null;
-				});
+		future.acceptEither(this.timeoutAfter(timeout, unit), list -> {
+			this.applyWhenReady().accept(list);
+			Impactor.getInstance().getScheduler().executeSync(() -> this.define(list));
+		}).exceptionally(ex -> {
+			Impactor.getInstance().getScheduler().executeSync(() -> this.doProvidedFill(this.getTimeoutIcon()));
+			return null;
+		});
 	}
 
 	private <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
@@ -144,6 +148,8 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	protected abstract I getLoadingIcon();
 
 	protected abstract I getTimeoutIcon();
+
+	protected abstract Consumer<List<T>> applyWhenReady();
 
 	private void doProvidedFill(I icon) {
 		this.clean();
@@ -175,6 +181,10 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 		this.view.close(this.viewer);
 	}
 
+	public void sort(Comparator<T> comparator) {
+		this.contents.sort(comparator);
+	}
+
 	@Override
 	public void clean() {
 		int index = this.cOffset + this.view.getDimension().getColumns() * this.rOffset;
@@ -192,11 +202,6 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	@Override
 	public void apply() {
 		int capacity = this.contentZone.getColumns() * this.contentZone.getRows();
-		int pages = this.contents.isEmpty() ? 1 : (this.contents.size() % capacity == 0 ? this.contents.size() / capacity : this.contents.size() / capacity + 1);
-		if (pages < this.page) {
-			this.page = pages;
-		}
-
 		if (this.contents.isEmpty()) {
 			return;
 		}
@@ -206,6 +211,10 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 				.filter(x -> this.conditions.stream().allMatch(y -> y.test(x)))
 				.collect(Collectors.toList());
 		filtered.set(viewable.size());
+		int pages = viewable.isEmpty() ? 1 : (viewable.size() % capacity == 0 ? viewable.size() / capacity : viewable.size() / capacity + 1);
+		if (pages < this.page) {
+			this.page = pages;
+		}
 		viewable = viewable.subList((this.page - 1) * capacity, this.page == pages ? filtered.get() : this.page * capacity);
 		List<I> translated = viewable.stream().map(x -> this.applier.apply(x)).collect(Collectors.toList());
 
@@ -236,6 +245,5 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 			this.future.cancel(false);
 		}
 	}
-
-
+	
 }

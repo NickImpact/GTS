@@ -13,6 +13,7 @@ import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.placeholders.parsers.SourceSpecificPlaceholderParser;
+import me.nickimpact.gts.sponge.utils.Utilities;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -87,7 +88,7 @@ public class GTSSpongePlaceholderManager {
                                     );
                                 }
 
-                                return Text.of(result, builder.build());
+                                return Text.join(result, Text.of(TextColors.RESET, builder.build()));
                             })
                             .orElse(Text.of("Unknown"));
                 }
@@ -108,6 +109,12 @@ public class GTSSpongePlaceholderManager {
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Listing.class,
+                "listing_details",
+                "GTS - Listing Details",
+                listing -> TextSerializers.JSON.deserialize(GsonComponentSerializer.INSTANCE.serialize(listing.getEntry().getDescription()))
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Listing.class,
                 "time_left",
                 "GTS - Listing Time Remaining",
                 listing -> {
@@ -115,6 +122,13 @@ public class GTSSpongePlaceholderManager {
                     LocalDateTime now = LocalDateTime.now();
                     return Text.of(new Time(Duration.between(now, expiration).getSeconds()).asPatternized());
                 }
+        ));
+
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Time.class,
+                "time",
+                "GTS - Amount of time representing how long a listing will be listed for",
+                Utilities::translateTime
         ));
 
         // Buy It Now

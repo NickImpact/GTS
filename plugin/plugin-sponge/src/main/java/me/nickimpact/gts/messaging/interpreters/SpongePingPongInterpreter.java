@@ -1,30 +1,31 @@
 package me.nickimpact.gts.messaging.interpreters;
 
+import me.nickimpact.gts.common.messaging.interpreters.Interpreter;
 import me.nickimpact.gts.common.messaging.messages.utility.GTSPongMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 
-public class SpongePingPongInterpreter {
+public class SpongePingPongInterpreter implements Interpreter {
 
-	public static void register(GTSPlugin plugin) {
-		registerDecoders(plugin);
-		registerInterpreters(plugin);
+	public void register(GTSPlugin plugin) {
+		this.getDecoders(plugin);
 	}
 
-	public static void registerDecoders(GTSPlugin plugin) {
+	@Override
+	public void getDecoders(GTSPlugin plugin) {
 		plugin.getMessagingService().registerDecoder(GTSPongMessage.TYPE, GTSPongMessage::decode);
 	}
 
-	public static void registerInterpreters(GTSPlugin plugin) {
+	@Override
+	public void getInterpreters(GTSPlugin plugin) {
 		plugin.getMessagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
 				GTSPongMessage.class, pong -> {
-					// Only process pong when a request is available. Servers that don't make the ping request
-					// don't care for this functionality
-					if(plugin.getMessagingService()
-							.getMessenger()
-							.getMessageConsumer()
-							.locateAndFilterRequestIfPresent(pong.getRequestID())) {
-						plugin.getPluginLogger().noTag("&eGTS &7(&aMessaging&7) &fReceived pong response");
-					}
+					GTSPlugin.getInstance().getPluginLogger().debug(String.format(
+							"Received pong response (%s) for ping request (%s)",
+							pong.getID(),
+							pong.getRequestID()
+					));
+					GTSPlugin.getInstance().getMessagingService().getMessenger().getMessageConsumer()
+							.processRequest(pong.getRequestID(), pong);
 				}
 		);
 	}

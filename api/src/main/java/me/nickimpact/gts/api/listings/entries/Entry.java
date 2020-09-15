@@ -41,6 +41,13 @@ public interface Entry<T, I> extends Storable {
 	TextComponent getName();
 
 	/**
+	 * Represents a short description we will output to chat for placeholder usage.
+	 *
+	 * @return The description we want to use to detail a listing
+	 */
+	TextComponent getDescription();
+
+	/**
 	 * Represents how this entry should be displayed to a user querying this listing.
 	 *
 	 * @param viewer The ID of the user viewing the display

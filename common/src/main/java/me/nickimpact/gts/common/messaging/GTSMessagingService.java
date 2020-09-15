@@ -37,7 +37,9 @@ import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.api.messaging.Messenger;
 import me.nickimpact.gts.api.messaging.MessengerProvider;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
+import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import me.nickimpact.gts.common.messaging.messages.listings.auctions.impl.BidMessage;
+import me.nickimpact.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveRequestMessage;
 import me.nickimpact.gts.common.messaging.messages.utility.GTSPingMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -46,7 +48,9 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public class GTSMessagingService implements InternalMessagingService {
 
@@ -89,12 +93,12 @@ public class GTSMessagingService implements InternalMessagingService {
 
     @Override
     public <T extends OutgoingMessage> void registerDecoder(String type, BiFunction<JsonElement, UUID, T> decoder) {
-        decoders.put(type, decoder);
+        this.decoders.put(type, decoder);
     }
 
     @Override
     public BiFunction<JsonElement, UUID, ? extends OutgoingMessage> getDecoder(String type) {
-        return decoders.get(type);
+        return this.decoders.get(type);
     }
 
     @Override
@@ -107,7 +111,7 @@ public class GTSMessagingService implements InternalMessagingService {
     @Override
     public void sendPing() {
         Impactor.getInstance().getScheduler().executeAsync(() -> {
-            UUID requestID = generatePingID();
+            UUID requestID = this.generatePingID();
             this.plugin.getPluginLogger().info("[Messaging] Sending ping with id: " + requestID);
             this.messenger.sendOutgoingMessage(new GTSPingMessage(requestID));
             Impactor.getInstance().getEventBus().postAsync(PingEvent.class, requestID, Instant.now());
@@ -122,7 +126,7 @@ public class GTSMessagingService implements InternalMessagingService {
     @Override
     public void publishBid(UUID listing, UUID actor, double bid) {
         Impactor.getInstance().getScheduler().executeAsync(() -> {
-            UUID requestID = generatePingID();
+            UUID requestID = this.generatePingID();
             this.plugin.getPluginLogger().info("[Messaging] Publishing bid with ID: " + requestID + "...");
             this.messenger.sendOutgoingMessage(new BidMessage(requestID, listing, actor, bid));
         });
@@ -134,8 +138,10 @@ public class GTSMessagingService implements InternalMessagingService {
     }
 
     @Override
-    public void publishQuickPurchaseListing(UUID listing, UUID actor, String broadcast) {
-
+    public void publishBINCancellation(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive, Consumer<BuyItNowMessage.Remove.Response> consumer) {
+        BuyItNowMessage.Remove.Request request = new BuyItNowRemoveRequestMessage(this.generatePingID(), listing, actor, receiver, shouldReceive);
+        this.getMessenger().getMessageConsumer().registerRequest(request.getID(), consumer);
+        this.messenger.sendOutgoingMessage(request);
     }
 
     public static String encodeMessageAsString(String type, UUID id, @Nullable JsonElement content) {

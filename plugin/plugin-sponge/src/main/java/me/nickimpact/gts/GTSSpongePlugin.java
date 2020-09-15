@@ -31,8 +31,9 @@ import me.nickimpact.gts.listeners.PingListener;
 import me.nickimpact.gts.listings.SpongeItemEntry;
 import me.nickimpact.gts.listings.data.SpongeItemManager;
 import me.nickimpact.gts.listings.legacy.SpongeLegacyItemStorable;
-import me.nickimpact.gts.manager.SpongeListingManager;
+import me.nickimpact.gts.sponge.manager.SpongeListingManager;
 import me.nickimpact.gts.messaging.SpongeMessagingFactory;
+import me.nickimpact.gts.messaging.interpreters.SpongeBINInterpreters;
 import me.nickimpact.gts.messaging.interpreters.SpongePingPongInterpreter;
 import me.nickimpact.gts.sponge.listings.SpongeAuction;
 import me.nickimpact.gts.sponge.listings.SpongeBuyItNow;
@@ -100,13 +101,10 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	}
 
 	public void init() {
-		this.messagingService = this.getMessagingFactory().getInstance();
-		SpongePingPongInterpreter.register(this);
+		this.applyMessagingServiceSettings();
 
 		Impactor.getInstance().getEventBus().subscribe(new PingListener());
-
 		new GTSCommandManager(this.bootstrap.getContainer()).register();
-
 		Impactor.getInstance().getRegistry().get(Blacklist.class).append(ItemType.class, ItemTypes.DIAMOND.getName());
 
 		this.storage = new StorageFactory(this).getInstance(StorageType.MARIADB);
@@ -211,5 +209,11 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		);
 
 		GTSPlugin.getInstance().getPluginLogger().noTag(output);
+	}
+
+	private void applyMessagingServiceSettings() {
+		this.messagingService = this.getMessagingFactory().getInstance();
+		new SpongePingPongInterpreter().register(this);
+		new SpongeBINInterpreters().register(this);
 	}
 }

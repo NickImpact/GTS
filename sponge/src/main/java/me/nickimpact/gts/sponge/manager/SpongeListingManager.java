@@ -1,10 +1,9 @@
-package me.nickimpact.gts.manager;
+package me.nickimpact.gts.sponge.manager;
 
 import com.google.common.collect.Lists;
 import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.configuration.Config;
 import com.nickimpact.impactor.api.services.text.MessageService;
-import me.nickimpact.gts.GTSSpongePlugin;
 import me.nickimpact.gts.api.events.PublishListingEvent;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
@@ -19,7 +18,6 @@ import me.nickimpact.gts.common.discord.Message;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.utils.future.CompletableFutureManager;
 import me.nickimpact.gts.common.utils.exceptions.ExceptionWriter;
-import me.nickimpact.gts.common.utils.lang.StringComposer;
 import me.nickimpact.gts.sponge.listings.SpongeAuction;
 import me.nickimpact.gts.sponge.listings.SpongeBuyItNow;
 import me.nickimpact.gts.sponge.listings.SpongeListing;
@@ -38,7 +36,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -75,6 +72,8 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.MAX_LISTINGS), sources)));
 				return false;
 			}
+
+			source.ifPresent(player -> player.sendMessage(Text.of("Testing")));
 
 			// Publish our event to indicate the user's desire to publish their listing
 			if(Impactor.getInstance().getEventBus().post(PublishListingEvent.class, lister, listing)) {
@@ -135,7 +134,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				if(fees.get().doubleValue() > 0) {
 					sources.add(fees::get);
 					player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_FEES_COLLECTION), sources));
-					EconomyService economy = GTSPlugin.getInstance().as(GTSSpongePlugin.class).getEconomy();
+					EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
 					economy.getOrCreateAccount(lister).ifPresent(account -> {
 						if(account.getBalance(economy.getDefaultCurrency()).doubleValue() < fees.get().doubleValue()) {
 							player.sendMessages(parser.parse(lang.get(MsgConfigKeys.TAX_INVALID), sources));
@@ -151,7 +150,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 					if (!listing.getEntry().take(lister)) {
 						player.sendMessage(parser.parse(lang.get(MsgConfigKeys.UNABLE_TO_TAKE_LISTING)));
 						if(fees.get().doubleValue() > 0) {
-							EconomyService economy = GTSPlugin.getInstance().as(GTSSpongePlugin.class).getEconomy();
+							EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
 							economy.getOrCreateAccount(lister).ifPresent(account -> {
 								if (account.getBalance(economy.getDefaultCurrency()).doubleValue() < fees.get().doubleValue()) {
 									player.sendMessages(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_RETURN_FEES), sources));

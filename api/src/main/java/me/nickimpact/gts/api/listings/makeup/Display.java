@@ -8,6 +8,6 @@ public interface Display<T> {
 	 *
 	 * @return The instance used to display this listing
 	 */
-	T getDisplay();
+	T get();
 
 }

@@ -25,18 +25,14 @@
 
 package me.nickimpact.gts.api.messaging;
 
-import lombok.Synchronized;
 import me.nickimpact.gts.api.messaging.message.Message;
 import me.nickimpact.gts.api.messaging.message.MessageConsumer;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
 import me.nickimpact.gts.api.messaging.message.type.MessageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.net.SocketAddress;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 /**
  * Encapsulates the LuckPerms system which accepts incoming {@link Message}s
@@ -50,18 +46,9 @@ public interface IncomingMessageConsumer {
      *
      * @param request The message working as the request message
      */
-    void registerRequest(UUID request);
+    <T extends MessageType.Response> void registerRequest(UUID request, Consumer<T> response);
 
-    /**
-     * Attempts to locate a registered request. If one is found, this method will indicate such
-     * by returning true, otherwise false. When found, this method will also remove said matching
-     * request from the cache as preserving the message in that data set past that point is no
-     * longer necessary.
-     *
-     * @param incomingID The ID that was marked on the incoming response message
-     * @return True if a matching request is found, false otherwise
-     */
-    boolean locateAndFilterRequestIfPresent(UUID incomingID);
+    <T extends MessageType.Response> void processRequest(UUID request, T response);
 
     /**
      * Caches the ID into the registry of read messages on this instance. This cache will purge out

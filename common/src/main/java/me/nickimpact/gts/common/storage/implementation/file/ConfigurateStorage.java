@@ -29,6 +29,7 @@ import com.google.common.base.Throwables;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
+import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
 import me.nickimpact.gts.common.storage.implementation.file.loaders.ConfigurateLoader;
@@ -84,7 +85,7 @@ public class ConfigurateStorage implements StorageImplementation {
         this.userDir = this.dataDir.resolve("data");
         this.createDirectoriesIfNotExists(this.userDir);
 
-        FileWatcher watcher = new FileWatcher(this.plugin, dataDir);
+        FileWatcher watcher = new FileWatcher(this.plugin, this.dataDir);
         this.userWatcher = watcher.getWatcher(this.userDir);
         this.userWatcher.addListener(path -> {
 //            String s = path.getFileName().toString();
@@ -163,6 +164,11 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) {
+        return null;
+    }
+
+    @Override
+    public BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception {
         return null;
     }
 

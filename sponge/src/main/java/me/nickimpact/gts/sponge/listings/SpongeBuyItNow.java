@@ -66,7 +66,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 
 	public static class SpongeBuyItNowBuilder implements BuyItNowBuilder {
 
-		private UUID id;
+		private UUID id = UUID.randomUUID();
 		private UUID lister;
 		private SpongeEntry<?> entry;
 		private SpongePrice<?> price;

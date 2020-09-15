@@ -10,13 +10,16 @@ import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import me.nickimpact.gts.api.blacklist.Blacklist;
+import me.nickimpact.gts.api.listings.prices.Price;
+import me.nickimpact.gts.api.listings.ui.EntrySelection;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
-import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.ui.Historical;
+import me.nickimpact.gts.listings.SpongeItemEntry;
+import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
 import me.nickimpact.gts.sponge.listings.ui.AbstractSpongeEntryUI;
+import me.nickimpact.gts.sponge.pricing.provided.MonetaryPrice;
 import me.nickimpact.gts.ui.SpongeMainMenu;
-import me.nickimpact.gts.ui.components.TimeSelectMenu;
-import me.nickimpact.gts.util.Utilities;
+import me.nickimpact.gts.sponge.utils.Utilities;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.effect.sound.SoundTypes;
@@ -38,7 +41,7 @@ import org.spongepowered.api.text.format.TextColors;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static me.nickimpact.gts.util.Utilities.readMessageConfigOption;
+import static me.nickimpact.gts.sponge.utils.Utilities.readMessageConfigOption;
 
 public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> implements Historical<SpongeMainMenu> {
 
@@ -49,7 +52,6 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
         this.getDisplay().attachListener((player, event) -> {
                     event.getTransactions().forEach(transaction -> {
                         transaction.getSlot().getProperty(SlotIndex.class, "slotindex").ifPresent(slot -> {
-                            //noinspection ConstantConditions
                             if(slot.getValue() >= 45) {
                                 if(!transaction.getOriginal().getType().equals(ItemTypes.AIR)) {
                                     ItemStackSnapshot clicked = transaction.getOriginal();
@@ -71,17 +73,6 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
                                     this.getDisplay().setSlot(13, this.createChosenIcon());
                                     this.getDisplay().setSlot(44, this.generateConfirmIcon());
                                     this.style(true);
-                                    //this.display.setSlot(slot.getValue(), new SpongeIcon(ItemStackSnapshot.NONE.createStack()));
-                                    this.viewer.getOpenInventory().ifPresent(inv -> {
-                                        inv.query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class))
-                                                .transform(InventoryTransformation.of(
-                                                        QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class),
-                                                        QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class)
-                                                ))
-                                                .query(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotIndex.of(s)))
-                                                .first()
-                                                .set(ItemStackSnapshot.NONE.createStack());
-                                    });
                                 }
                             }
                         });
@@ -98,6 +89,21 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
     @Override
     protected InventoryDimension getDimensions() {
         return InventoryDimension.of(9, 5);
+    }
+
+    @Override
+    protected EntrySelection<? extends SpongeEntry<?>> getSelection() {
+        return this.chosen;
+    }
+
+    @Override
+    protected Price<?, ?> getPrice() {
+        return new MonetaryPrice(this.price);
+    }
+
+    @Override
+    protected int getTimeSlot() {
+        return 42;
     }
 
     @Override
@@ -133,17 +139,7 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
         SpongeIcon price = this.generatePriceIcon(50);
         slb.slot(price, 38);
 
-        ItemStack duration = ItemStack.builder()
-                .itemType(ItemTypes.CLOCK)
-                .add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Duration: ", TextColors.GREEN, "2 Hours"))
-                .add(Keys.ITEM_LORE, Lists.newArrayList(
-
-                ))
-                .build();
-        SpongeIcon time = new SpongeIcon(duration);
-        time.addListener(clickable -> {
-            new TimeSelectMenu(this.viewer).open();
-        });
+        SpongeIcon time = this.createTimeIcon();
         slb.slot(time, 42);
 
         SpongeIcon waiting = this.generateWaitingIcon(false);
@@ -210,17 +206,6 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
         icon.addListener(clickable -> {
             this.getDisplay().setSlot(13, this.createNoneChosenIcon());
             this.getDisplay().setSlot(44, this.generateWaitingIcon(false));
-
-            this.viewer.getOpenInventory().ifPresent(inv -> {
-                inv.query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class))
-                        .transform(InventoryTransformation.of(
-                                QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class),
-                                QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class)
-                        ))
-                        .query(QueryOperationTypes.INVENTORY_PROPERTY.of(SlotIndex.of(this.chosen.getSlot())))
-                        .first()
-                        .set(this.chosen.getSelection().createStack());
-            });
             this.style(false);
 
             this.chosen = null;
@@ -230,9 +215,14 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
 
     @Getter
     @RequiredArgsConstructor
-    protected static class Chosen {
+    protected static class Chosen implements EntrySelection<SpongeItemEntry> {
         private final ItemStackSnapshot selection;
         private final int slot;
+
+        @Override
+        public SpongeItemEntry createFromSelection() {
+            return new SpongeItemEntry(this.selection);
+        }
     }
 
 }

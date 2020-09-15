@@ -29,7 +29,7 @@ public interface GTSPlugin extends ImpactorPlugin, Configurable, Depending, Tran
 	InternalMessagingService getMessagingService();
 
 	default InputStream getResourceStream(String path) {
-		return getClass().getClassLoader().getResourceAsStream(path);
+		return this.getClass().getClassLoader().getResourceAsStream(path);
 	}
 
 }

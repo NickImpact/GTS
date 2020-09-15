@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static me.nickimpact.gts.common.messaging.GTSMessagingService.NORMAL;
 
@@ -28,7 +29,7 @@ public class BungeeIncomingMessageConsumer implements IncomingMessageConsumer {
 	private final GTSBungeePlugin plugin;
 	private final Set<UUID> receivedMessages;
 
-	private final Map<Class<?>, MessageConsumer> consumers = Maps.newHashMap();
+	private final Map<Class<?>, MessageConsumer<?>> consumers = Maps.newHashMap();
 
 	public BungeeIncomingMessageConsumer(GTSBungeePlugin plugin) {
 		this.plugin = plugin;
@@ -36,12 +37,10 @@ public class BungeeIncomingMessageConsumer implements IncomingMessageConsumer {
 	}
 
 	@Override
-	public void registerRequest(UUID request) {}
+	public <T extends MessageType.Response> void registerRequest(UUID request, Consumer<T> response) {}
 
 	@Override
-	public boolean locateAndFilterRequestIfPresent(UUID incomingID) {
-		return false;
-	}
+	public <T extends MessageType.Response> void processRequest(UUID request, T response) {}
 
 	@Override
 	public void cacheReceivedID(UUID id) {
@@ -94,7 +93,7 @@ public class BungeeIncomingMessageConsumer implements IncomingMessageConsumer {
 		}
 
 		// consume the message
-		processIncomingMessage(decoded);
+		this.processIncomingMessage(decoded);
 		return true;
 	}
 
@@ -114,34 +113,6 @@ public class BungeeIncomingMessageConsumer implements IncomingMessageConsumer {
 			UpdateMessage msg = (UpdateMessage) message;
 			this.plugin.getPluginLogger().info("[Messaging] Received message with id: " + msg.getID());
 			this.getInternalConsumer(msg.getClass()).consume(message);
-
-//			if(message instanceof AuctionMessage) {
-//				if(message instanceof AuctionMessage.Bid) {
-//					if(message instanceof AuctionMessage.Bid.Request) {
-//						AuctionMessage.Bid.Request incoming = (AuctionMessage.Bid.Request) msg;
-//						this.plugin.getPluginLogger().debug("[Messaging] Message type is a bid message, attempting to process...");
-//						this.plugin.getPluginLogger().debug("[Messaging] Processing bid...");
-//						incoming.respond(target).thenAccept(response -> {
-//							this.plugin.getPluginLogger().debug("[Messaging] Bid Status: " + response.wasSuccessful());
-//							this.plugin.getMessagingService().getMessenger().sendOutgoingMessage(response, target);
-//						});
-//					} else {
-//						this.plugin.getPluginLogger().debug("[Messaging] Message type is a bid response, forwarding to other servers...");
-//						CompletableFuture.runAsync(() -> {
-//							this.plugin.getMessagingService().getMessenger().sendOutgoingMessage((OutgoingMessage) msg, target);
-//						});
-//					}
-//				} else if(message instanceof AuctionMessage.Cancel) {
-//
-//				}
-//			} else if(message instanceof PingMessage) {
-//				if(message instanceof PingMessage.Ping) {
-//					((PingMessage.Ping) message).respond(target).thenAccept(pong -> {
-//						this.plugin.getPluginLogger().info("[Messaging] Sending response with ID: " + pong.getID());
-//						this.plugin.getMessagingService().getMessenger().sendOutgoingMessage(pong, target);
-//					});
-//				}
-//			}
 		} else {
 			throw new IllegalArgumentException("Unknown message type: " + message.getClass().getName());
 		}

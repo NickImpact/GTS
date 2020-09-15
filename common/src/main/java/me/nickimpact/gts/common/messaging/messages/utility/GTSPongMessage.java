@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @SuppressWarnings("Duplicates")
-public class GTSPongMessage extends AbstractMessage implements PingMessage.Pong {
+public class GTSPongMessage extends AbstractMessage.Response implements PingMessage.Pong {
 
 	public static final String TYPE = "PONG";
 
@@ -32,21 +32,13 @@ public class GTSPongMessage extends AbstractMessage implements PingMessage.Pong 
 		return new GTSPongMessage(id, requestID);
 	}
 
-	private UUID request;
-
 	GTSPongMessage(UUID id, UUID request) {
-		super(id);
-		this.request = request;
-	}
-
-	@Override
-	public UUID getRequestID() {
-		return this.request;
+		super(id, request);
 	}
 
 	@Override
 	public boolean wasSuccessful() {
-		return false;
+		return true;
 	}
 
 	@Override

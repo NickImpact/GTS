@@ -19,4 +19,18 @@ public abstract class AbstractMessage implements UpdateMessage, OutgoingMessage 
 		return this.id;
 	}
 
+	public static abstract class Response extends AbstractMessage {
+
+		private final UUID request;
+
+		public Response(UUID id, UUID request) {
+			super(id);
+			this.request = request;
+		}
+
+		public UUID getRequestID() {
+			return this.request;
+		}
+	}
+
 }

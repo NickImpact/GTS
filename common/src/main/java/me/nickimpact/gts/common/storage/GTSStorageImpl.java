@@ -118,7 +118,7 @@ public class GTSStorageImpl implements GTSStorage {
 
     @Override
     public CompletableFuture<BuyItNowMessage.Remove.Response> processListingRemoveRequest(BuyItNowMessage.Remove.Request request) {
-        return null;
+        return this.schedule(() -> this.implementation.processListingRemoveRequest(request));
     }
 
     @Override

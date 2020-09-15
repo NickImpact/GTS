@@ -1,9 +1,27 @@
 package me.nickimpact.gts.sponge.listings.ui;
 
 import com.google.common.collect.Lists;
+import com.nickimpact.impactor.api.Impactor;
+import com.nickimpact.impactor.api.services.text.MessageService;
+import com.nickimpact.impactor.api.utilities.Time;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
+import me.nickimpact.gts.api.listings.Listing;
+import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
+import me.nickimpact.gts.api.listings.manager.ListingManager;
+import me.nickimpact.gts.api.listings.prices.Price;
 import me.nickimpact.gts.api.listings.ui.AbstractEntryUI;
+import me.nickimpact.gts.api.listings.ui.EntrySelection;
+import me.nickimpact.gts.common.config.MsgConfigKeys;
+import me.nickimpact.gts.common.config.updated.ConfigKeys;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
+import me.nickimpact.gts.sponge.listings.SpongeBuyItNow;
+import me.nickimpact.gts.sponge.listings.SpongeListing;
+import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
+import me.nickimpact.gts.sponge.listings.ui.components.TimeSelectMenu;
+import me.nickimpact.gts.sponge.manager.SpongeListingManager;
+import me.nickimpact.gts.sponge.pricing.provided.MonetaryPrice;
+import me.nickimpact.gts.sponge.utils.Utilities;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.DyeColors;
@@ -20,11 +38,17 @@ import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E, SpongeIcon> {
 
     private final SpongeUI display;
+
+    private Time duration = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME_LOW);
 
     public AbstractSpongeEntryUI(Player viewer) {
         super(viewer);
@@ -36,6 +60,11 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
 
     protected abstract Text getTitle();
     protected abstract InventoryDimension getDimensions();
+
+    protected abstract EntrySelection<? extends SpongeEntry<?>> getSelection();
+    protected abstract Price<?, ?> getPrice();
+
+    protected abstract int getTimeSlot();
 
     protected SpongeUI getDisplay() {
         return this.display;
@@ -75,7 +104,16 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
                 .build();
         SpongeIcon confirm = new SpongeIcon(rep);
         confirm.addListener(clickable -> {
-
+            SpongeEntry<?> entry = this.getSelection().createFromSelection();
+            SpongeBuyItNow listing = (SpongeBuyItNow) BuyItNow.builder()
+                    .lister(this.viewer.getUniqueId())
+                    .entry(entry)
+                    .price(this.getPrice())
+                    .expiration(LocalDateTime.now().plusSeconds(this.duration.getTime()))
+                    .build();
+            this.display.close(this.viewer);
+            SpongeListingManager manager = Impactor.getInstance().getRegistry().get(SpongeListingManager.class);
+            manager.list(this.viewer.getUniqueId(), listing);
         });
         return confirm;
     }
@@ -93,9 +131,34 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
         );
     }
 
-    private final SpongeIcon red = border(DyeColors.RED);
-    private final SpongeIcon darkGreen = border(DyeColors.GREEN);
-    private final SpongeIcon green = border(DyeColors.LIME);
+    @Override
+    public SpongeIcon createTimeIcon() {
+        MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+        List<Supplier<Object>> sources = Lists.newArrayList(
+                () -> this.duration
+        );
+
+        ItemStack duration = ItemStack.builder()
+                .itemType(ItemTypes.CLOCK)
+                .add(Keys.DISPLAY_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_DISPLAY), sources))
+                .add(Keys.ITEM_LORE, Lists.newArrayList(
+
+                ))
+                .build();
+        SpongeIcon time = new SpongeIcon(duration);
+        time.addListener(clickable -> {
+            new TimeSelectMenu(this.viewer, this, (ui, t) -> {
+                this.duration = t;
+                ui.getDisplay().setSlot(this.getTimeSlot(), this.createTimeIcon());
+                ui.open(this.viewer);
+            }).open();
+        });
+        return time;
+    }
+
+    private final SpongeIcon red = this.border(DyeColors.RED);
+    private final SpongeIcon darkGreen = this.border(DyeColors.GREEN);
+    private final SpongeIcon green = this.border(DyeColors.LIME);
 
     @Override
     public void style(boolean selected) {
@@ -104,22 +167,22 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
                 return color;
             }
 
-            return red;
+            return this.red;
         };
 
-        this.display.setSlot(10, applier.apply(selected, darkGreen));
-        this.display.setSlot(11, applier.apply(selected, darkGreen));
-        this.display.setSlot(15, applier.apply(selected, darkGreen));
-        this.display.setSlot(16, applier.apply(selected, darkGreen));
+        this.display.setSlot(10, applier.apply(selected, this.darkGreen));
+        this.display.setSlot(11, applier.apply(selected, this.darkGreen));
+        this.display.setSlot(15, applier.apply(selected, this.darkGreen));
+        this.display.setSlot(16, applier.apply(selected, this.darkGreen));
 
-        this.display.setSlot( 3, applier.apply(selected, green));
-        this.display.setSlot( 4, applier.apply(selected, green));
-        this.display.setSlot( 5, applier.apply(selected, green));
-        this.display.setSlot(12, applier.apply(selected, green));
-        this.display.setSlot(14, applier.apply(selected, green));
-        this.display.setSlot(21, applier.apply(selected, green));
-        this.display.setSlot(22, applier.apply(selected, green));
-        this.display.setSlot(23, applier.apply(selected, green));
+        this.display.setSlot( 3, applier.apply(selected, this.green));
+        this.display.setSlot( 4, applier.apply(selected, this.green));
+        this.display.setSlot( 5, applier.apply(selected, this.green));
+        this.display.setSlot(12, applier.apply(selected, this.green));
+        this.display.setSlot(14, applier.apply(selected, this.green));
+        this.display.setSlot(21, applier.apply(selected, this.green));
+        this.display.setSlot(22, applier.apply(selected, this.green));
+        this.display.setSlot(23, applier.apply(selected, this.green));
     }
 
     protected SpongeIcon border(DyeColor color) {

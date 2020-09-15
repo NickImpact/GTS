@@ -16,6 +16,8 @@ public interface EntryUI<P, E, I> {
 
 	I createChosenIcon();
 
+	I createTimeIcon();
+
 	void style(boolean selected);
 
 }

@@ -10,7 +10,7 @@ import com.nickimpact.impactor.api.Impactor;
 import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.listings.SpongeItemEntry;
-import me.nickimpact.gts.manager.SpongeListingManager;
+import me.nickimpact.gts.sponge.manager.SpongeListingManager;
 import me.nickimpact.gts.sponge.listings.SpongeBuyItNow;
 import me.nickimpact.gts.sponge.pricing.provided.MonetaryPrice;
 import me.nickimpact.gts.ui.SpongeMainMenu;
@@ -19,8 +19,6 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
-import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 

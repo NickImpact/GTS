@@ -8,7 +8,8 @@ import com.nickimpact.impactor.sponge.ui.SpongeUI;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.config.wrappers.TitleLorePair;
 import me.nickimpact.gts.listings.ui.SpongeItemUI;
-import me.nickimpact.gts.util.Utilities;
+import me.nickimpact.gts.ui.submenu.SpongeListingMenu;
+import me.nickimpact.gts.sponge.utils.Utilities;
 import me.nickimpact.gts.util.items.SkullCreator;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -20,7 +21,7 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.List;
 
-import static me.nickimpact.gts.util.Utilities.readMessageConfigOption;
+import static me.nickimpact.gts.sponge.utils.Utilities.readMessageConfigOption;
 
 public class SpongeMainMenu {
 
