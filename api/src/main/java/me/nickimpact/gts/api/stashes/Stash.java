@@ -1,17 +1,20 @@
 package me.nickimpact.gts.api.stashes;
 
+import com.nickimpact.impactor.api.Impactor;
+import com.nickimpact.impactor.api.utilities.Builder;
+import com.nickimpact.impactor.api.utilities.mappings.Tuple;
+import me.nickimpact.gts.api.listings.Listing;
+
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Represents a stash of contents that a player may currently possess due to not being able
  * to currently receive an item. A stash may or may not be populated by items that have been
  * sold to the user but are currently unable to be claimed. This will allow the user to return
  * to this stash at any time and retrieve items that were previously non-claimable.
- *
- * @param <T> The type of {@link StashEntry StashEntry} that will populate this stash.
- * @param <P> The type representing the player who will be claiming this stash
  */
-public interface Stash<T extends StashEntry<?>, P> {
+public interface Stash {
 
 	/**
 	 * Specifies the size of the stash as it is currently.
@@ -39,7 +42,7 @@ public interface Stash<T extends StashEntry<?>, P> {
 	 *
 	 * @return The list of items contained by this Stash
 	 */
-	List<T> getStashContents();
+	List<Tuple<Listing, Boolean>> getStashContents();
 
 	/**
 	 * Allows the player to claim a set of items from the stash. If any items remain in the stash
@@ -47,9 +50,19 @@ public interface Stash<T extends StashEntry<?>, P> {
 	 * the amount of items remaining in the stash still requiring claim.
 	 *
 	 * @param claimer The user claiming items from the stash
-	 * @return 0 if all stashed items were successfully claimed, or a positive value indicating
-	 * the amount of items still in the stash after the claim attempt.
+	 * @param listing The ID of the listing being claimed
+	 * @return True if the claim attempt was successful, false otherwise
 	 */
-	int claim(P claimer);
+	boolean claim(UUID claimer, UUID listing);
+
+	static StashBuilder builder() {
+		return Impactor.getInstance().getRegistry().createBuilder(StashBuilder.class);
+	}
+
+	interface StashBuilder extends Builder<Stash, StashBuilder> {
+
+		StashBuilder append(Listing listing, boolean purchased);
+
+	}
 
 }

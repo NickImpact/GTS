@@ -62,6 +62,6 @@ public interface Price<P, I> extends Storable {
 	 *
 	 * @param recipient The user receiving the payment
 	 */
-	void reward(UUID recipient);
+	boolean reward(UUID recipient);
 
 }

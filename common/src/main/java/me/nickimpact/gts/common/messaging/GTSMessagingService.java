@@ -37,7 +37,9 @@ import me.nickimpact.gts.api.messaging.IncomingMessageConsumer;
 import me.nickimpact.gts.api.messaging.Messenger;
 import me.nickimpact.gts.api.messaging.MessengerProvider;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
+import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import me.nickimpact.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
 import me.nickimpact.gts.common.messaging.messages.listings.auctions.impl.BidMessage;
 import me.nickimpact.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveRequestMessage;
 import me.nickimpact.gts.common.messaging.messages.utility.GTSPingMessage;
@@ -138,7 +140,14 @@ public class GTSMessagingService implements InternalMessagingService {
     }
 
     @Override
-    public void publishBINCancellation(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive, Consumer<BuyItNowMessage.Remove.Response> consumer) {
+    public void requestAuctionClaim(UUID listing, UUID actor, boolean isLister, Consumer<AuctionMessage.Claim.Response> callback) {
+        AuctionClaimMessage.ClaimRequest request = new AuctionClaimMessage.ClaimRequest(this.generatePingID(), listing, actor, isLister);
+        this.getMessenger().getMessageConsumer().registerRequest(request.getID(), callback);
+        this.messenger.sendOutgoingMessage(request);
+    }
+
+    @Override
+    public void requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive, Consumer<BuyItNowMessage.Remove.Response> consumer) {
         BuyItNowMessage.Remove.Request request = new BuyItNowRemoveRequestMessage(this.generatePingID(), listing, actor, receiver, shouldReceive);
         this.getMessenger().getMessageConsumer().registerRequest(request.getID(), consumer);
         this.messenger.sendOutgoingMessage(request);

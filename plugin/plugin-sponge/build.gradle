@@ -51,7 +51,7 @@ shadowJar {
 
     relocate ('net.kyori.text', 'com.nickimpact.impactor.relocations.text')
     relocate ('com.github.benmanes.caffeine', 'com.nickimpact.impactor.relocations.caffeine')
-
+    relocate ('io.github.classgraph', 'com.nickimpact.impactor.relocations.classgraph')
 }
 
 reobf {
@@ -88,6 +88,7 @@ sourceMainJava.finalizedBy(blossomSourceReplacementJava)
 blossom {
     blossomSourceReplacementJava.output = file("$buildDir/sources/main/java")
     replaceToken '@version@', version
+    replaceToken '@jar_name@', "GTS-Sponge-1.12.2-${project.version}.jar"
 }
 
 build.dependsOn reobfShadowJar

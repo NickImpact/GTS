@@ -1,26 +1,12 @@
 package me.nickimpact.gts.api.listings.entries;
 
+import me.nickimpact.gts.api.data.ResourceManager;
 import me.nickimpact.gts.api.data.Storable;
 import me.nickimpact.gts.api.listings.ui.EntryUI;
 
 import java.util.function.Supplier;
 
-public interface EntryManager<T, P> {
-
-    /**
-     * Represents the item ID that'll be used to reference the associated Entry type. This is purely
-     * for the creation of the listing entry,
-     *
-     * @return The Minecraft Item ID that represents the item that should be used for entry creation
-     */
-    String getItemID();
-
-    /**
-     *
-     *
-     * @return
-     */
-    Storable.Deserializer<T> getDeserializer();
+public interface EntryManager<T, P> extends ResourceManager<T> {
 
     /**
      * The UI that a user will use to create a listing specific to the particular Entry type. These

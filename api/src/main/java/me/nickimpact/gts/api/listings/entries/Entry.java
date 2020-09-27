@@ -67,9 +67,6 @@ public interface Entry<T, I> extends Storable {
 	 *
 	 * @param receiver The recipient of the entry
 	 * @return True if the listing was received, false otherwise.
-	 *
-	 * https://projectpokemon.org/images/normal-sprite/bulbasaur.gif
-	 * https://projectpokemon.org/images/shiny-sprite/bulbasaur.gif
 	 */
 	boolean give(UUID receiver);
 

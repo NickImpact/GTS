@@ -24,4 +24,5 @@ dependencies {
         exclude(module: 'text-api')
         exclude(module: 'gson')
     }
+    shadow('io.github.classgraph:classgraph:4.8.90')
 }

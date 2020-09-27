@@ -32,14 +32,14 @@ import com.nickimpact.impactor.api.json.factory.JObject;
 import com.nickimpact.impactor.api.storage.sql.ConnectionFactory;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.prices.Price;
-import me.nickimpact.gts.api.messaging.message.errors.ErrorCode;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import me.nickimpact.gts.api.stashes.Stash;
+import me.nickimpact.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
 import me.nickimpact.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveResponseMessage;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
@@ -54,7 +54,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
@@ -65,14 +64,15 @@ public class SqlImplementation implements StorageImplementation {
 	private static final String GET_SPECIFIC_LISTING = "SELECT * FROM {prefix}listings` WHERE id=?";
 	private static final String DELETE_LISTING = "DELETE FROM `{prefix}listings` WHERE id=?";
 
+	private static final String ADD_AUCTION_CLAIM_STATUS = "INSERT INTO `{prefix}auction_claims` (auction, lister, winner) VALUES (?, ?, ?)";
+	private static final String GET_AUCTION_CLAIM_STATUS = "SELECT * FROM `{prefix}auction_claims` WHERE auction=?";
+	private static final String UPDATE_AUCTION_CLAIM_LISTER = "UPDATE `{prefix}auction_claims` SET lister=? WHERE auction=?";
+	private static final String UPDATE_AUCTION_CLAIM_WINNER = "UPDATE `{prefix}auction_claims` SET winner=? WHERE auction=?";
+	private static final String DELETE_AUCTION_CLAIM_STATUS = "DELETE FROM `{prefix}auction_claims` WHERE auction=?";
 
 	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES (?)";
 	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID=?";
 	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";
-
-	private static final String ADD_SOLD_LISTING = "INSERT INTO `{prefix}sold` VALUES (?, ?, ?, ?)";
-	private static final String GET_SOLD_LISTINGS = "SELECT name, price FROM `{prefix}sold` WHERE owner = ?";
-	private static final String REMOVE_SOLD_LISTING = "DELETE FROM `{prefix}sold` WHERE id = ? AND owner = ?";
 
 	private final GTSPlugin plugin;
 
@@ -214,9 +214,17 @@ public class SqlImplementation implements StorageImplementation {
 
 					String type = json.get("type").getAsString();
 					if(type.equals("bin")) {
-						return GTSService.getInstance().getGTSComponentManager().getListingDeserializer(BuyItNow.class).get().deserialize(json);
+						return GTSService.getInstance().getGTSComponentManager()
+								.getListingResourceManager(BuyItNow.class)
+								.get()
+								.getDeserializer()
+								.deserialize(json);
 					} else {
-						return GTSService.getInstance().getGTSComponentManager().getListingDeserializer(Auction.class).get().deserialize(json);
+						return GTSService.getInstance().getGTSComponentManager()
+								.getListingResourceManager(Auction.class)
+								.get()
+								.getDeserializer()
+								.deserialize(json);
 					}
 				}
 				return null;
@@ -240,10 +248,18 @@ public class SqlImplementation implements StorageImplementation {
 
 					String type = json.get("type").getAsString();
 					if(type.equals("bin")) {
-						BuyItNow bin = GTSService.getInstance().getGTSComponentManager().getListingDeserializer(BuyItNow.class).get().deserialize(json);
+						BuyItNow bin = GTSService.getInstance().getGTSComponentManager()
+								.getListingResourceManager(BuyItNow.class)
+								.get()
+								.getDeserializer()
+								.deserialize(json);
 						entries.add(bin);
 					} else {
-						Auction auction = GTSService.getInstance().getGTSComponentManager().getListingDeserializer(Auction.class).get().deserialize(json);
+						Auction auction = GTSService.getInstance().getGTSComponentManager()
+								.getListingResourceManager(Auction.class)
+								.get()
+								.getDeserializer()
+								.deserialize(json);
 						entries.add(auction);
 					}
 				} catch (Exception e) {
@@ -291,52 +307,84 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public boolean addToSoldListings(UUID owner, SoldListing listing) throws Exception {
-		return this.query(ADD_SOLD_LISTING, (connection, ps) -> {
-			ps.setString(1, listing.getId().toString());
-			ps.setString(2, owner.toString());
-			ps.setString(3, listing.getNameOfEntry());
-			ps.setDouble(4, listing.getMoneyReceived());
-			ps.executeUpdate();
-
-			return true;
-		});
-	}
-
-	@Override
-	public List<SoldListing> getAllSoldListingsForPlayer(UUID uuid) throws Exception {
-		return this.query(GET_SOLD_LISTINGS, (connection, ps) -> {
-			ps.setString(1, uuid.toString());
-			return this.results(ps, rs -> {
-				List<SoldListing> sold = Lists.newArrayList();
-				while(rs.next()) {
-					sold.add(SoldListing.builder().id(UUID.fromString(rs.getString("id"))).name(rs.getString("name")).money(rs.getDouble("price")).build());
-				}
-
-				return sold;
-			});
-		});
-	}
-
-	@Override
-	public boolean deleteSoldListing(UUID id, UUID owner) throws Exception {
-		return this.query(REMOVE_SOLD_LISTING, (connection, ps) -> {
-			ps.setString(1, id.toString());
-			ps.setString(2, owner.toString());
-			ps.executeUpdate();
-
-			return true;
-		});
-	}
-
-	@Override
 	public boolean purge() throws Exception {
 		return false;
 	}
 
 	@Override
+	public Stash getStash(UUID user) throws Exception {
+		Stash.StashBuilder builder = Stash.builder();
+
+		List<Listing> listings = this.getListings();
+		for(Listing listing : listings) {
+			if(listing.hasExpired()) {
+				if (listing instanceof Auction) {
+					Auction auction = (Auction) listing;
+					if(auction.getLister().equals(user)) {
+						builder.append(auction, false);
+					} else {
+						if(auction.getBids().size() > 0 && auction.getHighBid().getFirst().equals(user)) {
+							builder.append(auction, true);
+						}
+					}
+				} else {
+					BuyItNow bin = (BuyItNow) listing;
+					if(bin.getLister().equals(user)) {
+						builder.append(bin, false);
+					}
+				}
+			}
+		}
+
+		return builder.build();
+	}
+
+	@Override
 	public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) {
 		return null;
+	}
+
+	@Override
+	public AuctionMessage.Claim.Response processAuctionClaimRequest(AuctionMessage.Claim.Request request) throws Exception {
+		return this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
+			ps.setString(1, request.getAuctionID().toString());
+			return this.results(ps, results -> {
+				int result;
+				if(results.next()) {
+					boolean lister = request.isLister() || results.getBoolean("lister");
+					boolean winner = !request.isLister() || results.getBoolean("winner");
+
+					if(lister && winner) {
+						try(PreparedStatement delete = connection.prepareStatement(this.processor.apply(DELETE_AUCTION_CLAIM_STATUS))) {
+							delete.setString(1, request.getAuctionID().toString());
+							result = delete.executeUpdate();
+						}
+					} else {
+						String key = request.isLister() ? UPDATE_AUCTION_CLAIM_LISTER : UPDATE_AUCTION_CLAIM_WINNER;
+						try (PreparedStatement update = connection.prepareStatement(this.processor.apply(key))) {
+							update.setString(1, request.getActor().toString());
+							update.setString(2, request.getAuctionID().toString());
+							result = update.executeUpdate();
+						}
+					}
+				} else {
+					try(PreparedStatement append = connection.prepareStatement(this.processor.apply(ADD_AUCTION_CLAIM_STATUS))) {
+						append.setString(1, request.getAuctionID().toString());
+						append.setBoolean(2, request.isLister());
+						append.setBoolean(3, !request.isLister());
+						result = append.executeUpdate();
+					}
+				}
+
+				return new AuctionClaimMessage.ClaimResponse(
+						GTSPlugin.getInstance().getMessagingService().generatePingID(),
+						request.getID(),
+						request.getAuctionID(),
+						request.getActor(),
+						result != 0
+				);
+			});
+		});
 	}
 
 	@Override
@@ -407,8 +455,9 @@ public class SqlImplementation implements StorageImplementation {
 									UUID lister = UUID.fromString(incoming.getString("owner"));
 									LocalDateTime expiration = incoming.getTimestamp("expiration").toLocalDateTime();
 									Price<?, ?> price = GTSService.getInstance().getGTSComponentManager()
-											.getPriceDeserializer("currency")
+											.getPriceManager("currency")
 											.orElseThrow(() -> new IllegalStateException("No deserializer for currency available"))
+											.getDeserializer()
 											.deserialize(new JObject().add("value", incoming.getDouble("price")).toJson());
 
 									JsonObject json = GTSPlugin.getInstance().getGson().fromJson(incoming.getString("entry"), JsonObject.class);
@@ -440,9 +489,10 @@ public class SqlImplementation implements StorageImplementation {
 							}
 
 							ps.executeBatch();
+							connection.commit();
+						} finally {
+							connection.setAutoCommit(true);
 						}
-						connection.commit();
-						connection.setAutoCommit(true);
 
 						return null;
 					})

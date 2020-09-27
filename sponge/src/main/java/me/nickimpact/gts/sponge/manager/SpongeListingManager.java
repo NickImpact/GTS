@@ -46,14 +46,12 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 	private final DiscordNotifier notifier = new DiscordNotifier(GTSPlugin.getInstance());
 
-
 	@Override
 	public String getServiceName() {
 		return "Sponge Listing Manager";
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public CompletableFuture<Boolean> list(UUID lister, SpongeListing listing) {
 		final Optional<Player> source = Sponge.getServer().getPlayer(lister);
 		final Config main = GTSPlugin.getInstance().getConfiguration();
@@ -72,8 +70,6 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.MAX_LISTINGS), sources)));
 				return false;
 			}
-
-			source.ifPresent(player -> player.sendMessage(Text.of("Testing")));
 
 			// Publish our event to indicate the user's desire to publish their listing
 			if(Impactor.getInstance().getEventBus().post(PublishListingEvent.class, lister, listing)) {

@@ -1,14 +1,13 @@
 package me.nickimpact.gts.common.ui;
 
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.AtomicDouble;
 import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.gui.Icon;
 import com.nickimpact.impactor.api.gui.InventoryDimensions;
 import com.nickimpact.impactor.api.gui.Page;
 import com.nickimpact.impactor.api.gui.UI;
+import com.nickimpact.impactor.api.utilities.mappings.Tuple;
 import lombok.Getter;
-import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 
 import java.util.Arrays;
@@ -54,6 +53,7 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	@Getter
 	private List<T> contents = Lists.newArrayList();
 	private Function<T, I> applier;
+	private Comparator<T> sorter;
 
 	protected S title;
 	private InventoryDimensions contentZone;
@@ -181,8 +181,8 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 		this.view.close(this.viewer);
 	}
 
-	public void sort(Comparator<T> comparator) {
-		this.contents.sort(comparator);
+	public void setSorter(Comparator<T> comparator) {
+		this.sorter = comparator;
 	}
 
 	@Override
@@ -210,6 +210,9 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 		List<T> viewable = this.contents.stream()
 				.filter(x -> this.conditions.stream().allMatch(y -> y.test(x)))
 				.collect(Collectors.toList());
+		if(this.sorter != null) {
+			viewable.sort(this.sorter);
+		}
 		filtered.set(viewable.size());
 		int pages = viewable.isEmpty() ? 1 : (viewable.size() % capacity == 0 ? viewable.size() / capacity : viewable.size() / capacity + 1);
 		if (pages < this.page) {
@@ -245,5 +248,5 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 			this.future.cancel(false);
 		}
 	}
-	
+
 }

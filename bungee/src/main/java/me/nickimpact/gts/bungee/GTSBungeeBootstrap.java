@@ -1,5 +1,6 @@
 package me.nickimpact.gts.bungee;
 
+import com.nickimpact.impactor.api.dependencies.classloader.PluginClassLoader;
 import com.nickimpact.impactor.api.logging.Logger;
 import me.nickimpact.gts.common.plugin.bootstrap.GTSBootstrap;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -56,6 +57,11 @@ public class GTSBungeeBootstrap extends Plugin implements GTSBootstrap {
 
     @Override
     public InputStream getResourceStream(String path) {
+        return null;
+    }
+
+    @Override
+    public PluginClassLoader getPluginClassLoader() {
         return null;
     }
 

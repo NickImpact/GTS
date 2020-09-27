@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.gui.InventoryDimensions;
 import com.nickimpact.impactor.api.services.text.MessageService;
+import com.nickimpact.impactor.api.utilities.mappings.Tuple;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
@@ -13,7 +14,6 @@ import lombok.Getter;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
-import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.config.wrappers.SortConfigurationOptions;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
@@ -38,6 +38,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -64,12 +65,15 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private boolean mode = false;
 	private CircularLinkedList<Sorter> sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
 
-	public SpongeListingMenu(Player viewer) {
+	public SpongeListingMenu(Player viewer, Predicate<SpongeListing>... conditions) {
 		super(GTSPlugin.getInstance(),
 				viewer,
 				Impactor.getInstance().getRegistry().get(SpongeListingManager.class).fetchListings(),
 				listing -> !listing.hasExpired()
 		);
+		this.conditions.add(QUICK_PURCHASE_ONLY);
+		this.conditions.addAll(Arrays.asList(conditions));
+		this.setSorter(this.sorter.copy().next().get().getComparator());
 		this.applier(listing -> {
 			SpongeIcon icon = new SpongeIcon(listing.getEntry().getDisplay(viewer.getUniqueId(), listing).get());
 			icon.addListener(clickable -> {
@@ -226,6 +230,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 			this.mode = true;
 			this.sorter = Sorter.AUCTION_ONLY.copy();
 			this.sorter.reset();
+			this.setSorter(this.sorter.getCurrent().get().getComparator());
 			sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), Lists.newArrayList(this::getViewer)));
 			this.getView().setSlot(51, sorter);
 
@@ -239,6 +244,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 			this.mode = false;
 			this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
 			this.sorter.reset();
+			this.setSorter(this.sorter.getCurrent().get().getComparator());
 			sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), Lists.newArrayList(this::getViewer)));
 			this.getView().setSlot(51, sorter);
 
@@ -274,7 +280,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		SpongeIcon sortIcon = new SpongeIcon(sorter);
 		sortIcon.addListener(clickable -> {
 			this.sorter.next();
-			this.sort(this.sorter.getCurrent().get().getComparator());
+			this.setSorter(this.sorter.getCurrent().get().getComparator());
 			this.apply();
 			sortIcon.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(options), Lists.newArrayList(this::getViewer)));
 

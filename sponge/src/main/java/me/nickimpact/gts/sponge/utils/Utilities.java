@@ -9,6 +9,8 @@ import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.config.updated.types.time.TimeKey;
 import me.nickimpact.gts.common.config.updated.types.time.TimeLanguageOptions;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
+import net.kyori.text.TextComponent;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataSerializable;
@@ -40,6 +42,10 @@ public class Utilities {
 
 	public static List<Text> parseList(ConfigKey<List<String>> key, List<Supplier<Object>> sources) {
 		return GTSPlugin.getInstance().getMsgConfig().get(key).stream().map(x -> PARSER.parse(x, sources)).collect(Collectors.toList());
+	}
+
+	public static Text translateComponent(TextComponent component) {
+		return TextSerializers.JSON.deserialize(GsonComponentSerializer.INSTANCE.serialize(component));
 	}
 
 	public static Text translateTime(Time time) {

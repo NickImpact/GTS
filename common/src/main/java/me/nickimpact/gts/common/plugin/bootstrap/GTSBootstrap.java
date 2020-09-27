@@ -1,5 +1,6 @@
 package me.nickimpact.gts.common.plugin.bootstrap;
 
+import com.nickimpact.impactor.api.dependencies.classloader.PluginClassLoader;
 import com.nickimpact.impactor.api.logging.Logger;
 
 import java.io.InputStream;
@@ -21,6 +22,13 @@ public interface GTSBootstrap {
 	Path getConfigDirectory();
 
 	InputStream getResourceStream(String path);
+
+	/**
+	 * Gets a {@link PluginClassLoader} for this instance
+	 *
+	 * @return a classloader
+	 */
+	PluginClassLoader getPluginClassLoader();
 
 	/**
 	 * States whether or not GTS encountered an error during startup that prevented the plugin from initializing

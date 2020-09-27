@@ -29,6 +29,7 @@ import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import me.nickimpact.gts.api.stashes.Stash;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 
 import java.util.Collections;
@@ -87,17 +88,13 @@ public interface StorageImplementation {
 
     List<UUID> getAllIgnorers() throws Exception;
 
-    boolean addToSoldListings(UUID owner, SoldListing listing) throws Exception;
-
-    List<SoldListing> getAllSoldListingsForPlayer(UUID uuid) throws Exception;
-
-    boolean deleteSoldListing(UUID id, UUID owner) throws Exception;
-
     boolean purge() throws Exception;
 
 
 
     // New methods
+
+    Stash getStash(UUID user) throws Exception;
 
     /**
      * Attempts to process a bid on an auction. This call will generate the response message that'll be sent back
@@ -112,6 +109,8 @@ public interface StorageImplementation {
      * particular auction.
      */
     AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) throws Exception;
+
+    AuctionMessage.Claim.Response processAuctionClaimRequest(AuctionMessage.Claim.Request request) throws Exception;
 
     BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception;
 }

@@ -142,7 +142,7 @@ public class GTSSpongePlaceholderManager {
         // Auction Related Placeholders
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.class,
-                "auction_bid_count",
+                "auction_bids",
                 "GTS - Current Bid Count on an Auction",
                 auction -> Text.of(auction.getBids().size())
         ));
@@ -160,6 +160,12 @@ public class GTSSpongePlaceholderManager {
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.class,
+                "auction_high_bid",
+                "GTS - High Bid of an Auction",
+                auction -> Sponge.getServiceManager().provideUnchecked(EconomyService.class).getDefaultCurrency().format(BigDecimal.valueOf(auction.getHighBid().getSecond()))
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Auction.class,
                 "auction_high_bidder",
                 "GTS - High Bidder of an Auction",
                 auction -> {
@@ -171,9 +177,16 @@ public class GTSSpongePlaceholderManager {
                 }
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
-                String.class, // Would use UUID but
+                String.class, // TODO - Modify to go ask the proxy if in multi-server for the info if the host server does not have it
                 "auction_bidder",
                 "GTS - Bidder on an Auction",
+                Text::of
+        ));
+
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Integer.class,
+                "stash_returned",
+                "GTS - Stash Contents Returned Successfully",
                 Text::of
         ));
     }

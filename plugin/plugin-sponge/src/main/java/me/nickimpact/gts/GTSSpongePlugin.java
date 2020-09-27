@@ -14,8 +14,10 @@ import com.nickimpact.impactor.sponge.plugin.AbstractSpongePlugin;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.blacklist.Blacklist;
 import me.nickimpact.gts.api.exceptions.LackingServiceException;
+import me.nickimpact.gts.api.extension.ExtensionManager;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
+import me.nickimpact.gts.api.stashes.Stash;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.commands.GTSCommandManager;
 import me.nickimpact.gts.common.api.ApiRegistrationUtil;
@@ -23,6 +25,8 @@ import me.nickimpact.gts.common.api.GTSAPIProvider;
 import me.nickimpact.gts.common.blacklist.BlacklistImpl;
 import me.nickimpact.gts.common.config.updated.ConfigKeys;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
+import me.nickimpact.gts.common.data.ResourceManagerImpl;
+import me.nickimpact.gts.common.extension.SimpleExtensionManager;
 import me.nickimpact.gts.common.messaging.InternalMessagingService;
 import me.nickimpact.gts.common.messaging.MessagingFactory;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
@@ -38,6 +42,7 @@ import me.nickimpact.gts.messaging.interpreters.SpongePingPongInterpreter;
 import me.nickimpact.gts.sponge.listings.SpongeAuction;
 import me.nickimpact.gts.sponge.listings.SpongeBuyItNow;
 import me.nickimpact.gts.sponge.pricing.provided.MonetaryPrice;
+import me.nickimpact.gts.sponge.stash.SpongeStash;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -64,6 +69,8 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 	private InternalMessagingService messagingService;
 
+	private SimpleExtensionManager extensionManager;
+
 	public GTSSpongePlugin(GTSSpongeBootstrap bootstrap, org.slf4j.Logger fallback) {
 		super(PluginMetadata.builder()
 				.id("gts")
@@ -85,15 +92,14 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		ApiRegistrationUtil.register(new GTSAPIProvider());
 		Sponge.getServiceManager().setProvider(this.bootstrap, GTSService.class, GTSService.getInstance());
-		Impactor.getInstance().getRegistry().registerBuilderSupplier(Auction.AuctionBuilder.class, SpongeAuction.SpongeAuctionBuilder::new);
-		Impactor.getInstance().getRegistry().registerBuilderSupplier(BuyItNow.BuyItNowBuilder.class, SpongeBuyItNow.SpongeBuyItNowBuilder::new);
+		this.supplyBuilders();
 
 		Impactor.getInstance().getRegistry().register(SpongeListingManager.class, new SpongeListingManager());
 
-		GTSService.getInstance().getGTSComponentManager().registerListingDeserializer(BuyItNow.class, SpongeBuyItNow::deserialize);
-		GTSService.getInstance().getGTSComponentManager().registerListingDeserializer(Auction.class, SpongeAuction::deserialize);
-		GTSService.getInstance().getGTSComponentManager().registerEntryDeserializer(SpongeItemEntry.class, new SpongeItemManager());
-		GTSService.getInstance().getGTSComponentManager().registerPriceDeserializer(MonetaryPrice.class, MonetaryPrice::deserialize);
+		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(BuyItNow.class, new ResourceManagerImpl<>("minecraft:emerald", SpongeBuyItNow::deserialize));
+		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(Auction.class, new ResourceManagerImpl<>("minecraft:gold_ingot", SpongeAuction::deserialize));
+		GTSService.getInstance().getGTSComponentManager().registerEntryManager(SpongeItemEntry.class, new SpongeItemManager());
+		GTSService.getInstance().getGTSComponentManager().registerPriceManager(MonetaryPrice.class, new MonetaryPrice.MonetaryPriceManager());
 		GTSService.getInstance().getGTSComponentManager().registerLegacyEntryDeserializer("item", new SpongeLegacyItemStorable());
 
 		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
@@ -107,7 +113,12 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		new GTSCommandManager(this.bootstrap.getContainer()).register();
 		Impactor.getInstance().getRegistry().get(Blacklist.class).append(ItemType.class, ItemTypes.DIAMOND.getName());
 
+		this.extensionManager = new SimpleExtensionManager(this);
+		this.extensionManager.loadExtensions(this.getBootstrap().getConfigDirectory().resolve("extensions"));
+
 		this.storage = new StorageFactory(this).getInstance(StorageType.MARIADB);
+
+		throw new RuntimeException("Dummy exception");
 	}
 
 	public void started() {
@@ -158,6 +169,11 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	@Override
 	public GTSStorage getStorage() {
 		return this.storage;
+	}
+
+	@Override
+	public ExtensionManager getExtensionManager() {
+		return this.extensionManager;
 	}
 
 	@Override
@@ -216,4 +232,11 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		new SpongePingPongInterpreter().register(this);
 		new SpongeBINInterpreters().register(this);
 	}
+
+	private void supplyBuilders() {
+		Impactor.getInstance().getRegistry().registerBuilderSupplier(Auction.AuctionBuilder.class, SpongeAuction.SpongeAuctionBuilder::new);
+		Impactor.getInstance().getRegistry().registerBuilderSupplier(BuyItNow.BuyItNowBuilder.class, SpongeBuyItNow.SpongeBuyItNowBuilder::new);
+		Impactor.getInstance().getRegistry().registerBuilderSupplier(Stash.StashBuilder.class, SpongeStash.SpongeStashBuilder::new);
+	}
+
 }

@@ -1,4 +1,4 @@
-package me.nickimpact.gts.util.items;
+package me.nickimpact.gts.sponge.utils.items;
 
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.SkullTypes;

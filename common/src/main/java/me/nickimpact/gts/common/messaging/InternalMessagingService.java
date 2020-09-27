@@ -32,8 +32,6 @@ import me.nickimpact.gts.api.messaging.MessengerProvider;
 import me.nickimpact.gts.api.messaging.message.OutgoingMessage;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import me.nickimpact.gts.api.messaging.message.type.utility.PingMessage;
-import me.nickimpact.gts.common.plugin.GTSPlugin;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
@@ -127,6 +125,15 @@ public interface InternalMessagingService {
      */
     void requestAuctionCancellation(UUID listing, UUID actor);
 
+    /**
+     *
+     *
+     * @param listing
+     * @param actor
+     * @param isLister
+     */
+    void requestAuctionClaim(UUID listing, UUID actor, boolean isLister, Consumer<AuctionMessage.Claim.Response> callback);
+
     //------------------------------------------------------------------------------------
     //
     //  BuyItNow Based Messages
@@ -140,10 +147,10 @@ public interface InternalMessagingService {
      * @param actor
      * @return
      */
-    default void publishBINCancellation(UUID listing, UUID actor, Consumer<BuyItNowMessage.Remove.Response> consumer) {
-        this.publishBINCancellation(listing, actor, null, true, consumer);
+    default void requestBINRemoveRequest(UUID listing, UUID actor, Consumer<BuyItNowMessage.Remove.Response> consumer) {
+        this.requestBINRemoveRequest(listing, actor, null, true, consumer);
     }
 
-    void publishBINCancellation(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive, Consumer<BuyItNowMessage.Remove.Response> consumer);
+    void requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive, Consumer<BuyItNowMessage.Remove.Response> consumer);
 
 }

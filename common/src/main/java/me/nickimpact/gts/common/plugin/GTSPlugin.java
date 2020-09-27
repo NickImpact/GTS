@@ -6,6 +6,7 @@ import com.nickimpact.impactor.api.plugin.ImpactorPlugin;
 import com.nickimpact.impactor.api.plugin.components.Configurable;
 import com.nickimpact.impactor.api.plugin.components.Depending;
 import com.nickimpact.impactor.api.plugin.components.Translatable;
+import me.nickimpact.gts.api.extension.ExtensionManager;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.common.messaging.InternalMessagingService;
 import me.nickimpact.gts.common.plugin.bootstrap.GTSBootstrap;
@@ -25,6 +26,8 @@ public interface GTSPlugin extends ImpactorPlugin, Configurable, Depending, Tran
 	Gson getGson();
 
 	GTSStorage getStorage();
+
+	ExtensionManager getExtensionManager();
 
 	InternalMessagingService getMessagingService();
 

@@ -30,6 +30,7 @@ import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
+import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
 import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
@@ -114,8 +115,12 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 		if(listing instanceof Auction) {
 			Auction auction = (Auction) listing;
-
-			List<String> input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS);
+			List<String> input;
+			if(auction.getBids().size() > 1) {
+				input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_BIDS);
+			} else {
+				input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_NO_BIDS);
+			}
 			List<Supplier<Object>> sources = Lists.newArrayList(() -> auction);
 			lore.addAll(service.parse(input, sources));
 		} else if(listing instanceof BuyItNow) {
@@ -136,16 +141,13 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 		Optional<Player> player = Sponge.getServer().getPlayer(receiver);
 		if(player.isPresent()) {
 			MainPlayerInventory inventory = player.get().getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
-			if(inventory.size() == inventory.capacity()) {
-				return false;
-			}
-
-			player.get().getInventory()
-					.transform(InventoryTransformation.of(
-							QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
-							QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class))
-					)
-					.offer(this.getOrCreateElement().createStack());
+			return inventory.transform(InventoryTransformation.of(
+					QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
+					QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class))
+				)
+				.offer(this.getOrCreateElement().createStack())
+				.getType()
+				.equals(InventoryTransactionResult.Type.SUCCESS);
 		}
 
 		return false;

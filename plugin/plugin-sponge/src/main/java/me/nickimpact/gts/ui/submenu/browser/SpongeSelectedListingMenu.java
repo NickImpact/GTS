@@ -119,7 +119,7 @@ public class SpongeSelectedListingMenu implements Historical<SpongeListingMenu> 
             this.viewer.sendMessage(Text.of("TODO - Processing request..."));
 
             GTSPlugin.getInstance().getMessagingService()
-                    .publishBINCancellation(this.listing.getID(), this.viewer.getUniqueId(), response -> {
+                    .requestBINRemoveRequest(this.listing.getID(), this.viewer.getUniqueId(), response -> {
                         if(response.wasSuccessful()) {
                             Impactor.getInstance().getScheduler().executeSync(() -> {
                                 this.viewer.sendMessage(Text.of("TODO - Listing returned"));

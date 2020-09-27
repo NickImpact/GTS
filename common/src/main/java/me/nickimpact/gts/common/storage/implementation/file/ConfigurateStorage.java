@@ -30,6 +30,7 @@ import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import me.nickimpact.gts.api.stashes.Stash;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.common.storage.implementation.StorageImplementation;
 import me.nickimpact.gts.common.storage.implementation.file.loaders.ConfigurateLoader;
@@ -143,27 +144,22 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     @Override
-    public boolean addToSoldListings(UUID owner, SoldListing listing) {
-        return false;
-    }
-
-    @Override
-    public List<SoldListing> getAllSoldListingsForPlayer(UUID uuid) {
-        return null;
-    }
-
-    @Override
-    public boolean deleteSoldListing(UUID id, UUID owner) throws Exception {
-        return false;
-    }
-
-    @Override
     public boolean purge() throws Exception {
         return false;
     }
 
     @Override
+    public Stash getStash(UUID user) throws Exception {
+        return null;
+    }
+
+    @Override
     public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) {
+        return null;
+    }
+
+    @Override
+    public AuctionMessage.Claim.Response processAuctionClaimRequest(AuctionMessage.Claim.Request request) throws Exception {
         return null;
     }
 

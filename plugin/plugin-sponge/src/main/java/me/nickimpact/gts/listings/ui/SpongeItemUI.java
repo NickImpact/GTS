@@ -1,9 +1,7 @@
 package me.nickimpact.gts.listings.ui;
 
-import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Lists;
 import com.nickimpact.impactor.api.Impactor;
-import com.nickimpact.impactor.api.gui.signs.SignQuery;
 import com.nickimpact.impactor.api.services.text.MessageService;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
@@ -26,15 +24,10 @@ import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.InventoryTransformation;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
-import org.spongepowered.api.item.inventory.entity.Hotbar;
-import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.item.inventory.property.SlotIndex;
-import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
-import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -44,8 +37,6 @@ import java.util.function.Supplier;
 import static me.nickimpact.gts.sponge.utils.Utilities.readMessageConfigOption;
 
 public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> implements Historical<SpongeMainMenu> {
-
-    private double price = 50;
 
     public SpongeItemUI(Player viewer) {
         super(viewer);
@@ -97,8 +88,13 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
     }
 
     @Override
-    protected Price<?, ?> getPrice() {
-        return new MonetaryPrice(this.price);
+    protected int getPriceSlot() {
+        return 38;
+    }
+
+    @Override
+    protected int getSelectionTypeSlot() {
+        return 40;
     }
 
     @Override
@@ -136,8 +132,10 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
         });
         slb.slot(back, 36);
 
-        SpongeIcon price = this.generatePriceIcon(50);
+        SpongeIcon price = this.createPriceIcon();
         slb.slot(price, 38);
+
+        slb.slot(this.createBINIcon(), 40);
 
         SpongeIcon time = this.createTimeIcon();
         slb.slot(time, 42);
@@ -153,53 +151,6 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
         return Optional.of(() -> new SpongeMainMenu(this.viewer));
     }
 
-    private SpongeIcon generatePriceIcon(double price) {
-        ItemStack rep = ItemStack.builder()
-                .itemType(ItemTypes.GOLD_INGOT)
-                .add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Price: $", price))
-                .add(Keys.ITEM_LORE, Lists.newArrayList(
-                        Text.of(TextColors.GRAY, "The price a player will pay"),
-                        Text.of(TextColors.GRAY, "in order to purchase this listing."),
-                        Text.EMPTY,
-                        Text.of(TextColors.YELLOW, "Click to edit!")
-                ))
-                .build();
-        SpongeIcon icon = new SpongeIcon(rep);
-        icon.addListener(clickable -> {
-            SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
-                .position(new Vector3d(0, 1, 0))
-                .text(Lists.newArrayList(
-                        Text.of(""),
-                        Text.of("----------------"),
-                        Text.of("Enter a Price"),
-                        Text.of("for this Listing")
-                ))
-                .response(submission -> {
-                    try {
-                        double value = Double.parseDouble(submission.get(0));
-                        if(value > 0) {
-                            this.price = value;
-                            SpongeIcon updated = this.generatePriceIcon(value);
-                            this.getDisplay().setSlot(38, updated);
-
-                            Impactor.getInstance().getScheduler().executeSync(() -> {
-                                this.open(this.viewer);
-                            });
-                            return true;
-                        }
-                        return false;
-                    } catch (Exception e) {
-                        return false;
-                    }
-                })
-                .reopenOnFailure(true)
-                .build();
-            this.viewer.closeInventory();
-            query.sendTo(this.viewer);
-        });
-        return icon;
-    }
-
     @Override
     public SpongeIcon createChosenIcon() {
         SpongeIcon icon = new SpongeIcon(this.chosen.getSelection().createStack());
@@ -211,6 +162,11 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
             this.chosen = null;
         });
         return icon;
+    }
+
+    @Override
+    public SpongeIcon createSelectionTypeIcon() {
+        return null;
     }
 
     @Getter

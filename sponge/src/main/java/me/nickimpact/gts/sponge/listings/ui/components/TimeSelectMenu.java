@@ -17,7 +17,6 @@ import me.nickimpact.gts.common.config.updated.types.time.TimeLanguageOptions;
 import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.sponge.listings.ui.AbstractSpongeEntryUI;
 import me.nickimpact.gts.sponge.utils.Utilities;
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.DyeColors;
@@ -85,7 +84,7 @@ public class TimeSelectMenu {
                     .text(Lists.newArrayList(
                             Text.of(""),
                             Text.of("----------------"),
-                            Text.of("Enter a time"),
+                            Text.of("Enter your time"),
                             Text.of("Ex: 1d5h")
                     ))
                     .response(submission -> {

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.nickimpact.impactor.api.json.factory.JObject;
 import me.nickimpact.gts.api.GTSService;
+import me.nickimpact.gts.api.data.ResourceManager;
 import me.nickimpact.gts.api.data.Storable;
 import me.nickimpact.gts.api.data.registry.GTSKeyMarker;
 import me.nickimpact.gts.api.listings.buyitnow.BuyItNow;
@@ -52,13 +53,14 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 
 		JsonObject element = json.getAsJsonObject("entry");
 		EntryManager<?, ?> entryManager = GTSService.getInstance().getGTSComponentManager()
-				.getEntryDeserializer(element.get("key").getAsString())
+				.getEntryManager(element.get("key").getAsString())
 				.orElseThrow(() -> new RuntimeException("JSON Data for entry is missing mapping key"));
 		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));
 
 		JsonObject price = json.getAsJsonObject("price");
 		Storable.Deserializer<Price<?, ?>> deserializer = GTSService.getInstance().getGTSComponentManager()
-				.getPriceDeserializer(price.get("key").getAsString())
+				.getPriceManager(price.get("key").getAsString())
+				.map(ResourceManager::getDeserializer)
 				.orElseThrow(() -> new RuntimeException("JSON Data for price is missing mapping key"));
 		builder.price(deserializer.deserialize(price.getAsJsonObject("content")));
 		return builder.build();

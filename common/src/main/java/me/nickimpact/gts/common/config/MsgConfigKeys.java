@@ -317,13 +317,13 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 		return new TitleLorePair(title, lore);
 	});
-	public static final ConfigKey<TitleLorePair> UI_MAIN_CREATE_AUCTION = customKey(c -> {
-		String title = c.getString("ui.menus.main.create-auction.title", "&aCreate an Auction");
-		List<String> lore = c.getStringList("ui.menus.main.create-auction.lore", Lists.newArrayList(
-				"&7SPlace your own items for",
-				"&7auction, allowing other players to",
-				"&7place bids and potentially purchase",
-				"&7your item!"
+	public static final ConfigKey<TitleLorePair> UI_MAIN_VIEW_PERSONAL_LISTINGS = customKey(c -> {
+		String title = c.getString("ui.menus.main.view-personal-listings.title", "&aView Your Listings");
+		List<String> lore = c.getStringList("ui.menus.main.view-personal-listings.lore", Lists.newArrayList(
+				"&7View the listings you've",
+				"&7created that are still active",
+				"&7on the market. Expired listings",
+				"&7can be found in your stash!"
 		));
 
 		return new TitleLorePair(title, lore);
@@ -381,10 +381,50 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 		return new TitleLorePair(title, lore);
 	});
 
+	// Stash Window
+	public static final ConfigKey<String> UI_MENU_STASH_TITLE = stringKey("ui.menus.stash.title", "&cGTS &7\u00bb &3Stash");
+	public static final ConfigKey<String> UI_MENU_MAIN_STASH_STATUS = stringKey("ui.menus.main.stash.status", "&b* You have items available for pickup!");
+	public static final ConfigKey<String> UI_ICON_STASH_COLLECT_ALL_TITLE = stringKey("ui.icons.stash.collect-all.title", "&aCollect All");
+	public static final ConfigKey<List<String>> UI_ICON_STASH_COLLECT_ALL_LORE = listKey("ui.icons.stash.collect-all.lore", Lists.newArrayList(
+			"&7Allows you to claim all your stashed",
+			"&7listings at once! Note that if you",
+			"&7don't have the space for a particular",
+			"&7listing, it'll be skipped",
+			"",
+			"&eClick to begin your claim request!"
+	));
+
+	public static final ConfigKey<String> STASH_COLLECT_ALL_RESULTS = stringKey("ui.menus.stash.collect-all.results", "{{gts:prefix}} &7Successfully returned {{gts:stash_returned}} listings!");
+
+	// Icons
+	public static final ConfigKey<String> UI_ICON_BIN_CREATE_TITLE = stringKey("ui.icons.bin.creator.title", "&aBIN Mode");
+	public static final ConfigKey<List<String>> UI_ICON_BIN_CREATE_LORE = listKey("ui.icons.bin.creator.lore", Lists.newArrayList(
+			"&7Set a price, then one player",
+			"&7may buy the listing at that",
+			"&7price.",
+			"",
+			"&8(BIN means Buy It Now)",
+			"",
+			"&eClick to switch to Auction Mode!"
+	));
+
+	public static final ConfigKey<String> UI_ICON_AUCTION_CREATE_TITLE = stringKey("ui.icons.auction.creator.title", "&aAuction Mode");
+	public static final ConfigKey<List<String>> UI_ICON_AUCTION_CREATE_LORE = listKey("ui.icons.auctions.creator.lore", Lists.newArrayList(
+			"&7A listing in which multiple",
+			"&7players compete for the listing",
+			"&7by bidding against each other",
+			"",
+			"&eClick to switch to BIN Mode!"
+	));
+
 	// Time Selection
 	public static final ConfigKey<String> UI_TIME_SELECT_TITLE = stringKey("ui.time-select.title", "Select a Time");
 
-	public static final ConfigKey<String> UI_TIME_DISPLAY = stringKey("ui.components.time.display", "&fDuration: &e{{gts:time}}");
+	public static final ConfigKey<String> UI_TIME_DISPLAY_TITLE = stringKey("ui.components.time.display.title", "&eDuration: {{gts:time}}");
+	public static final ConfigKey<List<String>> UI_TIME_DISPLAY_LORE = listKey("ui.components.time.display.lore", Lists.newArrayList(
+			"&7How long the listing will",
+			"&7be listed on the GTS."
+	));
 
 	// Admin Menus
 	public static final ConfigKey<String> UI_ADMIN_MAIN_TITLE = stringKey("ui.admin.main.title", "GTS - Admin Mode");
@@ -418,12 +458,20 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"",
 			"&eClick to inspect!"
 	));
-	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS = listKey("ui.listings.auctions.details", Lists.newArrayList(
+	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS_NO_BIDS = listKey("ui.listings.auctions.details.no-bids", Lists.newArrayList(
 			"&7Seller: &e{{gts:seller}}",
-			"&7Bids: &a{{gts:bids}} bids",
+			"&7Starting Bid: &e{{gts:auction_start_price}}",
 			"",
-			"&7Top bid: &e{{gts:high_bid}}",
-			"&7Bidder: {{gts:high_bidder}}",
+			"&7Ends in: &e{{gts:time_left}}",
+			"",
+			"&eClick to inspect!"
+	));
+	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS_WITH_BIDS = listKey("ui.listings.auctions.details.with-bids", Lists.newArrayList(
+			"&7Seller: &e{{gts:seller}}",
+			"&7Bids: &a{{gts:auction_bids}} bids",
+			"",
+			"&7Top bid: &e{{gts:auction_high_bid}}",
+			"&7Bidder: {{gts:auction_high_bidder}}",
 			"",
 			"&7Ends in: &e{{gts:time_left}}",
 			"",

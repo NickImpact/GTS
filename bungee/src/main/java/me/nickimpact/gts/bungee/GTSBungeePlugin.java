@@ -11,6 +11,7 @@ import com.nickimpact.impactor.bungee.configuration.BungeeConfig;
 import com.nickimpact.impactor.bungee.configuration.BungeeConfigAdapter;
 import com.nickimpact.impactor.bungee.plugin.AbstractBungeePlugin;
 import me.nickimpact.gts.api.blacklist.Blacklist;
+import me.nickimpact.gts.api.extension.ExtensionManager;
 import me.nickimpact.gts.api.storage.GTSStorage;
 import me.nickimpact.gts.bungee.messaging.BungeeMessagingFactory;
 import me.nickimpact.gts.bungee.messaging.interpreters.BungeeBINRemoveInterpreter;
@@ -83,6 +84,11 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 	@Override
 	public GTSStorage getStorage() {
 		return this.storage;
+	}
+
+	@Override
+	public ExtensionManager getExtensionManager() {
+		return null;
 	}
 
 	@Override

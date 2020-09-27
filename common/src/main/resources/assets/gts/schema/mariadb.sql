@@ -5,6 +5,13 @@ CREATE TABLE `{prefix}listings` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARSET = utf8;
 
+CREATE TABLE `{prefix}auction_claims` (
+    `auction`           VARCHAR(36)     NOT NULL,
+    `lister`            TINYINT(1)      NOT NULL,
+    `winner`            TINYINT(1)      NOT NULL,
+    PRIMARY KEY (`auction`)
+) DEFAULT CHARSET = utf8;
+
 CREATE TABLE `{prefix}player_settings` (
     `uuid`              VARCHAR(36)     NOT NULL,
     `pub_notif`         TINYINT(1)      NOT NULL,

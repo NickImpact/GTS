@@ -1,14 +1,11 @@
 package me.nickimpact.gts.api.storage;
 
 import me.nickimpact.gts.api.listings.Listing;
-import me.nickimpact.gts.api.listings.SoldListing;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import me.nickimpact.gts.api.player.PlayerSettings;
 import me.nickimpact.gts.api.stashes.Stash;
-import me.nickimpact.gts.api.stashes.StashEntry;
 
-import java.net.SocketAddress;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -54,7 +51,7 @@ public interface GTSStorage {
 	 * @param user The user representing the holder of the stash
 	 * @return The stash as it is currently
 	 */
-	CompletableFuture<Stash<? extends StashEntry<?>, ?>> fetchStash(UUID user);
+	CompletableFuture<Stash> getStash(UUID user);
 
 	CompletableFuture<Optional<PlayerSettings>> getPlayerSettings(UUID uuid);
 
@@ -78,6 +75,8 @@ public interface GTSStorage {
 	 * @return A response indicating the success or failure of the bid request, fit with all necessary information
 	 */
 	CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request);
+
+	CompletableFuture<AuctionMessage.Claim.Response> processAuctionClaimRequest(AuctionMessage.Claim.Request request);
 
 	CompletableFuture<BuyItNowMessage.Remove.Response> processListingRemoveRequest(BuyItNowMessage.Remove.Request request);
 

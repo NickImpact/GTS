@@ -1,16 +1,19 @@
 package me.nickimpact.gts.ui;
 
 import com.google.common.collect.Lists;
+import com.nickimpact.impactor.api.Impactor;
 import com.nickimpact.impactor.api.services.text.MessageService;
 import com.nickimpact.impactor.sponge.ui.SpongeIcon;
 import com.nickimpact.impactor.sponge.ui.SpongeLayout;
 import com.nickimpact.impactor.sponge.ui.SpongeUI;
 import me.nickimpact.gts.common.config.MsgConfigKeys;
 import me.nickimpact.gts.common.config.wrappers.TitleLorePair;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
 import me.nickimpact.gts.listings.ui.SpongeItemUI;
 import me.nickimpact.gts.ui.submenu.SpongeListingMenu;
 import me.nickimpact.gts.sponge.utils.Utilities;
-import me.nickimpact.gts.util.items.SkullCreator;
+import me.nickimpact.gts.ui.submenu.stash.SpongeStashMenu;
+import me.nickimpact.gts.sponge.utils.items.SkullCreator;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
@@ -79,17 +82,17 @@ public class SpongeMainMenu {
 
 		this.createStashIcon(slb);
 
-		TitleLorePair auctions = readMessageConfigOption(MsgConfigKeys.UI_MAIN_CREATE_AUCTION);
-		SpongeIcon auction = new SpongeIcon(ItemStack.builder()
-				.itemType(ItemTypes.GOLD_BLOCK)
-				.add(Keys.DISPLAY_NAME, PARSER.parse(auctions.getTitle(), Lists.newArrayList(() -> this.viewer)))
-				.add(Keys.ITEM_LORE, PARSER.parse(auctions.getLore(), Lists.newArrayList(() -> this.viewer)))
+		TitleLorePair personal = readMessageConfigOption(MsgConfigKeys.UI_MAIN_VIEW_PERSONAL_LISTINGS);
+		SpongeIcon personalIcon = new SpongeIcon(ItemStack.builder()
+				.from(SkullCreator.fromBase64("ODJhZTE5MTA3MDg2ZGQzMTRkYWYzMWQ4NjYxOGU1MTk0OGE2ZTNlMjBkOTZkY2ExN2QyMWIyNWQ0MmQyYjI0In19fQ=="))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(personal.getTitle(), Lists.newArrayList(() -> this.viewer)))
+				.add(Keys.ITEM_LORE, PARSER.parse(personal.getLore(), Lists.newArrayList(() -> this.viewer)))
 				.build()
 		);
-		auction.addListener(clickable -> {
-
+		personalIcon.addListener(clickable -> {
+			new SpongeListingMenu(this.viewer, listing -> listing.getLister().equals(this.viewer.getUniqueId())).open();
 		});
-		slb.slot(auction, 29);
+		slb.slot(personalIcon, 29);
 
 		TitleLorePair cBids = readMessageConfigOption(MsgConfigKeys.UI_MAIN_CURRENT_BIDS);
 		SpongeIcon bids = new SpongeIcon(ItemStack.builder()
@@ -115,6 +118,20 @@ public class SpongeMainMenu {
 		return slb.build();
 	}
 
+	private void createPersonalIcon(SpongeLayout.SpongeLayoutBuilder slb) {
+
+	}
+
+	private void writePersonalIconLore(SpongeIcon icon, List<String> base) {
+		List<String> lore = Lists.newArrayList(base);
+		lore.add("");
+
+		GTSPlugin.getInstance().getStorage().fetchListings(Lists.newArrayList())
+				.thenAccept(listings -> {
+
+				});
+	}
+
 	private void createStashIcon(SpongeLayout.SpongeLayoutBuilder slb) {
 		TitleLorePair stashRef = readMessageConfigOption(MsgConfigKeys.UI_MAIN_STASH);
 		ItemStack icon = ItemStack.builder()
@@ -125,7 +142,7 @@ public class SpongeMainMenu {
 		SpongeIcon stash = new SpongeIcon(icon);
 		this.writeStashIconLore(stash, stashRef.getLore());
 		stash.addListener(clickable -> {
-
+			new SpongeStashMenu(this.viewer).open();
 		});
 		slb.slot(stash, 15);
 	}
@@ -136,26 +153,23 @@ public class SpongeMainMenu {
 		lore.add("");
 		lore.add(readMessageConfigOption(MsgConfigKeys.UI_MAIN_STASH_CLICK_NOTIF));
 
-//		GTSPlugin.getInstance().getStorage().fetchStash(this.viewer.getUniqueId()).thenAccept(
-//				stash -> {
-//					if(!stash.isEmpty()) {
-//						Map<String, PlaceholderParser> tokens = Maps.newHashMap();
-//						tokens.put("gts_stash_size", placeholder -> LegacyComponentSerializer.legacy().deserialize("" + stash.getSize()));
-//
-//						GTSPlugin.getInstance().getScheduler().executeSync(() -> {
-//							lore.clear();
-//							lore.addAll(loreBase);
-//							lore.add("");
-//							lore.addAll(readMessageConfigOption(MsgConfigKeys.UI_MAIN_STASH_ITEMS_AVAILABLE));
-//							lore.add("");
-//							lore.add(readMessageConfigOption(MsgConfigKeys.UI_MAIN_STASH_CLICK_NOTIF));
-//
-//							icon.getDisplay().offer(Keys.ITEM_LORE, PARSER.getTextListForSource(lore, this.viewer, tokens, null));
-//							this.view.setSlot(15, icon);
-//						});
-//					}
-//				}
-//		);
+		GTSPlugin.getInstance().getStorage().getStash(this.viewer.getUniqueId()).thenAccept(
+				stash -> {
+					if(!stash.isEmpty()) {
+						List<String> updated = Lists.newArrayList();
+						updated.addAll(loreBase);
+						updated.add("");
+						updated.add(readMessageConfigOption(MsgConfigKeys.UI_MENU_MAIN_STASH_STATUS));
+						updated.add("");
+						updated.add(readMessageConfigOption(MsgConfigKeys.UI_MAIN_STASH_CLICK_NOTIF));
+
+						Impactor.getInstance().getScheduler().executeSync(() -> {
+							icon.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(updated, Lists.newArrayList(() -> this.viewer, () -> stash)));
+							this.view.setSlot(15, icon);
+						});
+					}
+				}
+		);
 
 		icon.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(lore, Lists.newArrayList(() -> this.viewer)));
 	}

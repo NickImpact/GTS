@@ -3,12 +3,11 @@ package me.nickimpact.gts.common.messaging.messages.listings.auctions.impl;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nickimpact.impactor.api.json.factory.JObject;
+import com.nickimpact.impactor.api.utilities.mappings.Tuple;
 import me.nickimpact.gts.api.messaging.message.type.auctions.AuctionMessage;
 import me.nickimpact.gts.api.util.groupings.SimilarPair;
-import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.common.messaging.GTSMessagingService;
 import me.nickimpact.gts.common.messaging.messages.listings.auctions.AuctionMessageOptions;
-import net.kyori.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -21,12 +20,8 @@ public class AuctionPublishMessage extends AuctionMessageOptions implements Auct
 
 	public static AuctionPublishMessage decode(@Nullable JsonElement element, UUID id) {
 		Tuple<JsonObject, SimilarPair<UUID>> base = AuctionMessageOptions.decodeBaseAuctionParameters(element);
-		JsonObject raw = base.getFirst();
 		UUID listing = base.getSecond().getFirst();
 		UUID actor = base.getSecond().getSecond();
-		String broadcast = Optional.ofNullable(raw.get("broadcast"))
-				.map(JsonElement::getAsString)
-				.orElseThrow(() -> new IllegalStateException("Failed to locate broadcast message"));
 
 		return new AuctionPublishMessage(id, listing, actor);
 	}

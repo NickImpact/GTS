@@ -1,5 +1,7 @@
 package me.nickimpact.gts.api.listings.ui;
 
+import me.nickimpact.gts.api.listings.prices.Price;
+
 import java.util.Optional;
 
 public interface EntryUI<P, E, I> {
@@ -15,6 +17,10 @@ public interface EntryUI<P, E, I> {
 	I createNoneChosenIcon();
 
 	I createChosenIcon();
+
+	I createPriceIcon();
+
+	I createSelectionTypeIcon();
 
 	I createTimeIcon();
 

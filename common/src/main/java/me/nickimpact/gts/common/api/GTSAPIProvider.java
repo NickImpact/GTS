@@ -5,11 +5,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.data.registry.GTSComponentManager;
-import me.nickimpact.gts.api.extensions.Extension;
+import me.nickimpact.gts.api.extension.Extension;
 import me.nickimpact.gts.api.player.PlayerSettingsManager;
 import me.nickimpact.gts.api.searching.Searcher;
 import me.nickimpact.gts.common.listings.GTSComponentManagerImpl;
 import me.nickimpact.gts.common.player.PlayerSettingsManagerImpl;
+import me.nickimpact.gts.common.plugin.GTSPlugin;
 
 import java.util.Map;
 import java.util.Optional;
@@ -22,7 +23,7 @@ public class GTSAPIProvider implements GTSService {
 
 	@Override
 	public ImmutableList<Extension> getAllExtensions() {
-		return ImmutableList.copyOf(Lists.newArrayList());
+		return ImmutableList.copyOf(GTSPlugin.getInstance().getExtensionManager().getLoadedExtensions());
 	}
 
 	@Override

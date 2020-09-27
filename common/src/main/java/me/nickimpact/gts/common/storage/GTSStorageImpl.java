@@ -117,6 +117,11 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
+    public CompletableFuture<AuctionMessage.Claim.Response> processAuctionClaimRequest(AuctionMessage.Claim.Request request) {
+        return this.schedule(() -> this.implementation.processAuctionClaimRequest(request));
+    }
+
+    @Override
     public CompletableFuture<BuyItNowMessage.Remove.Response> processListingRemoveRequest(BuyItNowMessage.Remove.Request request) {
         return this.schedule(() -> this.implementation.processListingRemoveRequest(request));
     }
@@ -127,8 +132,8 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<Stash<?, ?>> fetchStash(UUID user) {
-        return null;
+    public CompletableFuture<Stash> getStash(UUID user) {
+        return this.schedule(() -> this.implementation.getStash(user));
     }
 
     private <T> CompletableFuture<T> schedule(Callable<T> callable) {

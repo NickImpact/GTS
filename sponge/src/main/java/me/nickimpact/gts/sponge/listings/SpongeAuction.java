@@ -7,11 +7,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nickimpact.impactor.api.json.factory.JArray;
 import com.nickimpact.impactor.api.json.factory.JObject;
+import com.nickimpact.impactor.api.utilities.mappings.Tuple;
 import me.nickimpact.gts.api.GTSService;
 import me.nickimpact.gts.api.listings.auctions.Auction;
 import me.nickimpact.gts.api.listings.entries.Entry;
 import me.nickimpact.gts.api.listings.entries.EntryManager;
-import me.nickimpact.gts.api.util.groupings.Tuple;
 import me.nickimpact.gts.sponge.listings.makeup.SpongeEntry;
 
 import java.time.LocalDateTime;
@@ -131,7 +131,7 @@ public class SpongeAuction extends SpongeListing implements Auction {
 
 		JsonObject element = object.getAsJsonObject("entry");
 		EntryManager<?, ?> entryManager = GTSService.getInstance().getGTSComponentManager()
-				.getEntryDeserializer(element.get("key").getAsString())
+				.getEntryManager(element.get("key").getAsString())
 				.orElseThrow(() -> new RuntimeException("JSON Data for entry is missing mapping key"));
 		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));
 

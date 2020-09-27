@@ -2,6 +2,8 @@ package me.nickimpact.gts;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.nickimpact.impactor.api.dependencies.classloader.PluginClassLoader;
+import com.nickimpact.impactor.api.dependencies.classloader.ReflectionClassLoader;
 import com.nickimpact.impactor.api.logging.Logger;
 import lombok.Getter;
 import me.nickimpact.gts.api.GTSService;
@@ -55,11 +57,14 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 	@ConfigDir(sharedRoot = false)
 	private Path configDir;
 
+	private PluginClassLoader classLoader;
+
 	private Throwable exception;
 
 	@Inject
 	public GTSSpongeBootstrap(org.slf4j.Logger fallback) {
 		this.plugin = new GTSSpongePlugin(this, fallback);
+		this.classLoader = new ReflectionClassLoader(this);
 	}
 
 	@Listener(order = Order.EARLY)
@@ -121,6 +126,11 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 	@Override
 	public InputStream getResourceStream(String path) {
 		return null;
+	}
+
+	@Override
+	public PluginClassLoader getPluginClassLoader() {
+		return this.classLoader;
 	}
 
 	@Override

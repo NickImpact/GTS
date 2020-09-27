@@ -2,6 +2,7 @@ package me.nickimpact.gts.common.listings;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import me.nickimpact.gts.api.data.ResourceManager;
 import me.nickimpact.gts.api.data.Storable;
 import me.nickimpact.gts.api.listings.Listing;
 import me.nickimpact.gts.api.listings.entries.Entry;
@@ -9,6 +10,7 @@ import me.nickimpact.gts.api.data.registry.GTSKeyMarker;
 import me.nickimpact.gts.api.listings.entries.EntryManager;
 import me.nickimpact.gts.api.data.registry.GTSComponentManager;
 import me.nickimpact.gts.api.listings.prices.Price;
+import me.nickimpact.gts.api.listings.prices.PriceManager;
 
 import java.util.Map;
 import java.util.Optional;
@@ -16,44 +18,59 @@ import java.util.Optional;
 @SuppressWarnings("unchecked")
 public class GTSComponentManagerImpl implements GTSComponentManager {
 
-    private final Map<Class<?>, Storable.Deserializer<?>> listings = Maps.newHashMap();
-    private final Map<String, EntryManager<?, ?>> managers = Maps.newHashMap();
-    private final Map<String, Storable.Deserializer<?>> prices = Maps.newHashMap();
+    private final Map<Class<? extends Listing>, ResourceManager<? extends Listing>> listings = Maps.newHashMap();
+    private final Map<String, EntryManager<? extends Entry<?, ?>, ?>> managers = Maps.newHashMap();
+    private final Map<String, PriceManager<? extends Price<?, ?>, ?>> prices = Maps.newHashMap();
 
     private final Map<String, Storable.Deserializer<?>> legacy = Maps.newHashMap();
 
     @Override
-    public <T extends Listing> void registerListingDeserializer(Class<T> type, Storable.Deserializer<T> deserializer) {
+    public <T extends Listing> void registerListingResourceManager(Class<T> type, ResourceManager<T> deserializer) {
         this.listings.put(type, deserializer);
     }
 
     @Override
-    public <T extends Listing> Optional<Storable.Deserializer<T>> getListingDeserializer(Class<T> type) {
-        return Optional.ofNullable((Storable.Deserializer<T>) this.listings.get(type));
+    public <T extends Listing> Optional<ResourceManager<T>> getListingResourceManager(Class<T> type) {
+        return Optional.ofNullable((ResourceManager<T>) this.listings.get(type));
     }
 
     @Override
-    public <T extends Entry<?, ?>> void registerEntryDeserializer(Class<T> clazz, EntryManager<T, ?> manager) {
-        Preconditions.checkArgument(clazz.isAnnotationPresent(GTSKeyMarker.class), "An Entry type must be annotated with GTSKeyMarker");
-
-        this.managers.put(clazz.getAnnotation(GTSKeyMarker.class).value(), manager);
+    public Map<Class<? extends Listing>, ResourceManager<? extends Listing>> getAllListingResourceManagers() {
+        return this.listings;
     }
 
     @Override
-    public <T extends Entry<?, ?>> Optional<EntryManager<T, ?>> getEntryDeserializer(String key) {
+    public <T extends Entry<?, ?>> void registerEntryManager(Class<T> type, EntryManager<T, ?> manager) {
+        Preconditions.checkArgument(type.isAnnotationPresent(GTSKeyMarker.class), "An Entry type must be annotated with GTSKeyMarker");
+
+        this.managers.put(type.getAnnotation(GTSKeyMarker.class).value(), manager);
+    }
+
+    @Override
+    public <T extends Entry<?, ?>> Optional<EntryManager<T, ?>> getEntryManager(String key) {
         return Optional.ofNullable((EntryManager<T, ?>) this.managers.get(key));
     }
 
     @Override
-    public <T extends Price<?, ?>> void registerPriceDeserializer(Class<T> type, Storable.Deserializer<T> deserializer) {
-        Preconditions.checkArgument(type.isAnnotationPresent(GTSKeyMarker.class), "A Price type must be annotated with GTSKeyMarker");
-
-        this.prices.put(type.getAnnotation(GTSKeyMarker.class).value(), deserializer);
+    public Map<String, EntryManager<? extends Entry<?, ?>, ?>> getAllEntryManagers() {
+        return this.managers;
     }
 
     @Override
-    public <T extends Price<?, ?>> Optional<Storable.Deserializer<T>> getPriceDeserializer(String key) {
-        return Optional.ofNullable((Storable.Deserializer<T>) this.prices.get(key));
+    public <T extends Price<?, ?>> void registerPriceManager(Class<T> type, PriceManager<T, ?> resource) {
+        Preconditions.checkArgument(type.isAnnotationPresent(GTSKeyMarker.class), "A Price type must be annotated with GTSKeyMarker");
+
+        this.prices.put(type.getAnnotation(GTSKeyMarker.class).value(), resource);
+    }
+
+    @Override
+    public <T extends Price<?, ?>> Optional<PriceManager<T, ?>> getPriceManager(String key) {
+        return Optional.ofNullable((PriceManager<T, ?>) this.prices.get(key));
+    }
+
+    @Override
+    public Map<String, PriceManager<? extends Price<?, ?>, ?>> getAllPriceManagers() {
+        return this.prices;
     }
 
     @Override

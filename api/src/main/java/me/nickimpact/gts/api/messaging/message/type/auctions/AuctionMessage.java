@@ -96,6 +96,24 @@ public interface AuctionMessage extends OutgoingMessage {
 	}
 
 	/**
+	 * Represents the message indicating a user who is attempting to claim a part of their auction after
+	 * it has expired. Since auctions are special in that they have two rewards versus one, we need to
+	 * process the claim accordingly as to ensure we don't delete the auction from memory until both claim
+	 * requests have been processed.
+	 */
+	interface Claim extends AuctionMessage {
+
+		interface Request extends Claim, MessageType.Request<Response> {
+
+			boolean isLister();
+
+		}
+
+		interface Response extends Claim, MessageType.Response {}
+
+	}
+
+	/**
 	 * Represents the act of the auction creator cancelling their auction. This message is entirely dependent on
 	 * two main aspects of plugin configuration: The allowance of a user being able to cancel an auction, and the
 	 * amount of time left on the auction per some ratio that'll actually allow a user to cancel their auction.
