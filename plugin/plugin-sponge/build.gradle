@@ -49,9 +49,10 @@ shadowJar {
     exclude 'protocolcontrol-*.jar'
     exclude 'dummyThing'
 
-    relocate ('net.kyori.text', 'com.nickimpact.impactor.relocations.text')
-    relocate ('com.github.benmanes.caffeine', 'com.nickimpact.impactor.relocations.caffeine')
-    relocate ('io.github.classgraph', 'com.nickimpact.impactor.relocations.classgraph')
+    relocate ('net.kyori.text', 'net.impactdev.impactor.relocations.text')
+    relocate ('com.github.benmanes.caffeine', 'net.impactdev.impactor.relocations.caffeine')
+    relocate ('io.github.classgraph', 'net.impactdev.impactor.relocations.classgraph')
+    relocate ('co.aikar.commands', 'net.impactdev.impactor.relocations.commands')
 }
 
 reobf {
@@ -64,10 +65,10 @@ dependencies {
     compile project(':api')
     compile project(':common')
     compile project(':sponge')
-    shadow 'com.nickimpact.impactor:sponge:3.0.0-SNAPSHOT'
-    shadow 'org.spongepowered:spongeapi:7.3.0-20200614.093206-8'
+    shadow 'net.impactdev.impactor:sponge:3.0.0-SNAPSHOT'
+    shadow 'org.spongepowered:spongeapi:7.3.0'
     shadow "com.ichorpowered:protocolcontrol:0.0.1"
-    //shadow "co.aikar:acf-sponge:0.5.0-SNAPSHOT"
+    shadow "co.aikar:acf-sponge:0.5.0-SNAPSHOT"
     shadow('net.kyori:text-api:3.0.3') {
         exclude(module: 'checker-qual')
     }
@@ -88,7 +89,6 @@ sourceMainJava.finalizedBy(blossomSourceReplacementJava)
 blossom {
     blossomSourceReplacementJava.output = file("$buildDir/sources/main/java")
     replaceToken '@version@', version
-    replaceToken '@jar_name@', "GTS-Sponge-1.12.2-${project.version}.jar"
 }
 
 build.dependsOn reobfShadowJar

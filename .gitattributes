@@ -1,5 +1,5 @@
-# Auto detect com.nickimpact.gts.api.text files and perform LF normalization
-* com.nickimpact.gts.api.text=auto
+# Auto detect net.impactdev.gts.api.text files and perform LF normalization
+* net.impactdev.gts.api.text=auto
 
 # Custom for Visual Studio
 *.cs     diff=csharp
