@@ -116,13 +116,15 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, Boolean>> im
                         }
                     } else {
                         if(((BuyItNow) listing).getPrice().reward(this.getViewer().getUniqueId())) {
-                            GTSPlugin.getInstance().getMessagingService().requestBINRemoveRequest(listing.getID(), listing.getLister(), response -> {});
+                            GTSPlugin.getInstance().getMessagingService()
+                                    .requestBINRemoveRequest(listing.getID(), listing.getLister());
                             successful.incrementAndGet();
                         }
                     }
                 } else {
                     if(entry.getFirst().getEntry().give(this.getViewer().getUniqueId())) {
-                        GTSPlugin.getInstance().getMessagingService().requestBINRemoveRequest(entry.getFirst().getID(), entry.getFirst().getLister(), response -> { });
+                        GTSPlugin.getInstance().getMessagingService()
+                                .requestBINRemoveRequest(entry.getFirst().getID(), entry.getFirst().getLister());
                         successful.incrementAndGet();
                     }
                 }

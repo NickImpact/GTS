@@ -26,6 +26,9 @@
 package net.impactdev.gts.common.messaging;
 
 import com.google.gson.JsonElement;
+import net.impactdev.gts.api.messaging.message.type.MessageType;
+import net.impactdev.gts.common.messaging.messages.utility.GTSPongMessage;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.MessengerProvider;
@@ -36,10 +39,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 public interface InternalMessagingService {
 
@@ -70,10 +76,38 @@ public interface InternalMessagingService {
      */
     UUID generatePingID();
 
+    /**
+     * Forces a completable future to timeout its actions after the specified amount of time. This is best used
+     * with {@link CompletableFuture#acceptEither(CompletionStage, Consumer) acceptEither},
+     * {@link CompletableFuture#applyToEither(CompletionStage, Function) applyToEither}, or any of their respective
+     * async companions.
+     *
+     * @param timeout The amount of time that it should take before we forcibly raise a timeout exception
+     * @param unit The time unit to measure our timeout value by
+     * @param <W> The intended return type of the completable future (for compatibility with both run and supply)
+     * @return A completable future who's sole purpose is to timeout after X amount of time
+     */
     default <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
         CompletableFuture<W> result = new CompletableFuture<>();
         Impactor.getInstance().getScheduler().asyncLater(() -> result.completeExceptionally(new TimeoutException()), timeout, unit);
         return result;
+    }
+
+    /**
+     * More of a utility method, this method processes a request by placing it in the receiver queue for the hooked
+     * incoming message receiver. It'll hold the active thread until a response has been received. Once received,
+     * it is to return that value.
+     *
+     * @param requestID The ID of the request being published
+     * @param <W> The intended return type
+     * @return The response as soon as it's available
+     */
+    default <R extends MessageType.Request<?> & OutgoingMessage, W extends MessageType.Response> W await(UUID requestID, R request) {
+        AtomicReference<W> reference = new AtomicReference<>(null);
+        GTSPlugin.getInstance().getMessagingService().getMessenger().getMessageConsumer().registerRequest(requestID, reference::set);
+        GTSPlugin.getInstance().getMessagingService().getMessenger().sendOutgoingMessage(request);
+        while(reference.get() == null) {}
+        return reference.get();
     }
 
     //------------------------------------------------------------------------------------
@@ -88,7 +122,7 @@ public interface InternalMessagingService {
      * be parsed by the server that meets the requirements of the pong message. Those being the server
      * address and port for which they were attached at the time of the message being sent.
      */
-    void sendPing();
+    CompletableFuture<GTSPongMessage> sendPing();
 
     //------------------------------------------------------------------------------------
     //
@@ -108,14 +142,15 @@ public interface InternalMessagingService {
     /**
      * Attempts to publish a bid to the central database for GTS. This message simply controls the process
      * of sending the initial message. Afterwords, the proxy handling the message will respond with a
-     * {@link AuctionMessage.Bid.Response Bid Response} that'll
-     * specify all other required information regarding the bid.
+     * {@link AuctionMessage.Bid.Response Bid Response} that'll specify all other required information
+     * regarding the bid.
      *
      * @param listing The listing being bid on
      * @param actor   The user who placed the bid
      * @param bid     The amount the user has just bid on the auction for
+     * @return A completable future wrapping a response message for a users bid request
      */
-    void publishBid(UUID listing, UUID actor, double bid, Consumer<AuctionMessage.Bid.Response> consumer);
+    CompletableFuture<AuctionMessage.Bid.Response> publishBid(UUID listing, UUID actor, double bid);
 
     /**
      *
@@ -147,10 +182,10 @@ public interface InternalMessagingService {
      * @param actor
      * @return
      */
-    default void requestBINRemoveRequest(UUID listing, UUID actor, Consumer<BuyItNowMessage.Remove.Response> consumer) {
-        this.requestBINRemoveRequest(listing, actor, null, true, consumer);
+    default CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor) {
+        return this.requestBINRemoveRequest(listing, actor, null, true);
     }
 
-    void requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive, Consumer<BuyItNowMessage.Remove.Response> consumer);
+    CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive);
 
 }

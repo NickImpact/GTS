@@ -8,6 +8,7 @@ public class SpongePingPongInterpreter implements Interpreter {
 
 	public void register(GTSPlugin plugin) {
 		this.getDecoders(plugin);
+		this.getInterpreters(plugin);
 	}
 
 	@Override

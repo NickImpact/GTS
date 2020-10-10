@@ -140,15 +140,14 @@ public class SpongeSelectedListingMenu {
                     GTSPlugin.getInstance().getMessagingService().publishBid(
                             auction.getID(),
                             this.viewer.getUniqueId(),
-                            newBid,
-                            response -> {
-                                if(response.wasSuccessful()) {
-                                    this.viewer.sendMessage(Text.of(TextColors.RED, "TODO - Bid placed at " + currency.format(new BigDecimal(newBid))));
-                                } else {
-                                    this.viewer.sendMessage(Text.of());
-                                }
-                            }
-                    );
+                            newBid
+                    ).thenAccept(response -> {
+                        if(response.wasSuccessful()) {
+                            this.viewer.sendMessage(Text.of(TextColors.RED, "TODO - Bid placed at " + currency.format(new BigDecimal(newBid))));
+                        } else {
+                            this.viewer.sendMessage(Text.of());
+                        }
+                    });
                 } else {
                     this.viewer.sendMessage(Text.of(TextColors.RED, "TODO - Can't afford"));
                 }
@@ -178,7 +177,8 @@ public class SpongeSelectedListingMenu {
             this.viewer.sendMessage(Text.of("TODO - Processing request..."));
 
             GTSPlugin.getInstance().getMessagingService()
-                    .requestBINRemoveRequest(this.listing.getID(), this.viewer.getUniqueId(), response -> {
+                    .requestBINRemoveRequest(this.listing.getID(), this.viewer.getUniqueId())
+                    .thenAccept(response -> {
                         if(response.wasSuccessful()) {
                             Impactor.getInstance().getScheduler().executeSync(() -> {
                                 this.viewer.sendMessage(Text.of("TODO - Listing returned"));

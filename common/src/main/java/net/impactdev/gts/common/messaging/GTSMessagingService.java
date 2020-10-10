@@ -33,6 +33,9 @@ import com.google.gson.JsonObject;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.BidMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveRequestMessage;
+import net.impactdev.gts.common.messaging.messages.utility.GTSPongMessage;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.gts.api.events.PingEvent;
@@ -53,6 +56,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
@@ -113,12 +117,24 @@ public class GTSMessagingService implements InternalMessagingService {
     }
 
     @Override
-    public void sendPing() {
-        Impactor.getInstance().getScheduler().executeAsync(() -> {
-            UUID requestID = this.generatePingID();
-            this.plugin.getPluginLogger().info("[Messaging] Sending ping with id: " + requestID);
-            this.messenger.sendOutgoingMessage(new GTSPingMessage(requestID));
-            Impactor.getInstance().getEventBus().postAsync(PingEvent.class, requestID, Instant.now());
+    public CompletableFuture<GTSPongMessage> sendPing() {
+        return CompletableFutureManager.makeFuture(() -> {
+            UUID request = this.generatePingID();
+            this.plugin.getPluginLogger().info("[Messaging] Sending ping with id: " + request);
+            Impactor.getInstance().getEventBus().postAsync(PingEvent.class, request, Instant.now());
+
+            long start = System.nanoTime();
+            GTSPongMessage response = this.await(request, new GTSPingMessage(request));
+
+            long finish = System.nanoTime();
+            this.plugin.getPluginLogger().info("[Messaging] Pong received, took: " + (finish - start) / 1000000 + " ms");
+            return response;
+        }, Impactor.getInstance().getScheduler().async()).applyToEither(
+                this.timeoutAfter(5, TimeUnit.SECONDS),
+                pong -> pong
+        ).exceptionally(e -> {
+            this.plugin.getPluginLogger().error("[Messaging] Failed to receive pong response in time, ensure connection is setup correctly!");
+            return null;
         });
     }
 
@@ -128,12 +144,16 @@ public class GTSMessagingService implements InternalMessagingService {
     }
 
     @Override
-    public void publishBid(UUID listing, UUID actor, double bid, Consumer<AuctionMessage.Bid.Response> consumer) {
-        Impactor.getInstance().getScheduler().executeAsync(() -> {
-            UUID requestID = this.generatePingID();
-            this.plugin.getPluginLogger().info("[Messaging] Publishing bid with ID: " + requestID + "...");
-            this.messenger.getMessageConsumer().registerRequest(requestID, consumer);
-            this.messenger.sendOutgoingMessage(new BidMessage(requestID, listing, actor, bid));
+    public CompletableFuture<AuctionMessage.Bid.Response> publishBid(UUID listing, UUID actor, double bid) {
+        return CompletableFutureManager.makeFuture(() -> {
+            BidMessage request = new BidMessage(this.generatePingID(), listing, actor, bid);
+            return this.<AuctionMessage.Bid.Request, AuctionMessage.Bid.Response>await(request.getID(), request);
+        }, Impactor.getInstance().getScheduler().async()).applyToEither(
+                this.timeoutAfter(5, TimeUnit.SECONDS),
+                response -> response
+        ).exceptionally(e -> {
+            this.plugin.getPluginLogger().error("[Messaging] Failed to receive bid response in time, ensure connection is setup correctly!");
+            return null;
         });
     }
 
@@ -150,10 +170,20 @@ public class GTSMessagingService implements InternalMessagingService {
     }
 
     @Override
-    public void requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive, Consumer<BuyItNowMessage.Remove.Response> consumer) {
-        BuyItNowMessage.Remove.Request request = new BuyItNowRemoveRequestMessage(this.generatePingID(), listing, actor, receiver, shouldReceive);
-        this.getMessenger().getMessageConsumer().registerRequest(request.getID(), consumer);
-        this.messenger.sendOutgoingMessage(request);
+    public CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive) {
+        return CompletableFutureManager.makeFuture(() -> {
+            BuyItNowMessage.Remove.Request request = new BuyItNowRemoveRequestMessage(this.generatePingID(), listing, actor, receiver, shouldReceive);
+            return this.<BuyItNowMessage.Remove.Request, BuyItNowMessage.Remove.Response>await(request.getID(), request);
+        }, Impactor.getInstance().getScheduler().async()).applyToEither(
+            this.timeoutAfter(5, TimeUnit.SECONDS),
+            response -> response
+        ).thenApply(response -> {
+            this.plugin.getPluginLogger().debug("[Messaging] BIN Remove Response Received");
+            return response;
+        }).exceptionally(e -> {
+            this.plugin.getPluginLogger().error("[Messaging] Failed to receive BIN Remove response in time, ensure connection is setup correctly!");
+            return null;
+        });
     }
 
     public static String encodeMessageAsString(String type, UUID id, @Nullable JsonElement content) {
