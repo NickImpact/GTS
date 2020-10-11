@@ -21,7 +21,6 @@ build
 eclipse
 run
 
-gradlew
 *.bat
 *.jar
 *.properties
