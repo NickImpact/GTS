@@ -38,7 +38,7 @@ repositories {
         url = "https://maven.pkg.github.com/ichorpowered/protocolcontrol"
         credentials {
             username = "NickImpact"
-            password = project.properties['github_personal_access_token']
+            password = System.getenv("GITHUB_TOKEN")
         }
     }
 }
