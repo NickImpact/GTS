@@ -57,7 +57,6 @@ shadowJar {
     relocate ('com.github.benmanes.caffeine', 'net.impactdev.impactor.relocations.caffeine')
     relocate ('io.github.classgraph', 'net.impactdev.impactor.relocations.classgraph')
     relocate ('co.aikar.commands', 'net.impactdev.impactor.relocations.commands')
-    relocate ('org.bstats', 'net.impactdev.gts.sponge.relocations.bstats')
 }
 
 reobf {
@@ -95,6 +94,7 @@ sourceMainJava.finalizedBy(blossomSourceReplacementJava)
 blossom {
     blossomSourceReplacementJava.output = file("$buildDir/sources/main/java")
     replaceToken '@version@', version
+    replaceToken '@bstats_plugin_ID@', project.properties['bstats_plugin_ID']
 }
 
 build.dependsOn reobfShadowJar

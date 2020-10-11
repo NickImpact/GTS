@@ -46,7 +46,6 @@ import net.impactdev.gts.sponge.stash.SpongeStash;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.PluginContainer;
@@ -70,6 +69,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	private InternalMessagingService messagingService;
 
 	private SimpleExtensionManager extensionManager;
+
 
 	public GTSSpongePlugin(GTSSpongeBootstrap bootstrap, org.slf4j.Logger fallback) {
 		super(PluginMetadata.builder()

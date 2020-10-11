@@ -14,6 +14,7 @@ import net.impactdev.gts.api.events.extension.PlaceholderRegistryEvent;
 import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import org.apache.commons.lang3.StringUtils;
+import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;
@@ -30,6 +31,8 @@ import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.placeholder.PlaceholderParser;
+import org.spongepowered.api.util.Tristate;
+import org.spongepowered.api.util.metric.MetricsConfigManager;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,7 +53,7 @@ import java.util.Optional;
 		})
 public class GTSSpongeBootstrap implements GTSBootstrap {
 
-	private GTSSpongePlugin plugin;
+	private final GTSSpongePlugin plugin;
 
 	@Getter
 	@Inject
@@ -60,14 +63,19 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 	@ConfigDir(sharedRoot = false)
 	private Path configDir;
 
-	private PluginClassLoader classLoader;
+	private final PluginClassLoader classLoader;
+
+	@Getter private final Metrics2.Factory factory;
 
 	private Throwable exception;
 
 	@Inject
-	public GTSSpongeBootstrap(org.slf4j.Logger fallback) {
+	public GTSSpongeBootstrap(org.slf4j.Logger fallback, Metrics2.Factory factory) {
 		this.plugin = new GTSSpongePlugin(this, fallback);
 		this.classLoader = new ReflectionClassLoader(this);
+
+		this.factory = factory;
+		this.factory.make(Integer.parseInt("@bstats_plugin_ID@"));
 	}
 
 	@Listener(order = Order.EARLY)
