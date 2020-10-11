@@ -2,7 +2,9 @@ package net.impactdev.gts.ui.submenu;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.gui.InventoryDimensions;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
@@ -42,11 +44,13 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
@@ -74,8 +78,41 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		this.conditions.add(QUICK_PURCHASE_ONLY);
 		this.conditions.addAll(Arrays.asList(conditions));
 		this.setSorter(this.sorter.copy().next().get().getComparator());
+
+		final Config lang = GTSPlugin.getInstance().getMsgConfig();
+		final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
 		this.applier(listing -> {
-			SpongeIcon icon = new SpongeIcon(listing.getEntry().getDisplay(viewer.getUniqueId(), listing).get());
+			Display<ItemStack> display = listing.getEntry().getDisplay(viewer.getUniqueId(), listing);
+			ItemStack item = display.get();
+
+			Optional<List<Text>> lore = item.get(Keys.ITEM_LORE);
+			lore.ifPresent(texts -> texts.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR))));
+			Supplier<List<Text>> append = () -> {
+				List<Text> result = Lists.newArrayList();
+				if(listing instanceof Auction) {
+					Auction auction = (Auction) listing;
+					List<String> input;
+					if(auction.getBids().size() > 1) {
+						input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_BIDS);
+					} else {
+						input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_NO_BIDS);
+					}
+					List<Supplier<Object>> sources = Lists.newArrayList(() -> auction);
+					result.addAll(service.parse(input, sources));
+				} else if(listing instanceof BuyItNow) {
+					BuyItNow bin = (BuyItNow) listing;
+
+					List<String> input = lang.get(MsgConfigKeys.UI_BIN_DETAILS);
+					List<Supplier<Object>> sources = Lists.newArrayList(() -> bin);
+					result.addAll(service.parse(input, sources));
+				}
+				return result;
+			};
+			List<Text> result = lore.orElse(Lists.newArrayList());
+			result.addAll(append.get());
+			item.offer(Keys.ITEM_LORE, result);
+
+			SpongeIcon icon = new SpongeIcon(item);
 			icon.addListener(clickable -> {
 				new SpongeSelectedListingMenu(this.getViewer(), listing, () -> this, true).open();
 			});

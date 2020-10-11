@@ -99,39 +99,16 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Display<ItemStack> getDisplay(UUID viewer, Listing listing) {
-		final Config lang = GTSPlugin.getInstance().getMsgConfig();
-		final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-
 		ItemStack.Builder designer = ItemStack.builder();
 		designer.fromSnapshot(this.getOrCreateElement());
 
 		List<Text> lore = Lists.newArrayList();
 		if(this.getOrCreateElement().get(Keys.ITEM_LORE).isPresent()) {
 			lore.addAll(this.getOrCreateElement().get(Keys.ITEM_LORE).get());
-			lore.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR)));
+			designer.add(Keys.ITEM_LORE, lore);
 		}
 
-		if(listing instanceof Auction) {
-			Auction auction = (Auction) listing;
-			List<String> input;
-			if(auction.getBids().size() > 1) {
-				input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_BIDS);
-			} else {
-				input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_NO_BIDS);
-			}
-			List<Supplier<Object>> sources = Lists.newArrayList(() -> auction);
-			lore.addAll(service.parse(input, sources));
-		} else if(listing instanceof BuyItNow) {
-			BuyItNow bin = (BuyItNow) listing;
-
-			List<String> input = lang.get(MsgConfigKeys.UI_BIN_DETAILS);
-			List<Supplier<Object>> sources = Lists.newArrayList(() -> bin);
-			lore.addAll(service.parse(input, sources));
-		}
-
-		designer.add(Keys.ITEM_LORE, lore);
 
 		return new SpongeDisplay(designer.build());
 	}

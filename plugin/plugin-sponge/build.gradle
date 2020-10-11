@@ -41,6 +41,10 @@ repositories {
             password = System.getenv("GITHUB_TOKEN")
         }
     }
+    maven {
+        name = "CodeMC"
+        url = "https://repo.codemc.org/repository/maven-public"
+    }
 }
 
 shadowJar {
@@ -53,6 +57,7 @@ shadowJar {
     relocate ('com.github.benmanes.caffeine', 'net.impactdev.impactor.relocations.caffeine')
     relocate ('io.github.classgraph', 'net.impactdev.impactor.relocations.classgraph')
     relocate ('co.aikar.commands', 'net.impactdev.impactor.relocations.commands')
+    relocate ('org.bstats', 'net.impactdev.gts.sponge.relocations.bstats')
 }
 
 reobf {
@@ -83,6 +88,7 @@ dependencies {
         exclude(module: 'text-api')
         exclude(module: 'gson')
     }
+    compile('org.bstats:bstats-sponge:1.7')
 }
 
 sourceMainJava.finalizedBy(blossomSourceReplacementJava)
