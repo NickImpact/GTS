@@ -18,13 +18,17 @@ public abstract class MessagingFactory<P extends GTSPlugin> {
 	private final P plugin;
 
 	public final InternalMessagingService getInstance() {
-		String messageType = "pluginmsg";//this.plugin.getConfiguration().get(ConfigKeys.MESSAGE_SERVICE);
+		String messageType = this.plugin.getConfiguration().get(ConfigKeys.MESSAGE_SERVICE);
 		if(messageType.equalsIgnoreCase("none")) {
 			return null;
 		}
 
-		this.plugin.getPluginLogger().info("Loading messaging service... [" + messageType.toUpperCase() + "]");
-		InternalMessagingService service = getServiceFor(messageType);
+		if(this.plugin.getConfiguration().get(ConfigKeys.USE_MULTI_SERVER)) {
+			this.plugin.getPluginLogger().info("Loading messaging service... [" + messageType.toUpperCase() + "]");
+		} else {
+			this.plugin.getPluginLogger().info("Loading messaging service... [Single Server Mode]");
+		}
+		InternalMessagingService service = this.getServiceFor(messageType);
 		if(service != null) {
 			return service;
 		}
@@ -46,7 +50,7 @@ public abstract class MessagingFactory<P extends GTSPlugin> {
 		@Override
 		public @NonNull Messenger obtain(@NonNull IncomingMessageConsumer incomingMessageConsumer) {
 			RedisMessenger redis = new RedisMessenger(incomingMessageConsumer);
-			redis.init(getPlugin().getConfiguration().get(ConfigKeys.REDIS_ADDRESS), getPlugin().getConfiguration().get(ConfigKeys.REDIS_PASSWORD));
+			redis.init(MessagingFactory.this.getPlugin().getConfiguration().get(ConfigKeys.REDIS_ADDRESS), MessagingFactory.this.getPlugin().getConfiguration().get(ConfigKeys.REDIS_PASSWORD));
 			return redis;
 		}
 

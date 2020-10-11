@@ -19,6 +19,10 @@ public interface PingMessage extends UpdateMessage, OutgoingMessage {
 	/**
 	 * Simply indicates that the proxy has heard the ping sent.
 	 */
-	interface Pong extends PingMessage, MessageType.Response {}
+	interface Pong extends PingMessage, MessageType.Response {
+
+		long getResponseTime();
+
+	}
 
 }

@@ -6,6 +6,7 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
+import net.impactdev.gts.api.messaging.message.Message;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.impactor.api.Impactor;
@@ -15,6 +16,7 @@ import net.impactdev.gts.sponge.manager.SpongeListingManager;
 import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
 import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
 import net.impactdev.gts.ui.admin.SpongeAdminMenu;
+import net.impactdev.impactor.api.services.text.MessageService;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
@@ -53,26 +55,18 @@ public class GTSCommand extends BaseCommand {
         @Subcommand("ping")
         @CommandPermission("gts.commands.admin.ping")
         public void processPingRequest(CommandIssuer issuer) {
-            issuer.sendMessage("Check the console for the status of this message!");
-            GTSPlugin.getInstance().getMessagingService().sendPing();
-        }
-
-        @Subcommand("test")
-        public void test(Player player) {
-            ItemStack test = ItemStack.builder()
-                    .itemType(ItemTypes.DIAMOND)
-                    .add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Test Item"))
-                    .build();
-            SpongeItemEntry entry = new SpongeItemEntry(test.createSnapshot());
-            BuyItNow bin = BuyItNow.builder()
-                    .id(UUID.randomUUID())
-                    .lister(player.getUniqueId())
-                    .price(new MonetaryPrice(420.00))
-                    .expiration(LocalDateTime.now().plusDays(7))
-                    .entry(entry)
-                    .build();
-            SpongeListingManager manager = Impactor.getInstance().getRegistry().get(SpongeListingManager.class);
-            manager.list(player.getUniqueId(), (SpongeBuyItNow) bin);
+            MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+            GTSPlugin.getInstance().getMessagingService()
+                    .sendPing()
+                    .thenAccept(pong -> {
+                        if(issuer.getIssuer() instanceof Player) {
+                            if(pong.wasSuccessful()) {
+                                ((Player) issuer.getIssuer()).sendMessage(service.parse(
+                                        "&eGTS &7\u00bb Ping request &asuccessful&7, took &b" + pong.getResponseTime() + " ms&7!"
+                                ));
+                            }
+                        }
+                    });
         }
 
     }

@@ -28,12 +28,18 @@ public class GTSPongMessage extends AbstractMessage.Response implements PingMess
 		UUID requestID = Optional.ofNullable(raw.get("request"))
 				.map(x -> UUID.fromString(x.getAsString()))
 				.orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
+		long response = Optional.ofNullable(raw.get("responseTime"))
+				.map(JsonElement::getAsLong)
+				.orElse(-1L);
 
-		return new GTSPongMessage(id, requestID);
+		return new GTSPongMessage(id, requestID, response);
 	}
 
-	GTSPongMessage(UUID id, UUID request) {
+	private long response;
+
+	GTSPongMessage(UUID id, UUID request, long response) {
 		super(id, request);
+		this.response = response;
 	}
 
 	@Override
@@ -57,4 +63,12 @@ public class GTSPongMessage extends AbstractMessage.Response implements PingMess
 		);
 	}
 
+	@Override
+	public long getResponseTime() {
+		return this.response;
+	}
+
+	public void setResponseTime(long time) {
+		this.response = time;
+	}
 }

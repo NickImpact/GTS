@@ -125,9 +125,10 @@ public class GTSMessagingService implements InternalMessagingService {
 
             long start = System.nanoTime();
             GTSPongMessage response = this.await(request, new GTSPingMessage(request));
-
             long finish = System.nanoTime();
-            this.plugin.getPluginLogger().info("[Messaging] Pong received, took: " + (finish - start) / 1000000 + " ms");
+            response.setResponseTime((finish - start) / 1000000);
+
+            this.plugin.getPluginLogger().info("[Messaging] Pong received, took: " + response.getResponseTime() + " ms");
             return response;
         }, Impactor.getInstance().getScheduler().async()).applyToEither(
                 this.timeoutAfter(5, TimeUnit.SECONDS),

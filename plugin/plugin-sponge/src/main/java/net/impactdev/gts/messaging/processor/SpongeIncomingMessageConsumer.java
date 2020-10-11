@@ -9,6 +9,7 @@ import net.impactdev.gts.api.messaging.message.Message;
 import net.impactdev.gts.api.messaging.message.MessageConsumer;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.gts.api.messaging.message.type.UpdateMessage;
+import net.impactdev.gts.common.config.updated.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.Impactor;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -61,7 +62,9 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 		Objects.requireNonNull(message, "message");
 
 		if (!this.receivedMessages.add(message.getID())) {
-			return false;
+			if(this.plugin.getConfiguration().get(ConfigKeys.USE_MULTI_SERVER)) {
+				return false;
+			}
 		}
 
 		this.processIncomingMessage(message);

@@ -40,7 +40,8 @@ public class GTSPingMessage extends AbstractMessage implements PingMessage.Ping 
 	public CompletableFuture<Pong> respond() {
 		return CompletableFutureManager.makeFuture(() -> new GTSPongMessage(
 				GTSPlugin.getInstance().getMessagingService().generatePingID(),
-				this.getID()
+				this.getID(),
+				-1
 		), Impactor.getInstance().getScheduler().async());
 	}
 
