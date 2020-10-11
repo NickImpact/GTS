@@ -34,3 +34,9 @@ jobs:
         run: ./gradlew setupDecompWorkspace
       - name: Build with Gradle
         run: ./gradlew build
+
+        # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
+        # the publishing section of your build.gradle
+        env:
+          GITHUB_USERNAME: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
