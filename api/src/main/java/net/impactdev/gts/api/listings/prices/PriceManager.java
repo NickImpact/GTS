@@ -8,6 +8,6 @@ import java.util.function.BiConsumer;
 
 public interface PriceManager<T, P> extends ResourceManager<T> {
 
-    TriConsumer<P, EntryUI<?, ?, ?>, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?>>> process();
+    TriConsumer<P, EntryUI<?, ?, ?>, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>>> process();
 
 }

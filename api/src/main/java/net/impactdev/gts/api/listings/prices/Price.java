@@ -3,6 +3,7 @@ package net.impactdev.gts.api.listings.prices;
 import net.impactdev.gts.api.data.Storable;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.kyori.text.TextComponent;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
 
@@ -10,9 +11,10 @@ import java.util.UUID;
  * Represents a value which a player will pay to purchase (or bid) on a listing.
  *
  * @param <P> The element that is controlled by this interface
+ * @param <S> A potentially populated field indicating payment source from the player
  * @param <I> The display output type for this price
  */
-public interface Price<P, I> extends Storable {
+public interface Price<P, S, I> extends Storable {
 
 	/**
 	 * The instance being setup as the price. So this might be a double or BigDecimal to represent some form of monetary
@@ -53,7 +55,7 @@ public interface Price<P, I> extends Storable {
 	 *
 	 * @param payer The user paying for the listing
 	 */
-	void pay(UUID payer);
+	void pay(UUID payer, @Nullable S source);
 
 	/**
 	 * Processes the receiving end of a payment. Sometimes, a price may be unable to be completed due to offline

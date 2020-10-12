@@ -17,7 +17,7 @@ public interface BuyItNow extends Listing {
 	 *
 	 * @return The price of the listing
 	 */
-	Price<?, ?> getPrice();
+	Price<?, ?, ?> getPrice();
 
 	static BuyItNowBuilder builder() {
 		return Impactor.getInstance().getRegistry().createBuilder(BuyItNowBuilder.class);
@@ -25,7 +25,7 @@ public interface BuyItNow extends Listing {
 
 	interface BuyItNowBuilder extends ListingBuilder<BuyItNow, BuyItNowBuilder> {
 
-		BuyItNowBuilder price(Price<?, ?> price);
+		BuyItNowBuilder price(Price<?, ?, ?> price);
 
 	}
 

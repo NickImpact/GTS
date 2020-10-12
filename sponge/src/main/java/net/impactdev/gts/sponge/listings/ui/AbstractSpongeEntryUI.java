@@ -51,7 +51,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
     private boolean auction = false;
     private Time duration = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME_LOW);
 
-    protected SpongePrice<?> price = new MonetaryPrice(50);
+    protected SpongePrice<?, ?> price = new MonetaryPrice(50);
 
     public AbstractSpongeEntryUI(Player viewer) {
         super(viewer);
@@ -81,11 +81,11 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
         this.display.open(user);
     }
 
-    protected SpongePrice<?> getPrice() {
+    protected SpongePrice<?, ?> getPrice() {
         return this.price;
     }
 
-    public void setPrice(SpongePrice<?> price) {
+    public void setPrice(SpongePrice<?, ?> price) {
         this.price = price;
     }
 
@@ -277,7 +277,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
             SpongeIcon icon = new SpongeIcon(selector);
             icon.addListener(clickable -> {
                 new SpongePriceTypeSelectionMenu(this.viewer, this, (ui, price) -> {
-                    ((AbstractSpongeEntryUI<E>)ui).setPrice((SpongePrice<?>) price);
+                    ((AbstractSpongeEntryUI<E>)ui).setPrice((SpongePrice<?, ?>) price);
                     ((AbstractSpongeEntryUI<E>)ui).open(this.viewer);
                 }).open();
             });

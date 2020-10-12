@@ -78,7 +78,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 			}
 
 			// Retrieve the Price of the listing
-			AtomicReference<Price<?, ?>> price;
+			AtomicReference<Price<?, ?, ?>> price;
 			if(listing instanceof Auction) {
 				price = new AtomicReference<>(new MonetaryPrice(((Auction) listing).getStartingPrice()));
 			} else {

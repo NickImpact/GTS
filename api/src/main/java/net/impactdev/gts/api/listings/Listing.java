@@ -107,7 +107,7 @@ public interface Listing extends Storable {
 
 		B entry(Entry<?, ?> entry);
 
-		B price(Price<?, ?> price);
+		B price(Price<?, ?, ?> price);
 
 		B expiration(LocalDateTime expiration);
 

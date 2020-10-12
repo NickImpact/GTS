@@ -30,7 +30,7 @@ import java.util.UUID;
 import java.util.function.BiConsumer;
 
 @GTSKeyMarker("currency")
-public class MonetaryPrice implements SpongePrice<BigDecimal> {
+public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 
 	@Setter private static EconomyService economy;
 	private final BigDecimal price;
@@ -65,7 +65,7 @@ public class MonetaryPrice implements SpongePrice<BigDecimal> {
 	}
 
 	@Override
-	public void pay(UUID payer) {
+	public void pay(UUID payer, Void source) {
 		economy.getOrCreateAccount(payer).get().withdraw(economy.getDefaultCurrency(), this.price, Sponge.getCauseStackManager().getCurrentCause());
 	}
 
@@ -95,7 +95,7 @@ public class MonetaryPrice implements SpongePrice<BigDecimal> {
 	public static class MonetaryPriceManager implements PriceManager<MonetaryPrice, Player> {
 
 		@Override
-		public TriConsumer<Player, EntryUI<?, ?, ?>, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?>>> process() {
+		public TriConsumer<Player, EntryUI<?, ?, ?>, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>>> process() {
 			return (viewer, ui, callback) -> {
 				SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
 						.position(new Vector3d(0, 1, 0))
@@ -109,7 +109,7 @@ public class MonetaryPrice implements SpongePrice<BigDecimal> {
 							try {
 								double value = Double.parseDouble(submission.get(0));
 								if(value > 0) {
-									SpongePrice<BigDecimal> price = new MonetaryPrice(value);
+									SpongePrice<BigDecimal, Void> price = new MonetaryPrice(value);
 
 									Impactor.getInstance().getScheduler().executeSync(() -> {
 										callback.accept(ui, price);

@@ -20,7 +20,7 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
 
     private final Map<Class<? extends Listing>, ResourceManager<? extends Listing>> listings = Maps.newHashMap();
     private final Map<String, EntryManager<? extends Entry<?, ?>, ?>> managers = Maps.newHashMap();
-    private final Map<String, PriceManager<? extends Price<?, ?>, ?>> prices = Maps.newHashMap();
+    private final Map<String, PriceManager<? extends Price<?, ?, ?>, ?>> prices = Maps.newHashMap();
 
     private final Map<String, Storable.Deserializer<?>> legacy = Maps.newHashMap();
 
@@ -57,19 +57,19 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
     }
 
     @Override
-    public <T extends Price<?, ?>> void registerPriceManager(Class<T> type, PriceManager<T, ?> resource) {
+    public <T extends Price<?, ?, ?>> void registerPriceManager(Class<T> type, PriceManager<T, ?> resource) {
         Preconditions.checkArgument(type.isAnnotationPresent(GTSKeyMarker.class), "A Price type must be annotated with GTSKeyMarker");
 
         this.prices.put(type.getAnnotation(GTSKeyMarker.class).value(), resource);
     }
 
     @Override
-    public <T extends Price<?, ?>> Optional<PriceManager<T, ?>> getPriceManager(String key) {
+    public <T extends Price<?, ?, ?>> Optional<PriceManager<T, ?>> getPriceManager(String key) {
         return Optional.ofNullable((PriceManager<T, ?>) this.prices.get(key));
     }
 
     @Override
-    public Map<String, PriceManager<? extends Price<?, ?>, ?>> getAllPriceManagers() {
+    public Map<String, PriceManager<? extends Price<?, ?, ?>, ?>> getAllPriceManagers() {
         return this.prices;
     }
 

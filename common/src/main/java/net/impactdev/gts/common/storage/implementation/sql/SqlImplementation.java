@@ -456,7 +456,7 @@ public class SqlImplementation implements StorageImplementation {
 								try {
 									UUID lister = UUID.fromString(incoming.getString("owner"));
 									LocalDateTime expiration = incoming.getTimestamp("expiration").toLocalDateTime();
-									Price<?, ?> price = GTSService.getInstance().getGTSComponentManager()
+									Price<?, ?, ?> price = GTSService.getInstance().getGTSComponentManager()
 											.getPriceManager("currency")
 											.orElseThrow(() -> new IllegalStateException("No deserializer for currency available"))
 											.getDeserializer()

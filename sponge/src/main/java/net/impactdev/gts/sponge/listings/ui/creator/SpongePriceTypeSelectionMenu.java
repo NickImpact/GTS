@@ -29,13 +29,13 @@ import java.util.function.Supplier;
 
 public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEntryUI<?>> {
 
-    private final SpongePage<Map.Entry<String, PriceManager<? extends Price<?, ?>, ?>>> display;
+    private final SpongePage<Map.Entry<String, PriceManager<? extends Price<?, ?, ?>, ?>>> display;
 
     private final AbstractSpongeEntryUI<?> parent;
-    private final BiConsumer<EntryUI<?, ?, ?>, Price<?, ?>> callback;
+    private final BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>> callback;
 
-    public SpongePriceTypeSelectionMenu(Player player, AbstractSpongeEntryUI<?> parent, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?>> callback) {
-        Map<String, PriceManager<? extends Price<?, ?>, ?>> resources = GTSService.getInstance().getGTSComponentManager().getAllPriceManagers();
+    public SpongePriceTypeSelectionMenu(Player player, AbstractSpongeEntryUI<?> parent, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>> callback) {
+        Map<String, PriceManager<? extends Price<?, ?, ?>, ?>> resources = GTSService.getInstance().getGTSComponentManager().getAllPriceManagers();
         this.parent = parent;
         this.callback = callback;
 
@@ -60,7 +60,7 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
         if(overrides.isPresent()) {
             Mappings mappings = overrides.get();
             Queue<Integer> slots = mappings.createQueue();
-            for(Map.Entry<String, PriceManager<? extends Price<?, ?>, ?>> entry : resources.entrySet()) {
+            for(Map.Entry<String, PriceManager<? extends Price<?, ?, ?>, ?>> entry : resources.entrySet()) {
                 SpongeIcon icon = this.createIcon(entry.getKey(), entry.getValue());
                 this.display.getView().setSlot(slots.poll(), icon);
             }
@@ -79,7 +79,7 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
         return builder.build();
     }
 
-    private SpongeIcon createIcon(String type, PriceManager<? extends Price<?, ?>, ?> resource) {
+    private SpongeIcon createIcon(String type, PriceManager<? extends Price<?, ?, ?>, ?> resource) {
         ItemType item = Sponge.getRegistry().getType(ItemType.class, resource.getItemID()).orElse(ItemTypes.BARRIER);
         ItemStack rep = ItemStack.builder()
                 .itemType(item)
@@ -88,7 +88,7 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
         SpongeIcon icon = new SpongeIcon(rep);
         icon.addListener(clickable -> {
             this.display.close();
-            ((PriceManager<? extends Price<?, ?>, Player>) resource).process().accept(clickable.getPlayer(), this.parent, this.callback);
+            ((PriceManager<? extends Price<?, ?, ?>, Player>) resource).process().accept(clickable.getPlayer(), this.parent, this.callback);
         });
         return icon;
     }

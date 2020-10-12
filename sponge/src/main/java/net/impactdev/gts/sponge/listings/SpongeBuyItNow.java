@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 
-	private final SpongePrice<?> price;
+	private final SpongePrice<?, ?> price;
 
 	private SpongeBuyItNow(SpongeBuyItNowBuilder builder) {
 		super(builder.id, builder.lister, builder.entry, builder.expiration);
@@ -27,7 +27,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 	}
 
 	@Override
-	public Price<?, ?> getPrice() {
+	public Price<?, ?, ?> getPrice() {
 		return this.price;
 	}
 
@@ -58,7 +58,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));
 
 		JsonObject price = json.getAsJsonObject("price");
-		Storable.Deserializer<Price<?, ?>> deserializer = GTSService.getInstance().getGTSComponentManager()
+		Storable.Deserializer<Price<?, ?, ?>> deserializer = GTSService.getInstance().getGTSComponentManager()
 				.getPriceManager(price.get("key").getAsString())
 				.map(ResourceManager::getDeserializer)
 				.orElseThrow(() -> new RuntimeException("JSON Data for price is missing mapping key"));
@@ -71,7 +71,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 		private UUID id = UUID.randomUUID();
 		private UUID lister;
 		private SpongeEntry<?> entry;
-		private SpongePrice<?> price;
+		private SpongePrice<?, ?> price;
 		private LocalDateTime expiration;
 
 		@Override
@@ -94,9 +94,9 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 		}
 
 		@Override
-		public BuyItNowBuilder price(Price<?, ?> price) {
+		public BuyItNowBuilder price(Price<?, ?, ?> price) {
 			Preconditions.checkArgument(price instanceof SpongePrice, "Mixing of incompatible platform types");
-			this.price = (SpongePrice<?>) price;
+			this.price = (SpongePrice<?, ?>) price;
 			return this;
 		}
 
