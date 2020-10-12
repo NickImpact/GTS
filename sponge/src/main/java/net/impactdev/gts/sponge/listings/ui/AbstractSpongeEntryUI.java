@@ -159,7 +159,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
 
             SpongeListing listing;
             if(this.auction) {
-                Preconditions.checkArgument(!(this.price instanceof MonetaryPrice), "Auctions must have monetary prices");
+                Preconditions.checkArgument((this.price instanceof MonetaryPrice), "Auctions must have monetary prices");
                 listing = (SpongeAuction) Auction.builder()
                         .lister(this.viewer.getUniqueId())
                         .entry(entry)

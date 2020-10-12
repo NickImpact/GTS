@@ -95,6 +95,9 @@ blossom {
     blossomSourceReplacementJava.output = file("$buildDir/sources/main/java")
     replaceToken '@version@', version
     replaceToken '@bstats_plugin_ID@', project.properties['bstats_plugin_ID']
+    replaceToken '@git_commit@', gitCommit.commit
 }
 
+blossomSourceReplacementJava.dependsOn(gitCommit)
+jar.dependsOn(gitCommit)
 build.dependsOn reobfShadowJar

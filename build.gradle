@@ -34,6 +34,12 @@ allprojects {
             options.compilerArgs << "-Xlint:deprecation"
         }
     }
+
+    task gitCommit {
+        def process = 'git rev-parse --short HEAD'.execute()
+        process.waitFor()
+        ext.commit = process.exitValue() ? 'Unknown' : process.text.trim().replace('\n', '')
+    }
 }
 
 subprojects {

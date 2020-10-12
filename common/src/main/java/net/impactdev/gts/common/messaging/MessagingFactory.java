@@ -19,11 +19,15 @@ public abstract class MessagingFactory<P extends GTSPlugin> {
 
 	public final InternalMessagingService getInstance() {
 		String messageType = this.plugin.getConfiguration().get(ConfigKeys.MESSAGE_SERVICE);
-		if(messageType.equalsIgnoreCase("none")) {
-			return null;
+
+		boolean fallback = false;
+		if(this.plugin.getConfiguration().get(ConfigKeys.USE_MULTI_SERVER) && messageType.equalsIgnoreCase("none")) {
+			this.plugin.getPluginLogger().error("Multi Server Mode requires a messaging service other than none!");
+			this.plugin.getPluginLogger().error("Defaulting to Single Server Mode...");
+			fallback = true;
 		}
 
-		if(this.plugin.getConfiguration().get(ConfigKeys.USE_MULTI_SERVER)) {
+		if(!fallback && this.plugin.getConfiguration().get(ConfigKeys.USE_MULTI_SERVER)) {
 			this.plugin.getPluginLogger().info("Loading messaging service... [" + messageType.toUpperCase() + "]");
 		} else {
 			this.plugin.getPluginLogger().info("Loading messaging service... [Single Server Mode]");

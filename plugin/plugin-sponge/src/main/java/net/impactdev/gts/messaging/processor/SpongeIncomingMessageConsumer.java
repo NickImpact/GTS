@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -121,20 +122,17 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 		return this.consumers.get(parent);
 	}
 
-	@SuppressWarnings("unchecked")
 	private void processIncomingMessage(Message message) {
 		if (message instanceof UpdateMessage) {
 			UpdateMessage msg = (UpdateMessage) message;
 			this.plugin.getPluginLogger().debug("[Messaging] Received message with id: " + msg.getID());
-			this.getInternalConsumer(msg.getClass()).consume(message);
+
+			Optional.ofNullable(this.getInternalConsumer(msg.getClass()))
+					.orElseThrow(() -> new IllegalStateException("No consumer available for " + msg.getClass().getName()))
+					.consume(message);
 		} else {
 			throw new IllegalArgumentException("Unknown message type: " + message.getClass().getName());
 		}
 	}
 
-	private <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
-		CompletableFuture<W> result = new CompletableFuture<>();
-		Impactor.getInstance().getScheduler().asyncLater(() -> result.completeExceptionally(new TimeoutException()), timeout, unit);
-		return result;
-	}
 }

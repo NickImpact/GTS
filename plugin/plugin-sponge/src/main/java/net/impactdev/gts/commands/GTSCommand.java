@@ -9,6 +9,7 @@ import co.aikar.commands.annotation.Subcommand;
 import net.impactdev.gts.api.messaging.message.Message;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.ui.SpongeMainMenu;
+import net.impactdev.gts.util.GTSInfoGenerator;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.common.plugin.GTSPlugin;
@@ -50,6 +51,12 @@ public class GTSCommand extends BaseCommand {
                 Player player = issuer.getIssuer();
                 new SpongeAdminMenu(player).open();
             }
+        }
+
+        @Subcommand("info")
+        @CommandPermission("gts.commands.admin.info")
+        public void processInfoRequest(CommandIssuer issuer) {
+            new GTSInfoGenerator(issuer);
         }
 
         @Subcommand("ping")
