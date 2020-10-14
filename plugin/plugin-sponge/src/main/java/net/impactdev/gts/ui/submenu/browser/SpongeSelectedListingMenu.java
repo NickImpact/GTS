@@ -5,8 +5,10 @@ import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.common.config.updated.ConfigKeys;
 import net.impactdev.gts.sponge.ui.SpongeAsyncPage;
+import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
 import net.impactdev.impactor.sponge.ui.SpongeLayout;
@@ -50,8 +52,16 @@ public class SpongeSelectedListingMenu {
         this.viewer = viewer;
         this.listing = listing;
         this.parent = parent;
+
+        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+        boolean isLister = viewer.getUniqueId().equals(listing.getLister());
+
         this.display = SpongeUI.builder()
-                .title(Text.EMPTY)
+                .title(service.parse(Utilities.readMessageConfigOption(
+                        isLister ? MsgConfigKeys.UI_MENU_LISTING_SELECTED_LISTER :
+                                MsgConfigKeys.UI_MENU_LISTING_SELECTED_OTHER
+                )))
                 .dimension(InventoryDimension.of(9, 6))
                 .build()
                 .define(this.design());

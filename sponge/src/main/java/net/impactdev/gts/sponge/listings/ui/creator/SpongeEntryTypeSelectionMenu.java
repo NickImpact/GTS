@@ -3,7 +3,11 @@ package net.impactdev.gts.sponge.listings.ui.creator;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.entries.EntryManager;
+import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
+import net.impactdev.gts.sponge.utils.Utilities;
+import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
 import net.impactdev.impactor.sponge.ui.SpongeLayout;
 import net.impactdev.impactor.sponge.ui.SpongePage;
@@ -28,10 +32,11 @@ public class SpongeEntryTypeSelectionMenu {
 
     public SpongeEntryTypeSelectionMenu(Player player) {
         Map<String, EntryManager<? extends Entry<?, ?>, ?>> managers = GTSService.getInstance().getGTSComponentManager().getAllEntryManagers();
+        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
         SpongePage.SpongePageBuilder builder = SpongePage.builder()
                 .viewer(player)
-                .title(Text.of(TextColors.RED, "GTS", TextColors.GOLD, "TODO"))
+                .title(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_ENTRY_SELECT_TITLE)))
                 .view(this.design(managers.size()))
                 .contentZone(InventoryDimension.of(7, managers.size() > 7 ? 2 : 1))
                 .offsets(1);

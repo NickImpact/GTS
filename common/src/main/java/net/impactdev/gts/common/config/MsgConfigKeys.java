@@ -396,6 +396,12 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	public static final ConfigKey<String> STASH_COLLECT_ALL_RESULTS = stringKey("ui.menus.stash.collect-all.results", "{{gts:prefix}} &7Successfully returned {{gts:stash_returned}} listings!");
 
+	public static final ConfigKey<String> UI_MENU_ENTRY_SELECT_TITLE = stringKey("ui.menus.entry-select.title", "&cGTS &7\u00bb &3Select Entry Type");
+	public static final ConfigKey<String> UI_MENU_PRICE_SELECT_TITLE = stringKey("ui.menus.price-select.title", "&cGTS &7\u00bb &3Select Price Type");
+
+	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_OTHER = stringKey("ui.menus.listing-selected.purchaser", "&cGTS &7\u00bb &3Purchase Listing?");
+	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_LISTER = stringKey("ui.menus.listing-selected.lister", "&cGTS &7\u00bb &3Remove Listing?");
+
 	// Icons
 	public static final ConfigKey<String> UI_ICON_BIN_CREATE_TITLE = stringKey("ui.icons.bin.creator.title", "&aBIN Mode");
 	public static final ConfigKey<List<String>> UI_ICON_BIN_CREATE_LORE = listKey("ui.icons.bin.creator.lore", Lists.newArrayList(

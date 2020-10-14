@@ -1,6 +1,10 @@
 package net.impactdev.gts.sponge.listings.ui.creator;
 
+import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
+import net.impactdev.gts.sponge.utils.Utilities;
+import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
 import net.impactdev.impactor.sponge.ui.SpongeLayout;
 import net.impactdev.impactor.sponge.ui.SpongePage;
@@ -39,9 +43,11 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
         this.parent = parent;
         this.callback = callback;
 
+        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+
         SpongePage.SpongePageBuilder builder = SpongePage.builder()
                 .viewer(player)
-                .title(Text.of(TextColors.RED, "GTS", TextColors.GOLD, "TODO"))
+                .title(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_PRICE_SELECT_TITLE)))
                 .view(this.design(resources.size()))
                 .contentZone(InventoryDimension.of(7, resources.size() > 7 ? 2 : 1))
                 .offsets(1);
@@ -61,7 +67,7 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
             Mappings mappings = overrides.get();
             Queue<Integer> slots = mappings.createQueue();
             for(Map.Entry<String, PriceManager<? extends Price<?, ?, ?>, ?>> entry : resources.entrySet()) {
-                SpongeIcon icon = this.createIcon(entry.getKey(), entry.getValue());
+                SpongeIcon icon = this.createIcon(entry.getValue().getName(), entry.getValue());
                 this.display.getView().setSlot(slots.poll(), icon);
             }
         }
@@ -83,7 +89,7 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
         ItemType item = Sponge.getRegistry().getType(ItemType.class, resource.getItemID()).orElse(ItemTypes.BARRIER);
         ItemStack rep = ItemStack.builder()
                 .itemType(item)
-                .add(Keys.DISPLAY_NAME, Text.of(type))
+                .add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, type))
                 .build();
         SpongeIcon icon = new SpongeIcon(rep);
         icon.addListener(clickable -> {
