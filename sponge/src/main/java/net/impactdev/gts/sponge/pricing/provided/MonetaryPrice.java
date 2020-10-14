@@ -16,6 +16,7 @@ import net.impactdev.gts.api.listings.ui.EntryUI;
 import net.impactdev.gts.api.util.TriConsumer;
 import net.kyori.text.TextComponent;
 import net.kyori.text.format.TextColor;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -42,7 +43,7 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 	@Override
 	public TextComponent getText() {
 		return TextComponent.builder()
-				.append(TextComponent.of(economy.getDefaultCurrency().format(this.getPrice()).toPlain()).color(TextColor.YELLOW))
+				.append(TextComponent.of(economy.getDefaultCurrency().format(this.getPrice()).toPlain()))
 				.build();
 	}
 
@@ -65,7 +66,7 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 	}
 
 	@Override
-	public void pay(UUID payer, Void source) {
+	public void pay(UUID payer, @Nullable Object source) {
 		economy.getOrCreateAccount(payer).get().withdraw(economy.getDefaultCurrency(), this.price, Sponge.getCauseStackManager().getCurrentCause());
 	}
 
@@ -74,6 +75,11 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 		return economy.getOrCreateAccount(recipient).get()
 				.deposit(economy.getDefaultCurrency(), this.price, Sponge.getCauseStackManager().getCurrentCause())
 				.getResult().equals(ResultType.SUCCESS);
+	}
+
+	@Override
+	public Class<Void> getSourceType() {
+		return Void.class;
 	}
 
 	@Override
@@ -116,8 +122,15 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 									});
 									return true;
 								}
+
+								Impactor.getInstance().getScheduler().executeSync(() -> {
+									callback.accept(ui, null);
+								});
 								return false;
 							} catch (Exception e) {
+								Impactor.getInstance().getScheduler().executeSync(() -> {
+									callback.accept(ui, null);
+								});
 								return false;
 							}
 						})

@@ -127,6 +127,11 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
+    public CompletableFuture<BuyItNowMessage.Purchase.Response> processPurchase(BuyItNowMessage.Purchase.Request request) {
+        return null;
+    }
+
+    @Override
     public CompletableFuture<List<Listing>> fetchListings(Collection<Predicate<Listing>> filters) {
         return this.schedule(this.implementation::getListings);
     }

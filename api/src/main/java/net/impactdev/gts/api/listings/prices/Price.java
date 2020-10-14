@@ -1,5 +1,6 @@
 package net.impactdev.gts.api.listings.prices;
 
+import com.google.common.reflect.TypeToken;
 import net.impactdev.gts.api.data.Storable;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.kyori.text.TextComponent;
@@ -55,7 +56,7 @@ public interface Price<P, S, I> extends Storable {
 	 *
 	 * @param payer The user paying for the listing
 	 */
-	void pay(UUID payer, @Nullable S source);
+	void pay(UUID payer, @Nullable Object source);
 
 	/**
 	 * Processes the receiving end of a payment. Sometimes, a price may be unable to be completed due to offline
@@ -65,5 +66,12 @@ public interface Price<P, S, I> extends Storable {
 	 * @param recipient The user receiving the payment
 	 */
 	boolean reward(UUID recipient);
+
+	/**
+	 * Represents the typing of the source that should be applied to a listings price
+	 *
+	 * @return A type token wrapping the source type
+	 */
+	Class<S> getSourceType();
 
 }

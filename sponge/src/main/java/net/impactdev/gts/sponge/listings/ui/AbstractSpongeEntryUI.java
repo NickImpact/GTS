@@ -272,12 +272,15 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
         } else {
             ItemStack selector = ItemStack.builder()
                     .from(SkullCreator.fromBase64("Mzk2Y2UxM2ZmNjE1NWZkZjMyMzVkOGQyMjE3NGM1ZGU0YmY1NTEyZjFhZGVkYTFhZmEzZmMyODE4MGYzZjcifX19"))
-                    .add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "TODO - Select Price"))
+                    .add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Price: ", Utilities.translateComponent(this.price.getText())))
                     .build();
             SpongeIcon icon = new SpongeIcon(selector);
             icon.addListener(clickable -> {
                 new SpongePriceTypeSelectionMenu(this.viewer, this, (ui, price) -> {
-                    ((AbstractSpongeEntryUI<E>)ui).setPrice((SpongePrice<?, ?>) price);
+                    if(price != null) {
+                        ((AbstractSpongeEntryUI<E>) ui).setPrice((SpongePrice<?, ?>) price);
+                        ((AbstractSpongeEntryUI<E>) ui).display.setSlot(this.getPriceSlot(), this.createPriceIcon());
+                    }
                     ((AbstractSpongeEntryUI<E>)ui).open(this.viewer);
                 }).open();
             });

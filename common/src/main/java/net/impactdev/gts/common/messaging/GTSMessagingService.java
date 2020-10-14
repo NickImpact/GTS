@@ -171,6 +171,11 @@ public class GTSMessagingService implements InternalMessagingService {
     }
 
     @Override
+    public CompletableFuture<BuyItNowMessage.Purchase.Response> requestBINPurchase(UUID listing, UUID actor, Object source) {
+        return null;
+    }
+
+    @Override
     public CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive) {
         return CompletableFutureManager.makeFuture(() -> {
             BuyItNowMessage.Remove.Request request = new BuyItNowRemoveRequestMessage(this.generatePingID(), listing, actor, receiver, shouldReceive);

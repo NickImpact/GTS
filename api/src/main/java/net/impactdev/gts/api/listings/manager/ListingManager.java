@@ -15,7 +15,7 @@ public interface ListingManager<L extends Listing, A extends Auction, B extends 
 
 	CompletableFuture<Boolean> bid(UUID bidder, A listing, double amount);
 
-	CompletableFuture<Boolean> purchase(UUID buyer, B listing);
+	<S> CompletableFuture<Boolean> purchase(UUID buyer, B listing, S source);
 
 	CompletableFuture<Boolean> deleteListing(L listing);
 

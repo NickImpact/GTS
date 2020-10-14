@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
@@ -232,8 +233,24 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 	}
 
 	@Override
-	public CompletableFuture<Boolean> purchase(UUID buyer, SpongeBuyItNow listing) {
-		return CompletableFuture.supplyAsync(() -> false);
+	public CompletableFuture<Boolean> purchase(UUID buyer, SpongeBuyItNow listing, Object source) {
+		if(listing.getPrice().getSourceType().equals(source.getClass())) {
+			if (listing.getPrice().canPay(buyer)) {
+				return GTSPlugin.getInstance().getMessagingService().requestBINPurchase(listing.getID(), buyer, source)
+						.thenApply(response -> {
+							if (response.wasSuccessful()) {
+								Impactor.getInstance().getScheduler().executeSync(() -> listing.getPrice().pay(buyer, source));
+							}
+							return true;
+						});
+			}
+
+			return CompletableFuture.supplyAsync(() -> false);
+		} else {
+			return CompletableFuture.supplyAsync(() -> {
+				throw new CompletionException(new IllegalArgumentException("Source of price is invalid"));
+			});
+		}
 	}
 
 	@Override

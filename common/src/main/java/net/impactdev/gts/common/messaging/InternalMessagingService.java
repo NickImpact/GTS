@@ -175,6 +175,8 @@ public interface InternalMessagingService {
     //
     //------------------------------------------------------------------------------------
 
+    CompletableFuture<BuyItNowMessage.Purchase.Response> requestBINPurchase(UUID listing, UUID actor, Object source);
+
     /**
      *
      *
