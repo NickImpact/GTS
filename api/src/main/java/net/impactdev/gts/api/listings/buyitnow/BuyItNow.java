@@ -19,6 +19,18 @@ public interface BuyItNow extends Listing {
 	 */
 	Price<?, ?, ?> getPrice();
 
+	/**
+	 * Specifies whether or not this listing has been purchased
+	 *
+	 * @return True if purchased, false otherwise
+	 */
+	boolean isPurchased();
+
+	/**
+	 * Marks a listing as purchased
+	 */
+	void markPurchased();
+
 	static BuyItNowBuilder builder() {
 		return Impactor.getInstance().getRegistry().createBuilder(BuyItNowBuilder.class);
 	}
@@ -26,6 +38,13 @@ public interface BuyItNow extends Listing {
 	interface BuyItNowBuilder extends ListingBuilder<BuyItNow, BuyItNowBuilder> {
 
 		BuyItNowBuilder price(Price<?, ?, ?> price);
+
+		/**
+		 * Indicates that the built listing has been purchased
+		 *
+		 * @return The builder after marking the listing as purchased
+		 */
+		BuyItNowBuilder purchased();
 
 	}
 

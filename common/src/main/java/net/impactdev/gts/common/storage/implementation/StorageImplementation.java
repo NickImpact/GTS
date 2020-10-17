@@ -26,11 +26,13 @@
 package net.impactdev.gts.common.storage.implementation;
 
 import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 
+import java.sql.Connection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -94,6 +96,18 @@ public interface StorageImplementation {
     // New methods
 
     Stash getStash(UUID user) throws Exception;
+
+    /**
+     * Processes an incoming request to purchase a BIN listing, and responds with the results of the
+     * request.
+     *
+     * @param request Details regarding the request
+     * @return A response based on the request
+     * @throws Exception If an error occurs at all during processing of the request
+     */
+    BuyItNowMessage.Purchase.Response processPurchase(BuyItNowMessage.Purchase.Request request) throws Exception;
+
+    boolean sendListingUpdate(BuyItNow listing) throws Exception;
 
     /**
      * Attempts to process a bid on an auction. This call will generate the response message that'll be sent back

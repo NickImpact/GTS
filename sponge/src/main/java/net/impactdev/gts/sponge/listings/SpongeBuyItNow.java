@@ -21,6 +21,8 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 
 	private final SpongePrice<?, ?> price;
 
+	private boolean purchased;
+
 	private SpongeBuyItNow(SpongeBuyItNowBuilder builder) {
 		super(builder.id, builder.lister, builder.entry, builder.expiration);
 		this.price = builder.price;
@@ -32,13 +34,24 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 	}
 
 	@Override
+	public boolean isPurchased() {
+		return this.purchased;
+	}
+
+	@Override
+	public void markPurchased() {
+		this.purchased = true;
+	}
+
+	@Override
 	public JObject serialize() {
 		Preconditions.checkArgument(this.getPrice().getClass().isAnnotationPresent(GTSKeyMarker.class), "A Price type must be annotated with GTSKeyMarker");
 
 		JObject json = super.serialize();
 		JObject price = new JObject()
 				.add("key", this.getPrice().getClass().getAnnotation(GTSKeyMarker.class).value())
-				.add("content", this.getPrice().serialize());
+				.add("content", this.getPrice().serialize())
+				.add("purchased", this.purchased);
 		json.add("price", price);
 		json.add("type", "bin");
 
@@ -63,6 +76,9 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 				.map(ResourceManager::getDeserializer)
 				.orElseThrow(() -> new RuntimeException("JSON Data for price is missing mapping key"));
 		builder.price(deserializer.deserialize(price.getAsJsonObject("content")));
+		if(price.has("purchased") && price.get("purchased").getAsBoolean()) {
+			builder.purchased();
+		}
 		return builder.build();
 	}
 
@@ -72,6 +88,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 		private UUID lister;
 		private SpongeEntry<?> entry;
 		private SpongePrice<?, ?> price;
+		private boolean purchased;
 		private LocalDateTime expiration;
 
 		@Override
@@ -97,6 +114,12 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 		public BuyItNowBuilder price(Price<?, ?, ?> price) {
 			Preconditions.checkArgument(price instanceof SpongePrice, "Mixing of incompatible platform types");
 			this.price = (SpongePrice<?, ?>) price;
+			return this;
+		}
+
+		@Override
+		public BuyItNowBuilder purchased() {
+			this.purchased = true;
 			return this;
 		}
 

@@ -29,6 +29,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
+import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseResponseMessage;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.storage.sql.ConnectionFactory;
 import net.impactdev.gts.api.GTSService;
@@ -61,6 +62,7 @@ import java.util.function.Function;
 public class SqlImplementation implements StorageImplementation {
 
 	private static final String ADD_LISTING = "INSERT INTO `{prefix}listings` (id, lister, listing) VALUES (?, ?, ?)";
+	private static final String UPDATE_LISTING = "UPDATE FROM `{prefix}listings` SET listing=? WHERE id=?";
 	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM `{prefix}listings`";
 	private static final String GET_SPECIFIC_LISTING = "SELECT * FROM `{prefix}listings` WHERE id=?";
 	private static final String DELETE_LISTING = "DELETE FROM `{prefix}listings` WHERE id=?";
@@ -319,7 +321,7 @@ public class SqlImplementation implements StorageImplementation {
 
 		List<Listing> listings = this.getListings();
 		for(Listing listing : listings) {
-			if(listing.hasExpired()) {
+			if(listing.hasExpired() || (listing instanceof BuyItNow && ((BuyItNow) listing).isPurchased())) {
 				if (listing instanceof Auction) {
 					Auction auction = (Auction) listing;
 					if(auction.getLister().equals(user)) {
@@ -342,6 +344,43 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
+	public BuyItNowMessage.Purchase.Response processPurchase(BuyItNowMessage.Purchase.Request request) throws Exception {
+		return this.query(GET_SPECIFIC_LISTING, (connection, ps) -> {
+			ps.setString(1, request.getListingID().toString());
+			return this.results(ps, results -> {
+				BINPurchaseResponseMessage.BINPurchaseResponseBuilder builder = BINPurchaseResponseMessage.builder()
+						.id(GTSPlugin.getInstance().getMessagingService().generatePingID())
+						.request(request.getID())
+						.listing(request.getListingID())
+						.actor(request.getActor());
+
+				if(results.next()) {
+					BuyItNow bin = GTSService.getInstance().getGTSComponentManager()
+							.getListingResourceManager(BuyItNow.class)
+							.orElseThrow(() -> new IllegalStateException("Failed to locate the manager for BIN listings"))
+							.getDeserializer()
+							.deserialize(this.plugin.getGson().fromJson(results.getString("listing"), JsonObject.class));
+					bin.markPurchased();
+
+					boolean successful = this.sendListingUpdate(bin);
+					builder.success(successful);
+				}
+
+				return builder.build();
+			});
+		});
+	}
+
+	@Override
+	public boolean sendListingUpdate(BuyItNow listing) throws Exception {
+		return this.query(UPDATE_LISTING, (connection, ps) -> {
+			ps.setString(1, GTSPlugin.getInstance().getGson().toJson(listing.serialize().toJson()));
+			ps.setString(2, listing.getID().toString());
+			return ps.executeUpdate() != 0;
+		});
+	}
+
+	@Override
 	public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) {
 		return null;
 	}
@@ -356,7 +395,7 @@ public class SqlImplementation implements StorageImplementation {
 					boolean lister = request.isLister() || results.getBoolean("lister");
 					boolean winner = !request.isLister() || results.getBoolean("winner");
 
-					if(lister && winner) {
+					if(lister || winner) {
 						try(PreparedStatement delete = connection.prepareStatement(this.processor.apply(DELETE_AUCTION_CLAIM_STATUS))) {
 							delete.setString(1, request.getAuctionID().toString());
 							result = delete.executeUpdate();

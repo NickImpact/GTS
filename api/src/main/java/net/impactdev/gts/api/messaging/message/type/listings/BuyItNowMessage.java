@@ -57,11 +57,7 @@ public interface BuyItNowMessage extends OutgoingMessage {
 		 * A valid request will then be further processed, apply the necessary actions to the storage manager,
 		 * and then further respond to the request with a new {@link Purchase.Response Response} message.
 		 */
-		interface Request extends Purchase, MessageType.Request<Response> {
-
-
-
-		}
+		interface Request extends Purchase, MessageType.Request<Response> {}
 
 		/**
 		 * This message indicates the response to a {@link Purchase.Request Request} made prior to this

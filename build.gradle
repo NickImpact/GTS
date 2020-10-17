@@ -17,8 +17,16 @@ plugins {
     id 'ninja.miserable.blossom' version '1.0.1'
 }
 
+ext {
+    if(System.getenv().containsKey("BUILD_NUMBER")) {
+        run = "-${System.getenv("BUILD_NUMBER")}"
+    } else {
+        run = ""
+    }
+}
+
 group = 'me.nickimpact.gts'
-version = '6.0.0-SNAPSHOT'
+version = "6.0.0-SNAPSHOT${project.ext.run}"
 
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'

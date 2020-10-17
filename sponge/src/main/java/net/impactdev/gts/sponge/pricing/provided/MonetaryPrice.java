@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.sponge.pricing.SpongePrice;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.gui.UI;
 import net.impactdev.impactor.api.gui.signs.SignQuery;
 import net.impactdev.impactor.api.json.factory.JObject;
 import lombok.Setter;
@@ -27,8 +28,10 @@ import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 @GTSKeyMarker("currency")
 public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
@@ -139,6 +142,11 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 				viewer.closeInventory();
 				query.sendTo(viewer);
 			};
+		}
+
+		@Override
+		public <U extends UI<?, ?, ?, ?>> Optional<PriceSelectorUI<U>> getSelector(Player viewer, Price<?, ?, ?> price, Consumer<Object> callback) {
+			return Optional.empty();
 		}
 
 		@Override

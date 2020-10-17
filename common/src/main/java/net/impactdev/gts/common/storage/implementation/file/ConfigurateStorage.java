@@ -27,6 +27,7 @@ package net.impactdev.gts.common.storage.implementation.file;
 
 import com.google.common.base.Throwables;
 import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.stashes.Stash;
@@ -150,6 +151,16 @@ public class ConfigurateStorage implements StorageImplementation {
     @Override
     public Stash getStash(UUID user) throws Exception {
         return null;
+    }
+
+    @Override
+    public BuyItNowMessage.Purchase.Response processPurchase(BuyItNowMessage.Purchase.Request request) throws Exception {
+        return null;
+    }
+
+    @Override
+    public boolean sendListingUpdate(BuyItNow listing) throws Exception {
+        return false;
     }
 
     @Override

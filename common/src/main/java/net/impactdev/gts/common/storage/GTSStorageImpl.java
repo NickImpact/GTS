@@ -25,6 +25,7 @@
 
 package net.impactdev.gts.common.storage;
 
+import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
@@ -128,7 +129,11 @@ public class GTSStorageImpl implements GTSStorage {
 
     @Override
     public CompletableFuture<BuyItNowMessage.Purchase.Response> processPurchase(BuyItNowMessage.Purchase.Request request) {
-        return null;
+        return this.schedule(() -> this.implementation.processPurchase(request));
+    }
+
+    public CompletableFuture<Boolean> sendListingUpdate(BuyItNow listing) {
+        return this.schedule(() -> this.implementation.sendListingUpdate(listing));
     }
 
     @Override

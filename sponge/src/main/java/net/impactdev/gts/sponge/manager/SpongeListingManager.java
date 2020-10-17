@@ -1,6 +1,7 @@
 package net.impactdev.gts.sponge.manager;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.common.storage.GTSStorageImpl;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.services.text.MessageService;
@@ -240,6 +241,15 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 						.thenApply(response -> {
 							if (response.wasSuccessful()) {
 								Impactor.getInstance().getScheduler().executeSync(() -> listing.getPrice().pay(buyer, source));
+
+								// We do the following such that we will ensure we populate any potential source
+								// the price may require
+								((GTSStorageImpl) GTSPlugin.getInstance().getStorage()).sendListingUpdate(listing)
+										.exceptionally(e -> {
+											GTSPlugin.getInstance().getPluginLogger().error("Fatal error detected while updating listing with price, see error below:");
+											ExceptionWriter.write(e);
+											return false;
+										});
 							}
 							return true;
 						});
