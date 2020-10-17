@@ -39,7 +39,7 @@ jobs:
       - name: Add artifacts to build
         uses: actions/upload-artifact@v2
         with:
-          name: Sponge Jars
+          name: All GTS Jars
           path: |
             ${{ github.workspace }}/build/allJars/*.jar
         # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
