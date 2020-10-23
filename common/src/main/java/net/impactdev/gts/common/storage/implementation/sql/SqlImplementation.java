@@ -62,7 +62,7 @@ import java.util.function.Function;
 public class SqlImplementation implements StorageImplementation {
 
 	private static final String ADD_LISTING = "INSERT INTO `{prefix}listings` (id, lister, listing) VALUES (?, ?, ?)";
-	private static final String UPDATE_LISTING = "UPDATE FROM `{prefix}listings` SET listing=? WHERE id=?";
+	private static final String UPDATE_LISTING = "UPDATE `{prefix}listings` SET listing=? WHERE id=?";
 	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM `{prefix}listings`";
 	private static final String GET_SPECIFIC_LISTING = "SELECT * FROM `{prefix}listings` WHERE id=?";
 	private static final String DELETE_LISTING = "DELETE FROM `{prefix}listings` WHERE id=?";
@@ -355,15 +355,7 @@ public class SqlImplementation implements StorageImplementation {
 						.actor(request.getActor());
 
 				if(results.next()) {
-					BuyItNow bin = GTSService.getInstance().getGTSComponentManager()
-							.getListingResourceManager(BuyItNow.class)
-							.orElseThrow(() -> new IllegalStateException("Failed to locate the manager for BIN listings"))
-							.getDeserializer()
-							.deserialize(this.plugin.getGson().fromJson(results.getString("listing"), JsonObject.class));
-					bin.markPurchased();
-
-					boolean successful = this.sendListingUpdate(bin);
-					builder.success(successful);
+					builder.success(true);
 				}
 
 				return builder.build();

@@ -1,6 +1,7 @@
 package net.impactdev.gts.common.messaging.messages.utility;
 
 import com.google.gson.JsonElement;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.json.factory.JObject;
@@ -45,4 +46,8 @@ public class GTSPingMessage extends AbstractMessage implements PingMessage.Ping 
 		), Impactor.getInstance().getScheduler().async());
 	}
 
+	@Override
+	public void print(PrettyPrinter printer) {
+
+	}
 }

@@ -73,7 +73,16 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		super(GTSPlugin.getInstance(),
 				viewer,
 				Impactor.getInstance().getRegistry().get(SpongeListingManager.class).fetchListings(),
-				listing -> !listing.hasExpired()
+				listing -> {
+						boolean expired = listing.hasExpired();
+						if(!expired) {
+							if (listing instanceof BuyItNow) {
+								return !((BuyItNow) listing).isPurchased();
+							}
+						}
+
+						return !expired;
+				}
 		);
 		this.conditions.add(QUICK_PURCHASE_ONLY);
 		this.conditions.addAll(Arrays.asList(conditions));

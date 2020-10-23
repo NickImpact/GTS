@@ -1,8 +1,8 @@
 package net.impactdev.gts;
 
-import com.google.common.collect.Lists;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.placeholders.GTSSpongePlaceholderManager;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.dependencies.classloader.PluginClassLoader;
@@ -13,7 +13,6 @@ import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.events.extension.PlaceholderRegistryEvent;
 import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import org.apache.commons.lang3.StringUtils;
 import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
@@ -21,26 +20,19 @@ import org.spongepowered.api.config.ConfigDir;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.Order;
 import org.spongepowered.api.event.game.GameRegistryEvent;
+import org.spongepowered.api.event.game.GameReloadEvent;
 import org.spongepowered.api.event.game.state.GameInitializationEvent;
 import org.spongepowered.api.event.game.state.GamePreInitializationEvent;
 import org.spongepowered.api.event.game.state.GameStartedServerEvent;
+import org.spongepowered.api.event.game.state.GameStartingServerEvent;
 import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.placeholder.PlaceholderParser;
-import org.spongepowered.api.util.Tristate;
-import org.spongepowered.api.util.metric.MetricsConfigManager;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @Plugin(
@@ -101,14 +93,19 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 	}
 
 	@Listener
-	public void onStart(GameStartedServerEvent event) {
+	public void onStart(GameStartingServerEvent event) {
 		try {
 			this.plugin.started();
 		} catch (Throwable e) {
 			this.exception = e;
 			this.disable();
-			ExceptionWriter.write(e);
 		}
+	}
+
+	@Listener
+	public void onReload(GameReloadEvent event) {
+		this.plugin.getConfiguration().reload();
+		this.plugin.getMsgConfig().reload();
 	}
 
 	@Listener
@@ -157,83 +154,50 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 		Sponge.getCommandManager().getOwnedBy(this).forEach(Sponge.getCommandManager()::removeMapping);
 		Sponge.getScheduler().getScheduledTasks(this).forEach(Task::cancel);
 
-		Sponge.getEventManager().registerListener(this, GameStartedServerEvent.class, e -> this.displayErrorOnStart());
-	}
-
-	private void appendX(List<Text> messages, int spacing) {
-		Text space = Text.of(String.join("", Collections.nCopies(spacing, " ")));
-		messages.add(Text.of(space, TextColors.RED, "\\              /"));
-		messages.add(Text.of(space, TextColors.RED, " \\            /"));
-		messages.add(Text.of(space, TextColors.RED, "  \\          /"));
-		messages.add(Text.of(space, TextColors.RED, "   \\        /"));
-		messages.add(Text.of(space, TextColors.RED, "    \\      /"));
-		messages.add(Text.of(space, TextColors.RED, "     \\    /"));
-		messages.add(Text.of(space, TextColors.RED, "      \\  /"));
-		messages.add(Text.of(space, TextColors.RED, "       \\/"));
-		messages.add(Text.of(space, TextColors.RED, "       /\\"));
-		messages.add(Text.of(space, TextColors.RED, "      /  \\"));
-		messages.add(Text.of(space, TextColors.RED, "     /    \\"));
-		messages.add(Text.of(space, TextColors.RED, "    /      \\"));
-		messages.add(Text.of(space, TextColors.RED, "   /        \\"));
-		messages.add(Text.of(space, TextColors.RED, "  /          \\"));
-		messages.add(Text.of(space, TextColors.RED, " /            \\"));
-		messages.add(Text.of(space, TextColors.RED, "/              \\"));
+		Sponge.getEventManager().registerListener(this, GameStartedServerEvent.class, event -> this.displayErrorOnStart());
 	}
 
 	private void displayErrorOnStart() {
-		List<Text> output = Lists.newArrayList();
-		output.add(Text.of(TextColors.RED, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-		output.add(Text.of(TextColors.RED, "| " + StringUtils.center("GTS FAILED TO LOAD", 26) + " |"));
-		output.add(Text.of(TextColors.RED, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-		this.appendX(output, 7);
-		output.add(Text.of(TextColors.RED, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
+		PrettyPrinter printer = new PrettyPrinter(80)
+				.add("GTS FAILED TO LOAD").center()
+				.hr()
+				.bigX()
+				.hr('-')
+				.add("GTS encountered an error during server start and did not enable successfully")
+				.add("No commands, listeners, or tasks are registered.")
+				.add()
+				.add("This means the plugin is set to not function and is in safe mode!")
+				.add()
+				.add("Below is the encountered stacktrace:")
+				.hr('-');
 
-		output.add(Text.EMPTY);
-		output.add(Text.of(TextColors.RED, "GTS encountered an error during server start and did not enable successfully"));
-		output.add(Text.of(TextColors.RED, "No commands, listeners, or tasks are registered"));
-		output.add(Text.of(Text.EMPTY));
-
-		output.add(Text.of(TextColors.RED, "The encountered error will be listed below:"));
-		output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
 		if(!this.getLaunchError().isPresent()) {
-			output.add(Text.of(TextColors.YELLOW, "No exception information was provided..."));
+			printer.add("No exception information was logged...");
 		} else {
-			Throwable exception = this.getLaunchError().get();
-
-			try(StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
-				exception.printStackTrace(pw);
-				pw.flush();
-				String[] trace = sw.toString().split("(\r)?\n");
-				for(String s : trace) {
-					output.add(Text.of(TextColors.YELLOW, s));
-				}
-			} catch (IOException e) {
-				exception.printStackTrace();
-			}
+			printer.add(this.getLaunchError().get());
 		}
-		output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-		output.add(Text.of(TextColors.RED, "If this error persists, ensure you are running the latest GTS versions"));
-		output.add(Text.of(TextColors.RED, "If you do, please report this error to the GTS team at ", TextColors.AQUA, "https://github.com/NickImpact/GTS/issues"));
-		output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-		output.add(Text.of(TextColors.YELLOW, "| " + StringUtils.center("Server Information", 26) + " |"));
-		output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-		output.add(Text.of(TextColors.YELLOW, "Impactor Version: ", TextColors.AQUA, Sponge.getPluginManager().getPlugin("impactor").get().getVersion().get()));
-		output.add(Text.of(TextColors.YELLOW, "GTS Version: ", TextColors.AQUA, this.plugin.getMetadata().getVersion()));
-		output.add(Text.of(TextColors.YELLOW, "Sponge Version: ", TextColors.AQUA, Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName() + " " + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse("")));
+
+		printer.hr('-')
+				.add("If this error persists, ensure you are running the latest GTS versions")
+				.add("If you are on latest, please report this error to the GTS team at here:")
+				.add("https://github.com/NickImpact/GTS/issues")
+				.hr('-')
+				.add("Server Information").center()
+				.hr('-')
+				.add("Impactor Version: " + Sponge.getPluginManager().getPlugin("impactor").get().getVersion().get())
+				.add("GTS Version:      " + this.plugin.getMetadata().getVersion())
+				.add("Sponge Version:   " + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName() + " " + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse("?"));
 
 		if(!GTSService.getInstance().getAllExtensions().isEmpty()) {
-			output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-			output.add(Text.of(TextColors.YELLOW, "| " + StringUtils.center("Installed Extensions", 26) + " |"));
-			output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-			GTSService.getInstance().getAllExtensions().forEach(x -> output.add(Text.of(TextColors.YELLOW, x.getMetadata().getName(), " - ", x.getMetadata().getVersion())));
+			printer.hr('-')
+					.add("Installed Extensions")
+					.hr('-');
+			GTSService.getInstance().getAllExtensions().forEach(x -> printer.add(x.getMetadata().getName() + " - " + x.getMetadata().getVersion()));
 		}
 
-		output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-		output.add(Text.of(TextColors.YELLOW, "| " + StringUtils.center("END GTS ERROR REPORT", 26) + " |"));
-		output.add(Text.of(TextColors.YELLOW, "+-" + String.join("", Collections.nCopies(26, "-")) + "-+"));
-
-		for(Text out : output) {
-			Sponge.getServer().getConsole().sendMessage(out);
-		}
+		printer.hr()
+				.add("END GTS ERROR REPORT")
+				.center()
+				.log(this.getPluginLogger(), PrettyPrinter.Level.ERROR);
 	}
 }

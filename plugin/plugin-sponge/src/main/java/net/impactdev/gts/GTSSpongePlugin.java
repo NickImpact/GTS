@@ -1,5 +1,6 @@
 package net.impactdev.gts;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -45,13 +46,8 @@ import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
 import net.impactdev.gts.sponge.stash.SpongeStash;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -69,7 +65,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	private InternalMessagingService messagingService;
 
 	private SimpleExtensionManager extensionManager;
-
 
 	public GTSSpongePlugin(GTSSpongeBootstrap bootstrap, org.slf4j.Logger fallback) {
 		super(PluginMetadata.builder()
@@ -115,19 +110,12 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		Impactor.getInstance().getEventBus().subscribe(new PingListener());
 		new GTSCommandManager(this.bootstrap.getContainer()).register();
 
-		this.storage = new StorageFactory(this).getInstance(StorageType.MARIADB);
+		this.storage = new StorageFactory(this).getInstance(StorageType.H2);
 
 		this.extensionManager.enableExtensions();
 	}
 
 	public void started() {
-		ItemStack test = ItemStack.builder()
-				.itemType(ItemTypes.BARRIER)
-				.add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Testing"))
-				.build();
-		SpongeItemEntry testing = new SpongeItemEntry(test.createSnapshot());
-		testing.serialize();
-
 		if(!Sponge.getServiceManager().isRegistered(EconomyService.class)) {
 			throw new LackingServiceException(EconomyService.class);
 		}
@@ -204,7 +192,12 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 	@Override
 	public List<StorageType> getStorageRequirements() {
-		return Lists.newArrayList(StorageType.H2, StorageType.MARIADB);
+		return Lists.newArrayList();
+	}
+
+	@Override
+	public boolean inDebugMode() {
+		return this.getConfiguration().get(ConfigKeys.DEBUG_ENABLED);
 	}
 
 	@Override
@@ -236,6 +229,16 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(Auction.AuctionBuilder.class, SpongeAuction.SpongeAuctionBuilder::new);
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(BuyItNow.BuyItNowBuilder.class, SpongeBuyItNow.SpongeBuyItNowBuilder::new);
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(Stash.StashBuilder.class, SpongeStash.SpongeStashBuilder::new);
+	}
+
+	@Override
+	public ImmutableList<StorageType> getMultiServerCompatibleStorageOptions() {
+		return ImmutableList.copyOf(Lists.newArrayList(
+				StorageType.MARIADB,
+				StorageType.MYSQL,
+				StorageType.MONGODB,
+				StorageType.POSTGRESQL
+		));
 	}
 
 }

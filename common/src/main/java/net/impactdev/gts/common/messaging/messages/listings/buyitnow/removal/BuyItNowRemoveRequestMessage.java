@@ -2,6 +2,8 @@ package net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
@@ -41,10 +43,10 @@ public class BuyItNowRemoveRequestMessage extends AbstractMessage implements Buy
         return new BuyItNowRemoveRequestMessage(id, listing, actor, receiver, shouldReceive);
     }
 
-    private UUID listing;
-    private UUID actor;
-    private UUID receiver;
-    private boolean shouldReceive;
+    private final UUID listing;
+    private final UUID actor;
+    private final UUID receiver;
+    private final boolean shouldReceive;
 
     public BuyItNowRemoveRequestMessage(UUID id, UUID listing, UUID actor) {
         this(id, listing, actor, null, true);
@@ -99,5 +101,16 @@ public class BuyItNowRemoveRequestMessage extends AbstractMessage implements Buy
     @Override
     public CompletableFuture<Remove.Response> respond() {
         return GTSPlugin.getInstance().getStorage().processListingRemoveRequest(this);
+    }
+
+    @Override
+    public void print(PrettyPrinter printer) {
+        printer.add("Request Information:")
+                .hr('-')
+                .kv("Request ID", this.getID())
+                .kv("Listing ID", this.getListingID())
+                .kv("Actor", this.getActor())
+                .kv("Receiver", this.getRecipient().orElse(Listing.SERVER_ID))
+                .kv("Should Receive", this.shouldReturnListing());
     }
 }

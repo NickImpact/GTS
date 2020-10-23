@@ -125,7 +125,6 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 	private void processIncomingMessage(Message message) {
 		if (message instanceof UpdateMessage) {
 			UpdateMessage msg = (UpdateMessage) message;
-			this.plugin.getPluginLogger().debug("[Messaging] Received message with id: " + msg.getID());
 
 			Optional.ofNullable(this.getInternalConsumer(msg.getClass()))
 					.orElseThrow(() -> new IllegalStateException("No consumer available for " + msg.getClass().getName()))

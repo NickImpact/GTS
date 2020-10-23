@@ -37,6 +37,7 @@ public class ConfigKeys implements ConfigKeyHolder {
 	// Essential Settings
 	public static final ConfigKey<Boolean> USE_MULTI_SERVER = booleanKey("multi-server", false);
 	public static final ConfigKey<String> LANGUAGE = stringKey("language", "en_us");
+	public static final ConfigKey<Boolean> DEBUG_ENABLED = booleanKey("debug", false);
 
 	// Storage Settings
 	public static final ConfigKey<StorageType> STORAGE_METHOD = enduringKey(customKey(adapter -> StorageType.parse(adapter.getString("storage-method", "mariadb"))));

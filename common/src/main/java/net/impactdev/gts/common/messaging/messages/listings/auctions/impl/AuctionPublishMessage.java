@@ -2,6 +2,7 @@ package net.impactdev.gts.common.messaging.messages.listings.auctions.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
@@ -46,5 +47,10 @@ public class AuctionPublishMessage extends AuctionMessageOptions implements Auct
 						.add("actor", this.getActor().toString())
 						.toJson()
 		);
+	}
+
+	@Override
+	public void print(PrettyPrinter printer) {
+
 	}
 }

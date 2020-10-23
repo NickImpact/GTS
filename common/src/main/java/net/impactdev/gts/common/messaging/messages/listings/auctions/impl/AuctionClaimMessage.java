@@ -2,6 +2,7 @@ package net.impactdev.gts.common.messaging.messages.listings.auctions.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
@@ -82,6 +83,11 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
         public CompletableFuture<Claim.Response> respond() {
             return GTSPlugin.getInstance().getStorage().processAuctionClaimRequest(this);
         }
+
+        @Override
+        public void print(PrettyPrinter printer) {
+
+        }
     }
 
     public static class ClaimResponse extends AuctionClaimMessage implements AuctionMessage.Claim.Response {
@@ -139,6 +145,11 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
         }
 
         @Override
+        public long getResponseTime() {
+            return 0;
+        }
+
+        @Override
         public boolean wasSuccessful() {
             return this.successful;
         }
@@ -146,6 +157,11 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
         @Override
         public Optional<ErrorCode> getErrorCode() {
             return Optional.empty();
+        }
+
+        @Override
+        public void print(PrettyPrinter printer) {
+
         }
     }
 }

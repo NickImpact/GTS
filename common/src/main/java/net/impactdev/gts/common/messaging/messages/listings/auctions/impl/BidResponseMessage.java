@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
@@ -152,4 +153,13 @@ public class BidResponseMessage extends AuctionMessageOptions implements Auction
 		return this.request;
 	}
 
+	@Override
+	public long getResponseTime() {
+		return 0;
+	}
+
+	@Override
+	public void print(PrettyPrinter printer) {
+
+	}
 }

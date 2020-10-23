@@ -173,7 +173,7 @@ public class SpongeSelectedListingMenu {
                     this.viewer.sendMessage(Text.of(TextColors.RED, "TODO - Can't afford"));
                 }
             });
-            builder.slot(normal, 41);
+            builder.slot(normal, 42);
 
             if(affordability.getSecond()) {
                 SpongeIcon custom = new SpongeIcon(ItemStack.builder().itemType(ItemTypes.BARRIER).build());
@@ -205,7 +205,7 @@ public class SpongeSelectedListingMenu {
                     manager.purchase(this.viewer.getUniqueId(), (SpongeBuyItNow) bin, null);
                 }
             });
-            builder.slot(icon, 41);
+            builder.slot(icon, 42);
         }
     }
 

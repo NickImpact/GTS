@@ -3,6 +3,7 @@ package net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.common.messaging.messages.AbstractMessage;
 import net.impactdev.impactor.api.json.factory.JObject;
@@ -15,9 +16,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class BINPurchaseRequestMessage extends AbstractMessage implements BuyItNowMessage.Purchase.Request {
 
-    private static final String TYPE = "BIN/Purchase/Request";
+    public static final String TYPE = "BIN/Purchase/Request";
 
-    private static BINPurchaseRequestMessage decode(@Nullable JsonElement content, UUID id) {
+    public static BINPurchaseRequestMessage decode(@Nullable JsonElement content, UUID id) {
         if(content == null) {
             throw new IllegalStateException("Raw JSON data was null");
         }
@@ -68,5 +69,10 @@ public class BINPurchaseRequestMessage extends AbstractMessage implements BuyItN
                         .add("actor", this.actor.toString())
                         .toJson()
         );
+    }
+
+    @Override
+    public void print(PrettyPrinter printer) {
+
     }
 }

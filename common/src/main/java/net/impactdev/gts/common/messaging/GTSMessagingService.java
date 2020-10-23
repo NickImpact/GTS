@@ -30,10 +30,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.BidMessage;
+import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseRequestMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveRequestMessage;
+import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveResponseMessage;
 import net.impactdev.gts.common.messaging.messages.utility.GTSPongMessage;
+import net.impactdev.gts.common.utils.debug.Debugger;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.impactor.api.Impactor;
@@ -54,6 +60,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -172,23 +179,83 @@ public class GTSMessagingService implements InternalMessagingService {
 
     @Override
     public CompletableFuture<BuyItNowMessage.Purchase.Response> requestBINPurchase(UUID listing, UUID actor, Object source) {
-        return null;
+        PrettyPrinter debugger = Debugger.create();
+        debugger.add("Request Information:")
+                .kv("Listing ID", listing);
+
+        return CompletableFutureManager.makeFuture(() -> {
+            BINPurchaseRequestMessage request = new BINPurchaseRequestMessage(this.generatePingID(), listing, actor);
+            return this.<BuyItNowMessage.Purchase.Request, BuyItNowMessage.Purchase.Response>await(request.getID(), request);
+        }, Impactor.getInstance().getScheduler().async()).applyToEither(
+                this.timeoutAfter(5, TimeUnit.SECONDS),
+                response -> response
+        ).thenApply(response -> {
+            this.plugin.getPluginLogger().debug("[Messaging] BIN Purchase Response Received");
+            return response;
+        }).exceptionally(e -> {
+            this.plugin.getPluginLogger().error("[Messaging] Failed to receive BIN Purchase response in time, ensure connection is setup correctly!");
+            return null;
+        });
     }
 
     @Override
     public CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive) {
+        PrettyPrinter debugger = new PrettyPrinter(53).add("Buy It Now Removal Request").center().hr();
+        final AtomicReference<BuyItNowMessage.Remove.Request> reference = new AtomicReference<>();
+
         return CompletableFutureManager.makeFuture(() -> {
+            long start = System.nanoTime();
             BuyItNowMessage.Remove.Request request = new BuyItNowRemoveRequestMessage(this.generatePingID(), listing, actor, receiver, shouldReceive);
-            return this.<BuyItNowMessage.Remove.Request, BuyItNowMessage.Remove.Response>await(request.getID(), request);
-        }, Impactor.getInstance().getScheduler().async()).applyToEither(
-            this.timeoutAfter(5, TimeUnit.SECONDS),
-            response -> response
-        ).thenApply(response -> {
-            this.plugin.getPluginLogger().debug("[Messaging] BIN Remove Response Received");
+            reference.set(request);
+
+            BuyItNowMessage.Remove.Response response = this.await(request.getID(), request);
+            long finish = System.nanoTime();
+            response = BuyItNowRemoveResponseMessage.builder()
+                    .from((BuyItNowRemoveResponseMessage) response)
+                    .responseTime((finish - start) / 1000000)
+                    .build();
+
+            debugger.add()
+                    .add(request)
+                    .add()
+                    .hr('=')
+                    .add()
+                    .add(response)
+                    .add();
             return response;
-        }).exceptionally(e -> {
-            this.plugin.getPluginLogger().error("[Messaging] Failed to receive BIN Remove response in time, ensure connection is setup correctly!");
-            return null;
+        }).applyToEither(
+            this.timeoutAfter(5, TimeUnit.SECONDS),
+            response -> {
+                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+                return response;
+            }
+        ).exceptionally(e -> {
+            BuyItNowMessage.Remove.Response response = null;
+
+            BuyItNowRemoveResponseMessage.ResponseBuilder builder = BuyItNowRemoveResponseMessage.builder()
+                    .id(Listing.SERVER_ID)
+                    .request(reference.get().getID())
+                    .listing(listing)
+                    .actor(actor)
+                    .receiver(receiver)
+                    .shouldReceive(shouldReceive)
+                    .successful(false);
+            if(e instanceof TimeoutException) {
+                response = builder.error(ErrorCodes.REQUEST_TIMED_OUT)
+                        .responseTime(TimeUnit.SECONDS.toMillis(5))
+                        .build();
+                debugger.add().add(response);
+            } else {
+                debugger.add()
+                        .add("Encountered an unexpected exception, see below:")
+                        .add(e);
+
+                if(!GTSPlugin.getInstance().inDebugMode()) {
+                    ExceptionWriter.write(e);
+                }
+            }
+            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+            return response == null ? builder.build() : response;
         });
     }
 

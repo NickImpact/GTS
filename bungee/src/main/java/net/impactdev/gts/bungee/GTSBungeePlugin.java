@@ -1,5 +1,6 @@
 package net.impactdev.gts.bungee;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -94,6 +95,11 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 	@Override
 	public InternalMessagingService getMessagingService() {
 		return this.messagingService;
+	}
+
+	@Override
+	public ImmutableList<StorageType> getMultiServerCompatibleStorageOptions() {
+		return ImmutableList.<StorageType>builder().build();
 	}
 
 	@Override

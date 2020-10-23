@@ -26,6 +26,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 	private SpongeBuyItNow(SpongeBuyItNowBuilder builder) {
 		super(builder.id, builder.lister, builder.entry, builder.expiration);
 		this.price = builder.price;
+		this.purchased = builder.purchased;
 	}
 
 	@Override

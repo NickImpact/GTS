@@ -93,6 +93,17 @@ subprojects {
         testCompile 'com.google.guava:guava:27.1-jre'
 
     }
+
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+        dependsOn shadowJar
+    }
+
+    artifacts {
+        archives javadocJar
+    }
+
 }
 
 task copyJars(type: Copy) {

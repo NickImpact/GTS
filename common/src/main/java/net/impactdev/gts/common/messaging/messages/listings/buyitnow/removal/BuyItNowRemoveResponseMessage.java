@@ -2,6 +2,8 @@ package net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.utilities.Builder;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
@@ -64,6 +66,8 @@ public class BuyItNowRemoveResponseMessage extends AbstractMessage.Response impl
     private final boolean successful;
     private final ErrorCode error;
 
+    private final long responseTime;
+
     private BuyItNowRemoveResponseMessage(ResponseBuilder builder) {
         super(builder.id, builder.request);
         this.listing = builder.listing;
@@ -72,6 +76,12 @@ public class BuyItNowRemoveResponseMessage extends AbstractMessage.Response impl
         this.shouldReceive = builder.shouldReceive;
         this.successful = builder.successful;
         this.error = builder.error;
+        this.responseTime = builder.responseTime;
+    }
+
+    @Override
+    public long getResponseTime() {
+        return this.responseTime;
     }
 
     @Override
@@ -133,6 +143,23 @@ public class BuyItNowRemoveResponseMessage extends AbstractMessage.Response impl
         return new ResponseBuilder();
     }
 
+    @Override
+    public void print(PrettyPrinter printer) {
+        printer.add("Response Information:")
+                .hr('-')
+                .kv("Response ID", this.getID())
+                .kv("Request ID", this.getRequestID())
+                .kv("Listing ID", this.getListingID())
+                .kv("Actor", this.getActor())
+                .kv("Receiver", this.getRecipient().orElse(Listing.SERVER_ID))
+                .kv("Should Receive", this.shouldReturnListing())
+                .kv("Successful", this.wasSuccessful())
+                .add()
+                .kv("Response Time", this.getResponseTime() + "ms");
+
+        this.getErrorCode().ifPresent(error -> printer.kv("Error Encountered", error.getID()));
+    }
+
     public static class ResponseBuilder implements Builder<BuyItNowRemoveResponseMessage, ResponseBuilder> {
 
         private UUID id;
@@ -145,6 +172,8 @@ public class BuyItNowRemoveResponseMessage extends AbstractMessage.Response impl
 
         private boolean successful;
         private ErrorCode error;
+
+        private long responseTime;
 
         public ResponseBuilder id(UUID id) {
             this.id = id;
@@ -186,9 +215,23 @@ public class BuyItNowRemoveResponseMessage extends AbstractMessage.Response impl
             return this;
         }
 
+        public ResponseBuilder responseTime(long millis) {
+            this.responseTime = millis;
+            return this;
+        }
+
         @Override
-        public ResponseBuilder from(BuyItNowRemoveResponseMessage buyItNowRemoveResponseMessage) {
-            return null;
+        public ResponseBuilder from(BuyItNowRemoveResponseMessage clone) {
+            this.id = clone.getID();
+            this.request = clone.getRequestID();
+            this.listing = clone.listing;
+            this.actor = clone.actor;
+            this.receiver = clone.receiver;
+            this.successful = clone.successful;
+            this.shouldReceive = clone.shouldReceive;
+            this.responseTime = clone.responseTime;
+            this.error = clone.error;
+            return this;
         }
 
         @Override

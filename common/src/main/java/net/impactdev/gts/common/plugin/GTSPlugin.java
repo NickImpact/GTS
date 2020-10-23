@@ -1,5 +1,6 @@
 package net.impactdev.gts.common.plugin;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import net.impactdev.gts.common.messaging.InternalMessagingService;
 import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
@@ -10,6 +11,7 @@ import net.impactdev.impactor.api.plugin.components.Depending;
 import net.impactdev.impactor.api.plugin.components.Translatable;
 import net.impactdev.gts.api.extension.ExtensionManager;
 import net.impactdev.gts.api.storage.GTSStorage;
+import net.impactdev.impactor.api.storage.StorageType;
 
 import java.io.InputStream;
 
@@ -30,6 +32,8 @@ public interface GTSPlugin extends ImpactorPlugin, Configurable, Depending, Tran
 	ExtensionManager getExtensionManager();
 
 	InternalMessagingService getMessagingService();
+
+	ImmutableList<StorageType> getMultiServerCompatibleStorageOptions();
 
 	default InputStream getResourceStream(String path) {
 		return this.getClass().getClassLoader().getResourceAsStream(path);

@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.common.messaging.messages.AbstractMessage;
 import net.impactdev.impactor.api.json.factory.JObject;
@@ -31,8 +32,14 @@ public class BINPurchaseResponseMessage extends AbstractMessage implements BuyIt
         UUID actor = Optional.ofNullable(raw.get("actor"))
                 .map(x -> UUID.fromString(x.getAsString()))
                 .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
+        UUID request = Optional.ofNullable(raw.get("actor"))
+                .map(x -> UUID.fromString(x.getAsString()))
+                .orElseThrow(() -> new IllegalStateException("Unable to locate request ID"));
+        boolean successful = Optional.ofNullable(raw.get("actor"))
+                .map(JsonElement::getAsBoolean)
+                .orElseThrow(() -> new IllegalStateException("Unable to locate successful status marker"));
 
-        return new BINPurchaseResponseMessage(id, UUID.randomUUID(), listing, actor, false);
+        return new BINPurchaseResponseMessage(id, request, listing, actor, successful);
     }
 
     private UUID request;
@@ -51,6 +58,11 @@ public class BINPurchaseResponseMessage extends AbstractMessage implements BuyIt
     @Override
     public UUID getRequestID() {
         return this.request;
+    }
+
+    @Override
+    public long getResponseTime() {
+        return 0;
     }
 
     @Override
@@ -86,6 +98,11 @@ public class BINPurchaseResponseMessage extends AbstractMessage implements BuyIt
 
     public static BINPurchaseResponseBuilder builder() {
         return new BINPurchaseResponseBuilder();
+    }
+
+    @Override
+    public void print(PrettyPrinter printer) {
+
     }
 
     public static class BINPurchaseResponseBuilder implements Builder<BINPurchaseResponseMessage, BINPurchaseResponseBuilder> {

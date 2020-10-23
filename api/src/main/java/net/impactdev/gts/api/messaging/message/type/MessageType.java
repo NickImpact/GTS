@@ -44,6 +44,13 @@ public interface MessageType {
 		UUID getRequestID();
 
 		/**
+		 * Represents how long it took for a request to create this response. This is handled internally.
+		 *
+		 * @return A millisecond value indicating the time between messages
+		 */
+		long getResponseTime();
+
+		/**
 		 * States whether or not the request was successful. This could be caused by a number of things,
 		 * and is expected to have an accompanying error code to indicate the failure.
 		 *

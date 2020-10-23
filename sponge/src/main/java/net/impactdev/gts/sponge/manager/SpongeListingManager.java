@@ -1,6 +1,11 @@
 package net.impactdev.gts.sponge.manager;
 
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.Lists;
+import net.impactdev.gts.api.events.auctions.BidEvent;
+import net.impactdev.gts.api.events.buyitnow.PurchaseListingEvent;
 import net.impactdev.gts.common.storage.GTSStorageImpl;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
@@ -23,6 +28,8 @@ import net.impactdev.gts.sponge.listings.SpongeAuction;
 import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
 import net.impactdev.gts.sponge.listings.SpongeListing;
 import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.economy.EconomyService;
@@ -41,12 +48,22 @@ import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class SpongeListingManager implements ListingManager<SpongeListing, SpongeAuction, SpongeBuyItNow> {
 
 	private final DiscordNotifier notifier = new DiscordNotifier(GTSPlugin.getInstance());
+
+	private final LoadingCache<UUID, ReentrantLock> locks = Caffeine.newBuilder()
+			.expireAfterAccess(5, TimeUnit.MINUTES)
+			.build(new CacheLoader<UUID, ReentrantLock>() {
+				@Override
+				public @Nullable ReentrantLock load(@NonNull UUID key) throws Exception {
+					return new ReentrantLock();
+				}
+			});
 
 	@Override
 	public String getServiceName() {
@@ -197,70 +214,102 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 	@Override
 	public CompletableFuture<Boolean> bid(UUID bidder, SpongeAuction listing, double amount) {
 		return this.schedule(() -> {
-			EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-			Optional<UniqueAccount> account = economy.getOrCreateAccount(bidder);
-			if(!account.isPresent()) {
-				Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-						Text.of(TextColors.RED, "Failed to locate your bank account, no funds have been taken...")
-				));
+			ReentrantLock lock = this.locks.get(listing.getID());
+
+			try {
+				lock.lock();
+				EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
+				Optional<UniqueAccount> account = economy.getOrCreateAccount(bidder);
+				if (!account.isPresent()) {
+					Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+							Text.of(TextColors.RED, "Failed to locate your bank account, no funds have been taken...")
+					));
+					return false;
+				}
+
+				if (account.get().getBalance(economy.getDefaultCurrency()).doubleValue() < amount) {
+
+				}
+
+				if (!Impactor.getInstance().getEventBus().post(BidEvent.class, bidder, listing, amount)) {
+					Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+							Text.of(TextColors.GRAY, "Putting funds in escrow...")
+					));
+
+					TransactionResult result = account.get().withdraw(economy.getDefaultCurrency(), new BigDecimal(amount), Sponge.getCauseStackManager().getCurrentCause());
+					if (result.getResult().equals(ResultType.ACCOUNT_NO_FUNDS)) {
+						Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+								Text.of(TextColors.RED, "You don't have enough funds for this bid...")
+						));
+						return false;
+					}
+
+					Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+							Text.of(TextColors.GRAY, "Processing bid...")
+					));
+					GTSPlugin.getInstance().getMessagingService().publishBid(listing.getID(), bidder, amount);
+					return true;
+				}
 				return false;
+			} finally {
+				lock.unlock();
 			}
-
-			if(account.get().getBalance(economy.getDefaultCurrency()).doubleValue() < amount) {
-
-			}
-
-			Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-					Text.of(TextColors.GRAY, "Putting funds in escrow...")
-			));
-
-
-
-			TransactionResult result = account.get().withdraw(economy.getDefaultCurrency(), new BigDecimal(amount), Sponge.getCauseStackManager().getCurrentCause());
-			if(result.getResult().equals(ResultType.ACCOUNT_NO_FUNDS)) {
-				Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-						Text.of(TextColors.RED, "You don't have enough funds for this bid...")
-				));
-				return false;
-			}
-
-			Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-					Text.of(TextColors.GRAY, "Processing bid...")
-			));
-			GTSPlugin.getInstance().getMessagingService().publishBid(listing.getID(), bidder, amount);
-			return true;
 		});
 
 	}
 
 	@Override
 	public CompletableFuture<Boolean> purchase(UUID buyer, SpongeBuyItNow listing, Object source) {
-		if(listing.getPrice().getSourceType().equals(source.getClass())) {
-			if (listing.getPrice().canPay(buyer)) {
-				return GTSPlugin.getInstance().getMessagingService().requestBINPurchase(listing.getID(), buyer, source)
-						.thenApply(response -> {
-							if (response.wasSuccessful()) {
-								Impactor.getInstance().getScheduler().executeSync(() -> listing.getPrice().pay(buyer, source));
+		return CompletableFutureManager.makeFuture(() -> {
+			Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(
+					Text.of(TextColors.GRAY, "Processing purchase...")
+			));
+			if (listing.getPrice().getSourceType().equals(source.getClass())) {
+				boolean canPay = CompletableFutureManager.makeFuture(() -> listing.getPrice().canPay(buyer), Impactor.getInstance().getScheduler().sync()).get(2, TimeUnit.SECONDS);
+				if(canPay) {
+					ReentrantLock lock = this.locks.get(listing.getID());
 
-								// We do the following such that we will ensure we populate any potential source
-								// the price may require
-								((GTSStorageImpl) GTSPlugin.getInstance().getStorage()).sendListingUpdate(listing)
-										.exceptionally(e -> {
-											GTSPlugin.getInstance().getPluginLogger().error("Fatal error detected while updating listing with price, see error below:");
-											ExceptionWriter.write(e);
-											return false;
-										});
-							}
-							return true;
-						});
+					try {
+						lock.lock();
+						return GTSPlugin.getInstance().getMessagingService().requestBINPurchase(listing.getID(), buyer, source)
+								.thenApply(response -> {
+									if (response.wasSuccessful()) {
+										if (!Impactor.getInstance().getEventBus().post(PurchaseListingEvent.class, buyer, listing)) {
+											Impactor.getInstance().getScheduler().executeSync(() -> {
+												listing.getPrice().pay(buyer, source);
+												listing.getEntry().give(buyer);
+
+												Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(
+														Text.of(TextColors.GRAY, "Purchase complete!")
+												));
+
+												listing.markPurchased();
+
+												// We do the following such that we will ensure we populate any potential source
+												// the price may require
+												((GTSStorageImpl) GTSPlugin.getInstance().getStorage()).sendListingUpdate(listing)
+														.exceptionally(e -> {
+															GTSPlugin.getInstance().getPluginLogger().error("Fatal error detected while updating listing with price, see error below:");
+															ExceptionWriter.write(e);
+															return false;
+														});
+											});
+										}
+									}
+
+									return true;
+								}).get();
+					} finally {
+						lock.unlock();
+					}
+				} else {
+					return false;
+				}
+			} else {
+				throw new CompletionException(new IllegalArgumentException("Source of price is invalid"));
 			}
 
-			return CompletableFuture.supplyAsync(() -> false);
-		} else {
-			return CompletableFuture.supplyAsync(() -> {
-				throw new CompletionException(new IllegalArgumentException("Source of price is invalid"));
-			});
-		}
+		}, Impactor.getInstance().getScheduler().async());
 	}
 
 	@Override

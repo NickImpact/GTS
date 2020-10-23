@@ -25,7 +25,10 @@
 
 package net.impactdev.gts.common.storage;
 
+import com.google.common.collect.Lists;
 import net.impactdev.gts.common.storage.implementation.sql.SqlImplementation;
+import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.dependencies.DependencyManager;
 import net.impactdev.impactor.api.storage.StorageType;
 import net.impactdev.impactor.api.storage.sql.file.H2ConnectionFactory;
 import net.impactdev.impactor.api.storage.sql.hikari.MariaDBConnectionFactory;
@@ -56,6 +59,7 @@ public class StorageFactory {
         }
 
         this.plugin.getPluginLogger().info("Loading storage provider... [" + type.getName() + "]");
+        Impactor.getInstance().getRegistry().get(DependencyManager.class).loadStorageDependencies(Lists.newArrayList(type));
         storage = this.makeInstance(type);
         storage.init();
         return storage;

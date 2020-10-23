@@ -26,6 +26,7 @@
 package net.impactdev.gts.api.messaging.message;
 
 import net.impactdev.gts.api.messaging.Messenger;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
@@ -33,7 +34,7 @@ import java.util.UUID;
 /**
  * Represents a message sent received via a {@link Messenger}.
  */
-public interface Message {
+public interface Message extends PrettyPrinter.IPrettyPrintable {
 
     /**
      * Gets the unique id associated with this message.
