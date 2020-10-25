@@ -31,15 +31,17 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
+import net.impactdev.gts.api.messaging.message.type.MessageType;
+import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.BidMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseRequestMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveRequestMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveResponseMessage;
-import net.impactdev.gts.common.messaging.messages.utility.GTSPongMessage;
-import net.impactdev.gts.common.utils.debug.Debugger;
+import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
+import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
+import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
+import net.impactdev.gts.common.messaging.messages.utility.PingPongMessage;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.impactor.api.Impactor;
@@ -51,7 +53,6 @@ import net.impactdev.gts.api.messaging.MessengerProvider;
 import net.impactdev.gts.api.messaging.message.OutgoingMessage;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import net.impactdev.gts.common.messaging.messages.utility.GTSPingMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -60,9 +61,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -124,44 +123,90 @@ public class GTSMessagingService implements InternalMessagingService {
     }
 
     @Override
-    public CompletableFuture<GTSPongMessage> sendPing() {
+    public CompletableFuture<PingMessage.Pong> sendPing() {
+        PrettyPrinter debugger = new PrettyPrinter(53).add("Ping/Pong Status").center().hr();
+        final AtomicReference<PingMessage.Ping> reference = new AtomicReference<>();
+
         return CompletableFutureManager.makeFuture(() -> {
-            UUID request = this.generatePingID();
-            this.plugin.getPluginLogger().info("[Messaging] Sending ping with id: " + request);
-            Impactor.getInstance().getEventBus().postAsync(PingEvent.class, request, Instant.now());
+            PingMessage.Ping ping = new PingPongMessage.Ping(this.generatePingID());
+            reference.set(ping);
 
-            long start = System.nanoTime();
-            GTSPongMessage response = this.await(request, new GTSPingMessage(request));
-            long finish = System.nanoTime();
-            response.setResponseTime((finish - start) / 1000000);
+            Impactor.getInstance().getEventBus().postAsync(PingEvent.class, reference, Instant.now());
 
-            this.plugin.getPluginLogger().info("[Messaging] Pong received, took: " + response.getResponseTime() + " ms");
+            PingMessage.Pong response = this.await(ping);
+            this.populate(debugger, reference.get(), response);
+
             return response;
         }, Impactor.getInstance().getScheduler().async()).applyToEither(
                 this.timeoutAfter(5, TimeUnit.SECONDS),
-                pong -> pong
+                pong -> {
+                    debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+                    return pong;
+                }
         ).exceptionally(e -> {
-            this.plugin.getPluginLogger().error("[Messaging] Failed to receive pong response in time, ensure connection is setup correctly!");
-            return null;
+            ErrorCode error;
+            if(e instanceof MessagingException) {
+                error = ((MessagingException) e).getError();
+            } else {
+                error = ErrorCodes.FATAL_ERROR;
+                ExceptionWriter.write(e);
+            }
+
+            PingMessage.Ping request = reference.get();
+            PingMessage.Pong response = new PingPongMessage.Pong(UUID.randomUUID(), request.getID(), false, error);
+
+            this.populate(debugger, request, response);
+            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+
+            return response;
         });
     }
 
     @Override
-    public void publishAuctionListing(UUID auction, UUID actor, String broadcast) {
-
-    }
-
-    @Override
     public CompletableFuture<AuctionMessage.Bid.Response> publishBid(UUID listing, UUID actor, double bid) {
+        PrettyPrinter debugger = new PrettyPrinter(53).add("Bid Publishing Request").center().hr();
+        final AtomicReference<AuctionMessage.Bid.Request> reference = new AtomicReference<>();
+
         return CompletableFutureManager.makeFuture(() -> {
-            BidMessage request = new BidMessage(this.generatePingID(), listing, actor, bid);
-            return this.<AuctionMessage.Bid.Request, AuctionMessage.Bid.Response>await(request.getID(), request);
+            AuctionMessage.Bid.Request request = new AuctionBidMessage.Request(this.generatePingID(), listing, actor, bid);
+            reference.set(request);
+
+            AuctionMessage.Bid.Response response = this.await(request);
+            this.populate(debugger, request, response);
+
+            return response;
         }, Impactor.getInstance().getScheduler().async()).applyToEither(
                 this.timeoutAfter(5, TimeUnit.SECONDS),
-                response -> response
+                response -> {
+                    debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+                    return response;
+                }
         ).exceptionally(e -> {
-            this.plugin.getPluginLogger().error("[Messaging] Failed to receive bid response in time, ensure connection is setup correctly!");
-            return null;
+            ErrorCode error;
+            if(e instanceof MessagingException) {
+                error = ((MessagingException) e).getError();
+            } else {
+                error = ErrorCodes.FATAL_ERROR;
+                ExceptionWriter.write(e);
+            }
+
+            AuctionMessage.Bid.Request request = reference.get();
+            AuctionMessage.Bid.Response response = new AuctionBidMessage.Response(
+                    UUID.randomUUID(),
+                    request.getID(),
+                    listing,
+                    actor,
+                    bid,
+                    false,
+                    Listing.SERVER_ID,
+                    Maps.newHashMap(),
+                    error
+            );
+
+            this.populate(debugger, request, response);
+            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+
+            return response;
         });
     }
 
@@ -179,22 +224,41 @@ public class GTSMessagingService implements InternalMessagingService {
 
     @Override
     public CompletableFuture<BuyItNowMessage.Purchase.Response> requestBINPurchase(UUID listing, UUID actor, Object source) {
-        PrettyPrinter debugger = Debugger.create();
-        debugger.add("Request Information:")
-                .kv("Listing ID", listing);
+        PrettyPrinter debugger = new PrettyPrinter(53).add("Bid Publishing Request").center().hr();
+        final AtomicReference<BuyItNowMessage.Purchase.Request> reference = new AtomicReference<>();
 
         return CompletableFutureManager.makeFuture(() -> {
-            BINPurchaseRequestMessage request = new BINPurchaseRequestMessage(this.generatePingID(), listing, actor);
-            return this.<BuyItNowMessage.Purchase.Request, BuyItNowMessage.Purchase.Response>await(request.getID(), request);
+            BuyItNowMessage.Purchase.Request request = new BINPurchaseMessage.Request(this.generatePingID(), listing, actor);
+            reference.set(request);
+
+            BuyItNowMessage.Purchase.Response response = this.await(request);
+            this.populate(debugger, request, response);
+
+            return response;
         }, Impactor.getInstance().getScheduler().async()).applyToEither(
                 this.timeoutAfter(5, TimeUnit.SECONDS),
-                response -> response
-        ).thenApply(response -> {
-            this.plugin.getPluginLogger().debug("[Messaging] BIN Purchase Response Received");
+                response -> {
+                    debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+                    return response;
+                }
+        ).exceptionally(e -> {
+            ErrorCode error;
+            if(e instanceof MessagingException) {
+                error = ((MessagingException) e).getError();
+            } else {
+                error = ErrorCodes.FATAL_ERROR;
+                ExceptionWriter.write(e);
+            }
+
+            BuyItNowMessage.Purchase.Request request = reference.get();
+            BuyItNowMessage.Purchase.Response response = new BINPurchaseMessage.Response(
+                    UUID.randomUUID(), request.getID(), listing, actor, false, error
+            );
+
+            this.populate(debugger, request, response);
+            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+
             return response;
-        }).exceptionally(e -> {
-            this.plugin.getPluginLogger().error("[Messaging] Failed to receive BIN Purchase response in time, ensure connection is setup correctly!");
-            return null;
         });
     }
 
@@ -204,24 +268,12 @@ public class GTSMessagingService implements InternalMessagingService {
         final AtomicReference<BuyItNowMessage.Remove.Request> reference = new AtomicReference<>();
 
         return CompletableFutureManager.makeFuture(() -> {
-            long start = System.nanoTime();
-            BuyItNowMessage.Remove.Request request = new BuyItNowRemoveRequestMessage(this.generatePingID(), listing, actor, receiver, shouldReceive);
+            BuyItNowMessage.Remove.Request request = new BINRemoveMessage.Request(this.generatePingID(), listing, actor, receiver, shouldReceive);
             reference.set(request);
 
-            BuyItNowMessage.Remove.Response response = this.await(request.getID(), request);
-            long finish = System.nanoTime();
-            response = BuyItNowRemoveResponseMessage.builder()
-                    .from((BuyItNowRemoveResponseMessage) response)
-                    .responseTime((finish - start) / 1000000)
-                    .build();
+            BuyItNowMessage.Remove.Response response = this.await(request);
+            this.populate(debugger, request, response);
 
-            debugger.add()
-                    .add(request)
-                    .add()
-                    .hr('=')
-                    .add()
-                    .add(response)
-                    .add();
             return response;
         }).applyToEither(
             this.timeoutAfter(5, TimeUnit.SECONDS),
@@ -230,32 +282,23 @@ public class GTSMessagingService implements InternalMessagingService {
                 return response;
             }
         ).exceptionally(e -> {
-            BuyItNowMessage.Remove.Response response = null;
-
-            BuyItNowRemoveResponseMessage.ResponseBuilder builder = BuyItNowRemoveResponseMessage.builder()
-                    .id(Listing.SERVER_ID)
-                    .request(reference.get().getID())
-                    .listing(listing)
-                    .actor(actor)
-                    .receiver(receiver)
-                    .shouldReceive(shouldReceive)
-                    .successful(false);
-            if(e instanceof TimeoutException) {
-                response = builder.error(ErrorCodes.REQUEST_TIMED_OUT)
-                        .responseTime(TimeUnit.SECONDS.toMillis(5))
-                        .build();
-                debugger.add().add(response);
+            ErrorCode error;
+            if(e instanceof MessagingException) {
+                error = ((MessagingException) e).getError();
             } else {
-                debugger.add()
-                        .add("Encountered an unexpected exception, see below:")
-                        .add(e);
-
-                if(!GTSPlugin.getInstance().inDebugMode()) {
-                    ExceptionWriter.write(e);
-                }
+                error = ErrorCodes.FATAL_ERROR;
+                ExceptionWriter.write(e);
             }
+
+            BuyItNowMessage.Remove.Request request = reference.get();
+            BuyItNowMessage.Remove.Response response = new BINRemoveMessage.Response(
+                    UUID.randomUUID(), request.getID(), listing, actor, receiver, shouldReceive, false, error
+            );
+
+            this.populate(debugger, request, response);
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-            return response == null ? builder.build() : response;
+
+            return response;
         });
     }
 
@@ -271,6 +314,22 @@ public class GTSMessagingService implements InternalMessagingService {
                 .toJson();
 
         return NORMAL.toJson(json);
+    }
+
+    private PrettyPrinter populate(PrettyPrinter printer, MessageType.Request<?> request, MessageType.Response response) {
+        return printer.add()
+                .add("Request Information:")
+                .hr('-')
+                .add(request)
+                .add()
+                .hr('=')
+                .add()
+                .add()
+                .add("Response Information:")
+                .hr('-')
+                .add(response)
+                .consume(response::finalizeReport)
+                .add();
     }
 
 }

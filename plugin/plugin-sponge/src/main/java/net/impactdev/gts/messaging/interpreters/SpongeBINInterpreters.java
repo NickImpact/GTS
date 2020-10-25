@@ -1,12 +1,9 @@
 package net.impactdev.gts.messaging.interpreters;
 
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseRequestMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseResponseMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveRequestMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveResponseMessage;
+import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
+import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 
 public class SpongeBINInterpreters implements Interpreter {
@@ -20,16 +17,16 @@ public class SpongeBINInterpreters implements Interpreter {
     @Override
     public void getDecoders(GTSPlugin plugin) {
         plugin.getMessagingService().registerDecoder(
-                BuyItNowRemoveRequestMessage.TYPE, BuyItNowRemoveRequestMessage::decode
+                BINRemoveMessage.Request.TYPE, BINRemoveMessage.Request::decode
         );
         plugin.getMessagingService().registerDecoder(
-                BuyItNowRemoveResponseMessage.TYPE, BuyItNowRemoveResponseMessage::decode
+                BINRemoveMessage.Response.TYPE, BINRemoveMessage.Response::decode
         );
         plugin.getMessagingService().registerDecoder(
-                BINPurchaseRequestMessage.TYPE, BINPurchaseRequestMessage::decode
+                BINPurchaseMessage.Request.TYPE, BINPurchaseMessage.Request::decode
         );
         plugin.getMessagingService().registerDecoder(
-                BINPurchaseResponseMessage.TYPE, BINPurchaseResponseMessage::decode
+                BINPurchaseMessage.Response.TYPE, BINPurchaseMessage.Response::decode
         );
     }
 
@@ -38,28 +35,28 @@ public class SpongeBINInterpreters implements Interpreter {
         final IncomingMessageConsumer consumer = plugin.getMessagingService().getMessenger().getMessageConsumer();
 
         consumer.registerInternalConsumer(
-                BuyItNowRemoveRequestMessage.class, request -> {
+                BINRemoveMessage.Request.class, request -> {
                     GTSPlugin.getInstance().getStorage()
                             .processListingRemoveRequest(request)
                             .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
         consumer.registerInternalConsumer(
-                BuyItNowRemoveResponseMessage.class, response -> {
+                BINRemoveMessage.Response.class, response -> {
                     consumer.processRequest(response.getRequestID(), response);
                 }
         );
 
         // Purchase Requests/Responses
         consumer.registerInternalConsumer(
-                BINPurchaseRequestMessage.class, request -> {
+                BINPurchaseMessage.Request.class, request -> {
                     GTSPlugin.getInstance().getStorage()
                             .processPurchase(request)
                             .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
         consumer.registerInternalConsumer(
-                BINPurchaseResponseMessage.class, response -> {
+                BINPurchaseMessage.Response.class, response -> {
                     consumer.processRequest(response.getRequestID(), response);
                 }
         );

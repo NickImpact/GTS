@@ -1,8 +1,7 @@
 package net.impactdev.gts.messaging.interpreters;
 
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
-import net.impactdev.gts.common.messaging.messages.utility.GTSPingMessage;
-import net.impactdev.gts.common.messaging.messages.utility.GTSPongMessage;
+import net.impactdev.gts.common.messaging.messages.utility.PingPongMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 
 public class SpongePingPongInterpreter implements Interpreter {
@@ -14,14 +13,14 @@ public class SpongePingPongInterpreter implements Interpreter {
 
 	@Override
 	public void getDecoders(GTSPlugin plugin) {
-		plugin.getMessagingService().registerDecoder(GTSPingMessage.TYPE, GTSPingMessage::decode);
-		plugin.getMessagingService().registerDecoder(GTSPongMessage.TYPE, GTSPongMessage::decode);
+		plugin.getMessagingService().registerDecoder(PingPongMessage.Ping.TYPE, PingPongMessage.Ping::decode);
+		plugin.getMessagingService().registerDecoder(PingPongMessage.Pong.TYPE, PingPongMessage.Pong::decode);
 	}
 
 	@Override
 	public void getInterpreters(GTSPlugin plugin) {
 		plugin.getMessagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
-				GTSPingMessage.class, ping -> {
+				PingPongMessage.Ping.class, ping -> {
 					try {
 						plugin.getPluginLogger().info("[Messaging] Translating ping...");
 						ping.respond()
@@ -43,7 +42,7 @@ public class SpongePingPongInterpreter implements Interpreter {
 		);
 
 		plugin.getMessagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
-				GTSPongMessage.class, pong -> {
+				PingPongMessage.Pong.class, pong -> {
 					GTSPlugin.getInstance().getPluginLogger().debug(String.format(
 							"Received pong response (%s) for ping request (%s)",
 							pong.getID(),

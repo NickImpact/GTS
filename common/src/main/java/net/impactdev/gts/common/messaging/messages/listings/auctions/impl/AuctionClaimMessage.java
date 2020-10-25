@@ -150,6 +150,11 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
         }
 
         @Override
+        public void setResponseTime(long millis) {
+
+        }
+
+        @Override
         public boolean wasSuccessful() {
             return this.successful;
         }

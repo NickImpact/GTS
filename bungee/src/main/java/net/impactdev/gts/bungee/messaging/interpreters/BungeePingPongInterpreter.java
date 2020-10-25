@@ -1,17 +1,18 @@
 package net.impactdev.gts.bungee.messaging.interpreters;
 
-import net.impactdev.gts.common.messaging.messages.utility.GTSPingMessage;
+import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
+import net.impactdev.gts.common.messaging.messages.utility.PingPongMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 
 public class BungeePingPongInterpreter {
 
 	public static void registerDecoders(GTSPlugin plugin) {
-		plugin.getMessagingService().registerDecoder(GTSPingMessage.TYPE, GTSPingMessage::decode);
+		plugin.getMessagingService().registerDecoder(PingPongMessage.Ping.TYPE, PingPongMessage.Ping::decode);
 	}
 
 	public static void registerInterpreters(GTSPlugin plugin) {
 		plugin.getMessagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
-				GTSPingMessage.class, ping -> {
+				PingPongMessage.Ping.class, ping -> {
 					try {
 						plugin.getPluginLogger().info("[Messaging] Translating ping...");
 						ping.respond()

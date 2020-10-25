@@ -73,4 +73,5 @@ public abstract class AuctionMessageOptions extends AbstractMessage implements A
 
 		return new Tuple<>(raw, new SimilarPair<>(listing, actor));
 	}
+
 }

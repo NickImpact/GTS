@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -700,6 +701,11 @@ public class PrettyPrinter {
     public PrettyPrinter add(Object object, int indent) {
         String margin = Strings.repeat(" ", indent);
         return this.append(object, indent, margin);
+    }
+
+    public PrettyPrinter consume(Consumer<PrettyPrinter> consumer) {
+        consumer.accept(this);
+        return this;
     }
 
     private PrettyPrinter append(Object object, int indent, String margin) {

@@ -26,8 +26,10 @@
 package net.impactdev.gts.common.messaging;
 
 import com.google.gson.JsonElement;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
-import net.impactdev.gts.common.messaging.messages.utility.GTSPongMessage;
+import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.messaging.Messenger;
@@ -89,7 +91,9 @@ public interface InternalMessagingService {
      */
     default <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
         CompletableFuture<W> result = new CompletableFuture<>();
-        Impactor.getInstance().getScheduler().asyncLater(() -> result.completeExceptionally(new TimeoutException()), timeout, unit);
+        Impactor.getInstance().getScheduler().asyncLater(() -> result.completeExceptionally(
+                new MessagingException(ErrorCodes.REQUEST_TIMED_OUT, new TimeoutException())
+        ), timeout, unit);
         return result;
     }
 
@@ -98,16 +102,24 @@ public interface InternalMessagingService {
      * incoming message receiver. It'll hold the active thread until a response has been received. Once received,
      * it is to return that value.
      *
-     * @param requestID The ID of the request being published
+     * @param request The request being made
+     * @param <R> The type of request being made
      * @param <W> The intended return type
      * @return The response as soon as it's available
      */
-    default <R extends MessageType.Request<?> & OutgoingMessage, W extends MessageType.Response> W await(UUID requestID, R request) {
+    default <R extends MessageType.Request<?> & OutgoingMessage, W extends MessageType.Response> W await(R request) {
         AtomicReference<W> reference = new AtomicReference<>(null);
-        GTSPlugin.getInstance().getMessagingService().getMessenger().getMessageConsumer().registerRequest(requestID, reference::set);
+        long start = System.nanoTime();
+
+        GTSPlugin.getInstance().getMessagingService().getMessenger().getMessageConsumer().registerRequest(request.getID(), reference::set);
         GTSPlugin.getInstance().getMessagingService().getMessenger().sendOutgoingMessage(request);
         while(reference.get() == null) {}
-        return reference.get();
+
+        long finish = System.nanoTime();
+        return reference.updateAndGet(response -> {
+            response.setResponseTime((finish - start) / 1000000);
+            return response;
+        });
     }
 
     //------------------------------------------------------------------------------------
@@ -122,22 +134,13 @@ public interface InternalMessagingService {
      * be parsed by the server that meets the requirements of the pong message. Those being the server
      * address and port for which they were attached at the time of the message being sent.
      */
-    CompletableFuture<GTSPongMessage> sendPing();
+    CompletableFuture<PingMessage.Pong> sendPing();
 
     //------------------------------------------------------------------------------------
     //
     //  Auction Based Messages
     //
     //------------------------------------------------------------------------------------
-
-    /**
-     *
-     *
-     * @param auction
-     * @param actor
-     * @param broadcast
-     */
-    void publishAuctionListing(UUID auction, UUID actor, String broadcast);
 
     /**
      * Attempts to publish a bid to the central database for GTS. This message simply controls the process

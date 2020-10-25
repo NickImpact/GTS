@@ -28,8 +28,11 @@ package net.impactdev.gts.common.storage.implementation.sql;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseResponseMessage;
+import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
+import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.storage.sql.ConnectionFactory;
 import net.impactdev.gts.api.GTSService;
@@ -41,7 +44,6 @@ import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.stashes.Stash;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BuyItNowRemoveResponseMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
@@ -348,17 +350,16 @@ public class SqlImplementation implements StorageImplementation {
 		return this.query(GET_SPECIFIC_LISTING, (connection, ps) -> {
 			ps.setString(1, request.getListingID().toString());
 			return this.results(ps, results -> {
-				BINPurchaseResponseMessage.BINPurchaseResponseBuilder builder = BINPurchaseResponseMessage.builder()
-						.id(GTSPlugin.getInstance().getMessagingService().generatePingID())
-						.request(request.getID())
-						.listing(request.getListingID())
-						.actor(request.getActor());
+				boolean successful = results.next();
 
-				if(results.next()) {
-					builder.success(true);
-				}
-
-				return builder.build();
+				return new BINPurchaseMessage.Response(
+						GTSPlugin.getInstance().getMessagingService().generatePingID(),
+						request.getID(),
+						request.getListingID(),
+						request.getActor(),
+						successful,
+						successful ? null : ErrorCodes.ALREADY_PURCHASED
+				);
 			});
 		});
 	}
@@ -422,23 +423,19 @@ public class SqlImplementation implements StorageImplementation {
 
 	@Override
 	public BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception {
-		BuyItNowRemoveResponseMessage.ResponseBuilder response = BuyItNowRemoveResponseMessage.builder();
-		response.id(GTSPlugin.getInstance().getMessagingService().generatePingID());
-		response.request(request.getID());
+		boolean success = this.deleteListing(request.getListingID());
+		ErrorCode error = success ? null : ErrorCodes.LISTING_MISSING;
 
-		response.listing(request.getListingID());
-		response.actor(request.getActor());
-		response.receiver(request.getRecipient().orElse(null));
-		response.shouldReceive(request.shouldReturnListing());
-
-		if(this.deleteListing(request.getListingID())) {
-			response.successful(true);
-		} else {
-			response.successful(false);
-			response.error(() -> "No listing exists with that ID");
-		}
-
-		return response.build();
+		return new BINRemoveMessage.Response(
+				GTSPlugin.getInstance().getMessagingService().generatePingID(),
+				request.getID(),
+				request.getListingID(),
+				request.getActor(),
+				request.getRecipient().orElse(null),
+				request.shouldReturnListing(),
+				success,
+				error
+		);
 	}
 
 	private boolean tableExists(String table) throws SQLException {

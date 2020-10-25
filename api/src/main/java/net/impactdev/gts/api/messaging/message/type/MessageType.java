@@ -1,10 +1,13 @@
 package net.impactdev.gts.api.messaging.message.type;
 
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.impactor.api.utilities.Builder;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public interface MessageType {
 
@@ -51,6 +54,13 @@ public interface MessageType {
 		long getResponseTime();
 
 		/**
+		 * Applies the input rate as the response time for this message. This should realistically only be
+		 * set by the implementation, and not otherwise altered. You may lose valuable information if you
+		 * change this value.
+		 */
+		void setResponseTime(long millis);
+
+		/**
 		 * States whether or not the request was successful. This could be caused by a number of things,
 		 * and is expected to have an accompanying error code to indicate the failure.
 		 *
@@ -67,6 +77,15 @@ public interface MessageType {
 		 * indicating the reason the initial request failed.
 		 */
 		Optional<ErrorCode> getErrorCode();
+
+		default PrettyPrinter finalizeReport(PrettyPrinter printer) {
+			printer.kv("Successful", this.wasSuccessful());
+			this.getErrorCode().ifPresent(error -> {
+				printer.kv("Error", error.getKey());
+			});
+
+			return printer.kv("Response Time", this.getResponseTime() + " ms");
+		}
 
 	}
 

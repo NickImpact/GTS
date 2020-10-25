@@ -91,6 +91,7 @@ public interface AuctionMessage extends OutgoingMessage {
 			 * @return A mapping of users to their highest bids on the auction currently
 			 */
 			@NonNull Map<UUID, Double> getAllOtherBids();
+
 		}
 	}
 
