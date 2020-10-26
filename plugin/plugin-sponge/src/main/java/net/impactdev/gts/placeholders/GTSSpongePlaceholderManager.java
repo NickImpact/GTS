@@ -2,6 +2,7 @@ package net.impactdev.gts.placeholders;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.services.text.MessageService;
@@ -14,6 +15,8 @@ import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.placeholders.parsers.SourceSpecificPlaceholderParser;
 import net.impactdev.gts.sponge.utils.Utilities;
+import net.kyori.text.TextComponent;
+import net.kyori.text.event.HoverEvent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.User;
@@ -185,6 +188,18 @@ public class GTSSpongePlaceholderManager {
                 "stash_returned",
                 "GTS - Stash Contents Returned Successfully",
                 Text::of
+        ));
+
+        this.register(new SourceSpecificPlaceholderParser<>(
+                ErrorCode.class,
+                "error_code",
+                "An error code indicating why a request failed",
+                error -> {
+                    TextComponent component = TextComponent.builder(error.getKey())
+                            .hoverEvent(HoverEvent.showText(TextComponent.builder().append().build()))
+                            .build();
+                    return Utilities.translateComponent(component);
+                }
         ));
     }
 

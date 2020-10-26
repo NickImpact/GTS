@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
@@ -93,7 +94,7 @@ public abstract class BINRemoveMessage extends AbstractMessage implements BuyItN
                             .add("actor", this.actor.toString())
                             .consume(o -> {
                                 if(this.recipient != null) {
-                                    o.add("receiver", this.recipient.toString());
+                                    o.add("recipient", this.recipient.toString());
                                 }
                             })
                             .add("shouldReceive", this.shouldReceive)
@@ -146,8 +147,11 @@ public abstract class BINRemoveMessage extends AbstractMessage implements BuyItN
             UUID receiver = Optional.ofNullable(raw.get("recipient"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElse(null);
+            ErrorCode error = Optional.ofNullable(raw.get("error"))
+                    .map(x -> ErrorCodes.get(x.getAsInt()))
+                    .orElse(null);
 
-            return new BINRemoveMessage.Response(id, request, listing, actor, receiver, shouldReceive, successful, null);
+            return new BINRemoveMessage.Response(id, request, listing, actor, receiver, shouldReceive, successful, error);
         }
 
         private UUID request;
@@ -165,7 +169,27 @@ public abstract class BINRemoveMessage extends AbstractMessage implements BuyItN
 
         @Override
         public @NonNull String asEncodedString() {
-            return null;
+            return GTSMessagingService.encodeMessageAsString(
+                    TYPE,
+                    this.getID(),
+                    new JObject()
+                            .add("request", this.getRequestID().toString())
+                            .add("listing", this.getListingID().toString())
+                            .add("actor", this.getActor().toString())
+                            .consume(o -> {
+                                if(this.recipient != null) {
+                                    o.add("receiver", this.recipient.toString());
+                                }
+                            })
+                            .add("shouldReceive", this.shouldReceive)
+                            .add("successful", this.wasSuccessful())
+                            .consume(o -> {
+                                if(this.error != null) {
+                                    o.add("error", this.error.ordinal());
+                                }
+                            })
+                            .toJson()
+            );
         }
 
         @Override
@@ -198,7 +222,8 @@ public abstract class BINRemoveMessage extends AbstractMessage implements BuyItN
             printer.kv("Response ID", this.getID())
                     .kv("Request ID", this.getRequestID())
                     .kv("Listing ID", this.getListingID())
-                    .kv("Actor", this.getActor());
+                    .kv("Actor", this.getActor())
+                    .kv("Receiver", this.getRecipient().orElse(Listing.SERVER_ID));
 
             this.getRecipient().ifPresent(id -> printer.kv("Recipient", id));
             printer.kv("Should Receive", this.shouldReturnListing());

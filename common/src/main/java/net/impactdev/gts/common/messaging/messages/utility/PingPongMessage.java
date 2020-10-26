@@ -3,6 +3,7 @@ package net.impactdev.gts.common.messaging.messages.utility;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
@@ -56,7 +57,7 @@ public abstract class PingPongMessage extends AbstractMessage implements PingMes
 
         @Override
         public void print(PrettyPrinter printer) {
-
+            printer.kv("ID", this.getID());
         }
     }
 
@@ -74,11 +75,14 @@ public abstract class PingPongMessage extends AbstractMessage implements PingMes
             UUID requestID = Optional.ofNullable(raw.get("request"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-            long response = Optional.ofNullable(raw.get("responseTime"))
-                    .map(JsonElement::getAsLong)
-                    .orElse(-1L);
+            boolean successful = Optional.ofNullable(raw.get("successful"))
+                    .map(JsonElement::getAsBoolean)
+                    .orElseThrow(() -> new IllegalStateException("Unable to locate success state"));
+            ErrorCode error = Optional.ofNullable(raw.get("error"))
+                    .map(x -> ErrorCodes.get(x.getAsInt()))
+                    .orElse(null);
 
-            return new PingPongMessage.Pong(id, requestID, true, null);
+            return new PingPongMessage.Pong(id, requestID, successful, error);
         }
 
         private final UUID request;
@@ -89,6 +93,8 @@ public abstract class PingPongMessage extends AbstractMessage implements PingMes
         public Pong(UUID id, UUID request, boolean successful, ErrorCode error) {
             super(id);
             this.request = request;
+            this.successful = successful;
+            this.error = error;
         }
 
         @Override
@@ -123,13 +129,20 @@ public abstract class PingPongMessage extends AbstractMessage implements PingMes
                     this.getID(),
                     new JObject()
                             .add("request", this.getRequestID().toString())
+                            .add("successful", this.successful)
+                            .consume(o -> {
+                                if(this.getErrorCode().isPresent()) {
+                                    o.add("error", this.error.ordinal());
+                                }
+                            })
                             .toJson()
             );
         }
 
         @Override
         public void print(PrettyPrinter printer) {
-
+            printer.kv("ID", this.getID())
+                    .kv("Ping ID", this.getRequestID());
         }
     }
 

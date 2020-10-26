@@ -489,6 +489,8 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> GENERAL_FEEDBACK_COLLECT_LISTING = stringKey("general.feedback.collect-listing", "&7Collecting your listing...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_RETURN_FEES = stringKey("general.feedback.return-tax-from-failure", "&7Returning fees...");
 
+	public static final ConfigKey<String> REQUEST_FAILED = stringKey("general.requests.failure", "{{gts:prefix}} Request failed with status code (&c{{gts:error_code}}&7)");
+
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
 

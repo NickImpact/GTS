@@ -31,6 +31,7 @@ import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.MessengerProvider;
@@ -90,11 +91,9 @@ public interface InternalMessagingService {
      * @return A completable future who's sole purpose is to timeout after X amount of time
      */
     default <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
-        CompletableFuture<W> result = new CompletableFuture<>();
-        Impactor.getInstance().getScheduler().asyncLater(() -> result.completeExceptionally(
-                new MessagingException(ErrorCodes.REQUEST_TIMED_OUT, new TimeoutException())
-        ), timeout, unit);
-        return result;
+        return CompletableFutureManager.makeFutureDelayed(() -> {
+                throw new MessagingException(ErrorCodes.REQUEST_TIMED_OUT, new TimeoutException());
+            }, timeout, unit);
     }
 
     /**

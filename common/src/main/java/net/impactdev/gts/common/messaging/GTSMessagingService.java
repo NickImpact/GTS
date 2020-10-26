@@ -131,19 +131,21 @@ public class GTSMessagingService implements InternalMessagingService {
             PingMessage.Ping ping = new PingPongMessage.Ping(this.generatePingID());
             reference.set(ping);
 
-            Impactor.getInstance().getEventBus().postAsync(PingEvent.class, reference, Instant.now());
+            Impactor.getInstance().getEventBus().postAsync(PingEvent.class, reference.get().getID(), Instant.now());
 
             PingMessage.Pong response = this.await(ping);
             this.populate(debugger, reference.get(), response);
 
             return response;
-        }, Impactor.getInstance().getScheduler().async()).applyToEither(
+        }).applyToEither(
                 this.timeoutAfter(5, TimeUnit.SECONDS),
                 pong -> {
                     debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
                     return pong;
                 }
-        ).exceptionally(e -> {
+        ).exceptionally(completion -> {
+            Throwable e = completion.getCause();
+
             ErrorCode error;
             if(e instanceof MessagingException) {
                 error = ((MessagingException) e).getError();
@@ -154,6 +156,7 @@ public class GTSMessagingService implements InternalMessagingService {
 
             PingMessage.Ping request = reference.get();
             PingMessage.Pong response = new PingPongMessage.Pong(UUID.randomUUID(), request.getID(), false, error);
+            response.setResponseTime(TimeUnit.SECONDS.toMillis(5));
 
             this.populate(debugger, request, response);
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
@@ -175,13 +178,15 @@ public class GTSMessagingService implements InternalMessagingService {
             this.populate(debugger, request, response);
 
             return response;
-        }, Impactor.getInstance().getScheduler().async()).applyToEither(
+        }).applyToEither(
                 this.timeoutAfter(5, TimeUnit.SECONDS),
                 response -> {
                     debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
                     return response;
                 }
-        ).exceptionally(e -> {
+        ).exceptionally(completion -> {
+            Throwable e = completion.getCause();
+
             ErrorCode error;
             if(e instanceof MessagingException) {
                 error = ((MessagingException) e).getError();
@@ -202,6 +207,7 @@ public class GTSMessagingService implements InternalMessagingService {
                     Maps.newHashMap(),
                     error
             );
+            response.setResponseTime(TimeUnit.SECONDS.toMillis(5));
 
             this.populate(debugger, request, response);
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
@@ -235,13 +241,15 @@ public class GTSMessagingService implements InternalMessagingService {
             this.populate(debugger, request, response);
 
             return response;
-        }, Impactor.getInstance().getScheduler().async()).applyToEither(
+        }).applyToEither(
                 this.timeoutAfter(5, TimeUnit.SECONDS),
                 response -> {
                     debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
                     return response;
                 }
-        ).exceptionally(e -> {
+        ).exceptionally(completion -> {
+            Throwable e = completion.getCause();
+
             ErrorCode error;
             if(e instanceof MessagingException) {
                 error = ((MessagingException) e).getError();
@@ -254,6 +262,7 @@ public class GTSMessagingService implements InternalMessagingService {
             BuyItNowMessage.Purchase.Response response = new BINPurchaseMessage.Response(
                     UUID.randomUUID(), request.getID(), listing, actor, false, error
             );
+            response.setResponseTime(TimeUnit.SECONDS.toMillis(5));
 
             this.populate(debugger, request, response);
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
@@ -281,7 +290,9 @@ public class GTSMessagingService implements InternalMessagingService {
                 debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
                 return response;
             }
-        ).exceptionally(e -> {
+        ).exceptionally(completion -> {
+            Throwable e = completion.getCause();
+
             ErrorCode error;
             if(e instanceof MessagingException) {
                 error = ((MessagingException) e).getError();
@@ -294,6 +305,7 @@ public class GTSMessagingService implements InternalMessagingService {
             BuyItNowMessage.Remove.Response response = new BINRemoveMessage.Response(
                     UUID.randomUUID(), request.getID(), listing, actor, receiver, shouldReceive, false, error
             );
+            response.setResponseTime(TimeUnit.SECONDS.toMillis(5));
 
             this.populate(debugger, request, response);
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
@@ -324,10 +336,10 @@ public class GTSMessagingService implements InternalMessagingService {
                 .add()
                 .hr('=')
                 .add()
-                .add()
                 .add("Response Information:")
                 .hr('-')
                 .add(response)
+                .add()
                 .consume(response::finalizeReport)
                 .add();
     }

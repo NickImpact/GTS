@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.impactdev.gts.commands.GTSCommandManager;
-import net.impactdev.gts.listeners.PingListener;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.listings.data.SpongeItemManager;
 import net.impactdev.gts.listings.legacy.SpongeLegacyItemStorable;
@@ -107,7 +106,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	public void init() {
 		this.applyMessagingServiceSettings();
 
-		Impactor.getInstance().getEventBus().subscribe(new PingListener());
 		new GTSCommandManager(this.bootstrap.getContainer()).register();
 
 		this.storage = new StorageFactory(this).getInstance(StorageType.H2);

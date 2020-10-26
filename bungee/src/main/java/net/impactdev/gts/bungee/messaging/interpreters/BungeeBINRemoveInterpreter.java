@@ -15,7 +15,7 @@ public class BungeeBINRemoveInterpreter implements Interpreter {
     @Override
     public void getDecoders(GTSPlugin plugin) {
         plugin.getMessagingService().registerDecoder(
-                BINRemoveMessage.Request.TYPE, BINRemoveMessage.Response::decode
+                BINRemoveMessage.Request.TYPE, BINRemoveMessage.Request::decode
         );
     }
 

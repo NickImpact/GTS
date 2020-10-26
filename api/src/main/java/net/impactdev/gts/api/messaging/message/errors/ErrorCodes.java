@@ -12,7 +12,9 @@ public class ErrorCodes {
     public static final ErrorCode LISTING_MISSING = create("UNKNOWN_LISTING", "Listing could not be found");
     public static final ErrorCode ALREADY_PURCHASED = create("PURCHASED", "Listing already purchased");
     public static final ErrorCode REQUEST_TIMED_OUT = create("TIMEOUT", "Failed to receive a response within 5 seconds");
+
     public static final ErrorCode FATAL_ERROR = create("FATAL", "A fatal error occurred...");
+    public static final ErrorCode UNKNOWN = create("UNKNOWN", "Literally no idea what happened");
 
     private static final List<ErrorCode> KEYS;
 

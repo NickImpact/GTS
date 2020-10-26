@@ -8,6 +8,7 @@ import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceManager;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.common.config.updated.ConfigKeys;
 import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
 import net.impactdev.gts.sponge.manager.SpongeListingManager;
@@ -210,6 +211,8 @@ public class SpongeSelectedListingMenu {
     }
 
     private SpongeIcon createRemover() {
+        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+
         ItemStack display = ItemStack.builder()
                 .itemType(ItemTypes.ANVIL)
                 .add(Keys.DISPLAY_NAME, PARSER.parse("&cTODO - Remove Listing Title"))
@@ -228,9 +231,17 @@ public class SpongeSelectedListingMenu {
                     .thenAccept(response -> {
                         if(response.wasSuccessful()) {
                             Impactor.getInstance().getScheduler().executeSync(() -> {
-                                this.viewer.sendMessage(Text.of("TODO - Listing returned"));
-                                this.listing.getEntry().give(this.viewer.getUniqueId());
+                                if(this.listing.getEntry().give(this.viewer.getUniqueId())) {
+                                    this.viewer.sendMessage(Text.of("TODO - Listing returned"));
+                                } else {
+                                    this.viewer.sendMessage(Text.of("TODO - Unable to return listing"));
+                                }
                             });
+                        } else {
+                            this.viewer.sendMessage(service.parse(
+                                    Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+                                    Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                            ));
                         }
                     });
         });

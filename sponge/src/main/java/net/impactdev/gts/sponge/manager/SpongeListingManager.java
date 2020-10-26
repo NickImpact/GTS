@@ -6,7 +6,9 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.events.auctions.BidEvent;
 import net.impactdev.gts.api.events.buyitnow.PurchaseListingEvent;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.common.storage.GTSStorageImpl;
+import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.services.text.MessageService;
@@ -293,6 +295,15 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 															ExceptionWriter.write(e);
 															return false;
 														});
+											});
+										} else {
+											Sponge.getServer().getPlayer(buyer).ifPresent(player -> {
+												final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+												player.sendMessage(parser.parse(
+														Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+														Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+												));
 											});
 										}
 									}

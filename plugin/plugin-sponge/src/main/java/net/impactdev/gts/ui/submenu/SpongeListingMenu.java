@@ -123,19 +123,17 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 			SpongeIcon icon = new SpongeIcon(item);
 			icon.addListener(clickable -> {
+				this.getView().close(this.getViewer());
 				new SpongeSelectedListingMenu(this.getViewer(), listing, () -> this, true).open();
 			});
 			return icon;
 		});
-		this.runner = Sponge.getScheduler().createTaskBuilder()
-				.execute(this::apply)
-				.interval(1, TimeUnit.SECONDS)
-				.submit(GTSPlugin.getInstance().getBootstrap());
 	}
 
 	@Override
 	public void open() {
 		super.open();
+		this.runner = this.schedule();
 		this.getView().attachCloseListener(close -> this.runner.cancel());
 	}
 
@@ -408,4 +406,10 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		private final Comparator<T> comparator;
 	}
 
+	private Task schedule() {
+		return Sponge.getScheduler().createTaskBuilder()
+				.execute(this::apply)
+				.interval(1, TimeUnit.SECONDS)
+				.submit(GTSPlugin.getInstance().getBootstrap());
+	}
 }
