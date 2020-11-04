@@ -10,6 +10,7 @@ import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.gts.api.messaging.message.type.UpdateMessage;
 import net.impactdev.gts.bungee.GTSBungeePlugin;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -85,15 +86,21 @@ public class BungeeIncomingMessageConsumer implements IncomingMessageConsumer {
 		// extract content
 		@Nullable JsonElement content = decodedObject.get("content");
 
-		// decode message
-		Message decoded = GTSPlugin.getInstance().getMessagingService().getDecoder(type).apply(content, id);
-		if(decoded == null) {
+		try {
+			// decode message
+			Message decoded = GTSPlugin.getInstance().getMessagingService().getDecoder(type).apply(content, id);
+			if (decoded == null) {
+				return false;
+			}
+
+			// consume the message
+			this.processIncomingMessage(decoded);
+			return true;
+		} catch (Exception e) {
+			GTSPlugin.getInstance().getPluginLogger().error("Failed to read message of type: " + type);
+			ExceptionWriter.write(e);
 			return false;
 		}
-
-		// consume the message
-		this.processIncomingMessage(decoded);
-		return true;
 	}
 
 	@Override

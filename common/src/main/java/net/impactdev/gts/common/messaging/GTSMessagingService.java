@@ -26,13 +26,14 @@
 package net.impactdev.gts.common.messaging;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.TreeMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.common.messaging.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
@@ -138,11 +139,11 @@ public class GTSMessagingService implements InternalMessagingService {
 
             return response;
         }).applyToEither(
-                this.timeoutAfter(5, TimeUnit.SECONDS),
-                pong -> {
-                    debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-                    return pong;
-                }
+            this.timeoutAfter(5, TimeUnit.SECONDS),
+            pong -> {
+                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+                return pong;
+            }
         ).exceptionally(completion -> {
             Throwable e = completion.getCause();
 
@@ -167,7 +168,7 @@ public class GTSMessagingService implements InternalMessagingService {
 
     @Override
     public CompletableFuture<AuctionMessage.Bid.Response> publishBid(UUID listing, UUID actor, double bid) {
-        PrettyPrinter debugger = new PrettyPrinter(53).add("Bid Publishing Request").center().hr();
+        PrettyPrinter debugger = new PrettyPrinter(80).add("Bid Publishing Request").center().hr();
         final AtomicReference<AuctionMessage.Bid.Request> reference = new AtomicReference<>();
 
         return CompletableFutureManager.makeFuture(() -> {
@@ -179,11 +180,11 @@ public class GTSMessagingService implements InternalMessagingService {
 
             return response;
         }).applyToEither(
-                this.timeoutAfter(5, TimeUnit.SECONDS),
-                response -> {
-                    debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-                    return response;
-                }
+            this.timeoutAfter(5, TimeUnit.SECONDS),
+            response -> {
+                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+                return response;
+            }
         ).exceptionally(completion -> {
             Throwable e = completion.getCause();
 
@@ -204,7 +205,7 @@ public class GTSMessagingService implements InternalMessagingService {
                     bid,
                     false,
                     Listing.SERVER_ID,
-                    Maps.newHashMap(),
+                    TreeMultimap.create(),
                     error
             );
             response.setResponseTime(TimeUnit.SECONDS.toMillis(5));
@@ -230,7 +231,7 @@ public class GTSMessagingService implements InternalMessagingService {
 
     @Override
     public CompletableFuture<BuyItNowMessage.Purchase.Response> requestBINPurchase(UUID listing, UUID actor, Object source) {
-        PrettyPrinter debugger = new PrettyPrinter(53).add("Bid Publishing Request").center().hr();
+        PrettyPrinter debugger = new PrettyPrinter(53).add("BIN Purchase Request").center().hr();
         final AtomicReference<BuyItNowMessage.Purchase.Request> reference = new AtomicReference<>();
 
         return CompletableFutureManager.makeFuture(() -> {
@@ -242,11 +243,11 @@ public class GTSMessagingService implements InternalMessagingService {
 
             return response;
         }).applyToEither(
-                this.timeoutAfter(5, TimeUnit.SECONDS),
-                response -> {
-                    debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-                    return response;
-                }
+            this.timeoutAfter(5, TimeUnit.SECONDS),
+            response -> {
+                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+                return response;
+            }
         ).exceptionally(completion -> {
             Throwable e = completion.getCause();
 

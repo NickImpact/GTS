@@ -26,13 +26,12 @@
 package net.impactdev.gts.common.messaging;
 
 import com.google.gson.JsonElement;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.common.messaging.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.MessengerProvider;
 import net.impactdev.gts.api.messaging.message.OutgoingMessage;

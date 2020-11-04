@@ -145,7 +145,7 @@ public class ConfigKeys implements ConfigKeyHolder {
 		return (float) input;
 	});
 	public static final ConfigKey<Float> AUCTIONS_INCREMENT_RATE = customKey(adapter -> {
-		double in = adapter.getDouble("pricing.auctions.increment-rate", 0.1);
+		double in = adapter.getDouble("pricing.auctions.increment-rate", 0.03);
 		return (float) in;
 	});
 

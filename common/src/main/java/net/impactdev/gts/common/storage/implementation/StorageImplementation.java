@@ -107,7 +107,7 @@ public interface StorageImplementation {
      */
     BuyItNowMessage.Purchase.Response processPurchase(BuyItNowMessage.Purchase.Request request) throws Exception;
 
-    boolean sendListingUpdate(BuyItNow listing) throws Exception;
+    boolean sendListingUpdate(Listing listing) throws Exception;
 
     /**
      * Attempts to process a bid on an auction. This call will generate the response message that'll be sent back

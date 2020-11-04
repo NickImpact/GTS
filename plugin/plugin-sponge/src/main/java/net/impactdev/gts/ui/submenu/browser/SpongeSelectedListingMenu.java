@@ -6,26 +6,24 @@ import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
+import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceManager;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.common.messaging.errors.ErrorCodes;
 import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.sponge.listings.SpongeAuction;
 import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
-import net.impactdev.gts.sponge.manager.SpongeListingManager;
+import net.impactdev.gts.manager.SpongeListingManager;
 import net.impactdev.gts.sponge.ui.SpongeAsyncPage;
 import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.gui.UI;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
 import net.impactdev.impactor.sponge.ui.SpongeLayout;
-import net.impactdev.impactor.sponge.ui.SpongePage;
 import net.impactdev.impactor.sponge.ui.SpongeUI;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.ui.Historical;
 import net.impactdev.gts.sponge.listings.SpongeListing;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -37,13 +35,13 @@ import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.Currency;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static net.impactdev.gts.sponge.utils.Utilities.PARSER;
@@ -142,7 +140,7 @@ public class SpongeSelectedListingMenu {
         if(this.listing instanceof Auction) {
             Auction auction = (Auction) this.listing;
             double current = auction.hasAnyBidsPlaced() ? auction.getCurrentPrice() : auction.getStartingPrice();
-            double newBid = auction.hasAnyBidsPlaced() ? current * GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_INCREMENT_RATE) : current;
+            double newBid = auction.hasAnyBidsPlaced() ? current * (1.0 + GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_INCREMENT_RATE)) : current;
 
             Currency currency = GTSPlugin.getInstance().as(GTSSpongePlugin.class).getEconomy().getDefaultCurrency();
             Tuple<Boolean, Boolean> affordability = this.getBalanceAbilities(currency, auction.hasAnyBidsPlaced() ? current : newBid);
@@ -157,27 +155,23 @@ public class SpongeSelectedListingMenu {
                     .build()
             );
             normal.addListener(clickable -> {
-                if(affordability.getFirst()) {
-                    this.display.close(this.viewer);
-                    GTSPlugin.getInstance().getMessagingService().publishBid(
-                            auction.getID(),
-                            this.viewer.getUniqueId(),
-                            newBid
-                    ).thenAccept(response -> {
-                        if(response.wasSuccessful()) {
-                            this.viewer.sendMessage(Text.of(TextColors.RED, "TODO - Bid placed at " + currency.format(new BigDecimal(newBid))));
-                        } else {
-                            this.viewer.sendMessage(Text.of());
-                        }
-                    });
+                if(auction.getHighBid().map(bid -> bid.getFirst().equals(this.viewer.getUniqueId())).orElse(false)) {
+                    this.viewer.sendMessage(Text.of(TextColors.RED, "TODO - Already hold top bid"));
                 } else {
-                    this.viewer.sendMessage(Text.of(TextColors.RED, "TODO - Can't afford"));
+                    if (affordability.getFirst()) {
+                        this.display.close(this.viewer);
+                        SpongeListingManager manager = (SpongeListingManager) Impactor.getInstance().getRegistry().get(ListingManager.class);
+                        manager.bid(this.viewer.getUniqueId(), (SpongeAuction) auction, newBid);
+                    } else {
+                        this.viewer.sendMessage(Text.of(TextColors.RED, "TODO - Can't afford"));
+                    }
                 }
             });
-            builder.slot(normal, 42);
+            builder.slot(normal, 41);
 
             if(affordability.getSecond()) {
                 SpongeIcon custom = new SpongeIcon(ItemStack.builder().itemType(ItemTypes.BARRIER).build());
+                builder.slot(custom, 43);
             }
         } else {
             ItemStack display = ItemStack.builder()
@@ -195,14 +189,14 @@ public class SpongeSelectedListingMenu {
                         .map(ui -> (PriceManager<?, Player>) ui)
                         .orElseThrow(() -> new IllegalStateException("Unable to find price manager for " + price.getClass().getAnnotation(GTSKeyMarker.class).value()))
                         .getSelector(this.viewer, price, source -> {
-                            SpongeListingManager manager = Impactor.getInstance().getRegistry().get(SpongeListingManager.class);
+                            SpongeListingManager manager = (SpongeListingManager) Impactor.getInstance().getRegistry().get(ListingManager.class);
                             manager.purchase(this.viewer.getUniqueId(), (SpongeBuyItNow) bin, source);
                         });
                 if(selector.isPresent()) {
                     selector.get().getDisplay().open(this.viewer);
                 } else {
                     // For prices that have no need for a source
-                    SpongeListingManager manager = Impactor.getInstance().getRegistry().get(SpongeListingManager.class);
+                    SpongeListingManager manager = (SpongeListingManager) Impactor.getInstance().getRegistry().get(ListingManager.class);
                     manager.purchase(this.viewer.getUniqueId(), (SpongeBuyItNow) bin, null);
                 }
             });

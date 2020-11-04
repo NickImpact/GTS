@@ -24,11 +24,11 @@ import java.util.UUID;
 @AllArgsConstructor
 public class JsonStoredEntry implements Entry<JsonObject, Void> {
 
-	private final JObject data;
+	private final JsonObject data;
 
 	@Override
 	public JsonObject getOrCreateElement() {
-		return this.data.toJson();
+		return this.data;
 	}
 
 	@Override

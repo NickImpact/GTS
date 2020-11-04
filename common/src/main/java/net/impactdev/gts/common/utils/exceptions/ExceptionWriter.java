@@ -27,7 +27,7 @@ public class ExceptionWriter {
             pw.flush();
             String[] trace = sw.toString().split("(\r)?\n");
             for(String s : trace) {
-                logger.info("&c" + s);
+                logger.error("&c" + s);
             }
         } catch (IOException e) {
             exception.printStackTrace();

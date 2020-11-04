@@ -3,7 +3,7 @@ package net.impactdev.gts.common.messaging.messages.utility;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.common.messaging.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;

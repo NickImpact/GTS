@@ -159,7 +159,7 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     @Override
-    public boolean sendListingUpdate(BuyItNow listing) throws Exception {
+    public boolean sendListingUpdate(Listing listing) throws Exception {
         return false;
     }
 

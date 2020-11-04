@@ -4,6 +4,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.impactdev.gts.api.GTSService;
+import net.impactdev.gts.api.listings.auctions.Auction;
+import net.impactdev.gts.bungee.listings.BungeeAuction;
+import net.impactdev.gts.bungee.messaging.interpreters.BungeeAuctionInterpreter;
+import net.impactdev.gts.common.api.ApiRegistrationUtil;
+import net.impactdev.gts.common.api.GTSAPIProvider;
+import net.impactdev.gts.common.data.ResourceManagerImpl;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.plugin.PluginMetadata;
@@ -49,8 +56,13 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 	}
 
 	public void load() {
+		ApiRegistrationUtil.register(new GTSAPIProvider());
+
 		Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
 		Impactor.getInstance().getRegistry().register(Blacklist.class, new BlacklistImpl());
+
+		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(Auction.class, new ResourceManagerImpl<>("Auctions", "N/A", BungeeAuction::deserialize));
+		Impactor.getInstance().getRegistry().registerBuilderSupplier(Auction.AuctionBuilder.class, BungeeAuction.BungeeAuctionBuilder::new);
 	}
 
 	public void enable() {
@@ -62,6 +74,7 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 		BungeePingPongInterpreter.registerDecoders(this);
 		BungeePingPongInterpreter.registerInterpreters(this);
 		new BungeeBINRemoveInterpreter().register(this);
+		new BungeeAuctionInterpreter().register(this);
 	}
 
 	@Override

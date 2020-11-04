@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import net.impactdev.gts.common.messaging.InternalMessagingService;
 import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
+import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.plugin.ImpactorPlugin;
 import net.impactdev.impactor.api.plugin.components.Configurable;

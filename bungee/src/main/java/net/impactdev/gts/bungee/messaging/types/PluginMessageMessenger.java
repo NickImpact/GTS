@@ -8,6 +8,7 @@ import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.message.OutgoingMessage;
 import net.impactdev.gts.bungee.GTSBungeePlugin;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PluginMessageEvent;
@@ -69,7 +70,11 @@ public class PluginMessageMessenger implements Messenger, Listener {
 		ByteArrayDataInput in = ByteStreams.newDataInput(data);
 		String msg = in.readUTF();
 
-		this.consumer.consumeIncomingMessageAsString(msg);
+		try {
+			this.consumer.consumeIncomingMessageAsString(msg);
+		} catch (Exception e) {
+
+		}
 	}
 
 }

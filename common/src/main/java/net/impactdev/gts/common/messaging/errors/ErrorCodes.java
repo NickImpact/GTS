@@ -1,6 +1,7 @@
-package net.impactdev.gts.api.messaging.message.errors;
+package net.impactdev.gts.common.messaging.errors;
 
 import com.google.common.collect.ImmutableList;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -9,10 +10,18 @@ import java.util.List;
 
 public class ErrorCodes {
 
+    // Generic
     public static final ErrorCode LISTING_MISSING = create("UNKNOWN_LISTING", "Listing could not be found");
-    public static final ErrorCode ALREADY_PURCHASED = create("PURCHASED", "Listing already purchased");
     public static final ErrorCode REQUEST_TIMED_OUT = create("TIMEOUT", "Failed to receive a response within 5 seconds");
+    public static final ErrorCode THIRD_PARTY_CANCELLED = create("OUTSIDE_CANCEL", "An outside source cancelled your request");
 
+    // BIN
+    public static final ErrorCode ALREADY_PURCHASED = create("PURCHASED", "Listing already purchased");
+
+    // Auctions
+    public static final ErrorCode OUTBID = create("OUTBID", "Another user has already placed a larger bid");
+
+    // Fatal
     public static final ErrorCode FATAL_ERROR = create("FATAL", "A fatal error occurred...");
     public static final ErrorCode UNKNOWN = create("UNKNOWN", "Literally no idea what happened");
 

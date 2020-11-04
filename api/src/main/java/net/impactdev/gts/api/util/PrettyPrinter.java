@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -141,8 +143,19 @@ public class PrettyPrinter {
      * Table column alignment
      */
     enum Alignment {
-        LEFT,
-        RIGHT
+        LEFT((width, text) -> "%-" + width + "s"),
+        CENTER((width, text) -> "%" + (((width - text) / 2) + text - 2) + "s" + Strings.repeat(" ", Math.max(0, ((width - text) / 2) - text + 2))),
+        RIGHT((width, text) -> "%" + width + "s");
+
+        private BiFunction<Integer, Integer, String> format;
+
+        Alignment(BiFunction<Integer, Integer, String> format) {
+            this.format = format;
+        }
+
+        public String getFormat(int width, String text) {
+            return this.format.apply(width, text.length());
+        }
     }
 
     private static class Table implements IVariableWidthEntry {
@@ -190,16 +203,18 @@ public class PrettyPrinter {
             return this.add(new Column(this, align, size, title));
         }
 
-        Row addRow(Object... args) {
-            return this.add(new Row(this, args));
+        Row addRow(int width, Object... args) {
+            return this.add(new Row(this, width, args));
         }
 
         void updateFormat() {
-            String spacing = Strings.repeat(" ", this.colSpacing);
+            String spacing = Strings.repeat(" ", this.colSpacing / 2);
             StringBuilder format = new StringBuilder();
             boolean addSpacing = false;
             for (Column column : this.columns) {
                 if (addSpacing) {
+                    format.append(spacing);
+                    format.append("|");
                     format.append(spacing);
                 }
                 addSpacing = true;
@@ -240,7 +255,7 @@ public class PrettyPrinter {
     }
 
     /** A {@link Table table's} column */
-    private static class Column {
+    private static class Column implements IVariableWidthEntry {
 
         private final Table parent;
 
@@ -302,8 +317,8 @@ public class PrettyPrinter {
         }
 
         private void updateFormat() {
-            int width = Math.min(this.maxWidth, this.size == 0 ? this.minWidth : this.size);
-            this.format = "%" + (this.align == Alignment.RIGHT ? "" : "-") + width + "s";
+            int width = this.getWidth();
+            this.format = this.align.getFormat(width, this.title);
             this.parent.updateFormat();
         }
 
@@ -328,6 +343,10 @@ public class PrettyPrinter {
             return this.title;
         }
 
+        @Override
+        public int getWidth() {
+            return Math.min(this.maxWidth, this.size == 0 ? this.minWidth : this.size);
+        }
     }
 
     private static class Row implements IVariableWidthEntry {
@@ -336,12 +355,14 @@ public class PrettyPrinter {
 
         private final String[] args;
 
-        public Row(Table parent, Object... args) {
+        public Row(Table parent, int width, Object... args) {
             this.parent = parent.grow(args.length);
             this.args = new String[args.length];
             for(int i = 0; i < args.length; i++) {
                 this.args[i] = args[i].toString();
-                this.parent.columns.get(i).setMinWidth(this.args[i].length());
+                for(Column column : this.parent.columns) {
+                    column.setMinWidth(width);
+                }
             }
         }
 
@@ -357,7 +378,14 @@ public class PrettyPrinter {
                 }
             }
 
-            return String.format(this.parent.format, args);
+            StringJoiner joiner = new StringJoiner(" | ");
+            for(int i = 0; i < args.length; i++) {
+                Column column = this.parent.columns.get(i);
+                String out = args[i].toString();
+                joiner.add(String.format(Alignment.LEFT.getFormat(column.getWidth(), out), out));
+            }
+
+            return joiner.toString();
         }
 
         @Override
@@ -515,7 +543,9 @@ public class PrettyPrinter {
         }
         if (!onlyIfNeeded || this.table.addHeader) {
             this.table.headerAdded();
+            this.hr('-');
             this.addLine(this.table);
+            this.hr('-');
         }
         return this;
     }
@@ -530,7 +560,7 @@ public class PrettyPrinter {
      */
     public PrettyPrinter tr(Object... args) {
         this.th(true);
-        this.addLine(this.table.addRow(args));
+        this.addLine(this.table.addRow(this.width / args.length - 1, args));
         this.recalcWidth = true;
         return this;
     }

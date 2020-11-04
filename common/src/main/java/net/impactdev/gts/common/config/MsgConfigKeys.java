@@ -340,22 +340,34 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	// Listings Menu
 	public static final ConfigKey<String> UI_MENU_LISTINGS_TITLE = stringKey("ui.menus.listings.title", "&cGTS &7\u00bb &3Listings");
-	public static final ConfigKey<TitleLorePair> UI_MENU_LISTINGS_SEARCH = customKey(c -> {
-		String title = c.getString("ui.menus.listings.search.title", "&aSearch");
-		List<String> lore = c.getStringList("ui.menus.listings.search.lore", Lists.newArrayList(
-				"&7Find items by name, type,",
-				"&7or any other options that",
-				"&7can identify an item.",
-				"",
-				"&aCurrent Query:",
-				"&a{{gts_search_query}}",
-				"",
-				"&bRight Click to add additional",
-				"&bparameters!",
-				"&eClick to begin search!"
-		));
-		return new TitleLorePair(title, lore);
-	});
+	public static final ConfigKey<String> UI_MENU_SEARCH_TITLE = stringKey(
+			"ui.menus.listings.search.title",
+			"&aSearch"
+	);
+	public static final ConfigKey<List<String>> UI_MENU_SEARCH_LORE_NO_QUERY = listKey(
+			"ui.menus.listings.search.lore.no-query",
+			Lists.newArrayList(
+					"&7Find items by name, type,",
+					"&7or any other options that",
+					"&7can identify an item.",
+					"",
+					"&eClick to begin search!"
+			)
+	);
+	public static final ConfigKey<List<String>> UI_MENU_SEARCH_LORE_QUERIED = listKey(
+			"ui.menus.listings.search.lore.queried",
+			Lists.newArrayList(
+					"&7Find items by name, type,",
+					"&7or any other options that",
+					"&7can identify an item.",
+					"",
+					"&aCurrent Query:",
+					"&3{{gts:search_query}}",
+					"",
+					"&eClick to edit search!"
+			)
+	);
+
 	public static final ConfigKey<SortConfigurationOptions> UI_MENU_LISTINGS_SORT = customKey(c -> new SortConfigurationOptions(
 			c.getString("ui.menus.listings.sort.title", "&aSort"),
 			c.getString("ui.menus.listings.sort.lore.coloring.selected", "&b"),
@@ -472,7 +484,18 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"",
 			"&eClick to inspect!"
 	));
-	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS_WITH_BIDS = listKey("ui.listings.auctions.details.with-bids", Lists.newArrayList(
+	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS_WITH_SINGLE_BID = listKey("ui.listings.auctions.details.with-single-bid", Lists.newArrayList(
+			"&7Seller: &e{{gts:seller}}",
+			"&7Bids: &a{{gts:auction_bids}} bid",
+			"",
+			"&7Top bid: &e{{gts:auction_high_bid}}",
+			"&7Bidder: {{gts:auction_high_bidder}}",
+			"",
+			"&7Ends in: &e{{gts:time_left}}",
+			"",
+			"&eClick to inspect!"
+	));
+	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS_WITH_BIDS = listKey("ui.listings.auctions.details.with-multiple-bids", Lists.newArrayList(
 			"&7Seller: &e{{gts:seller}}",
 			"&7Bids: &a{{gts:auction_bids}} bids",
 			"",

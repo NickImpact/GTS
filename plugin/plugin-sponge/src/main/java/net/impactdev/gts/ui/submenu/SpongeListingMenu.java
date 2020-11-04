@@ -1,11 +1,16 @@
 package net.impactdev.gts.ui.submenu;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.makeup.Display;
+import net.impactdev.gts.api.listings.manager.ListingManager;
+import net.impactdev.gts.api.searching.Searcher;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.gui.InventoryDimensions;
+import net.impactdev.impactor.api.gui.signs.SignQuery;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
@@ -21,12 +26,13 @@ import net.impactdev.gts.common.config.wrappers.SortConfigurationOptions;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.lists.CircularLinkedList;
 import net.impactdev.gts.common.config.wrappers.TitleLorePair;
-import net.impactdev.gts.sponge.manager.SpongeListingManager;
+import net.impactdev.gts.manager.SpongeListingManager;
 import net.impactdev.gts.sponge.listings.SpongeListing;
 import net.impactdev.gts.sponge.ui.SpongeAsyncPage;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
 import net.impactdev.gts.sponge.utils.Utilities;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
@@ -63,7 +69,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 	private Task runner;
 
-	private String searchQuery = "Testing";
+	private @Nullable Searching searchQuery;
 
 	/** True = Quick Purchase, false = Auction */
 	private boolean mode = false;
@@ -72,7 +78,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	public SpongeListingMenu(Player viewer, Predicate<SpongeListing>... conditions) {
 		super(GTSPlugin.getInstance(),
 				viewer,
-				Impactor.getInstance().getRegistry().get(SpongeListingManager.class).fetchListings(),
+				Impactor.getInstance().getRegistry().get(ListingManager.class).fetchListings(),
 				listing -> {
 						boolean expired = listing.hasExpired();
 						if(!expired) {
@@ -87,6 +93,12 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		this.conditions.add(QUICK_PURCHASE_ONLY);
 		this.conditions.addAll(Arrays.asList(conditions));
 		this.setSorter(this.sorter.copy().next().get().getComparator());
+
+		for(Predicate<SpongeListing> condition : this.conditions) {
+			if(condition instanceof Searching) {
+				this.searchQuery = (Searching) condition;
+			}
+		}
 
 		final Config lang = GTSPlugin.getInstance().getMsgConfig();
 		final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
@@ -103,6 +115,8 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 					List<String> input;
 					if(auction.getBids().size() > 1) {
 						input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_BIDS);
+					} else if(auction.getBids().size() == 1) {
+						input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_SINGLE_BID);
 					} else {
 						input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_NO_BIDS);
 					}
@@ -226,6 +240,8 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	}
 
 	private void createBottomPanel(SpongeLayout.SpongeLayoutBuilder layout) {
+		Config lang = GTSPlugin.getInstance().getMsgConfig();
+
 		ItemStack quick = ItemStack.builder()
 				.itemType(ItemTypes.EMERALD)
 				.add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, "Quick Purchase"))
@@ -252,15 +268,41 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 				.build();
 		SpongeIcon aIcon = new SpongeIcon(auctions);
 
-		TitleLorePair pair = GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SEARCH);
 		ItemStack searcher = ItemStack.builder()
 				.itemType(ItemTypes.SIGN)
-				.add(Keys.DISPLAY_NAME, PARSER.parse(pair.getTitle(), Lists.newArrayList(this::getViewer)))
-				.add(Keys.ITEM_LORE, PARSER.parse(pair.getLore(), Lists.newArrayList(this::getViewer)))
+				.add(Keys.DISPLAY_NAME, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_TITLE), Lists.newArrayList(this::getViewer)))
+				.add(Keys.ITEM_LORE, PARSER.parse(
+						this.searchQuery != null ? Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_LORE_QUERIED) :
+								Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_LORE_NO_QUERY),
+						Lists.newArrayList(this::getViewer, () -> this.searchQuery)
+				))
 				.build();
 		SpongeIcon sIcon = new SpongeIcon(searcher);
 		sIcon.addListener(clickable -> {
+			SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
+					.position(new Vector3d(0, 1, 0))
+					.text(Lists.newArrayList(
+							Text.EMPTY,
+							Text.of("----------------"),
+							Text.of("Enter your search"),
+							Text.of("query above")
+					))
+					.response(submission -> {
+						final String asking = submission.get(0);
+						Impactor.getInstance().getScheduler().executeSync(() -> {
+							if(asking.isEmpty()) {
+								new SpongeListingMenu(this.getViewer()).open();
+							} else {
+								new SpongeListingMenu(this.getViewer(), new Searching(asking)).open();
+							}
+						});
 
+						return true;
+					})
+					.build();
+
+			this.getView().close(this.getViewer());
+			query.sendTo(this.getViewer());
 		});
 		layout.slot(sIcon, 49);
 
@@ -378,13 +420,36 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 	}
 
+	public static class Searching implements Predicate<SpongeListing> {
+
+		private final String query;
+
+		public Searching(String query) {
+			this.query = query;
+		}
+
+		@Override
+		public boolean test(SpongeListing listing) {
+			boolean passes = true;
+			for(Searcher s : GTSService.getInstance().getSearchers()) {
+				passes = s.parse(listing, this.query);
+			}
+
+			return passes;
+		}
+
+		public String getQuery() {
+			return this.query;
+		}
+	}
+
 	@Getter
 	@AllArgsConstructor
 	private enum Sorter {
 		QP_MOST_RECENT(SortConfigurationOptions::getQpMostRecent, Comparator.<SpongeListing, LocalDateTime>comparing(Listing::getExpiration).reversed()),
 		QP_ENDING_SOON(SortConfigurationOptions::getQpEndingSoon, Comparator.comparing(Listing::getExpiration)),
-		A_HIGHEST_BID(SortConfigurationOptions::getAHighest, Comparator.<SpongeListing, Double>comparing(listing -> ((Auction) listing).getHighBid().getSecond()).reversed()),
-		A_LOWEST_BID(SortConfigurationOptions::getALowest, Comparator.comparing(listing -> ((Auction) listing).getHighBid().getSecond())),
+		A_HIGHEST_BID(SortConfigurationOptions::getAHighest, Comparator.<SpongeListing, Double>comparing(listing -> ((Auction) listing).getCurrentPrice()).reversed()),
+		A_LOWEST_BID(SortConfigurationOptions::getALowest, Comparator.comparing(listing -> ((Auction) listing).getCurrentPrice())),
 		A_ENDING_SOON(SortConfigurationOptions::getAEndingSoon, Comparator.comparing(Listing::getExpiration)),
 		A_MOST_BIDS(SortConfigurationOptions::getAMostBids, Comparator.<SpongeListing, Integer>comparing(listing -> ((Auction) listing).getBids().size()).reversed())
 		;

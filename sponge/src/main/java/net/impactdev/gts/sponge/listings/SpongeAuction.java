@@ -3,6 +3,7 @@ package net.impactdev.gts.sponge.listings;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
@@ -20,55 +21,63 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Optional;
+import java.util.SortedMap;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
 public class SpongeAuction extends SpongeListing implements Auction {
 
-	private double price;
-	private float increment;
+	/** The starting price of this auction */
+	private final double start;
 
-	/**
-	 * This should feature the top bid at the first key, with lowest being the last key.
-	 */
-	private final NavigableSet<Tuple<UUID, Double>> bids = new ConcurrentSkipListSet<>(Collections.reverseOrder(Comparator.comparing(Tuple::getSecond)));
+	/** The current price of this auction, representing the start or highest bid */
+	private double price;
+
+	/** The base increment percentage required to place a bid */
+	private final float increment;
+
+	private final TreeMultimap<UUID, Double> bids = TreeMultimap.create(
+			Comparator.naturalOrder(),
+			Collections.reverseOrder(Double::compareTo)
+	);
 
 	private SpongeAuction(SpongeAuctionBuilder builder) {
-		super(builder.id, builder.lister, builder.entry, builder.expiration);
-		this.price = builder.start;
+		super(builder.id, builder.lister, builder.entry, builder.published, builder.expiration);
+		this.start = builder.start;
+		this.price = Math.max(builder.current, this.start);
 		this.increment = builder.increment;
 		if(builder.bids != null) {
-			builder.bids.forEach((uuid, bid) -> {
-				this.bids.add(new Tuple<>(uuid, bid));
-			});
+			builder.bids.forEach(this.bids::put);
 		}
 	}
 
 	@Override
-	public Tuple<UUID, Double> getHighBid() {
-		return new Tuple<>(this.bids.first().getFirst(), this.bids.first().getSecond());
+	public Optional<Tuple<UUID, Double>> getHighBid() {
+		return this.bids.entries().stream()
+				.max(Map.Entry.comparingByValue())
+				.map(e -> new Tuple<>(e.getKey(), e.getValue()));
 	}
 
 	@Override
 	public double getStartingPrice() {
-		return this.price;
+		return this.start;
 	}
 
 	@Override
 	public double getCurrentPrice() {
-		return this.price + Math.ceil(this.price * this.getIncrement());
+		return this.price;
 	}
 
 	@Override
 	public float getIncrement() {
-		return this.increment * (this.getBids().size() == 0 ? 0 : 1);
+		return this.increment;
 	}
 
 	@Override
 	public boolean bid(UUID user, double amount) {
-		if(this.bids.size() == 0 || (amount >= this.getHighBid().getSecond() + this.getIncrement())) {
-			this.getBids().add(new Tuple<>(user, amount));
+		if(this.bids.size() == 0 || (amount >= this.getHighBid().get().getSecond() * (1.0 + this.getIncrement()))) {
+			this.getBids().put(user, amount);
 			this.price = amount;
 			return true;
 		}
@@ -77,14 +86,11 @@ public class SpongeAuction extends SpongeListing implements Auction {
 
 	@Override
 	public Optional<Double> getCurrentBid(UUID uuid) {
-		return this.bids.stream()
-				.filter(entry -> entry.getFirst().equals(uuid))
-				.map(Tuple::getSecond)
-				.max(Comparator.naturalOrder());
+		return this.getHighBid().map(Tuple::getSecond);
 	}
 
 	@Override
-	public NavigableSet<Tuple<UUID, Double>> getBids() {
+	public TreeMultimap<UUID, Double> getBids() {
 		return this.bids;
 	}
 
@@ -93,16 +99,10 @@ public class SpongeAuction extends SpongeListing implements Auction {
 		JObject json = super.serialize();
 
 		JObject bids = new JObject();
-		Multimap<UUID, Double> data = ArrayListMultimap.create();
-		synchronized (this.bids) {
-			for (Tuple<UUID, Double> entry : this.bids) {
-				data.put(entry.getFirst(), entry.getSecond());
-			}
-		}
 
-		for(UUID id : data.keys()) {
+		for(UUID id : this.bids.keys()) {
 			JArray array = new JArray();
-			for(double bid : data.get(id).stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList())) {
+			for(double bid : this.bids.get(id).stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList())) {
 				array.add(bid);
 			}
 			bids.add(id.toString(), array);
@@ -110,6 +110,7 @@ public class SpongeAuction extends SpongeListing implements Auction {
 
 		JObject pricing = new JObject()
 				.add("start", this.getStartingPrice())
+				.add("current", this.getCurrentPrice())
 				.add("increment", this.getIncrement());
 
 		json.add("auction", new JObject()
@@ -125,8 +126,10 @@ public class SpongeAuction extends SpongeListing implements Auction {
 		SpongeAuctionBuilder builder = (SpongeAuctionBuilder) Auction.builder()
 				.id(UUID.fromString(object.get("id").getAsString()))
 				.lister(UUID.fromString(object.get("lister").getAsString()))
+				.published(LocalDateTime.parse(object.getAsJsonObject("timings").get("published").getAsString()))
 				.expiration(LocalDateTime.parse(object.getAsJsonObject("timings").get("expiration").getAsString()))
 				.start(object.getAsJsonObject("auction").getAsJsonObject("pricing").get("start").getAsDouble())
+				.current(object.getAsJsonObject("auction").getAsJsonObject("pricing").get("current").getAsDouble())
 				.increment(object.getAsJsonObject("auction").getAsJsonObject("pricing").get("increment").getAsFloat());
 
 		JsonObject element = object.getAsJsonObject("entry");
@@ -154,9 +157,11 @@ public class SpongeAuction extends SpongeListing implements Auction {
 		private UUID id = UUID.randomUUID();
 		private UUID lister;
 		private SpongeEntry<?> entry;
+		private LocalDateTime published = LocalDateTime.now();
 		private LocalDateTime expiration;
 		private double start;
 		private float increment;
+		private double current;
 		private Multimap<UUID, Double> bids;
 
 		@Override
@@ -172,9 +177,15 @@ public class SpongeAuction extends SpongeListing implements Auction {
 		}
 
 		@Override
-		public AuctionBuilder entry(Entry entry) {
+		public AuctionBuilder entry(Entry<?, ?> entry) {
 			Preconditions.checkArgument(entry instanceof SpongeEntry, "Mixing of invalid types!");
-			this.entry = (SpongeEntry) entry;
+			this.entry = (SpongeEntry<?>) entry;
+			return this;
+		}
+
+		@Override
+		public AuctionBuilder published(LocalDateTime published) {
+			this.published = published;
 			return this;
 		}
 
@@ -197,6 +208,12 @@ public class SpongeAuction extends SpongeListing implements Auction {
 		}
 
 		@Override
+		public AuctionBuilder current(double current) {
+			this.current = current;
+			return this;
+		}
+
+		@Override
 		public AuctionBuilder bids(Multimap<UUID, Double> bids) {
 			this.bids = bids;
 			return this;
@@ -207,17 +224,12 @@ public class SpongeAuction extends SpongeListing implements Auction {
 			Preconditions.checkArgument(input instanceof SpongeAuction, "Mixing of invalid types!");
 			this.id = input.getID();
 			this.lister = input.getLister();
-			this.entry = (SpongeEntry) input.getEntry();
+			this.entry = (SpongeEntry<?>) input.getEntry();
+			this.published = input.getPublishTime();
 			this.expiration = input.getExpiration();
-			this.start = input.getCurrentPrice() - input.getIncrement();
-
-			// Hack around the static 0 for an auction with no bids currently set
-			if(input.getBids().size() == 0) {
-				UUID tmp = UUID.randomUUID();
-				//input.getBids().put(tmp, 0D);
-				this.increment = input.getIncrement();
-				input.getBids().remove(tmp);
-			}
+			this.start = input.getStartingPrice();
+			this.increment = input.getIncrement();
+			this.current = input.getCurrentPrice();
 
 			return this;
 		}

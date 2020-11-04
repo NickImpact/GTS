@@ -132,7 +132,7 @@ public class GTSStorageImpl implements GTSStorage {
         return this.schedule(() -> this.implementation.processPurchase(request));
     }
 
-    public CompletableFuture<Boolean> sendListingUpdate(BuyItNow listing) {
+    public CompletableFuture<Boolean> sendListingUpdate(Listing listing) {
         return this.schedule(() -> this.implementation.sendListingUpdate(listing));
     }
 

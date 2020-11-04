@@ -6,6 +6,7 @@ import net.impactdev.gts.api.extension.Extension;
 import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.api.searching.Searcher;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface GTSService {
@@ -17,37 +18,36 @@ public interface GTSService {
 	/**
 	 *
 	 *
-	 * @since 6.0.0
 	 * @return An immutable list of all loaded extensions hooked to GTS
 	 */
 	ImmutableList<Extension> getAllExtensions();
 
+	/**
+	 *
+	 *
+	 * @return The component manager responsible for managing the types of Listings,
+	 * Entries, and Prices GTS can manipulate.
+	 */
 	GTSComponentManager getGTSComponentManager();
 
 	/**
 	 *
 	 * @return A mapping manager of all individual player settings
-	 *
-	 * @since 6.0.0
 	 */
 	PlayerSettingsManager getPlayerSettingsManager();
 
 	/**
 	 * Registers a searching option for all listings in the listing manager.
 	 *
-	 * @param key The key for the search operation
 	 * @param searcher The searcher
-	 * @since 5.1.0
 	 */
-	void addSearcher(String key, Searcher searcher);
+	void addSearcher(Searcher searcher);
 
 	/**
+	 * The set of registered searchers that a user can use to find listings matching their query.
 	 *
-	 * @param key The key representing a particular searcher
-	 * @return A matching Searcher if one is found belonging to the input key, or empty if none match
-	 *
-	 * @since 5.1.0
+	 * @return Every registered searcher
 	 */
-	Optional<Searcher> getSearcher(String key);
+	List<Searcher> getSearchers();
 
 }

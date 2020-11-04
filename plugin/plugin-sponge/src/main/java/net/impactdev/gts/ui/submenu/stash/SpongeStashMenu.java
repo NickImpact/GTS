@@ -105,7 +105,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, Boolean>> im
                 if(entry.getSecond()) {
                     Listing listing = entry.getFirst();
                     if(listing instanceof Auction) {
-                        if(new MonetaryPrice(((Auction) listing).getHighBid().getSecond()).reward(this.getViewer().getUniqueId())) {
+                        if(new MonetaryPrice(((Auction) listing).getCurrentPrice()).reward(this.getViewer().getUniqueId())) {
                             GTSPlugin.getInstance().getMessagingService().requestAuctionClaim(
                                     listing.getID(),
                                     listing.getLister(),

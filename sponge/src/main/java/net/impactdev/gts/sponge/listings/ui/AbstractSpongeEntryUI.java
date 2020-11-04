@@ -3,6 +3,7 @@ package net.impactdev.gts.sponge.listings.ui;
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
+import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.gui.signs.SignQuery;
@@ -23,7 +24,6 @@ import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
 import net.impactdev.gts.sponge.listings.SpongeListing;
 import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
 import net.impactdev.gts.sponge.listings.ui.creator.TimeSelectMenu;
-import net.impactdev.gts.sponge.manager.SpongeListingManager;
 import net.impactdev.gts.sponge.pricing.SpongePrice;
 import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
 import net.impactdev.gts.sponge.listings.ui.creator.SpongePriceTypeSelectionMenu;
@@ -177,7 +177,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
             }
 
             this.display.close(this.viewer);
-            SpongeListingManager manager = Impactor.getInstance().getRegistry().get(SpongeListingManager.class);
+            ListingManager<SpongeListing, SpongeAuction, SpongeBuyItNow> manager = Impactor.getInstance().getRegistry().get(ListingManager.class);
             manager.list(this.viewer.getUniqueId(), listing).exceptionally(error -> {
                 ExceptionWriter.write(error);
                 return false;
@@ -251,7 +251,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
                                 if(value > 0) {
                                     this.price = new MonetaryPrice(value);
                                     SpongeIcon updated = this.createPriceIcon();
-                                    this.getDisplay().setSlot(38, updated);
+                                    this.getDisplay().setSlot(this.getPriceSlot(), updated);
 
                                     Impactor.getInstance().getScheduler().executeSync(() -> {
                                         this.open(this.viewer);

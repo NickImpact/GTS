@@ -3,6 +3,7 @@ package net.impactdev.gts.placeholders;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.services.text.MessageService;
@@ -15,6 +16,7 @@ import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.placeholders.parsers.SourceSpecificPlaceholderParser;
 import net.impactdev.gts.sponge.utils.Utilities;
+import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.HoverEvent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
@@ -37,6 +39,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 
 public class GTSSpongePlaceholderManager {
@@ -66,32 +69,7 @@ public class GTSSpongePlaceholderManager {
                 Listing.class,
                 "seller",
                 "GTS - Listing Seller",
-                listing -> {
-                    UserStorageService service = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
-                    return service.get(listing.getLister())
-                            .map(user -> {
-                                Text result = Text.EMPTY;
-
-                                Optional<String> prefix = this.getOptionFromSubject(user, "prefix");
-                                if(prefix.isPresent()) {
-                                    result = TextSerializers.FORMATTING_CODE.deserialize(prefix.get());
-                                }
-
-                                Text.Builder builder = Text.builder(" " + user.getName());
-
-                                Optional<String> color = this.getOptionFromSubject(user, "color");
-
-                                if(color.isPresent()) {
-                                    builder.color(color
-                                            .map(in -> Sponge.getRegistry().getType(TextColor.class, in.toUpperCase()).orElse(TextColors.NONE))
-                                            .orElse(TextColors.NONE)
-                                    );
-                                }
-
-                                return Text.join(result, Text.of(TextColors.RESET, builder.build()));
-                            })
-                            .orElse(Text.of("Unknown"));
-                }
+                listing -> this.calculateDisplayName(listing.getLister())
         ));
 
         // Listing Related Placeholders
@@ -162,18 +140,19 @@ public class GTSSpongePlaceholderManager {
                 Auction.class,
                 "auction_high_bid",
                 "GTS - High Bid of an Auction",
-                auction -> Sponge.getServiceManager().provideUnchecked(EconomyService.class).getDefaultCurrency().format(BigDecimal.valueOf(auction.getHighBid().getSecond()))
+                auction -> Sponge.getServiceManager().provideUnchecked(EconomyService.class).getDefaultCurrency()
+                        .format(BigDecimal.valueOf(auction.getHighBid().map(Tuple::getSecond).orElseThrow(() -> new IllegalStateException("Unable to locate bid amount"))))
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.class,
                 "auction_high_bidder",
                 "GTS - High Bidder of an Auction",
                 auction -> {
-                    UserStorageService service = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
-                    return service.get(auction.getHighBid().getFirst())
-                            .map(User::getName)
-                            .map(Text::of)
-                            .orElse((LiteralText) Text.EMPTY);
+                    if(auction.getHighBid().isPresent()) {
+                        return this.calculateDisplayName(auction.getHighBid().get().getFirst());
+                    }
+
+                    return Text.EMPTY;
                 }
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
@@ -191,9 +170,15 @@ public class GTSSpongePlaceholderManager {
         ));
 
         this.register(new SourceSpecificPlaceholderParser<>(
+                SpongeListingMenu.Searching.class,
+                "search_query",
+                "GTS - A search query applied by a user",
+                query -> Text.of(query.getQuery())
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
                 ErrorCode.class,
                 "error_code",
-                "An error code indicating why a request failed",
+                "GTS - An error code indicating why a request failed",
                 error -> {
                     TextComponent component = TextComponent.builder(error.getKey())
                             .hoverEvent(HoverEvent.showText(TextComponent.builder().append().build()))
@@ -230,6 +215,33 @@ public class GTSSpongePlaceholderManager {
         }
 
         return Optional.empty();
+    }
+
+    private Text calculateDisplayName(UUID id) {
+        UserStorageService service = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
+        return service.get(id)
+                .map(user -> {
+                    Text result = Text.EMPTY;
+
+                    Optional<String> prefix = this.getOptionFromSubject(user, "prefix");
+                    if(prefix.isPresent()) {
+                        result = TextSerializers.FORMATTING_CODE.deserialize(prefix.get());
+                    }
+
+                    Text.Builder builder = Text.builder(" " + user.getName());
+
+                    Optional<String> color = this.getOptionFromSubject(user, "color");
+
+                    if(color.isPresent()) {
+                        builder.color(color
+                                .map(in -> Sponge.getRegistry().getType(TextColor.class, in.toUpperCase()).orElse(TextColors.WHITE))
+                                .orElse(TextColors.WHITE)
+                        );
+                    }
+
+                    return Text.join(result, Text.of(TextColors.RESET, builder.build()));
+                })
+                .orElse(Text.of("Unknown"));
     }
 
 }

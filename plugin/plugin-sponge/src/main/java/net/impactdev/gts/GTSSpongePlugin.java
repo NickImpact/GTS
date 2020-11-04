@@ -4,10 +4,13 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.commands.GTSCommandManager;
+import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.listings.data.SpongeItemManager;
 import net.impactdev.gts.listings.legacy.SpongeLegacyItemStorable;
+import net.impactdev.gts.messaging.interpreters.SpongeAuctionInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeBINInterpreters;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
@@ -36,7 +39,7 @@ import net.impactdev.gts.common.messaging.InternalMessagingService;
 import net.impactdev.gts.common.messaging.MessagingFactory;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.StorageFactory;
-import net.impactdev.gts.sponge.manager.SpongeListingManager;
+import net.impactdev.gts.manager.SpongeListingManager;
 import net.impactdev.gts.messaging.SpongeMessagingFactory;
 import net.impactdev.gts.messaging.interpreters.SpongePingPongInterpreter;
 import net.impactdev.gts.sponge.listings.SpongeAuction;
@@ -49,6 +52,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -84,11 +88,14 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		this.displayBanner();
 
-		ApiRegistrationUtil.register(new GTSAPIProvider());
 		Sponge.getServiceManager().setProvider(this.bootstrap, GTSService.class, GTSService.getInstance());
 		this.supplyBuilders();
 
-		Impactor.getInstance().getRegistry().register(SpongeListingManager.class, new SpongeListingManager());
+		Impactor.getInstance().getRegistry().register(ListingManager.class, new SpongeListingManager());
+		Impactor.getInstance().getRegistry().register(
+				EconomicFormatter.class,
+				amount -> this.getEconomy().getDefaultCurrency().format(new BigDecimal(amount)).toPlain()
+		);
 
 		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(BuyItNow.class, new ResourceManagerImpl<>("BIN", "minecraft:emerald", SpongeBuyItNow::deserialize));
 		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(Auction.class, new ResourceManagerImpl<>("Auctions", "minecraft:gold_ingot", SpongeAuction::deserialize));
@@ -133,7 +140,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public <T extends GTSPlugin> T as(Class<T> type) {
 		if(!type.isAssignableFrom(this.getClass())) {
 			throw new RuntimeException("Invalid plugin typing");
@@ -221,6 +227,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		this.messagingService = this.getMessagingFactory().getInstance();
 		new SpongePingPongInterpreter().register(this);
 		new SpongeBINInterpreters().register(this);
+		new SpongeAuctionInterpreters().register(this);
 	}
 
 	private void supplyBuilders() {

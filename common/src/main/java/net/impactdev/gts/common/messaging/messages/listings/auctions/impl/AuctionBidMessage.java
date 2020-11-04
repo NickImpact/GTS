@@ -1,12 +1,16 @@
 package net.impactdev.gts.common.messaging.messages.listings.auctions.impl;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
+import com.google.common.collect.TreeMultimap;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.common.messaging.errors.ErrorCodes;
 import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.gts.common.utils.EconomicFormatter;
+import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
@@ -18,14 +22,18 @@ import org.checkerframework.checker.index.qual.Positive;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public abstract class AuctionBidMessage extends AuctionMessageOptions implements AuctionMessage.Bid {
 
-	protected double bid;
+	protected final double bid;
 
 	/**
 	 * Constructs the message that'll be sent to all other connected servers.
@@ -95,7 +103,6 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 			);
 		}
 
-
 		@Override
 		public CompletableFuture<Bid.Response> respond() {
 			return GTSPlugin.getInstance().getStorage().processBid(this);
@@ -103,7 +110,9 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 
 		@Override
 		public void print(PrettyPrinter printer) {
-
+			printer.kv("Auction ID", this.getAuctionID())
+					.kv("Actor", this.getActor())
+					.kv("Amount Bid", Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(this.bid));
 		}
 
 	}
@@ -139,30 +148,50 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 			UUID seller = Optional.ofNullable(raw.get("seller"))
 					.map(e -> UUID.fromString(e.getAsString()))
 					.orElseThrow(() -> new IllegalStateException("Failed to locate seller"));
-			Map<UUID, Double> bids = Optional.ofNullable(raw.get("bids"))
+
+			TreeMultimap<UUID, Double> bids = TreeMultimap.create(
+					Comparator.naturalOrder(),
+					Collections.reverseOrder(Double::compareTo)
+			);
+
+			Optional.ofNullable(raw.get("bids"))
 					.map(e -> {
-						Gson gson = GTSPlugin.getInstance().getGson();
-						return gson.<Map<UUID, Double>>fromJson(e, new TypeToken<Map<UUID, Double>>(){}.getType());
+						JsonObject map = e.getAsJsonObject();
+						for(Map.Entry<String, JsonElement> entry : map.entrySet()) {
+							UUID user = UUID.fromString(entry.getKey());
+							JsonArray userBids = entry.getValue().getAsJsonArray();;
+							for(JsonElement placedBid : userBids) {
+								bids.put(user, placedBid.getAsDouble());
+							}
+						}
+
+						return map;
 					})
 					.orElseThrow(() -> new IllegalStateException("Failed to locate additional bid information"));
+			ErrorCode error = Optional.ofNullable(raw.get("error"))
+					.map(x -> ErrorCodes.get(x.getAsInt()))
+					.orElse(null);
 
-			return new AuctionBidMessage.Response(id, request, listing, actor, bid, successful, seller, bids, null);
+			return new AuctionBidMessage.Response(id, request, listing, actor, bid, successful, seller, bids, error);
 		}
 
 		/** The ID of the request message generating this response */
-		private UUID request;
+		private final UUID request;
 
 		/** Whether the transaction was successfully placed */
-		private boolean successful;
+		private final boolean successful;
 
 		/** Specifies the seller of the auction */
-		private UUID seller;
+		private final UUID seller;
 
 		/** Details a filtered list of all bids placed on this auction, with the highest bid per user filtered in */
-		private Map<UUID, Double> bids;
+		private final TreeMultimap<UUID, Double> bids;
 
 		/** The amount of time it took for this response to be generated */
 		private long responseTime;
+
+		/** The error code reported for this response, if any */
+		private final ErrorCode error;
 
 		/**
 		 * Constructs the message that'll be sent to all other connected servers.
@@ -176,7 +205,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 		 * @param seller     The ID of the user who created the auction
 		 * @param bids       All other bids placed, filtered to contain highest bids per user, as a means of communication
 		 */
-		public Response(UUID id, UUID request, UUID listing, UUID actor, double bid, boolean successful, UUID seller, Map<UUID, Double> bids, ErrorCode error) {
+		public Response(UUID id, UUID request, UUID listing, UUID actor, double bid, boolean successful, UUID seller, TreeMultimap<UUID, Double> bids, ErrorCode error) {
 			super(id, listing, actor, bid);
 
 			Preconditions.checkNotNull(request, "Request message ID cannot be null");
@@ -188,6 +217,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 			this.successful = successful;
 			this.seller = seller;
 			this.bids = bids;
+			this.error = error;
 		}
 
 		@Override
@@ -202,7 +232,20 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 							.add("bid", this.getAmountBid())
 							.add("successful", this.wasSuccessful())
 							.add("seller", this.getSeller().toString())
-							.add("bids", GTSPlugin.getInstance().getGson().toJsonTree(this.getAllOtherBids()))
+							.consume(o -> {
+								JObject users = new JObject();
+								for(UUID id : this.getAllOtherBids().keySet()) {
+									JArray bids = new JArray();
+									for(double bid : this.getAllOtherBids().get(id)) {
+										bids.add(bid);
+									}
+
+									users.add(id.toString(), bids);
+								}
+
+								o.add("bids", users);
+							})
+							.consume(o -> this.getErrorCode().ifPresent(e -> o.add("error", e.ordinal())))
 							.toJson()
 			);
 		}
@@ -214,7 +257,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 
 		@Override
 		public Optional<ErrorCode> getErrorCode() {
-			return Optional.empty();
+			return Optional.ofNullable(this.error);
 		}
 
 		@Override
@@ -223,7 +266,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 		}
 
 		@Override
-		public @NonNull Map<UUID, Double> getAllOtherBids() {
+		public @NonNull TreeMultimap<UUID, Double> getAllOtherBids() {
 			return this.bids;
 		}
 
@@ -244,7 +287,37 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 
 		@Override
 		public void print(PrettyPrinter printer) {
+			printer.kv("Response ID", this.getID())
+					.kv("Request ID", this.getRequestID())
+					.kv("Auction ID", this.getAuctionID())
+					.kv("Actor", this.getActor())
+					.kv("Amount Bid", Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(this.bid))
+					.add()
+					.kv("Seller", this.getSeller());
 
+			if(this.getAllOtherBids().size() > 0) {
+				int index = 0;
+				int amount = this.getAllOtherBids().size();
+				printer.add()
+						.hr('-')
+						.add("All Bids").center()
+						.table("UUID", "Bid");
+				List<Map.Entry<UUID, Double>> bids = this.getAllOtherBids().entries()
+						.stream()
+						.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+						.collect(Collectors.toList());
+
+				for (Map.Entry<UUID, Double> bid : bids) {
+					printer.tr(bid.getKey(), Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(bid.getValue()));
+					if(++index == 5) {
+						break;
+					}
+				}
+				if(index == 5 && amount - index > 0) {
+					printer.add("and " + (amount - index) + "more...");
+				}
+				printer.hr('-');
+			}
 		}
 
 	}

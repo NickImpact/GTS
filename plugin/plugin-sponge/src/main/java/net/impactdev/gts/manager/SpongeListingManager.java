@@ -1,12 +1,13 @@
-package net.impactdev.gts.sponge.manager;
+package net.impactdev.gts.manager;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.Lists;
+import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.events.auctions.BidEvent;
 import net.impactdev.gts.api.events.buyitnow.PurchaseListingEvent;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.common.messaging.errors.ErrorCodes;
 import net.impactdev.gts.common.storage.GTSStorageImpl;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
@@ -34,6 +35,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.economy.transaction.ResultType;
@@ -215,7 +219,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 	@Override
 	public CompletableFuture<Boolean> bid(UUID bidder, SpongeAuction listing, double amount) {
-		return this.schedule(() -> {
+		return CompletableFutureManager.makeFuture(() -> {
 			ReentrantLock lock = this.locks.get(listing.getID());
 
 			try {
@@ -230,7 +234,8 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				}
 
 				if (account.get().getBalance(economy.getDefaultCurrency()).doubleValue() < amount) {
-
+					// TODO - Not enough funds feedback
+					return false;
 				}
 
 				if (!Impactor.getInstance().getEventBus().post(BidEvent.class, bidder, listing, amount)) {
@@ -238,7 +243,16 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 							Text.of(TextColors.GRAY, "Putting funds in escrow...")
 					));
 
-					TransactionResult result = account.get().withdraw(economy.getDefaultCurrency(), new BigDecimal(amount), Sponge.getCauseStackManager().getCurrentCause());
+					TransactionResult result = account.get().withdraw(
+							economy.getDefaultCurrency(),
+							new BigDecimal(amount),
+							Cause.builder()
+									.append(bidder)
+									.build(EventContext.builder()
+										.add(EventContextKeys.PLUGIN, GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer())
+										.build()
+									)
+					);
 					if (result.getResult().equals(ResultType.ACCOUNT_NO_FUNDS)) {
 						Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
 								Text.of(TextColors.RED, "You don't have enough funds for this bid...")
@@ -249,8 +263,18 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 					Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
 							Text.of(TextColors.GRAY, "Processing bid...")
 					));
-					GTSPlugin.getInstance().getMessagingService().publishBid(listing.getID(), bidder, amount);
-					return true;
+					return GTSPlugin.getInstance().getMessagingService().publishBid(listing.getID(), bidder, amount)
+							.get()
+							.wasSuccessful();
+				} else {
+					Sponge.getServer().getPlayer(bidder).ifPresent(player -> {
+						final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+						player.sendMessage(parser.parse(
+								Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+								Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)
+						));
+					});
 				}
 				return false;
 			} finally {
@@ -266,7 +290,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 			Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(
 					Text.of(TextColors.GRAY, "Processing purchase...")
 			));
-			if (listing.getPrice().getSourceType().equals(source.getClass())) {
+			if (source == null || listing.getPrice().getSourceType().equals(source.getClass())) {
 				boolean canPay = CompletableFutureManager.makeFuture(() -> listing.getPrice().canPay(buyer), Impactor.getInstance().getScheduler().sync()).get(2, TimeUnit.SECONDS);
 				if(canPay) {
 					ReentrantLock lock = this.locks.get(listing.getID());
@@ -302,10 +326,12 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 												player.sendMessage(parser.parse(
 														Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-														Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+														Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)
 												));
 											});
 										}
+									} else {
+										// TODO - Request unsuccessful
 									}
 
 									return true;

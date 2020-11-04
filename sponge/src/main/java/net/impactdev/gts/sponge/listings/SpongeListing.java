@@ -3,22 +3,31 @@ package net.impactdev.gts.sponge.listings;
 import com.google.common.base.Preconditions;
 import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
 import net.impactdev.impactor.api.json.factory.JObject;
-import lombok.RequiredArgsConstructor;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-
-@RequiredArgsConstructor
 public abstract class SpongeListing implements Listing {
 
 	private final UUID id;
 	private final UUID lister;
 	private final SpongeEntry<?> entry;
-	private final LocalDateTime published = LocalDateTime.now();
+	private final LocalDateTime published;
 	private final LocalDateTime expiration;
+
+	public SpongeListing(UUID id, UUID lister, SpongeEntry<?> entry, LocalDateTime expiration) {
+		this(id, lister, entry, LocalDateTime.now(), expiration);
+	}
+
+	public SpongeListing(UUID id, UUID lister, SpongeEntry<?> entry, LocalDateTime published, LocalDateTime expiration) {
+		this.id = id;
+		this.lister = lister;
+		this.entry = entry;
+		this.published = published;
+		this.expiration = expiration;
+	}
 
 	@Override
 	public UUID getID() {

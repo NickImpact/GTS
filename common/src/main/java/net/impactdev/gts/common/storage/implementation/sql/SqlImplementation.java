@@ -26,10 +26,14 @@
 package net.impactdev.gts.common.storage.implementation.sql;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.TreeMultimap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.api.util.TriState;
+import net.impactdev.gts.common.messaging.errors.ErrorCodes;
+import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
@@ -54,6 +58,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -329,9 +335,8 @@ public class SqlImplementation implements StorageImplementation {
 					if(auction.getLister().equals(user)) {
 						builder.append(auction, false);
 					} else {
-						if(auction.getBids().size() > 0 && auction.getHighBid().getFirst().equals(user)) {
-							builder.append(auction, true);
-						}
+						auction.getHighBid().filter(x -> x.getFirst().equals(user))
+								.ifPresent(entry -> builder.append(auction, true));
 					}
 				} else {
 					BuyItNow bin = (BuyItNow) listing;
@@ -365,7 +370,7 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public boolean sendListingUpdate(BuyItNow listing) throws Exception {
+	public boolean sendListingUpdate(Listing listing) throws Exception {
 		return this.query(UPDATE_LISTING, (connection, ps) -> {
 			ps.setString(1, GTSPlugin.getInstance().getGson().toJson(listing.serialize().toJson()));
 			ps.setString(2, listing.getID().toString());
@@ -374,8 +379,59 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) {
-		return null;
+	public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) throws Exception {
+		return this.query(GET_SPECIFIC_LISTING, ((connection, ps) -> {
+			ps.setString(1, request.getAuctionID().toString());
+			return this.results(ps, results -> {
+				AuctionMessage.Bid.Response response;
+
+				boolean fatal = false;
+				TriState successful = TriState.FALSE; // FALSE = Missing Listing ID
+				TreeMultimap<UUID, Double> bids = TreeMultimap.create(
+						Comparator.naturalOrder(),
+						Collections.reverseOrder(Double::compareTo)
+				);
+
+				if(results.next()) {
+					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
+					if(!json.has("type")) {
+						throw new JsonParseException("Invalid Listing: Missing type");
+					}
+
+					String type = json.get("type").getAsString();
+					if(!type.equals("auction")) {
+						throw new IllegalStateException("Trying to place bid on non-auction");
+					}
+
+					Auction auction = GTSService.getInstance().getGTSComponentManager()
+							.getListingResourceManager(Auction.class)
+							.map(ResourceManager::getDeserializer)
+							.get()
+							.deserialize(json);
+
+					successful = auction.bid(request.getActor(), request.getAmountBid()) ? TriState.TRUE : TriState.UNDEFINED;
+					bids = auction.getBids();
+					if(!this.sendListingUpdate(auction)) {
+						successful = TriState.FALSE;
+					}
+				}
+
+				response = new AuctionBidMessage.Response(
+						GTSPlugin.getInstance().getMessagingService().generatePingID(),
+						request.getID(),
+						request.getAuctionID(),
+						request.getActor(),
+						request.getAmountBid(),
+						successful.asBoolean(),
+						UUID.fromString(results.getString("lister")),
+						bids,
+						successful == TriState.UNDEFINED ? ErrorCodes.OUTBID : successful == TriState.FALSE ?
+								(fatal ? ErrorCodes.FATAL_ERROR : ErrorCodes.LISTING_MISSING) : null
+				);
+
+				return response;
+			});
+		}));
 	}
 
 	@Override

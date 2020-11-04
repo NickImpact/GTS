@@ -1,5 +1,6 @@
 package net.impactdev.gts.api.messaging.message.type.auctions;
 
+import com.google.common.collect.TreeMultimap;
 import net.impactdev.gts.api.messaging.message.OutgoingMessage;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import org.checkerframework.checker.index.qual.Positive;
@@ -90,7 +91,7 @@ public interface AuctionMessage extends OutgoingMessage {
 			 *
 			 * @return A mapping of users to their highest bids on the auction currently
 			 */
-			@NonNull Map<UUID, Double> getAllOtherBids();
+			@NonNull TreeMultimap<UUID, Double> getAllOtherBids();
 
 		}
 	}

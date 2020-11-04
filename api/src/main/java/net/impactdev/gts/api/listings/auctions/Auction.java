@@ -1,6 +1,7 @@
 package net.impactdev.gts.api.listings.auctions;
 
 import com.google.common.collect.Multimap;
+import com.google.common.collect.TreeMultimap;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.utilities.Builder;
@@ -57,7 +58,7 @@ public interface Auction extends Listing {
 	 *
 	 * @return A mapping of bids placed on this auction by a user and for how much they bid
 	 */
-	NavigableSet<Tuple<UUID, Double>> getBids();
+	TreeMultimap<UUID, Double> getBids();
 
 	/**
 	 * Returns the highest bid currently placed on this auction. The high bid at time of expiration marks the winner,
@@ -65,7 +66,7 @@ public interface Auction extends Listing {
 	 *
 	 * @return The highest bidder paired with the amount they bid
 	 */
-	Tuple<UUID, Double> getHighBid();
+	Optional<Tuple<UUID, Double>> getHighBid();
 
 	/**
 	 * Specifies the starting price of this auction. This is mainly here for tracking, and can be represented
@@ -115,11 +116,15 @@ public interface Auction extends Listing {
 
 		AuctionBuilder entry(Entry<?, ?> entry);
 
+		AuctionBuilder published(LocalDateTime published);
+
 		AuctionBuilder expiration(LocalDateTime expiration);
 
 		AuctionBuilder start(double amount);
 
 		AuctionBuilder increment(float rate);
+
+		AuctionBuilder current(double current);
 
 		AuctionBuilder bids(Multimap<UUID, Double> bids);
 
