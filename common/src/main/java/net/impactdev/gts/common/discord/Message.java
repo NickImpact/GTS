@@ -3,6 +3,7 @@ package net.impactdev.gts.common.discord;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import lombok.Getter;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -17,7 +18,7 @@ public class Message {
 	private String username;
 	private String avatarUrl;
 
-	@Getter private transient List<String> webhooks = Lists.newArrayList();
+	@Getter private transient final List<String> webhooks;
 
 	public Message(String username, String avatar, DiscordOption option) {
 		this.username = username;
@@ -33,12 +34,10 @@ public class Message {
 	HttpsURLConnection send(String url) throws Exception {
 		HttpsURLConnection connection = (HttpsURLConnection)(new URL(url)).openConnection();
 		connection.setRequestMethod("POST");
-		connection.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:49.0) Gecko/20100101 Firefox/49.0");
+		connection.setRequestProperty("User-Agent", "GTS Minecraft Plugin");
 		connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
 		connection.setDoOutput(true);
-		connection.setDoInput(true);
 		String json = this.getJsonString();
-		connection.setRequestProperty("Content-length", String.valueOf(json.length()));
 		DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
 		dos.write(json.getBytes(StandardCharsets.UTF_8));
 		dos.flush();

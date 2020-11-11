@@ -55,7 +55,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 	public static class Request extends AuctionBidMessage implements Bid.Request {
 
 		/** Specifies the typing for this message. AKA, the identifier from a standpoint on knowing the incoming message type */
-		public static final String TYPE = "Auction/Bid";
+		public static final String TYPE = "Auction/Bid/Request";
 
 		/**
 		 * Attempts to decode a new AuctionMessageOptions from the raw JSON data. This call will only fail exceptionally
@@ -110,7 +110,8 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 
 		@Override
 		public void print(PrettyPrinter printer) {
-			printer.kv("Auction ID", this.getAuctionID())
+			printer.kv("Request ID", this.getID())
+					.kv("Auction ID", this.getAuctionID())
 					.kv("Actor", this.getActor())
 					.kv("Amount Bid", Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(this.bid));
 		}

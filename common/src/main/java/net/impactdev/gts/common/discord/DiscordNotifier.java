@@ -8,6 +8,7 @@ import net.impactdev.gts.common.config.updated.ConfigKeys;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 
 import javax.net.ssl.HttpsURLConnection;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -24,6 +25,7 @@ public class DiscordNotifier {
 		Embed.Builder embed = Embed.builder()
 				.title(option.getDescriptor())
 				.color(option.getColor().getRGB())
+				.timestamp(LocalDateTime.now())
 				.field(field);
 
 		listing.getEntry().getThumbnailURL().ifPresent(embed::thumbnail);
@@ -41,16 +43,12 @@ public class DiscordNotifier {
 				final List<String> URLS = message.getWebhooks();
 
 				for (final String URL : URLS) {
-					if (this.plugin.getConfiguration().get(ConfigKeys.DISCORD_DEBUG_ENABLED)) {
-						this.plugin.getPluginLogger().info("[WebHook-Debug] Sending webhook payload to " + URL);
-						this.plugin.getPluginLogger().info("[WebHook-Debug] Payload: " + message.getJsonString());
-					}
+					this.plugin.getPluginLogger().debug("[WebHook-Debug] Sending webhook payload to " + URL);
+					this.plugin.getPluginLogger().debug("[WebHook-Debug] Payload: " + message.getJsonString());
 
 					HttpsURLConnection connection = message.send(URL);
 					int status = connection.getResponseCode();
-					if (this.plugin.getConfiguration().get(ConfigKeys.DISCORD_DEBUG_ENABLED)) {
-						this.plugin.getPluginLogger().info("[WebHook-Debug] Payload info received, status code: " + status);
-					}
+					this.plugin.getPluginLogger().debug("[WebHook-Debug] Payload info received, status code: " + status);
 				}
 			}
 		});

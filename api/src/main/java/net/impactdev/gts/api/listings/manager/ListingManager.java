@@ -23,6 +23,4 @@ public interface ListingManager<L extends Listing, A extends Auction, B extends 
 
 	CompletableFuture<List<L>> fetchListings();
 
-	CompletableFuture<List<UUID>> getIgnorers();
-
 }

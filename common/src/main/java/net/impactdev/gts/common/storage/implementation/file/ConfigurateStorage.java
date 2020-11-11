@@ -30,6 +30,7 @@ import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
@@ -129,21 +130,6 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     @Override
-    public boolean addIgnorer(UUID uuid) throws Exception {
-        return false;
-    }
-
-    @Override
-    public boolean removeIgnorer(UUID uuid) throws Exception {
-        return false;
-    }
-
-    @Override
-    public List<UUID> getAllIgnorers() throws Exception {
-        return null;
-    }
-
-    @Override
     public boolean purge() throws Exception {
         return false;
     }
@@ -151,6 +137,16 @@ public class ConfigurateStorage implements StorageImplementation {
     @Override
     public Stash getStash(UUID user) throws Exception {
         return null;
+    }
+
+    @Override
+    public Optional<PlayerSettings> getPlayerSettings(UUID user) throws Exception {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean applyPlayerSettings(UUID user, PlayerSettings updates) throws Exception {
+        return false;
     }
 
     @Override
@@ -170,6 +166,11 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public AuctionMessage.Claim.Response processAuctionClaimRequest(AuctionMessage.Claim.Request request) throws Exception {
+        return null;
+    }
+
+    @Override
+    public AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception {
         return null;
     }
 

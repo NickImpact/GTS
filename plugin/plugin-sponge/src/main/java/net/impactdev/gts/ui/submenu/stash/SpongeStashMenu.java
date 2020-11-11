@@ -53,7 +53,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, Boolean>> im
             SpongeListing listing = (SpongeListing) content.getFirst();
             SpongeIcon icon = new SpongeIcon(listing.getEntry().getDisplay(viewer.getUniqueId(), listing).get());
             icon.addListener(clickable -> {
-                new SpongeSelectedListingMenu(this.getViewer(), listing, () -> this, false).open();
+                new SpongeSelectedListingMenu(this.getViewer(), listing, () -> new SpongeStashMenu(this.getViewer()), false).open();
             });
             return icon;
         });
@@ -109,8 +109,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, Boolean>> im
                             GTSPlugin.getInstance().getMessagingService().requestAuctionClaim(
                                     listing.getID(),
                                     listing.getLister(),
-                                    this.getViewer().getUniqueId().equals(listing.getLister()),
-                                    response -> {}
+                                    this.getViewer().getUniqueId().equals(listing.getLister())
                             );
                             successful.incrementAndGet();
                         }

@@ -1,10 +1,11 @@
 package net.impactdev.gts.api.player;
 
-import java.util.Optional;
+import net.impactdev.gts.api.data.Storable;
+
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public interface PlayerSettingsManager {
+public interface PlayerSettingsManager extends Storable.Deserializer<PlayerSettings> {
 
     /**
      * Caches the set of settings to a binding UUID.
@@ -22,22 +23,8 @@ public interface PlayerSettingsManager {
      * <p>Unless populated via other means, this call will never attempt to lookup offline player data.</p>
      *
      * @param uuid The ID of the user we wish to find individual player settings for
-     * @return A set of player settings if any are available, otherwise, an empty option.
+     * @return An async wrapped operation responsible for retrieving a set of player settings
      */
-    Optional<PlayerSettings> retrieve(UUID uuid);
-
-    /**
-     * Attempts to retrieve a set of player settings for a particular player's UUID via an async
-     * thread separate from the main server thread.
-     *
-     * <p>NOTE: This should be what is used when trying to access offline player settings.
-     * Unlike {@link #retrieve(UUID)}, this call will access the database for information
-     * rather than simply ask the internally loaded cache.</p>
-     *
-     * @param uuid The ID of the user we wish to find individual player settings for
-     * @return A completable future run on an async thread separate from the main server thread
-     * that will result in an optionally filed set of settings specific to a player.
-     */
-    CompletableFuture<Optional<PlayerSettings>> retrieveAsync(UUID uuid);
+    CompletableFuture<PlayerSettings> retrieve(UUID uuid);
 
 }

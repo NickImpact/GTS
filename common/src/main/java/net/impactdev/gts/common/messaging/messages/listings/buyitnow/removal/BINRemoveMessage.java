@@ -119,7 +119,7 @@ public abstract class BINRemoveMessage extends AbstractMessage implements BuyItN
 
     public static class Response extends BINRemoveMessage implements Remove.Response {
 
-        public static final String TYPE = "BIN - Remove Response";
+        public static final String TYPE = "BIN/Remove/Response";
 
         public static BINRemoveMessage.Response decode(@Nullable JsonElement content, UUID id) {
             if(content == null) {

@@ -1,5 +1,6 @@
 package net.impactdev.gts.ui.submenu.browser;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.GTSService;
@@ -14,6 +15,7 @@ import net.impactdev.gts.common.config.updated.ConfigKeys;
 import net.impactdev.gts.sponge.listings.SpongeAuction;
 import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
 import net.impactdev.gts.manager.SpongeListingManager;
+import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
 import net.impactdev.gts.sponge.ui.SpongeAsyncPage;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
@@ -39,6 +41,7 @@ import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -220,24 +223,54 @@ public class SpongeSelectedListingMenu {
             this.display.close(this.viewer);
             this.viewer.sendMessage(Text.of("TODO - Processing request..."));
 
-            GTSPlugin.getInstance().getMessagingService()
-                    .requestBINRemoveRequest(this.listing.getID(), this.viewer.getUniqueId())
-                    .thenAccept(response -> {
-                        if(response.wasSuccessful()) {
-                            Impactor.getInstance().getScheduler().executeSync(() -> {
-                                if(this.listing.getEntry().give(this.viewer.getUniqueId())) {
-                                    this.viewer.sendMessage(Text.of("TODO - Listing returned"));
-                                } else {
-                                    this.viewer.sendMessage(Text.of("TODO - Unable to return listing"));
-                                }
-                            });
-                        } else {
-                            this.viewer.sendMessage(service.parse(
-                                    Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-                                    Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
-                            ));
-                        }
-                    });
+            if(this.listing instanceof BuyItNow) {
+                GTSPlugin.getInstance().getMessagingService()
+                        .requestBINRemoveRequest(this.listing.getID(), this.viewer.getUniqueId())
+                        .thenAccept(response -> {
+                            if (response.wasSuccessful()) {
+                                Impactor.getInstance().getScheduler().executeSync(() -> {
+                                    if (this.listing.getEntry().give(this.viewer.getUniqueId())) {
+                                        this.viewer.sendMessage(Text.of("TODO - Listing returned"));
+                                    } else {
+                                        this.viewer.sendMessage(Text.of("TODO - Unable to return listing"));
+                                    }
+                                });
+                            } else {
+                                this.viewer.sendMessage(service.parse(
+                                        Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+                                        Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                ));
+                            }
+                        });
+            } else {
+                GTSPlugin.getInstance().getMessagingService()
+                        .requestAuctionCancellation(this.listing.getID(), this.viewer.getUniqueId())
+                        .thenAccept(response -> {
+                            if(response.wasSuccessful()) {
+                                Impactor.getInstance().getScheduler().executeSync(() -> {
+                                    if(this.listing.getEntry().give(this.viewer.getUniqueId())) {
+                                        // TODO - inform user, also figure out how to handle unable to return listing
+
+
+
+                                    } else {
+                                        // Set auction as expired, with no bids
+                                        Auction auction = Auction.builder()
+                                                .from((Auction) this.listing)
+                                                .expiration(LocalDateTime.now())
+                                                .bids(ArrayListMultimap.create())
+                                                .build();
+
+                                        // Place auction back in storage, in a state such that it'll only be
+                                        // accessible via the lister's stash
+                                        GTSPlugin.getInstance().getStorage().publishListing(auction);
+                                    }
+                                });
+                            } else {
+                                // TODO - Response marked failure
+                            }
+                        });
+            }
         });
 
         return icon;

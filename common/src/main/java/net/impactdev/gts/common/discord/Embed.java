@@ -42,7 +42,9 @@ public class Embed {
 		json.add("title", this.title);
 		json.add("color", this.color);
 		json.add("timestamp", this.timestamp.toString());
-		json.add("thumbnail", new JObject().add("url", this.thumbnail));
+		if(this.thumbnail != null) {
+			json.add("thumbnail", new JObject().add("url", this.thumbnail));
+		}
 
 		JArray fields = new JArray();
 		for(Field field : this.fields) {
@@ -61,7 +63,7 @@ public class Embed {
 
 		private String title;
 		private int color;
-		private LocalDateTime timestamp;
+		private LocalDateTime timestamp = LocalDateTime.now();
 		private String thumbnail;
 		private List<Field> fields = Lists.newArrayList();
 

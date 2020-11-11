@@ -25,15 +25,19 @@
 
 package net.impactdev.gts.common.storage.implementation.sql;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.TreeMultimap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.util.TriState;
+import net.impactdev.gts.common.config.updated.ConfigKeys;
 import net.impactdev.gts.common.messaging.errors.ErrorCodes;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
+import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
@@ -81,9 +85,8 @@ public class SqlImplementation implements StorageImplementation {
 	private static final String UPDATE_AUCTION_CLAIM_WINNER = "UPDATE `{prefix}auction_claims` SET winner=? WHERE auction=?";
 	private static final String DELETE_AUCTION_CLAIM_STATUS = "DELETE FROM `{prefix}auction_claims` WHERE auction=?";
 
-	private static final String ADD_IGNORER = "INSERT INTO `{prefix}ignorers` VALUES (?)";
-	private static final String REMOVE_IGNORER = "DELETE FROM `{prefix}ignorers` WHERE UUID=?";
-	private static final String GET_IGNORERS = "SELECT * FROM `{prefix}ignorers`";
+	private static final String APPLY_PLAYER_SETTINGS = "INSERT INTO `{prefix}player_settings` (id, settings) VALUES (?, ?) ON DUPLICATE KEY UPDATE settings=VALUES(settings)";
+	private static final String GET_PLAYER_SETTINGS = "SELECT settings FROM `{prefix}player_settings` WHERE id=?";
 
 	private final GTSPlugin plugin;
 
@@ -288,37 +291,6 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public boolean addIgnorer(UUID uuid) throws Exception {
-		return this.query(ADD_IGNORER, (connection, ps) -> {
-			ps.setString(1, uuid.toString());
-			ps.executeUpdate();
-
-			return true;
-		});
-	}
-
-	@Override
-	public boolean removeIgnorer(UUID uuid) throws Exception {
-		return this.query(REMOVE_IGNORER, (connection, ps) -> {
-			ps.setString(1, uuid.toString());
-			ps.executeUpdate();
-
-			return true;
-		});
-	}
-
-	@Override
-	public List<UUID> getAllIgnorers() throws Exception {
-		return this.query(GET_IGNORERS, (connection, ps) -> this.results(ps, results -> {
-			List<UUID> ignorers = Lists.newArrayList();
-			while(results.next()) {
-				ignorers.add(UUID.fromString(results.getString("uuid")));
-			}
-			return ignorers;
-		}));
-	}
-
-	@Override
 	public boolean purge() throws Exception {
 		return false;
 	}
@@ -332,7 +304,7 @@ public class SqlImplementation implements StorageImplementation {
 			if(listing.hasExpired() || (listing instanceof BuyItNow && ((BuyItNow) listing).isPurchased())) {
 				if (listing instanceof Auction) {
 					Auction auction = (Auction) listing;
-					if(auction.getLister().equals(user)) {
+					if(auction.getLister().equals(user) && auction.getBids().size() == 0) {
 						builder.append(auction, false);
 					} else {
 						auction.getHighBid().filter(x -> x.getFirst().equals(user))
@@ -348,6 +320,32 @@ public class SqlImplementation implements StorageImplementation {
 		}
 
 		return builder.build();
+	}
+
+	@Override
+	public Optional<PlayerSettings> getPlayerSettings(UUID user) throws Exception {
+		return this.query(GET_PLAYER_SETTINGS, ((connection, ps) -> {
+			ps.setString(1, user.toString());
+			return this.results(ps, results -> {
+				if(results.next()) {
+					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("settings"), JsonObject.class);
+					return Optional.of(GTSService.getInstance().getPlayerSettingsManager().deserialize(json));
+				}
+
+				this.applyPlayerSettings(user, PlayerSettings.create());
+				return Optional.empty();
+			});
+		}));
+	}
+
+	@Override
+	public boolean applyPlayerSettings(UUID user, PlayerSettings updates) throws Exception {
+		return this.query(APPLY_PLAYER_SETTINGS, ((connection, ps) -> {
+			ps.setString(1, user.toString());
+			ps.setString(2, GTSPlugin.getInstance().getGson().toJson(updates.serialize().toJson()));
+			ps.executeUpdate();
+			return true; // Ignore return value of executeUpdate() as this can possibly end up being 0
+		}));
 	}
 
 	@Override
@@ -440,6 +438,7 @@ public class SqlImplementation implements StorageImplementation {
 			ps.setString(1, request.getAuctionID().toString());
 			return this.results(ps, results -> {
 				int result;
+
 				if(results.next()) {
 					boolean lister = request.isLister() || results.getBoolean("lister");
 					boolean winner = !request.isLister() || results.getBoolean("winner");
@@ -471,7 +470,58 @@ public class SqlImplementation implements StorageImplementation {
 						request.getID(),
 						request.getAuctionID(),
 						request.getActor(),
-						result != 0
+						result != 0,
+						result != 1 ? ErrorCodes.FATAL_ERROR : null
+				);
+			});
+		});
+	}
+
+	@Override
+	public AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception {
+		return this.query(GET_SPECIFIC_LISTING, (connection, ps) -> {
+			ps.setString(1, request.getAuctionID().toString());
+			return this.results(ps, results -> {
+				boolean result = false;
+				List<UUID> bidders = Lists.newArrayList();
+				ErrorCode error = null;
+
+				if(results.next()) {
+					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
+					if(!json.has("type")) {
+						throw new JsonParseException("Invalid Listing: Missing type");
+					}
+
+					String type = json.get("type").getAsString();
+					if(!type.equals("auction")) {
+						throw new IllegalStateException("Trying to place bid on non-auction");
+					}
+
+					Auction auction = GTSService.getInstance().getGTSComponentManager()
+							.getListingResourceManager(Auction.class)
+							.map(ResourceManager::getDeserializer)
+							.get()
+							.deserialize(json);
+
+					if(this.plugin.getConfiguration().get(ConfigKeys.AUCTIONS_ALLOW_CANCEL_WITH_BIDS)) {
+						auction.getBids().keySet().stream().distinct().forEach(bidders::add);
+
+						result = this.deleteListing(auction.getID());
+					} else {
+						if(auction.getBids().size() > 0) {
+							error = ErrorCodes.BIDS_PLACED;
+						}
+					}
+				}
+
+				return new AuctionCancelMessage.Response(
+						GTSPlugin.getInstance().getMessagingService().generatePingID(),
+						request.getID(),
+						request.getAuctionID(),
+						request.getActor(),
+						ImmutableList.copyOf(bidders),
+						result,
+						error
 				);
 			});
 		});

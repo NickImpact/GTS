@@ -5,8 +5,10 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.GTSSpongePlugin;
+import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.events.auctions.BidEvent;
 import net.impactdev.gts.api.events.buyitnow.PurchaseListingEvent;
+import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.common.messaging.errors.ErrorCodes;
 import net.impactdev.gts.common.storage.GTSStorageImpl;
 import net.impactdev.gts.sponge.utils.Utilities;
@@ -197,12 +199,14 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 			source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_TEMPLATE), sources)));
 
-			List<UUID> ignoring = this.getIgnorers().get(2, TimeUnit.SECONDS);
+			PlayerSettingsManager manager = GTSService.getInstance().getPlayerSettingsManager();
 			for(Player player : Sponge.getServer().getOnlinePlayers()) {
-				if(!ignoring.contains(player.getUniqueId())) {
-					if (source.isPresent() && !source.get().getUniqueId().equals(player.getUniqueId())) {
-						player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST), sources));
-					}
+				if (source.isPresent() && !source.get().getUniqueId().equals(player.getUniqueId())) {
+					manager.retrieve(player.getUniqueId()).thenAccept(settings -> {
+						if(settings.getPublishListenState()) {
+							player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST), sources));
+						}
+					});
 				}
 			}
 
@@ -372,11 +376,6 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				return Lists.newArrayList();
 			}
 		});
-	}
-
-	@Override
-	public CompletableFuture<List<UUID>> getIgnorers() {
-		return CompletableFuture.supplyAsync(Lists::newArrayList);
 	}
 
 	private CompletableFuture<Boolean> schedule(Supplier<Boolean> task) {

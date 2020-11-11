@@ -33,17 +33,6 @@ public interface AuctionMessage extends OutgoingMessage {
 	@NonNull UUID getActor();
 
 	/**
-	 * This message type indicates that a new auction listing has been published.
-	 *
-	 * We cannot expect the message to be populated with physical decoded data given that this
-	 * message can be received on a proxy, where extensions should not be installed at all. Along
-	 * with that detail, the proxy will never even attempt to deserialize the raw data of a listing.
-	 * Therefore, this message is simply populated with the message that indicates that the listing
-	 * is actually being published globally, or within the scope of the configuration.
-	 */
-	interface Publish extends AuctionMessage {}
-
-	/**
 	 * Represents a bid action. This message is created whenever a player decides to bid on an auction.
 	 * The responsibility of this message is to inform the users who have all made bids, as well
 	 * as the seller, that a new bid has been placed, either outbidding someone else, or simply

@@ -159,7 +159,7 @@ public interface InternalMessagingService {
      * @param listing
      * @param actor
      */
-    void requestAuctionCancellation(UUID listing, UUID actor);
+    CompletableFuture<AuctionMessage.Cancel.Response> requestAuctionCancellation(UUID listing, UUID actor);
 
     /**
      *
@@ -168,7 +168,7 @@ public interface InternalMessagingService {
      * @param actor
      * @param isLister
      */
-    void requestAuctionClaim(UUID listing, UUID actor, boolean isLister, Consumer<AuctionMessage.Claim.Response> callback);
+    CompletableFuture<AuctionMessage.Claim.Response> requestAuctionClaim(UUID listing, UUID actor, boolean isLister);
 
     //------------------------------------------------------------------------------------
     //

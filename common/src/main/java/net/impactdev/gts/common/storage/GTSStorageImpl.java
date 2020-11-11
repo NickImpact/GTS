@@ -25,7 +25,6 @@
 
 package net.impactdev.gts.common.storage;
 
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
@@ -104,12 +103,12 @@ public class GTSStorageImpl implements GTSStorage {
 
     @Override
     public CompletableFuture<Optional<PlayerSettings>> getPlayerSettings(UUID uuid) {
-        return null;
+        return this.schedule(() -> this.implementation.getPlayerSettings(uuid));
     }
 
     @Override
     public CompletableFuture<Boolean> applyPlayerSettings(UUID uuid, PlayerSettings settings) {
-        return null;
+        return this.schedule(() -> this.implementation.applyPlayerSettings(uuid, settings));
     }
 
     @Override
@@ -120,6 +119,11 @@ public class GTSStorageImpl implements GTSStorage {
     @Override
     public CompletableFuture<AuctionMessage.Claim.Response> processAuctionClaimRequest(AuctionMessage.Claim.Request request) {
         return this.schedule(() -> this.implementation.processAuctionClaimRequest(request));
+    }
+
+    @Override
+    public CompletableFuture<AuctionMessage.Cancel.Response> processAuctionCancelRequest(AuctionMessage.Cancel.Request request) {
+        return this.schedule(() -> this.implementation.processAuctionCancelRequest(request));
     }
 
     @Override

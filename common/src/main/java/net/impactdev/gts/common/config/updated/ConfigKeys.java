@@ -145,7 +145,7 @@ public class ConfigKeys implements ConfigKeyHolder {
 		return (float) input;
 	});
 	public static final ConfigKey<Float> AUCTIONS_INCREMENT_RATE = customKey(adapter -> {
-		double in = adapter.getDouble("pricing.auctions.increment-rate", 0.03);
+		double in = adapter.getDouble("auctions.increment-rate", 0.03);
 		return (float) in;
 	});
 
@@ -159,6 +159,8 @@ public class ConfigKeys implements ConfigKeyHolder {
 	public static final TimeKey LISTING_TIME_HIGHEST = new TimeKey("listing-time-highest", "2d");
 
 	public static final ConfigKey<Boolean> PRICE_CONTROL_ENABLED = booleanKey("pricing.control.enabled", true);
+
+	public static final ConfigKey<Boolean> AUCTIONS_ALLOW_CANCEL_WITH_BIDS = booleanKey("auctions.allow-cancel-with-bids", false);
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

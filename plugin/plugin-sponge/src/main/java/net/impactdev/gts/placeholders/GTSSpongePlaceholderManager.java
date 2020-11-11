@@ -1,6 +1,10 @@
 package net.impactdev.gts.placeholders;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.EvictingQueue;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
@@ -19,16 +23,16 @@ import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.kyori.text.TextComponent;
 import net.kyori.text.event.HoverEvent;
+import net.kyori.text.format.Style;
+import net.kyori.text.format.TextColor;
+import net.kyori.text.format.TextDecoration;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.user.UserStorageService;
-import org.spongepowered.api.text.LiteralText;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColor;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.placeholder.PlaceholderContext;
 import org.spongepowered.api.text.placeholder.PlaceholderParser;
@@ -39,8 +43,13 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.StringJoiner;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class GTSSpongePlaceholderManager {
 
@@ -221,27 +230,113 @@ public class GTSSpongePlaceholderManager {
         UserStorageService service = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
         return service.get(id)
                 .map(user -> {
-                    Text result = Text.EMPTY;
+                    TextComponent.Builder component = TextComponent.builder();
+
+                    AtomicReference<Style> style = new AtomicReference<>(Style.empty());
 
                     Optional<String> prefix = this.getOptionFromSubject(user, "prefix");
-                    if(prefix.isPresent()) {
-                        result = TextSerializers.FORMATTING_CODE.deserialize(prefix.get());
-                    }
+                    prefix.ifPresent(pre -> {
+                        style.set(this.parseStyle(prefix.get()));
 
-                    Text.Builder builder = Text.builder(" " + user.getName());
+                        TextComponent p = TextComponent.builder()
+                                .append(pre.replaceAll(STYLE_LOCATOR.pattern(), ""))
+                                .style(style.get())
+                                .build();
+                        component.append(p);
+                    });
 
                     Optional<String> color = this.getOptionFromSubject(user, "color");
+                    TextColor translated = color.flatMap(TextColor.NAMES::value).orElse(null);
+                    Style inherit = style.get().merge(Style.builder().color(translated).build(), Style.Merge.COLOR);
 
-                    if(color.isPresent()) {
-                        builder.color(color
-                                .map(in -> Sponge.getRegistry().getType(TextColor.class, in.toUpperCase()).orElse(TextColors.WHITE))
-                                .orElse(TextColors.WHITE)
-                        );
-                    }
-
-                    return Text.join(result, Text.of(TextColors.RESET, builder.build()));
+                    return Utilities.translateComponent(component.append(TextComponent.space())
+                            .append(TextComponent.builder()
+                                    .append(user.getName())
+                                    .style(inherit)
+                                    .build()
+                            )
+                            .build()
+                    );
                 })
                 .orElse(Text.of("Unknown"));
+    }
+
+    private static final Pattern STYLE_LOCATOR = Pattern.compile("([&][a-f0-9klmnor])");
+
+    private static final BiMap<Character, net.kyori.text.format.TextColor> ID_TO_COLOR =
+            HashBiMap.create(
+                    ImmutableMap.<Character, net.kyori.text.format.TextColor>builder()
+                            .put('0', net.kyori.text.format.TextColor.BLACK)
+                            .put('1', net.kyori.text.format.TextColor.DARK_BLUE)
+                            .put('2', net.kyori.text.format.TextColor.DARK_GREEN)
+                            .put('3', net.kyori.text.format.TextColor.DARK_AQUA)
+                            .put('4', net.kyori.text.format.TextColor.DARK_RED)
+                            .put('5', net.kyori.text.format.TextColor.DARK_PURPLE)
+                            .put('6', net.kyori.text.format.TextColor.GOLD)
+                            .put('7', net.kyori.text.format.TextColor.GRAY)
+                            .put('8', net.kyori.text.format.TextColor.DARK_GRAY)
+                            .put('9', net.kyori.text.format.TextColor.BLUE)
+                            .put('a', net.kyori.text.format.TextColor.GREEN)
+                            .put('b', net.kyori.text.format.TextColor.AQUA)
+                            .put('c', net.kyori.text.format.TextColor.RED)
+                            .put('d', net.kyori.text.format.TextColor.LIGHT_PURPLE)
+                            .put('e', net.kyori.text.format.TextColor.YELLOW)
+                            .put('f', net.kyori.text.format.TextColor.WHITE)
+                            .build()
+            );
+    private static final BiMap<Character, Style> ID_TO_STYLE =
+            HashBiMap.create(
+                    ImmutableMap.<Character, Style>builder()
+                            .put('l', Style.of(TextDecoration.BOLD))
+                            .put('o', Style.of(TextDecoration.ITALIC))
+                            .put('n', Style.of(TextDecoration.UNDERLINED))
+                            .put('m', Style.of(TextDecoration.STRIKETHROUGH))
+                            .put('k', Style.of(TextDecoration.OBFUSCATED))
+                            .put('r', Style.empty())
+                            .build()
+            );
+
+    private net.kyori.text.format.TextColor getColor(String style) {
+        Pattern pattern = Pattern.compile("[a-f0-9]");
+        Matcher matcher = pattern.matcher(style);
+
+        net.kyori.text.format.TextColor color = null;
+        while(matcher.find()) {
+            color = ID_TO_COLOR.get(matcher.group().charAt(0));
+        }
+
+        return color;
+    }
+
+    private Style parseStyle(String in) {
+        Queue<String> queue = EvictingQueue.create(2);
+        Matcher matcher = STYLE_LOCATOR.matcher(in);
+        while(matcher.find()) {
+            queue.add(matcher.group(1));
+        }
+
+        StringJoiner joiner = new StringJoiner("");
+        for(String s : queue) {
+            joiner.add(s);
+        }
+
+        return this.getStyle(joiner.toString());
+    }
+
+    private Style getStyle(String style) {
+        Style result = Style.empty();
+        net.kyori.text.format.TextColor color = this.getColor(style);
+        if(color != null) {
+            result = result.color(color);
+        }
+
+        Pattern pattern = Pattern.compile("[k-or]");
+        Matcher matcher = pattern.matcher(style);
+        while(matcher.find()) {
+            result = result.merge(ID_TO_STYLE.get(matcher.group().charAt(0)));
+        }
+
+        return result;
     }
 
 }

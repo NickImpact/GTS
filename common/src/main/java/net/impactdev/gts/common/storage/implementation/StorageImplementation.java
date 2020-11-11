@@ -29,6 +29,7 @@ import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 
@@ -83,19 +84,17 @@ public interface StorageImplementation {
 
     List<Listing> getListings() throws Exception;
 
-    boolean addIgnorer(UUID uuid) throws Exception;
-
-    boolean removeIgnorer(UUID uuid) throws Exception;
-
-    List<UUID> getAllIgnorers() throws Exception;
-
     boolean purge() throws Exception;
 
-
-
+    // ---------------------------------------------------------
     // New methods
+    // ---------------------------------------------------------
 
     Stash getStash(UUID user) throws Exception;
+
+    Optional<PlayerSettings> getPlayerSettings(UUID user) throws Exception;
+
+    boolean applyPlayerSettings(UUID user, PlayerSettings updates) throws Exception;
 
     /**
      * Processes an incoming request to purchase a BIN listing, and responds with the results of the
@@ -124,6 +123,8 @@ public interface StorageImplementation {
     AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) throws Exception;
 
     AuctionMessage.Claim.Response processAuctionClaimRequest(AuctionMessage.Claim.Request request) throws Exception;
+
+    AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception;
 
     BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception;
 }

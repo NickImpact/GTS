@@ -1,25 +1,30 @@
 package net.impactdev.gts.common.messaging.messages.listings.auctions.impl;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.impactdev.gts.api.util.PrettyPrinter;
-import net.impactdev.gts.common.messaging.errors.ErrorCodes;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
+import net.impactdev.gts.common.messaging.errors.ErrorCodes;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.AuctionMessageOptions;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.impactor.api.json.factory.JArray;
+import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class AuctionClaimMessage extends AuctionMessageOptions implements AuctionMessage.Claim {
+public abstract class AuctionCancelMessage extends AuctionMessageOptions implements AuctionMessage.Cancel {
 
     /**
      * Constructs the message that'll be sent to all other connected servers.
@@ -28,27 +33,21 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
      * @param listing The ID of the listing being bid on
      * @param actor   The ID of the user placing the bid
      */
-    protected AuctionClaimMessage(UUID id, UUID listing, UUID actor) {
+    protected AuctionCancelMessage(UUID id, UUID listing, UUID actor) {
         super(id, listing, actor);
     }
 
-    public static class ClaimRequest extends AuctionClaimMessage implements AuctionMessage.Claim.Request {
+    public static class Request extends AuctionCancelMessage implements Cancel.Request {
 
-        public static final String TYPE = "Auction/Claim/Request";
+        public static final String TYPE = "Auction/Cancel/Request";
 
-        public static ClaimRequest decode(@Nullable JsonElement element, UUID id) {
+        public static AuctionCancelMessage.Request decode(@Nullable JsonElement element, UUID id) {
             Tuple<JsonObject, SimilarPair<UUID>> base = AuctionMessageOptions.decodeBaseAuctionParameters(element);
-            JsonObject raw = base.getFirst();
             UUID listing = base.getSecond().getFirst();
             UUID actor = base.getSecond().getSecond();
 
-            boolean isLister = Optional.ofNullable(raw.get("isLister"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Failed to locate isLister field"));
-            return new ClaimRequest(id, listing, actor, isLister);
+            return new AuctionCancelMessage.Request(id, listing, actor);
         }
-
-        private final boolean isLister;
 
         /**
          * Constructs the message that'll be sent to all other connected servers.
@@ -57,14 +56,8 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
          * @param listing The ID of the listing being bid on
          * @param actor   The ID of the user placing the bid
          */
-        public ClaimRequest(UUID id, UUID listing, UUID actor, boolean isLister) {
+        public Request(UUID id, UUID listing, UUID actor) {
             super(id, listing, actor);
-            this.isLister = isLister;
-        }
-
-        @Override
-        public boolean isLister() {
-            return this.isLister;
         }
 
         @Override
@@ -75,14 +68,13 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
                     new JObject()
                             .add("listing", this.getAuctionID().toString())
                             .add("actor", this.getActor().toString())
-                            .add("isLister", this.isLister)
                             .toJson()
             );
         }
 
         @Override
-        public CompletableFuture<Claim.Response> respond() {
-            return GTSPlugin.getInstance().getStorage().processAuctionClaimRequest(this);
+        public CompletableFuture<Cancel.Response> respond() {
+            return GTSPlugin.getInstance().getStorage().processAuctionCancelRequest(this);
         }
 
         @Override
@@ -93,11 +85,11 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
         }
     }
 
-    public static class ClaimResponse extends AuctionClaimMessage implements AuctionMessage.Claim.Response {
+    public static class Response extends AuctionCancelMessage implements Cancel.Response {
 
-        public static final String TYPE = "Auction/Claim/Response";
+        public static final String TYPE = "Auction/Cancel/Response";
 
-        public static ClaimResponse decode(@Nullable JsonElement element, UUID id) {
+        public static AuctionCancelMessage.Response decode(@Nullable JsonElement element, UUID id) {
             Tuple<JsonObject, SimilarPair<UUID>> base = AuctionMessageOptions.decodeBaseAuctionParameters(element);
             JsonObject raw = base.getFirst();
             UUID listing = base.getSecond().getFirst();
@@ -106,39 +98,56 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
             UUID request = Optional.ofNullable(raw.get("request"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-            boolean successful = Optional.ofNullable(raw.get("isLister"))
+            List<UUID> bidders = Optional.ofNullable(raw.get("bidders"))
+                    .map(x -> {
+                        List<UUID> result = Lists.newArrayList();
+                        JsonArray array = x.getAsJsonArray();
+                        for(JsonElement s : array) {
+                            result.add(UUID.fromString(s.getAsString()));
+                        }
+                        return result;
+                    })
+                    .orElseThrow(() -> new IllegalStateException("Failed to locate bidder information"));
+            boolean successful = Optional.ofNullable(raw.get("successful"))
                     .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Failed to locate successful status"));
+                    .orElseThrow(() -> new IllegalStateException("Failed to locate success parameter"));
             ErrorCode error = Optional.ofNullable(raw.get("error"))
                     .map(x -> ErrorCodes.get(x.getAsInt()))
                     .orElse(null);
-            return new ClaimResponse(id, request, listing, actor, successful, error);
+
+            return new AuctionCancelMessage.Response(id, request, listing, actor, ImmutableList.copyOf(bidders), successful, error);
         }
 
-        /** The ID of the request message generating this response */
         private final UUID request;
-
-        /** Whether the transaction was successfully placed */
-        private final boolean successful;
-
-        /** The amount of time it took for this response to be generated */
-        private long responseTime;
-
-        /** The error code reported for this response, if any */
+        private final ImmutableList<UUID> bidders;
+        private final boolean success;
         private final ErrorCode error;
+
+        private long responseTime;
 
         /**
          * Constructs the message that'll be sent to all other connected servers.
          *
          * @param id      The message ID that'll be used to ensure the message isn't duplicated
+         * @param request The ID of the message that spawned this response
          * @param listing The ID of the listing being bid on
          * @param actor   The ID of the user placing the bid
+         * @param bidders The set of individuals who have bid on the listing
+         * @param success The state of the response
+         * @param error   An error code marking the reason of failure, should it be necessary. Can be null
          */
-        public ClaimResponse(UUID id, UUID request, UUID listing, UUID actor, boolean successful, @Nullable ErrorCode error) {
+        public Response(UUID id, UUID request, UUID listing, UUID actor, ImmutableList<UUID> bidders, boolean success, @Nullable ErrorCode error) {
             super(id, listing, actor);
+
             this.request = request;
-            this.successful = successful;
+            this.bidders = bidders;
+            this.success = success;
             this.error = error;
+        }
+
+        @Override
+        public List<UUID> getBidders() {
+            return this.bidders;
         }
 
         @Override
@@ -147,11 +156,18 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
                     TYPE,
                     this.getID(),
                     new JObject()
-                            .add("request", this.getRequestID().toString())
+                            .add("request", this.request.toString())
                             .add("listing", this.getAuctionID().toString())
                             .add("actor", this.getActor().toString())
-                            .add("successful", this.successful)
-                            .add("error", this.error.ordinal())
+                            .consume(o -> {
+                                JArray bidders = new JArray();
+                                for(UUID bidder : this.bidders) {
+                                    bidders.add(bidder.toString());
+                                }
+                                o.add("bidders", bidders);
+                            })
+                            .add("successful", this.success)
+                            .consume(o -> this.getErrorCode().ifPresent(error -> o.add("error", error.ordinal())))
                             .toJson()
             );
         }
@@ -173,7 +189,7 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
 
         @Override
         public boolean wasSuccessful() {
-            return this.successful;
+            return this.success;
         }
 
         @Override
@@ -183,10 +199,7 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
 
         @Override
         public void print(PrettyPrinter printer) {
-            printer.kv("Response ID", this.getID())
-                    .kv("Request ID", this.getRequestID())
-                    .kv("Auction ID", this.getAuctionID())
-                    .kv("Actor", this.getActor());
+
         }
     }
 }

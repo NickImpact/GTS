@@ -38,6 +38,7 @@ import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
@@ -63,6 +64,7 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -218,15 +220,104 @@ public class GTSMessagingService implements InternalMessagingService {
     }
 
     @Override
-    public void requestAuctionCancellation(UUID listing, UUID actor) {
+    public CompletableFuture<AuctionMessage.Cancel.Response> requestAuctionCancellation(UUID listing, UUID actor) {
+        PrettyPrinter debugger = new PrettyPrinter(53).add("Auction Cancellation Request").center().hr();
+        final AtomicReference<AuctionMessage.Cancel.Request> reference = new AtomicReference<>();
+        final AtomicLong start = new AtomicLong();
 
+        return CompletableFutureManager.makeFuture(() -> {
+            AuctionMessage.Cancel.Request request = new AuctionCancelMessage.Request(this.generatePingID(), listing, actor);
+            reference.set(request);
+
+            AuctionMessage.Cancel.Response response = this.await(request);
+            this.populate(debugger, request, response);
+
+            return response;
+        }).applyToEither(
+            this.timeoutAfter(5, TimeUnit.SECONDS),
+            response -> {
+                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+                return response;
+            }
+        ).exceptionally(completion -> {
+            Throwable e = completion.getCause();
+
+            ErrorCode error;
+            if(e instanceof MessagingException) {
+                error = ((MessagingException) e).getError();
+            } else {
+                error = ErrorCodes.FATAL_ERROR;
+                ExceptionWriter.write(e);
+            }
+
+            AuctionMessage.Cancel.Request request = reference.get();
+            AuctionMessage.Cancel.Response response = null;
+
+            long end = System.nanoTime();
+            response.setResponseTime(TimeUnit.SECONDS.toMillis(
+                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 : (end - start.get()) / 1000000)
+            );
+
+            this.populate(debugger, request, response);
+            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+
+            return response;
+        });
     }
 
     @Override
-    public void requestAuctionClaim(UUID listing, UUID actor, boolean isLister, Consumer<AuctionMessage.Claim.Response> callback) {
-        AuctionClaimMessage.ClaimRequest request = new AuctionClaimMessage.ClaimRequest(this.generatePingID(), listing, actor, isLister);
-        this.getMessenger().getMessageConsumer().registerRequest(request.getID(), callback);
-        this.messenger.sendOutgoingMessage(request);
+    public CompletableFuture<AuctionMessage.Claim.Response> requestAuctionClaim(UUID listing, UUID actor, boolean isLister) {
+        PrettyPrinter debugger = new PrettyPrinter(53).add("Auction Claim Request").center().hr();
+        final AtomicReference<AuctionMessage.Claim.Request> reference = new AtomicReference<>();
+        final AtomicLong start = new AtomicLong();
+
+        return CompletableFutureManager.makeFuture(() -> {
+            start.set(System.nanoTime());
+            AuctionClaimMessage.ClaimRequest request = new AuctionClaimMessage.ClaimRequest(this.generatePingID(), listing, actor, isLister);
+            reference.set(request);
+
+            AuctionMessage.Claim.Response response = this.await(request);
+            this.populate(debugger, request, response);
+
+            return response;
+        }).applyToEither(
+            this.timeoutAfter(5, TimeUnit.SECONDS),
+            response -> {
+                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+                return response;
+            }
+        ).exceptionally(completion -> {
+            Throwable e = completion.getCause();
+
+            ErrorCode error;
+            if(e instanceof MessagingException) {
+                error = ((MessagingException) e).getError();
+            } else {
+                error = ErrorCodes.FATAL_ERROR;
+                ExceptionWriter.write(e);
+            }
+
+            AuctionMessage.Claim.Request request = reference.get();
+            AuctionMessage.Claim.Response response = new AuctionClaimMessage.ClaimResponse(
+                    this.generatePingID(),
+                    request.getID(),
+                    request.getAuctionID(),
+                    request.getActor(),
+                    false,
+                    error
+            );
+
+            long end = System.nanoTime();
+            response.setResponseTime(TimeUnit.SECONDS.toMillis(
+                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 : (end - start.get()) / 1000000)
+            );
+
+            this.populate(debugger, request, response);
+            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+
+            return response;
+        });
+
     }
 
     @Override
@@ -329,8 +420,8 @@ public class GTSMessagingService implements InternalMessagingService {
         return NORMAL.toJson(json);
     }
 
-    private PrettyPrinter populate(PrettyPrinter printer, MessageType.Request<?> request, MessageType.Response response) {
-        return printer.add()
+    private void populate(PrettyPrinter printer, MessageType.Request<?> request, MessageType.Response response) {
+        printer.add()
                 .add("Request Information:")
                 .hr('-')
                 .add(request)

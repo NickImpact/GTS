@@ -138,7 +138,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 			SpongeIcon icon = new SpongeIcon(item);
 			icon.addListener(clickable -> {
 				this.getView().close(this.getViewer());
-				new SpongeSelectedListingMenu(this.getViewer(), listing, () -> this, true).open();
+				new SpongeSelectedListingMenu(this.getViewer(), listing, () -> new SpongeListingMenu(this.getViewer()), true).open();
 			});
 			return icon;
 		});
