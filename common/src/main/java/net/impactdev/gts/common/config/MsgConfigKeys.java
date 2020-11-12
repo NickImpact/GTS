@@ -105,97 +105,44 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> TRANSLATIONS_YES = stringKey("translations.yes", "Yes");
 	public static final ConfigKey<String> TRANSLATIONS_NO = stringKey("translations.no", "No");
 
-	public static final ConfigKey<String> NO_PERMISSION = stringKey("general.errors.no-permission", "{{gts_error}} You don't have permission to use this!");
-	public static final ConfigKey<String> PRICE_NOT_POSITIVE = stringKey("general.errors.non-positive-price", "{{gts_error}} Invalid price! Value must be positive!");
-	public static final ConfigKey<String> PRICE_MAX_INVALID = stringKey("general.errors.max-price.invalid", "{{gts_error}} Your request is above the max amount of &e{{gts_max_price}}&7!");
-	public static final ConfigKey<String> ERROR_BLACKLISTED = stringKey("general.errors.blacklisted", "{{gts_error}} Sorry, but &e{{gts_entry}} &7has been blacklisted from the GTS...");
-
-	public static final ConfigKey<String> BUTTONS_INCREASE_CURRENCY_TITLE = stringKey("buttons.currency.increase.title", "&aIncrease Price Requested");
-	public static final ConfigKey<List<String>> BUTTONS_INCREASE_CURRENCY_LORE = listKey("buttons.currency.increase.lore", Lists.newArrayList(
-			"&7Left Click: &b+{{gts_button_currency_left_click}}",
-			"&7Right Click: &b+{{gts_button_currency_right_click}}",
-			"&7Shift + Left Click: &b+{{gts_button_currency_shift_left_click}}",
-			"&7Shift + Right Click: &b+{{gts_button_currency_shift_right_click}}"
-	));
-
-	public static final ConfigKey<String> BUTTONS_DECREASE_CURRENCY_TITLE = stringKey("buttons.currency.decrease.title", "&cDecrease Price Requested");
-	public static final ConfigKey<List<String>> BUTTONS_DECREASE_CURRENCY_LORE = listKey("buttons.currency.decrease.lore", Lists.newArrayList(
-			"&7Left Click: &c-{{gts_button_currency_left_click}}",
-			"&7Right Click: &c-{{gts_button_currency_right_click}}",
-			"&7Shift + Left Click: &c-{{gts_button_currency_shift_left_click}}",
-			"&7Shift + Right Click: &c-{{gts_button_currency_shift_right_click}}"
-	));
-
-	public static final ConfigKey<String> PRICE_DISPLAY_TITLE = stringKey("buttons.currency.display.title", "&eListing Price");
-	public static final ConfigKey<List<String>> PRICE_DISPLAY_LORE = listKey("buttons.currency.display.lore", Lists.newArrayList(
-			"&7Target Price: &a{{gts_price}}",
-			"",
-			"&7Min Price: &a{{gts_min_price}}",
-			"&7Max Price: &a{{gts_max_price}}"
-	));
-
-	public static final ConfigKey<String> BUTTONS_INCREASE_AMOUNT_TITLE = stringKey("buttons.amount.increase.title", "&aIncrease Amount To Be Listed");
-	public static final ConfigKey<List<String>> BUTTONS_INCREASE_AMOUNT_LORE = listKey("buttons.amount.increase.lore", Lists.newArrayList(
-			"&7Left Click: &b+{{gts_button_amount_left_click}}",
-			"&7Right Click: &b+{{gts_button_amount_right_click}}",
-			"&7Shift + Left Click: &b+{{gts_button_amount_shift_left_click}}",
-			"&7Shift + Right Click: &b+{{gts_button_amount_shift_right_click}}"
-	));
-
-	public static final ConfigKey<String> BUTTONS_DECREASE_AMOUNT_TITLE = stringKey("buttons.amount.decrease.title", "&cDecrease Amount To Be Listed");
-	public static final ConfigKey<List<String>> BUTTONS_DECREASE_AMOUNT_LORE = listKey("buttons.amount.decrease.lore", Lists.newArrayList(
-			"&7Left Click: &c-{{gts_button_amount_left_click}}",
-			"&7Right Click: &c-{{gts_button_amount_right_click}}",
-			"&7Shift + Left Click: &c-{{gts_button_amount_shift_left_click}}",
-			"&7Shift + Right Click: &c-{{gts_button_amount_shift_right_click}}"
-	));
-
-	public static final ConfigKey<String> AMOUNT_DISPLAY_TITLE = stringKey("buttons.amount.display.title", "&eListing Amount");
-	public static final ConfigKey<List<String>> AMOUNT_DISPLAY_LORE = listKey("buttons.amount.display.lore", Lists.newArrayList(
-			"&7Target amount: &a{{gts_amount}}",
-			"",
-			"&7Min Size: &a{{gts_min_amount}}",
-			"&7Max Size: &a{{gts_max_amount}}"
-	));
-
-	public static final ConfigKey<String> ITEMS_NONE_IN_HAND = stringKey("entries.items.command.none-in-hand", "{{gts_error}} Your hand has no item in it!");
-	public static final ConfigKey<String> ITEMS_NO_CUSTOM_NAMES = stringKey("entries.items.generic.custom-name-restricted", "{{gts_error}} You can't sell items with custom names!");
-	public static final ConfigKey<String> ITEMS_INVENTORY_FULL = stringKey("entries.items.generic.inventory-full", "{{gts_error}} Your inventory is full, so we'll hold onto this item for you!");
-	public static final ConfigKey<String> ITEMS_MAX_STACK = stringKey("ui.items.icons.max-stack-size", "Max Stack Size");
+	public static final ConfigKey<String> NO_PERMISSION = stringKey("general.errors.no-permission", "{{gts:error}} You don't have permission to use this!");
+	public static final ConfigKey<String> PRICE_NOT_POSITIVE = stringKey("general.errors.non-positive-price", "{{gts:error}} Invalid price! Value must be positive!");
+	public static final ConfigKey<String> PRICE_MAX_INVALID = stringKey("general.errors.max-price.invalid", "{{gts:error}} Your request is above the max amount of &e{{gts_max_price}}&7!");
+	public static final ConfigKey<String> ERROR_BLACKLISTED = stringKey("general.errors.blacklisted", "{{gts:error}} Sorry, but &e{{gts_entry}} &7has been blacklisted from the GTS...");
 
 	public static final ConfigKey<List<String>> DISCORD_PUBLISH_TEMPLATE = listKey("discord.templates.publish", Lists.newArrayList(
-			"Publisher: {{gts_publisher}}",
-			"Publisher Identifier: {{gts_publisher_id}}",
+			"Publisher: {{discord:publisher}}",
+			"Identifier: {{discord:publisher_id}}",
 			"",
-			"Published Item: {{gts_published_item}}",
-			"Item Details: {{gts_published_item_details}}",
-			"Requested Price: {{gts_publishing_price}}",
-			"Expiration Time: {{gts_publishing_expiration}}"
+			"Requested Price: {{discord:price}}",
+			"Expiration Time: {{discord:expiration}}"
 	));
 	public static final ConfigKey<List<String>> DISCORD_PURCHASE_TEMPLATE = listKey("discord.templates.purchase", Lists.newArrayList(
-			"Buyer: {{gts_buyer}}",
-			"Buyer Identifier: {{gts_buyer_id}}",
+			"Buyer: {{discord:actor}}",
+			"Buyer Identifier: {{discord:actor_id}}",
 			"",
-			"Seller: {{gts_seller}}",
-			"Seller Identifier: {{gts_seller_id}}",
+			"Seller: {{discord:publisher}}",
+			"Seller Identifier: {{discord:publisher_id}}",
 			"",
-			"Item: {{gts_published_item}}",
-			"Item Details: {{gts_published_item_details}}",
-			"Price: {{gts_publishing_price}}"
+			"Price: {{discord:price}}"
+	));
+	public static final ConfigKey<List<String>> DISCORD_BID_TEMPLATE = listKey("discord.templates.bid", Lists.newArrayList(
+			"Bidder: {{discord:actor}}",
+			"Bidder Identifier: {{discord:actor_id}}",
+			"Bid Amount: {{discord:bid}}",
+			"",
+			"Seller: {{discord:publisher}}",
+			"Seller Identifier: {{discord:publisher_id}}"
 	));
 	public static final ConfigKey<List<String>> DISCORD_EXPIRATION_TEMPLATE = listKey("discord.templates.expiration", Lists.newArrayList(
-			"Publisher: {{gts_publisher}}",
-			"Publisher Identifier: {{gts_publisher_id}}",
+			"Publisher: {{discord:publisher}}",
+			"Identifier: {{discord:publisher_id}}",
 			"",
-			"Item: {{gts_published_item}}",
-			"Price: {{gts_publishing_price}}"
+			"Requested Price: {{discord:price}}"
 	));
 	public static final ConfigKey<List<String>> DISCORD_REMOVAL_TEMPLATE = listKey("discord.templates.removal", Lists.newArrayList(
 			"Publisher: {{gts_publisher}}",
-			"Publisher Identifier: {{gts_publisher_id}}",
-			"",
-			"Item: {{gts_published_item}}",
-			"Item Details: {{gts_published_item_details}}"
+			"Publisher Identifier: {{gts_publisher_id}}"
 	));
 	public static final ConfigKey<String> LISTING_EVENT_CANCELLED = stringKey("general.listings.event-cancelled", "{{gts:error}} Your listing was blocked by an administrative source...");
 

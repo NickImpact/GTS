@@ -1,26 +1,33 @@
 package net.impactdev.gts.common.discord;
 
-import com.google.gson.JsonObject;
+import net.impactdev.impactor.api.json.factory.JObject;
 
 public class Field {
+
 	private String name;
 	private String value;
+	private boolean inline;
 
-	public Field(String name, String value) {
+	public Field(String name, String value, boolean inline) {
 		this.name = name;
 		this.value = value;
+		this.inline = inline;
 	}
 
-	public JsonObject getJson() {
-		JsonObject json = new JsonObject();
+	public JObject getJson() {
+		JObject json = new JObject();
 		if (this.name != null) {
-			json.addProperty("name", this.name);
+			json.add("name", this.name);
 		}
 
 		if (this.value != null) {
-			json.addProperty("value", this.value);
+			json.add("value", this.value);
 		}
 
-		return json;
+		return json.consume(d -> {
+			if(this.inline) {
+				d.add("inline", true);
+			}
+		});
 	}
 }

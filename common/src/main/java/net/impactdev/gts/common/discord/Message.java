@@ -5,6 +5,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import lombok.Getter;
+import net.impactdev.impactor.api.json.factory.JArray;
+import net.impactdev.impactor.api.json.factory.JObject;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.DataOutputStream;
@@ -46,26 +48,27 @@ public class Message {
 	}
 
 	String getJsonString() {
-		JsonObject var1 = new JsonObject();
+		JObject json = new JObject();
+
 		if (this.username != null) {
-			var1.addProperty("username", this.username);
+			json.add("username", this.username);
 		}
 
 		if (this.avatarUrl != null) {
-			var1.addProperty("avatar_url", this.avatarUrl);
+			json.add("avatar_url", this.avatarUrl);
 		}
 
 		if (!this.embeds.isEmpty()) {
-			JsonArray jArray = new JsonArray();
+			JArray embeds = new JArray();
 
 			for (Embed embed : this.embeds) {
-				jArray.add(embed.getJson());
+				embeds.add(embed.getJson());
 			}
 
-			var1.add("embeds", jArray);
+			json.add("embeds", embeds);
 		}
 
-		return var1.toString();
+		return json.toJson().toString();
 	}
 
 }

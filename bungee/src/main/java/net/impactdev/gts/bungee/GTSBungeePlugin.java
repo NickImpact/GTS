@@ -34,6 +34,7 @@ import net.impactdev.gts.common.storage.StorageFactory;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.UUID;
 
 public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 
@@ -113,6 +114,11 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 	@Override
 	public ImmutableList<StorageType> getMultiServerCompatibleStorageOptions() {
 		return ImmutableList.<StorageType>builder().build();
+	}
+
+	@Override
+	public String getPlayerDisplayName(UUID id) {
+		return this.getBootstrap().getProxy().getPlayer(id).getName();
 	}
 
 	@Override

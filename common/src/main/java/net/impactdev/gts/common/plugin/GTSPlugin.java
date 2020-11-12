@@ -15,6 +15,7 @@ import net.impactdev.gts.api.storage.GTSStorage;
 import net.impactdev.impactor.api.storage.StorageType;
 
 import java.io.InputStream;
+import java.util.UUID;
 
 public interface GTSPlugin extends ImpactorPlugin, Configurable, Depending, Translatable {
 
@@ -35,6 +36,8 @@ public interface GTSPlugin extends ImpactorPlugin, Configurable, Depending, Tran
 	InternalMessagingService getMessagingService();
 
 	ImmutableList<StorageType> getMultiServerCompatibleStorageOptions();
+
+	String getPlayerDisplayName(UUID id);
 
 	default InputStream getResourceStream(String path) {
 		return this.getClass().getClassLoader().getResourceAsStream(path);

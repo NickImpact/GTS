@@ -48,13 +48,19 @@ import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
 import net.impactdev.gts.sponge.stash.SpongeStash;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
+import org.spongepowered.api.service.user.UserStorageService;
 
 import java.io.File;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
 public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
@@ -244,6 +250,12 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				StorageType.MONGODB,
 				StorageType.POSTGRESQL
 		));
+	}
+
+	@Override
+	public String getPlayerDisplayName(UUID id) {
+		UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
+		return uss.get(id).map(User::getName).orElse("Unknown");
 	}
 
 }
