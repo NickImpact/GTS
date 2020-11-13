@@ -64,15 +64,6 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 	private final DiscordNotifier notifier = new DiscordNotifier(GTSPlugin.getInstance());
 
-	private final LoadingCache<UUID, ReentrantLock> locks = Caffeine.newBuilder()
-			.expireAfterAccess(5, TimeUnit.MINUTES)
-			.build(new CacheLoader<UUID, ReentrantLock>() {
-				@Override
-				public @Nullable ReentrantLock load(@NonNull UUID key) throws Exception {
-					return new ReentrantLock();
-				}
-			});
-
 	@Override
 	public String getServiceName() {
 		return "Sponge Listing Manager";
@@ -224,66 +215,59 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 	@Override
 	public CompletableFuture<Boolean> bid(UUID bidder, SpongeAuction listing, double amount) {
 		return CompletableFutureManager.makeFuture(() -> {
-			ReentrantLock lock = this.locks.get(listing.getID());
-
-			try {
-				lock.lock();
-				EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-				Optional<UniqueAccount> account = economy.getOrCreateAccount(bidder);
-				if (!account.isPresent()) {
-					Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-							Text.of(TextColors.RED, "Failed to locate your bank account, no funds have been taken...")
-					));
-					return false;
-				}
-
-				if (account.get().getBalance(economy.getDefaultCurrency()).doubleValue() < amount) {
-					// TODO - Not enough funds feedback
-					return false;
-				}
-
-				if (!Impactor.getInstance().getEventBus().post(BidEvent.class, bidder, listing, amount)) {
-					Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-							Text.of(TextColors.GRAY, "Putting funds in escrow...")
-					));
-
-					TransactionResult result = account.get().withdraw(
-							economy.getDefaultCurrency(),
-							new BigDecimal(amount),
-							Cause.builder()
-									.append(bidder)
-									.build(EventContext.builder()
-										.add(EventContextKeys.PLUGIN, GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer())
-										.build()
-									)
-					);
-					if (result.getResult().equals(ResultType.ACCOUNT_NO_FUNDS)) {
-						Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-								Text.of(TextColors.RED, "You don't have enough funds for this bid...")
-						));
-						return false;
-					}
-
-					Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-							Text.of(TextColors.GRAY, "Processing bid...")
-					));
-					return GTSPlugin.getInstance().getMessagingService().publishBid(listing.getID(), bidder, amount)
-							.get()
-							.wasSuccessful();
-				} else {
-					Sponge.getServer().getPlayer(bidder).ifPresent(player -> {
-						final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-
-						player.sendMessage(parser.parse(
-								Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-								Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)
-						));
-					});
-				}
+			EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
+			Optional<UniqueAccount> account = economy.getOrCreateAccount(bidder);
+			if (!account.isPresent()) {
+				Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+						Text.of(TextColors.RED, "Failed to locate your bank account, no funds have been taken...")
+				));
 				return false;
-			} finally {
-				lock.unlock();
 			}
+
+			if (account.get().getBalance(economy.getDefaultCurrency()).doubleValue() < amount) {
+				// TODO - Not enough funds feedback
+				return false;
+			}
+
+			if (!Impactor.getInstance().getEventBus().post(BidEvent.class, bidder, listing, amount)) {
+				Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+						Text.of(TextColors.GRAY, "Putting funds in escrow...")
+				));
+
+				TransactionResult result = account.get().withdraw(
+						economy.getDefaultCurrency(),
+						new BigDecimal(amount),
+						Cause.builder()
+								.append(bidder)
+								.build(EventContext.builder()
+									.add(EventContextKeys.PLUGIN, GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer())
+									.build()
+								)
+				);
+				if (result.getResult().equals(ResultType.ACCOUNT_NO_FUNDS)) {
+					Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+							Text.of(TextColors.RED, "You don't have enough funds for this bid...")
+					));
+					return false;
+				}
+
+				Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+						Text.of(TextColors.GRAY, "Processing bid...")
+				));
+				return GTSPlugin.getInstance().getMessagingService().publishBid(listing.getID(), bidder, amount)
+						.get()
+						.wasSuccessful();
+			} else {
+				Sponge.getServer().getPlayer(bidder).ifPresent(player -> {
+					final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+					player.sendMessage(parser.parse(
+							Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+							Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)
+					));
+				});
+			}
+			return false;
 		});
 
 	}
@@ -297,52 +281,45 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 			if (source == null || listing.getPrice().getSourceType().equals(source.getClass())) {
 				boolean canPay = CompletableFutureManager.makeFuture(() -> listing.getPrice().canPay(buyer), Impactor.getInstance().getScheduler().sync()).get(2, TimeUnit.SECONDS);
 				if(canPay) {
-					ReentrantLock lock = this.locks.get(listing.getID());
+					return GTSPlugin.getInstance().getMessagingService().requestBINPurchase(listing.getID(), buyer, source)
+							.thenApply(response -> {
+								if (response.wasSuccessful()) {
+									if (!Impactor.getInstance().getEventBus().post(PurchaseListingEvent.class, buyer, listing)) {
+										Impactor.getInstance().getScheduler().executeSync(() -> {
+											listing.getPrice().pay(buyer, source);
+											listing.getEntry().give(buyer);
 
-					try {
-						lock.lock();
-						return GTSPlugin.getInstance().getMessagingService().requestBINPurchase(listing.getID(), buyer, source)
-								.thenApply(response -> {
-									if (response.wasSuccessful()) {
-										if (!Impactor.getInstance().getEventBus().post(PurchaseListingEvent.class, buyer, listing)) {
-											Impactor.getInstance().getScheduler().executeSync(() -> {
-												listing.getPrice().pay(buyer, source);
-												listing.getEntry().give(buyer);
+											Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(
+													Text.of(TextColors.GRAY, "Purchase complete!")
+											));
 
-												Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(
-														Text.of(TextColors.GRAY, "Purchase complete!")
-												));
+											listing.markPurchased();
 
-												listing.markPurchased();
-
-												// We do the following such that we will ensure we populate any potential source
-												// the price may require
-												((GTSStorageImpl) GTSPlugin.getInstance().getStorage()).sendListingUpdate(listing)
-														.exceptionally(e -> {
-															GTSPlugin.getInstance().getPluginLogger().error("Fatal error detected while updating listing with price, see error below:");
-															ExceptionWriter.write(e);
-															return false;
-														});
-											});
-										} else {
-											Sponge.getServer().getPlayer(buyer).ifPresent(player -> {
-												final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-
-												player.sendMessage(parser.parse(
-														Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-														Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)
-												));
-											});
-										}
+											// We do the following such that we will ensure we populate any potential source
+											// the price may require
+											((GTSStorageImpl) GTSPlugin.getInstance().getStorage()).sendListingUpdate(listing)
+													.exceptionally(e -> {
+														GTSPlugin.getInstance().getPluginLogger().error("Fatal error detected while updating listing with price, see error below:");
+														ExceptionWriter.write(e);
+														return false;
+													});
+										});
 									} else {
-										// TODO - Request unsuccessful
-									}
+										Sponge.getServer().getPlayer(buyer).ifPresent(player -> {
+											final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
 
-									return true;
-								}).get();
-					} finally {
-						lock.unlock();
-					}
+											player.sendMessage(parser.parse(
+													Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+													Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)
+											));
+										});
+									}
+								} else {
+									// TODO - Request unsuccessful
+								}
+
+								return true;
+							}).get();
 				} else {
 					return false;
 				}

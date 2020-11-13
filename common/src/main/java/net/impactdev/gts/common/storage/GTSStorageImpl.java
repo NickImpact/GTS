@@ -25,6 +25,9 @@
 
 package net.impactdev.gts.common.storage;
 
+import com.github.benmanes.caffeine.cache.CacheLoader;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
@@ -36,6 +39,8 @@ import net.impactdev.gts.api.storage.GTSStorage;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -44,12 +49,23 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 
 public class GTSStorageImpl implements GTSStorage {
 
     private final GTSPlugin plugin;
     private final StorageImplementation implementation;
+
+    private final LoadingCache<UUID, ReentrantLock> locks = Caffeine.newBuilder()
+            .expireAfterAccess(5, TimeUnit.MINUTES)
+            .build(new CacheLoader<UUID, ReentrantLock>() {
+                @Override
+                public @Nullable ReentrantLock load(@NonNull UUID key) throws Exception {
+                    return new ReentrantLock();
+                }
+            });
 
     public GTSStorageImpl(GTSPlugin plugin, StorageImplementation implementation) {
         this.plugin = plugin;
@@ -113,27 +129,72 @@ public class GTSStorageImpl implements GTSStorage {
 
     @Override
     public CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request) {
-        return this.schedule(() -> this.implementation.processBid(request));
+        return this.schedule(() -> {
+            ReentrantLock lock = this.locks.get(request.getAuctionID());
+
+            try {
+                lock.lock();
+                return this.implementation.processBid(request);
+            } finally {
+                lock.unlock();
+            }
+        });
     }
 
     @Override
     public CompletableFuture<AuctionMessage.Claim.Response> processAuctionClaimRequest(AuctionMessage.Claim.Request request) {
-        return this.schedule(() -> this.implementation.processAuctionClaimRequest(request));
+        return this.schedule(() -> {
+            ReentrantLock lock = this.locks.get(request.getAuctionID());
+
+            try {
+                lock.lock();
+                return this.implementation.processAuctionClaimRequest(request);
+            } finally {
+                lock.unlock();
+            }
+        });
     }
 
     @Override
     public CompletableFuture<AuctionMessage.Cancel.Response> processAuctionCancelRequest(AuctionMessage.Cancel.Request request) {
-        return this.schedule(() -> this.implementation.processAuctionCancelRequest(request));
+        return this.schedule(() -> {
+            ReentrantLock lock = this.locks.get(request.getAuctionID());
+
+            try {
+                lock.lock();
+                return this.implementation.processAuctionCancelRequest(request);
+            } finally {
+                lock.unlock();
+            }
+        });
     }
 
     @Override
     public CompletableFuture<BuyItNowMessage.Remove.Response> processListingRemoveRequest(BuyItNowMessage.Remove.Request request) {
-        return this.schedule(() -> this.implementation.processListingRemoveRequest(request));
+        return this.schedule(() -> {
+            ReentrantLock lock = this.locks.get(request.getListingID());
+
+            try {
+                lock.lock();
+                return this.implementation.processListingRemoveRequest(request);
+            } finally {
+                lock.unlock();
+            }
+        });
     }
 
     @Override
     public CompletableFuture<BuyItNowMessage.Purchase.Response> processPurchase(BuyItNowMessage.Purchase.Request request) {
-        return this.schedule(() -> this.implementation.processPurchase(request));
+        return this.schedule(() -> {
+            ReentrantLock lock = this.locks.get(request.getListingID());
+
+            try {
+                lock.lock();
+                return this.implementation.processPurchase(request);
+            } finally {
+                lock.unlock();
+            }
+        });
     }
 
     public CompletableFuture<Boolean> sendListingUpdate(Listing listing) {

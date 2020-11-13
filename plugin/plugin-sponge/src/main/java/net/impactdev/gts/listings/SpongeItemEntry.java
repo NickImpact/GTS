@@ -34,6 +34,7 @@ import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
 import org.spongepowered.api.item.inventory.type.GridInventory;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.List;
@@ -104,12 +105,14 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 		ItemStack.Builder designer = ItemStack.builder();
 		designer.fromSnapshot(this.getOrCreateElement());
 
-		List<Text> lore = Lists.newArrayList();
-		if(this.getOrCreateElement().get(Keys.ITEM_LORE).isPresent()) {
-			lore.addAll(this.getOrCreateElement().get(Keys.ITEM_LORE).get());
-			designer.add(Keys.ITEM_LORE, lore);
+		if(this.getOrCreateElement().get(Keys.DISPLAY_NAME).isPresent()) {
+			Text name = this.getOrCreateElement().get(Keys.DISPLAY_NAME).get();
+			if(name.getColor() == TextColors.NONE) {
+				designer.add(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, name));
+			}
+		} else {
+			designer.add(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, this.getOrCreateElement().getTranslation().get()));
 		}
-
 
 		return new SpongeDisplay(designer.build());
 	}
@@ -151,12 +154,15 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	@Override
 	public Optional<String> getThumbnailURL() {
-		return Optional.empty();
+		return Optional.of("https://static.wikia.nocookie.net/minecraft_gamepedia/images/e/e7/Diamond_Pickaxe_JE3_BE3.png/revision/latest/scale-to-width-down/150?cb=20200226193952");
 	}
 
 	@Override
 	public List<String> getDetails() {
-		return Lists.newArrayList();
+		return Lists.newArrayList(
+				"Testing",
+				"123"
+		);
 	}
 
 	@Override
