@@ -80,6 +80,12 @@ public class GTSSpongePlaceholderManager {
                 "GTS - Listing Seller",
                 listing -> this.calculateDisplayName(listing.getLister())
         ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                UUID.class,
+                "purchaser",
+                "GTS - Listing Purchaser",
+                this::calculateDisplayName
+        ));
 
         // Listing Related Placeholders
         this.register(new SourceSpecificPlaceholderParser<>(

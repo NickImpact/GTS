@@ -64,7 +64,17 @@ public interface BuyItNowMessage extends OutgoingMessage {
 		 * message. In general, this message simply contains the UUID of the listing being purchased,
 		 * as well as the success status of the request.
 		 */
-		interface Response extends Purchase, MessageType.Response {}
+		interface Response extends Purchase, MessageType.Response {
+
+			/**
+			 * The UUID of the user selling this listing. This is meant to aid receiving servers in finding
+			 * out who we should try to inform of their listing being sold, if they are online at all.
+			 *
+			 * @return The UUID of the seller
+			 */
+			UUID getSeller();
+
+		}
 
 	}
 

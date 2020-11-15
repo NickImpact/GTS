@@ -6,7 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.common.messaging.errors.ErrorCodes;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.impactor.api.Impactor;

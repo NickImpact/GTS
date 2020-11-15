@@ -35,7 +35,7 @@ import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.common.config.updated.ConfigKeys;
-import net.impactdev.gts.common.messaging.errors.ErrorCodes;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
@@ -355,11 +355,14 @@ public class SqlImplementation implements StorageImplementation {
 			return this.results(ps, results -> {
 				boolean successful = results.next();
 
+				UUID seller = this.getListing(request.getListingID()).map(Listing::getLister).orElse(Listing.SERVER_ID);
+
 				return new BINPurchaseMessage.Response(
 						GTSPlugin.getInstance().getMessagingService().generatePingID(),
 						request.getID(),
 						request.getListingID(),
 						request.getActor(),
+						seller,
 						successful,
 						successful ? null : ErrorCodes.ALREADY_PURCHASED
 				);

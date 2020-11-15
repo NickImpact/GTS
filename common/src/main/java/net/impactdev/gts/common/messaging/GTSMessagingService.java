@@ -33,7 +33,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.common.messaging.errors.ErrorCodes;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
@@ -67,7 +67,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 public class GTSMessagingService implements InternalMessagingService {
 
@@ -352,7 +351,7 @@ public class GTSMessagingService implements InternalMessagingService {
 
             BuyItNowMessage.Purchase.Request request = reference.get();
             BuyItNowMessage.Purchase.Response response = new BINPurchaseMessage.Response(
-                    UUID.randomUUID(), request.getID(), listing, actor, false, error
+                    UUID.randomUUID(), request.getID(), listing, actor, Listing.SERVER_ID, false, error
             );
             response.setResponseTime(TimeUnit.SECONDS.toMillis(5));
 

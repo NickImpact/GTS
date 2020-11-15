@@ -26,7 +26,7 @@
 package net.impactdev.gts.common.messaging;
 
 import com.google.gson.JsonElement;
-import net.impactdev.gts.common.messaging.errors.ErrorCodes;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;

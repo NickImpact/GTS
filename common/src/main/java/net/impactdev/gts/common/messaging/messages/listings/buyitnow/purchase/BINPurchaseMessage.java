@@ -6,7 +6,9 @@ import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.common.messaging.messages.AbstractMessage;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.json.factory.JObject;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -76,7 +78,7 @@ public abstract class BINPurchaseMessage extends AbstractMessage implements BuyI
 
         @Override
         public CompletableFuture<Purchase.Response> respond() {
-            return null;
+            return GTSPlugin.getInstance().getStorage().processPurchase(this);
         }
 
         @Override
@@ -107,22 +109,30 @@ public abstract class BINPurchaseMessage extends AbstractMessage implements BuyI
             UUID request = Optional.ofNullable(raw.get("actor"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElseThrow(() -> new IllegalStateException("Unable to locate request ID"));
+            UUID seller = Optional.ofNullable(raw.get("seller"))
+                    .map(x -> UUID.fromString(x.getAsString()))
+                    .orElseThrow(() -> new IllegalStateException("Unable to locate seller ID"));
             boolean successful = Optional.ofNullable(raw.get("actor"))
                     .map(JsonElement::getAsBoolean)
                     .orElseThrow(() -> new IllegalStateException("Unable to locate successful status marker"));
+            ErrorCode error = Optional.ofNullable(raw.get("error"))
+                    .map(x -> ErrorCodes.get(x.getAsInt()))
+                    .orElse(null);
 
-            return new BINPurchaseMessage.Response(id, request, listing, actor, successful, null);
+            return new BINPurchaseMessage.Response(id, request, listing, actor, seller, successful, error);
         }
 
         private final UUID request;
+        private final UUID seller;
         private final boolean successful;
         private long time;
 
         private final ErrorCode error;
 
-        public Response(UUID id, UUID request, UUID listing, UUID actor, boolean successful, ErrorCode error) {
+        public Response(UUID id, UUID request, UUID listing, UUID actor, UUID seller, boolean successful, ErrorCode error) {
             super(id, listing, actor);
             this.request = request;
+            this.seller = seller;
             this.successful = successful;
             this.error = error;
         }
@@ -169,15 +179,13 @@ public abstract class BINPurchaseMessage extends AbstractMessage implements BuyI
                     .kv("Request ID", this.getRequestID())
                     .kv("Listing ID", this.getListingID())
                     .kv("Actor", this.getActor())
-                    .kv("Successful", this.wasSuccessful());
-
-            this.getErrorCode().ifPresent(error -> {
-                printer.kv("Error", error.getKey());
-            });
-
-            printer.kv("Response Time", this.getResponseTime() + " ms");
+                    .kv("Seller", this.getSeller());
         }
 
+        @Override
+        public UUID getSeller() {
+            return this.seller;
+        }
     }
 
 }

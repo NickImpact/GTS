@@ -10,7 +10,7 @@ import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.errors.ErrorCodes;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.AuctionMessageOptions;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.json.factory.JArray;

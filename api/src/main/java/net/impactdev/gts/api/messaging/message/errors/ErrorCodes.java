@@ -1,7 +1,6 @@
-package net.impactdev.gts.common.messaging.errors;
+package net.impactdev.gts.api.messaging.message.errors;
 
 import com.google.common.collect.ImmutableList;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -14,6 +13,7 @@ public class ErrorCodes {
     public static final ErrorCode LISTING_MISSING = create("UNKNOWN_LISTING", "Listing could not be found");
     public static final ErrorCode REQUEST_TIMED_OUT = create("TIMEOUT", "Failed to receive a response within 5 seconds");
     public static final ErrorCode THIRD_PARTY_CANCELLED = create("OUTSIDE_CANCEL", "An outside source cancelled your request");
+    public static final ErrorCode LISTING_EXPIRED = create("EXPIRED", "The listing has expired");
 
     // BIN
     public static final ErrorCode ALREADY_PURCHASED = create("PURCHASED", "Listing already purchased");

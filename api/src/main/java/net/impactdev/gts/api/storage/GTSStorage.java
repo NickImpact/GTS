@@ -25,6 +25,8 @@ public interface GTSStorage {
 
 	CompletableFuture<Boolean> publishListing(Listing listing);
 
+	CompletableFuture<Optional<Listing>> getListing(UUID listing);
+
 	/**
 	 * Fetches all listings, with no filters applied. This is to allow all listings to be processed and accessible,
 	 * despite expiration of a listing or another filter that would be typically applied against it.
