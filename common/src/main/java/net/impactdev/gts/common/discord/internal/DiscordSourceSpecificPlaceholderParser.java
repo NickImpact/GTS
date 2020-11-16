@@ -1,6 +1,7 @@
 package net.impactdev.gts.common.discord.internal;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -28,6 +29,7 @@ public class DiscordSourceSpecificPlaceholderParser<T> implements DiscordPlaceho
                 .filter(x -> this.sourceType.isAssignableFrom(x.getClass()))
                 .map(this.sourceType::cast)
                 .map(this.parser)
+                .filter(Objects::nonNull)
                 .findAny()
                 .orElse(null);
     }

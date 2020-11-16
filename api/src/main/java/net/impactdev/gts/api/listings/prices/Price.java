@@ -1,7 +1,7 @@
 package net.impactdev.gts.api.listings.prices;
 
-import com.google.common.reflect.TypeToken;
 import net.impactdev.gts.api.data.Storable;
+import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.kyori.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -73,5 +73,13 @@ public interface Price<P, S, I> extends Storable {
 	 * @return A type token wrapping the source type
 	 */
 	Class<S> getSourceType();
+
+	/**
+	 * Calculates and returns the fee a user should pay for selecting this price
+	 *
+	 * @param listingType <code>true</code> if BIN, <code>false</code> if Auction
+	 * @return The fee a user is to pay for this price
+	 */
+	long calculateFee(boolean listingType);
 
 }

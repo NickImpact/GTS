@@ -13,7 +13,9 @@ import net.impactdev.gts.common.api.GTSAPIProvider;
 import net.impactdev.gts.common.data.ResourceManagerImpl;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
+import net.impactdev.impactor.api.dependencies.Dependency;
 import net.impactdev.impactor.api.plugin.PluginMetadata;
+import net.impactdev.impactor.api.plugin.registry.PluginRegistry;
 import net.impactdev.impactor.api.storage.StorageType;
 import net.impactdev.impactor.bungee.configuration.BungeeConfig;
 import net.impactdev.impactor.bungee.configuration.BungeeConfigAdapter;
@@ -54,9 +56,10 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 				.build(), bootstrap.getLogger()
 		);
 		this.bootstrap = bootstrap;
+		PluginRegistry.register(this);
 	}
 
-	public void load() {
+	public void enable() {
 		ApiRegistrationUtil.register(new GTSAPIProvider());
 
 		Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
@@ -64,9 +67,7 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 
 		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(Auction.class, new ResourceManagerImpl<>("Auctions", "N/A", BungeeAuction::deserialize));
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(Auction.AuctionBuilder.class, BungeeAuction.BungeeAuctionBuilder::new);
-	}
 
-	public void enable() {
 		this.config = new BungeeConfig(new BungeeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
 		this.storage = new StorageFactory(this).getInstance(StorageType.MARIADB);
 
@@ -143,5 +144,15 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 
 	public MessagingFactory<?> getMessagingFactory() {
 		return new BungeeMessagingFactory(this);
+	}
+
+	@Override
+	public List<Dependency> getAllDependencies() {
+		return Lists.newArrayList(
+				Dependency.KYORI_TEXT,
+				Dependency.KYORI_TEXT_SERIALIZER_LEGACY,
+				Dependency.KYORI_TEXT_SERIALIZER_GSON,
+				Dependency.CAFFEINE
+		);
 	}
 }

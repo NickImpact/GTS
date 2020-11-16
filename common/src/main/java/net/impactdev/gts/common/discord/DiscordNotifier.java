@@ -55,7 +55,7 @@ public class DiscordNotifier {
 		}
 
 		Field base = new Field("Listing Information", this.parser.interpret(this.plugin.getMsgConfig().get(template), sources), true);
-		Field entry = new Field(listing.getEntry().getName().content(), StringComposer.composeListAsString(listing.getEntry().getDetails()), true);
+		Field entry = new Field(StringComposer.readNameFromComponent(listing.getEntry().getName()), StringComposer.composeListAsString(listing.getEntry().getDetails()), true);
 
 		Embed.Builder embed = Embed.builder()
 				.title(option.getDescriptor())

@@ -26,6 +26,9 @@ dependencies {
 shadowJar {
     archiveName = "GTS-Bungee-${project.version}.jar"
     exclude 'Impactor*.jar'
+
+    relocate ('com.github.benmanes.caffeine', 'net.impactdev.impactor.relocations.caffeine')
+    relocate ('net.kyori.text', 'net.impactdev.impactor.relocations.text')
 }
 
 processResources {

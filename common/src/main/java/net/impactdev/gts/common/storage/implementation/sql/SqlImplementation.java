@@ -304,11 +304,25 @@ public class SqlImplementation implements StorageImplementation {
 			if(listing.hasExpired() || (listing instanceof BuyItNow && ((BuyItNow) listing).isPurchased())) {
 				if (listing instanceof Auction) {
 					Auction auction = (Auction) listing;
-					if(auction.getLister().equals(user) && auction.getBids().size() == 0) {
-						builder.append(auction, false);
-					} else {
-						auction.getHighBid().filter(x -> x.getFirst().equals(user))
-								.ifPresent(entry -> builder.append(auction, true));
+					if(auction.getLister().equals(user) || auction.getHighBid().map(bid -> bid.getFirst().equals(user)).orElse(false)) {
+						boolean state = auction.getLister().equals(user);
+						boolean claimed = this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
+							ps.setString(1, auction.getID().toString());
+							return this.results(ps, results -> {
+								if (results.next()) {
+									if(state && results.getBoolean("lister")) {
+										return true;
+									} else {
+										return !state && results.getBoolean("winner");
+									}
+								}
+								return false;
+							});
+						});
+
+						if(!claimed) {
+							builder.append(auction, !state);
+						}
 					}
 				} else {
 					BuyItNow bin = (BuyItNow) listing;
@@ -513,6 +527,8 @@ public class SqlImplementation implements StorageImplementation {
 					} else {
 						if(auction.getBids().size() > 0) {
 							error = ErrorCodes.BIDS_PLACED;
+						} else {
+							result = this.deleteListing(auction.getID());
 						}
 					}
 				}

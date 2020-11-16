@@ -135,7 +135,7 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 
 	@Override
 	public InputStream getResourceStream(String path) {
-		return null;
+		return this.plugin.getResourceStream(path);
 	}
 
 	@Override

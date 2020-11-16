@@ -9,6 +9,7 @@ import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.gui.signs.SignQuery;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.Time;
+import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
 import net.impactdev.impactor.sponge.ui.SpongeLayout;
 import net.impactdev.impactor.sponge.ui.SpongeUI;
@@ -224,16 +225,18 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
 
     @Override
     public SpongeIcon createPriceIcon() {
+        MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+        List<Supplier<Object>> sources = Lists.newArrayList(
+                () -> this.price,
+                () -> new Tuple<>(this.price, !this.auction),
+                () -> !this.auction
+        );
+
         if(this.auction) {
             ItemStack rep = ItemStack.builder()
                     .itemType(ItemTypes.GOLD_NUGGET)
-                    .add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "Price: ", Utilities.translateComponent(this.price.getText())))
-                    .add(Keys.ITEM_LORE, Lists.newArrayList(
-                            Text.of(TextColors.GRAY, "The price a player will pay"),
-                            Text.of(TextColors.GRAY, "in order to purchase this listing."),
-                            Text.EMPTY,
-                            Text.of(TextColors.YELLOW, "Click to edit!")
-                    ))
+                    .add(Keys.DISPLAY_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_TITLE), sources))
+                    .add(Keys.ITEM_LORE, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_LORE), sources))
                     .build();
             SpongeIcon icon = new SpongeIcon(rep);
             icon.addListener(clickable -> {
@@ -272,7 +275,8 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
         } else {
             ItemStack selector = ItemStack.builder()
                     .from(SkullCreator.fromBase64("Mzk2Y2UxM2ZmNjE1NWZkZjMyMzVkOGQyMjE3NGM1ZGU0YmY1NTEyZjFhZGVkYTFhZmEzZmMyODE4MGYzZjcifX19"))
-                    .add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Price: ", Utilities.translateComponent(this.price.getText())))
+                    .add(Keys.DISPLAY_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_TITLE), sources))
+                    .add(Keys.ITEM_LORE, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_LORE), sources))
                     .build();
             SpongeIcon icon = new SpongeIcon(selector);
             icon.addListener(clickable -> {

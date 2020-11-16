@@ -57,6 +57,7 @@ shadowJar {
     relocate ('com.github.benmanes.caffeine', 'net.impactdev.impactor.relocations.caffeine')
     relocate ('io.github.classgraph', 'net.impactdev.impactor.relocations.classgraph')
     relocate ('co.aikar.commands', 'net.impactdev.impactor.relocations.commands')
+    relocate ('org.mariuszgromada.math.mxparser', 'net.impactdev.impactor.relocations.mxparser')
 }
 
 reobf {

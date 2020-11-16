@@ -14,6 +14,8 @@ import net.impactdev.impactor.api.storage.StorageCredentials;
 import net.impactdev.impactor.api.storage.StorageType;
 import net.impactdev.impactor.api.utilities.Time;
 import net.impactdev.gts.api.blacklist.Blacklist;
+import org.mariuszgromada.math.mxparser.Expression;
+import org.mariuszgromada.math.mxparser.Function;
 
 import java.awt.Color;
 import java.lang.reflect.Field;
@@ -21,6 +23,7 @@ import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.function.BiFunction;
 
 import static net.impactdev.impactor.api.configuration.ConfigKeyTypes.*;
@@ -139,11 +142,19 @@ public class ConfigKeys implements ConfigKeyHolder {
 	});
 	public static final ConfigKey<Long> LISTINGS_MIN_PRICE = longKey("pricing.control.min-price", 1);
 	public static final ConfigKey<Long> LISTINGS_MAX_PRICE = longKey("pricing.control.max-price", 10000000);
-	public static final ConfigKey<Boolean> TAXES_ENABLED = booleanKey("pricing.taxes.enabled", false);
-	public static final ConfigKey<Float> TAXES_RATE = customKey(adapter -> {
-		double input = adapter.getDouble("pricing.taxes.rate", 0.08);
+	public static final ConfigKey<Boolean> FEES_ENABLED = booleanKey("pricing.fees.enabled", true);
+	public static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_BIN = customKey(adapter -> {
+		double input = adapter.getDouble("pricing.fees.starting_price.bin_rate", 0.02);
 		return (float) input;
 	});
+	public static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_AUCTION = customKey(adapter -> {
+		double input = adapter.getDouble("pricing.fees.starting_price.auction_rate", 0.05);
+		return (float) input;
+	});
+	public static final ConfigKey<Function> FEE_TIME_EQUATION = customKey(adapter -> {
+		return new Function(adapter.getString("pricing.fees.time.equation", "f(hours,minutes) = 5 * (hours - 1 + (minutes > 0)) + 50"));
+	});
+
 	public static final ConfigKey<Float> AUCTIONS_INCREMENT_RATE = customKey(adapter -> {
 		double in = adapter.getDouble("auctions.increment-rate", 0.03);
 		return (float) in;

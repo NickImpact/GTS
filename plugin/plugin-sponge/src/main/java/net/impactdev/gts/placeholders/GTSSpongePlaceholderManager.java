@@ -6,10 +6,17 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import net.impactdev.gts.api.listings.makeup.Fees;
+import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.util.groupings.SimilarPair;
+import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
+import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.Time;
 import net.impactdev.gts.GTSSpongePlugin;
@@ -27,6 +34,8 @@ import net.kyori.text.format.Style;
 import net.kyori.text.format.TextColor;
 import net.kyori.text.format.TextDecoration;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import org.mariuszgromada.math.mxparser.Argument;
+import org.mariuszgromada.math.mxparser.Expression;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
@@ -39,6 +48,7 @@ import org.spongepowered.api.text.placeholder.PlaceholderParser;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,6 +58,7 @@ import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,10 +129,92 @@ public class GTSSpongePlaceholderManager {
         ));
 
         this.register(new SourceSpecificPlaceholderParser<>(
+                Price.class,
+                "price_selection",
+                "GTS - Price Selection for creating Listing",
+                price -> Utilities.translateComponent(price.getText())
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Tuple.class,
+                "price_fee",
+                "GTS - Price Selection Fee",
+                wrapper -> {
+                    if(wrapper.getFirst() instanceof Price && wrapper.getSecond() instanceof Boolean) {
+                        Price<?, ?, ?> price = (Price<?, ?, ?>) wrapper.getFirst();
+                        boolean listingType = (Boolean) wrapper.getSecond();
+
+                        return Text.of(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(price.calculateFee(listingType)));
+                    }
+
+                    return Text.EMPTY;
+                }
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Boolean.class,
+                "price_fee_rate",
+                "GTS - Price Selection Fee Rate",
+                state -> {
+                    ConfigKey<Float> key = state ? ConfigKeys.FEES_STARTING_PRICE_RATE_BIN : ConfigKeys.FEES_STARTING_PRICE_RATE_AUCTION;
+                    float rate = GTSPlugin.getInstance().getConfiguration().get(key);
+                    DecimalFormat df = new DecimalFormat("#0.##");
+
+                    return Text.of(df.format(rate * 100), "%");
+                }
+        ));
+
+        this.register(new SourceSpecificPlaceholderParser<>(
                 Time.class,
                 "time",
                 "GTS - Amount of time representing how long a listing will be listed for",
                 Utilities::translateTime
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Time.class,
+                "time_fee",
+                "GTS - Calculated fee for chosen time",
+                time -> {
+                    org.mariuszgromada.math.mxparser.Function function = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.FEE_TIME_EQUATION);
+                    SimilarPair<Argument> arguments = Utilities.calculateTimeFee(time);
+                    Expression expression = new Expression("f(hours,minutes)", function, arguments.getFirst(), arguments.getSecond());
+                    return Text.of(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(expression.calculate()));
+                }
+        ));
+
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Fees.class,
+                "fees",
+                "GTS - Fee Wrapper",
+                fees -> {
+                    TextComponent.Builder result = TextComponent.builder(
+                            Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(fees.getTotal())
+                    );
+
+                    final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+                    List<Supplier<Object>> sources = Lists.newArrayList();
+                    sources.add(fees::getPrice);
+                    sources.add(() -> fees.getTime().getFirst());
+
+                    TextComponent hover = TextComponent.builder()
+                            .append(Utilities.toComponent(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.FEE_PRICE_FORMAT), sources)))
+                            .append(TextComponent.newline())
+                            .append(Utilities.toComponent(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.FEE_TIME_FORMAT), sources)))
+                            .build();
+                    return Utilities.translateComponent(result.hoverEvent(HoverEvent.showText(hover)).build());
+                }
+        ));
+
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Double.class,
+                "min_price",
+                "GTS - Minimum Price Descriptor",
+                value -> Text.of(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value))
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Double.class,
+                "max_price",
+                "GTS - Maximum Price Descriptor",
+                value -> Text.of(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value))
         ));
 
         // Buy It Now
@@ -200,6 +293,12 @@ public class GTSSpongePlaceholderManager {
                             .build();
                     return Utilities.translateComponent(component);
                 }
+        ));
+        this.register(this.create(
+                "max_listings",
+                "GTS - Max Listings Configuration Response",
+                container,
+                context -> Text.of(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER))
         ));
     }
 

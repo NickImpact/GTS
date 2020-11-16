@@ -3,8 +3,13 @@ package net.impactdev.gts.sponge.pricing.provided;
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
+import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.pricing.SpongePrice;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.gui.UI;
 import net.impactdev.impactor.api.gui.signs.SignQuery;
 import net.impactdev.impactor.api.json.factory.JObject;
@@ -28,6 +33,7 @@ import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.BiConsumer;
@@ -86,6 +92,16 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 	}
 
 	@Override
+	public long calculateFee(boolean listingType) {
+		Config config = GTSPlugin.getInstance().getConfiguration();
+		if(listingType) {
+			return Math.round(this.price.doubleValue() * config.get(ConfigKeys.FEES_STARTING_PRICE_RATE_BIN));
+		} else {
+			return Math.round(this.price.doubleValue() * config.get(ConfigKeys.FEES_STARTING_PRICE_RATE_AUCTION));
+		}
+	}
+
+	@Override
 	public int getVersion() {
 		return 1;
 	}
@@ -137,7 +153,7 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 								return false;
 							}
 						})
-						.reopenOnFailure(true)
+						.reopenOnFailure(false)
 						.build();
 				viewer.closeInventory();
 				query.sendTo(viewer);

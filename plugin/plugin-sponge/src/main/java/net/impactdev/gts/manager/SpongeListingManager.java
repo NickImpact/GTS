@@ -1,12 +1,15 @@
 package net.impactdev.gts.manager;
 
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.AtomicDouble;
 import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.events.auctions.BidEvent;
 import net.impactdev.gts.api.events.buyitnow.PurchaseListingEvent;
+import net.impactdev.gts.api.listings.makeup.Fees;
 import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.storage.GTSStorageImpl;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
@@ -30,6 +33,10 @@ import net.impactdev.gts.sponge.listings.SpongeAuction;
 import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
 import net.impactdev.gts.sponge.listings.SpongeListing;
 import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
+import net.impactdev.impactor.api.utilities.Time;
+import org.mariuszgromada.math.mxparser.Argument;
+import org.mariuszgromada.math.mxparser.Expression;
+import org.mariuszgromada.math.mxparser.Function;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.cause.Cause;
@@ -43,6 +50,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -105,18 +113,27 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 			if(main.get(ConfigKeys.PRICE_CONTROL_ENABLED)) {
 				if (price.get() instanceof MonetaryPrice) {
 					MonetaryPrice monetary = (MonetaryPrice) price.get();
-					double min = main.get(ConfigKeys.LISTINGS_MIN_PRICE);
-					double max = main.get(ConfigKeys.LISTINGS_MAX_PRICE);
+					AtomicDouble min = new AtomicDouble(main.get(ConfigKeys.LISTINGS_MIN_PRICE));
+					AtomicDouble max = new AtomicDouble(main.get(ConfigKeys.LISTINGS_MAX_PRICE));
 
 					if(listing.getEntry() instanceof PriceControlled) {
 						PriceControlled controls = (PriceControlled) listing.getEntry();
-						min = Math.max(min, controls.getMin());
-						max = Math.min(max, controls.getMax());
+						min.set(Math.max(min.get(), controls.getMin()));
+						max.set(Math.min(max.get(), controls.getMax()));
 					}
 
 					double actual = monetary.getPrice().doubleValue();
-					if(actual < min || actual > max) {
-						source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.MIN_PRICE_ERROR), sources)));
+					if(actual < min.get()) {
+						List<Supplier<Object>> minSources = Lists.newArrayList(sources);
+						minSources.add(min::get);
+
+						source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.MIN_PRICE_ERROR), minSources)));
+						return false;
+					} else if(actual > max.get()) {
+						List<Supplier<Object>> maxSources = Lists.newArrayList(sources);
+						maxSources.add(max::get);
+
+						source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.MAX_PRICE_ERROR), maxSources)));
 						return false;
 					}
 				}
@@ -125,13 +142,25 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 			// Let's begin tax application
 			//
 			// Of course, let's make sure it's enabled, and that the price is also taxable
+			Fees.FeeBuilder feeBuilder = Fees.builder();
 			AtomicReference<BigDecimal> fees = new AtomicReference<>(BigDecimal.ZERO);
-			if(main.get(ConfigKeys.TAXES_ENABLED)) {
-				if(price.get() instanceof MonetaryPrice) {
-					MonetaryPrice monetary = (MonetaryPrice) price.get();
-					float rate = main.get(ConfigKeys.TAXES_RATE);
+			if(main.get(ConfigKeys.FEES_ENABLED)) {
+				fees.updateAndGet(current -> {
+					double amount = price.get().calculateFee(listing instanceof BuyItNow);
+					feeBuilder.price(price.get(), listing instanceof BuyItNow);
+					return current.add(new BigDecimal(amount));
+				});
 
-					fees.set(monetary.getPrice().multiply(new BigDecimal(rate)));
+				Time time = new Time(Duration.between(listing.getPublishTime(), listing.getExpiration()).getSeconds());
+				Function function = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.FEE_TIME_EQUATION);
+				SimilarPair<Argument> arguments = Utilities.calculateTimeFee(time);
+				Expression expression = new Expression("f(hours,minutes)", function, arguments.getFirst(), arguments.getSecond());
+				if(!Double.isNaN(expression.calculate())) {
+					fees.updateAndGet(current -> {
+						double amount = expression.calculate();
+						feeBuilder.time(time, amount);
+						return current.add(BigDecimal.valueOf(amount));
+					});
 				}
 			}
 
@@ -145,11 +174,17 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 					EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
 					economy.getOrCreateAccount(lister).ifPresent(account -> {
 						if(account.getBalance(economy.getDefaultCurrency()).doubleValue() < fees.get().doubleValue()) {
-							player.sendMessages(parser.parse(lang.get(MsgConfigKeys.TAX_INVALID), sources));
+							player.sendMessages(parser.parse(lang.get(MsgConfigKeys.FEE_INVALID), sources));
 							check.set(false);
 						}
 
-						account.withdraw(economy.getDefaultCurrency(), fees.get(), Sponge.getCauseStackManager().getCurrentCause());
+						account.withdraw(economy.getDefaultCurrency(), fees.get(), Cause.builder()
+								.append(player)
+								.build(EventContext.builder()
+										.add(EventContextKeys.PLUGIN, GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer())
+										.build()
+								)
+						);
 					});
 				}
 
@@ -164,7 +199,13 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 									player.sendMessages(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_RETURN_FEES), sources));
 								}
 
-								account.deposit(economy.getDefaultCurrency(), fees.get(), Sponge.getCauseStackManager().getCurrentCause());
+								account.deposit(economy.getDefaultCurrency(), fees.get(), Cause.builder()
+										.append(player)
+										.build(EventContext.builder()
+												.add(EventContextKeys.PLUGIN, GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer())
+												.build()
+										)
+								);
 							});
 						}
 						check.set(false);
@@ -183,6 +224,11 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 			}).get(3, TimeUnit.SECONDS);
 
 			source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_TEMPLATE), sources)));
+
+			if(main.get(ConfigKeys.FEES_ENABLED)) {
+				sources.add(feeBuilder::build);
+				source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.FEE_APPLICATION), sources)));
+			}
 
 			PlayerSettingsManager manager = GTSService.getInstance().getPlayerSettingsManager();
 			for(Player player : Sponge.getServer().getOnlinePlayers()) {

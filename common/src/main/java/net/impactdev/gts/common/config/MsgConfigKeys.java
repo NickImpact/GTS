@@ -26,44 +26,29 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	// Generic messages for the program
 	// Best to support lists of text here, as a server may decide to go heavy on text formatting
 	public static final ConfigKey<List<String>> MAX_LISTINGS = listKey("general.max-listings", Lists.newArrayList(
-			"{{gts_prefix}} &cUnfortunately, you can't deposit another listing, since you already have {{max_listings}} deposited..."
+			"{{gts:prefix}} &cUnfortunately, you can't deposit another listing, since you already have {{gts:max_listings}} deposited..."
 	));
 	public static final ConfigKey<List<String>> ADD_TEMPLATE = listKey("general.addition-to-seller", Lists.newArrayList(
 			"{{gts:prefix}} &7Your &a{{gts:listing_name}} &7has been added to the market!"
 	));
-	public static final ConfigKey<List<String>> TAX_APPLICATION = listKey("general.taxes.applied", Lists.newArrayList(
-			"&c&l- {{tax}} &7(&aTaxes&7)"
-	));
-	public static final ConfigKey<List<String>> TAX_INVALID = listKey("general.taxes.invalid", Lists.newArrayList(
-			"{{gts_prefix}} &cUnable to afford the tax of &e{{tax}} &cfor this listing..."
-	));
+
 	public static final ConfigKey<List<String>> ADD_BROADCAST = listKey("general.addition-broadcast", Lists.newArrayList(
 			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for &a{{gts:bin_price}}&7!"
 	));
 	public static final ConfigKey<List<String>> PURCHASE_PAY = listKey("general.prices.pay", Lists.newArrayList(
-			"{{gts_prefix}} &7You have purchased a &a{{listing_specifics}} &7for &e{{price}}&7!"
+			"{{gts:prefix}} &7You have purchased a &a{{gts:listing_specifics}} &7for &e{{gts:bin_price}}&7!"
 	));
 	public static final ConfigKey<List<String>> PURCHASE_RECEIVE = listKey("general.prices.receive", Lists.newArrayList(
 			"{{gts:prefix}} &a{{gts:purchaser}} &7purchased your &a{{gts:listing_name}} &7listing for &a{{gts:bin_price}}&7!"
 	));
 	public static final ConfigKey<List<String>> REMOVAL_CHOICE = listKey("general.removal.choice", Lists.newArrayList(
-			"{{gts_prefix}} &7Your &a{{listing_name}} &7listing has been returned!"
-	));
-	public static final ConfigKey<List<String>> REMOVAL_EXPIRES = listKey("general.removal.expires", Lists.newArrayList(
-			"{{gts_prefix}} &7Your &a{{listing_name}} &7listing has expired, and has thus been returned!"
+			"{{gts:prefix}} &7Your &a{{gts:listing_name}} &7listing has been returned!"
 	));
 	public static final ConfigKey<List<String>> MIN_PRICE_ERROR = listKey("general.prices.min-price.invalid", Lists.newArrayList(
-			"{{gts_error}} &7In order to sell your &a{{listing_name}}&7, you need to list it for the price of &e{{min_price}}&7..."
+			"{{gts:error}} &7In order to sell your &a{{gts:listing_name}}&7, you need to list it for the price of &e{{gts:min_price}}&7..."
 	));
-
-	// Items
-	public static final ConfigKey<String> UI_ITEMS_PLAYER_LISTINGS_TITLE = stringKey("item-displays.player-listings.title", "&eYour Listings");
-
-	// Entries
-	public static final ConfigKey<List<String>> ENTRY_INFO = listKey("entries.base-info", Lists.newArrayList(
-			"",
-			"&7Price: &e{{price}}",
-			"&7Time Left: &e{{time_left}}"
+	public static final ConfigKey<List<String>> MAX_PRICE_ERROR = listKey("general.prices.max-price.invalid", Lists.newArrayList(
+			"{{gts:error}} &7In order to sell your &a{{gts:listing_name}}&7, you need to list it for the price at or below &e{{gts:max_price}}&7..."
 	));
 
 	// Error messages
@@ -379,14 +364,39 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&eClick to switch to BIN Mode!"
 	));
 
+	// Price Selection
+	public static final ConfigKey<String> UI_PRICE_DISPLAY_TITLE = stringKey("ui.components.price.display.title", "&ePrice: {{gts:price_selection}}");
+	public static final ConfigKey<List<String>> UI_PRICE_DISPLAY_LORE = listKey("ui.components.price.display.lore", Lists.newArrayList(
+			"&7How much to list your",
+			"&7be listed on the GTS.",
+			"",
+			"&7Fee: &6{{gts:price_fee}} &e({{gts:price_fee_rate}})",
+			"",
+			"&eClick to edit!"
+	));
+
 	// Time Selection
 	public static final ConfigKey<String> UI_TIME_SELECT_TITLE = stringKey("ui.time-select.title", "Select a Time");
 
 	public static final ConfigKey<String> UI_TIME_DISPLAY_TITLE = stringKey("ui.components.time.display.title", "&eDuration: {{gts:time}}");
 	public static final ConfigKey<List<String>> UI_TIME_DISPLAY_LORE = listKey("ui.components.time.display.lore", Lists.newArrayList(
 			"&7How long the listing will",
-			"&7be listed on the GTS."
+			"&7be listed on the GTS.",
+			"",
+			"&7Fee: &6{{gts:time_fee}}",
+			"",
+			"&eClick to edit!"
 	));
+
+	// Fees
+	public static final ConfigKey<List<String>> FEE_APPLICATION = listKey("general.fees.applied", Lists.newArrayList(
+			"{{gts:prefix}} &c&l- {{gts:fees}} &7(&aFees&7)"
+	));
+	public static final ConfigKey<List<String>> FEE_INVALID = listKey("general.fees.invalid", Lists.newArrayList(
+			"{{gts:prefix}} &cUnable to afford the tax of &e{{tax}} &cfor this listing..."
+	));
+	public static final ConfigKey<String> FEE_PRICE_FORMAT = stringKey("general.fees.price-format", "&7Price Selection: {{gts:price_fee}}");
+	public static final ConfigKey<String> FEE_TIME_FORMAT = stringKey("general.fees.price-format", "&7Time Selection: {{gts:time_fee}}");
 
 	// Admin Menus
 	public static final ConfigKey<String> UI_ADMIN_MAIN_TITLE = stringKey("ui.admin.main.title", "GTS - Admin Mode");

@@ -20,17 +20,6 @@ public class GTSBungeeBootstrap extends Plugin implements GTSBootstrap {
     }
 
     @Override
-    public void onLoad() {
-        try {
-            this.plugin.load();
-        } catch (Exception e) {
-            this.exception = e;
-            e.printStackTrace();
-        }
-        this.plugin.getPluginLogger().info("&eTest");
-    }
-
-    @Override
     public void onEnable() {
         try {
             this.plugin.enable();

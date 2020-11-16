@@ -1,5 +1,6 @@
 package net.impactdev.gts.sponge.utils;
 
+import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.services.text.MessageService;
@@ -9,6 +10,7 @@ import net.impactdev.gts.common.config.updated.types.time.TimeLanguageOptions;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
+import org.mariuszgromada.math.mxparser.Argument;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
@@ -34,6 +36,10 @@ public class Utilities {
 
 	public static List<Text> parseList(ConfigKey<List<String>> key, List<Supplier<Object>> sources) {
 		return GTSPlugin.getInstance().getMsgConfig().get(key).stream().map(x -> PARSER.parse(x, sources)).collect(Collectors.toList());
+	}
+
+	public static TextComponent toComponent(Text text) {
+		return (TextComponent) GsonComponentSerializer.INSTANCE.deserialize(TextSerializers.JSON.serialize(text));
 	}
 
 	public static Text translateComponent(TextComponent component) {
@@ -77,5 +83,12 @@ public class Utilities {
 		}
 
 		return TextSerializers.FORMATTING_CODE.deserialize(joiner.toString());
+	}
+
+	public static SimilarPair<Argument> calculateTimeFee(Time time) {
+		long minutes = TimeUnit.SECONDS.toMinutes(time.getTime()) % 60;
+		long hours = TimeUnit.SECONDS.toHours(time.getTime());
+
+		return new SimilarPair<>(new Argument("hours", hours), new Argument("minutes", minutes));
 	}
 }

@@ -54,8 +54,12 @@ import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.user.UserStorageService;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -109,8 +113,12 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		GTSService.getInstance().getGTSComponentManager().registerPriceManager(MonetaryPrice.class, new MonetaryPrice.MonetaryPriceManager());
 		GTSService.getInstance().getGTSComponentManager().registerLegacyEntryDeserializer("item", new SpongeLegacyItemStorable());
 
+		this.copyResource(Paths.get("main.conf"), this.getConfigDir());
 		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
-		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/en_us.conf")), new MsgConfigKeys());
+
+		String language = this.config.get(ConfigKeys.LANGUAGE);
+		this.copyResource(Paths.get("lang/" + language + ".conf"), this.getConfigDir());
+		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/" + language.toLowerCase() + ".conf")), new MsgConfigKeys());
 
 		this.extensionManager = new SimpleExtensionManager(this);
 		this.extensionManager.loadExtensions(this.getBootstrap().getConfigDirectory().resolve("extensions"));
@@ -196,7 +204,8 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				Dependency.KYORI_TEXT_SERIALIZER_GSON,
 				Dependency.KYORI_TEXT_ADAPTER_SPONGEAPI,
 				Dependency.CAFFEINE,
-				Dependency.ACF_SPONGE
+				Dependency.ACF_SPONGE,
+				Dependency.MXPARSER
 		);
 	}
 
@@ -256,6 +265,17 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	public String getPlayerDisplayName(UUID id) {
 		UserStorageService uss = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
 		return uss.get(id).map(User::getName).orElse("Unknown");
+	}
+
+	private void copyResource(Path path, Path destination) {
+		Path base = Paths.get("assets", "gts");
+		if(!Files.exists(destination.resolve(path))) {
+			try (InputStream resource = this.getResourceStream(base.resolve(path).toString())) {
+				Files.copy(resource, destination.resolve(path));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
 }
