@@ -6,6 +6,9 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
+import com.google.gson.JsonObject;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.gts.util.GTSInfoGenerator;
 import net.impactdev.impactor.api.Impactor;
@@ -14,6 +17,11 @@ import net.impactdev.gts.ui.admin.SpongeAdminMenu;
 import net.impactdev.impactor.api.services.text.MessageService;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
+
+import javax.net.ssl.HttpsURLConnection;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 @CommandAlias("gts")
 public class GTSCommand extends BaseCommand {

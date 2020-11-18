@@ -10,6 +10,7 @@ import com.sun.org.apache.xpath.internal.operations.Bool;
 import net.impactdev.gts.api.listings.makeup.Fees;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.util.WaitingInteger;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.updated.ConfigKeys;
 import net.impactdev.gts.common.utils.EconomicFormatter;
@@ -299,6 +300,12 @@ public class GTSSpongePlaceholderManager {
                 "GTS - Max Listings Configuration Response",
                 container,
                 context -> Text.of(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER))
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                WaitingInteger.class,
+                "active_bids",
+                "GTS - Active Bids for a Player",
+                Text::of
         ));
     }
 

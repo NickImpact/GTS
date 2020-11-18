@@ -52,6 +52,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GTSStorageImpl implements GTSStorage {
 
@@ -208,7 +210,14 @@ public class GTSStorageImpl implements GTSStorage {
 
     @Override
     public CompletableFuture<List<Listing>> fetchListings(Collection<Predicate<Listing>> filters) {
-        return this.schedule(this.implementation::getListings);
+        return this.schedule(() -> {
+            Stream<Listing> results = this.implementation.getListings().stream();
+            for(Predicate<Listing> predicate : filters) {
+                results = results.filter(predicate);
+            }
+
+            return results.collect(Collectors.toList());
+        });
     }
 
     @Override

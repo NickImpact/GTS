@@ -1,6 +1,8 @@
 package net.impactdev.gts.ui;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.api.listings.auctions.Auction;
+import net.impactdev.gts.api.util.WaitingInteger;
 import net.impactdev.gts.sponge.listings.ui.creator.SpongeEntryTypeSelectionMenu;
 import net.impactdev.gts.sponge.ui.Displayable;
 import net.impactdev.gts.listings.ui.SpongeItemUI;
@@ -27,6 +29,8 @@ import org.spongepowered.api.text.format.TextColors;
 
 import java.util.List;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
@@ -39,14 +43,15 @@ public class SpongeMainMenu implements Displayable {
 
 	public SpongeMainMenu(Player viewer) {
 		this.viewer = viewer;
-		this.view = this.construct(viewer);
+		this.view = this.construct();
+		this.applyActiveBids();
 	}
 
 	public void open() {
 		this.open(this.viewer);
 	}
 
-	private SpongeUI construct(Player viewer) {
+	private SpongeUI construct() {
 		return SpongeUI.builder()
 				.title(PARSER.parse(readMessageConfigOption(MsgConfigKeys.UI_MAIN_TITLE), Lists.newArrayList(() -> this.viewer)))
 				.dimension(InventoryDimension.of(9, 5))
@@ -98,11 +103,14 @@ public class SpongeMainMenu implements Displayable {
 		});
 		slb.slot(personalIcon, 29);
 
-		TitleLorePair cBids = readMessageConfigOption(MsgConfigKeys.UI_MAIN_CURRENT_BIDS);
+		TitleLorePair cBids = readMessageConfigOption(MsgConfigKeys.UI_MAIN_CURRENT_BIDS_MULTI);
 		SpongeIcon bids = new SpongeIcon(ItemStack.builder()
 				.itemType(ItemTypes.KNOWLEDGE_BOOK)
 				.add(Keys.DISPLAY_NAME, PARSER.parse(cBids.getTitle(), Lists.newArrayList(() -> this.viewer)))
-				.add(Keys.ITEM_LORE, PARSER.parse(cBids.getLore(), Lists.newArrayList(() -> this.viewer)))
+				.add(Keys.ITEM_LORE, PARSER.parse(cBids.getLore(), Lists.newArrayList(
+						() -> this.viewer,
+						() -> new WaitingInteger("(Calculating...)")
+				)))
 				.build()
 		);
 		bids.addListener(clickable -> {
@@ -110,30 +118,7 @@ public class SpongeMainMenu implements Displayable {
 		});
 		slb.slot(bids, 33);
 
-		SpongeIcon trademark = new SpongeIcon(ItemStack.builder()
-				.from(SkullCreator.fromBase64("ZTdhNWU1MjE4M2U0MWIyOGRlNDFkOTAzODg4M2QzOTlkYzU4N2Q0ZWIyMzBlNjk2ZDhmNmJlNmQzZTU3Y2YifX19"))
-				.add(Keys.DISPLAY_NAME, Text.of(TextColors.GOLD, "Bidoof"))
-				.add(Keys.ITEM_LORE, Lists.newArrayList(
-						Text.of(TextColors.GRAY, "What a handsome fella")
-				))
-				.build());
-		slb.slot(trademark, 44);
-
 		return slb.build();
-	}
-
-	private void createPersonalIcon(SpongeLayout.SpongeLayoutBuilder slb) {
-
-	}
-
-	private void writePersonalIconLore(SpongeIcon icon, List<String> base) {
-		List<String> lore = Lists.newArrayList(base);
-		lore.add("");
-
-		GTSPlugin.getInstance().getStorage().fetchListings(Lists.newArrayList())
-				.thenAccept(listings -> {
-
-				});
 	}
 
 	private void createStashIcon(SpongeLayout.SpongeLayoutBuilder slb) {
@@ -189,5 +174,47 @@ public class SpongeMainMenu implements Displayable {
 	@Override
 	public void open(Player player) {
 		this.view.open(player);
+	}
+
+	private void applyActiveBids() {
+		GTSPlugin.getInstance().getStorage()
+				.fetchListings(Lists.newArrayList(
+						listing -> listing instanceof Auction,
+						listing -> !listing.hasExpired()
+				))
+				.thenApply(listings -> listings.stream().map(listing -> (Auction) listing).collect(Collectors.toList()))
+				.thenAccept(auctions -> {
+					AtomicInteger amount = new AtomicInteger(0);
+					for(Auction auction : auctions) {
+						if(auction.getBids().containsKey(this.viewer.getUniqueId())) {
+							amount.incrementAndGet();
+						}
+					}
+
+					Impactor.getInstance().getScheduler().executeSync(() -> {
+						TitleLorePair cBids = readMessageConfigOption(
+								amount.get() == 1 ? MsgConfigKeys.UI_MAIN_CURRENT_BIDS_SINGLE :
+										MsgConfigKeys.UI_MAIN_CURRENT_BIDS_MULTI
+						);
+
+						SpongeIcon bids = new SpongeIcon(ItemStack.builder()
+								.itemType(ItemTypes.KNOWLEDGE_BOOK)
+								.add(Keys.DISPLAY_NAME, PARSER.parse(cBids.getTitle(), Lists.newArrayList(() -> this.viewer)))
+								.add(Keys.ITEM_LORE, PARSER.parse(cBids.getLore(), Lists.newArrayList(
+										() -> this.viewer,
+										() -> new WaitingInteger(amount.get())
+								)))
+								.build()
+						);
+						bids.addListener(clickable -> {
+
+						});
+						this.view.setSlot(33, bids);
+					});
+				})
+				.exceptionally(e -> {
+					ExceptionWriter.write(e);
+					return null;
+				});
 	}
 }

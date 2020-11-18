@@ -157,14 +157,14 @@ public class SpongeSelectedListingMenu {
             );
             normal.addListener(clickable -> {
                 if(auction.getHighBid().map(bid -> bid.getFirst().equals(this.viewer.getUniqueId())).orElse(false)) {
-                    this.viewer.sendMessage(Text.of(TextColors.RED, "TODO - Already hold top bid"));
+                    this.viewer.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER)));
                 } else {
                     if (affordability.getFirst()) {
                         this.display.close(this.viewer);
                         SpongeListingManager manager = (SpongeListingManager) Impactor.getInstance().getRegistry().get(ListingManager.class);
                         manager.bid(this.viewer.getUniqueId(), (SpongeAuction) auction, newBid);
                     } else {
-                        this.viewer.sendMessage(Text.of(TextColors.RED, "TODO - Can't afford"));
+                        this.viewer.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID)));
                     }
                 }
             });
@@ -210,16 +210,14 @@ public class SpongeSelectedListingMenu {
 
         ItemStack display = ItemStack.builder()
                 .itemType(ItemTypes.ANVIL)
-                .add(Keys.DISPLAY_NAME, PARSER.parse("&cTODO - Remove Listing Title"))
-                .add(Keys.ITEM_LORE, PARSER.parse(Lists.newArrayList(
-                        "&cTODO - Remove Listing Lore"
-                )))
+                .add(Keys.DISPLAY_NAME, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_SELECTED_REMOVE_TITLE)))
+                .add(Keys.ITEM_LORE, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_SELECTED_REMOVE_LORE)))
                 .build();
 
         SpongeIcon icon = new SpongeIcon(display);
         icon.addListener(clickable -> {
             this.display.close(this.viewer);
-            this.viewer.sendMessage(Text.of("TODO - Processing request..."));
+            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PUBLISH_REQUEST)));
 
             if(this.listing instanceof BuyItNow) {
                 GTSPlugin.getInstance().getMessagingService()
@@ -228,9 +226,18 @@ public class SpongeSelectedListingMenu {
                             if (response.wasSuccessful()) {
                                 Impactor.getInstance().getScheduler().executeSync(() -> {
                                     if (this.listing.getEntry().give(this.viewer.getUniqueId())) {
-                                        this.viewer.sendMessage(Text.of("TODO - Listing returned"));
+                                        this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_RETURNED)));
                                     } else {
-                                        this.viewer.sendMessage(Text.of("TODO - Unable to return listing"));
+                                        this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+
+                                        BuyItNow bin = BuyItNow.builder()
+                                                .from((BuyItNow) this.listing)
+                                                .expiration(LocalDateTime.now())
+                                                .build();
+
+                                        // Place BIN back in storage, in a state such that it'll only be
+                                        // accessible via the lister's stash
+                                        GTSPlugin.getInstance().getStorage().publishListing(bin);
                                     }
                                 });
                             } else {
@@ -247,11 +254,10 @@ public class SpongeSelectedListingMenu {
                             if(response.wasSuccessful()) {
                                 Impactor.getInstance().getScheduler().executeSync(() -> {
                                     if(this.listing.getEntry().give(this.viewer.getUniqueId())) {
-                                        // TODO - inform user, also figure out how to handle unable to return listing
-
-
-
+                                        this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_RETURNED)));
                                     } else {
+                                        this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+
                                         // Set auction as expired, with no bids
                                         Auction auction = Auction.builder()
                                                 .from((Auction) this.listing)
@@ -265,7 +271,10 @@ public class SpongeSelectedListingMenu {
                                     }
                                 });
                             } else {
-                                // TODO - Response marked failure
+                                this.viewer.sendMessage(service.parse(
+                                        Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+                                        Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                ));
                             }
                         });
             }

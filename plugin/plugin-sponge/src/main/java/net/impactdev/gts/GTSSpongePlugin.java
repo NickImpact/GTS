@@ -7,11 +7,14 @@ import com.google.gson.GsonBuilder;
 import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.commands.GTSCommandManager;
 import net.impactdev.gts.common.utils.EconomicFormatter;
+import net.impactdev.gts.common.utils.Version;
+import net.impactdev.gts.listeners.JoinListener;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.listings.data.SpongeItemManager;
 import net.impactdev.gts.listings.legacy.SpongeLegacyItemStorable;
 import net.impactdev.gts.messaging.interpreters.SpongeAuctionInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeBINInterpreters;
+import net.impactdev.gts.util.OreVersionChecker;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.dependencies.Dependency;
@@ -122,6 +125,8 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		this.extensionManager = new SimpleExtensionManager(this);
 		this.extensionManager.loadExtensions(this.getBootstrap().getConfigDirectory().resolve("extensions"));
+
+		Sponge.getEventManager().registerListeners(this.bootstrap, new JoinListener());
 	}
 
 	public void init() {
@@ -139,6 +144,16 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 			throw new LackingServiceException(EconomyService.class);
 		}
 		MonetaryPrice.setEconomy(this.getEconomy());
+
+		final Version current = new Version(this.getMetadata().getVersion());
+		OreVersionChecker.query().thenAccept(response -> {
+			if(current.compareTo(response) < 0) {
+				Impactor.getInstance().getScheduler().executeSync(() -> {
+					GTSPlugin.getInstance().getPluginLogger().warn("A new version of GTS is available on Ore!");
+					GTSPlugin.getInstance().getPluginLogger().warn("You can download it from here: &bhttps://ore.spongepowered.org/api/v1/projects/gts/versions/recommended/download");
+				});
+			}
+		});
 	}
 
 	public MessagingFactory<?> getMessagingFactory() {
