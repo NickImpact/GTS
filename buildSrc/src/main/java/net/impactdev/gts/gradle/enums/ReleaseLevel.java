@@ -1,6 +1,6 @@
 package net.impactdev.gts.gradle.enums;
 
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 public enum ReleaseLevel {
 
@@ -10,17 +10,17 @@ public enum ReleaseLevel {
     MINOR(version -> version.endsWith(".0"), "minor", false),
     PATCH(version -> true, "patch", false);
 
-    private final Function<String, Boolean> validator;
+    private final Predicate<String> validator;
     private final String template;
     private final boolean snapshot;
 
-    ReleaseLevel(Function<String, Boolean> validator, String template, boolean snapshot) {
+    ReleaseLevel(Predicate<String> validator, String template, boolean snapshot) {
         this.validator = validator;
         this.template = template;
         this.snapshot = snapshot;
     }
 
-    public Function<String, Boolean> getValidator() {
+    public Predicate<String> getValidator() {
         return this.validator;
     }
 
@@ -30,6 +30,16 @@ public enum ReleaseLevel {
 
     public boolean isSnapshot() {
         return this.snapshot;
+    }
+
+    public static ReleaseLevel get(String version) {
+        for(ReleaseLevel level : ReleaseLevel.values()) {
+            if(level.getValidator().test(version)) {
+                return level;
+            }
+        }
+
+        return ReleaseLevel.SNAPSHOT;
     }
 
 }

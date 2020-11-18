@@ -1,3 +1,9 @@
+import net.impactdev.gts.gradle.enums.ReleaseLevel
+import net.impactdev.gts.gradle.tasks.ReleaseNotesTask
+
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+
 buildscript {
     repositories {
         mavenCentral()
@@ -35,10 +41,26 @@ allprojects {
         }
     }
 
-    task gitCommit {
-        def process = 'git rev-parse --short HEAD'.execute()
+    task gitHash {
+        def process = 'git rev-parse HEAD'.execute()
         process.waitFor()
         ext.commit = process.exitValue() ? 'Unknown' : process.text.trim().replace('\n', '')
+    }
+
+    task gitMessage {
+        def process = 'git log -1 --format=%B'.execute()
+        process.waitFor()
+        ext.message = process.exitValue() ? 'Unknown' : process.text.trim()
+    }
+
+    ext {
+        sponge = "7.3.0"
+        spigot = "1.12.2"
+
+        run = ""
+        if(System.getenv().containsKey("BUILD_NUMBER")) {
+            run = "-${System.getenv("BUILD_NUMBER")}"
+        }
     }
 }
 
@@ -50,16 +72,6 @@ subprojects {
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
-    }
-
-    ext {
-        sponge = "7.1.5"
-        spigot = "1.12.2"
-
-        run = ""
-        if(System.getenv().containsKey("BUILD_NUMBER")) {
-            run = "-${System.getenv("BUILD_NUMBER")}"
-        }
     }
 
     version = "6.0.0-SNAPSHOT${project.ext.run}"
@@ -107,8 +119,32 @@ subprojects {
 
 }
 
+task genChangelog(type: ReleaseNotesTask) {
+    dependsOn(gitHash)
+    dependsOn(gitMessage)
+    version = project.version
+    hash = gitHash.ext.commit
+    sponge = project.ext.sponge
+    message = gitMessage.ext.message
+    level = ReleaseLevel.get(version)
+}
+
+task writeChangelogToFile {
+    dependsOn(genChangelog)
+    doLast {
+        java.nio.file.Path path = project.projectDir.toPath().resolve("$buildDir").resolve("allJars").resolve("${project.version}.md")
+        if(!Files.exists(path)) {
+            Files.createDirectories(path.getParent())
+            Files.createFile(path)
+        }
+
+        Files.write(path, genChangelog.result.getBytes(StandardCharsets.UTF_8))
+    }
+}
+
 task copyJars(type: Copy) {
     dependsOn subprojects.build
+    dependsOn writeChangelogToFile
     from subprojects.collect { it.tasks.withType(Jar) }
     into "$buildDir/allJars"
     exclude '*-all.jar'
