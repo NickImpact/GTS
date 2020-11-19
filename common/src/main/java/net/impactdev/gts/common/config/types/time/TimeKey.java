@@ -1,4 +1,4 @@
-package net.impactdev.gts.common.config.updated.types.time;
+package net.impactdev.gts.common.config.types.time;
 
 import net.impactdev.impactor.api.configuration.ConfigurationAdapter;
 import net.impactdev.impactor.api.configuration.keys.BaseConfigKey;

@@ -18,7 +18,7 @@ import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.listings.ui.AbstractEntryUI;
 import net.impactdev.gts.api.listings.ui.EntrySelection;
 import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.listings.SpongeAuction;
 import net.impactdev.gts.sponge.listings.SpongeBuyItNow;

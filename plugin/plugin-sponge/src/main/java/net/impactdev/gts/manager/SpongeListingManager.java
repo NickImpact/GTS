@@ -22,7 +22,7 @@ import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceControlled;
 import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.discord.DiscordNotifier;
 import net.impactdev.gts.common.discord.DiscordOption;
 import net.impactdev.gts.common.discord.Message;

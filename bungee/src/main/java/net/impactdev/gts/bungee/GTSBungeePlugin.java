@@ -27,7 +27,7 @@ import net.impactdev.gts.bungee.messaging.BungeeMessagingFactory;
 import net.impactdev.gts.bungee.messaging.interpreters.BungeeBINRemoveInterpreter;
 import net.impactdev.gts.bungee.messaging.interpreters.BungeePingPongInterpreter;
 import net.impactdev.gts.common.blacklist.BlacklistImpl;
-import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.messaging.InternalMessagingService;
 import net.impactdev.gts.common.messaging.MessagingFactory;
 import net.impactdev.gts.common.plugin.GTSPlugin;

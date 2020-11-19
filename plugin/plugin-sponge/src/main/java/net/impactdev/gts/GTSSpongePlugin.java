@@ -34,7 +34,7 @@ import net.impactdev.gts.api.storage.GTSStorage;
 import net.impactdev.gts.common.api.ApiRegistrationUtil;
 import net.impactdev.gts.common.api.GTSAPIProvider;
 import net.impactdev.gts.common.blacklist.BlacklistImpl;
-import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.data.ResourceManagerImpl;
 import net.impactdev.gts.common.extension.SimpleExtensionManager;
@@ -64,10 +64,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
-import java.util.regex.Pattern;
 
 public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 

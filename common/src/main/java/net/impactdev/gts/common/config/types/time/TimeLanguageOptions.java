@@ -1,4 +1,4 @@
-package net.impactdev.gts.common.config.updated.types.time;
+package net.impactdev.gts.common.config.types.time;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

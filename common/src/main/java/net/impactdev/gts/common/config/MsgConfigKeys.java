@@ -5,7 +5,7 @@ import com.google.common.collect.Lists;
 import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.configuration.ConfigKeyHolder;
 import net.impactdev.impactor.api.configuration.keys.BaseConfigKey;
-import net.impactdev.gts.common.config.updated.types.time.TimeLanguageOptions;
+import net.impactdev.gts.common.config.types.time.TimeLanguageOptions;
 import net.impactdev.gts.common.config.wrappers.SortConfigurationOptions;
 import net.impactdev.gts.common.config.wrappers.TitleLorePair;
 
@@ -435,6 +435,9 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"",
 			"&eClick to inspect!"
 	));
+
+	// Active Bids UI
+	public static final ConfigKey<String> UI_PLAYER_ACTIVE_BIDS_TITLE = stringKey("ui.player-active-bids.title", "&cGTS &7\u00bb &3Active Bids");
 
 	public static final ConfigKey<String> GENERAL_FEEDBACK_BEGIN_PUBLISH_REQUEST = stringKey("general.feedback.begin-feedback-request", "&7Processing your request...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_FEES_COLLECTION = stringKey("general.feedback.tax-collect", "&7Collecting fees...");

@@ -75,6 +75,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private boolean mode = false;
 	private CircularLinkedList<Sorter> sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
 
+	@SafeVarargs
 	public SpongeListingMenu(Player viewer, Predicate<SpongeListing>... conditions) {
 		super(GTSPlugin.getInstance(),
 				viewer,

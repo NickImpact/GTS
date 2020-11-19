@@ -7,7 +7,7 @@ import net.impactdev.gts.bungee.GTSBungeePlugin;
 import net.impactdev.gts.bungee.messaging.processor.BungeeIncomingMessageConsumer;
 import net.impactdev.gts.bungee.messaging.types.PluginMessageMessenger;
 import net.impactdev.gts.bungee.messaging.types.RedisBungeeMessenger;
-import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.common.messaging.InternalMessagingService;
 import net.impactdev.gts.common.messaging.MessagingFactory;

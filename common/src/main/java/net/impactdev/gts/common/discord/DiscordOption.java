@@ -2,7 +2,7 @@ package net.impactdev.gts.common.discord;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 
 import java.awt.*;

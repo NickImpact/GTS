@@ -6,7 +6,7 @@ import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.Time;
 import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.config.updated.types.time.TimeLanguageOptions;
+import net.impactdev.gts.common.config.types.time.TimeLanguageOptions;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;

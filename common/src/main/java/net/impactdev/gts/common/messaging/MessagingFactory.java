@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.MessengerProvider;
-import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.messaging.redis.RedisMessenger;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.api.util.PrettyPrinter;

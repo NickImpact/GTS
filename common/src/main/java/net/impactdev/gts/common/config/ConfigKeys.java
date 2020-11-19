@@ -1,10 +1,10 @@
-package net.impactdev.gts.common.config.updated;
+package net.impactdev.gts.common.config;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.common.config.updated.types.time.TimeKey;
+import net.impactdev.gts.common.config.types.time.TimeKey;
 import net.impactdev.gts.common.discord.DiscordOption;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.ConfigKey;
@@ -14,7 +14,6 @@ import net.impactdev.impactor.api.storage.StorageCredentials;
 import net.impactdev.impactor.api.storage.StorageType;
 import net.impactdev.impactor.api.utilities.Time;
 import net.impactdev.gts.api.blacklist.Blacklist;
-import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 
 import java.awt.Color;
@@ -23,7 +22,6 @@ import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
-import java.util.StringJoiner;
 import java.util.function.BiFunction;
 
 import static net.impactdev.impactor.api.configuration.ConfigKeyTypes.*;

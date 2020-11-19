@@ -1,6 +1,7 @@
 package net.impactdev.gts.common.ui;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.gui.Icon;
 import net.impactdev.impactor.api.gui.InventoryDimensions;

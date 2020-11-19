@@ -7,6 +7,7 @@ import net.impactdev.gts.sponge.listings.ui.creator.SpongeEntryTypeSelectionMenu
 import net.impactdev.gts.sponge.ui.Displayable;
 import net.impactdev.gts.listings.ui.SpongeItemUI;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
+import net.impactdev.gts.ui.submenu.auctions.ActiveBidsMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
@@ -114,7 +115,7 @@ public class SpongeMainMenu implements Displayable {
 				.build()
 		);
 		bids.addListener(clickable -> {
-
+			new ActiveBidsMenu(this.viewer).open();
 		});
 		slb.slot(bids, 33);
 
@@ -207,7 +208,7 @@ public class SpongeMainMenu implements Displayable {
 								.build()
 						);
 						bids.addListener(clickable -> {
-
+							new ActiveBidsMenu(this.viewer).open();
 						});
 						this.view.setSlot(33, bids);
 					});

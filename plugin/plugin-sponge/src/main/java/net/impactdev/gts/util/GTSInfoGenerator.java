@@ -4,7 +4,7 @@ import co.aikar.commands.CommandIssuer;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.extension.Extension;
-import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.impactor.api.Impactor;

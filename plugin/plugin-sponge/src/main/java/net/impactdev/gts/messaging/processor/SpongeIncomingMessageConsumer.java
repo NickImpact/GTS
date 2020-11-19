@@ -9,9 +9,8 @@ import net.impactdev.gts.api.messaging.message.Message;
 import net.impactdev.gts.api.messaging.message.MessageConsumer;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.gts.api.messaging.message.type.UpdateMessage;
-import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.Impactor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -22,9 +21,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import static net.impactdev.gts.common.messaging.GTSMessagingService.NORMAL;

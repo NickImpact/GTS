@@ -33,7 +33,7 @@ import net.impactdev.impactor.api.storage.StorageType;
 import net.impactdev.impactor.api.storage.sql.file.H2ConnectionFactory;
 import net.impactdev.impactor.api.storage.sql.hikari.MariaDBConnectionFactory;
 import net.impactdev.impactor.api.storage.sql.hikari.MySQLConnectionFactory;
-import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.storage.implementation.file.ConfigurateStorage;

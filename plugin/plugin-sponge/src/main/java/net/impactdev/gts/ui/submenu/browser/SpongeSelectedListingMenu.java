@@ -11,7 +11,7 @@ import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.common.config.updated.ConfigKeys;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.sponge.listings.SpongeAuction;
 import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
 import net.impactdev.gts.manager.SpongeListingManager;
