@@ -5,6 +5,7 @@ import com.google.common.collect.TreeMultimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.util.PrettyPrinter;
@@ -22,6 +23,7 @@ import org.checkerframework.checker.index.qual.Positive;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -150,9 +152,9 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 					.map(e -> UUID.fromString(e.getAsString()))
 					.orElseThrow(() -> new IllegalStateException("Failed to locate seller"));
 
-			TreeMultimap<UUID, Double> bids = TreeMultimap.create(
+			TreeMultimap<UUID, Auction.Bid> bids = TreeMultimap.create(
 					Comparator.naturalOrder(),
-					Collections.reverseOrder(Double::compareTo)
+					Collections.reverseOrder(Comparator.comparing(Auction.Bid::getAmount))
 			);
 
 			Optional.ofNullable(raw.get("bids"))
@@ -162,7 +164,13 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 							UUID user = UUID.fromString(entry.getKey());
 							JsonArray userBids = entry.getValue().getAsJsonArray();;
 							for(JsonElement placedBid : userBids) {
-								bids.put(user, placedBid.getAsDouble());
+								JsonObject data = placedBid.getAsJsonObject();
+								Auction.Bid parsed = Auction.Bid.builder()
+										.amount(data.get("amount").getAsDouble())
+										.timestamp(LocalDateTime.parse(data.get("timestamp").getAsString()))
+										.build();
+
+								bids.put(user, parsed);
 							}
 						}
 
@@ -186,7 +194,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 		private final UUID seller;
 
 		/** Details a filtered list of all bids placed on this auction, with the highest bid per user filtered in */
-		private final TreeMultimap<UUID, Double> bids;
+		private final TreeMultimap<UUID, Auction.Bid> bids;
 
 		/** The amount of time it took for this response to be generated */
 		private long responseTime;
@@ -206,7 +214,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 		 * @param seller     The ID of the user who created the auction
 		 * @param bids       All other bids placed, filtered to contain highest bids per user, as a means of communication
 		 */
-		public Response(UUID id, UUID request, UUID listing, UUID actor, double bid, boolean successful, UUID seller, TreeMultimap<UUID, Double> bids, ErrorCode error) {
+		public Response(UUID id, UUID request, UUID listing, UUID actor, double bid, boolean successful, UUID seller, TreeMultimap<UUID, Auction.Bid> bids, ErrorCode error) {
 			super(id, listing, actor, bid);
 
 			Preconditions.checkNotNull(request, "Request message ID cannot be null");
@@ -237,8 +245,8 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 								JObject users = new JObject();
 								for(UUID id : this.getAllOtherBids().keySet()) {
 									JArray bids = new JArray();
-									for(double bid : this.getAllOtherBids().get(id)) {
-										bids.add(bid);
+									for(Auction.Bid bid : this.bids.get(id).stream().sorted(Collections.reverseOrder(Comparator.comparing(Auction.Bid::getAmount))).collect(Collectors.toList())) {
+										bids.add(bid.serialize());
 									}
 
 									users.add(id.toString(), bids);
@@ -267,7 +275,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 		}
 
 		@Override
-		public @NonNull TreeMultimap<UUID, Double> getAllOtherBids() {
+		public @NonNull TreeMultimap<UUID, Auction.Bid> getAllOtherBids() {
 			return this.bids;
 		}
 
@@ -303,13 +311,13 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 						.hr('-')
 						.add("All Bids").center()
 						.table("UUID", "Bid");
-				List<Map.Entry<UUID, Double>> bids = this.getAllOtherBids().entries()
+				List<Map.Entry<UUID, Auction.Bid>> bids = this.getAllOtherBids().entries()
 						.stream()
-						.sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+						.sorted(Collections.reverseOrder(Comparator.comparing(bid -> bid.getValue().getAmount())))
 						.collect(Collectors.toList());
 
-				for (Map.Entry<UUID, Double> bid : bids) {
-					printer.tr(bid.getKey(), Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(bid.getValue()));
+				for (Map.Entry<UUID, Auction.Bid> bid : bids) {
+					printer.tr(bid.getKey(), Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(bid.getValue().getAmount()));
 					if(++index == 5) {
 						break;
 					}

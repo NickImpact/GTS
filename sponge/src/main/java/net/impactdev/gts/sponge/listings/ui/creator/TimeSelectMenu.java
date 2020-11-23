@@ -78,7 +78,6 @@ public class TimeSelectMenu {
                 .build();
         SpongeIcon icon = new SpongeIcon(custom);
         icon.addListener(clickable -> {
-            AtomicReference<Time> result = new AtomicReference<>();
             SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
                     .position(new Vector3d(0, 1, 0))
                     .text(Lists.newArrayList(
@@ -89,13 +88,16 @@ public class TimeSelectMenu {
                     ))
                     .response(submission -> {
                         try {
-                            try {
-                                result.set(new Time(submission.get(0)));
-                                Impactor.getInstance().getScheduler().executeSync(() -> this.callback.accept(this.parent, result.get()));
+                            Time time = new Time(submission.get(0));
+
+                            long min = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_MIN_TIME).getTime();
+                            long max = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_MAX_TIME).getTime();
+                            if(time.getTime() >= Math.max(0, min) && time.getTime() <= Math.max(0, max)) {
+                                Impactor.getInstance().getScheduler().executeSync(() -> this.callback.accept(this.parent, time));
                                 return true;
-                            } catch (Exception e) {
-                                return false;
                             }
+
+                            return false;
                         } catch (Exception e) {
                             return false;
                         }

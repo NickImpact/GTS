@@ -1,3 +1,4 @@
+/* This design originates from Nucleus, which is licensed under MIT */
 package net.impactdev.gts.gradle.enums;
 
 import java.util.function.Predicate;

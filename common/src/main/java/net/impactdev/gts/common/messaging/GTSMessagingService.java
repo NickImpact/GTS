@@ -303,6 +303,8 @@ public class GTSMessagingService implements InternalMessagingService {
                     request.getAuctionID(),
                     request.getActor(),
                     false,
+                    false,
+                    false,
                     error
             );
 

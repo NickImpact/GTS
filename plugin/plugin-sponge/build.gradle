@@ -1,3 +1,7 @@
+import net.impactdev.gts.gradle.tasks.UploadToOre
+
+import java.nio.file.Paths
+
 buildscript {
     repositories {
         jcenter()

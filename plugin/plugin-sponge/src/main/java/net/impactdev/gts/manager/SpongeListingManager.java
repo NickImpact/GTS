@@ -82,7 +82,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 			List<Supplier<Object>> sources = Lists.newArrayList(() -> listing);
 			source.ifPresent(player -> sources.add(() -> player));
 
-			source.ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PUBLISH_REQUEST))));
+			source.ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST))));
 
 			// Check if the user attempting to list a listing has already hit the max amount allowed for a player
 			boolean hasMax = this.hasMaxListings(lister).get(2, TimeUnit.SECONDS);
@@ -314,6 +314,8 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 	@Override
 	public CompletableFuture<Boolean> purchase(UUID buyer, SpongeBuyItNow listing, Object source) {
+		final Config lang = GTSPlugin.getInstance().getMsgConfig();
+		final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
 		return CompletableFutureManager.makeFuture(() -> {
 			Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(
 					Text.of(TextColors.GRAY, "Processing purchase...")
@@ -329,9 +331,24 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 											listing.getPrice().pay(buyer, source);
 											listing.getEntry().give(buyer);
 
-											Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(
-													Text.of(TextColors.GRAY, "Purchase complete!")
+											Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessages(
+													parser.parse(lang.get(MsgConfigKeys.PURCHASE_PAY), Lists.newArrayList(
+															() -> listing
+													))
 											));
+
+											Sponge.getServer().getPlayer(listing.getLister()).ifPresent(seller -> {
+												GTSService.getInstance().getPlayerSettingsManager()
+														.retrieve(seller.getUniqueId())
+														.thenAccept(settings -> {
+															if(settings.getSoldListenState()) {
+																seller.sendMessages(parser.parse(
+																		lang.get(MsgConfigKeys.PURCHASE_RECEIVE),
+																		Lists.newArrayList(() -> listing, () -> buyer)
+																));
+															}
+														});
+											});
 
 											listing.markPurchased();
 
@@ -346,8 +363,6 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 										});
 									} else {
 										Sponge.getServer().getPlayer(buyer).ifPresent(player -> {
-											final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-
 											player.sendMessage(parser.parse(
 													Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
 													Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)

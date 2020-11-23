@@ -37,9 +37,9 @@ public class SpongeAuction extends SpongeListing implements Auction {
 	/** The base increment percentage required to place a bid */
 	private final float increment;
 
-	private final TreeMultimap<UUID, Double> bids = TreeMultimap.create(
+	private final TreeMultimap<UUID, Bid> bids = TreeMultimap.create(
 			Comparator.naturalOrder(),
-			Collections.reverseOrder(Double::compareTo)
+			Collections.reverseOrder(Comparator.comparing(Bid::getAmount))
 	);
 
 	private SpongeAuction(SpongeAuctionBuilder builder) {
@@ -53,9 +53,9 @@ public class SpongeAuction extends SpongeListing implements Auction {
 	}
 
 	@Override
-	public Optional<Tuple<UUID, Double>> getHighBid() {
+	public Optional<Tuple<UUID, Bid>> getHighBid() {
 		return this.bids.entries().stream()
-				.max(Map.Entry.comparingByValue())
+				.max(Comparator.comparing(value -> value.getValue().getAmount()))
 				.map(e -> new Tuple<>(e.getKey(), e.getValue()));
 	}
 
@@ -75,9 +75,21 @@ public class SpongeAuction extends SpongeListing implements Auction {
 	}
 
 	@Override
+	public double getNextBidRequirement() {
+		double result;
+		if(this.getBids().size() == 0) {
+			result = this.getStartingPrice();
+		} else {
+			result = this.getCurrentPrice() * (1.0 + this.getIncrement());
+		}
+
+		return result;
+	}
+
+	@Override
 	public boolean bid(UUID user, double amount) {
-		if(this.bids.size() == 0 || (amount >= this.getHighBid().get().getSecond() * (1.0 + this.getIncrement()))) {
-			this.getBids().put(user, amount);
+		if(this.bids.size() == 0 || (amount >= this.getHighBid().get().getSecond().getAmount() * (1.0 + this.getIncrement()))) {
+			this.getBids().put(user, new Bid(amount));
 			this.price = amount;
 			return true;
 		}
@@ -85,12 +97,12 @@ public class SpongeAuction extends SpongeListing implements Auction {
 	}
 
 	@Override
-	public Optional<Double> getCurrentBid(UUID uuid) {
+	public Optional<Bid> getCurrentBid(UUID uuid) {
 		return this.getHighBid().map(Tuple::getSecond);
 	}
 
 	@Override
-	public TreeMultimap<UUID, Double> getBids() {
+	public TreeMultimap<UUID, Bid> getBids() {
 		return this.bids;
 	}
 
@@ -102,8 +114,8 @@ public class SpongeAuction extends SpongeListing implements Auction {
 
 		for(UUID id : this.bids.keys()) {
 			JArray array = new JArray();
-			for(double bid : this.bids.get(id).stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList())) {
-				array.add(bid);
+			for(Bid bid : this.bids.get(id).stream().sorted(Collections.reverseOrder(Comparator.comparing(Bid::getAmount))).collect(Collectors.toList())) {
+				array.add(bid.serialize());
 			}
 			bids.add(id.toString(), array);
 		}
@@ -139,11 +151,17 @@ public class SpongeAuction extends SpongeListing implements Auction {
 		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));
 
 		JsonObject bids = object.getAsJsonObject("auction").getAsJsonObject("bids");
-		Multimap<UUID, Double> mapping = ArrayListMultimap.create();
+		Multimap<UUID, Bid> mapping = ArrayListMultimap.create();
 		for(Map.Entry<String, JsonElement> entry : bids.entrySet()) {
 			if(entry.getValue().isJsonArray()) {
 				entry.getValue().getAsJsonArray().forEach(e -> {
-					mapping.put(UUID.fromString(entry.getKey()), e.getAsDouble());
+					JsonObject data = e.getAsJsonObject();
+					Bid bid = Bid.builder()
+							.amount(data.get("amount").getAsDouble())
+							.timestamp(LocalDateTime.parse(data.get("timestamp").getAsString()))
+							.build();
+
+					mapping.put(UUID.fromString(entry.getKey()), bid);
 				});
 			}
 		}
@@ -162,7 +180,7 @@ public class SpongeAuction extends SpongeListing implements Auction {
 		private double start;
 		private float increment;
 		private double current;
-		private Multimap<UUID, Double> bids;
+		private Multimap<UUID, Bid> bids;
 
 		@Override
 		public AuctionBuilder id(UUID id) {
@@ -214,7 +232,7 @@ public class SpongeAuction extends SpongeListing implements Auction {
 		}
 
 		@Override
-		public AuctionBuilder bids(Multimap<UUID, Double> bids) {
+		public AuctionBuilder bids(Multimap<UUID, Bid> bids) {
 			this.bids = bids;
 			return this;
 		}

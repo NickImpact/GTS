@@ -78,7 +78,15 @@ public interface GTSStorage {
 	 */
 	CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request);
 
+	/**
+	 *
+	 *
+	 * @param request
+	 * @return
+	 */
 	CompletableFuture<AuctionMessage.Claim.Response> processAuctionClaimRequest(AuctionMessage.Claim.Request request);
+
+	CompletableFuture<Boolean> appendOldClaimStatus(UUID auction, boolean lister, boolean winner);
 
 	CompletableFuture<AuctionMessage.Cancel.Response> processAuctionCancelRequest(AuctionMessage.Cancel.Request request);
 

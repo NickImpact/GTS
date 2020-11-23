@@ -121,9 +121,18 @@ public class GTSSpongePlaceholderManager {
                 "time_left",
                 "GTS - Listing Time Remaining",
                 listing -> {
+                    final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+
                     LocalDateTime expiration = listing.getExpiration();
                     LocalDateTime now = LocalDateTime.now();
-                    return Text.of(new Time(Duration.between(now, expiration).getSeconds()).asPatternized());
+                    Time time = new Time(Duration.between(now, expiration).getSeconds());
+                    if(time.getTime() <= 0) {
+                        return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.TIME_EXPIRED_TRANSLATION));
+                    }
+                    return parser.parse(
+                            Utilities.readMessageConfigOption(MsgConfigKeys.TIME_REMAINING_TRANSLATION),
+                            Lists.newArrayList(() -> time)
+                    );
                 }
         ));
 
@@ -166,6 +175,12 @@ public class GTSSpongePlaceholderManager {
                 "time",
                 "GTS - Amount of time representing how long a listing will be listed for",
                 Utilities::translateTime
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Time.class,
+                "time_short",
+                "GTS - A short version of the output of {{gts:time}}",
+                time -> Text.of(time.asPatternized())
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Time.class,
@@ -248,7 +263,7 @@ public class GTSSpongePlaceholderManager {
                 "auction_high_bid",
                 "GTS - High Bid of an Auction",
                 auction -> Sponge.getServiceManager().provideUnchecked(EconomyService.class).getDefaultCurrency()
-                        .format(BigDecimal.valueOf(auction.getHighBid().map(Tuple::getSecond).orElseThrow(() -> new IllegalStateException("Unable to locate bid amount"))))
+                        .format(BigDecimal.valueOf(auction.getHighBid().map(Tuple::getSecond).map(Auction.Bid::getAmount).orElseThrow(() -> new IllegalStateException("Unable to locate bid amount"))))
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.class,
@@ -267,6 +282,45 @@ public class GTSSpongePlaceholderManager {
                 "auction_bidder",
                 "GTS - Bidder on an Auction",
                 Text::of
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Auction.class,
+                "auction_next_required_bid",
+                "GTS - An auction's next required bid",
+                auction -> Text.of(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(auction.getNextBidRequirement()))
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Double.class,
+                "auction_previous_user_bid",
+                "GTS - The previous highest bid by a user on an auction, if any",
+                value -> Text.of(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value))
+        ));
+
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Auction.BidContext.class,
+                "auction_bid_amount",
+                "GTS - Amount placed on a Bid",
+                bid -> Text.of(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(bid.getBid().getAmount()))
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Auction.BidContext.class,
+                "auction_bid_actor",
+                "GTS - Actor who placed a Bid",
+                bid -> this.calculateDisplayName(bid.getBidder())
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Auction.BidContext.class,
+                "auction_bid_since_placed",
+                "GTS - How long it has been since a bid was placed",
+                bid -> {
+                    Duration duration = Duration.between(bid.getBid().getTimestamp(), LocalDateTime.now());
+                    Time time = new Time(duration.getSeconds());
+                    if(time.getTime() < 60) {
+                        return Text.of(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.TIME_MOMENTS_TRANSLATION));
+                    }
+
+                    return Utilities.translateTimeHighest(time);
+                }
         ));
 
         this.register(new SourceSpecificPlaceholderParser<>(
@@ -304,6 +358,12 @@ public class GTSSpongePlaceholderManager {
                 "active_bids",
                 "GTS - Active Bids for a Player",
                 Text::of
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                TextComponent.class,
+                "claim_item",
+                "GTS - The item a user is claiming",
+                Utilities::translateComponent
         ));
     }
 

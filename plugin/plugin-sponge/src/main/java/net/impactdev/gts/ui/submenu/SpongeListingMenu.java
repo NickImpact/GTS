@@ -139,7 +139,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 			SpongeIcon icon = new SpongeIcon(item);
 			icon.addListener(clickable -> {
 				this.getView().close(this.getViewer());
-				new SpongeSelectedListingMenu(this.getViewer(), listing, () -> new SpongeListingMenu(this.getViewer()), true).open();
+				new SpongeSelectedListingMenu(this.getViewer(), listing, () -> new SpongeListingMenu(this.getViewer()), false, true).open();
 			});
 			return icon;
 		});
@@ -292,9 +292,11 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 						final String asking = submission.get(0);
 						Impactor.getInstance().getScheduler().executeSync(() -> {
 							if(asking.isEmpty()) {
-								new SpongeListingMenu(this.getViewer()).open();
+								new SpongeListingMenu(this.getViewer(), this.conditions.toArray(new Predicate[]{})).open();
 							} else {
-								new SpongeListingMenu(this.getViewer(), new Searching(asking)).open();
+								this.conditions.removeIf(p -> p instanceof Searching);
+								this.conditions.add(new Searching(asking));
+								new SpongeListingMenu(this.getViewer(), this.conditions.toArray(new Predicate[]{})).open();
 							}
 						});
 
@@ -447,7 +449,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	@Getter
 	@AllArgsConstructor
 	private enum Sorter {
-		QP_MOST_RECENT(SortConfigurationOptions::getQpMostRecent, Comparator.<SpongeListing, LocalDateTime>comparing(Listing::getExpiration).reversed()),
+		QP_MOST_RECENT(SortConfigurationOptions::getQpMostRecent, Comparator.<SpongeListing, LocalDateTime>comparing(Listing::getPublishTime).reversed()),
 		QP_ENDING_SOON(SortConfigurationOptions::getQpEndingSoon, Comparator.comparing(Listing::getExpiration)),
 		A_HIGHEST_BID(SortConfigurationOptions::getAHighest, Comparator.<SpongeListing, Double>comparing(listing -> ((Auction) listing).getCurrentPrice()).reversed()),
 		A_LOWEST_BID(SortConfigurationOptions::getALowest, Comparator.comparing(listing -> ((Auction) listing).getCurrentPrice())),

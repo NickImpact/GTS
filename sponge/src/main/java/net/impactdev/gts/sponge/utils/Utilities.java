@@ -85,6 +85,45 @@ public class Utilities {
 		return TextSerializers.FORMATTING_CODE.deserialize(joiner.toString());
 	}
 
+	public static Text translateTimeHighest(Time time) {
+		long weeks = TimeUnit.SECONDS.toDays(time.getTime()) / 7;
+		long days = TimeUnit.SECONDS.toDays(time.getTime()) % 7;
+		long hours = TimeUnit.SECONDS.toHours(time.getTime()) % 24;
+		long minutes = TimeUnit.SECONDS.toMinutes(time.getTime()) % 60;
+		long seconds = time.getTime() % 60;
+
+		BiFunction<TimeLanguageOptions, Long, String> measure = (key, value) -> {
+			if(value > 1) {
+				return key.getPlural();
+			} else {
+				return key.getSingular();
+			}
+		};
+
+		StringJoiner joiner = new StringJoiner(" ");
+		if(weeks > 0) {
+			joiner.add(weeks + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.WEEKS), weeks));
+		}
+
+		if(days > 0 && joiner.length() == 0) {
+			joiner.add(days + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.DAYS), days));
+		}
+
+		if(hours > 0 && joiner.length() == 0) {
+			joiner.add(hours + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.HOURS), hours));
+		}
+
+		if(minutes > 0 && joiner.length() == 0) {
+			joiner.add(minutes + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.MINUTES), minutes));
+		}
+
+		if(seconds > 0 && joiner.length() == 0) {
+			joiner.add(seconds + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.SECONDS), seconds));
+		}
+
+		return TextSerializers.FORMATTING_CODE.deserialize(joiner.toString());
+	}
+
 	public static SimilarPair<Argument> calculateTimeFee(Time time) {
 		long minutes = TimeUnit.SECONDS.toMinutes(time.getTime()) % 60;
 		long hours = TimeUnit.SECONDS.toHours(time.getTime());

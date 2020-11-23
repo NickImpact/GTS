@@ -1,7 +1,9 @@
+/* This design originates from Nucleus, which is licensed under MIT */
 package net.impactdev.gts.gradle.tasks;
 
 import net.impactdev.gts.gradle.enums.ReleaseLevel;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.BufferedReader;
@@ -48,30 +50,25 @@ public class ReleaseNotesTask extends DefaultTask {
 
     @TaskAction
     public void run() {
-        Path template = this.getProject().getProjectDir().toPath()
+        Path template = this.getProject().getRootDir().toPath()
                 .resolve("changelogs")
                 .resolve("templates")
                 .resolve(this.getLevel().getTemplate() + ".md");
+
 
         if(Files.exists(template)) {
             try {
                 String result = this.read(Files.newBufferedReader(template));
                 this.result = Placeholders.transform(this, result);
-            } catch (Exception ignored) {}
+            } catch (Exception e) {
+                throw new GradleException(e.getMessage());
+            }
         }
 
-        this.getLogger().info(this.version);
-        this.getLogger().info(this.hash);
-        this.getLogger().info(this.getShortHash());
-        this.getLogger().info(this.getSpongeVersion());
-        this.getLogger().info(this.getMessage());
-        this.getLogger().info(this.getLevel().name());
-        this.getLogger().info(this.getProject().getProjectDir().toPath().toString());
-        this.getLogger().info(this.getChangesForVersion().orElse("Invalid"));
     }
 
     private Optional<String> getChangesForVersion() {
-        Path notes = this.getProject().getProjectDir().toPath()
+        Path notes = this.getProject().getRootDir().toPath()
                 .resolve("changelogs")
                 .resolve(this.getVersion() + ".md");
 

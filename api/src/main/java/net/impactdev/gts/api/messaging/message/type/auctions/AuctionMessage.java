@@ -1,6 +1,7 @@
 package net.impactdev.gts.api.messaging.message.type.auctions;
 
 import com.google.common.collect.TreeMultimap;
+import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.OutgoingMessage;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import org.checkerframework.checker.index.qual.Positive;
@@ -80,7 +81,7 @@ public interface AuctionMessage extends OutgoingMessage {
 			 *
 			 * @return A mapping of users to their highest bids on the auction currently
 			 */
-			@NonNull TreeMultimap<UUID, Double> getAllOtherBids();
+			@NonNull TreeMultimap<UUID, Auction.Bid> getAllOtherBids();
 
 		}
 	}
@@ -99,7 +100,13 @@ public interface AuctionMessage extends OutgoingMessage {
 
 		}
 
-		interface Response extends Claim, MessageType.Response {}
+		interface Response extends Claim, MessageType.Response {
+
+			boolean hasListerClaimed();
+
+			boolean hasWinnerClaimed();
+
+		}
 
 	}
 

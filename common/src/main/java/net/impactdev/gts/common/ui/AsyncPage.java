@@ -152,6 +152,10 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 
 	protected abstract Consumer<List<T>> applyWhenReady();
 
+	protected Runnable applyIfEmpty() {
+		return () -> {};
+	}
+
 	private void doProvidedFill(I icon) {
 		this.clean();
 		int index = this.cOffset + this.view.getDimension().getColumns() * this.rOffset;
@@ -215,6 +219,7 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 			viewable.sort(this.sorter);
 		}
 		filtered.set(viewable.size());
+
 		int pages = viewable.isEmpty() ? 1 : (viewable.size() % capacity == 0 ? viewable.size() / capacity : viewable.size() / capacity + 1);
 		if (pages < this.page) {
 			this.page = pages;
@@ -240,6 +245,10 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 				this.view.clear(index);
 			}
 
+		}
+
+		if(viewable.isEmpty()) {
+			this.applyIfEmpty().run();
 		}
 
 	}

@@ -31,16 +31,6 @@ public class PlayerSettingsManagerImpl implements PlayerSettingsManager {
         return this.cache.get(uuid);
     }
 
-    @Override
-    public PlayerSettings deserialize(JsonObject object) {
-        PlayerSettings.PlayerSettingsBuilder builder = PlayerSettings.builder();
-        for(Map.Entry<String, JsonElement> element : object.entrySet()) {
-            builder.set(NotificationSetting.valueOf(element.getKey()), element.getValue().getAsBoolean());
-        }
-
-        return builder.build();
-    }
-
     private PlayerSettings fetch(UUID uuid) {
         try {
             return GTSPlugin.getInstance().getStorage().getPlayerSettings(uuid)

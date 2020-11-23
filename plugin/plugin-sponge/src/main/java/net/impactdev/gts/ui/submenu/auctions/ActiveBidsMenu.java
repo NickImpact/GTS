@@ -10,6 +10,7 @@ import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.config.wrappers.TitleLorePair;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.listings.SpongeListing;
+import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
 import net.impactdev.gts.sponge.ui.SpongeAsyncPage;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
@@ -41,6 +42,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
 public class ActiveBidsMenu extends SpongeAsyncPage<SpongeListing> {
 
@@ -98,7 +102,7 @@ public class ActiveBidsMenu extends SpongeAsyncPage<SpongeListing> {
             SpongeIcon icon = new SpongeIcon(item);
             icon.addListener(clickable -> {
                 this.getView().close(this.getViewer());
-                new SpongeSelectedListingMenu(this.getViewer(), listing, () -> new SpongeListingMenu(this.getViewer()), true).open();
+                new SpongeSelectedListingMenu(this.getViewer(), listing, () -> new SpongeListingMenu(this.getViewer()), true, true).open();
             });
             return icon;
         });
@@ -119,8 +123,8 @@ public class ActiveBidsMenu extends SpongeAsyncPage<SpongeListing> {
     @Override
     protected Map<PageIconType, PageIcon<ItemType>> getPageIcons() {
         Map<PageIconType, PageIcon<ItemType>> options = Maps.newHashMap();
-        options.put(PageIconType.PREV, new PageIcon<>(ItemTypes.ARROW, 48));
-        options.put(PageIconType.NEXT, new PageIcon<>(ItemTypes.ARROW, 50));
+        options.put(PageIconType.PREV, new PageIcon<>(ItemTypes.ARROW, 47));
+        options.put(PageIconType.NEXT, new PageIcon<>(ItemTypes.ARROW, 51));
 
         return options;
     }
@@ -144,7 +148,18 @@ public class ActiveBidsMenu extends SpongeAsyncPage<SpongeListing> {
     protected SpongeLayout design() {
         SpongeLayout.SpongeLayoutBuilder slb = SpongeLayout.builder();
         slb.dimension(9, 5).border().dimension(9, 6);
-        slb.slots(SpongeIcon.BORDER, 45, 46, 47, 51, 52, 53);
+        slb.slots(SpongeIcon.BORDER, 45, 46, 52, 53);
+
+        SpongeIcon back = new SpongeIcon(ItemStack.builder()
+                .itemType(ItemTypes.BARRIER)
+                .add(Keys.DISPLAY_NAME, Utilities.PARSER.parse(readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK), Lists.newArrayList(() -> this.viewer)))
+                .build()
+        );
+        back.addListener(clickable -> {
+            SpongeMainPageProvider provider = SpongeMainPageProvider.creator().viewer(this.viewer).build();
+            provider.open();
+        });
+        slb.slot(back, 49);
 
         return slb.build();
     }
@@ -186,6 +201,17 @@ public class ActiveBidsMenu extends SpongeAsyncPage<SpongeListing> {
     @Override
     protected Consumer<List<SpongeListing>> applyWhenReady() {
         return collection -> {};
+    }
+
+    @Override
+    protected Runnable applyIfEmpty() {
+        return () -> this.getView().setSlot(22, new SpongeIcon(ItemStack.builder()
+                .itemType(ItemTypes.STAINED_GLASS_PANE)
+                .add(Keys.DYE_COLOR, DyeColors.RED)
+                .add(Keys.DISPLAY_NAME, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PLAYER_NO_ACTIVE_BIDS_TITLE)))
+                .add(Keys.ITEM_LORE, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PLAYER_NO_ACTIVE_BIDS_LORE)))
+                .build())
+        );
     }
 
     private Task schedule() {

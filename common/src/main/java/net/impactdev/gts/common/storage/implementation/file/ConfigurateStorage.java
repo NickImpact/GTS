@@ -170,6 +170,11 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     @Override
+    public boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner) throws Exception {
+        return false;
+    }
+
+    @Override
     public AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception {
         return null;
     }

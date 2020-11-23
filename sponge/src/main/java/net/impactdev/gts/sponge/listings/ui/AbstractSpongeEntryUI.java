@@ -5,6 +5,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+import net.impactdev.gts.sponge.listings.ui.creator.SpongePriceTypeSelectionMenu;
+import net.impactdev.gts.sponge.listings.ui.creator.TimeSelectMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.gui.signs.SignQuery;
 import net.impactdev.impactor.api.services.text.MessageService;
@@ -24,10 +26,8 @@ import net.impactdev.gts.sponge.listings.SpongeAuction;
 import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
 import net.impactdev.gts.sponge.listings.SpongeListing;
 import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
-import net.impactdev.gts.sponge.listings.ui.creator.TimeSelectMenu;
 import net.impactdev.gts.sponge.pricing.SpongePrice;
 import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
-import net.impactdev.gts.sponge.listings.ui.creator.SpongePriceTypeSelectionMenu;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.sponge.utils.items.SkullCreator;
 import org.spongepowered.api.data.key.Keys;
@@ -215,8 +215,10 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
         SpongeIcon time = new SpongeIcon(duration);
         time.addListener(clickable -> {
             new TimeSelectMenu(this.viewer, this, (ui, t) -> {
-                this.duration = t;
-                ui.getDisplay().setSlot(this.getTimeSlot(), this.createTimeIcon());
+                if (t.getTime() != 0) {
+                    this.duration = t;
+                    ui.getDisplay().setSlot(this.getTimeSlot(), this.createTimeIcon());
+                }
                 ui.open(this.viewer);
             }).open();
         });

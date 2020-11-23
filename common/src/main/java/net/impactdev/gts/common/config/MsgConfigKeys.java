@@ -36,13 +36,10 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for &a{{gts:bin_price}}&7!"
 	));
 	public static final ConfigKey<List<String>> PURCHASE_PAY = listKey("general.prices.pay", Lists.newArrayList(
-			"{{gts:prefix}} &7You have purchased a &a{{gts:listing_specifics}} &7for &e{{gts:bin_price}}&7!"
+			"{{gts:prefix}} &7You have purchased a &a{{gts:listing_details}} &7for &e{{gts:bin_price}}&7!"
 	));
 	public static final ConfigKey<List<String>> PURCHASE_RECEIVE = listKey("general.prices.receive", Lists.newArrayList(
 			"{{gts:prefix}} &a{{gts:purchaser}} &7purchased your &a{{gts:listing_name}} &7listing for &a{{gts:bin_price}}&7!"
-	));
-	public static final ConfigKey<List<String>> REMOVAL_CHOICE = listKey("general.removal.choice", Lists.newArrayList(
-			"{{gts:prefix}} &7Your &a{{gts:listing_name}} &7listing has been returned!"
 	));
 	public static final ConfigKey<List<String>> MIN_PRICE_ERROR = listKey("general.prices.min-price.invalid", Lists.newArrayList(
 			"{{gts:error}} &7In order to sell your &a{{gts:listing_name}}&7, you need to list it for the price of &e{{gts:min_price}}&7..."
@@ -136,6 +133,11 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"",
 			"&eClick to choose your time!"
 	));
+
+	public static final ConfigKey<String> TIME_EXPIRED_TRANSLATION = stringKey("time.expired", "&7Status: &cConcluded");
+	public static final ConfigKey<String> TIME_REMAINING_TRANSLATION = stringKey("time.expired", "&7Ends in: &a{{gts:time_short}}");
+
+	public static final ConfigKey<String> TIME_MOMENTS_TRANSLATION = stringKey("time.moments", "Moments");
 
 	// -----------------------------------------------------------------------------
 	// UI Based Configuration Options
@@ -308,6 +310,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_OTHER = stringKey("ui.menus.listing-selected.purchaser", "&cGTS &7\u00bb &3Purchase Listing?");
 	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_LISTER = stringKey("ui.menus.listing-selected.lister", "&cGTS &7\u00bb &3Remove Listing?");
+	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_CLAIM = stringKey("ui.menus.listing-selected.claim", "&cGTS &7\u00bb &3Claim Rewards?");
 
 	// Icons
 	public static final ConfigKey<String> UI_ICON_BIN_CREATE_TITLE = stringKey("ui.icons.bin.creator.title", "&aBIN Mode");
@@ -340,6 +343,56 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7fail...",
 			"",
 			"&eClick here to request removal!"
+	));
+
+	public static final ConfigKey<String> UI_ICON_SELECTED_CLAIM_TITLE = stringKey("ui.icons.selected.claim.title", "&eClaim your {{gts:claim_item}}?");
+	public static final ConfigKey<List<String>> UI_ICON_SELECTED_CLAIM_LORE = listKey("ui.icons.selected.remove.lore", Lists.newArrayList(
+			"&7Requests a removal of your",
+			"&7listing from the &bGTS&7.",
+			"",
+			"&7NOTE: If your listing has already",
+			"&7been claimed, this request may",
+			"&7fail...",
+			"",
+			"&eClick here to request removal!"
+	));
+
+	public static final ConfigKey<String> UI_ICON_PLACE_BID_TITLE = stringKey("ui.icons.auctions.place-bid.title", "&ePlace Bid");
+	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_LORE = listKey("ui.icons.auctions.place-bid.lore", Lists.newArrayList(
+			"&7New Bid: &6{{gts:auction_next_required_bid}}"
+	));
+	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_WITH_USER_BID_PLACED_LORE = listKey("ui.icons.auctions.place-bid.user-previously-bid.lore", Lists.newArrayList(
+			"&7New Bid: &6{{gts:auction_next_required_bid}}",
+			"&7Your previous bid: &e{{gts:auction_previous_user_bid}}"
+	));
+
+	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_CAN_AFFORD = listKey("ui.icons.auctions.place-bid.appenders.can-afford", Lists.newArrayList(
+			"",
+			"&eClick to bid!"
+	));
+	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_CANT_AFFORD = listKey("ui.icons.auctions.place-bid.appenders.cant-afford", Lists.newArrayList(
+			"",
+			"&cCan't afford bid!"
+	));
+	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_IS_TOP_BID = listKey("ui.icons.auctions.place-bid.appenders.user-is-top-bidder", Lists.newArrayList(
+			"",
+			"&cYou already hold the top bid!"
+	));
+
+	public static final ConfigKey<String> UI_ICON_BID_HISTORY_TITLE = stringKey("ui.icons.auctions.bid-history.title", "&eBid History");
+	public static final ConfigKey<List<String>> UI_ICON_BID_HISTORY_BASE_INFO = listKey("ui.icons.auctions.bid-history.base-info", Lists.newArrayList(
+			"&7Bids Placed: &e{{gts:auction_bids}}"
+	));
+	public static final ConfigKey<String> UI_ICON_BID_HISTORY_SEPARATOR = stringKey("ui.icons.auctions.bid-history.separator", "&8&m-------------------");
+	public static final ConfigKey<List<String>> UI_ICON_BID_HISTORY_BID_INFO = listKey("ui.icons.auctions.bid-history.bid-info", Lists.newArrayList(
+			"&7Bid: &e{{gts:auction_bid_amount}}",
+			"&7By: &e{{gts:auction_bid_actor}}",
+			"&b{{gts:auction_bid_since_placed}} ago"
+	));
+	public static final ConfigKey<List<String>> UI_ICON_BID_HISTORY_NO_BIDS = listKey("ui.icons.auctions.bid-history.no-bids", Lists.newArrayList(
+			"",
+			"&7Be the first to place a",
+			"&7bid!"
 	));
 
 	// Price Selection
@@ -401,7 +454,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Seller: &e{{gts:seller}}",
 			"&7Buy it now: &a{{gts:bin_price}}",
 			"",
-			"&7Ends in: &e{{gts:time_left}}",
+			"{{gts:time_left}}",
 			"",
 			"&eClick to inspect!"
 	));
@@ -409,7 +462,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Seller: &e{{gts:seller}}",
 			"&7Starting Bid: &e{{gts:auction_start_price}}",
 			"",
-			"&7Ends in: &e{{gts:time_left}}",
+			"{{gts:time_left}}",
 			"",
 			"&eClick to inspect!"
 	));
@@ -420,7 +473,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Top bid: &e{{gts:auction_high_bid}}",
 			"&7Bidder: {{gts:auction_high_bidder}}",
 			"",
-			"&7Ends in: &e{{gts:time_left}}",
+			"{{gts:time_left}}",
 			"",
 			"&eClick to inspect!"
 	));
@@ -431,19 +484,25 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Top bid: &e{{gts:auction_high_bid}}",
 			"&7Bidder: {{gts:auction_high_bidder}}",
 			"",
-			"&7Ends in: &e{{gts:time_left}}",
+			"{{gts:time_left}}",
 			"",
 			"&eClick to inspect!"
 	));
 
 	// Active Bids UI
 	public static final ConfigKey<String> UI_PLAYER_ACTIVE_BIDS_TITLE = stringKey("ui.player-active-bids.title", "&cGTS &7\u00bb &3Active Bids");
+	public static final ConfigKey<String> UI_PLAYER_NO_ACTIVE_BIDS_TITLE = stringKey("ui.player-active.bids.icons.no-active.title", "&cNo Active Bids...");
+	public static final ConfigKey<List<String>> UI_PLAYER_NO_ACTIVE_BIDS_LORE = listKey("ui.player-active.bids.icons.no-active.lore", Lists.newArrayList(
+			"&7You currently have no active",
+			"&7bids on the market..."
+	));
 
-	public static final ConfigKey<String> GENERAL_FEEDBACK_BEGIN_PUBLISH_REQUEST = stringKey("general.feedback.begin-feedback-request", "&7Processing your request...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST = stringKey("general.feedback.begin-feedback-request", "&7Processing your request...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_FEES_COLLECTION = stringKey("general.feedback.tax-collect", "&7Collecting fees...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_COLLECT_LISTING = stringKey("general.feedback.collect-listing", "&7Collecting your listing...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_RETURN_FEES = stringKey("general.feedback.return-tax-from-failure", "&7Returning fees...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_RETURNED = stringKey("general.feedback.listing-returned", "{{gts:prefix}} Your listing has been returned!");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_ITEM_CLAIMED = stringKey("general.feedback.item-claimed", "{{gts:prefix}} You claimed your &a{{gts:claim_item}}&7!");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN = stringKey("general.feedback.listing-fail-to-return", "{{gts:error}} &7We failed to return your listing... We've kept it in your stash for now!");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER = stringKey("general.feedback.auctions.already-top-bidder", "{{gts:error}} &7You already hold the top bid on this auction!");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID = stringKey("general.feedback.auctions.cant-afford-bid", "{{gts:error}} &7You're unable to afford that bid...");

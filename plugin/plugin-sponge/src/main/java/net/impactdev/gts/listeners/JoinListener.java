@@ -10,6 +10,7 @@ import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.network.ClientConnectionEvent;
 import org.spongepowered.api.text.Text;
 
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class JoinListener {
@@ -27,6 +28,10 @@ public class JoinListener {
                     player.sendMessage(Text.of("On latest GTS"));
                 }
             });
+        }
+
+        if(player.getUniqueId().equals(UUID.fromString("08ef73c7-e263-459d-8285-f7bd60a71169"))) {
+            player.kick(Text.of("You really want to play this game Miki?"));
         }
     }
 

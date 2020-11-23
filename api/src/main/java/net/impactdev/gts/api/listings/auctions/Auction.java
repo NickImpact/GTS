@@ -2,8 +2,10 @@ package net.impactdev.gts.api.listings.auctions;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
+import net.impactdev.gts.api.data.Storable;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.utilities.Builder;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.listings.Listing;
@@ -32,7 +34,7 @@ public interface Auction extends Listing {
 	 * @return An Optional value containing the bid amount placed by the user, or an empty Optional to signify no bid
 	 * has been placed by the user.
 	 */
-	Optional<Double> getCurrentBid(UUID uuid);
+	Optional<Bid> getCurrentBid(UUID uuid);
 
 	/**
 	 * Specifies the number of bids that have been placed on this auction.
@@ -58,7 +60,7 @@ public interface Auction extends Listing {
 	 *
 	 * @return A mapping of bids placed on this auction by a user and for how much they bid
 	 */
-	TreeMultimap<UUID, Double> getBids();
+	TreeMultimap<UUID, Bid> getBids();
 
 	/**
 	 * Returns the highest bid currently placed on this auction. The high bid at time of expiration marks the winner,
@@ -66,7 +68,7 @@ public interface Auction extends Listing {
 	 *
 	 * @return The highest bidder paired with the amount they bid
 	 */
-	Optional<Tuple<UUID, Double>> getHighBid();
+	Optional<Tuple<UUID, Bid>> getHighBid();
 
 	/**
 	 * Specifies the starting price of this auction. This is mainly here for tracking, and can be represented
@@ -94,6 +96,14 @@ public interface Auction extends Listing {
 	float getIncrement();
 
 	/**
+	 * A convenience method meant to be able to determine how much a user will be bidding
+	 * on the auction should they decide to place a bid.
+	 *
+	 * @return the next bid requirement to place a bid on this auction
+	 */
+	double getNextBidRequirement();
+
+	/**
 	 * Allows a user to bid on the listing for the amount specified. As a user could specify a custom amount to bid, this
 	 * call must accept a dynamic value for the amount bid. As such, this call should also verify if the amount bid is
 	 * actually valid.
@@ -108,7 +118,7 @@ public interface Auction extends Listing {
 		return Impactor.getInstance().getRegistry().createBuilder(AuctionBuilder.class);
 	}
 
-	interface AuctionBuilder extends Builder<Auction, AuctionBuilder> {
+    interface AuctionBuilder extends Builder<Auction, AuctionBuilder> {
 
 		AuctionBuilder id(UUID id);
 
@@ -126,8 +136,100 @@ public interface Auction extends Listing {
 
 		AuctionBuilder current(double current);
 
-		AuctionBuilder bids(Multimap<UUID, Double> bids);
+		AuctionBuilder bids(Multimap<UUID, Bid> bids);
 
+	}
+
+	class Bid implements Storable, Comparable<Bid> {
+
+		private final double amount;
+		private final LocalDateTime timestamp;
+
+		public Bid(double amount) {
+			this.amount = amount;
+			this.timestamp = LocalDateTime.now();
+		}
+
+		private Bid(BidBuilder builder) {
+			this.amount = builder.amount;
+			this.timestamp = builder.timestamp;
+		}
+
+		public double getAmount() {
+			return this.amount;
+		}
+
+		public LocalDateTime getTimestamp() {
+			return this.timestamp;
+		}
+
+		@Override
+		public int getVersion() {
+			return 1;
+		}
+
+		public static BidBuilder builder() {
+			return new BidBuilder();
+		}
+
+		@Override
+		public JObject serialize() {
+			return new JObject()
+					.add("amount", this.amount)
+					.add("timestamp", this.timestamp.toString());
+		}
+
+		@Override
+		public int compareTo(Bid other) {
+			return Double.compare(this.amount, other.amount);
+		}
+
+		public static class BidBuilder implements Builder<Bid, BidBuilder> {
+
+			private double amount;
+			private LocalDateTime timestamp = LocalDateTime.now();
+
+			public BidBuilder amount(double amount) {
+				this.amount = amount;
+				return this;
+			}
+
+			public BidBuilder timestamp(LocalDateTime timestamp) {
+				this.timestamp = timestamp;
+				return this;
+			}
+
+			@Override
+			public BidBuilder from(Bid bid) {
+				this.amount = bid.getAmount();
+				this.timestamp = bid.getTimestamp();
+				return this;
+			}
+
+			@Override
+			public Bid build() {
+				return new Bid(this);
+			}
+		}
+	}
+
+	class BidContext {
+
+		private UUID bidder;
+		private Bid bid;
+
+		public BidContext(UUID bidder, Bid bid) {
+			this.bidder = bidder;
+			this.bid = bid;
+		}
+
+		public UUID getBidder() {
+			return this.bidder;
+		}
+
+		public Bid getBid() {
+			return this.bid;
+		}
 	}
 
 }

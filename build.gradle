@@ -1,8 +1,10 @@
 import net.impactdev.gts.gradle.enums.ReleaseLevel
 import net.impactdev.gts.gradle.tasks.ReleaseNotesTask
+import net.impactdev.gts.gradle.tasks.UploadToOre
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
+import java.nio.file.Paths
 
 buildscript {
     repositories {
@@ -158,6 +160,17 @@ task copyJars(type: Copy) {
     exclude 'generations*.jar'
     exclude 'bungee*.jar'
     exclude 'pixelmon*.jar'
+}
+
+task uploadToOre(type: UploadToOre) {
+    dependsOn(genChangelog)
+    dependsOn(copyJars)
+
+    notes = { genChangelog.result } as Provider<String>
+    level = genChangelog.level
+    file = new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-1.12.2-${project.version}.jar").toString())
+    pluginID = "gts"
+    apiKey = properties['ore_api_key']?.toString() ?: System.getenv("ORE_API_KEY")
 }
 
 build.dependsOn shadowJar

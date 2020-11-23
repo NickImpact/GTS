@@ -28,6 +28,8 @@ package net.impactdev.gts.common.storage;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
@@ -156,6 +158,31 @@ public class GTSStorageImpl implements GTSStorage {
             try {
                 lock.lock();
                 return this.implementation.processAuctionClaimRequest(request);
+            } catch (Exception e) {
+                return new AuctionClaimMessage.ClaimResponse(
+                        GTSPlugin.getInstance().getMessagingService().generatePingID(),
+                        request.getID(),
+                        request.getAuctionID(),
+                        request.getActor(),
+                        false,
+                        false,
+                        false,
+                        ErrorCodes.FATAL_ERROR
+                );
+            } finally {
+                lock.unlock();
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<Boolean> appendOldClaimStatus(UUID auction, boolean lister, boolean winner) {
+        return this.schedule(() -> {
+            ReentrantLock lock = this.locks.get(auction);
+
+            try {
+                lock.lock();
+                return this.implementation.appendOldClaimStatus(auction, lister, winner);
             } finally {
                 lock.unlock();
             }

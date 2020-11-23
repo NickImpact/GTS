@@ -1,11 +1,9 @@
 package net.impactdev.gts.api.player;
 
-import net.impactdev.gts.api.data.Storable;
-
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public interface PlayerSettingsManager extends Storable.Deserializer<PlayerSettings> {
+public interface PlayerSettingsManager {
 
     /**
      * Caches the set of settings to a binding UUID.

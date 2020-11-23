@@ -1,10 +1,12 @@
 package net.impactdev.gts.sponge.listings.ui.creator;
 
+import com.google.common.collect.Lists;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.entries.EntryManager;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
+import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
@@ -26,7 +28,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 
+import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
+
 public class SpongeEntryTypeSelectionMenu {
+
+    private final Player viewer;
 
     private final SpongePage<Map.Entry<String, EntryManager<? extends Entry<?, ?>, ?>>> display;
 
@@ -42,9 +48,10 @@ public class SpongeEntryTypeSelectionMenu {
                 .offsets(1);
 
         if(managers.size() > 7) {
-            builder.lastPage(ItemTypes.ARROW, 28).nextPage(ItemTypes.ARROW, 34);
+            builder.lastPage(ItemTypes.ARROW, 37).nextPage(ItemTypes.ARROW, 43);
         }
 
+        this.viewer = player;
         this.display = builder.build();
 
         this.display.applier(resource -> {
@@ -68,8 +75,19 @@ public class SpongeEntryTypeSelectionMenu {
 
     private SpongeLayout design(int size) {
         SpongeLayout.SpongeLayoutBuilder builder = SpongeLayout.builder();
-        builder.dimension(9, size > 7 ? 4 : 3);
-        builder.columns(SpongeIcon.BORDER, 0, 8).rows(SpongeIcon.BORDER, 0, 2);
+        builder.dimension(9, size > 7 ? 5 : 4);
+        builder.columns(SpongeIcon.BORDER, 0, 8).rows(SpongeIcon.BORDER, 0, size > 7 ? 3 : 2);
+
+        SpongeIcon back = new SpongeIcon(ItemStack.builder()
+                .itemType(ItemTypes.BARRIER)
+                .add(Keys.DISPLAY_NAME, Utilities.PARSER.parse(readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK), Lists.newArrayList(() -> this.viewer)))
+                .build()
+        );
+        back.addListener(clickable -> {
+            SpongeMainPageProvider provider = SpongeMainPageProvider.creator().viewer(this.viewer).build();
+            provider.open();
+        });
+        builder.slot(back, size > 7 ? 40 : 31);
 
         return builder.build();
     }
@@ -95,7 +113,7 @@ public class SpongeEntryTypeSelectionMenu {
         FOUR(10, 12, 14, 16),
         FIVE(11, 12, 13, 14, 15),;
 
-        private int[] slots;
+        private final int[] slots;
 
         Mappings(int... slots) {
             this.slots = slots;

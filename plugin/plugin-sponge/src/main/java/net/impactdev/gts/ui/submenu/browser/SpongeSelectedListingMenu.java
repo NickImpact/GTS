@@ -2,22 +2,26 @@ package net.impactdev.gts.ui.submenu.browser;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.AtomicDouble;
 import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
+import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.sponge.listings.SpongeAuction;
 import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
 import net.impactdev.gts.manager.SpongeListingManager;
+import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
 import net.impactdev.gts.sponge.ui.SpongeAsyncPage;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.configuration.Config;
+import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
@@ -35,12 +39,15 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.scheduler.Task;
 import org.spongepowered.api.service.economy.Currency;
+import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
@@ -56,11 +63,13 @@ public class SpongeSelectedListingMenu {
     private SpongeListing listing;
 
     private Supplier<SpongeAsyncPage<?>> parent;
+    private boolean claim;
 
-    public SpongeSelectedListingMenu(Player viewer, SpongeListing listing, Supplier<SpongeAsyncPage<?>> parent, boolean update) {
+    public SpongeSelectedListingMenu(Player viewer, SpongeListing listing, Supplier<SpongeAsyncPage<?>> parent, boolean claim, boolean update) {
         this.viewer = viewer;
         this.listing = listing;
         this.parent = parent;
+        this.claim = claim;
 
         final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
@@ -68,6 +77,7 @@ public class SpongeSelectedListingMenu {
 
         this.display = SpongeUI.builder()
                 .title(service.parse(Utilities.readMessageConfigOption(
+                        this.claim ? MsgConfigKeys.UI_MENU_LISTING_SELECTED_CLAIM :
                         isLister ? MsgConfigKeys.UI_MENU_LISTING_SELECTED_LISTER :
                                 MsgConfigKeys.UI_MENU_LISTING_SELECTED_OTHER
                 )))
@@ -107,8 +117,43 @@ public class SpongeSelectedListingMenu {
 
         builder.border();
         builder.slots(colored, 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
-        builder.slots(SpongeIcon.BORDER, 19, 20, 24, 25);
+        builder.slots(SpongeIcon.BORDER, 19, 20, 24, 25, 40);
         builder.row(SpongeIcon.BORDER, 3);
+
+        final Config lang = GTSPlugin.getInstance().getMsgConfig();
+        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        Display<ItemStack> display = this.listing.getEntry().getDisplay(this.viewer.getUniqueId(), this.listing);
+        ItemStack item = display.get();
+
+        Optional<List<Text>> lore = item.get(Keys.ITEM_LORE);
+        lore.ifPresent(texts -> texts.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR))));
+
+        Supplier<List<Text>> append = () -> {
+            List<Text> result = Lists.newArrayList();
+            if(this.listing instanceof Auction) {
+                Auction auction = (Auction) this.listing;
+                List<String> input;
+                if(auction.getBids().size() > 1) {
+                    input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_BIDS);
+                } else if(auction.getBids().size() == 1) {
+                    input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_SINGLE_BID);
+                } else {
+                    input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_NO_BIDS);
+                }
+                List<Supplier<Object>> sources = Lists.newArrayList(() -> auction);
+                result.addAll(service.parse(input, sources));
+            } else if(this.listing instanceof BuyItNow) {
+                BuyItNow bin = (BuyItNow) this.listing;
+
+                List<String> input = lang.get(MsgConfigKeys.UI_BIN_DETAILS);
+                List<Supplier<Object>> sources = Lists.newArrayList(() -> bin);
+                result.addAll(service.parse(input, sources));
+            }
+            return result;
+        };
+        List<Text> result = lore.orElse(Lists.newArrayList());
+        result.addAll(append.get());
+        item.offer(Keys.ITEM_LORE, result);
 
         SpongeIcon icon = new SpongeIcon(this.listing.getEntry()
                 .getDisplay(this.viewer.getUniqueId(), this.listing)
@@ -126,35 +171,32 @@ public class SpongeSelectedListingMenu {
         });
         builder.slot(back, 38);
 
-        if(this.listing.getLister().equals(this.viewer.getUniqueId())) {
-            builder.slot(this.createRemover(), 42);
+        if(this.claim) {
+            this.createClaimerSection(builder);
         } else {
-            this.createSubmitters(builder);
+            if(this.listing.getLister().equals(this.viewer.getUniqueId())) {
+                this.createRemoverSection(builder);
+            } else {
+                this.createSubmittersSection(builder);
+
+            }
         }
 
         return builder.build();
     }
 
-    private void createSubmitters(SpongeLayout.SpongeLayoutBuilder builder) {
+    private void createSubmittersSection(SpongeLayout.SpongeLayoutBuilder builder) {
         final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
         if(this.listing instanceof Auction) {
             Auction auction = (Auction) this.listing;
             double current = auction.hasAnyBidsPlaced() ? auction.getCurrentPrice() : auction.getStartingPrice();
-            double newBid = auction.hasAnyBidsPlaced() ? current * (1.0 + GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_INCREMENT_RATE)) : current;
+            double newBid = auction.getNextBidRequirement();
 
             Currency currency = GTSPlugin.getInstance().as(GTSSpongePlugin.class).getEconomy().getDefaultCurrency();
             Tuple<Boolean, Boolean> affordability = this.getBalanceAbilities(currency, auction.hasAnyBidsPlaced() ? current : newBid);
 
-            SpongeIcon normal = new SpongeIcon(ItemStack.builder()
-                    .itemType(ItemTypes.WRITABLE_BOOK)
-                    .add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "TODO - Place Bid"))
-                    .add(Keys.ITEM_LORE, Lists.newArrayList(
-                            Text.of(TextColors.RED, "TODO - Bid lore"),
-                            Text.of(TextColors.GRAY, "New Bid: ", TextColors.YELLOW, currency.format(new BigDecimal(newBid)))
-                    ))
-                    .build()
-            );
+            SpongeIcon normal = new SpongeIcon(this.buildBidIcon());
             normal.addListener(clickable -> {
                 if(auction.getHighBid().map(bid -> bid.getFirst().equals(this.viewer.getUniqueId())).orElse(false)) {
                     this.viewer.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER)));
@@ -168,8 +210,9 @@ public class SpongeSelectedListingMenu {
                     }
                 }
             });
-            builder.slot(normal, 41);
 
+            builder.slot(normal, 41);
+            builder.slot(this.getBidHistory(), 42);
             if(affordability.getSecond()) {
                 SpongeIcon custom = new SpongeIcon(ItemStack.builder().itemType(ItemTypes.BARRIER).build());
                 builder.slot(custom, 43);
@@ -199,13 +242,15 @@ public class SpongeSelectedListingMenu {
                     // For prices that have no need for a source
                     SpongeListingManager manager = (SpongeListingManager) Impactor.getInstance().getRegistry().get(ListingManager.class);
                     manager.purchase(this.viewer.getUniqueId(), (SpongeBuyItNow) bin, null);
+                    this.display.close(this.viewer);
                 }
             });
+
             builder.slot(icon, 42);
         }
     }
 
-    private SpongeIcon createRemover() {
+    private void createRemoverSection(SpongeLayout.SpongeLayoutBuilder builder) {
         final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
         ItemStack display = ItemStack.builder()
@@ -217,7 +262,7 @@ public class SpongeSelectedListingMenu {
         SpongeIcon icon = new SpongeIcon(display);
         icon.addListener(clickable -> {
             this.display.close(this.viewer);
-            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PUBLISH_REQUEST)));
+            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST)));
 
             if(this.listing instanceof BuyItNow) {
                 GTSPlugin.getInstance().getMessagingService()
@@ -225,19 +270,27 @@ public class SpongeSelectedListingMenu {
                         .thenAccept(response -> {
                             if (response.wasSuccessful()) {
                                 Impactor.getInstance().getScheduler().executeSync(() -> {
-                                    if (this.listing.getEntry().give(this.viewer.getUniqueId())) {
-                                        this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_RETURNED)));
+                                    if(this.claim) {
+                                        if(((BuyItNow) this.listing).getPrice().reward(this.viewer.getUniqueId())) {
+                                            service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
+                                                    Lists.newArrayList(() -> ((BuyItNow) this.listing).getPrice().getText())
+                                            );
+                                        }
                                     } else {
-                                        this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+                                        if (this.listing.getEntry().give(this.viewer.getUniqueId())) {
+                                            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_RETURNED)));
+                                        } else {
+                                            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
 
-                                        BuyItNow bin = BuyItNow.builder()
-                                                .from((BuyItNow) this.listing)
-                                                .expiration(LocalDateTime.now())
-                                                .build();
+                                            BuyItNow bin = BuyItNow.builder()
+                                                    .from((BuyItNow) this.listing)
+                                                    .expiration(LocalDateTime.now())
+                                                    .build();
 
-                                        // Place BIN back in storage, in a state such that it'll only be
-                                        // accessible via the lister's stash
-                                        GTSPlugin.getInstance().getStorage().publishListing(bin);
+                                            // Place BIN back in storage, in a state such that it'll only be
+                                            // accessible via the lister's stash
+                                            GTSPlugin.getInstance().getStorage().publishListing(bin);
+                                        }
                                     }
                                 });
                             } else {
@@ -251,15 +304,15 @@ public class SpongeSelectedListingMenu {
                 GTSPlugin.getInstance().getMessagingService()
                         .requestAuctionCancellation(this.listing.getID(), this.viewer.getUniqueId())
                         .thenAccept(response -> {
-                            if(response.wasSuccessful()) {
+                            if (response.wasSuccessful()) {
                                 Impactor.getInstance().getScheduler().executeSync(() -> {
-                                    if(this.listing.getEntry().give(this.viewer.getUniqueId())) {
+                                    if (this.listing.getEntry().give(this.viewer.getUniqueId())) {
                                         this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_RETURNED)));
                                     } else {
                                         this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
 
                                         // Set auction as expired, with no bids
-                                        Auction auction = Auction.builder()
+                                        Auction fallback = Auction.builder()
                                                 .from((Auction) this.listing)
                                                 .expiration(LocalDateTime.now())
                                                 .bids(ArrayListMultimap.create())
@@ -267,7 +320,7 @@ public class SpongeSelectedListingMenu {
 
                                         // Place auction back in storage, in a state such that it'll only be
                                         // accessible via the lister's stash
-                                        GTSPlugin.getInstance().getStorage().publishListing(auction);
+                                        GTSPlugin.getInstance().getStorage().publishListing(fallback);
                                     }
                                 });
                             } else {
@@ -280,7 +333,142 @@ public class SpongeSelectedListingMenu {
             }
         });
 
-        return icon;
+        if(this.listing instanceof BuyItNow) {
+            builder.slot(icon, 42);
+        } else {
+            builder.slot(icon, 41);
+            builder.slot(this.getBidHistory(), 43);
+        }
+    }
+
+    private void createClaimerSection(SpongeLayout.SpongeLayoutBuilder builder) {
+        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        List<Supplier<Object>> sources = Lists.newArrayList();
+
+        boolean lister = this.listing.getLister().equals(this.viewer.getUniqueId());
+        if(lister) {
+            if(this.listing instanceof BuyItNow) {
+                sources.add(() -> ((BuyItNow) this.listing).getPrice().getText());
+            } else {
+                sources.add(() -> new MonetaryPrice(((Auction) this.listing).getCurrentPrice()).getText());
+            }
+        } else {
+            sources.add(() -> this.listing.getEntry().getName());
+        }
+
+        SpongeIcon collect = new SpongeIcon(ItemStack.builder()
+                .itemType(ItemTypes.CHEST_MINECART)
+                .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_SELECTED_CLAIM_TITLE), sources))
+                .add(Keys.ITEM_LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_SELECTED_CLAIM_LORE)))
+                .build()
+        );
+        collect.addListener(clickable -> {
+            this.display.close(this.viewer);
+
+            if(lister) {
+                if(this.listing instanceof BuyItNow) {
+                    GTSPlugin.getInstance().getMessagingService()
+                            .requestBINRemoveRequest(this.listing.getID(), this.viewer.getUniqueId())
+                            .thenAccept(response -> {
+                                if(response.wasSuccessful()) {
+                                    Impactor.getInstance().getScheduler().executeSync(() -> {
+                                        if (((BuyItNow) this.listing).getPrice().reward(this.viewer.getUniqueId())) {
+                                            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED)));
+                                        } else {
+                                            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+
+                                            BuyItNow bin = BuyItNow.builder()
+                                                    .from((BuyItNow) this.listing)
+                                                    .expiration(LocalDateTime.now())
+                                                    .build();
+
+                                            // Place BIN back in storage, in a state such that it'll only be
+                                            // accessible via the lister's stash
+                                            GTSPlugin.getInstance().getStorage().publishListing(bin);
+                                        }
+                                    });
+                                } else {
+                                    this.viewer.sendMessage(service.parse(
+                                            Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+                                            Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                    ));
+                                }
+                            });
+                } else {
+                    GTSPlugin.getInstance().getMessagingService()
+                            .requestAuctionClaim(this.listing.getID(), this.viewer.getUniqueId(), lister)
+                            .thenAccept(response -> {
+                                if(response.wasSuccessful()) {
+                                    Impactor.getInstance().getScheduler().executeSync(() -> {
+                                        // This is the user attempting to receive the money for the auction
+
+                                        Auction auction = (Auction) this.listing;
+                                        MonetaryPrice wrapper = new MonetaryPrice(auction.getCurrentPrice());
+                                        if(wrapper.reward(this.viewer.getUniqueId())) {
+                                            this.viewer.sendMessage(service.parse(
+                                                    Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
+                                                    Lists.newArrayList(wrapper::getText)
+                                            ));
+                                        } else {
+                                            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+
+                                            GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
+                                                    auction.getID(),
+                                                    response.hasListerClaimed(),
+                                                    response.hasWinnerClaimed()
+                                            );
+                                        }
+                                    });
+                                } else {
+                                    this.viewer.sendMessage(service.parse(
+                                            Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+                                            Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                    ));
+                                }
+                            });
+                }
+            } else {
+                // We should only have an auction at this point
+
+                GTSPlugin.getInstance().getMessagingService()
+                        .requestAuctionClaim(this.listing.getID(), this.viewer.getUniqueId(), lister)
+                        .thenAccept(response -> {
+                            if(response.wasSuccessful()) {
+                                Impactor.getInstance().getScheduler().executeSync(() -> {
+                                    // This is the user attempting to receive the money for the auction
+
+                                    Auction auction = (Auction) this.listing;
+                                    if(auction.getEntry().give(this.viewer.getUniqueId())) {
+                                        this.viewer.sendMessage(service.parse(
+                                                Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
+                                                Lists.newArrayList(() -> auction.getEntry().getName())
+                                        ));
+                                    } else {
+                                        this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+
+                                        GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
+                                                auction.getID(),
+                                                response.hasListerClaimed(),
+                                                response.hasWinnerClaimed()
+                                        );
+                                    }
+                                });
+                            } else {
+                                this.viewer.sendMessage(service.parse(
+                                        Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+                                        Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                ));
+                            }
+                        });
+            }
+        });
+
+        if(this.listing instanceof BuyItNow) {
+            builder.slot(collect, 42);
+        } else {
+            builder.slot(collect, 41);
+            builder.slot(this.getBidHistory(), 43);
+        }
     }
 
     private Tuple<Boolean, Boolean> getBalanceAbilities(Currency currency, double value) {
@@ -296,5 +484,82 @@ public class SpongeSelectedListingMenu {
                 });
 
         return new Tuple<>(canAfford.get(), isExact.get());
+    }
+
+    private ItemStack buildBidIcon() {
+        final Config lang = GTSPlugin.getInstance().getMsgConfig();
+        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        Auction auction = (Auction) this.listing;
+        List<Supplier<Object>> sources = Lists.newArrayList();
+        sources.add(() -> auction);
+
+        AtomicDouble previous = new AtomicDouble(0);
+        List<Text> lore = Lists.newArrayList();
+        ConfigKey<List<String>> base = MsgConfigKeys.UI_ICON_PLACE_BID_LORE;
+        if(auction.getBids().containsKey(this.viewer.getUniqueId())) {
+            base = MsgConfigKeys.UI_ICON_PLACE_BID_WITH_USER_BID_PLACED_LORE;
+            sources.add(() -> (previous.addAndGet(auction.getCurrentBid(this.viewer.getUniqueId()).map(Auction.Bid::getAmount).orElse(0D))));
+        }
+
+        lore.addAll(service.parse(lang.get(base), sources));
+
+        double required = auction.getNextBidRequirement();
+        AtomicBoolean canAfford = new AtomicBoolean(false);
+        EconomyService economy = GTSPlugin.getInstance().as(GTSSpongePlugin.class).getEconomy();
+        economy.getOrCreateAccount(this.viewer.getUniqueId())
+                .ifPresent(account -> {
+                    if(account.getBalance(economy.getDefaultCurrency()).doubleValue() >= required) {
+                        canAfford.set(true);
+                    }
+                });
+
+        ConfigKey<List<String>> append = canAfford.get() ? MsgConfigKeys.UI_ICON_PLACE_BID_CAN_AFFORD : MsgConfigKeys.UI_ICON_PLACE_BID_CANT_AFFORD;
+        if(auction.getHighBid().map(t -> t.getFirst().equals(this.viewer.getUniqueId())).orElse(false)) {
+            append = MsgConfigKeys.UI_ICON_PLACE_BID_IS_TOP_BID;
+        }
+
+        lore.addAll(service.parse(lang.get(append), sources));
+
+        return ItemStack.builder()
+                .itemType(ItemTypes.WRITABLE_BOOK)
+                .add(Keys.DISPLAY_NAME, service.parse(lang.get(MsgConfigKeys.UI_ICON_PLACE_BID_TITLE)))
+                .add(Keys.ITEM_LORE, lore)
+                .build();
+    }
+
+    private SpongeIcon getBidHistory() {
+        final Config lang = GTSPlugin.getInstance().getMsgConfig();
+        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        Auction auction = (Auction) this.listing;
+        List<Supplier<Object>> sources = Lists.newArrayList(() -> auction);
+
+        List<Text> lore = Lists.newArrayList();
+        lore.addAll(service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_BASE_INFO), sources));
+
+        final AtomicDouble prior = new AtomicDouble(Double.MAX_VALUE);
+        if(auction.getBids().size() > 0) {
+            for (int i = 0; i < 5 && i < auction.getBids().size(); i++) {
+                Map.Entry<UUID, Auction.Bid> entry = auction.getBids().entries().stream()
+                        .filter(bid -> bid.getValue().getAmount() < prior.get())
+                        .max(Comparator.comparing(value -> value.getValue().getAmount()))
+                        .get();
+
+                prior.set(entry.getValue().getAmount());
+
+                Auction.BidContext context = new Auction.BidContext(entry.getKey(), entry.getValue());
+                lore.add(service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_SEPARATOR)));
+                lore.addAll(service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_BID_INFO), Lists.newArrayList(() -> context)));
+            }
+        } else {
+            lore.addAll(service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_NO_BIDS)));
+        }
+
+        ItemStack display = ItemStack.builder()
+                .itemType(ItemTypes.PAPER)
+                .add(Keys.DISPLAY_NAME, service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_TITLE)))
+                .add(Keys.ITEM_LORE, lore)
+                .build();
+
+        return new SpongeIcon(display);
     }
 }

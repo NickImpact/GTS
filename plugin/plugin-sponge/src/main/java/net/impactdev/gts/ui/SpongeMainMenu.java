@@ -3,9 +3,8 @@ package net.impactdev.gts.ui;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.util.WaitingInteger;
+import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
 import net.impactdev.gts.sponge.listings.ui.creator.SpongeEntryTypeSelectionMenu;
-import net.impactdev.gts.sponge.ui.Displayable;
-import net.impactdev.gts.listings.ui.SpongeItemUI;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.gts.ui.submenu.auctions.ActiveBidsMenu;
 import net.impactdev.impactor.api.Impactor;
@@ -26,7 +25,6 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.util.List;
 import java.util.concurrent.CompletionException;
@@ -35,7 +33,7 @@ import java.util.stream.Collectors;
 
 import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
-public class SpongeMainMenu implements Displayable {
+public class SpongeMainMenu implements SpongeMainPageProvider {
 
 	private static final MessageService<Text> PARSER = Utilities.PARSER;
 
@@ -48,8 +46,13 @@ public class SpongeMainMenu implements Displayable {
 		this.applyActiveBids();
 	}
 
+	@Override
+	public Player getViewer() {
+		return this.viewer;
+	}
+
 	public void open() {
-		this.open(this.viewer);
+		this.view.open(this.viewer);
 	}
 
 	private SpongeUI construct() {
@@ -167,16 +170,6 @@ public class SpongeMainMenu implements Displayable {
 		icon.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(lore, Lists.newArrayList(() -> this.viewer)));
 	}
 
-	@Override
-	public SpongeUI getView() {
-		return this.view;
-	}
-
-	@Override
-	public void open(Player player) {
-		this.view.open(player);
-	}
-
 	private void applyActiveBids() {
 		GTSPlugin.getInstance().getStorage()
 				.fetchListings(Lists.newArrayList(
@@ -217,5 +210,28 @@ public class SpongeMainMenu implements Displayable {
 					ExceptionWriter.write(e);
 					return null;
 				});
+	}
+
+	public static class MainMenuCreator implements Creator {
+
+		private Player viewer;
+
+		@Override
+		public Creator viewer(Player player) {
+			this.viewer = player;
+			return this;
+		}
+
+		@Override
+		public Creator from(SpongeMainPageProvider provider) {
+			this.viewer = provider.getViewer();
+			return this;
+		}
+
+		@Override
+		public SpongeMainPageProvider build() {
+			return new SpongeMainMenu(this.viewer);
+		}
+
 	}
 }

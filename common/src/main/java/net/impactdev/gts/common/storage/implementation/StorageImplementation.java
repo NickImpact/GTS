@@ -124,6 +124,8 @@ public interface StorageImplementation {
 
     AuctionMessage.Claim.Response processAuctionClaimRequest(AuctionMessage.Claim.Request request) throws Exception;
 
+    boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner) throws Exception;
+
     AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception;
 
     BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception;

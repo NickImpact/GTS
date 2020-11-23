@@ -106,17 +106,29 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
             UUID request = Optional.ofNullable(raw.get("request"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-            boolean successful = Optional.ofNullable(raw.get("isLister"))
+            boolean lister = Optional.ofNullable(raw.get("lister"))
+                    .map(JsonElement::getAsBoolean)
+                    .orElseThrow(() -> new IllegalStateException("Failed to locate lister status"));
+            boolean winner = Optional.ofNullable(raw.get("winner"))
+                    .map(JsonElement::getAsBoolean)
+                    .orElseThrow(() -> new IllegalStateException("Failed to locate winner status"));
+            boolean successful = Optional.ofNullable(raw.get("successful"))
                     .map(JsonElement::getAsBoolean)
                     .orElseThrow(() -> new IllegalStateException("Failed to locate successful status"));
             ErrorCode error = Optional.ofNullable(raw.get("error"))
                     .map(x -> ErrorCodes.get(x.getAsInt()))
                     .orElse(null);
-            return new ClaimResponse(id, request, listing, actor, successful, error);
+            return new ClaimResponse(id, request, listing, actor, lister, winner, successful, error);
         }
 
         /** The ID of the request message generating this response */
         private final UUID request;
+
+        /** Whether the lister has claimed their portion of the auction */
+        private final boolean lister;
+
+        /** Whether the winner has claimed their portion of the auction */
+        private final boolean winner;
 
         /** Whether the transaction was successfully placed */
         private final boolean successful;
@@ -134,9 +146,11 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
          * @param listing The ID of the listing being bid on
          * @param actor   The ID of the user placing the bid
          */
-        public ClaimResponse(UUID id, UUID request, UUID listing, UUID actor, boolean successful, @Nullable ErrorCode error) {
+        public ClaimResponse(UUID id, UUID request, UUID listing, UUID actor, boolean lister, boolean winner, boolean successful, @Nullable ErrorCode error) {
             super(id, listing, actor);
             this.request = request;
+            this.lister = lister;
+            this.winner = winner;
             this.successful = successful;
             this.error = error;
         }
@@ -150,6 +164,8 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
                             .add("request", this.getRequestID().toString())
                             .add("listing", this.getAuctionID().toString())
                             .add("actor", this.getActor().toString())
+                            .add("lister", this.lister)
+                            .add("winner", this.winner)
                             .add("successful", this.successful)
                             .add("error", this.error.ordinal())
                             .toJson()
@@ -172,6 +188,16 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
         }
 
         @Override
+        public boolean hasListerClaimed() {
+            return this.lister;
+        }
+
+        @Override
+        public boolean hasWinnerClaimed() {
+            return this.winner;
+        }
+
+        @Override
         public boolean wasSuccessful() {
             return this.successful;
         }
@@ -186,7 +212,11 @@ public abstract class AuctionClaimMessage extends AuctionMessageOptions implemen
             printer.kv("Response ID", this.getID())
                     .kv("Request ID", this.getRequestID())
                     .kv("Auction ID", this.getAuctionID())
-                    .kv("Actor", this.getActor());
+                    .kv("Actor", this.getActor())
+                    .kv("Has Lister Claimed", this.lister)
+                    .kv("Has Winner Claimed", this.winner);
         }
+
     }
+
 }
