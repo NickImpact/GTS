@@ -291,13 +291,11 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 					.response(submission -> {
 						final String asking = submission.get(0);
 						Impactor.getInstance().getScheduler().executeSync(() -> {
-							if(asking.isEmpty()) {
-								new SpongeListingMenu(this.getViewer(), this.conditions.toArray(new Predicate[]{})).open();
-							} else {
+							if (!asking.isEmpty()) {
 								this.conditions.removeIf(p -> p instanceof Searching);
 								this.conditions.add(new Searching(asking));
-								new SpongeListingMenu(this.getViewer(), this.conditions.toArray(new Predicate[]{})).open();
 							}
+							new SpongeListingMenu(this.getViewer(), this.conditions.toArray(new Predicate[]{})).open();
 						});
 
 						return true;
@@ -433,9 +431,12 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 		@Override
 		public boolean test(SpongeListing listing) {
-			boolean passes = true;
+			boolean passes = false;
 			for(Searcher s : GTSService.getInstance().getSearchers()) {
-				passes = s.parse(listing, this.query);
+				if(s.parse(listing, this.query)) {
+					passes = true;
+					break;
+				}
 			}
 
 			return passes;

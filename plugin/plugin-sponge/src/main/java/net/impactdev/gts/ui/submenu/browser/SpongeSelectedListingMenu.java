@@ -350,7 +350,11 @@ public class SpongeSelectedListingMenu {
             if(this.listing instanceof BuyItNow) {
                 sources.add(() -> ((BuyItNow) this.listing).getPrice().getText());
             } else {
-                sources.add(() -> new MonetaryPrice(((Auction) this.listing).getCurrentPrice()).getText());
+                if(((Auction) this.listing).hasAnyBidsPlaced()) {
+                    sources.add(() -> new MonetaryPrice(((Auction) this.listing).getCurrentPrice()).getText());
+                } else {
+                    sources.add(() -> this.listing.getEntry().getName());
+                }
             }
         } else {
             sources.add(() -> this.listing.getEntry().getName());
@@ -395,37 +399,69 @@ public class SpongeSelectedListingMenu {
                                 }
                             });
                 } else {
-                    GTSPlugin.getInstance().getMessagingService()
-                            .requestAuctionClaim(this.listing.getID(), this.viewer.getUniqueId(), lister)
-                            .thenAccept(response -> {
-                                if(response.wasSuccessful()) {
-                                    Impactor.getInstance().getScheduler().executeSync(() -> {
-                                        // This is the user attempting to receive the money for the auction
+                    Auction auction = (Auction) this.listing;
+                    if(auction.hasAnyBidsPlaced()) {
+                        GTSPlugin.getInstance().getMessagingService()
+                                .requestAuctionClaim(this.listing.getID(), this.viewer.getUniqueId(), lister)
+                                .thenAccept(response -> {
+                                    if (response.wasSuccessful()) {
+                                        Impactor.getInstance().getScheduler().executeSync(() -> {
+                                            // This is the user attempting to receive the money for the auction
 
-                                        Auction auction = (Auction) this.listing;
-                                        MonetaryPrice wrapper = new MonetaryPrice(auction.getCurrentPrice());
-                                        if(wrapper.reward(this.viewer.getUniqueId())) {
-                                            this.viewer.sendMessage(service.parse(
-                                                    Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
-                                                    Lists.newArrayList(wrapper::getText)
-                                            ));
-                                        } else {
-                                            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+                                            MonetaryPrice wrapper = new MonetaryPrice(auction.getCurrentPrice());
+                                            if (wrapper.reward(this.viewer.getUniqueId())) {
+                                                this.viewer.sendMessage(service.parse(
+                                                        Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
+                                                        Lists.newArrayList(wrapper::getText)
+                                                ));
+                                            } else {
+                                                this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
 
-                                            GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
-                                                    auction.getID(),
-                                                    response.hasListerClaimed(),
-                                                    response.hasWinnerClaimed()
-                                            );
-                                        }
-                                    });
-                                } else {
-                                    this.viewer.sendMessage(service.parse(
-                                            Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-                                            Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
-                                    ));
-                                }
-                            });
+                                                GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
+                                                        auction.getID(),
+                                                        response.hasListerClaimed(),
+                                                        response.hasWinnerClaimed()
+                                                );
+                                            }
+                                        });
+                                    } else {
+                                        this.viewer.sendMessage(service.parse(
+                                                Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+                                                Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                        ));
+                                    }
+                                });
+                    } else {
+                        GTSPlugin.getInstance().getMessagingService()
+                                .requestAuctionCancellation(this.listing.getID(), this.viewer.getUniqueId())
+                                .thenAccept(response -> {
+                                    if (response.wasSuccessful()) {
+                                        Impactor.getInstance().getScheduler().executeSync(() -> {
+                                            if (this.listing.getEntry().give(this.viewer.getUniqueId())) {
+                                                this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_RETURNED)));
+                                            } else {
+                                                this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+
+                                                // Set auction as expired, with no bids
+                                                Auction fallback = Auction.builder()
+                                                        .from((Auction) this.listing)
+                                                        .expiration(LocalDateTime.now())
+                                                        .bids(ArrayListMultimap.create())
+                                                        .build();
+
+                                                // Place auction back in storage, in a state such that it'll only be
+                                                // accessible via the lister's stash
+                                                GTSPlugin.getInstance().getStorage().publishListing(fallback);
+                                            }
+                                        });
+                                    } else {
+                                        this.viewer.sendMessage(service.parse(
+                                                Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+                                                Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                        ));
+                                    }
+                                });
+                    }
                 }
             } else {
                 // We should only have an auction at this point
@@ -551,7 +587,9 @@ public class SpongeSelectedListingMenu {
                 lore.addAll(service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_BID_INFO), Lists.newArrayList(() -> context)));
             }
         } else {
-            lore.addAll(service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_NO_BIDS)));
+            if(!this.listing.getLister().equals(this.viewer.getUniqueId())) {
+                lore.addAll(service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_NO_BIDS)));
+            }
         }
 
         ItemStack display = ItemStack.builder()

@@ -74,7 +74,7 @@ public class SpongeBINInterpreters implements Interpreter {
                                 Sponge.getServer().getPlayer(response.getSeller()).ifPresent(player -> {
                                     player.sendMessages(service.parse(
                                             Utilities.readMessageConfigOption(MsgConfigKeys.PURCHASE_RECEIVE),
-                                            Lists.newArrayList(() -> info)
+                                            Lists.newArrayList(() -> info, response::getActor)
                                     ));
                                 });
                             });

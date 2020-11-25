@@ -14,6 +14,7 @@ import net.impactdev.gts.listeners.JoinListener;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.listings.data.SpongeItemManager;
 import net.impactdev.gts.listings.legacy.SpongeLegacyItemStorable;
+import net.impactdev.gts.listings.searcher.SpongeItemSearcher;
 import net.impactdev.gts.messaging.interpreters.SpongeAuctionInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeBINInterpreters;
 import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
@@ -116,6 +117,8 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		GTSService.getInstance().getGTSComponentManager().registerEntryManager(SpongeItemEntry.class, new SpongeItemManager());
 		GTSService.getInstance().getGTSComponentManager().registerPriceManager(MonetaryPrice.class, new MonetaryPrice.MonetaryPriceManager());
 		GTSService.getInstance().getGTSComponentManager().registerLegacyEntryDeserializer("item", new SpongeLegacyItemStorable());
+
+		GTSService.getInstance().addSearcher(new SpongeItemSearcher());
 
 		this.copyResource(Paths.get("main.conf"), this.getConfigDir());
 		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());

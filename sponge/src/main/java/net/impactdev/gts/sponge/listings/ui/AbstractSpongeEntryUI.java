@@ -92,17 +92,13 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
 
     @Override
     public SpongeIcon generateWaitingIcon(boolean auction) {
+        MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+
         return new SpongeIcon(ItemStack.builder()
                 .itemType(ItemTypes.CONCRETE)
                 .add(Keys.DYE_COLOR, DyeColors.RED)
-                .add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "Create BIN Listing"))
-                .add(Keys.ITEM_LORE, Lists.newArrayList(
-                        Text.of(TextColors.GRAY, "No item selected..."),
-                        Text.EMPTY,
-                        Text.of(TextColors.GRAY, "Click an item in your"),
-                        Text.of(TextColors.GRAY, "to list it on the GTS"),
-                        Text.of(TextColors.GRAY, "for a BIN purchase!")
-                ))
+                .add(Keys.DISPLAY_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.AWAITING_CREATE_LISTING_TITLE)))
+                .add(Keys.ITEM_LORE, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.AWAITING_CREATE_LISTING_LORE)))
                 .build()
         );
     }
@@ -146,13 +142,13 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
 
     @Override
     public SpongeIcon generateConfirmIcon() {
+        MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+
         ItemStack rep = ItemStack.builder()
                 .itemType(ItemTypes.CONCRETE)
                 .add(Keys.DYE_COLOR, DyeColors.LIME)
-                .add(Keys.DISPLAY_NAME, Text.of(TextColors.RED, "TODO - Confirm Title"))
-                .add(Keys.ITEM_LORE, Lists.newArrayList(
-
-                ))
+                .add(Keys.DISPLAY_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.CONFIRM_CREATE_LISTING_TITLE)))
+                .add(Keys.ITEM_LORE, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.CONFIRM_CREATE_LISTING_LORE)))
                 .build();
         SpongeIcon confirm = new SpongeIcon(rep);
         confirm.addListener(clickable -> {

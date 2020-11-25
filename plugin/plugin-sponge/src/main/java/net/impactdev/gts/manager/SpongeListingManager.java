@@ -235,7 +235,11 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				if (source.isPresent() && !source.get().getUniqueId().equals(player.getUniqueId())) {
 					manager.retrieve(player.getUniqueId()).thenAccept(settings -> {
 						if(settings.getPublishListenState()) {
-							player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST), sources));
+							if(listing instanceof BuyItNow) {
+								player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_BIN), sources));
+							} else {
+								player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_AUCTION), sources));
+							}
 						}
 					});
 				}
@@ -336,19 +340,6 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 															() -> listing
 													))
 											));
-
-											Sponge.getServer().getPlayer(listing.getLister()).ifPresent(seller -> {
-												GTSService.getInstance().getPlayerSettingsManager()
-														.retrieve(seller.getUniqueId())
-														.thenAccept(settings -> {
-															if(settings.getSoldListenState()) {
-																seller.sendMessages(parser.parse(
-																		lang.get(MsgConfigKeys.PURCHASE_RECEIVE),
-																		Lists.newArrayList(() -> listing, () -> buyer)
-																));
-															}
-														});
-											});
 
 											listing.markPurchased();
 

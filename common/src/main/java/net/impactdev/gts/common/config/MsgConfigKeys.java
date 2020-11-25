@@ -32,9 +32,13 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"{{gts:prefix}} &7Your &a{{gts:listing_name}} &7has been added to the market!"
 	));
 
-	public static final ConfigKey<List<String>> ADD_BROADCAST = listKey("general.addition-broadcast", Lists.newArrayList(
+	public static final ConfigKey<List<String>> ADD_BROADCAST_BIN = listKey("general.addition-broadcast", Lists.newArrayList(
 			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for &a{{gts:bin_price}}&7!"
 	));
+	public static final ConfigKey<List<String>> ADD_BROADCAST_AUCTION = listKey("general.addition-broadcast", Lists.newArrayList(
+			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for auction, starting at &e{{gts:auction_start_price}}&7!"
+	));
+
 	public static final ConfigKey<List<String>> PURCHASE_PAY = listKey("general.prices.pay", Lists.newArrayList(
 			"{{gts:prefix}} &7You have purchased a &a{{gts:listing_details}} &7for &e{{gts:bin_price}}&7!"
 	));
@@ -96,11 +100,41 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	public static final ConfigKey<String> UNABLE_TO_TAKE_LISTING = stringKey("general.listings.unable-to-take", "{{gts:error}} Your listing failed to be taken...");
 	public static final ConfigKey<String> NOT_PLAYER = stringKey("general.errors.commands.not-player", "{{gts:error}} You must be a player to use that command...");
-	public static final ConfigKey<String> CONFIRM_SELECTION = stringKey("buttons.general.confirm-selection", "&aConfirm Selection");
 	public static final ConfigKey<String> CONFIRM_PURCHASE = stringKey("buttons.general.confirm-purchase", "&aConfirm Purchase");
-	public static final ConfigKey<String> REMOVE_BUTTON = stringKey("buttons.remove", "&cClick to Remove your Listing");
-	public static final ConfigKey<List<String>> REMOVED_MISSING = listKey("general.errors.remove-listing.not-available", Lists.newArrayList("{{gts:error}} Unfortunately, your listing has either been purchased, or already expired..."));
-	public static final ConfigKey<String> SOLD_LISTING_INFORM = stringKey("general.listings.inform-of-sell", "{{gts:prefix}} &e{{gts:buyer}} &7has purchased your &e{{gts:listing_name}}&7!");
+
+	public static final ConfigKey<String> AWAITING_CREATE_LISTING_TITLE = stringKey("buttons.general.awaiting.create-listing.title", "&cCreate Listing");
+	public static final ConfigKey<List<String>> AWAITING_CREATE_LISTING_LORE = listKey("buttons.general.awaiting.create-listing.lore", Lists.newArrayList(
+		"&7Select an element you",
+			"&7wish to sell/auction away",
+			"&7to create a listing!"
+	));
+	public static final ConfigKey<String> CONFIRM_CREATE_LISTING_TITLE = stringKey("buttons.general.confirm.create-listing.title", "&aCreate Listing");
+	public static final ConfigKey<List<String>> CONFIRM_CREATE_LISTING_LORE = listKey("buttons.general.confirm.create-listing.lore", Lists.newArrayList(
+			"",
+			"&eClick here to create your listing!"
+	));
+
+	public static final ConfigKey<String> AWAITING_SELECT_PRICE_TITLE = stringKey("buttons.general.awaiting.create-listing.title", "&cConfirm Price");
+	public static final ConfigKey<List<String>> AWAITING_SELECT_PRICE_LORE = listKey("buttons.general.awaiting.create-listing.lore", Lists.newArrayList(
+			"&7Please fill out price specifications",
+			"&7first to confirm your price!"
+	));
+	public static final ConfigKey<String> CONFIRM_SELECT_PRICE_TITLE = stringKey("buttons.general.confirm.select-price.title", "&aConfirm Price");
+	public static final ConfigKey<List<String>> CONFIRM_SELECT_PRICE_LORE = listKey("buttons.general.confirm.select-price.lore", Lists.newArrayList(
+			"",
+			"&eClick here to confirm your price!"
+	));
+
+	public static final ConfigKey<String> AWAITING_SELECTION_TITLE = stringKey("buttons.general.awaiting.selection.title", "&cConfirm Price");
+	public static final ConfigKey<List<String>> AWAITING_SELECTION_LORE = listKey("buttons.general.awaiting.selection.lore", Lists.newArrayList(
+			"&7Please fill out price specifications",
+			"&7first to confirm your price!"
+	));
+	public static final ConfigKey<String> CONFIRM_SELECTION_TITLE = stringKey("buttons.general.confirm.selection.title", "&aConfirm Price");
+	public static final ConfigKey<List<String>> CONFIRM_SELECTION_LORE = listKey("buttons.general.confirm.selection.lore", Lists.newArrayList(
+			"",
+			"&eClick here to confirm your price!"
+	));
 
 	// -----------------------------------------------------------------------------
 	// Time
@@ -392,7 +426,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<List<String>> UI_ICON_BID_HISTORY_NO_BIDS = listKey("ui.icons.auctions.bid-history.no-bids", Lists.newArrayList(
 			"",
 			"&7Be the first to place a",
-			"&7bid!"
+			"&7bid on this auction!"
 	));
 
 	// Price Selection
