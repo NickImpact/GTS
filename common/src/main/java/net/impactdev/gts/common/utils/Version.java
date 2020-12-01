@@ -1,11 +1,17 @@
 package net.impactdev.gts.common.utils;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Version implements Comparable<Version> {
 
     private static final Pattern VERSION_PATTERN = Pattern.compile("(?<major>[0-9]+).(?<minor>[0-9]+).(?<patch>[0-9]+)(?<snapshot>-SNAPSHOT)?");
+
+    @Nullable
+    private final String source;
 
     private final short major;
     private final short minor;
@@ -15,6 +21,8 @@ public class Version implements Comparable<Version> {
     private final boolean valid;
 
     public Version(String input) {
+        this.source = input;
+
         Matcher matcher = VERSION_PATTERN.matcher(input);
         if(matcher.find()) {
             this.major = Short.parseShort(matcher.group("major"));
@@ -37,6 +45,8 @@ public class Version implements Comparable<Version> {
         this.patch = patch;
         this.snapshot = false;
         this.valid = true;
+
+        this.source = null;
     }
 
     public Version(short major, short minor, short patch, boolean snapshot) {
@@ -45,6 +55,8 @@ public class Version implements Comparable<Version> {
         this.patch = patch;
         this.snapshot = snapshot;
         this.valid = true;
+
+        this.source = null;
     }
 
     public short getMajor() {
@@ -104,5 +116,29 @@ public class Version implements Comparable<Version> {
         }
 
         return 0;
+    }
+
+    @Override
+    public String toString() {
+        if(this.source != null) {
+            return this.source;
+        }
+
+        StringJoiner joiner = new StringJoiner(".");
+
+        joiner.add(this.asString(this.getMajor()));
+        joiner.add(this.asString(this.getMinor()));
+        joiner.add(this.asString(this.getPatch()));
+
+        String result = joiner.toString();
+        if(this.isSnapshot()) {
+            result += "-SNAPSHOT";
+        }
+
+        return result;
+    }
+
+    private String asString(short x) {
+        return "" + x;
     }
 }

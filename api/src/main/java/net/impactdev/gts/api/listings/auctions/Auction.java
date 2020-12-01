@@ -11,9 +11,13 @@ import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.listings.Listing;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * An auction represents a listing which, instead of being directly purchasable, will be able to fluctuate its price
@@ -61,6 +65,24 @@ public interface Auction extends Listing {
 	 * @return A mapping of bids placed on this auction by a user and for how much they bid
 	 */
 	TreeMultimap<UUID, Bid> getBids();
+
+	/**
+	 * Returns a list of all users who have bid on this auction, without any information regarding what they have
+	 * bid.
+	 *
+	 * @return Each unique bidder
+	 */
+	default List<UUID> getUniqueBidders() {
+		return new ArrayList<>(this.getBids().keys());
+	}
+
+	/**
+	 * Like {@link #getUniqueBidders()}, this method returns a set of all unique bidders for this auction, as well
+	 * as provides contextual information towards their highest bid.
+	 *
+	 * @return Each unique bidder paired with their highest bid
+	 */
+	Map<UUID, Bid> getUniqueBiddersWithHighestBids();
 
 	/**
 	 * Returns the highest bid currently placed on this auction. The high bid at time of expiration marks the winner,

@@ -118,16 +118,20 @@ public class GTSSpongePlaceholderManager {
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Listing.class,
-                "time_left",
+                "listing_status",
                 "GTS - Listing Time Remaining",
                 listing -> {
                     final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+                    if(listing instanceof BuyItNow && ((BuyItNow) listing).isPurchased()) {
+                        return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STATUS_PURCHASED));
+                    }
 
                     LocalDateTime expiration = listing.getExpiration();
                     LocalDateTime now = LocalDateTime.now();
                     Time time = new Time(Duration.between(now, expiration).getSeconds());
                     if(time.getTime() <= 0) {
-                        return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.TIME_EXPIRED_TRANSLATION));
+                        return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STATUS_TIME_EXPIRED));
                     }
                     return parser.parse(
                             Utilities.readMessageConfigOption(MsgConfigKeys.TIME_REMAINING_TRANSLATION),
@@ -278,10 +282,10 @@ public class GTSSpongePlaceholderManager {
                 }
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
-                String.class, // TODO - Modify to go ask the proxy if in multi-server for the info if the host server does not have it
+                UUID.class,
                 "auction_bidder",
                 "GTS - Bidder on an Auction",
-                Text::of
+                this::calculateDisplayName
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.class,
@@ -321,6 +325,12 @@ public class GTSSpongePlaceholderManager {
 
                     return Utilities.translateTimeHighest(time);
                 }
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                Double.class,
+                "auction_outbid_amount",
+                "GTS - Amount a bid was outbid by",
+                difference -> Text.of(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(difference))
         ));
 
         this.register(new SourceSpecificPlaceholderParser<>(

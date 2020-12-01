@@ -7,6 +7,7 @@ import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
 import net.impactdev.gts.sponge.listings.ui.creator.SpongeEntryTypeSelectionMenu;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.gts.ui.submenu.auctions.ActiveBidsMenu;
+import net.impactdev.gts.ui.submenu.settings.PlayerSettingsMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
@@ -79,7 +80,7 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 			SpongeListingMenu b = new SpongeListingMenu(this.viewer);
 			b.open();
 		});
-		slb.slot(browser, 22);
+		slb.slot(browser, 13);
 
 		TitleLorePair selling = readMessageConfigOption(MsgConfigKeys.UI_MAIN_SELL);
 		SpongeIcon sell = new SpongeIcon(ItemStack.builder()
@@ -121,6 +122,18 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 			new ActiveBidsMenu(this.viewer).open();
 		});
 		slb.slot(bids, 33);
+
+		TitleLorePair settings = readMessageConfigOption(MsgConfigKeys.UI_MAIN_PLAYER_SETTINGS);
+		SpongeIcon ps = new SpongeIcon(ItemStack.builder()
+				.itemType(ItemTypes.ANVIL)
+				.add(Keys.DISPLAY_NAME, PARSER.parse(settings.getTitle()))
+				.add(Keys.ITEM_LORE, PARSER.parse(settings.getLore()))
+				.build()
+		);
+		ps.addListener(clickable -> {
+			new PlayerSettingsMenu(this.viewer).open();
+		});
+		slb.slot(ps, 31);
 
 		return slb.build();
 	}

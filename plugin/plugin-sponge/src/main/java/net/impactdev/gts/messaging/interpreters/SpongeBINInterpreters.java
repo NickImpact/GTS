@@ -1,8 +1,10 @@
 package net.impactdev.gts.messaging.interpreters;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
+import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
@@ -72,10 +74,15 @@ public class SpongeBINInterpreters implements Interpreter {
                         GTSPlugin.getInstance().getStorage().getListing(response.getListingID()).thenAccept(listing -> {
                             listing.ifPresent(info -> {
                                 Sponge.getServer().getPlayer(response.getSeller()).ifPresent(player -> {
-                                    player.sendMessages(service.parse(
-                                            Utilities.readMessageConfigOption(MsgConfigKeys.PURCHASE_RECEIVE),
-                                            Lists.newArrayList(() -> info, response::getActor)
-                                    ));
+                                    PlayerSettingsManager manager = GTSService.getInstance().getPlayerSettingsManager();
+                                    manager.retrieve(response.getSeller()).thenAccept(settings -> {
+                                        if(settings.getSoldListenState()) {
+                                            player.sendMessages(service.parse(
+                                                    Utilities.readMessageConfigOption(MsgConfigKeys.PURCHASE_RECEIVE),
+                                                    Lists.newArrayList(() -> info, response::getActor)
+                                            ));
+                                        }
+                                    });
                                 });
                             });
                         });

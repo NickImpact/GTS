@@ -9,6 +9,7 @@ import net.impactdev.gts.api.events.buyitnow.PurchaseListingEvent;
 import net.impactdev.gts.api.listings.makeup.Fees;
 import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.storage.GTSStorageImpl;
 import net.impactdev.gts.sponge.utils.Utilities;

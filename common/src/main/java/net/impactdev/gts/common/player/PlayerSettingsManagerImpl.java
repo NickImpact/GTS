@@ -8,6 +8,7 @@ import net.impactdev.gts.api.player.NotificationSetting;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 
 import java.util.Map;
 import java.util.UUID;
@@ -23,7 +24,10 @@ public class PlayerSettingsManagerImpl implements PlayerSettingsManager {
     @Override
     public void cache(UUID uuid, PlayerSettings settings) {
         this.cache.put(uuid, CompletableFuture.completedFuture(settings));
-        GTSPlugin.getInstance().getStorage().applyPlayerSettings(uuid, settings);
+        GTSPlugin.getInstance().getStorage().applyPlayerSettings(uuid, settings).exceptionally(e -> {
+            ExceptionWriter.write(e);
+            return null;
+        });
     }
 
     @Override

@@ -82,4 +82,14 @@ public enum TriState {
     public boolean asBoolean() {
         return this.val;
     }
+
+    public TriState invert() {
+        if(this == TRUE) {
+            return FALSE;
+        } else if(this == FALSE) {
+            return TRUE;
+        }
+
+        return UNDEFINED;
+    }
 }

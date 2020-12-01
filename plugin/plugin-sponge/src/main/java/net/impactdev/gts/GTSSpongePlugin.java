@@ -97,13 +97,15 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	}
 
 	public void preInit() {
-		ApiRegistrationUtil.register(new GTSAPIProvider());
 		Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
-		Impactor.getInstance().getRegistry().register(Blacklist.class, new BlacklistImpl());
+		ApiRegistrationUtil.register(new GTSAPIProvider());
 
 		this.displayBanner();
 
+		this.getPluginLogger().info("Initializing API Components...");
 		Sponge.getServiceManager().setProvider(this.bootstrap, GTSService.class, GTSService.getInstance());
+		Impactor.getInstance().getRegistry().register(Blacklist.class, new BlacklistImpl());
+
 		this.supplyBuilders();
 
 		Impactor.getInstance().getRegistry().register(ListingManager.class, new SpongeListingManager());
@@ -120,6 +122,8 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		GTSService.getInstance().addSearcher(new SpongeItemSearcher());
 
+		this.getPluginLogger().info("Setting up configuration...");
+
 		this.copyResource(Paths.get("main.conf"), this.getConfigDir());
 		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
 
@@ -127,6 +131,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		this.copyResource(Paths.get("lang/" + language + ".conf"), this.getConfigDir());
 		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/" + language.toLowerCase() + ".conf")), new MsgConfigKeys());
 
+		this.getPluginLogger().info("Sending load event to available extensions...");
 		this.extensionManager = new SimpleExtensionManager(this);
 		this.extensionManager.loadExtensions(this.getBootstrap().getConfigDirectory().resolve("extensions"));
 

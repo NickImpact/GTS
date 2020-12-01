@@ -125,15 +125,15 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&eClick here to confirm your price!"
 	));
 
-	public static final ConfigKey<String> AWAITING_SELECTION_TITLE = stringKey("buttons.general.awaiting.selection.title", "&cConfirm Price");
+	public static final ConfigKey<String> AWAITING_SELECTION_TITLE = stringKey("buttons.general.awaiting.selection.title", "&cConfirm Selection");
 	public static final ConfigKey<List<String>> AWAITING_SELECTION_LORE = listKey("buttons.general.awaiting.selection.lore", Lists.newArrayList(
 			"&7Please fill out price specifications",
-			"&7first to confirm your price!"
+			"&7first to confirm your selection!"
 	));
-	public static final ConfigKey<String> CONFIRM_SELECTION_TITLE = stringKey("buttons.general.confirm.selection.title", "&aConfirm Price");
+	public static final ConfigKey<String> CONFIRM_SELECTION_TITLE = stringKey("buttons.general.confirm.selection.title", "&aConfirm Selection");
 	public static final ConfigKey<List<String>> CONFIRM_SELECTION_LORE = listKey("buttons.general.confirm.selection.lore", Lists.newArrayList(
 			"",
-			"&eClick here to confirm your price!"
+			"&eClick here to confirm your selection!"
 	));
 
 	// -----------------------------------------------------------------------------
@@ -168,8 +168,9 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&eClick to choose your time!"
 	));
 
-	public static final ConfigKey<String> TIME_EXPIRED_TRANSLATION = stringKey("time.expired", "&7Status: &cConcluded");
-	public static final ConfigKey<String> TIME_REMAINING_TRANSLATION = stringKey("time.expired", "&7Ends in: &a{{gts:time_short}}");
+	public static final ConfigKey<String> STATUS_PURCHASED = stringKey("status.purchased", "&7Status: &aPurchased");
+	public static final ConfigKey<String> STATUS_TIME_EXPIRED = stringKey("status.time.expired", "&7Status: &cConcluded");
+	public static final ConfigKey<String> TIME_REMAINING_TRANSLATION = stringKey("status.time.remaining", "&7Ends in: &a{{gts:time_short}}");
 
 	public static final ConfigKey<String> TIME_MOMENTS_TRANSLATION = stringKey("time.moments", "Moments");
 
@@ -264,6 +265,21 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 				"&bYou have {{gts:active_bids}} active bids",
 				"",
 				"&eClick to inspect!"
+		));
+
+		return new TitleLorePair(title, lore);
+	});
+	public static final ConfigKey<TitleLorePair> UI_MAIN_PLAYER_SETTINGS = customKey(c -> {
+		String title = c.getString("ui.menus.main.player-settings.title", "&aCustomize your Settings");
+		List<String> lore = c.getStringList("ui.menus.main.player-settings.lore", Lists.newArrayList(
+				"&7Control output made by GTS",
+				"&7specifically for yourself!",
+				"",
+				"&7Here, you can set flags that",
+				"&7control a specific output",
+				"&7type!",
+				"",
+				"&eClick to begin editing!"
 		));
 
 		return new TitleLorePair(title, lore);
@@ -464,7 +480,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> FEE_TIME_FORMAT = stringKey("general.fees.price-format", "&7Time Selection: {{gts:time_fee}}");
 
 	// Admin Menus
-	public static final ConfigKey<String> UI_ADMIN_MAIN_TITLE = stringKey("ui.admin.main.title", "GTS - Admin Mode");
+	public static final ConfigKey<String> UI_ADMIN_MAIN_TITLE = stringKey("ui.admin.main.title", "&cGTS &7\u00bb &3Admin Mode");
 
 	public static final ConfigKey<String> UI_ADMIN_MAIN_MANAGER = stringKey("ui.admin.main.icons.manager", "&aGTS Listing Manager");
 	public static final ConfigKey<String> UI_ADMIN_MAIN_PRICE_MGMT = stringKey("ui.admin.main.icons.price-management", "&aPricing Management");
@@ -488,7 +504,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Seller: &e{{gts:seller}}",
 			"&7Buy it now: &a{{gts:bin_price}}",
 			"",
-			"{{gts:time_left}}",
+			"{{gts:listing_status}}",
 			"",
 			"&eClick to inspect!"
 	));
@@ -496,7 +512,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Seller: &e{{gts:seller}}",
 			"&7Starting Bid: &e{{gts:auction_start_price}}",
 			"",
-			"{{gts:time_left}}",
+			"{{gts:listing_status}}",
 			"",
 			"&eClick to inspect!"
 	));
@@ -507,7 +523,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Top bid: &e{{gts:auction_high_bid}}",
 			"&7Bidder: {{gts:auction_high_bidder}}",
 			"",
-			"{{gts:time_left}}",
+			"{{gts:listing_status}}",
 			"",
 			"&eClick to inspect!"
 	));
@@ -518,7 +534,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Top bid: &e{{gts:auction_high_bid}}",
 			"&7Bidder: {{gts:auction_high_bidder}}",
 			"",
-			"{{gts:time_left}}",
+			"{{gts:listing_status}}",
 			"",
 			"&eClick to inspect!"
 	));
@@ -531,17 +547,54 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7bids on the market..."
 	));
 
+	// Player Settings Menu
+	public static final ConfigKey<String> UI_PLAYER_SETTINGS_TITLE = stringKey("ui.player-settings.title", "&cGTS &7\u00bb &3User Settings");
+	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_TITLE = stringKey("ui.player-settings.setting-display.title", "&e{{setting}} Notifications");
+	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_PUBLISH_SETTING_LORE = listKey("ui.player-settings.setting-display.publish", Lists.newArrayList(
+			"&7This settings controls whether",
+			"&7you'll be informed of new listings",
+			"&7that are published to the GTS!"
+	));
+	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_SOLD_SETTING_LORE = listKey("ui.player-settings.setting-display.sold", Lists.newArrayList(
+			"&7This settings controls whether",
+			"&7you'll be informed of new listings",
+			"&7that are published to the GTS!"
+	));
+	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_BID_SETTING_LORE = listKey("ui.player-settings.setting-display.bid", Lists.newArrayList(
+			"&7This settings controls whether",
+			"&7you'll be informed of new listings",
+			"&7that are published to the GTS!"
+	));
+	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_OUTBID_SETTING_LORE = listKey("ui.player-settings.setting-display.outbid", Lists.newArrayList(
+			"&7This settings controls whether",
+			"&7you'll be informed of new listings",
+			"&7that are published to the GTS!"
+	));
+	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_ENABLED = stringKey("ui.player-settings.setting.enabled", "&aEnabled");
+	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_DISABLED = stringKey("ui.player-settings.setting.disabled", "&cDisabled");
+	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_LOADING = stringKey("ui.player-settings.setting.loading", "&6Loading...");
+	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_SETTING_TOGGLE_LORE = listKey("ui.player-settings.setting.toggle-lore", Lists.newArrayList(
+			"&7Click me to toggle the state",
+			"&7of this setting!"
+	));
+
+	// Generic Messages
 	public static final ConfigKey<String> GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST = stringKey("general.feedback.begin-feedback-request", "&7Processing your request...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_FEES_COLLECTION = stringKey("general.feedback.tax-collect", "&7Collecting fees...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_COLLECT_LISTING = stringKey("general.feedback.collect-listing", "&7Collecting your listing...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_RETURN_FEES = stringKey("general.feedback.return-tax-from-failure", "&7Returning fees...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_RETURNED = stringKey("general.feedback.listing-returned", "{{gts:prefix}} Your listing has been returned!");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_ITEM_CLAIMED = stringKey("general.feedback.item-claimed", "{{gts:prefix}} You claimed your &a{{gts:claim_item}}&7!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN = stringKey("general.feedback.listing-fail-to-return", "{{gts:error}} &7We failed to return your listing... We've kept it in your stash for now!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER = stringKey("general.feedback.auctions.already-top-bidder", "{{gts:error}} &7You already hold the top bid on this auction!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID = stringKey("general.feedback.auctions.cant-afford-bid", "{{gts:error}} &7You're unable to afford that bid...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN = stringKey("general.feedback.listing-fail-to-return", "{{gts:error}} We failed to return your listing... We've kept it in your stash for now!");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER = stringKey("general.feedback.auctions.already-top-bidder", "{{gts:error}} You already hold the top bid on this auction!");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID = stringKey("general.feedback.auctions.cant-afford-bid", "{{gts:error}} You're unable to afford that bid...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_BLACKLISTED = stringKey("general.feedback.blacklisted", "{{gts:error}} Your selection is &cblacklisted &7from being listed on the GTS...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_OUTBID = stringKey("general.feedback.auctions.outbid", "{{gts:prefix}} {{gts:auction_bidder}} &7outbid you by &e{{gts:auction_outbid_amount}} &7for &a{{gts:listing_name}}&7!");
 
-	public static final ConfigKey<String> REQUEST_FAILED = stringKey("general.requests.failure", "{{gts:prefix}} Request failed with status code (&c{{gts:error_code}}&7)");
+	public static final ConfigKey<String> REQUEST_FAILED = stringKey("general.requests.failure", "{{gts:prefix}} &7Request failed with status code (&c{{gts:error_code}}&7)");
+
+	public static final ConfigKey<String> UPDATE_AVAILABLE = stringKey("general.update-check.available", "{{gts:prefix}} &7A new update is available (&a{{new_version}}&7), and you are running &e{{current_version}}&7! Check Ore or Discord for the update!");
+	public static final ConfigKey<String> UPDATE_LATEST = stringKey("general.update-check.latest", "{{gts:prefix}} You're using the latest version!");
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

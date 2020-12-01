@@ -2,6 +2,7 @@ package net.impactdev.gts.bungee.listings;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 import com.google.gson.JsonElement;
@@ -14,6 +15,7 @@ import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -57,6 +59,16 @@ public class BungeeAuction extends BungeeListing implements Auction {
     @Override
     public TreeMultimap<UUID, Bid> getBids() {
         return this.bids;
+    }
+
+    @Override
+    public Map<UUID, Bid> getUniqueBiddersWithHighestBids() {
+        Map<UUID, Bid> unique = Maps.newHashMap();
+        for(UUID uuid : new ArrayList<>(this.getBids().keys())) {
+            unique.put(uuid, this.getBids().get(uuid).first());
+        }
+
+        return unique;
     }
 
     @Override

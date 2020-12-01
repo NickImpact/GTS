@@ -348,7 +348,11 @@ public class SpongeSelectedListingMenu {
         boolean lister = this.listing.getLister().equals(this.viewer.getUniqueId());
         if(lister) {
             if(this.listing instanceof BuyItNow) {
-                sources.add(() -> ((BuyItNow) this.listing).getPrice().getText());
+                if(((BuyItNow) this.listing).isPurchased()) {
+                    sources.add(() -> ((BuyItNow) this.listing).getPrice().getText());
+                } else {
+                    sources.add(() -> this.listing.getEntry().getName());
+                }
             } else {
                 if(((Auction) this.listing).hasAnyBidsPlaced()) {
                     sources.add(() -> new MonetaryPrice(((Auction) this.listing).getCurrentPrice()).getText());
@@ -376,15 +380,27 @@ public class SpongeSelectedListingMenu {
                             .thenAccept(response -> {
                                 if(response.wasSuccessful()) {
                                     Impactor.getInstance().getScheduler().executeSync(() -> {
-                                        if (((BuyItNow) this.listing).getPrice().reward(this.viewer.getUniqueId())) {
-                                            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED)));
+                                        boolean result;
+                                        if(((BuyItNow) this.listing).isPurchased()) {
+                                            result = ((BuyItNow) this.listing).getPrice().reward(this.viewer.getUniqueId());
+                                        } else {
+                                            result = this.listing.getEntry().give(this.viewer.getUniqueId());
+                                        }
+
+                                        if (result) {
+                                            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED), sources));
                                         } else {
                                             this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
 
-                                            BuyItNow bin = BuyItNow.builder()
+                                            BuyItNow.BuyItNowBuilder b = BuyItNow.builder()
                                                     .from((BuyItNow) this.listing)
-                                                    .expiration(LocalDateTime.now())
-                                                    .build();
+                                                    .expiration(LocalDateTime.now());
+
+                                            if(((BuyItNow) this.listing).isPurchased()) {
+                                                b.purchased();
+                                            }
+
+                                            BuyItNow bin = b.build();
 
                                             // Place BIN back in storage, in a state such that it'll only be
                                             // accessible via the lister's stash
@@ -438,7 +454,7 @@ public class SpongeSelectedListingMenu {
                                     if (response.wasSuccessful()) {
                                         Impactor.getInstance().getScheduler().executeSync(() -> {
                                             if (this.listing.getEntry().give(this.viewer.getUniqueId())) {
-                                                this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_RETURNED)));
+                                                this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED), sources));
                                             } else {
                                                 this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
 

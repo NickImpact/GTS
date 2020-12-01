@@ -7,6 +7,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.gts.ui.SpongeMainMenu;
@@ -24,6 +25,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 @CommandAlias("gts")
+@CommandPermission(GTSPermissions.DEFAULT)
 public class GTSCommand extends BaseCommand {
 
     @Default
@@ -37,7 +39,7 @@ public class GTSCommand extends BaseCommand {
     }
 
     @Subcommand("admin")
-    @CommandPermission("gts.commands.admin.base")
+    @CommandPermission(GTSPermissions.ADMIN_BASE)
     public class Admin extends BaseCommand {
 
         @Default
@@ -49,13 +51,13 @@ public class GTSCommand extends BaseCommand {
         }
 
         @Subcommand("info")
-        @CommandPermission("gts.commands.admin.info")
+        @CommandPermission(GTSPermissions.ADMIN_INFO)
         public void processInfoRequest(CommandIssuer issuer) {
             new GTSInfoGenerator(issuer);
         }
 
         @Subcommand("ping")
-        @CommandPermission("gts.commands.admin.ping")
+        @CommandPermission(GTSPermissions.ADMIN_PING)
         public void processPingRequest(CommandIssuer issuer) {
             MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
             GTSPlugin.getInstance().getMessagingService()

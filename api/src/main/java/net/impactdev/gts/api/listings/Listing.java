@@ -21,6 +21,10 @@ public interface Listing extends Storable {
 
 	Predicate<Listing> NON_EXPIRED_LISTINGS = listing -> !listing.hasExpired();
 
+	default <T extends Listing> T as(Class<T> type) {
+		return type.cast(this);
+	}
+
 	/**
 	 * Represents the ID of this listing. This is independent of the lister's UUID, which serves as a reference
 	 * to the player or system that listed the listing.

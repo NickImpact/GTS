@@ -36,6 +36,13 @@ public interface PlayerSettings extends Storable {
         return this.getListeningState(NotificationSetting.Outbid);
     }
 
+    default boolean matches(PlayerSettings other) {
+        return this.getPublishListenState() == other.getPublishListenState() &&
+                this.getSoldListenState() == other.getSoldListenState() &&
+                this.getBidListenState() == other.getBidListenState() &&
+                this.getOutbidListenState() == other.getOutbidListenState();
+    }
+
     static PlayerSettingsBuilder builder() {
         return Impactor.getInstance().getRegistry().createBuilder(PlayerSettingsBuilder.class);
     }

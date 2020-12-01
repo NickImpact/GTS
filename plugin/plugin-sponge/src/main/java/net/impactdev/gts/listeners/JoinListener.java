@@ -1,9 +1,14 @@
 package net.impactdev.gts.listeners;
 
+import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
 import net.impactdev.gts.common.utils.Version;
+import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.util.OreVersionChecker;
+import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.plugin.PluginMetadata;
+import net.impactdev.impactor.api.services.text.MessageService;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.filter.cause.First;
@@ -17,22 +22,23 @@ public class JoinListener {
 
     @Listener
     public void onAdminJoin(ClientConnectionEvent.Join event, @First Player player) {
-        if(player.hasPermission("gts.admin.base")) {
+        final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+        if(player.hasPermission(GTSPermissions.ADMIN_BASE)) {
             PluginMetadata meta = GTSPlugin.getInstance().getMetadata();
             final Version current = new Version(meta.getVersion());
             CompletableFuture<Version> ore = OreVersionChecker.query();
             ore.thenAccept(response -> {
                 if(current.compareTo(response) < 0) {
-                    player.sendMessage(Text.of("Newer version on Ore"));
+                    String before = Utilities.readMessageConfigOption(MsgConfigKeys.UPDATE_AVAILABLE);
+                    String after = before.replace("{{new_version}}", response.toString());
+                    player.sendMessage(parser.parse(after));
                 } else {
-                    player.sendMessage(Text.of("On latest GTS"));
+                    player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UPDATE_LATEST)));
                 }
             });
         }
 
-        if(player.getUniqueId().equals(UUID.fromString("08ef73c7-e263-459d-8285-f7bd60a71169"))) {
-            player.kick(Text.of("You really want to play this game Miki?"));
-        }
     }
 
 }

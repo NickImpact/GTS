@@ -34,6 +34,7 @@ import org.spongepowered.api.text.placeholder.PlaceholderParser;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Plugin(
 		id = "gts",
@@ -72,8 +73,12 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 
 	@Listener(order = Order.EARLY)
 	public void onPreInit(GamePreInitializationEvent event) {
+		long start = System.nanoTime();
 		try {
 			this.plugin.preInit();
+
+			long end = System.nanoTime();
+			this.getPluginLogger().info("Pre-Initialization complete, took " + TimeUnit.MILLISECONDS.convert(end - start, TimeUnit.NANOSECONDS) + " ms");
 		} catch (Throwable e) {
 			this.exception = e;
 			this.disable();
