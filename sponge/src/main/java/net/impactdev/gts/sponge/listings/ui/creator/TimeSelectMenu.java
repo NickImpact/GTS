@@ -97,6 +97,7 @@ public class TimeSelectMenu {
                                 return true;
                             }
 
+                            Impactor.getInstance().getScheduler().executeSync(() -> this.callback.accept(this.parent, null));
                             return false;
                         } catch (Exception e) {
                             return false;

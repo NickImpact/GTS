@@ -211,7 +211,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
         SpongeIcon time = new SpongeIcon(duration);
         time.addListener(clickable -> {
             new TimeSelectMenu(this.viewer, this, (ui, t) -> {
-                if (t.getTime() != 0) {
+                if (t != null && t.getTime() != 0) {
                     this.duration = t;
                     ui.getDisplay().setSlot(this.getTimeSlot(), this.createTimeIcon());
                 }
