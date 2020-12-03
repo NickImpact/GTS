@@ -52,7 +52,7 @@ repositories {
 }
 
 shadowJar {
-    archiveName = "GTS-Sponge-1.12.2-${project.version}.jar"
+    archiveName = "GTS-Sponge-${project.version}.jar"
 
     exclude 'protocolcontrol-*.jar'
     exclude 'dummyThing'
