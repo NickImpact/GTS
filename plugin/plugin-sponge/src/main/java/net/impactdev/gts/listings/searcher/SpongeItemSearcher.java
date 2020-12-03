@@ -16,7 +16,7 @@ public class SpongeItemSearcher implements Searcher {
                     .map(Text::toPlain)
                     .orElse(entry.getOrCreateElement().getTranslation().get());
 
-            return name.toLowerCase().startsWith(input.toLowerCase());
+            return name.toLowerCase().contains(input.toLowerCase());
         }
 
         return false;

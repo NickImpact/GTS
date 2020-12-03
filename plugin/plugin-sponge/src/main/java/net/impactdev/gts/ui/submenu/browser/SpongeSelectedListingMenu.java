@@ -1,5 +1,6 @@
 package net.impactdev.gts.ui.submenu.browser;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.AtomicDouble;
@@ -13,6 +14,8 @@ import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.common.utils.EconomicFormatter;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.sponge.listings.SpongeAuction;
 import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
 import net.impactdev.gts.manager.SpongeListingManager;
@@ -22,6 +25,7 @@ import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.configuration.ConfigKey;
+import net.impactdev.impactor.api.gui.signs.SignQuery;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
@@ -78,8 +82,9 @@ public class SpongeSelectedListingMenu {
         this.display = SpongeUI.builder()
                 .title(service.parse(Utilities.readMessageConfigOption(
                         this.claim ? MsgConfigKeys.UI_MENU_LISTING_SELECTED_CLAIM :
-                        isLister ? MsgConfigKeys.UI_MENU_LISTING_SELECTED_LISTER :
-                                MsgConfigKeys.UI_MENU_LISTING_SELECTED_OTHER
+                                isLister ? MsgConfigKeys.UI_MENU_LISTING_SELECTED_LISTER :
+                                this.listing instanceof BuyItNow ? MsgConfigKeys.UI_MENU_LISTING_SELECTED_OTHER :
+                                        MsgConfigKeys.UI_MENU_LISTING_SELECTED_OTHER_AUCTION
                 )))
                 .dimension(InventoryDimension.of(9, 6))
                 .build()
@@ -191,7 +196,7 @@ public class SpongeSelectedListingMenu {
         if(this.listing instanceof Auction) {
             Auction auction = (Auction) this.listing;
             double current = auction.hasAnyBidsPlaced() ? auction.getCurrentPrice() : auction.getStartingPrice();
-            double newBid = auction.getNextBidRequirement();
+            final double newBid = auction.getNextBidRequirement();
 
             Currency currency = GTSPlugin.getInstance().as(GTSSpongePlugin.class).getEconomy().getDefaultCurrency();
             Tuple<Boolean, Boolean> affordability = this.getBalanceAbilities(currency, auction.hasAnyBidsPlaced() ? current : newBid);
@@ -214,7 +219,70 @@ public class SpongeSelectedListingMenu {
             builder.slot(normal, 41);
             builder.slot(this.getBidHistory(), 42);
             if(affordability.getSecond()) {
-                SpongeIcon custom = new SpongeIcon(ItemStack.builder().itemType(ItemTypes.BARRIER).build());
+                List<Text> lore = Lists.newArrayList();
+                lore.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_PLACE_CUSTOM_BID_LORE_BASE)));
+
+                SpongeIcon custom = new SpongeIcon(ItemStack.builder()
+                        .itemType(ItemTypes.GOLD_INGOT)
+                        .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_PLACE_CUSTOM_BID_TITLE)))
+                        .add(Keys.ITEM_LORE, lore)
+                        .build());
+                custom.addListener(clickable -> {
+                    if(auction.getHighBid().map(bid -> bid.getFirst().equals(this.viewer.getUniqueId())).orElse(false)) {
+                        this.viewer.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER)));
+                    } else {
+                        SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
+                                .position(new Vector3d(0, 1, 0))
+                                .response(submission -> {
+                                    try {
+                                        double bid = Double.parseDouble(submission.get(0));
+                                        if (bid < newBid) {
+                                            Sponge.getServer().getPlayer(this.viewer.getUniqueId()).ifPresent(player -> {
+                                                player.sendMessage(service.parse(
+                                                        Utilities.readMessageConfigOption(MsgConfigKeys.CUSTOM_BID_INVALID),
+                                                        Lists.newArrayList(() -> this.listing)
+                                                ));
+                                            });
+                                            return false;
+                                        }
+
+                                        EconomyService economy = GTSPlugin.getInstance()
+                                                .as(GTSSpongePlugin.class)
+                                                .getEconomy();
+                                        boolean canAfford = economy.getOrCreateAccount(this.viewer.getUniqueId())
+                                                .map(account -> account.getBalance(currency).doubleValue() >= bid)
+                                                .orElse(false);
+
+                                        if(!canAfford) {
+                                            this.viewer.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER)));
+                                            return false;
+                                        }
+
+                                        SpongeListingManager manager = (SpongeListingManager) Impactor.getInstance().getRegistry().get(ListingManager.class);
+                                        manager.bid(this.viewer.getUniqueId(), (SpongeAuction) auction, bid);
+                                        return true;
+                                    } catch (NumberFormatException e) {
+                                        // TODO - Inform of invalid format
+                                        return false;
+                                    } catch (Exception fatal) {
+                                        ExceptionWriter.write(fatal);
+                                        // TODO - Inform user of the fatal error
+                                        return false;
+                                    }
+                                })
+                                .reopenOnFailure(false)
+                                .text(Lists.newArrayList(
+                                        Text.EMPTY,
+                                        Text.of("----------------"),
+                                        Text.of("Enter your bid"),
+                                        Text.of("above")
+                                ))
+                                .build();
+                        this.display.close(this.viewer);
+                        query.sendTo(this.viewer);
+                    }
+                });
+
                 builder.slot(custom, 43);
             }
         } else {

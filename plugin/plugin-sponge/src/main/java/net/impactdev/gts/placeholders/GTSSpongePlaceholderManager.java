@@ -352,7 +352,7 @@ public class GTSSpongePlaceholderManager {
                 "GTS - An error code indicating why a request failed",
                 error -> {
                     TextComponent component = TextComponent.builder(error.getKey())
-                            .hoverEvent(HoverEvent.showText(TextComponent.builder().append().build()))
+                            .hoverEvent(HoverEvent.showText(TextComponent.builder(error.getDescription()).build()))
                             .build();
                     return Utilities.translateComponent(component);
                 }

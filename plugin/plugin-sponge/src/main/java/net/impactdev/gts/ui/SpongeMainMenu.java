@@ -6,7 +6,6 @@ import net.impactdev.gts.api.util.WaitingInteger;
 import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
 import net.impactdev.gts.sponge.listings.ui.creator.SpongeEntryTypeSelectionMenu;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
-import net.impactdev.gts.ui.submenu.auctions.ActiveBidsMenu;
 import net.impactdev.gts.ui.submenu.settings.PlayerSettingsMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
@@ -119,7 +118,17 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 				.build()
 		);
 		bids.addListener(clickable -> {
-			new ActiveBidsMenu(this.viewer).open();
+			new SpongeListingMenu(
+					this.viewer,
+					listing -> {
+						if(listing instanceof Auction) {
+							Auction auction = (Auction) listing;
+							return auction.getBids().containsKey(this.viewer.getUniqueId());
+						}
+
+						return false;
+					}
+			).open();
 		});
 		slb.slot(bids, 33);
 
@@ -214,7 +223,17 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 								.build()
 						);
 						bids.addListener(clickable -> {
-							new ActiveBidsMenu(this.viewer).open();
+							new SpongeListingMenu(
+									this.viewer,
+									listing -> {
+										if(listing instanceof Auction) {
+											Auction auction = (Auction) listing;
+											return auction.getBids().containsKey(this.viewer.getUniqueId());
+										}
+
+										return false;
+									}
+							).open();
 						});
 						this.view.setSlot(33, bids);
 					});

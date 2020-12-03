@@ -359,6 +359,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> UI_MENU_PRICE_SELECT_TITLE = stringKey("ui.menus.price-select.title", "&cGTS &7\u00bb &3Select Price Type");
 
 	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_OTHER = stringKey("ui.menus.listing-selected.purchaser", "&cGTS &7\u00bb &3Purchase Listing?");
+	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_OTHER_AUCTION = stringKey("ui.menus.listing-selected.bidder", "&cGTS &7\u00bb &3Bid on Listing?");
 	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_LISTER = stringKey("ui.menus.listing-selected.lister", "&cGTS &7\u00bb &3Remove Listing?");
 	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_CLAIM = stringKey("ui.menus.listing-selected.claim", "&cGTS &7\u00bb &3Claim Rewards?");
 
@@ -415,7 +416,6 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7New Bid: &6{{gts:auction_next_required_bid}}",
 			"&7Your previous bid: &e{{gts:auction_previous_user_bid}}"
 	));
-
 	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_CAN_AFFORD = listKey("ui.icons.auctions.place-bid.appenders.can-afford", Lists.newArrayList(
 			"",
 			"&eClick to bid!"
@@ -428,6 +428,20 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"",
 			"&cYou already hold the top bid!"
 	));
+
+	public static final ConfigKey<String> UI_ICON_PLACE_CUSTOM_BID_TITLE = stringKey("ui.icons.auctions.place-bid.custom.title", "&eCustom Bid");
+	public static final ConfigKey<List<String>> UI_ICON_PLACE_CUSTOM_BID_LORE_BASE = listKey("ui.icons.auctions.place-bid.custom.lore.base", Lists.newArrayList(
+			"&7With this option, you can",
+			"&7specify a custom bid of your",
+			"&7desires, so long as it's",
+			"&7at least able to meet the",
+			"&7current requirement for the",
+			"&7next bid!",
+			"",
+			"&eClick to cast a custom bid!"
+	));
+
+	public static final ConfigKey<String> CUSTOM_BID_INVALID = stringKey("ui.icons.auctions.place-bid.custom.actions.bid-invalid", "{{gts:error}} You must bid at least &e{{gts:auction_next_required_bid}}&7!");
 
 	public static final ConfigKey<String> UI_ICON_BID_HISTORY_TITLE = stringKey("ui.icons.auctions.bid-history.title", "&eBid History");
 	public static final ConfigKey<List<String>> UI_ICON_BID_HISTORY_BASE_INFO = listKey("ui.icons.auctions.bid-history.base-info", Lists.newArrayList(
@@ -474,7 +488,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"{{gts:prefix}} &c&l- {{gts:fees}} &7(&aFees&7)"
 	));
 	public static final ConfigKey<List<String>> FEE_INVALID = listKey("general.fees.invalid", Lists.newArrayList(
-			"{{gts:prefix}} &cUnable to afford the tax of &e{{tax}} &cfor this listing..."
+			"{{gts:prefix}} &cUnable to afford the tax of &e{{gts:fees}} &cfor this listing..."
 	));
 	public static final ConfigKey<String> FEE_PRICE_FORMAT = stringKey("general.fees.price-format", "&7Price Selection: {{gts:price_fee}}");
 	public static final ConfigKey<String> FEE_TIME_FORMAT = stringKey("general.fees.price-format", "&7Time Selection: {{gts:time_fee}}");
@@ -557,18 +571,19 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	));
 	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_SOLD_SETTING_LORE = listKey("ui.player-settings.setting-display.sold", Lists.newArrayList(
 			"&7This settings controls whether",
-			"&7you'll be informed of new listings",
-			"&7that are published to the GTS!"
+			"&7you'll be informed when your BIN",
+			"&7listings have been purchased!"
 	));
 	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_BID_SETTING_LORE = listKey("ui.player-settings.setting-display.bid", Lists.newArrayList(
 			"&7This settings controls whether",
-			"&7you'll be informed of new listings",
-			"&7that are published to the GTS!"
+			"&7you'll be informed when your auctions",
+			"&7have received a new bid!"
 	));
 	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_OUTBID_SETTING_LORE = listKey("ui.player-settings.setting-display.outbid", Lists.newArrayList(
 			"&7This settings controls whether",
-			"&7you'll be informed of new listings",
-			"&7that are published to the GTS!"
+			"&7you'll be informed when you've been",
+			"&7outbid on an auction you've previously",
+			"&7bid on!"
 	));
 	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_ENABLED = stringKey("ui.player-settings.setting.enabled", "&aEnabled");
 	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_DISABLED = stringKey("ui.player-settings.setting.disabled", "&cDisabled");
@@ -580,7 +595,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	// Generic Messages
 	public static final ConfigKey<String> GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST = stringKey("general.feedback.begin-feedback-request", "&7Processing your request...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_FEES_COLLECTION = stringKey("general.feedback.tax-collect", "&7Collecting fees...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_FEES_COLLECTION = stringKey("general.feedback.fees-collect", "&7Collecting fees...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_COLLECT_LISTING = stringKey("general.feedback.collect-listing", "&7Collecting your listing...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_RETURN_FEES = stringKey("general.feedback.return-tax-from-failure", "&7Returning fees...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_RETURNED = stringKey("general.feedback.listing-returned", "{{gts:prefix}} Your listing has been returned!");

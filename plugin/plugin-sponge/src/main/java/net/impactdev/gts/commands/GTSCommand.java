@@ -6,10 +6,15 @@ import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
+import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.gts.util.GTSInfoGenerator;
 import net.impactdev.impactor.api.Impactor;
@@ -71,6 +76,14 @@ public class GTSCommand extends BaseCommand {
                             }
                         }
                     });
+        }
+
+        @Subcommand("test")
+        public void test(Player player) {
+            ErrorCode error = ErrorCodes.FATAL_ERROR;
+            MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+            player.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED), Lists.newArrayList(() -> error)));
         }
 
     }

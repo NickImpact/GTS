@@ -171,6 +171,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				// Have user pay their fees if any are present
 				if(fees.get().doubleValue() > 0) {
 					sources.add(fees::get);
+					sources.add(feeBuilder::build);
 					player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_FEES_COLLECTION), sources));
 					EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
 					economy.getOrCreateAccount(lister).ifPresent(account -> {
