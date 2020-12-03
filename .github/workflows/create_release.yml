@@ -43,8 +43,8 @@ jobs:
           tag_name: ${{ steps.get_version.outputs.version }}
           release_name: Release ${{ steps.get_version.outputs.version }}
           body_path: ${{ github.workspace }}/build/allJars/${{ steps.get_version.outputs.version }}.md
-          draft: true
-          prerelease: true
+          draft: false
+          prerelease: false
       - name: Upload Sponge Jar
         uses: actions/upload-release-asset@v1
         env:
