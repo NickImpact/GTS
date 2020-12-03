@@ -1,0 +1,63 @@
+on:
+  push:
+    # Act only when we receive a commit with a tag leading with a 6 or higher
+    #tags:
+    #  - '[6-9]*'
+    branches: [ 6.0.0 ] # Quick test for first attempt
+
+name: Create Github Release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - uses: actions/cache@v2
+          with:
+            path: |
+              ~/.gradle/caches
+              ~/buildSrc/.gradle/caches
+            key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+            restore-keys: |
+              ${{ runner.os }}-gradle-
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Initialize Forge Decomp Workspace
+        run: ./gradlew setupDecompWorkspace
+      - name: Build with Gradle
+        run: ./gradlew build
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body_path: build/allJars/${{ github.ref }}.md
+          draft: true
+          prerelease: true
+      - name: Upload Sponge Jar
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/allJars/GTS-Sponge-*-${{ github.ref}}.jar
+          asset_name: GTS ${{ github.ref}} for Sponge
+          asset_content_type: application/java-archive
+      - name: Upload Bungee Jar
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./build/allJars/GTS-Bungee-*-${{ github.ref}}.jar
+        asset_name: GTS ${{ github.ref}} for BungeeCord/Waterfall
+        asset_content_type: application/java-archive
