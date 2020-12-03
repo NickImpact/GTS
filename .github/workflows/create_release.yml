@@ -1,9 +1,8 @@
 on:
   push:
     # Act only when we receive a commit with a tag leading with a 6 or higher
-    #tags:
-    #  - '[6-9]*'
-    branches: [ 6.0.0 ] # Quick test for first attempt
+    tags:
+      - '[6-9]*'
 
 name: Create Github Release
 
