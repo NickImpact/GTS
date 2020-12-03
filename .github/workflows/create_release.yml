@@ -25,6 +25,9 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Get Version
+        id: get_version
+        uses: battila7/get-version-action@v2
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Initialize Forge Decomp Workspace
@@ -37,9 +40,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body_path: ${{ github.workspace }}/build/allJars/${{ github.ref }}.md
+          tag_name: ${{ steps.get_version.outputs.version }}
+          release_name: Release ${{ steps.get_version.outputs.version }}
+          body_path: ${{ github.workspace }}/build/allJars/${{ steps.get_version.outputs.version }}.md
           draft: true
           prerelease: true
       - name: Upload Sponge Jar
@@ -48,8 +51,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/build/allJars/GTS-Sponge-*-${{ github.ref}}.jar
-          asset_name: GTS ${{ github.ref}} for Sponge
+          asset_path: ${{ github.workspace }}/build/allJars/GTS-Sponge-*-${{ steps.get_version.outputs.version }}.jar
+          asset_name: GTS ${{ steps.get_version.outputs.version }} for Sponge
           asset_content_type: application/java-archive
       - name: Upload Bungee Jar
         uses: actions/upload-release-asset@v1
@@ -57,6 +60,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/build/allJars/GTS-Bungee-*-${{ github.ref}}.jar
-          asset_name: GTS ${{ github.ref}} for BungeeCord/Waterfall
+          asset_path: ${{ github.workspace }}/build/allJars/GTS-Bungee-*-${{ steps.get_version.outputs.version }}.jar
+          asset_name: GTS ${{ steps.get_version.outputs.version }} for BungeeCord/Waterfall
           asset_content_type: application/java-archive
