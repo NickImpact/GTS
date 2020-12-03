@@ -53,11 +53,11 @@ jobs:
           asset_name: GTS ${{ github.ref}} for Sponge
           asset_content_type: application/java-archive
       - name: Upload Bungee Jar
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/allJars/GTS-Bungee-*-${{ github.ref}}.jar
-        asset_name: GTS ${{ github.ref}} for BungeeCord/Waterfall
-        asset_content_type: application/java-archive
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/allJars/GTS-Bungee-*-${{ github.ref}}.jar
+          asset_name: GTS ${{ github.ref}} for BungeeCord/Waterfall
+          asset_content_type: application/java-archive
