@@ -36,10 +36,11 @@ import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
+import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
@@ -128,8 +129,10 @@ public class GTSMessagingService implements InternalMessagingService {
     public CompletableFuture<PingMessage.Pong> sendPing() {
         PrettyPrinter debugger = new PrettyPrinter(53).add("Ping/Pong Status").center().hr();
         final AtomicReference<PingMessage.Ping> reference = new AtomicReference<>();
+        final AtomicLong start = new AtomicLong();
 
         return CompletableFutureManager.makeFuture(() -> {
+            start.set(System.nanoTime());
             PingMessage.Ping ping = new PingPongMessage.Ping(this.generatePingID());
             reference.set(ping);
 
@@ -158,7 +161,12 @@ public class GTSMessagingService implements InternalMessagingService {
 
             PingMessage.Ping request = reference.get();
             PingMessage.Pong response = new PingPongMessage.Pong(UUID.randomUUID(), request.getID(), false, error);
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(5));
+
+            long end = System.nanoTime();
+            response.setResponseTime(TimeUnit.SECONDS.toMillis(
+                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
+                            (end - start.get()) / 1_000_000_000
+            ));
 
             this.populate(debugger, request, response);
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
@@ -171,8 +179,10 @@ public class GTSMessagingService implements InternalMessagingService {
     public CompletableFuture<AuctionMessage.Bid.Response> publishBid(UUID listing, UUID actor, double bid) {
         PrettyPrinter debugger = new PrettyPrinter(80).add("Bid Publishing Request").center().hr();
         final AtomicReference<AuctionMessage.Bid.Request> reference = new AtomicReference<>();
+        final AtomicLong start = new AtomicLong();
 
         return CompletableFutureManager.makeFuture(() -> {
+            start.set(System.nanoTime());
             AuctionMessage.Bid.Request request = new AuctionBidMessage.Request(this.generatePingID(), listing, actor, bid);
             reference.set(request);
 
@@ -209,8 +219,12 @@ public class GTSMessagingService implements InternalMessagingService {
                     TreeMultimap.create(),
                     error
             );
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(5));
 
+            long end = System.nanoTime();
+            response.setResponseTime(TimeUnit.SECONDS.toMillis(
+                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
+                            (end - start.get()) / 1_000_000_000
+            ));
             this.populate(debugger, request, response);
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
 
@@ -225,6 +239,7 @@ public class GTSMessagingService implements InternalMessagingService {
         final AtomicLong start = new AtomicLong();
 
         return CompletableFutureManager.makeFuture(() -> {
+            start.set(System.nanoTime());
             AuctionMessage.Cancel.Request request = new AuctionCancelMessage.Request(this.generatePingID(), listing, actor);
             reference.set(request);
 
@@ -254,8 +269,9 @@ public class GTSMessagingService implements InternalMessagingService {
 
             long end = System.nanoTime();
             response.setResponseTime(TimeUnit.SECONDS.toMillis(
-                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 : (end - start.get()) / 1000000)
-            );
+                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
+                            (end - start.get()) / 1_000_000_000
+            ));
 
             this.populate(debugger, request, response);
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
@@ -265,17 +281,17 @@ public class GTSMessagingService implements InternalMessagingService {
     }
 
     @Override
-    public CompletableFuture<AuctionMessage.Claim.Response> requestAuctionClaim(UUID listing, UUID actor, boolean isLister) {
-        PrettyPrinter debugger = new PrettyPrinter(53).add("Auction Claim Request").center().hr();
-        final AtomicReference<AuctionMessage.Claim.Request> reference = new AtomicReference<>();
+    public CompletableFuture<ClaimMessage.Response> requestClaim(UUID listing, UUID actor, @Nullable UUID receiver, boolean auction) {
+        PrettyPrinter debugger = new PrettyPrinter(53).add("Claim Request").center().hr();
+        final AtomicReference<ClaimMessage.Request> reference = new AtomicReference<>();
         final AtomicLong start = new AtomicLong();
 
         return CompletableFutureManager.makeFuture(() -> {
             start.set(System.nanoTime());
-            AuctionClaimMessage.ClaimRequest request = new AuctionClaimMessage.ClaimRequest(this.generatePingID(), listing, actor, isLister);
+            ClaimMessageImpl.ClaimRequestImpl request = new ClaimMessageImpl.ClaimRequestImpl(this.generatePingID(), listing, actor, receiver, auction);
             reference.set(request);
 
-            AuctionMessage.Claim.Response response = this.await(request);
+            ClaimMessage.Response response = this.await(request);
             this.populate(debugger, request, response);
 
             return response;
@@ -296,22 +312,21 @@ public class GTSMessagingService implements InternalMessagingService {
                 ExceptionWriter.write(e);
             }
 
-            AuctionMessage.Claim.Request request = reference.get();
-            AuctionMessage.Claim.Response response = new AuctionClaimMessage.ClaimResponse(
-                    this.generatePingID(),
-                    request.getID(),
-                    request.getAuctionID(),
-                    request.getActor(),
-                    false,
-                    false,
-                    false,
-                    error
-            );
+            ClaimMessage.Request request = reference.get();
+            ClaimMessage.Response response = ClaimMessageImpl.ClaimResponseImpl.builder()
+                    .id(UUID.randomUUID())
+                    .request(request.getID())
+                    .listing(request.getListingID())
+                    .actor(request.getActor())
+                    .receiver(request.getReceiver().orElse(null))
+                    .error(error)
+                    .build();
 
             long end = System.nanoTime();
             response.setResponseTime(TimeUnit.SECONDS.toMillis(
-                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 : (end - start.get()) / 1000000)
-            );
+                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
+                            (end - start.get()) / 1_000_000_000
+            ));
 
             this.populate(debugger, request, response);
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
@@ -325,8 +340,10 @@ public class GTSMessagingService implements InternalMessagingService {
     public CompletableFuture<BuyItNowMessage.Purchase.Response> requestBINPurchase(UUID listing, UUID actor, Object source) {
         PrettyPrinter debugger = new PrettyPrinter(53).add("BIN Purchase Request").center().hr();
         final AtomicReference<BuyItNowMessage.Purchase.Request> reference = new AtomicReference<>();
+        final AtomicLong start = new AtomicLong();
 
         return CompletableFutureManager.makeFuture(() -> {
+            start.set(System.nanoTime());
             BuyItNowMessage.Purchase.Request request = new BINPurchaseMessage.Request(this.generatePingID(), listing, actor);
             reference.set(request);
 
@@ -355,7 +372,12 @@ public class GTSMessagingService implements InternalMessagingService {
             BuyItNowMessage.Purchase.Response response = new BINPurchaseMessage.Response(
                     UUID.randomUUID(), request.getID(), listing, actor, Listing.SERVER_ID, false, error
             );
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(5));
+
+            long end = System.nanoTime();
+            response.setResponseTime(TimeUnit.SECONDS.toMillis(
+                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
+                            (end - start.get()) / 1_000_000_000
+            ));
 
             this.populate(debugger, request, response);
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
@@ -368,8 +390,10 @@ public class GTSMessagingService implements InternalMessagingService {
     public CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive) {
         PrettyPrinter debugger = new PrettyPrinter(53).add("Buy It Now Removal Request").center().hr();
         final AtomicReference<BuyItNowMessage.Remove.Request> reference = new AtomicReference<>();
+        final AtomicLong start = new AtomicLong();
 
         return CompletableFutureManager.makeFuture(() -> {
+            start.set(System.nanoTime());
             BuyItNowMessage.Remove.Request request = new BINRemoveMessage.Request(this.generatePingID(), listing, actor, receiver, shouldReceive);
             reference.set(request);
 
@@ -398,7 +422,12 @@ public class GTSMessagingService implements InternalMessagingService {
             BuyItNowMessage.Remove.Response response = new BINRemoveMessage.Response(
                     UUID.randomUUID(), request.getID(), listing, actor, receiver, shouldReceive, false, error
             );
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(5));
+
+            long end = System.nanoTime();
+            response.setResponseTime(TimeUnit.SECONDS.toMillis(
+                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
+                            (end - start.get()) / 1_000_000_000
+            ));
 
             this.populate(debugger, request, response);
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);

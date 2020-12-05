@@ -29,6 +29,7 @@ import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.common.plugin.GTSPlugin;
@@ -122,7 +123,7 @@ public interface StorageImplementation {
      */
     AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) throws Exception;
 
-    AuctionMessage.Claim.Response processAuctionClaimRequest(AuctionMessage.Claim.Request request) throws Exception;
+    ClaimMessage.Response processClaimRequest(ClaimMessage.Request request) throws Exception;
 
     boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner) throws Exception;
 

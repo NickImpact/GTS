@@ -106,7 +106,7 @@ public abstract class BINPurchaseMessage extends AbstractMessage implements BuyI
             UUID actor = Optional.ofNullable(raw.get("actor"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            UUID request = Optional.ofNullable(raw.get("actor"))
+            UUID request = Optional.ofNullable(raw.get("request"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElseThrow(() -> new IllegalStateException("Unable to locate request ID"));
             UUID seller = Optional.ofNullable(raw.get("seller"))

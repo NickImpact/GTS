@@ -17,6 +17,7 @@ import net.impactdev.gts.listings.legacy.SpongeLegacyItemStorable;
 import net.impactdev.gts.listings.searcher.SpongeItemSearcher;
 import net.impactdev.gts.messaging.interpreters.SpongeAuctionInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeBINInterpreters;
+import net.impactdev.gts.messaging.interpreters.SpongeListingInterpreters;
 import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.gts.util.OreVersionChecker;
@@ -267,6 +268,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		new SpongePingPongInterpreter().register(this);
 		new SpongeBINInterpreters().register(this);
 		new SpongeAuctionInterpreters().register(this);
+		new SpongeListingInterpreters().register(this);
 	}
 
 	private void supplyBuilders() {

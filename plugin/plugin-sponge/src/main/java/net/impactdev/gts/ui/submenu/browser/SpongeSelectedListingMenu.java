@@ -14,6 +14,7 @@ import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.sponge.listings.SpongeAuction;
@@ -254,7 +255,7 @@ public class SpongeSelectedListingMenu {
                                                 .orElse(false);
 
                                         if(!canAfford) {
-                                            this.viewer.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER)));
+                                            this.viewer.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID)));
                                             return false;
                                         }
 
@@ -444,7 +445,7 @@ public class SpongeSelectedListingMenu {
             if(lister) {
                 if(this.listing instanceof BuyItNow) {
                     GTSPlugin.getInstance().getMessagingService()
-                            .requestBINRemoveRequest(this.listing.getID(), this.viewer.getUniqueId())
+                            .requestClaim(this.listing.getID(), this.viewer.getUniqueId(), null, false)
                             .thenAccept(response -> {
                                 if(response.wasSuccessful()) {
                                     Impactor.getInstance().getScheduler().executeSync(() -> {
@@ -486,8 +487,10 @@ public class SpongeSelectedListingMenu {
                     Auction auction = (Auction) this.listing;
                     if(auction.hasAnyBidsPlaced()) {
                         GTSPlugin.getInstance().getMessagingService()
-                                .requestAuctionClaim(this.listing.getID(), this.viewer.getUniqueId(), lister)
-                                .thenAccept(response -> {
+                                .requestClaim(this.listing.getID(), this.viewer.getUniqueId(), null, true)
+                                .thenAccept(r -> {
+                                    ClaimMessage.Response.AuctionResponse response = (ClaimMessage.Response.AuctionResponse) r;
+
                                     if (response.wasSuccessful()) {
                                         Impactor.getInstance().getScheduler().executeSync(() -> {
                                             // This is the user attempting to receive the money for the auction
@@ -551,8 +554,10 @@ public class SpongeSelectedListingMenu {
                 // We should only have an auction at this point
 
                 GTSPlugin.getInstance().getMessagingService()
-                        .requestAuctionClaim(this.listing.getID(), this.viewer.getUniqueId(), lister)
-                        .thenAccept(response -> {
+                        .requestClaim(this.listing.getID(), this.viewer.getUniqueId(), null, true)
+                        .thenAccept(r -> {
+                            ClaimMessage.Response.AuctionResponse response = (ClaimMessage.Response.AuctionResponse) r;
+
                             if(response.wasSuccessful()) {
                                 Impactor.getInstance().getScheduler().executeSync(() -> {
                                     // This is the user attempting to receive the money for the auction

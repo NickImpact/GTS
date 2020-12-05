@@ -147,17 +147,18 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, Boolean>> im
                     Listing listing = entry.getFirst();
                     if(listing instanceof Auction) {
                         if(new MonetaryPrice(((Auction) listing).getCurrentPrice()).reward(this.getViewer().getUniqueId())) {
-                            GTSPlugin.getInstance().getMessagingService().requestAuctionClaim(
+                            GTSPlugin.getInstance().getMessagingService().requestClaim(
                                     listing.getID(),
                                     listing.getLister(),
-                                    this.getViewer().getUniqueId().equals(listing.getLister())
+                                    null,
+                                    true
                             );
                             successful.incrementAndGet();
                         }
                     } else {
                         if(((BuyItNow) listing).getPrice().reward(this.getViewer().getUniqueId())) {
                             GTSPlugin.getInstance().getMessagingService()
-                                    .requestBINRemoveRequest(listing.getID(), listing.getLister());
+                                    .requestClaim(listing.getID(), listing.getLister(), null, false);
                             successful.incrementAndGet();
                         }
                     }
@@ -165,10 +166,11 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, Boolean>> im
                     if(entry.getFirst().getEntry().give(this.getViewer().getUniqueId())) {
                         Listing listing = entry.getFirst();
                         if(listing instanceof Auction) {
-                            GTSPlugin.getInstance().getMessagingService().requestAuctionClaim(
+                            GTSPlugin.getInstance().getMessagingService().requestClaim(
                                     listing.getID(),
                                     listing.getLister(),
-                                    this.getViewer().getUniqueId().equals(listing.getLister())
+                                    null,
+                                    true
                             ).thenAccept(response -> {
                                 entry.getFirst().getEntry().give(this.getViewer().getUniqueId());
                             });

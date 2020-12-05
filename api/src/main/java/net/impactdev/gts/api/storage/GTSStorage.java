@@ -3,6 +3,7 @@ package net.impactdev.gts.api.storage;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
 
@@ -79,12 +80,14 @@ public interface GTSStorage {
 	CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request);
 
 	/**
-	 *
+	 * Indicates a user is attempting to claim something from a listing within their stash. This message
+	 * is common to both auctions and BIN listings, with auctions receiving an extended response, via
+	 * {@link ClaimMessage.Response.AuctionResponse}.
 	 *
 	 * @param request
 	 * @return
 	 */
-	CompletableFuture<AuctionMessage.Claim.Response> processAuctionClaimRequest(AuctionMessage.Claim.Request request);
+	CompletableFuture<ClaimMessage.Response> processClaimRequest(ClaimMessage.Request request);
 
 	CompletableFuture<Boolean> appendOldClaimStatus(UUID auction, boolean lister, boolean winner);
 

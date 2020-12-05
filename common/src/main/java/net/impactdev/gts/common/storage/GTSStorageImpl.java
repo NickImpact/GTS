@@ -28,8 +28,7 @@ package net.impactdev.gts.common.storage;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
+import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
@@ -151,24 +150,25 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<AuctionMessage.Claim.Response> processAuctionClaimRequest(AuctionMessage.Claim.Request request) {
+    public CompletableFuture<ClaimMessage.Response> processClaimRequest(ClaimMessage.Request request) {
         return this.schedule(() -> {
-            ReentrantLock lock = this.locks.get(request.getAuctionID());
+            ReentrantLock lock = this.locks.get(request.getListingID());
 
             try {
                 lock.lock();
-                return this.implementation.processAuctionClaimRequest(request);
+                return this.implementation.processClaimRequest(request);
             } catch (Exception e) {
-                return new AuctionClaimMessage.ClaimResponse(
-                        GTSPlugin.getInstance().getMessagingService().generatePingID(),
-                        request.getID(),
-                        request.getAuctionID(),
-                        request.getActor(),
-                        false,
-                        false,
-                        false,
-                        ErrorCodes.FATAL_ERROR
-                );
+//                return new AuctionClaimMessage.ClaimResponse(
+//                        GTSPlugin.getInstance().getMessagingService().generatePingID(),
+//                        request.getID(),
+//                        request.getAuctionID(),
+//                        request.getActor(),
+//                        false,
+//                        false,
+//                        false,
+//                        ErrorCodes.FATAL_ERROR
+//                );
+                return null;
             } finally {
                 lock.unlock();
             }

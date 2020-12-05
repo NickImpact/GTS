@@ -13,8 +13,7 @@ import java.util.UUID;
 
 /**
  * Represents a message that belongs to an auction. These messages are meant to inform a user
- * about an action that has just occurred with an auction. These are only necessary when GTS
- * is running on a multi-server platform.
+ * about an action that has just occurred with an auction.
  */
 public interface AuctionMessage extends OutgoingMessage {
 
@@ -84,30 +83,6 @@ public interface AuctionMessage extends OutgoingMessage {
 			@NonNull TreeMultimap<UUID, Auction.Bid> getAllOtherBids();
 
 		}
-	}
-
-	/**
-	 * Represents the message indicating a user who is attempting to claim a part of their auction after
-	 * it has expired. Since auctions are special in that they have two rewards versus one, we need to
-	 * process the claim accordingly as to ensure we don't delete the auction from memory until both claim
-	 * requests have been processed.
-	 */
-	interface Claim extends AuctionMessage {
-
-		interface Request extends Claim, MessageType.Request<Response> {
-
-			boolean isLister();
-
-		}
-
-		interface Response extends Claim, MessageType.Response {
-
-			boolean hasListerClaimed();
-
-			boolean hasWinnerClaimed();
-
-		}
-
 	}
 
 	/**

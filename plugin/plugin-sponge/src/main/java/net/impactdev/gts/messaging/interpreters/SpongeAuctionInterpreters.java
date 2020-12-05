@@ -9,7 +9,6 @@ import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
@@ -40,12 +39,6 @@ public class SpongeAuctionInterpreters implements Interpreter {
         );
         plugin.getMessagingService().registerDecoder(
                 AuctionCancelMessage.Response.TYPE, AuctionCancelMessage.Response::decode
-        );
-        plugin.getMessagingService().registerDecoder(
-                AuctionClaimMessage.ClaimRequest.TYPE, AuctionClaimMessage.ClaimRequest::decode
-        );
-        plugin.getMessagingService().registerDecoder(
-                AuctionClaimMessage.ClaimResponse.TYPE, AuctionClaimMessage.ClaimResponse::decode
         );
     }
 
@@ -95,18 +88,6 @@ public class SpongeAuctionInterpreters implements Interpreter {
                             });
                         });
                     }
-                }
-        );
-
-        consumer.registerInternalConsumer(
-                AuctionClaimMessage.ClaimRequest.class, request -> {
-                    request.respond()
-                            .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
-                }
-        );
-        consumer.registerInternalConsumer(
-                AuctionClaimMessage.ClaimResponse.class, response -> {
-                    consumer.processRequest(response.getRequestID(), response);
                 }
         );
 

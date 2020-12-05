@@ -30,6 +30,7 @@ import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.common.plugin.GTSPlugin;
@@ -165,7 +166,7 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     @Override
-    public AuctionMessage.Claim.Response processAuctionClaimRequest(AuctionMessage.Claim.Request request) throws Exception {
+    public ClaimMessage.Response processClaimRequest(ClaimMessage.Request request) throws Exception {
         return null;
     }
 

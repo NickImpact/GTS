@@ -294,6 +294,8 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 							if (!asking.isEmpty()) {
 								this.conditions.removeIf(p -> p instanceof Searching);
 								this.conditions.add(new Searching(asking));
+							} else {
+								this.conditions.removeIf(p -> p instanceof Searching);
 							}
 							new SpongeListingMenu(this.getViewer(), this.conditions.toArray(new Predicate[]{})).open();
 						});
@@ -311,7 +313,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		layout.slot(sorter, 51);
 
 		qIcon.addListener(clickable -> {
-			this.conditions.remove(QUICK_PURCHASE_ONLY);
+			this.conditions.removeIf(c -> c instanceof QuickPurchaseOnly);
 			this.conditions.add(AUCTIONS_ONLY);
 
 			this.mode = true;
@@ -326,7 +328,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		});
 		aIcon.addListener(clickable -> {
 			this.conditions.add(QUICK_PURCHASE_ONLY);
-			this.conditions.remove(AUCTIONS_ONLY);
+			this.conditions.removeIf(c -> c instanceof AuctionsOnly);
 
 			this.mode = false;
 			this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
@@ -431,15 +433,13 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 		@Override
 		public boolean test(SpongeListing listing) {
-			boolean passes = false;
 			for(Searcher s : GTSService.getInstance().getSearchers()) {
 				if(s.parse(listing, this.query)) {
-					passes = true;
-					break;
+					return true;
 				}
 			}
 
-			return passes;
+			return false;
 		}
 
 		public String getQuery() {

@@ -29,6 +29,7 @@ import com.google.gson.JsonElement;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
+import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
@@ -166,9 +167,10 @@ public interface InternalMessagingService {
      *
      * @param listing
      * @param actor
-     * @param isLister
+     * @param receiver
+     * @param auction
      */
-    CompletableFuture<AuctionMessage.Claim.Response> requestAuctionClaim(UUID listing, UUID actor, boolean isLister);
+    CompletableFuture<ClaimMessage.Response> requestClaim(UUID listing, UUID actor, @Nullable UUID receiver, boolean auction);
 
     //------------------------------------------------------------------------------------
     //

@@ -32,17 +32,17 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.NotificationSetting;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionClaimMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
-import net.impactdev.gts.common.player.PlayerSettingsImpl;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.storage.sql.ConnectionFactory;
 import net.impactdev.gts.api.GTSService;
@@ -71,6 +71,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class SqlImplementation implements StorageImplementation {
@@ -315,7 +316,7 @@ public class SqlImplementation implements StorageImplementation {
 									if(state && results.getBoolean("lister")) {
 										return true;
 									} else {
-										return !state && results.getBoolean("winner");
+										return results.getBoolean("winner");
 									}
 								}
 								return false;
@@ -461,49 +462,95 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public AuctionMessage.Claim.Response processAuctionClaimRequest(AuctionMessage.Claim.Request request) throws Exception {
-		return this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
-			ps.setString(1, request.getAuctionID().toString());
-			return this.results(ps, results -> {
-				int result;
+	public ClaimMessage.Response processClaimRequest(ClaimMessage.Request request) throws Exception {
+		Optional<Listing> listing = this.getListing(request.getListingID());
 
-				boolean lister;
-				boolean winner;
+		UUID response = GTSPlugin.getInstance().getMessagingService().generatePingID();
+		if(!listing.isPresent()) {
+			return ClaimMessageImpl.ClaimResponseImpl.builder()
+					.id(response)
+					.request(request.getID())
+					.listing(request.getListingID())
+					.actor(request.getActor())
+					.receiver(request.getReceiver().orElse(null))
+					.error(ErrorCodes.LISTING_MISSING)
+					.build();
+		} else {
+			boolean isLister = request.getActor().equals(listing.get().getLister());
 
-				if(results.next()) {
-					String key = request.isLister() ? UPDATE_AUCTION_CLAIM_LISTER : UPDATE_AUCTION_CLAIM_WINNER;
-					try (PreparedStatement update = connection.prepareStatement(this.processor.apply(key))) {
-						update.setBoolean(1, true);
-						update.setString(2, request.getAuctionID().toString());
-						result = update.executeUpdate();
-					}
+			if (listing.map(l -> l instanceof Auction).orElse(false)) {
+				return this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
+					ps.setString(1, request.getListingID().toString());
+					return this.results(ps, results -> {
+						int result;
+						boolean lister;
+						boolean winner;
 
-					lister = results.getBoolean("lister") || key.equals(UPDATE_AUCTION_CLAIM_LISTER);
-					winner = results.getBoolean("winner") || key.equals(UPDATE_AUCTION_CLAIM_WINNER);
-				} else {
-					try(PreparedStatement append = connection.prepareStatement(this.processor.apply(ADD_AUCTION_CLAIM_STATUS))) {
-						append.setString(1, request.getAuctionID().toString());
-						append.setBoolean(2, request.isLister());
-						append.setBoolean(3, !request.isLister());
-						result = append.executeUpdate();
-					}
+						if(results.next()) {
+							String key = isLister ? UPDATE_AUCTION_CLAIM_LISTER : UPDATE_AUCTION_CLAIM_WINNER;
+							try (PreparedStatement update = connection.prepareStatement(this.processor.apply(key))) {
+								update.setBoolean(1, true);
+								update.setString(2, request.getListingID().toString());
+								result = update.executeUpdate();
+							}
 
-					lister = request.isLister();
-					winner = !request.isLister();
+							lister = results.getBoolean("lister") || key.equals(UPDATE_AUCTION_CLAIM_LISTER);
+							winner = results.getBoolean("winner") || key.equals(UPDATE_AUCTION_CLAIM_WINNER);
+
+							if(result > 0 && lister && winner) {
+								try(PreparedStatement delete = connection.prepareStatement(this.processor.apply(DELETE_AUCTION_CLAIM_STATUS))) {
+									delete.setString(1, request.getListingID().toString());
+									result = delete.executeUpdate();
+
+									this.deleteListing(listing.get().getID());
+								}
+							}
+						} else {
+							try(PreparedStatement append = connection.prepareStatement(this.processor.apply(ADD_AUCTION_CLAIM_STATUS))) {
+								append.setString(1, request.getListingID().toString());
+								append.setBoolean(2, isLister);
+								append.setBoolean(3, !isLister);
+								result = append.executeUpdate();
+							}
+
+							lister = isLister;
+							winner = !isLister;
+						}
+
+						ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
+								.id(response)
+								.request(request.getID())
+								.listing(request.getListingID())
+								.actor(request.getActor())
+								.receiver(request.getReceiver().orElse(null))
+								.successful()
+								.auction()
+								.lister(lister)
+								.winner(winner);
+						if(result > 0) {
+							builder.successful();
+						} else {
+							builder.error(ErrorCodes.FATAL_ERROR);
+						}
+
+						return builder.build();
+					});
+				});
+			} else {
+				ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
+						.id(response)
+						.request(request.getID())
+						.listing(request.getListingID())
+						.actor(request.getActor())
+						.receiver(request.getReceiver().orElse(null));
+
+				if(this.deleteListing(request.getListingID())) {
+					builder.successful();
 				}
 
-				return new AuctionClaimMessage.ClaimResponse(
-						GTSPlugin.getInstance().getMessagingService().generatePingID(),
-						request.getID(),
-						request.getAuctionID(),
-						request.getActor(),
-						lister,
-						winner,
-						result != 0,
-						result != 1 ? ErrorCodes.FATAL_ERROR : null
-				);
-			});
-		});
+				return builder.build();
+			}
+		}
 	}
 
 	@Override
@@ -570,19 +617,31 @@ public class SqlImplementation implements StorageImplementation {
 
 	@Override
 	public BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception {
-		boolean success = this.deleteListing(request.getListingID());
-		ErrorCode error = success ? null : ErrorCodes.LISTING_MISSING;
+		BiFunction<Boolean, ErrorCode, BINRemoveMessage.Response> processor = (success, error) -> {
+			return new BINRemoveMessage.Response(
+					GTSPlugin.getInstance().getMessagingService().generatePingID(),
+					request.getID(),
+					request.getListingID(),
+					request.getActor(),
+					request.getRecipient().orElse(null),
+					request.shouldReturnListing(),
+					success,
+					error
+			);
+		};
 
-		return new BINRemoveMessage.Response(
-				GTSPlugin.getInstance().getMessagingService().generatePingID(),
-				request.getID(),
-				request.getListingID(),
-				request.getActor(),
-				request.getRecipient().orElse(null),
-				request.shouldReturnListing(),
-				success,
-				error
-		);
+		Optional<Listing> listing = this.getListing(request.getListingID());
+		if(!listing.isPresent()) {
+			return processor.apply(false, ErrorCodes.LISTING_MISSING);
+
+		}
+
+		Listing result = listing.get();
+		if(((BuyItNow) result).isPurchased()) {
+			return processor.apply(false, ErrorCodes.ALREADY_PURCHASED);
+		}
+
+		return processor.apply(true, null);
 	}
 
 	private boolean tableExists(String table) throws SQLException {
