@@ -26,7 +26,7 @@ plugins {
 }
 
 group = 'me.nickimpact.gts'
-version = "6.0.0"
+version = "6.0.1-SNAPSHOT"
 
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'
@@ -56,6 +56,8 @@ allprojects {
     }
 
     ext {
+        v = project.version
+
         sponge = "7.3.0"
         spigot = "1.12.2"
 
@@ -76,7 +78,7 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    version = "6.0.0${project.ext.run}"
+    version = "6.0.1-SNAPSHOT${project.ext.run}"
     group = 'me.nickimpact.gts'
 
     repositories {
@@ -168,7 +170,7 @@ task uploadToOre(type: UploadToOre) {
 
     notes = { genChangelog.result } as Provider<String>
     level = genChangelog.level
-    file = new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-1.12.2-${project.version}.jar").toString())
+    file = new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-${project.version}.jar").toString())
     pluginID = "gts"
     apiKey = properties['ore_api_key']?.toString() ?: System.getenv("ORE_API_KEY")
 }
