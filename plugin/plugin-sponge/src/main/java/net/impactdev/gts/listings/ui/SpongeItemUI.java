@@ -1,6 +1,7 @@
 package net.impactdev.gts.listings.ui;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;

@@ -53,23 +53,30 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	));
 
 	// Error messages
-	public static final ConfigKey<List<String>> NOT_ENOUGH_FUNDS = listKey("general.purchase.not-enough-funds", Lists.newArrayList("&cUnfortunately, you were unable to afford the price of {{price}}"));
-
-	public static final ConfigKey<String> TRANSLATIONS_YES = stringKey("translations.yes", "Yes");
-	public static final ConfigKey<String> TRANSLATIONS_NO = stringKey("translations.no", "No");
-
-	public static final ConfigKey<String> NO_PERMISSION = stringKey("general.errors.no-permission", "{{gts:error}} You don't have permission to use this!");
 	public static final ConfigKey<String> PRICE_NOT_POSITIVE = stringKey("general.errors.non-positive-price", "{{gts:error}} Invalid price! Value must be positive!");
 	public static final ConfigKey<String> PRICE_MAX_INVALID = stringKey("general.errors.max-price.invalid", "{{gts:error}} Your request is above the max amount of &e{{gts_max_price}}&7!");
 
-	public static final ConfigKey<List<String>> DISCORD_PUBLISH_TEMPLATE = listKey("discord.templates.publish", Lists.newArrayList(
+	public static final ConfigKey<List<String>> DISCORD_PUBLISH_TEMPLATE = listKey("discord.templates.publish.buyitnow", Lists.newArrayList(
+			"Listing ID: {{discord:listing_id}}",
+			"",
 			"Publisher: {{discord:publisher}}",
 			"Identifier: {{discord:publisher_id}}",
 			"",
 			"Requested Price: {{discord:price}}",
 			"Expiration Time: {{discord:expiration}}"
 	));
+	public static final ConfigKey<List<String>> DISCORD_PUBLISH_AUCTION_TEMPLATE = listKey("discord.templates.publish.auction", Lists.newArrayList(
+			"Listing ID: {{discord:listing_id}}",
+			"",
+			"Publisher: {{discord:publisher}}",
+			"Identifier: {{discord:publisher_id}}",
+			"",
+			"Starting Bid: {{discord:starting_bid}}",
+			"Expiration Time: {{discord:expiration}}"
+	));
 	public static final ConfigKey<List<String>> DISCORD_PURCHASE_TEMPLATE = listKey("discord.templates.purchase", Lists.newArrayList(
+			"Listing ID: {{discord:listing_id}}",
+			"",
 			"Buyer: {{discord:actor}}",
 			"Buyer Identifier: {{discord:actor_id}}",
 			"",
@@ -79,6 +86,8 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"Price: {{discord:price}}"
 	));
 	public static final ConfigKey<List<String>> DISCORD_BID_TEMPLATE = listKey("discord.templates.bid", Lists.newArrayList(
+			"Listing ID: {{discord:listing_id}}",
+			"",
 			"Bidder: {{discord:actor}}",
 			"Bidder Identifier: {{discord:actor_id}}",
 			"Bid Amount: {{discord:bid}}",
@@ -86,20 +95,15 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"Seller: {{discord:publisher}}",
 			"Seller Identifier: {{discord:publisher_id}}"
 	));
-	public static final ConfigKey<List<String>> DISCORD_EXPIRATION_TEMPLATE = listKey("discord.templates.expiration", Lists.newArrayList(
-			"Publisher: {{discord:publisher}}",
-			"Identifier: {{discord:publisher_id}}",
-			"",
-			"Requested Price: {{discord:price}}"
-	));
 	public static final ConfigKey<List<String>> DISCORD_REMOVAL_TEMPLATE = listKey("discord.templates.removal", Lists.newArrayList(
-			"Publisher: {{gts_publisher}}",
-			"Publisher Identifier: {{gts_publisher_id}}"
+			"Listing ID: {{discord:listing_id}}",
+			"",
+			"Publisher: {{discord:publisher}}",
+			"Identifier: {{discord:publisher_id}}"
 	));
 	public static final ConfigKey<String> LISTING_EVENT_CANCELLED = stringKey("general.listings.event-cancelled", "{{gts:error}} Your listing was blocked by an administrative source...");
 
 	public static final ConfigKey<String> UNABLE_TO_TAKE_LISTING = stringKey("general.listings.unable-to-take", "{{gts:error}} Your listing failed to be taken...");
-	public static final ConfigKey<String> NOT_PLAYER = stringKey("general.errors.commands.not-player", "{{gts:error}} You must be a player to use that command...");
 	public static final ConfigKey<String> CONFIRM_PURCHASE = stringKey("buttons.general.confirm-purchase", "&aConfirm Purchase");
 
 	public static final ConfigKey<String> AWAITING_CREATE_LISTING_TITLE = stringKey("buttons.general.awaiting.create-listing.title", "&cCreate Listing");
@@ -236,7 +240,9 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 				"&7View the listings you've",
 				"&7created that are still active",
 				"&7on the market. Expired listings",
-				"&7can be found in your stash!"
+				"&7can be found in your stash!",
+				"",
+				"&eClick to view your listings!"
 		));
 		return new TitleLorePair(title, lore);
 	});
@@ -553,14 +559,6 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&eClick to inspect!"
 	));
 
-	// Active Bids UI
-	public static final ConfigKey<String> UI_PLAYER_ACTIVE_BIDS_TITLE = stringKey("ui.player-active-bids.title", "&cGTS &7\u00bb &3Active Bids");
-	public static final ConfigKey<String> UI_PLAYER_NO_ACTIVE_BIDS_TITLE = stringKey("ui.player-active.bids.icons.no-active.title", "&cNo Active Bids...");
-	public static final ConfigKey<List<String>> UI_PLAYER_NO_ACTIVE_BIDS_LORE = listKey("ui.player-active.bids.icons.no-active.lore", Lists.newArrayList(
-			"&7You currently have no active",
-			"&7bids on the market..."
-	));
-
 	// Player Settings Menu
 	public static final ConfigKey<String> UI_PLAYER_SETTINGS_TITLE = stringKey("ui.player-settings.title", "&cGTS &7\u00bb &3User Settings");
 	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_TITLE = stringKey("ui.player-settings.setting-display.title", "&e{{setting}} Notifications");
@@ -597,14 +595,20 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST = stringKey("general.feedback.begin-feedback-request", "&7Processing your request...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_FEES_COLLECTION = stringKey("general.feedback.fees-collect", "&7Collecting fees...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_COLLECT_LISTING = stringKey("general.feedback.collect-listing", "&7Collecting your listing...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_RETURN_FEES = stringKey("general.feedback.return-tax-from-failure", "&7Returning fees...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_RETURN_FEES = stringKey("general.feedback.return-fees-from-failure", "&7Returning fees...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_RETURNED = stringKey("general.feedback.listing-returned", "{{gts:prefix}} Your listing has been returned!");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_ITEM_CLAIMED = stringKey("general.feedback.item-claimed", "{{gts:prefix}} You claimed your &a{{gts:claim_item}}&7!");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN = stringKey("general.feedback.listing-fail-to-return", "{{gts:error}} We failed to return your listing... We've kept it in your stash for now!");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER = stringKey("general.feedback.auctions.already-top-bidder", "{{gts:error}} You already hold the top bid on this auction!");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID = stringKey("general.feedback.auctions.cant-afford-bid", "{{gts:error}} You're unable to afford that bid...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_BLACKLISTED = stringKey("general.feedback.blacklisted", "{{gts:error}} Your selection is &cblacklisted &7from being listed on the GTS...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_OUTBID = stringKey("general.feedback.auctions.outbid", "{{gts:prefix}} {{gts:auction_bidder}} &7outbid you by &e{{gts:auction_outbid_amount}} &7for &a{{gts:listing_name}}&7!");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_OUTBID = stringKey("general.feedback.auctions.outbid", "{{gts:prefix}} &a{{gts:auction_bidder}} &7outbid you by &e{{gts:auction_outbid_amount}} &7for &a{{gts:listing_name}}&7!");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_NEWBID = stringKey("general.feedback.auctions.new-bid", "{{gts:prefix}} &a{{gts:auction_bidder}} &7bid &e{{gts:auction_bid_amount}} &7for your &a{{gts:listing_name}}&7!");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_CANCELLED = stringKey("general.feedback.auctions.cancelled", "{{gts:prefix}} Heads up! The auction for {{gts:listing_name}} has been cancelled, so you've been refunded your money!");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_PROCESSING_BID = stringKey("general.feedback.processing-bid", "&7Processing bid...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_FUNDS_TO_ESCROW = stringKey("general.feedback.funds-to-escrow", "&7Putting funds in escrow...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_FUNDS_FROM_ESCROW = stringKey("general.feedback.funds-from-escrow", "&7Returning your funds from escrow...");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_BID_PLACED = stringKey("general.feedback.auctions.bid-placed", "{{gts:prefix}} Your bid of {{gts:auction_bid_amount}} has been placed!");
 
 	public static final ConfigKey<String> REQUEST_FAILED = stringKey("general.requests.failure", "{{gts:prefix}} &7Request failed with status code (&c{{gts:error_code}}&7)");
 

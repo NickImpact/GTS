@@ -135,6 +135,16 @@ public interface InternalMessagingService {
      */
     CompletableFuture<PingMessage.Pong> sendPing();
 
+    /**
+     * Sends an update to the messaging service indicating a new listing has been published.
+     *
+     * @param listing The ID of the listing just published
+     * @param actor The ID of the user who published the listing
+     * @param auction Whether the listing is an auction or BIN listing
+     * @return An empty value, likely just null
+     */
+    CompletableFuture<Void> sendPublishNotice(UUID listing, UUID actor, boolean auction);
+
     //------------------------------------------------------------------------------------
     //
     //  Auction Based Messages

@@ -10,4 +10,5 @@ public interface Blacklist {
 
 	boolean isBlacklisted(Class<?> registrar, String query);
 
+    void clear();
 }

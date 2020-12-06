@@ -3,6 +3,7 @@ package net.impactdev.gts.common.discord;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.common.discord.internal.DiscordPlaceholderParser;
 import net.impactdev.gts.common.discord.internal.DiscordSourceSpecificPlaceholderParser;
@@ -93,6 +94,11 @@ public class DiscordNotifier {
 		this.parser = new MessageParser();
 		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
 				Listing.class,
+				"discord:listing_id",
+				listing -> listing.getID().toString()
+		));
+		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
+				Listing.class,
 				"discord:publisher",
 				listing -> GTSPlugin.getInstance().getPlayerDisplayName(listing.getLister())
 		));
@@ -102,21 +108,21 @@ public class DiscordNotifier {
 				listing -> listing.getLister().toString()
 		));
 		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
-				Listing.class,
+				BuyItNow.class,
 				"discord:price",
 				listing -> {
-					if(!BuyItNow.class.isAssignableFrom(listing.getClass())) {
-						return null;
-					}
-
-					BuyItNow bin = (BuyItNow) listing;
-					TextComponent price = bin.getPrice().getText();
+					TextComponent price = listing.getPrice().getText();
 					StringBuilder out = new StringBuilder(price.content());
 					for(Component child : price.children().stream().filter(x -> x instanceof TextComponent).collect(Collectors.toList())) {
 						out.append(((TextComponent) child).content());
 					}
 					return out.toString();
 				}
+		));
+		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
+				Auction.class,
+				"discord:starting_bid",
+				auction -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(auction.getStartingPrice())
 		));
 		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
 				Listing.class,
@@ -130,7 +136,7 @@ public class DiscordNotifier {
 		));
 		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
 				UUID.class,
-				"discord:actor",
+				"discord:actor_id",
 				UUID::toString
 		));
 		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(

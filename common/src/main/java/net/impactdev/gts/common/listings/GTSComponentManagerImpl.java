@@ -2,6 +2,7 @@ package net.impactdev.gts.common.listings;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
+import com.google.gson.internal.LinkedHashTreeMap;
 import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.data.Storable;
 import net.impactdev.gts.api.listings.Listing;
@@ -12,6 +13,7 @@ import net.impactdev.gts.api.data.registry.GTSComponentManager;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceManager;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,7 +21,7 @@ import java.util.Optional;
 public class GTSComponentManagerImpl implements GTSComponentManager {
 
     private final Map<Class<? extends Listing>, ResourceManager<? extends Listing>> listings = Maps.newHashMap();
-    private final Map<String, EntryManager<? extends Entry<?, ?>, ?>> managers = Maps.newHashMap();
+    private final Map<String, EntryManager<? extends Entry<?, ?>, ?>> managers = new LinkedHashMap<>();
     private final Map<String, PriceManager<? extends Price<?, ?, ?>, ?>> prices = Maps.newHashMap();
 
     private final Map<String, Storable.Deserializer<?>> legacy = Maps.newHashMap();
@@ -43,12 +45,12 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
     public <T extends Entry<?, ?>> void registerEntryManager(Class<T> type, EntryManager<T, ?> manager) {
         Preconditions.checkArgument(type.isAnnotationPresent(GTSKeyMarker.class), "An Entry type must be annotated with GTSKeyMarker");
 
-        this.managers.put(type.getAnnotation(GTSKeyMarker.class).value(), manager);
+        this.managers.put(type.getAnnotation(GTSKeyMarker.class).value().toLowerCase(), manager);
     }
 
     @Override
     public <T extends Entry<?, ?>> Optional<EntryManager<T, ?>> getEntryManager(String key) {
-        return Optional.ofNullable((EntryManager<T, ?>) this.managers.get(key));
+        return Optional.ofNullable((EntryManager<T, ?>) this.managers.get(key.toLowerCase()));
     }
 
     @Override

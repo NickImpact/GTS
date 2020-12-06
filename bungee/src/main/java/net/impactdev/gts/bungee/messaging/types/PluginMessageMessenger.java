@@ -38,7 +38,7 @@ public class PluginMessageMessenger implements Messenger, Listener {
 	}
 
 	private void dispatch(byte[] message) {
-		this.plugin.getBootstrap().getProxy().getServers().values().forEach(server -> server.sendData(CHANNEL, message, true));
+		this.plugin.getBootstrap().getProxy().getServers().values().forEach(server -> server.sendData(CHANNEL, message, false));
 	}
 
 	@Override

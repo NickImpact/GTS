@@ -103,6 +103,15 @@ public interface AuctionMessage extends OutgoingMessage {
 		interface Response extends Cancel, MessageType.Response {
 
 			/**
+			 * Contextual information regarding this listing will be deleted by the time a server processing
+			 * the response will have begun. As such, we will pass a copy of the data alongside the response
+			 * so listeners can interact with the information.
+			 *
+			 * @return The data of the auction that was just cancelled
+			 */
+			Auction getData();
+
+			/**
 			 * Specifies the list of users who have bid on this auction at least once. They should
 			 * be informed of the auction being cancelled.
 			 *

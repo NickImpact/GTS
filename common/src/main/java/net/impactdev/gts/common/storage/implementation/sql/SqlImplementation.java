@@ -71,6 +71,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -567,6 +568,7 @@ public class SqlImplementation implements StorageImplementation {
 	public AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception {
 		return this.query(GET_SPECIFIC_LISTING, (connection, ps) -> {
 			ps.setString(1, request.getAuctionID().toString());
+			AtomicReference<Auction> data = new AtomicReference<>();
 			return this.results(ps, results -> {
 				boolean result = false;
 				List<UUID> bidders = Lists.newArrayList();
@@ -588,6 +590,7 @@ public class SqlImplementation implements StorageImplementation {
 							.map(ResourceManager::getDeserializer)
 							.get()
 							.deserialize(json);
+					data.set(auction);
 
 					if(this.plugin.getConfiguration().get(ConfigKeys.AUCTIONS_ALLOW_CANCEL_WITH_BIDS)) {
 						auction.getBids().keySet().stream().distinct().forEach(bidders::add);
@@ -605,6 +608,7 @@ public class SqlImplementation implements StorageImplementation {
 				return new AuctionCancelMessage.Response(
 						GTSPlugin.getInstance().getMessagingService().generatePingID(),
 						request.getID(),
+						data.get(),
 						request.getAuctionID(),
 						request.getActor(),
 						ImmutableList.copyOf(bidders),

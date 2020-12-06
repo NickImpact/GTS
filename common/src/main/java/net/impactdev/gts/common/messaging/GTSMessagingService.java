@@ -40,6 +40,7 @@ import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
+import net.impactdev.gts.common.messaging.messages.listings.PublishListingMessageImpl;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
@@ -172,6 +173,14 @@ public class GTSMessagingService implements InternalMessagingService {
             debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
 
             return response;
+        });
+    }
+
+    @Override
+    public CompletableFuture<Void> sendPublishNotice(UUID listing, UUID actor, boolean auction) {
+        return CompletableFutureManager.makeFuture(() -> {
+            PublishListingMessageImpl message = new PublishListingMessageImpl(this.generatePingID(), listing, actor, auction);
+            GTSPlugin.getInstance().getMessagingService().getMessenger().sendOutgoingMessage(message);
         });
     }
 

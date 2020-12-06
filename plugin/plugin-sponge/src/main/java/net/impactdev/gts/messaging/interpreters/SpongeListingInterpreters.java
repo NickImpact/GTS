@@ -1,9 +1,13 @@
 package net.impactdev.gts.messaging.interpreters;
 
+import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
+import net.impactdev.gts.common.messaging.messages.listings.PublishListingMessageImpl;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 
 public class SpongeListingInterpreters implements Interpreter {
 
@@ -40,6 +44,20 @@ public class SpongeListingInterpreters implements Interpreter {
         consumer.registerInternalConsumer(
                 ClaimMessageImpl.ClaimResponseImpl.AuctionClaimResponseImpl.class, response -> {
                     consumer.processRequest(response.getRequestID(), response);
+                }
+        );
+
+        consumer.registerInternalConsumer(
+                PublishListingMessageImpl.class, message -> {
+                    GTSPlugin.getInstance().getStorage().getListing(message.getListingID()).thenAccept(listing -> {
+                        if(listing.isPresent()) {
+                            for(Player player : Sponge.getServer().getOnlinePlayers()) {
+                                if(!player.getUniqueId().equals(message.getActor())) {
+
+                                }
+                            }
+                        }
+                    });
                 }
         );
     }

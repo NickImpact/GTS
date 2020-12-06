@@ -5,6 +5,9 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.GTSService;
+import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
@@ -95,6 +98,15 @@ public abstract class AuctionCancelMessage extends AuctionMessageOptions impleme
             UUID listing = base.getSecond().getFirst();
             UUID actor = base.getSecond().getSecond();
 
+            Auction data = Optional.ofNullable(raw.get("data"))
+                    .map(x -> GTSService.getInstance().getGTSComponentManager()
+                            .getListingResourceManager(Auction.class)
+                            .get()
+                            .getDeserializer()
+                            .deserialize(x.getAsJsonObject())
+                    )
+                    .orElseThrow(() -> new IllegalStateException("Response lacking auction data"));
+
             UUID request = Optional.ofNullable(raw.get("request"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
@@ -115,8 +127,10 @@ public abstract class AuctionCancelMessage extends AuctionMessageOptions impleme
                     .map(x -> ErrorCodes.get(x.getAsInt()))
                     .orElse(null);
 
-            return new AuctionCancelMessage.Response(id, request, listing, actor, ImmutableList.copyOf(bidders), successful, error);
+            return new AuctionCancelMessage.Response(id, request, data, listing, actor, ImmutableList.copyOf(bidders), successful, error);
         }
+
+        private final Auction data;
 
         private final UUID request;
         private final ImmutableList<UUID> bidders;
@@ -136,13 +150,19 @@ public abstract class AuctionCancelMessage extends AuctionMessageOptions impleme
          * @param success The state of the response
          * @param error   An error code marking the reason of failure, should it be necessary. Can be null
          */
-        public Response(UUID id, UUID request, UUID listing, UUID actor, ImmutableList<UUID> bidders, boolean success, @Nullable ErrorCode error) {
+        public Response(UUID id, UUID request, Auction data, UUID listing, UUID actor, ImmutableList<UUID> bidders, boolean success, @Nullable ErrorCode error) {
             super(id, listing, actor);
 
+            this.data = data;
             this.request = request;
             this.bidders = bidders;
             this.success = success;
             this.error = error;
+        }
+
+        @Override
+        public Auction getData() {
+            return this.data;
         }
 
         @Override
@@ -167,6 +187,7 @@ public abstract class AuctionCancelMessage extends AuctionMessageOptions impleme
                                 o.add("bidders", bidders);
                             })
                             .add("successful", this.success)
+                            .add("data", this.data.serialize())
                             .consume(o -> this.getErrorCode().ifPresent(error -> o.add("error", error.ordinal())))
                             .toJson()
             );

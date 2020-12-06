@@ -1,6 +1,7 @@
 package net.impactdev.gts.messaging.interpreters;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
@@ -13,10 +14,20 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
+import net.kyori.text.TextComponent;
+import net.kyori.text.event.ClickEvent;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
+import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.Text;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.StringJoiner;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 public class SpongeAuctionInterpreters implements Interpreter {
 
@@ -80,8 +91,10 @@ public class SpongeAuctionInterpreters implements Interpreter {
                                 Sponge.getServer().getPlayer(info.getLister()).ifPresent(player -> {
                                     manager.retrieve(info.getLister()).thenAccept(settings -> {
                                         if(settings.getBidListenState()) {
-                                            // TODO - Inform user of who bid on their auction
-                                            //player.sendMessages(service.parse());
+                                            player.sendMessage(service.parse(
+                                                    Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_NEWBID),
+                                                    Lists.newArrayList(() -> info, response::getActor, () -> new Auction.BidContext(response.getActor(), new Auction.Bid(response.getAmountBid())))
+                                            ));
                                         }
                                     });
                                 });
@@ -102,8 +115,31 @@ public class SpongeAuctionInterpreters implements Interpreter {
                     consumer.processRequest(response.getRequestID(), response);
 
                     if(response.wasSuccessful()) {
+                        List<Supplier<Object>> sources = Lists.newArrayList();
+                        sources.add(response::getData);
+
+                        EconomyService economy = GTSPlugin.getInstance().as(GTSSpongePlugin.class).getEconomy();
+
                         for(UUID bidder : response.getBidders()) {
-                            // TODO - Inform users of cancellation of auction
+                            Sponge.getServer().getPlayer(bidder).ifPresent(player -> {
+                                player.sendMessage(service.parse(
+                                        Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANCELLED),
+                                        sources
+                                ));
+
+                                economy.getOrCreateAccount(bidder).ifPresent(account -> {
+                                    account.deposit(
+                                            economy.getDefaultCurrency(),
+                                            BigDecimal.valueOf(response.getData().getCurrentBid(bidder).map(Auction.Bid::getAmount).orElseThrow(() -> new IllegalStateException("Unable to find highest bid for player marked as a bidder"))),
+                                            Cause.builder()
+                                                    .append(bidder)
+                                                    .build(EventContext.builder()
+                                                            .add(EventContextKeys.PLUGIN, GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer())
+                                                            .build()
+                                                    )
+                                    );
+                                });
+                            });
                         }
                     }
                 }

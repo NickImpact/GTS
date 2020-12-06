@@ -23,4 +23,9 @@ public class BlacklistImpl implements Blacklist {
         return this.blacklist.get(registrar).contains(query);
     }
 
+    @Override
+    public void clear() {
+        this.blacklist.clear();
+    }
+
 }

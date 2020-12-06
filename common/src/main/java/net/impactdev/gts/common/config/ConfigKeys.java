@@ -5,7 +5,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.common.config.types.time.TimeKey;
+import net.impactdev.gts.common.config.wrappers.LazyBlacklist;
 import net.impactdev.gts.common.discord.DiscordOption;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.configuration.ConfigKeyHolder;
@@ -41,7 +43,7 @@ public class ConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<Boolean> DEBUG_ENABLED = booleanKey("debug", false);
 
 	// Storage Settings
-	public static final ConfigKey<StorageType> STORAGE_METHOD = enduringKey(customKey(adapter -> StorageType.parse(adapter.getString("storage-method", "mariadb"))));
+	public static final ConfigKey<StorageType> STORAGE_METHOD = enduringKey(customKey(adapter -> StorageType.parse(adapter.getString("storage-method", "H2"))));
 	public static final ConfigKey<StorageCredentials> STORAGE_CREDENTIALS = enduringKey(customKey(adapter -> {
 		String address = adapter.getString("data.address", "localhost");
 		String database = adapter.getString("data.database", "minecraft");
@@ -65,45 +67,48 @@ public class ConfigKeys implements ConfigKeyHolder {
 
 	// Discord Logging
 	public static final ConfigKey<Boolean> DISCORD_LOGGING_ENABLED = booleanKey("discord.enabled", true);
-	public static final ConfigKey<Boolean> DISCORD_DEBUG_ENABLED = booleanKey("discord.debug", false);
 	public static final ConfigKey<String> DISCORD_AVATAR = stringKey("discord.avatar", "https://cdn.bulbagarden.net/upload/thumb/f/f5/399Bidoof.png/600px-399Bidoof.png");
 	public static final ConfigKey<String> DISCORD_TITLE = stringKey("discord.title", "GTS Logging");
 	public static final ConfigKey<Map<DiscordOption.Options, DiscordOption>> DISCORD_LINKS = customKey(adapter -> {
 		BiFunction<String, String, String> options = (type, option) -> "discord.links.@type@.".replace("@type@", type) + option;
 
 		Map<DiscordOption.Options, DiscordOption> links = Maps.newHashMap();
-		links.put(DiscordOption.Options.List, new DiscordOption(
-			adapter.getString(options.apply("new-listing", "color"), "New Listing Published"),
-			Color.decode(adapter.getString(options.apply("new-listing", "descriptor"), "#00FF00")),
-			adapter.getStringList(options.apply("new-listing", "hooks"), Lists.newArrayList())
+		links.put(DiscordOption.Options.List_BIN, new DiscordOption(
+			adapter.getString(options.apply("new-bin-listing", "color"), "New \"Buy it Now\" Listing Published"),
+			Color.decode(adapter.getString(options.apply("new-bin-listing", "descriptor"), "#00FF00")),
+			adapter.getStringList(options.apply("new-bin-listing", "hooks"), Lists.newArrayList())
+		));
+		links.put(DiscordOption.Options.List_Auction, new DiscordOption(
+				adapter.getString(options.apply("new-auction-listing", "color"), "New Auction Published"),
+				Color.decode(adapter.getString(options.apply("new-auction-listing", "descriptor"), "#66CCFF")),
+				adapter.getStringList(options.apply("new-auction-listing", "hooks"), Lists.newArrayList())
 		));
 		links.put(DiscordOption.Options.Purchase, new DiscordOption(
 				adapter.getString(options.apply("purchase", "color"), "Listing Purchased"),
-				Color.decode(adapter.getString(options.apply("purchase", "descriptor"), "#00FF00")),
+				Color.decode(adapter.getString(options.apply("purchase", "descriptor"), "#FFFF00")),
 				adapter.getStringList(options.apply("purchase", "hooks"), Lists.newArrayList())
 		));
 		links.put(DiscordOption.Options.Bid, new DiscordOption(
 				adapter.getString(options.apply("bid", "color"), "Bid Posted"),
-				Color.decode(adapter.getString(options.apply("bid", "descriptor"), "#00FF00")),
+				Color.decode(adapter.getString(options.apply("bid", "descriptor"), "#FF9933")),
 				adapter.getStringList(options.apply("bid", "hooks"), Lists.newArrayList())
 		));
 		links.put(DiscordOption.Options.Remove, new DiscordOption(
 				adapter.getString(options.apply("remove", "color"), "Listing Removed"),
-				Color.decode(adapter.getString(options.apply("remove", "descriptor"), "#00FF00")),
+				Color.decode(adapter.getString(options.apply("remove", "descriptor"), "#FF0000")),
 				adapter.getStringList(options.apply("remove", "hooks"), Lists.newArrayList())
 		));
-		links.put(DiscordOption.Options.Expire, new DiscordOption(
-				adapter.getString(options.apply("expire", "color"), "Listing Expired"),
-				Color.decode(adapter.getString(options.apply("expire", "descriptor"), "#00FF00")),
-				adapter.getStringList(options.apply("expire", "hooks"), Lists.newArrayList())
+		links.put(DiscordOption.Options.Claim, new DiscordOption(
+				adapter.getString(options.apply("claim", "color"), "Listing Removed"),
+				Color.decode(adapter.getString(options.apply("claim", "descriptor"), "#CC00FF")),
+				adapter.getStringList(options.apply("claim", "hooks"), Lists.newArrayList())
 		));
-
 
 		return links;
 	});
 
 	// Listing Management
-	public static final ConfigKey<Blacklist> BLACKLIST = customKey(adapter -> {
+	public static final ConfigKey<LazyBlacklist> BLACKLIST = customKey(adapter -> new LazyBlacklist(() -> {
 		Blacklist blacklist = Impactor.getInstance().getRegistry().get(Blacklist.class);
 		List<String> blocked = adapter.getKeys("blacklist", Lists.newArrayList());
 		for(String classification : blocked) {
@@ -115,7 +120,7 @@ public class ConfigKeys implements ConfigKeyHolder {
 			});
 		}
 		return blacklist;
-	});
+	}));
 	public static final ConfigKey<Integer> MAX_LISTINGS_PER_USER = intKey("max-listings-per-user", 5);
 	public static final ConfigKey<Time> LISTING_MIN_TIME = customKey(adapter -> {
 		try {
@@ -131,22 +136,15 @@ public class ConfigKeys implements ConfigKeyHolder {
 			return new Time(adapter.getString("listing-max-time", "7d"));
 		}
 	});
-	public static final ConfigKey<Time> LISTING_BASE_TIME = customKey(adapter -> {
-		try {
-			return new Time(Long.parseLong(adapter.getString("listing-time", "86400")));
-		} catch (NumberFormatException e) {
-			return new Time(adapter.getString("listing-min-time", "1d"));
-		}
-	});
 	public static final ConfigKey<Long> LISTINGS_MIN_PRICE = longKey("pricing.control.min-price", 1);
 	public static final ConfigKey<Long> LISTINGS_MAX_PRICE = longKey("pricing.control.max-price", 10000000);
 	public static final ConfigKey<Boolean> FEES_ENABLED = booleanKey("pricing.fees.enabled", true);
 	public static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_BIN = customKey(adapter -> {
-		double input = adapter.getDouble("pricing.fees.starting_price.bin_rate", 0.02);
+		double input = adapter.getDouble("pricing.fees.starting-price.bin_rate", 0.02);
 		return (float) input;
 	});
 	public static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_AUCTION = customKey(adapter -> {
-		double input = adapter.getDouble("pricing.fees.starting_price.auction_rate", 0.05);
+		double input = adapter.getDouble("pricing.fees.starting-price.auction_rate", 0.05);
 		return (float) input;
 	});
 	public static final ConfigKey<Function> FEE_TIME_EQUATION = customKey(adapter -> {

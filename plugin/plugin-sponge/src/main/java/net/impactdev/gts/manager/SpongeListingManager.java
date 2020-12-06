@@ -219,47 +219,67 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				return false;
 			}
 
-			GTSPlugin.getInstance().getStorage().publishListing(listing).exceptionally(throwable -> {
+			boolean result = GTSPlugin.getInstance().getStorage().publishListing(listing).exceptionally(throwable -> {
 				source.ifPresent(player -> player.sendMessage(Text.of(TextColors.RED, "Fatal Error Detected")));
 				ExceptionWriter.write(throwable);
 				return false;
 			}).get(3, TimeUnit.SECONDS);
 
-			source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_TEMPLATE), sources)));
+			if(result) {
+				source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_TEMPLATE), sources)));
 
-			if(main.get(ConfigKeys.FEES_ENABLED)) {
-				sources.add(feeBuilder::build);
-				source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.FEE_APPLICATION), sources)));
-			}
-
-			PlayerSettingsManager manager = GTSService.getInstance().getPlayerSettingsManager();
-			for(Player player : Sponge.getServer().getOnlinePlayers()) {
-				if (source.isPresent() && !source.get().getUniqueId().equals(player.getUniqueId())) {
-					manager.retrieve(player.getUniqueId()).thenAccept(settings -> {
-						if(settings.getPublishListenState()) {
-							if(listing instanceof BuyItNow) {
-								player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_BIN), sources));
-							} else {
-								player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_AUCTION), sources));
-							}
-						}
-					});
+				if(main.get(ConfigKeys.FEES_ENABLED)) {
+					sources.add(feeBuilder::build);
+					source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.FEE_APPLICATION), sources)));
 				}
+
+				PlayerSettingsManager manager = GTSService.getInstance().getPlayerSettingsManager();
+				for(Player player : Sponge.getServer().getOnlinePlayers()) {
+					if (source.isPresent() && !source.get().getUniqueId().equals(player.getUniqueId())) {
+						manager.retrieve(player.getUniqueId()).thenAccept(settings -> {
+							if(settings.getPublishListenState()) {
+								if(listing instanceof BuyItNow) {
+									player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_BIN), sources));
+								} else {
+									player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_AUCTION), sources));
+								}
+							}
+						});
+					}
+				}
+
+				GTSPlugin.getInstance().getMessagingService().sendPublishNotice(listing.getID(), lister, listing instanceof Auction);
+
+				if(listing instanceof BuyItNow) {
+					Message message = this.notifier.forgeMessage(
+							DiscordOption.fetch(DiscordOption.Options.List_BIN),
+							MsgConfigKeys.DISCORD_PUBLISH_TEMPLATE,
+							listing
+					);
+					this.notifier.sendMessage(message);
+				} else {
+					this.notifier.sendMessage(this.notifier.forgeMessage(
+							DiscordOption.fetch(DiscordOption.Options.List_Auction),
+							MsgConfigKeys.DISCORD_PUBLISH_AUCTION_TEMPLATE,
+							listing
+					));
+				}
+
+				return true;
 			}
 
-			Message message = this.notifier.forgeMessage(
-					DiscordOption.fetch(DiscordOption.Options.List),
-					MsgConfigKeys.DISCORD_PUBLISH_TEMPLATE,
-					listing
-			);
-			this.notifier.sendMessage(message);
-
-			return true;
-		}, Impactor.getInstance().getScheduler().async());
+			return false;
+		});
 	}
 
 	@Override
 	public CompletableFuture<Boolean> bid(UUID bidder, SpongeAuction listing, double amount) {
+		final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+		Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+				service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_PROCESSING_BID))
+		));
+
 		return CompletableFutureManager.makeFuture(() -> {
 			EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
 			Optional<UniqueAccount> account = economy.getOrCreateAccount(bidder);
@@ -270,19 +290,22 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				return false;
 			}
 
-			if (account.get().getBalance(economy.getDefaultCurrency()).doubleValue() < amount) {
-				// TODO - Not enough funds feedback
+			AtomicDouble actual = new AtomicDouble(amount);
+			listing.getCurrentBid(bidder).ifPresent(prior -> actual.set(actual.get() - prior.getAmount()));
+
+			if (account.get().getBalance(economy.getDefaultCurrency()).doubleValue() < actual.get()) {
+				Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID))));
 				return false;
 			}
 
 			if (!Impactor.getInstance().getEventBus().post(BidEvent.class, bidder, listing, amount)) {
 				Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-						Text.of(TextColors.GRAY, "Putting funds in escrow...")
+						service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_TO_ESCROW))
 				));
 
 				TransactionResult result = account.get().withdraw(
 						economy.getDefaultCurrency(),
-						new BigDecimal(amount),
+						BigDecimal.valueOf(actual.get()),
 						Cause.builder()
 								.append(bidder)
 								.build(EventContext.builder()
@@ -292,22 +315,58 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				);
 				if (result.getResult().equals(ResultType.ACCOUNT_NO_FUNDS)) {
 					Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-							Text.of(TextColors.RED, "You don't have enough funds for this bid...")
+							service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID))
 					));
 					return false;
 				}
 
-				Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-						Text.of(TextColors.GRAY, "Processing bid...")
-				));
+				Message message = this.notifier.forgeMessage(
+						DiscordOption.fetch(DiscordOption.Options.Bid),
+						MsgConfigKeys.DISCORD_BID_TEMPLATE,
+						listing, amount, bidder
+				);
+				this.notifier.sendMessage(message);
+
 				return GTSPlugin.getInstance().getMessagingService().publishBid(listing.getID(), bidder, amount)
-						.get()
-						.wasSuccessful();
+						.thenApply(response -> {
+							if(response.wasSuccessful()) {
+								Auction.BidContext context = new Auction.BidContext(bidder, new Auction.Bid(amount));
+								Sponge.getServer().getPlayer(bidder).ifPresent(player -> {
+									player.sendMessage(service.parse(
+											Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_BID_PLACED),
+											Lists.newArrayList(() -> context)
+									));
+								});
+							} else {
+								// Return funds placed in escrow
+								Sponge.getServer().getPlayer(bidder).ifPresent(player -> {
+									player.sendMessage(service.parse(
+											Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+											Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+									));
+									player.sendMessage(service.parse(
+											Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)
+									));
+
+									account.get().deposit(
+											economy.getDefaultCurrency(),
+											BigDecimal.valueOf(actual.get()),
+											Cause.builder()
+													.append(bidder)
+													.build(EventContext.builder()
+															.add(EventContextKeys.PLUGIN, GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer())
+															.build()
+													)
+									);
+								});
+							}
+
+							return response.wasSuccessful();
+						})
+						.get(5, TimeUnit.SECONDS);
 			} else {
 				Sponge.getServer().getPlayer(bidder).ifPresent(player -> {
-					final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-
-					player.sendMessage(parser.parse(
+					player.sendMessage(service.parse(
 							Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
 							Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)
 					));
@@ -323,59 +382,70 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 		final Config lang = GTSPlugin.getInstance().getMsgConfig();
 		final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
 		return CompletableFutureManager.makeFuture(() -> {
-			Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(
-					Text.of(TextColors.GRAY, "Processing purchase...")
-			));
+			Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST))));
 			if (source == null || listing.getPrice().getSourceType().equals(source.getClass())) {
 				boolean canPay = CompletableFutureManager.makeFuture(() -> listing.getPrice().canPay(buyer), Impactor.getInstance().getScheduler().sync()).get(2, TimeUnit.SECONDS);
-				if(canPay) {
+
+				if (canPay && !Impactor.getInstance().getEventBus().post(PurchaseListingEvent.class, buyer, listing)) {
+					Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(
+							parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_TO_ESCROW))
+					));
+					listing.getPrice().pay(buyer, source);
+
 					return GTSPlugin.getInstance().getMessagingService().requestBINPurchase(listing.getID(), buyer, source)
 							.thenApply(response -> {
-								if (response.wasSuccessful()) {
-									if (!Impactor.getInstance().getEventBus().post(PurchaseListingEvent.class, buyer, listing)) {
-										Impactor.getInstance().getScheduler().executeSync(() -> {
-											listing.getPrice().pay(buyer, source);
-											listing.getEntry().give(buyer);
+								if(response.wasSuccessful()) {
+									listing.getEntry().give(buyer);
 
-											Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessages(
-													parser.parse(lang.get(MsgConfigKeys.PURCHASE_PAY), Lists.newArrayList(
-															() -> listing
-													))
-											));
+									Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessages(
+											parser.parse(lang.get(MsgConfigKeys.PURCHASE_PAY), Lists.newArrayList(
+													() -> listing
+											))
+									));
 
-											listing.markPurchased();
+									listing.markPurchased();
 
-											// We do the following such that we will ensure we populate any potential source
-											// the price may require
-											((GTSStorageImpl) GTSPlugin.getInstance().getStorage()).sendListingUpdate(listing)
-													.exceptionally(e -> {
-														GTSPlugin.getInstance().getPluginLogger().error("Fatal error detected while updating listing with price, see error below:");
-														ExceptionWriter.write(e);
-														return false;
-													});
-										});
-									} else {
-										Sponge.getServer().getPlayer(buyer).ifPresent(player -> {
-											player.sendMessage(parser.parse(
-													Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-													Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)
-											));
-										});
-									}
+									// We do the following such that we will ensure we populate any potential source
+									// the price may require
+									((GTSStorageImpl) GTSPlugin.getInstance().getStorage()).sendListingUpdate(listing)
+											.exceptionally(e -> {
+												GTSPlugin.getInstance().getPluginLogger().error("Fatal error detected while updating listing with price, see error below:");
+												ExceptionWriter.write(e);
+												return false;
+											});
+
+									Message message = this.notifier.forgeMessage(
+											DiscordOption.fetch(DiscordOption.Options.Purchase),
+											MsgConfigKeys.DISCORD_PURCHASE_TEMPLATE,
+											listing, buyer
+									);
+									this.notifier.sendMessage(message);
 								} else {
-									// TODO - Request unsuccessful
+									Sponge.getServer().getPlayer(buyer).ifPresent(player -> {
+										player.sendMessage(parser.parse(
+												Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+												Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)
+										));
+
+										player.sendMessage(parser.parse(
+												Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)
+										));
+
+										listing.getPrice().reward(buyer);
+									});
 								}
 
-								return true;
-							}).get();
-				} else {
-					return false;
+								return response.wasSuccessful();
+							})
+							.get(5, TimeUnit.SECONDS);
 				}
+
+				return false;
 			} else {
 				throw new CompletionException(new IllegalArgumentException("Source of price is invalid"));
 			}
 
-		}, Impactor.getInstance().getScheduler().async());
+		});
 	}
 
 	@Override
@@ -385,7 +455,9 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 	@Override
 	public CompletableFuture<Boolean> hasMaxListings(UUID lister) {
-		return CompletableFuture.supplyAsync(() -> false);
+		return this.fetchListings().thenApply(listings -> listings.stream()
+				.filter(l -> l.getLister().equals(lister))
+				.count() < GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER));
 	}
 
 	@Override
@@ -401,9 +473,5 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				return Lists.newArrayList();
 			}
 		});
-	}
-
-	private CompletableFuture<Boolean> schedule(Supplier<Boolean> task) {
-		return CompletableFuture.supplyAsync(task, Impactor.getInstance().getScheduler().async());
 	}
 }

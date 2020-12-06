@@ -21,10 +21,11 @@ public class DiscordOption {
 	}
 
 	public enum Options {
-		List,
+		List_BIN,
+		List_Auction,
 		Purchase,
 		Remove,
 		Bid,
-		Expire,
+		Claim,
 	}
 }

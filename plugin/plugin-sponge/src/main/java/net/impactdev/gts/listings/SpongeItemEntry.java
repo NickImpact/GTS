@@ -44,7 +44,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-@GTSKeyMarker("item")
+@GTSKeyMarker("items")
 public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	private static final Function<ItemStackSnapshot, JObject> writer = snapshot -> {

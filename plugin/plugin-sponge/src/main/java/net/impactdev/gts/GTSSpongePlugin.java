@@ -10,6 +10,7 @@ import net.impactdev.gts.commands.GTSCommandManager;
 import net.impactdev.gts.common.player.PlayerSettingsImpl;
 import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.gts.common.utils.Version;
+import net.impactdev.gts.listeners.AnvilRenameListener;
 import net.impactdev.gts.listeners.JoinListener;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.listings.data.SpongeItemManager;
@@ -124,29 +125,31 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		GTSService.getInstance().addSearcher(new SpongeItemSearcher());
 
 		this.getPluginLogger().info("Setting up configuration...");
-
 		this.copyResource(Paths.get("main.conf"), this.getConfigDir());
 		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
 
 		String language = this.config.get(ConfigKeys.LANGUAGE);
 		this.copyResource(Paths.get("lang/" + language + ".conf"), this.getConfigDir());
-		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/" + language.toLowerCase() + ".conf")), new MsgConfigKeys());
+		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/" + language.toLowerCase() + ".conf"), true), new MsgConfigKeys());
 
 		this.getPluginLogger().info("Sending load event to available extensions...");
 		this.extensionManager = new SimpleExtensionManager(this);
 		this.extensionManager.loadExtensions(this.getBootstrap().getConfigDirectory().resolve("extensions"));
 
-		Sponge.getEventManager().registerListeners(this.bootstrap, new JoinListener());
+		this.config.get(ConfigKeys.BLACKLIST).read();
 	}
 
 	public void init() {
 		this.applyMessagingServiceSettings();
-
 		new GTSCommandManager(this.bootstrap.getContainer()).register();
-
 		this.storage = new StorageFactory(this).getInstance(StorageType.H2);
-
 		this.extensionManager.enableExtensions();
+
+		Sponge.getEventManager().registerListeners(this.bootstrap, new JoinListener());
+
+		if(this.config.get(ConfigKeys.ITEMS_ALLOW_ANVIL_NAMES)) {
+			Sponge.getEventManager().registerListeners(this.bootstrap, new AnvilRenameListener());
+		}
 	}
 
 	public void started() {

@@ -161,7 +161,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
                         .lister(this.viewer.getUniqueId())
                         .entry(entry)
                         .start(((MonetaryPrice) this.price).getPrice().doubleValue())
-                        .increment(0.02f)
+                        .increment(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_INCREMENT_RATE))
                         .expiration(LocalDateTime.now().plusSeconds(this.duration.getTime()))
                         .build();
             } else {
