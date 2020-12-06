@@ -76,7 +76,7 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    version = "6.0.0-SNAPSHOT${project.ext.run}"
+    version = "6.0.0${project.ext.run}"
     group = 'me.nickimpact.gts'
 
     repositories {
