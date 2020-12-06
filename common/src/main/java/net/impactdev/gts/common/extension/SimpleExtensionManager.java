@@ -91,16 +91,16 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
     }
 
     public void loadExtensions(Path directory) {
-        if(!Files.isDirectory(directory)) {
-            return;
-        }
-
         if(!Files.exists(directory)) {
             try {
-                Files.createDirectory(directory);
+                Files.createDirectories(directory);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        if(!Files.isDirectory(directory)) {
+            return;
         }
 
         Set<Dependency> dependencies = Sets.newHashSet();

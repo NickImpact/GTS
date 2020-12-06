@@ -302,6 +302,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		Path base = Paths.get("assets", "gts");
 		if(!Files.exists(destination.resolve(path))) {
 			try (InputStream resource = this.getResourceStream(base.resolve(path).toString())) {
+				Files.createDirectories(destination.resolve(path).getParent());
 				Files.copy(resource, destination.resolve(path));
 			} catch (IOException e) {
 				throw new RuntimeException(e);
