@@ -1,0 +1,3 @@
+[submodule "pixelmon"]
+	path = pixelmon
+	url = https://github.com/NickImpact/GTS-Pixelmon-Extension.git

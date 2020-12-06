@@ -1,0 +1,12 @@
+subprojects {
+    repositories {
+        mavenCentral()
+        maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+    }
+
+    dependencies {
+        compile project(':api')
+        compile project(':common')
+        compile project(':sponge')
+    }
+}

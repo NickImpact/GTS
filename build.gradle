@@ -1,3 +1,11 @@
+import net.impactdev.gts.gradle.enums.ReleaseLevel
+import net.impactdev.gts.gradle.tasks.ReleaseNotesTask
+import net.impactdev.gts.gradle.tasks.UploadToOre
+
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Paths
+
 buildscript {
     repositories {
         mavenCentral()
@@ -18,7 +26,7 @@ plugins {
 }
 
 group = 'me.nickimpact.gts'
-version = '5.2.2'
+version = "6.0.0"
 
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'
@@ -34,6 +42,28 @@ allprojects {
             options.compilerArgs << "-Xlint:deprecation"
         }
     }
+
+    task gitHash {
+        def process = 'git rev-parse HEAD'.execute()
+        process.waitFor()
+        ext.commit = process.exitValue() ? 'Unknown' : process.text.trim().replace('\n', '')
+    }
+
+    task gitMessage {
+        def process = 'git log -1 --format=%B'.execute()
+        process.waitFor()
+        ext.message = process.exitValue() ? 'Unknown' : process.text.trim()
+    }
+
+    ext {
+        sponge = "7.3.0"
+        spigot = "1.12.2"
+
+        run = ""
+        if(System.getenv().containsKey("BUILD_NUMBER")) {
+            run = "-${System.getenv("BUILD_NUMBER")}"
+        }
+    }
 }
 
 subprojects {
@@ -46,12 +76,7 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    ext {
-        sponge = "7.1.5"
-        spigot = "1.12.2"
-    }
-
-    version = '5.2.3'
+    version = "6.0.0-SNAPSHOT${project.ext.run}"
     group = 'me.nickimpact.gts'
 
     repositories {
@@ -73,21 +98,55 @@ subprojects {
     }
     
     dependencies {
-        shadow "com.nickimpact.impactor:spigot:2.2.0-SNAPSHOT"
-        shadow "com.nickimpact.impactor:sponge:2.2.0-SNAPSHOT"
+        shadow "net.impactdev.impactor:api:3.0.0-SNAPSHOT"
         shadow "org.projectlombok:lombok:1.18.4"
         shadow 'com.google.guava:guava:27.1-jre'
-        shadow 'com.google.code.gson:gson:2.8.5'
+        shadow 'com.google.code.gson:gson:2.8.0'
+        shadow 'com.github.ben-manes.caffeine:caffeine:2.8.2'
+        shadow group: 'org.mariuszgromada.math', name: 'MathParser.org-mXparser', version: '4.4.2'
         testCompile group: 'junit', name: 'junit', version: '4.12'
+        testCompile 'com.google.guava:guava:27.1-jre'
+        testCompile group: 'org.mariuszgromada.math', name: 'MathParser.org-mXparser', version: '4.4.2'
     }
 
-    blossom {
-        replaceToken '@version@', version
+    task javadocJar(type: Jar, dependsOn: javadoc) {
+        classifier = 'javadoc'
+        from javadoc.destinationDir
+        dependsOn shadowJar
+    }
+
+    artifacts {
+        archives javadocJar
+    }
+
+}
+
+task genChangelog(type: ReleaseNotesTask) {
+    dependsOn(gitHash)
+    dependsOn(gitMessage)
+    version = project.version
+    hash = gitHash.ext.commit
+    sponge = project.ext.sponge
+    message = gitMessage.ext.message
+    level = ReleaseLevel.get(version)
+}
+
+task writeChangelogToFile {
+    dependsOn(genChangelog)
+    doLast {
+        java.nio.file.Path path = project.projectDir.toPath().resolve("$buildDir").resolve("allJars").resolve("${project.version}.md")
+        if(!Files.exists(path)) {
+            Files.createDirectories(path.getParent())
+            Files.createFile(path)
+        }
+
+        Files.write(path, genChangelog.result.getBytes(StandardCharsets.UTF_8))
     }
 }
 
 task copyJars(type: Copy) {
     dependsOn subprojects.build
+    dependsOn writeChangelogToFile
     from subprojects.collect { it.tasks.withType(Jar) }
     into "$buildDir/allJars"
     exclude '*-all.jar'
@@ -99,57 +158,19 @@ task copyJars(type: Copy) {
     exclude 'plugin*.jar'
     exclude 'reforged*.jar'
     exclude 'generations*.jar'
+    exclude 'bungee*.jar'
+    exclude 'pixelmon*.jar'
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "Unbound-Public"
-            url = "https://nexus.unboundnetwork.net/repository/unbound-public/"
-            credentials {
-                username project.hasProperty('nexus-username') ? project.property('nexus-username') : ''
-                password project.hasProperty('nexus-password') ? project.property('nexus-password') : ''
-            }
-        }
-    }
+task uploadToOre(type: UploadToOre) {
+    dependsOn(genChangelog)
+    dependsOn(copyJars)
 
-    publications {
-        api(MavenPublication) {
-            def project = project(':api')
-            from project.components.java
-            groupId project.group
-            artifactId "api"
-            version project.version
-        }
-        common(MavenPublication) {
-            def project = project(':common')
-            from project.components.java
-            groupId project.group
-            artifactId "common"
-            version project.version
-        }
-        sponge(MavenPublication) {
-            def project = project(':sponge')
-            from project.components.java
-            groupId project.group
-            artifactId "sponge"
-            version project.version
-        }
-        pluginSponge(MavenPublication) {
-            def project = project(':plugin-sponge')
-            from project.components.java
-            groupId project.group
-            artifactId "plugin-sponge"
-            version project.version
-        }
-        reforgedSponge(MavenPublication) {
-            def project = project(':reforged-sponge')
-            from project.components.java
-            groupId project.group
-            artifactId "reforged-sponge"
-            version project.version
-        }
-    }
+    notes = { genChangelog.result } as Provider<String>
+    level = genChangelog.level
+    file = new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-1.12.2-${project.version}.jar").toString())
+    pluginID = "gts"
+    apiKey = properties['ore_api_key']?.toString() ?: System.getenv("ORE_API_KEY")
 }
 
 build.dependsOn shadowJar

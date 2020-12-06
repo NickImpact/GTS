@@ -5,5 +5,19 @@ repositories {
 
 dependencies {
     shadow "co.aikar:acf-core:0.5.0-SNAPSHOT"
+    shadow('net.kyori:text-api:3.0.3') {
+        exclude(module: 'checker-qual')
+    }
+    shadow('net.kyori:text-serializer-legacy:3.0.3') {
+        exclude(module: 'text-api')
+    }
+    shadow('net.kyori:text-serializer-gson:3.0.3') {
+        exclude(module: 'text-api')
+        exclude(module: 'gson')
+    }
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+javadocJar {
+    archiveName = "GTS-API-${project.version}-javadocs.jar"
 }

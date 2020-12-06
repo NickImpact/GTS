@@ -1,0 +1,65 @@
+on:
+  push:
+    # Act only when we receive a commit with a tag leading with a 6 or higher
+    tags:
+      - '[6-9]*'
+
+name: Create Github Release
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/buildSrc/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Get Version
+        id: get_version
+        uses: battila7/get-version-action@v2
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Initialize Forge Decomp Workspace
+        run: ./gradlew setupDecompWorkspace
+      - name: Build with Gradle
+        run: ./gradlew build
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          release_name: Release ${{ steps.get_version.outputs.version }}
+          body_path: ${{ github.workspace }}/build/allJars/${{ steps.get_version.outputs.version }}.md
+          draft: false
+          prerelease: false
+      - name: Upload Sponge Jar
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/build/allJars/GTS-Sponge-${{ steps.get_version.outputs.version }}.jar
+          asset_name: GTS-Sponge-${{ steps.get_version.outputs.version }}.jar
+          asset_content_type: application/java-archive
+      - name: Upload Bungee Jar
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/build/allJars/GTS-Bungee-${{ steps.get_version.outputs.version }}.jar
+          asset_name: GTS-Bungee-${{ steps.get_version.outputs.version }}.jar
+          asset_content_type: application/java-archive

@@ -15,13 +15,12 @@ out
 
 # gradle
 build
-.gradle
+
 
 # other
 eclipse
 run
 
-gradlew
 *.bat
 *.jar
 *.properties
