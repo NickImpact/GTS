@@ -74,33 +74,33 @@ public class ConfigKeys implements ConfigKeyHolder {
 
 		Map<DiscordOption.Options, DiscordOption> links = Maps.newHashMap();
 		links.put(DiscordOption.Options.List_BIN, new DiscordOption(
-			adapter.getString(options.apply("new-bin-listing", "color"), "New \"Buy it Now\" Listing Published"),
-			Color.decode(adapter.getString(options.apply("new-bin-listing", "descriptor"), "#00FF00")),
+			adapter.getString(options.apply("new-bin-listing", "descriptor"), "New \"Buy it Now\" Listing Published"),
+			Color.decode(adapter.getString(options.apply("new-bin-listing", "color"), "#00FF00")),
 			adapter.getStringList(options.apply("new-bin-listing", "hooks"), Lists.newArrayList())
 		));
 		links.put(DiscordOption.Options.List_Auction, new DiscordOption(
-				adapter.getString(options.apply("new-auction-listing", "color"), "New Auction Published"),
-				Color.decode(adapter.getString(options.apply("new-auction-listing", "descriptor"), "#66CCFF")),
+				adapter.getString(options.apply("new-auction-listing", "descriptor"), "New Auction Published"),
+				Color.decode(adapter.getString(options.apply("new-auction-listing", "color"), "#66CCFF")),
 				adapter.getStringList(options.apply("new-auction-listing", "hooks"), Lists.newArrayList())
 		));
 		links.put(DiscordOption.Options.Purchase, new DiscordOption(
-				adapter.getString(options.apply("purchase", "color"), "Listing Purchased"),
-				Color.decode(adapter.getString(options.apply("purchase", "descriptor"), "#FFFF00")),
+				adapter.getString(options.apply("purchase", "descriptor"), "Listing Purchased"),
+				Color.decode(adapter.getString(options.apply("purchase", "color"), "#FFFF00")),
 				adapter.getStringList(options.apply("purchase", "hooks"), Lists.newArrayList())
 		));
 		links.put(DiscordOption.Options.Bid, new DiscordOption(
-				adapter.getString(options.apply("bid", "color"), "Bid Posted"),
-				Color.decode(adapter.getString(options.apply("bid", "descriptor"), "#FF9933")),
+				adapter.getString(options.apply("bid", "descriptor"), "Bid Posted"),
+				Color.decode(adapter.getString(options.apply("bid", "color"), "#FF9933")),
 				adapter.getStringList(options.apply("bid", "hooks"), Lists.newArrayList())
 		));
 		links.put(DiscordOption.Options.Remove, new DiscordOption(
-				adapter.getString(options.apply("remove", "color"), "Listing Removed"),
-				Color.decode(adapter.getString(options.apply("remove", "descriptor"), "#FF0000")),
+				adapter.getString(options.apply("remove", "descriptor"), "Listing Removed"),
+				Color.decode(adapter.getString(options.apply("remove", "color"), "#FF0000")),
 				adapter.getStringList(options.apply("remove", "hooks"), Lists.newArrayList())
 		));
 		links.put(DiscordOption.Options.Claim, new DiscordOption(
-				adapter.getString(options.apply("claim", "color"), "Listing Removed"),
-				Color.decode(adapter.getString(options.apply("claim", "descriptor"), "#CC00FF")),
+				adapter.getString(options.apply("claim", "descriptor"), "Listing Removed"),
+				Color.decode(adapter.getString(options.apply("claim", "color"), "#CC00FF")),
 				adapter.getStringList(options.apply("claim", "hooks"), Lists.newArrayList())
 		));
 
