@@ -1,4 +1,6 @@
+import com.google.common.collect.Lists
 import net.impactdev.gts.gradle.enums.ReleaseLevel
+import net.impactdev.gts.gradle.tasks.PostToDiscord
 import net.impactdev.gts.gradle.tasks.ReleaseNotesTask
 import net.impactdev.gts.gradle.tasks.UploadToOre
 
@@ -26,7 +28,7 @@ plugins {
 }
 
 group = 'me.nickimpact.gts'
-version = "6.0.3"
+version = "6.0.4-SNAPSHOT"
 
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'
@@ -78,7 +80,7 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    version = "6.0.3${project.ext.run}"
+    version = "6.0.4-SNAPSHOT${project.ext.run}"
     group = 'me.nickimpact.gts'
 
     repositories {
@@ -173,6 +175,43 @@ task uploadToOre(type: UploadToOre) {
     file = new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-${project.version}.jar").toString())
     pluginID = "gts"
     apiKey = properties['ore_api_key']?.toString() ?: System.getenv("ORE_API_KEY")
+}
+
+task sendToDiscordPlugins(type: PostToDiscord) {
+    dependsOn(copyJars)
+
+    webhookID = System.getenv("DISCORD_WEBHOOK_ID_PLUGIN")
+    webhookToken = System.getenv("DISCORD_WEBHOOK_TOKEN_PLUGIN")
+
+    version = project.version
+    level = ReleaseLevel.get(version)
+    files = Lists.newArrayList(
+            new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-${project.version}.jar").toString()),
+            new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Bungee-${project.version}.jar").toString())
+    )
+    force = true
+}
+
+task sendToDiscordReforgedExtension(type: PostToDiscord) {
+    dependsOn(copyJars)
+
+    "https://discord.com/api/webhooks/785400542834851851/EdnEK2WSF08jXhsZbMWQAHOMqtNb3Drxs-mUHdcDj0CBpZL1flSmalE6q6RMWISG92Az"
+
+    webhookID = System.getenv("DISCORD_WEBHOOK_ID_REFORGED")
+    webhookToken = System.getenv("DISCORD_WEBHOOK_TOKEN_REFORGED")
+
+    version = project.version
+    level = ReleaseLevel.get(version)
+    files = Lists.newArrayList(
+            new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Extension-Reforged-${project.version}.jar").toString())
+    )
+    force = true
+}
+
+task deploy {
+    dependsOn(uploadToOre)
+    dependsOn(sendToDiscordPlugins)
+    dependsOn(sendToDiscordReforgedExtension)
 }
 
 build.dependsOn shadowJar

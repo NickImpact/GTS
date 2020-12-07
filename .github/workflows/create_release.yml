@@ -55,7 +55,7 @@ jobs:
           asset_name: GTS-Sponge-${{ steps.get_version.outputs.version }}.jar
           asset_content_type: application/java-archive
       - name: Upload Sponge Jar to Ore
-        run: ./gradlew uploadToOre
+        run: ./gradlew deploy
         env:
           ORE_API_KEY: ${{ secrets.ORE_API_KEY }}
       - name: Upload Bungee Jar
