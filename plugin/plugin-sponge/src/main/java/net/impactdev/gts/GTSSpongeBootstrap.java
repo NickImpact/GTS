@@ -60,17 +60,12 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 
 	private final PluginClassLoader classLoader;
 
-	@Getter private final Metrics2.Factory factory;
-
 	private Throwable exception;
 
 	@Inject
-	public GTSSpongeBootstrap(org.slf4j.Logger fallback, Metrics2.Factory factory) {
+	public GTSSpongeBootstrap(org.slf4j.Logger fallback) {
 		this.plugin = new GTSSpongePlugin(this, fallback);
 		this.classLoader = new ReflectionClassLoader(this);
-
-		this.factory = factory;
-		this.factory.make(Integer.parseInt("@bstats_plugin_ID@"));
 	}
 
 	@Listener(order = Order.EARLY)
