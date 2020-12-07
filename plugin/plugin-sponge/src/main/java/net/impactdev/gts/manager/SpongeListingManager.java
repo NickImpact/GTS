@@ -457,7 +457,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 	public CompletableFuture<Boolean> hasMaxListings(UUID lister) {
 		return this.fetchListings().thenApply(listings -> listings.stream()
 				.filter(l -> l.getLister().equals(lister))
-				.count() < GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER));
+				.count() >= GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER));
 	}
 
 	@Override
