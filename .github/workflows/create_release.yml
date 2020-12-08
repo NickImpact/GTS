@@ -13,6 +13,11 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+        env:
+          DISCORD_WEBHOOK_ID_PLUGIN: {{ secrets.DISCORD_WEBHOOK_ID_PLUGIN }}
+          DISCORD_WEBHOOK_TOKEN_PLUGIN: {{ secrets.DISCORD_WEBHOOK_TOKEN_PLUGIN }}
+          DISCORD_WEBHOOK_ID_REFORGED: {{ secrets.DISCORD_WEBHOOK_ID_REFORGED }}
+          DISCORD_WEBHOOK_TOKEN_REFORGED: {{ secrets.DISCORD_WEBHOOK_TOKEN_REFORGED }}
       - uses: actions/cache@v2
         with:
           path: |

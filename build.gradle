@@ -28,7 +28,7 @@ plugins {
 }
 
 group = 'me.nickimpact.gts'
-version = "6.0.4"
+version = "6.0.5-SNAPSHOT"
 
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'
@@ -80,7 +80,7 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    version = "6.0.4${project.ext.run}"
+    version = "6.0.5-SNAPSHOT${project.ext.run}"
     group = 'me.nickimpact.gts'
 
     repositories {
@@ -174,14 +174,14 @@ task uploadToOre(type: UploadToOre) {
     level = genChangelog.level
     file = new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-${project.version}.jar").toString())
     pluginID = "gts"
-    apiKey = properties['ore_api_key']?.toString() ?: System.getenv("ORE_API_KEY")
+    apiKey = project.properties['ore_api_key']?.toString() ?: System.getenv("ORE_API_KEY")
 }
 
 task sendToDiscordPlugins(type: PostToDiscord) {
     dependsOn(copyJars)
 
-    webhookID = System.getenv("DISCORD_WEBHOOK_ID_PLUGIN")
-    webhookToken = System.getenv("DISCORD_WEBHOOK_TOKEN_PLUGIN")
+    webhookID = project.properties['discord_webhook_id_plugin']?.toString() ?: System.getenv("DISCORD_WEBHOOK_ID_PLUGIN")
+    webhookToken = project.properties['discord_webhook_token_plugin']?.toString() ?: System.getenv("DISCORD_WEBHOOK_TOKEN_PLUGIN")
 
     version = project.version
     level = ReleaseLevel.get(version)
@@ -195,10 +195,8 @@ task sendToDiscordPlugins(type: PostToDiscord) {
 task sendToDiscordReforgedExtension(type: PostToDiscord) {
     dependsOn(copyJars)
 
-    "https://discord.com/api/webhooks/785400542834851851/EdnEK2WSF08jXhsZbMWQAHOMqtNb3Drxs-mUHdcDj0CBpZL1flSmalE6q6RMWISG92Az"
-
-    webhookID = System.getenv("DISCORD_WEBHOOK_ID_REFORGED")
-    webhookToken = System.getenv("DISCORD_WEBHOOK_TOKEN_REFORGED")
+    webhookID = project.properties['discord_webhook_id_reforged']?.toString() ?: System.getenv("DISCORD_WEBHOOK_ID_REFORGED")
+    webhookToken = project.properties['discord_webhook_token_reforged']?.toString() ?: System.getenv("DISCORD_WEBHOOK_TOKEN_REFORGED")
 
     version = project.version
     level = ReleaseLevel.get(version)
@@ -209,7 +207,7 @@ task sendToDiscordReforgedExtension(type: PostToDiscord) {
 }
 
 task deploy {
-    dependsOn(uploadToOre)
+    //dependsOn(uploadToOre)
     dependsOn(sendToDiscordPlugins)
     dependsOn(sendToDiscordReforgedExtension)
 }
