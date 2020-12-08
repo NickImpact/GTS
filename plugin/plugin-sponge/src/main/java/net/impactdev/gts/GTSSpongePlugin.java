@@ -20,6 +20,7 @@ import net.impactdev.gts.messaging.interpreters.SpongeAuctionInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeBINInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeListingInterpreters;
 import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
+import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.gts.util.OreVersionChecker;
 import net.impactdev.impactor.api.Impactor;
@@ -96,6 +97,8 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				fallback
 		);
 		this.bootstrap = bootstrap;
+
+		Utilities.setContainer(this.bootstrap.getContainer());
 	}
 
 	public void preInit() {
@@ -125,11 +128,10 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		GTSService.getInstance().addSearcher(new SpongeItemSearcher());
 
 		this.getPluginLogger().info("Setting up configuration...");
-		this.copyResource(Paths.get("main.conf"), this.getConfigDir());
-		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
+		this.copyResource(Paths.get("gts.conf"), this.getConfigDir());
+		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "assets/gts.conf")), new ConfigKeys());
 
 		String language = this.config.get(ConfigKeys.LANGUAGE);
-		this.copyResource(Paths.get("lang/" + language + ".conf"), this.getConfigDir());
 		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/" + language.toLowerCase() + ".conf"), true), new MsgConfigKeys());
 
 		this.getPluginLogger().info("Sending load event to available extensions...");
@@ -301,7 +303,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	private void copyResource(Path path, Path destination) {
 		Path base = Paths.get("assets", "gts");
 		if(!Files.exists(destination.resolve(path))) {
-			try (InputStream resource = this.getResourceStream(base.resolve(path).toString())) {
+			try (InputStream resource = this.getResourceStream(base.resolve(path).toString().replace("\\", "/"))) {
 				Files.createDirectories(destination.resolve(path).getParent());
 				Files.copy(resource, destination.resolve(path));
 			} catch (IOException e) {
