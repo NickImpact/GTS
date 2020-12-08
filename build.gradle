@@ -207,7 +207,7 @@ task sendToDiscordReforgedExtension(type: PostToDiscord) {
 }
 
 task deploy {
-    dependsOn(uploadToOre)
+    //dependsOn(uploadToOre)
     dependsOn(sendToDiscordPlugins)
     dependsOn(sendToDiscordReforgedExtension)
 }

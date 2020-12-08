@@ -97,11 +97,10 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				fallback
 		);
 		this.bootstrap = bootstrap;
-
-		Utilities.setContainer(this.bootstrap.getContainer());
 	}
 
 	public void preInit() {
+		Utilities.setContainer(this.bootstrap.getContainer());
 		Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
 		ApiRegistrationUtil.register(new GTSAPIProvider());
 
