@@ -50,6 +50,7 @@ jobs:
       - name: Upload Sponge Jar to Github
         uses: actions/upload-release-asset@v1
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DISCORD_WEBHOOK_ID_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_ID_PLUGIN }}
           DISCORD_WEBHOOK_TOKEN_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_TOKEN_PLUGIN }}
           DISCORD_WEBHOOK_ID_REFORGED: ${{ secrets.DISCORD_WEBHOOK_ID_REFORGED }}
