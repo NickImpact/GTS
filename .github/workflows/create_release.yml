@@ -51,10 +51,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          DISCORD_WEBHOOK_ID_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_ID_PLUGIN }}
-          DISCORD_WEBHOOK_TOKEN_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_TOKEN_PLUGIN }}
-          DISCORD_WEBHOOK_ID_REFORGED: ${{ secrets.DISCORD_WEBHOOK_ID_REFORGED }}
-          DISCORD_WEBHOOK_TOKEN_REFORGED: ${{ secrets.DISCORD_WEBHOOK_TOKEN_REFORGED }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ${{ github.workspace }}/build/allJars/GTS-Sponge-${{ steps.get_version.outputs.version }}.jar
@@ -64,6 +60,10 @@ jobs:
         run: ./gradlew deploy
         env:
           ORE_API_KEY: ${{ secrets.ORE_API_KEY }}
+          DISCORD_WEBHOOK_ID_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_ID_PLUGIN }}
+          DISCORD_WEBHOOK_TOKEN_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_TOKEN_PLUGIN }}
+          DISCORD_WEBHOOK_ID_REFORGED: ${{ secrets.DISCORD_WEBHOOK_ID_REFORGED }}
+          DISCORD_WEBHOOK_TOKEN_REFORGED: ${{ secrets.DISCORD_WEBHOOK_TOKEN_REFORGED }}
       - name: Upload Bungee Jar
         uses: actions/upload-release-asset@v1
         env:
