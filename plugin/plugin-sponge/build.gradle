@@ -93,7 +93,6 @@ sourceMainJava.finalizedBy(blossomSourceReplacementJava)
 blossom {
     blossomSourceReplacementJava.output = file("$buildDir/sources/main/java")
     replaceToken '@version@', version
-    replaceToken '@bstats_plugin_ID@', project.properties['bstats_plugin_ID']
     replaceToken '@git_commit@', gitHash.commit
 }
 

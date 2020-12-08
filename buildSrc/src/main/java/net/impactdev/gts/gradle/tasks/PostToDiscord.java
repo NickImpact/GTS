@@ -11,6 +11,7 @@ import org.gradle.api.tasks.TaskAction;
 
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,7 +53,19 @@ public class PostToDiscord extends DefaultTask {
                         .build();
 
                 message.addEmbeds(embed);
-                discord.sendMessage(message, this.files);
+                discord.sendMessage(message);
+
+                for(File file : this.files) {
+                    List<File> wrapper = new ArrayList<>();
+                    wrapper.add(file);
+
+                    DiscordMessage out = new DiscordMessage.Builder()
+                            .withUsername("GTS Release Notifier")
+                            .withAvatarURL("https://cdn.discordapp.com/attachments/625206927152119818/785034021373607976/image0.jpg")
+                            .build();
+
+                    discord.sendMessage(out, wrapper);
+                }
             }
         }
     }
