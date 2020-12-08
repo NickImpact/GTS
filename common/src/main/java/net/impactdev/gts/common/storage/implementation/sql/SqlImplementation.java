@@ -148,9 +148,13 @@ public class SqlImplementation implements StorageImplementation {
 								String result = this.processor.apply(sb.toString().trim());
 
 								if (!result.isEmpty()) {
-									int start = result.indexOf('`');
-									if(!this.tableExists(result.substring(start + 1, result.indexOf('`', start + 1)))) {
+									if(result.startsWith("set mode")) {
 										s.addBatch(result);
+									} else {
+										int start = result.indexOf('`');
+										if (!this.tableExists(result.substring(start + 1, result.indexOf('`', start + 1)))) {
+											s.addBatch(result);
+										}
 									}
 								}
 
@@ -645,7 +649,7 @@ public class SqlImplementation implements StorageImplementation {
 			return processor.apply(false, ErrorCodes.ALREADY_PURCHASED);
 		}
 
-		return processor.apply(true, null);
+		return processor.apply(this.deleteListing(request.getListingID()), null);
 	}
 
 	private boolean tableExists(String table) throws SQLException {
