@@ -15,7 +15,6 @@ import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.events.extension.PlaceholderRegistryEvent;
 import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import org.bstats.sponge.Metrics2;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.config.ConfigDir;

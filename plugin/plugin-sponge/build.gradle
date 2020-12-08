@@ -87,7 +87,6 @@ dependencies {
         exclude(module: 'text-api')
         exclude(module: 'gson')
     }
-    compile('org.bstats:bstats-sponge:1.7')
 }
 
 sourceMainJava.finalizedBy(blossomSourceReplacementJava)
