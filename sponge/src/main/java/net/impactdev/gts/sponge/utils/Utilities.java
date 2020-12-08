@@ -11,6 +11,7 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.kyori.text.TextComponent;
 import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import org.mariuszgromada.math.mxparser.Argument;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
@@ -23,8 +24,20 @@ import java.util.stream.Collectors;
 
 public class Utilities {
 
+	private static PluginContainer container;
+
 	@SuppressWarnings("unchecked")
 	public static final MessageService<Text> PARSER = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+	public static PluginContainer getPluginContainer() {
+		return container;
+	}
+
+	public static void setContainer(PluginContainer container) {
+		if(container.getId().equals("gts")) {
+			Utilities.container = container;
+		}
+	}
 
 	public static <T> T readMessageConfigOption(ConfigKey<T> key) {
 		return GTSPlugin.getInstance().getMsgConfig().get(key);

@@ -6,6 +6,7 @@ import com.google.gson.JsonObject;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.pricing.SpongePrice;
+import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.gui.UI;
@@ -23,6 +24,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.EventContext;
+import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.economy.EconomyService;
@@ -78,7 +82,12 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 	@Override
 	public boolean reward(UUID recipient) {
 		return economy.getOrCreateAccount(recipient).get()
-				.deposit(economy.getDefaultCurrency(), this.price, Sponge.getCauseStackManager().getCurrentCause())
+				.deposit(economy.getDefaultCurrency(), this.price, Cause.builder()
+						.append(recipient)
+						.build(EventContext.builder()
+								.add(EventContextKeys.PLUGIN, Utilities.getPluginContainer())
+								.build()
+						))
 				.getResult().equals(ResultType.SUCCESS);
 	}
 
