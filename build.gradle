@@ -161,7 +161,7 @@ task copyJars(type: Copy) {
     exclude 'sponge*.jar'
     exclude 'plugin*.jar'
     exclude 'reforged*.jar'
-    exclude 'generations*.jar'
+    exclude 'gens*.jar'
     exclude 'bungee*.jar'
     exclude 'pixelmon*.jar'
 }

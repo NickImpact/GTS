@@ -76,7 +76,12 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 
 	@Override
 	public void pay(UUID payer, @Nullable Object source) {
-		economy.getOrCreateAccount(payer).get().withdraw(economy.getDefaultCurrency(), this.price, Sponge.getCauseStackManager().getCurrentCause());
+		economy.getOrCreateAccount(payer).get().withdraw(economy.getDefaultCurrency(), this.price, Cause.builder()
+				.append(payer)
+				.build(EventContext.builder()
+						.add(EventContextKeys.PLUGIN, Utilities.getPluginContainer())
+						.build()
+				));
 	}
 
 	@Override

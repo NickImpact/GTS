@@ -12,9 +12,8 @@ include (
 //        'plugin:spigot',
         'pixelmon',
         'pixelmon:reforged',
-//        'pixelmon:reforged:spigot',
         'pixelmon:reforged:sponge',
-//        'pixelmon:generations'
+        'pixelmon:generations',
+        'pixelmon:generations:gens-sponge'
 )
-
 
