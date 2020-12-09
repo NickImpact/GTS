@@ -497,7 +497,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"{{gts:prefix}} &cUnable to afford the tax of &e{{gts:fees}} &cfor this listing..."
 	));
 	public static final ConfigKey<String> FEE_PRICE_FORMAT = stringKey("general.fees.price-format", "&7Price Selection: {{gts:price_fee}}");
-	public static final ConfigKey<String> FEE_TIME_FORMAT = stringKey("general.fees.price-format", "&7Time Selection: {{gts:time_fee}}");
+	public static final ConfigKey<String> FEE_TIME_FORMAT = stringKey("general.fees.time-format", "&7Time Selection: {{gts:time_fee}}");
 
 	// Admin Menus
 	public static final ConfigKey<String> UI_ADMIN_MAIN_TITLE = stringKey("ui.admin.main.title", "&cGTS &7\u00bb &3Admin Mode");
