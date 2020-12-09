@@ -128,7 +128,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		this.getPluginLogger().info("Setting up configuration...");
 		this.copyResource(Paths.get("gts.conf"), this.getConfigDir());
-		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "assets/gts.conf")), new ConfigKeys());
+		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "gts.conf")), new ConfigKeys());
 
 		String language = this.config.get(ConfigKeys.LANGUAGE);
 		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/" + language.toLowerCase() + ".conf"), true), new MsgConfigKeys());

@@ -140,11 +140,11 @@ public class ConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<Long> LISTINGS_MAX_PRICE = longKey("pricing.control.max-price", 10000000);
 	public static final ConfigKey<Boolean> FEES_ENABLED = booleanKey("pricing.fees.enabled", true);
 	public static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_BIN = customKey(adapter -> {
-		double input = adapter.getDouble("pricing.fees.starting-price.bin_rate", 0.02);
+		double input = adapter.getDouble("pricing.fees.starting-price.bin-rate", 0.02);
 		return (float) input;
 	});
 	public static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_AUCTION = customKey(adapter -> {
-		double input = adapter.getDouble("pricing.fees.starting-price.auction_rate", 0.05);
+		double input = adapter.getDouble("pricing.fees.starting-price.auction-rate", 0.05);
 		return (float) input;
 	});
 	public static final ConfigKey<Function> FEE_TIME_EQUATION = customKey(adapter -> {
