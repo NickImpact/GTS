@@ -52,7 +52,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
     private boolean auction = false;
     private Time duration = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME_LOW);
 
-    protected SpongePrice<?, ?> price = new MonetaryPrice(50);
+    protected SpongePrice<?, ?> price = new MonetaryPrice(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTINGS_MIN_PRICE));
 
     public AbstractSpongeEntryUI(Player viewer) {
         super(viewer);
@@ -115,7 +115,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
         icon.addListener(clickable -> {
             this.auction = true;
             if(!(this.price instanceof MonetaryPrice)) {
-                this.price = new MonetaryPrice(50);
+                this.price = new MonetaryPrice(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTINGS_MIN_PRICE));
             }
             this.display.setSlot(this.getPriceSlot(), this.createPriceIcon());
             this.display.setSlot(this.getSelectionTypeSlot(), this.createAuctionIcon());
@@ -203,10 +203,19 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
                 () -> this.duration
         );
 
+        List<Text> result = Lists.newArrayList();
+        result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_DISPLAY_LORE), sources));
+
+        if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.FEES_ENABLED)) {
+            result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_DISPLAY_FEES), sources));
+        }
+
+        result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_COMPONENT_EDIT_LORE), sources));
+
         ItemStack duration = ItemStack.builder()
                 .itemType(ItemTypes.CLOCK)
                 .add(Keys.DISPLAY_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_DISPLAY_TITLE), sources))
-                .add(Keys.ITEM_LORE, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_DISPLAY_LORE), sources))
+                .add(Keys.ITEM_LORE, result)
                 .build();
         SpongeIcon time = new SpongeIcon(duration);
         time.addListener(clickable -> {
@@ -230,11 +239,20 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
                 () -> !this.auction
         );
 
+        List<Text> result = Lists.newArrayList();
+        result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_LORE), sources));
+
+        if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.FEES_ENABLED)) {
+            result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_FEES), sources));
+        }
+
+        result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_COMPONENT_EDIT_LORE), sources));
+
         if(this.auction) {
             ItemStack rep = ItemStack.builder()
                     .itemType(ItemTypes.GOLD_NUGGET)
                     .add(Keys.DISPLAY_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_TITLE), sources))
-                    .add(Keys.ITEM_LORE, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_LORE), sources))
+                    .add(Keys.ITEM_LORE, result)
                     .build();
             SpongeIcon icon = new SpongeIcon(rep);
             icon.addListener(clickable -> {
@@ -274,7 +292,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
             ItemStack selector = ItemStack.builder()
                     .from(SkullCreator.fromBase64("Mzk2Y2UxM2ZmNjE1NWZkZjMyMzVkOGQyMjE3NGM1ZGU0YmY1NTEyZjFhZGVkYTFhZmEzZmMyODE4MGYzZjcifX19"))
                     .add(Keys.DISPLAY_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_TITLE), sources))
-                    .add(Keys.ITEM_LORE, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_LORE), sources))
+                    .add(Keys.ITEM_LORE, result)
                     .build();
             SpongeIcon icon = new SpongeIcon(selector);
             icon.addListener(clickable -> {

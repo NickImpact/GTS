@@ -32,10 +32,10 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"{{gts:prefix}} &7Your &a{{gts:listing_name}} &7has been added to the market!"
 	));
 
-	public static final ConfigKey<List<String>> ADD_BROADCAST_BIN = listKey("general.addition-broadcast", Lists.newArrayList(
+	public static final ConfigKey<List<String>> ADD_BROADCAST_BIN = listKey("general.addition-broadcast.buy-it-now", Lists.newArrayList(
 			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for &a{{gts:bin_price}}&7!"
 	));
-	public static final ConfigKey<List<String>> ADD_BROADCAST_AUCTION = listKey("general.addition-broadcast", Lists.newArrayList(
+	public static final ConfigKey<List<String>> ADD_BROADCAST_AUCTION = listKey("general.addition-broadcast.auctions", Lists.newArrayList(
 			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for auction, starting at &e{{gts:auction_start_price}}&7!"
 	));
 
@@ -467,24 +467,31 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	// Price Selection
 	public static final ConfigKey<String> UI_PRICE_DISPLAY_TITLE = stringKey("ui.components.price.display.title", "&ePrice: {{gts:price_selection}}");
-	public static final ConfigKey<List<String>> UI_PRICE_DISPLAY_LORE = listKey("ui.components.price.display.lore", Lists.newArrayList(
+	public static final ConfigKey<List<String>> UI_PRICE_DISPLAY_LORE = listKey("ui.components.price.display.lore.base", Lists.newArrayList(
 			"&7How much to list your",
-			"&7be listed on the GTS.",
+			"&7be listed on the GTS."
+	));
+
+	public static final ConfigKey<List<String>> UI_PRICE_DISPLAY_FEES = listKey("ui.components.price.display.lore.fees", Lists.newArrayList(
 			"",
-			"&7Fee: &6{{gts:price_fee}} &e({{gts:price_fee_rate}})",
-			"",
-			"&eClick to edit!"
+			"&7Fee: &6{{gts:price_fee}} &e({{gts:price_fee_rate}})"
 	));
 
 	// Time Selection
 	public static final ConfigKey<String> UI_TIME_SELECT_TITLE = stringKey("ui.time-select.title", "Select a Time");
 
 	public static final ConfigKey<String> UI_TIME_DISPLAY_TITLE = stringKey("ui.components.time.display.title", "&eDuration: {{gts:time}}");
-	public static final ConfigKey<List<String>> UI_TIME_DISPLAY_LORE = listKey("ui.components.time.display.lore", Lists.newArrayList(
+	public static final ConfigKey<List<String>> UI_TIME_DISPLAY_LORE = listKey("ui.components.time.display.lore.base", Lists.newArrayList(
 			"&7How long the listing will",
-			"&7be listed on the GTS.",
+			"&7be listed on the GTS."
+	));
+
+	public static final ConfigKey<List<String>> UI_TIME_DISPLAY_FEES = listKey("ui.components.time.display.lore.fees", Lists.newArrayList(
 			"",
-			"&7Fee: &6{{gts:time_fee}}",
+			"&7Fee: &6{{gts:time_fee}}"
+	));
+
+	public static final ConfigKey<List<String>> UI_COMPONENT_EDIT_LORE = listKey("ui.components.edit-lore", Lists.newArrayList(
 			"",
 			"&eClick to edit!"
 	));
