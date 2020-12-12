@@ -157,6 +157,11 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		if(!Sponge.getServiceManager().isRegistered(EconomyService.class)) {
 			throw new LackingServiceException(EconomyService.class);
 		}
+
+		if(!Sponge.getPluginManager().getPlugin("protocolcontrol").isPresent()) {
+			throw new LackingServiceException("Protocol Control");
+		}
+
 		MonetaryPrice.setEconomy(this.getEconomy());
 
 		final Version current = new Version(this.getMetadata().getVersion());

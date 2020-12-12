@@ -10,6 +10,7 @@ public class AnvilRenameListener {
 
     @Listener
     public void onAnvilRename(UpdateAnvilEvent event) {
+
         ItemStackSnapshot result = event.getResult().getFinal();
         if(!result.isEmpty()) {
             if(!event.getItemName().isEmpty()) {
