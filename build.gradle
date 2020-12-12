@@ -182,7 +182,9 @@ task sendToDiscordPlugins(type: PostToDiscord) {
 
     webhookID = project.properties['discord_webhook_id_plugin']?.toString() ?: System.getenv("DISCORD_WEBHOOK_ID_PLUGIN")
     webhookToken = project.properties['discord_webhook_token_plugin']?.toString() ?: System.getenv("DISCORD_WEBHOOK_TOKEN_PLUGIN")
+    memberRole = project.properties['discord_member_id']?.toString() ?: System.getenv("DISCORD_WEBHOOK_MEMBER_ROLE")
 
+    content = "GTS {{content:version}} is now available!"
     version = project.version
     level = ReleaseLevel.get(version)
     files = Lists.newArrayList(
@@ -197,7 +199,9 @@ task sendToDiscordReforgedExtension(type: PostToDiscord) {
 
     webhookID = project.properties['discord_webhook_id_reforged']?.toString() ?: System.getenv("DISCORD_WEBHOOK_ID_REFORGED")
     webhookToken = project.properties['discord_webhook_token_reforged']?.toString() ?: System.getenv("DISCORD_WEBHOOK_TOKEN_REFORGED")
+    memberRole = project.properties['discord_member_id']?.toString() ?: System.getenv("DISCORD_WEBHOOK_MEMBER_ROLE")
 
+    content = "GTS Extension {{content:version}} for Reforged is now available!"
     version = project.version
     level = ReleaseLevel.get(version)
     files = Lists.newArrayList(

@@ -21,7 +21,9 @@ public class PostToDiscord extends DefaultTask {
 
     public String webhookID;
     public String webhookToken;
+    public String memberRole;
 
+    public String content;
     public String version;
     public ReleaseLevel level;
     public List<File> files;
@@ -40,7 +42,7 @@ public class PostToDiscord extends DefaultTask {
                 DiscordMessage message = new DiscordMessage.Builder()
                         .withUsername("GTS Release Notifier")
                         .withAvatarURL("https://cdn.discordapp.com/attachments/625206927152119818/785034021373607976/image0.jpg")
-                        .withContent("GTS " + this.version + " is now available!")
+                        .withContent(this.memberRole + " " + this.content.replace("{{content:version}}", this.version))
                         .build();
 
                 DiscordEmbed embed = new DiscordEmbed.Builder()
