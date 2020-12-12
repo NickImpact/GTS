@@ -28,7 +28,7 @@ plugins {
 }
 
 group = 'me.nickimpact.gts'
-version = "6.0.7"
+version = "6.0.8-SNAPSHOT"
 
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'
@@ -80,7 +80,7 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    version = "6.0.7${project.ext.run}"
+    version = "6.0.8-SNAPSHOT${project.ext.run}"
     group = 'me.nickimpact.gts'
 
     repositories {
