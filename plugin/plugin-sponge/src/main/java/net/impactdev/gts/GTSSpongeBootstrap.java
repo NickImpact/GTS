@@ -3,6 +3,7 @@ package net.impactdev.gts;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import net.impactdev.gts.api.blacklist.Blacklist;
+import net.impactdev.gts.api.events.extension.PluginReloadEvent;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.placeholders.GTSSpongePlaceholderManager;
@@ -110,6 +111,8 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 
 		Impactor.getInstance().getRegistry().get(Blacklist.class).clear();
 		this.plugin.getConfiguration().get(ConfigKeys.BLACKLIST).read();
+
+		Impactor.getInstance().getEventBus().post(PluginReloadEvent.class);
 	}
 
 	@Listener
