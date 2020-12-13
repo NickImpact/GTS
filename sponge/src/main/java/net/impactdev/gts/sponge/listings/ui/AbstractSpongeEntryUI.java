@@ -73,6 +73,8 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
     protected abstract int getSelectionTypeSlot();
     protected abstract int getTimeSlot();
 
+    protected abstract double getMinimumMonetaryPrice(E chosen);
+
     protected SpongeUI getDisplay() {
         return this.display;
     }
@@ -88,6 +90,17 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
 
     public void setPrice(SpongePrice<?, ?> price) {
         this.price = price;
+    }
+
+    @Override
+    public void setChosen(E chosen) {
+        this.chosen = chosen;
+        if(this.price instanceof MonetaryPrice) {
+            this.price = new MonetaryPrice(Math.max(
+                    GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTINGS_MIN_PRICE),
+                    this.getMinimumMonetaryPrice(chosen)
+            ));
+        }
     }
 
     @Override
@@ -115,7 +128,11 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
         icon.addListener(clickable -> {
             this.auction = true;
             if(!(this.price instanceof MonetaryPrice)) {
-                this.price = new MonetaryPrice(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTINGS_MIN_PRICE));
+                if (this.chosen != null) {
+                    this.price = new MonetaryPrice(this.getMinimumMonetaryPrice(this.chosen));
+                } else {
+                    this.price = new MonetaryPrice(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTINGS_MIN_PRICE));
+                }
             }
             this.display.setSlot(this.getPriceSlot(), this.createPriceIcon());
             this.display.setSlot(this.getSelectionTypeSlot(), this.createAuctionIcon());

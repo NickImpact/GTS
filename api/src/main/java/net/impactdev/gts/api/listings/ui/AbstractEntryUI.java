@@ -17,4 +17,6 @@ public abstract class AbstractEntryUI<P, E, I> implements EntryUI<P, E, I> {
         return Optional.ofNullable(this.chosen);
     }
 
+    public abstract void setChosen(E chosen);
+
 }

@@ -101,6 +101,11 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
     }
 
     @Override
+    protected double getMinimumMonetaryPrice(Chosen chosen) {
+        return 0;
+    }
+
+    @Override
     public Optional<Chosen> getChosenOption() {
         return Optional.ofNullable(this.chosen);
     }
