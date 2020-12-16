@@ -22,7 +22,7 @@ public interface GTSStorage {
 
 	void shutdown();
 
-	Map<String, String> getMeta();
+	CompletableFuture<Map<String, String>> getMeta();
 
 	CompletableFuture<Boolean> publishListing(Listing listing);
 

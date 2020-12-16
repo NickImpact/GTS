@@ -35,12 +35,10 @@ public class GTSInfoGenerator {
         if(path == null) {
             path = GTSPlugin.getInstance().getBootstrap().getDataDirectory();
         }
-
-        this.create(issuer);
     }
 
-    public void create(CommandIssuer issuer) {
-        CompletableFuture.runAsync(() -> {
+    public CompletableFuture<String> create(CommandIssuer issuer) {
+        return CompletableFuture.supplyAsync(() -> {
             try {
                 File file = new File(path.toFile(), this.createName());
                 file.getParentFile().mkdirs();
@@ -55,6 +53,8 @@ public class GTSInfoGenerator {
                 bw.flush();
                 bw.close();
                 fw.close();
+
+                return file.getName();
             } catch (Exception e) {
                 throw new CompletionException(e);
             }
@@ -166,6 +166,16 @@ public class GTSInfoGenerator {
         }
 
         results.add("Storage Type: " + GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.STORAGE_METHOD));
+
+        try {
+            GTSPlugin.getInstance().getStorage()
+                    .getMeta()
+                    .get(5, TimeUnit.SECONDS)
+                    .forEach((key, value) -> {
+                        results.add("  - " + key + ": " + value);
+                    });
+        } catch (Exception ignored) {}
+
         return results;
     }
 

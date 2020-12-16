@@ -58,7 +58,10 @@ public class GTSCommand extends BaseCommand {
         @Subcommand("info")
         @CommandPermission(GTSPermissions.ADMIN_INFO)
         public void processInfoRequest(CommandIssuer issuer) {
-            new GTSInfoGenerator(issuer);
+            new GTSInfoGenerator(issuer).create(issuer)
+                    .thenAccept(x -> {
+                        issuer.sendMessage("Report saved to: " + x);
+                    });
         }
 
         @Subcommand("ping")
@@ -76,14 +79,6 @@ public class GTSCommand extends BaseCommand {
                             }
                         }
                     });
-        }
-
-        @Subcommand("test")
-        public void test(Player player) {
-            ErrorCode error = ErrorCodes.FATAL_ERROR;
-            MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-
-            player.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED), Lists.newArrayList(() -> error)));
         }
 
     }

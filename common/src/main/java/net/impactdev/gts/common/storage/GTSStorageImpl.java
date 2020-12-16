@@ -106,8 +106,8 @@ public class GTSStorageImpl implements GTSStorage {
      * @return A mapping of flags to values representing storage implementation
      * properties
      */
-    public Map<String, String> getMeta() {
-        return this.implementation.getMeta();
+    public CompletableFuture<Map<String, String>> getMeta() {
+        return this.schedule(this.implementation::getMeta);
     }
 
     @Override
