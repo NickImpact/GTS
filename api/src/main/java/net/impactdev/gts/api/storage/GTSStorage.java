@@ -1,6 +1,7 @@
 package net.impactdev.gts.api.storage;
 
 import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
@@ -62,7 +63,6 @@ public interface GTSStorage {
 
 	CompletableFuture<Boolean> purge();
 
-
 	//------------------------------------------------------------------------------------------------------------------
 	//
 	//  Any and all actions that might require a message to transmit the request to the storage provider
@@ -97,4 +97,18 @@ public interface GTSStorage {
 
 	CompletableFuture<BuyItNowMessage.Purchase.Response> processPurchase(BuyItNowMessage.Purchase.Request request);
 
+	//------------------------------------------------------------------------------------------------------------------
+	//
+	//  Deprecated providers, scheduled to be removed with next minor version update
+	//
+	//------------------------------------------------------------------------------------------------------------------
+
+	/**
+	 * Attempts to clean the database of auctions stuck in the GTS from early 6.0.0 versions
+	 *
+	 * @param query The list of auctions that may need to be deleted
+	 * @return A completable future marking the processing of this operation
+	 */
+	@Deprecated
+	CompletableFuture<Integer> clean(List<Auction> query);
 }

@@ -27,6 +27,7 @@ package net.impactdev.gts.common.storage.implementation.file;
 
 import com.google.common.base.Throwables;
 import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
@@ -183,6 +184,11 @@ public class ConfigurateStorage implements StorageImplementation {
     @Override
     public BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception {
         return null;
+    }
+
+    @Override
+    public int clean(List<Auction> query) throws Exception {
+        return 0;
     }
 
     private ConfigurationNode readFile(String name) throws IOException {

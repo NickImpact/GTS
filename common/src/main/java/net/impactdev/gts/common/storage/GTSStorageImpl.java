@@ -28,6 +28,7 @@ package net.impactdev.gts.common.storage;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.listings.Listing;
@@ -229,6 +230,11 @@ public class GTSStorageImpl implements GTSStorage {
                 lock.unlock();
             }
         });
+    }
+
+    @Override
+    public CompletableFuture<Integer> clean(List<Auction> query) {
+        return this.schedule(() -> this.implementation.clean(query));
     }
 
     public CompletableFuture<Boolean> sendListingUpdate(Listing listing) {

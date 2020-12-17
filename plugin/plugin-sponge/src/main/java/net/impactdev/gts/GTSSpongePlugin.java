@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.commands.GTSCommandManager;
@@ -73,6 +74,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
@@ -173,6 +175,8 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				});
 			}
 		});
+
+		this.runCleanOperation();
 	}
 
 	public MessagingFactory<?> getMessagingFactory() {
@@ -314,6 +318,31 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				throw new RuntimeException(e);
 			}
 		}
+	}
+
+	/**
+	 * Runs a query that will update and remove any listings that have found themselves locked in the database
+	 * with no chance of removal by normal means.
+	 *
+	 * @deprecated This function is temporary in that it is simply meant to resolve issues with the database
+	 * for early 6.0.0 builds.
+	 */
+	@Deprecated
+	private void runCleanOperation() {
+		// TODO - Run a clean operation on the database to locate and fix any listings stuck with no chance of removal
+		// TODO - If any, output should be via the debug channel
+		this.getStorage().fetchListings(Lists.newArrayList(l -> l instanceof Auction))
+				.thenAccept(listings -> {
+					this.getStorage().clean(listings.stream()
+							.map(l -> (Auction) l)
+							.filter(a -> !a.hasAnyBidsPlaced())
+							.collect(Collectors.toList())
+					).thenAccept(amount -> {
+						if(amount > 0) {
+							this.getPluginLogger().debug("GTS detected " + amount + " listings stuck in storage. These listings have been now been removed!");
+						}
+					});
+				});
 	}
 
 }

@@ -57,6 +57,7 @@ import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+import org.checkerframework.checker.units.qual.A;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -499,7 +500,7 @@ public class SqlImplementation implements StorageImplementation {
 					if(this.deleteListing(request.getListingID())) {
 						builder.successful();
 					}
-					
+
 					return builder.build();
 				}
 
@@ -669,6 +670,34 @@ public class SqlImplementation implements StorageImplementation {
 		}
 
 		return processor.apply(this.deleteListing(request.getListingID()), null);
+	}
+
+	@Override
+	public int clean(List<Auction> query) throws Exception {
+		return this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
+			AtomicInteger cleaned = new AtomicInteger();
+
+			for(Auction auction : query) {
+				ps.setString(1, auction.getID().toString());
+				this.results(ps, results -> {
+					if(results.next()) {
+						if(results.getBoolean("lister")) {
+							try(PreparedStatement delete = connection.prepareStatement(this.processor.apply(DELETE_AUCTION_CLAIM_STATUS))) {
+								delete.setString(1, auction.getID().toString());
+								delete.executeUpdate();
+
+								this.deleteListing(auction.getID());
+								cleaned.incrementAndGet();
+							}
+						}
+					}
+
+					return null;
+				});
+			}
+
+			return cleaned.get();
+		});
 	}
 
 	private boolean tableExists(String table) throws SQLException {

@@ -455,6 +455,9 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 	@Override
 	public CompletableFuture<Boolean> hasMaxListings(UUID lister) {
+		// TODO - Verify that for any auctions a user has listed, that they've at least
+		// TODO - claimed their portion, before counting for score
+
 		return this.fetchListings().thenApply(listings -> listings.stream()
 				.filter(l -> l.getLister().equals(lister))
 				.count() >= GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER));

@@ -26,6 +26,7 @@
 package net.impactdev.gts.common.storage.implementation;
 
 import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
@@ -130,4 +131,7 @@ public interface StorageImplementation {
     AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception;
 
     BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception;
+
+    @Deprecated
+    int clean(List<Auction> query) throws Exception;
 }
