@@ -13,7 +13,7 @@ include (
         'pixelmon',
         'pixelmon:reforged',
         'pixelmon:reforged:sponge',
-        'pixelmon:generations',
-        'pixelmon:generations:gens-sponge'
+//        'pixelmon:generations',
+//        'pixelmon:generations:gens-sponge'
 )
 
