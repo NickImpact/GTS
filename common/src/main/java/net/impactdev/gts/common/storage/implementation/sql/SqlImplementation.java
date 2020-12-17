@@ -83,7 +83,7 @@ public class SqlImplementation implements StorageImplementation {
 	private static final String GET_SPECIFIC_LISTING = "SELECT * FROM `{prefix}listings` WHERE id=?";
 	private static final String DELETE_LISTING = "DELETE FROM `{prefix}listings` WHERE id=?";
 
-	private static final String ADD_AUCTION_CLAIM_STATUS = "INSERT INTO `{prefix}auction_claims` (auction, lister, winner) VALUES (?, ?, ?)";
+	private static final String ADD_AUCTION_CLAIM_STATUS = "INSERT INTO `{prefix}auction_claims` (auction, lister, winner) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE lister=VALUES(lister), winner=VALUES(winner)";
 	private static final String GET_AUCTION_CLAIM_STATUS = "SELECT * FROM `{prefix}auction_claims` WHERE auction=?";
 	private static final String UPDATE_AUCTION_CLAIM_LISTER = "UPDATE `{prefix}auction_claims` SET lister=? WHERE auction=?";
 	private static final String UPDATE_AUCTION_CLAIM_WINNER = "UPDATE `{prefix}auction_claims` SET winner=? WHERE auction=?";
@@ -484,6 +484,25 @@ public class SqlImplementation implements StorageImplementation {
 			boolean isLister = request.getActor().equals(listing.get().getLister());
 
 			if (listing.map(l -> l instanceof Auction).orElse(false)) {
+				if(!listing.map(l -> (Auction) l).get().hasAnyBidsPlaced()) {
+					ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
+							.id(response)
+							.request(request.getID())
+							.listing(request.getListingID())
+							.actor(request.getActor())
+							.successful()
+							.auction()
+							.winner(false)
+							.lister(false)
+							.receiver(request.getReceiver().orElse(null));
+
+					if(this.deleteListing(request.getListingID())) {
+						builder.successful();
+					}
+					
+					return builder.build();
+				}
+
 				return this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
 					ps.setString(1, request.getListingID().toString());
 					return this.results(ps, results -> {
