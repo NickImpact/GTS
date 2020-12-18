@@ -86,6 +86,8 @@ public interface StorageImplementation {
 
     List<Listing> getListings() throws Exception;
 
+    boolean hasMaxListings(UUID user) throws Exception;
+
     boolean purge() throws Exception;
 
     // ---------------------------------------------------------

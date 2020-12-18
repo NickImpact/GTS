@@ -61,6 +61,8 @@ public interface GTSStorage {
 
 	CompletableFuture<Boolean> applyPlayerSettings(UUID uuid, PlayerSettings settings);
 
+	CompletableFuture<Boolean> hasMaxListings(UUID user);
+
 	CompletableFuture<Boolean> purge();
 
 	//------------------------------------------------------------------------------------------------------------------

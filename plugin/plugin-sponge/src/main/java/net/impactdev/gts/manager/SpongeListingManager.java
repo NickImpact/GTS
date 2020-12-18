@@ -6,6 +6,7 @@ import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.events.auctions.BidEvent;
 import net.impactdev.gts.api.events.buyitnow.PurchaseListingEvent;
+import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.makeup.Fees;
 import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
@@ -455,12 +456,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 	@Override
 	public CompletableFuture<Boolean> hasMaxListings(UUID lister) {
-		// TODO - Verify that for any auctions a user has listed, that they've at least
-		// TODO - claimed their portion, before counting for score
-
-		return this.fetchListings().thenApply(listings -> listings.stream()
-				.filter(l -> l.getLister().equals(lister))
-				.count() >= GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER));
+		return GTSPlugin.getInstance().getStorage().hasMaxListings(lister);
 	}
 
 	@Override

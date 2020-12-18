@@ -137,6 +137,11 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
+    public CompletableFuture<Boolean> hasMaxListings(UUID user) {
+        return this.schedule(() -> this.implementation.hasMaxListings(user));
+    }
+
+    @Override
     public CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request) {
         return this.schedule(() -> {
             ReentrantLock lock = this.locks.get(request.getAuctionID());

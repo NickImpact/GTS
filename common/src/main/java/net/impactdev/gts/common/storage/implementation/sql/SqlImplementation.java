@@ -57,7 +57,6 @@ import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import org.checkerframework.checker.units.qual.A;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -82,7 +81,8 @@ public class SqlImplementation implements StorageImplementation {
 	private static final String UPDATE_LISTING = "UPDATE `{prefix}listings` SET listing=? WHERE id=?";
 	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM `{prefix}listings`";
 	private static final String GET_SPECIFIC_LISTING = "SELECT * FROM `{prefix}listings` WHERE id=?";
-	private static final String DELETE_LISTING = "DELETE FROM `{prefix}listings` WHERE id=?";
+	private static final String GET_ALL_USER_LISTINGS = "SELECT id FROM `{prefix}listings` WHERE lister=?";
+ 	private static final String DELETE_LISTING = "DELETE FROM `{prefix}listings` WHERE id=?";
 
 	private static final String ADD_AUCTION_CLAIM_STATUS = "INSERT INTO `{prefix}auction_claims` (auction, lister, winner) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE lister=VALUES(lister), winner=VALUES(winner)";
 	private static final String GET_AUCTION_CLAIM_STATUS = "SELECT * FROM `{prefix}auction_claims` WHERE auction=?";
@@ -297,6 +297,36 @@ public class SqlImplementation implements StorageImplementation {
 
 			return entries;
 		}));
+	}
+
+	@Override
+	public boolean hasMaxListings(UUID user) throws Exception {
+		return this.query(GET_ALL_USER_LISTINGS, (connection, ps) -> {
+			ps.setString(1, user.toString());
+			return this.results(ps, results -> {
+				AtomicInteger possesses = new AtomicInteger();
+
+				while(results.next()) {
+					try(PreparedStatement query = connection.prepareStatement(this.processor.apply(GET_AUCTION_CLAIM_STATUS))) {
+						query.setString(1, results.getString("id"));
+
+						this.results(query, r -> {
+							if(r.next()) {
+								if(!r.getBoolean("lister")) {
+									possesses.getAndIncrement();
+								}
+							} else {
+								possesses.getAndIncrement();
+							}
+
+							return null;
+						});
+					}
+				}
+
+				return possesses.get() >= GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER);
+			});
+		});
 	}
 
 	@Override

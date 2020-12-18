@@ -329,8 +329,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	 */
 	@Deprecated
 	private void runCleanOperation() {
-		// TODO - Run a clean operation on the database to locate and fix any listings stuck with no chance of removal
-		// TODO - If any, output should be via the debug channel
 		this.getStorage().fetchListings(Lists.newArrayList(l -> l instanceof Auction))
 				.thenAccept(listings -> {
 					this.getStorage().clean(listings.stream()
