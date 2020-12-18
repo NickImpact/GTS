@@ -1,8 +1,8 @@
 package net.impactdev.gts.util;
 
-import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
 import org.spongepowered.api.data.DataQuery;
@@ -11,17 +11,29 @@ import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.data.persistence.DataFormats;
 
 import java.io.IOException;
-import java.util.List;
+import java.lang.reflect.Array;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.IntStream;
 
 public class DataViewJsonManager {
 
+    private static final String DEBUG_OUT = "%s: %s";
+
     public static void writeDataViewToJSON(JObject writer, DataView container) {
+        PrettyPrinter printer = new PrettyPrinter(80);
+        printer.add("JSON Deserialization Attempt").center();
+        printer.hr();
+
+        writeDataViewToJSON(writer, container, printer, 0);
+    }
+
+    private static void writeDataViewToJSON(JObject writer, DataView container, PrettyPrinter printer, int indent) {
         for(Map.Entry<DataQuery, Object> entry : container.getValues(false).entrySet()) {
             DataQuery query = entry.getKey();
             Object value = entry.getValue();
 
-            write(writer, query.asString('.'), value);
+            write(writer, query.asString('.'), value, printer, indent);
         }
     }
 
@@ -33,20 +45,22 @@ public class DataViewJsonManager {
         }
     }
 
-    private static void writeDataViewToJSON(JArray writer, DataView container) {
+    private static void writeDataViewToJSON(JArray writer, DataView container, PrettyPrinter printer, int indent) {
         JObject result = new JObject();
 
         for(Map.Entry<DataQuery, Object> entry : container.getValues(false).entrySet()) {
             DataQuery query = entry.getKey();
             Object value = entry.getValue();
 
-            write(result, query.asString('.'), value);
+            write(result, query.asString('.'), value, printer, indent);
         }
 
         writer.add(result);
     }
 
-    private static void write(JObject writer, String key, Object value) {
+    private static void write(JObject writer, String key, Object value, PrettyPrinter printer, int indent) {
+        printer.add(translate(key, value), indent);
+
         if(value instanceof String) {
             writer.add(key, (String) value);
         } else if(value instanceof Number) {
@@ -54,19 +68,31 @@ public class DataViewJsonManager {
         } else if(value instanceof Boolean) {
             writer.add(key, (Boolean) value);
         } else if(value instanceof Iterable) {
-            writer.add(key, writeArray((Iterable<?>) value));
+            writer.add(key, writeArray((Iterable<?>) value, printer, indent + 2));
         } else if(value instanceof Map) {
-            writer.add(key, writeMap((Map<?, ?>) value));
+            writer.add(key, writeMap((Map<?, ?>) value, printer, indent + 2));
         } else if(value instanceof DataSerializable) {
-            writeDataViewToJSON(writer, ((DataSerializable) value).toContainer());
+            writeDataViewToJSON(writer, ((DataSerializable) value).toContainer(), printer, indent + 2);
         } else if(value instanceof DataView) {
-            writeDataViewToJSON(writer, (DataView) value);
+            writeDataViewToJSON(writer, (DataView) value, printer, indent + 2);
         } else {
-            throw new IllegalArgumentException("Unable to translate object to JSON: " + value);
+            IllegalArgumentException exception = new IllegalArgumentException("Unable to translate object to JSON: " + value);
+            printer.hr();
+            printer.add("Exception During Write").center();
+            printer.hr();
+            printer.add("Failed Data");
+            printer.add("Class: " + value.getClass().getName());
+            printer.add("Value: " + (value.getClass().isArray() ? printArray(value) : value.toString()));
+            printer.hr();
+
+            printer.add(exception);
+
+            printer.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+            throw exception;
         }
     }
 
-    private static void write(JArray writer, Object value) {
+    private static void write(JArray writer, Object value, PrettyPrinter printer, int indent) {
         if(value instanceof String) {
             writer.add((String) value);
         } else if(value instanceof Number) {
@@ -74,28 +100,28 @@ public class DataViewJsonManager {
         } else if(value instanceof Boolean) {
             //writer.add((Boolean) value);
         } else if(value instanceof Iterable) {
-            writer.add(writeArray((Iterable<?>) value));
+            writer.add(writeArray((Iterable<?>) value, printer, indent + 2));
         } else if(value instanceof Map) {
-            writer.add(writeMap((Map<?, ?>) value));
+            writer.add(writeMap((Map<?, ?>) value, printer, indent + 2));
         } else if(value instanceof DataSerializable) {
-            writeDataViewToJSON(writer, ((DataSerializable) value).toContainer());
+            writeDataViewToJSON(writer, ((DataSerializable) value).toContainer(), printer, indent + 2);
         } else if(value instanceof DataView) {
-            writeDataViewToJSON(writer, (DataView) value);
+            writeDataViewToJSON(writer, (DataView) value, printer, indent + 2);
         } else {
             throw new IllegalArgumentException("Unable to translate object to JSON: " + value);
         }
     }
 
-    private static JArray writeArray(Iterable<?> iterable) {
+    private static JArray writeArray(Iterable<?> iterable, PrettyPrinter printer, int indent) {
         JArray array = new JArray();
         for(Object value : iterable) {
-            write(array, value);
+            write(array, value, printer, indent);
         }
 
         return array;
     }
 
-    private static JObject writeMap(Map<?, ?> map) {
+    private static JObject writeMap(Map<?, ?> map, PrettyPrinter printer, int indent) {
         JObject mapped = new JObject();
         for(Map.Entry<?, ?> entry : map.entrySet()) {
             Object key = entry.getKey();
@@ -103,18 +129,25 @@ public class DataViewJsonManager {
                 key = ((DataQuery) key).asString('.');
             }
 
-            write(mapped, key.toString(), entry.getValue());
+            write(mapped, key.toString(), entry.getValue(), printer, indent + 2);
         }
 
         return mapped;
     }
 
-    private static List<?> readArray(JsonArray array) {
-        List<Object> results = Lists.newArrayList();
-        for(int i = 0; i < array.size(); i++) {
-            results.add(array.get(i));
+    private static String translate(String key, Object value) {
+        return String.format(DEBUG_OUT, key, value);
+    }
+
+    private static String printArray(Object array) {
+        if(!array.getClass().isArray()) {
+            return "Not an Array";
         }
 
-        return results;
+        return "[" + IntStream.range(0, Array.getLength(array))
+                .mapToObj(i -> Objects.toString(Array.get(array, i)))
+                .reduce("", (l, r) -> l + ", " + r)
+                .substring(2)
+                + "]";
     }
 }
