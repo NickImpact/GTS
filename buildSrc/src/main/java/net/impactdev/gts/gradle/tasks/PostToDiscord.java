@@ -74,7 +74,7 @@ public class PostToDiscord extends DefaultTask {
 
     private enum GifSelector {
         Patch(ReleaseLevel.PATCH, "https://pa1.narvii.com/6156/15a7f4cf7cd0b25244e4ba415e840f689da609d2_hq.gif", 56, 100),
-        Minor(ReleaseLevel.MINOR, "https://media.tenor.com/images/d8013e90642bfd34a7510810336130a2/tenor.gif0", 100, 100),
+        Minor(ReleaseLevel.MINOR, "https://media.tenor.com/images/d8013e90642bfd34a7510810336130a2/tenor.gif", 100, 100),
         Major(ReleaseLevel.MAJOR, "https://thumbs.gfycat.com/DentalFemaleGlassfrog-max-14mb.gif", 56, 100)
         ;
 

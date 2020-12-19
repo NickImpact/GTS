@@ -60,6 +60,7 @@ jobs:
         run: ./gradlew deploy
         env:
           ORE_API_KEY: ${{ secrets.ORE_API_KEY }}
+          DISCORD_WEBHOOK_MEMBER_ROLE: ${{ secrets.DISCORD_WEBHOOK_MEMBER_ROLE }}
           DISCORD_WEBHOOK_ID_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_ID_PLUGIN }}
           DISCORD_WEBHOOK_TOKEN_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_TOKEN_PLUGIN }}
           DISCORD_WEBHOOK_ID_REFORGED: ${{ secrets.DISCORD_WEBHOOK_ID_REFORGED }}
