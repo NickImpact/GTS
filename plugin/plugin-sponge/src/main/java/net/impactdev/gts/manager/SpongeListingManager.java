@@ -425,7 +425,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 									Sponge.getServer().getPlayer(buyer).ifPresent(player -> {
 										player.sendMessage(parser.parse(
 												Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-												Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)
+												Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
 										));
 
 										player.sendMessage(parser.parse(

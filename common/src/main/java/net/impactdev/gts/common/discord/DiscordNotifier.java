@@ -171,7 +171,7 @@ public class DiscordNotifier {
 				Optional.ofNullable(this.placeholders.get(placeholder.toLowerCase())).ifPresent(parser -> {
 					String out = parser.parse(sources);
 					if(out != null) {
-						result.set(result.get().replaceAll("[{][{]" + placeholder + "[}][}]", out));
+						result.set(result.get().replace("[{][{]" + placeholder + "[}][}]", out));
 					}
 				});
 			}
