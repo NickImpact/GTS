@@ -621,6 +621,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	public static final ConfigKey<String> UPDATE_AVAILABLE = stringKey("general.update-check.available", "{{gts:prefix}} &7A new update is available (&a{{new_version}}&7), and you are running &e{{current_version}}&7! Check Ore or Discord for the update!");
 	public static final ConfigKey<String> UPDATE_LATEST = stringKey("general.update-check.latest", "{{gts:prefix}} You're using the latest version!");
+	public static final ConfigKey<String> UPDATE_SNAPSHOT = stringKey("general.update-check.snapshot", "{{gts:prefix}} You're using a snapshot version of GTS, things may not work correctly!");
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

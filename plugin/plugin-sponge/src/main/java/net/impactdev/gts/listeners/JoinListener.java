@@ -33,6 +33,8 @@ public class JoinListener {
                     String before = Utilities.readMessageConfigOption(MsgConfigKeys.UPDATE_AVAILABLE);
                     String after = before.replace("{{new_version}}", response.toString());
                     player.sendMessage(parser.parse(after));
+                } else if(current.isSnapshot()) {
+                    player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UPDATE_SNAPSHOT)));
                 } else {
                     player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UPDATE_LATEST)));
                 }
