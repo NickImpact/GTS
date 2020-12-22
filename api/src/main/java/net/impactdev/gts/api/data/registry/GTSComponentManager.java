@@ -37,6 +37,8 @@ public interface GTSComponentManager {
 
     Map<String, PriceManager<? extends Price<?, ?, ?>, ?>> getAllPriceManagers();
 
+    DeserializerRegistry getDeserializerRegistry();
+
     // Legacy
 
     @Deprecated

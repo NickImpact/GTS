@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.gson.internal.LinkedHashTreeMap;
 import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.data.Storable;
+import net.impactdev.gts.api.data.registry.DeserializerRegistry;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
@@ -12,6 +13,7 @@ import net.impactdev.gts.api.listings.entries.EntryManager;
 import net.impactdev.gts.api.data.registry.GTSComponentManager;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceManager;
+import net.impactdev.gts.common.data.DeserializerRegistryImpl;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,6 +27,8 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
     private final Map<String, PriceManager<? extends Price<?, ?, ?>, ?>> prices = Maps.newHashMap();
 
     private final Map<String, Storable.Deserializer<?>> legacy = Maps.newHashMap();
+
+    private final DeserializerRegistry deserializer = new DeserializerRegistryImpl();
 
     @Override
     public <T extends Listing> void registerListingResourceManager(Class<T> type, ResourceManager<T> deserializer) {
@@ -46,6 +50,7 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
         Preconditions.checkArgument(type.isAnnotationPresent(GTSKeyMarker.class), "An Entry type must be annotated with GTSKeyMarker");
 
         this.managers.put(type.getAnnotation(GTSKeyMarker.class).value().toLowerCase(), manager);
+        manager.supplyDeserializers();
     }
 
     @Override
@@ -73,6 +78,11 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
     @Override
     public Map<String, PriceManager<? extends Price<?, ?, ?>, ?>> getAllPriceManagers() {
         return this.prices;
+    }
+
+    @Override
+    public DeserializerRegistry getDeserializerRegistry() {
+        return this.deserializer;
     }
 
     @Override

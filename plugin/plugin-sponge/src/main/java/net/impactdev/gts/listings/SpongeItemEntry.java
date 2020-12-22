@@ -1,6 +1,9 @@
 package net.impactdev.gts.listings;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
+import net.impactdev.gts.common.data.NBTMapper;
+import net.impactdev.gts.listings.data.NBTTranslator;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.json.factory.JObject;
@@ -49,10 +52,8 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	private static final Function<ItemStackSnapshot, JObject> writer = snapshot -> {
 		try {
-			JObject result = new JObject();
 			DataContainer container = snapshot.toContainer();
-			DataViewJsonManager.writeDataViewToJSON(result, container);
-			return result;
+			return new NBTMapper().from(NBTTranslator.getInstance().translateData(container)).getResult();
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to write JSON data for item snapshot", e);
 		}
@@ -167,7 +168,7 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	@Override
 	public int getVersion() {
-		return 1;
+		return 2;
 	}
 
 	@Override

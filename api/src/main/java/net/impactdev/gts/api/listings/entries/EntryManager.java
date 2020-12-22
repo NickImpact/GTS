@@ -18,4 +18,8 @@ public interface EntryManager<T, P> extends ResourceManager<T> {
      */
     Supplier<EntryUI<?, ?, ?>> getSellingUI(P player);
 
+    /**
+     *
+     */
+    void supplyDeserializers();
 }
