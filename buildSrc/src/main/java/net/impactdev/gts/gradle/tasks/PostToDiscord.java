@@ -7,6 +7,7 @@ import net.ranktw.DiscordWebHooks.DiscordWebhook;
 import net.ranktw.DiscordWebHooks.embed.FieldEmbed;
 import net.ranktw.DiscordWebHooks.embed.ImageEmbed;
 import org.gradle.api.DefaultTask;
+import org.gradle.api.GradleException;
 import org.gradle.api.tasks.TaskAction;
 
 import java.awt.*;
@@ -58,15 +59,20 @@ public class PostToDiscord extends DefaultTask {
                 discord.sendMessage(message);
 
                 for(File file : this.files) {
-                    List<File> wrapper = new ArrayList<>();
-                    wrapper.add(file);
+                    try {
+                        Thread.sleep(3000);
+                        List<File> wrapper = new ArrayList<>();
+                        wrapper.add(file);
 
-                    DiscordMessage out = new DiscordMessage.Builder()
-                            .withUsername("GTS Release Notifier")
-                            .withAvatarURL("https://cdn.discordapp.com/attachments/625206927152119818/785034021373607976/image0.jpg")
-                            .build();
+                        DiscordMessage out = new DiscordMessage.Builder()
+                                .withUsername("GTS Release Notifier")
+                                .withAvatarURL("https://cdn.discordapp.com/attachments/625206927152119818/785034021373607976/image0.jpg")
+                                .build();
 
-                    discord.sendMessage(out, wrapper);
+                        discord.sendMessage(out, wrapper);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failure during file upload", e);
+                    }
                 }
             }
         }
