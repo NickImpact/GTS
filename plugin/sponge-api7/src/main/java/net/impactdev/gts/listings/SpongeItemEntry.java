@@ -53,7 +53,7 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	private static final Function<ItemStackSnapshot, JObject> writer = snapshot -> {
 		try {
 			DataContainer container = snapshot.toContainer();
-			return new NBTMapper().from(NBTTranslator.getInstance().translateData(container)).getResult();
+			return new NBTMapper().from(NBTTranslator.getInstance().translateData(container));
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to write JSON data for item snapshot", e);
 		}

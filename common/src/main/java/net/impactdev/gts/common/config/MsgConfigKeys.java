@@ -254,7 +254,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 				"&7bid against can be found here",
 				"&7for your convenience",
 				"",
-				"&bYou have {{gts:active_bids}} active bid",
+				"&bYou have {{gts:active_bids|fallback=&7Loading...}} active bid",
 				"",
 				"&eClick to inspect!"
 		));
@@ -268,7 +268,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 				"&7bid against can be found here",
 				"&7for your convenience",
 				"",
-				"&bYou have {{gts:active_bids}} active bids",
+				"&bYou have {{gts:active_bids|fallback=&7Loading...}} active bids",
 				"",
 				"&eClick to inspect!"
 		));

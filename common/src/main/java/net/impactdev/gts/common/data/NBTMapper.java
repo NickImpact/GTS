@@ -1,6 +1,5 @@
 package net.impactdev.gts.common.data;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -30,22 +29,16 @@ import java.util.function.Function;
 
 public class NBTMapper {
 
-    private final JObject result = new JObject();
-
-    public JObject getResult() {
-        return this.result;
+    public JObject from(NBTTagCompound nbt) {
+        return this.from(nbt, false);
     }
 
-    public NBTMapper from(NBTTagCompound nbt) {
-        return this.from(nbt, true);
-    }
+    public JObject from(NBTTagCompound nbt, boolean print) {
+        JObject result = new JObject();
 
-    public NBTMapper from(NBTTagCompound nbt, boolean print) {
         PrettyPrinter test = new PrettyPrinter(80);
-        if(print) {
-            test.add("NBT Mapping Track - Write").center();
-            test.hr();
-        }
+        test.add("NBT Mapping Track - Write").center();
+        test.hr();
 
         for(String key : nbt.getKeySet()) {
             int id = nbt.getTagId(key);
@@ -53,43 +46,43 @@ public class NBTMapper {
 
             switch (id) {
                 case Constants.NBT.TAG_BYTE:
-                    this.append(key, nbt.getByte(key));
+                    this.append(result, key, nbt.getByte(key));
                     break;
                 case Constants.NBT.TAG_SHORT:
-                    this.append(key, nbt.getShort(key));
+                    this.append(result, key, nbt.getShort(key));
                     break;
                 case Constants.NBT.TAG_INT:
-                    this.append(key, nbt.getInteger(key));
+                    this.append(result, key, nbt.getInteger(key));
                     break;
                 case Constants.NBT.TAG_LONG:
-                    this.append(key, nbt.getLong(key));
+                    this.append(result, key, nbt.getLong(key));
                     break;
                 case Constants.NBT.TAG_FLOAT:
-                    this.append(key, nbt.getFloat(key));
+                    this.append(result, key, nbt.getFloat(key));
                     break;
                 case Constants.NBT.TAG_DOUBLE:
-                    this.append(key, nbt.getDouble(key));
+                    this.append(result, key, nbt.getDouble(key));
                     break;
                 case Constants.NBT.TAG_BYTE_ARRAY:
-                    this.append(key, nbt.getByteArray(key));
+                    this.append(result, key, nbt.getByteArray(key));
                     break;
                 case Constants.NBT.TAG_STRING:
-                    this.append(key, nbt.getString(key));
+                    this.append(result, key, nbt.getString(key));
                     break;
                 case Constants.NBT.TAG_LIST:
-                    this.append(key, (NBTTagList) nbt.getTag(key));
+                    this.append(result, key, (NBTTagList) nbt.getTag(key));
                     break;
                 case Constants.NBT.TAG_COMPOUND:
-                    this.append(key, nbt.getCompoundTag(key));
+                    this.append(result, key, nbt.getCompoundTag(key));
                     break;
                 case Constants.NBT.TAG_INT_ARRAY:
-                    this.append(key, nbt.getIntArray(key));
+                    this.append(result, key, nbt.getIntArray(key));
                     break;
                 case Constants.NBT.TAG_LONG_ARRAY:
                     try {
                         Field data = NBTTagLongArray.class.getDeclaredField("data");
                         data.setAccessible(true);
-                        this.append(key, (long[]) data.get(nbt.getTag(key)));
+                        this.append(result, key, (long[]) data.get(nbt.getTag(key)));
                     } catch (Exception e) {
                         throw new RuntimeException("Failed to read long array", e);
                     }
@@ -98,58 +91,61 @@ public class NBTMapper {
         }
 
         if(print) {
-            test.hr();
+            test.add();
+            test.add("Result:");
+            test.add(result.toJson());
+
             test.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
         }
-        return this;
+        return result;
     }
 
-    private void append(String key, byte value) {
-        this.getLowestParent(key).add(key, Mapper.BYTE.getApplier().apply(value));
+    private void append(JObject json, String key, byte value) {
+        this.getLowestParent(json, key).add(key, Mapper.BYTE.getApplier().apply(value));
     }
 
-    private void append(String key, short value) {
-        this.getLowestParent(key).add(key, Mapper.SHORT.getApplier().apply(value));
+    private void append(JObject json, String key, short value) {
+        this.getLowestParent(json, key).add(key, Mapper.SHORT.getApplier().apply(value));
     }
 
-    private void append(String key, int value) {
-        this.getLowestParent(key).add(key, Mapper.INTEGER.getApplier().apply(value));
+    private void append(JObject json, String key, int value) {
+        this.getLowestParent(json, key).add(key, Mapper.INTEGER.getApplier().apply(value));
     }
 
-    private void append(String key, long value) {
-        this.getLowestParent(key).add(key, Mapper.LONG.getApplier().apply(value));
+    private void append(JObject json, String key, long value) {
+        this.getLowestParent(json, key).add(key, Mapper.LONG.getApplier().apply(value));
     }
 
-    private void append(String key, float value) {
-        this.getLowestParent(key).add(key, Mapper.FLOAT.getApplier().apply(value));
+    private void append(JObject json, String key, float value) {
+        this.getLowestParent(json, key).add(key, Mapper.FLOAT.getApplier().apply(value));
     }
 
-    private void append(String key, double value) {
-        this.getLowestParent(key).add(key, Mapper.DOUBLE.getApplier().apply(value));
+    private void append(JObject json, String key, double value) {
+        this.getLowestParent(json, key).add(key, Mapper.DOUBLE.getApplier().apply(value));
     }
 
-    private void append(String key, byte[] value) {
-        this.getLowestParent(key).add(key, Mapper.BYTE_ARRAY.getApplier().apply(value));
+    private void append(JObject json, String key, byte[] value) {
+        this.getLowestParent(json, key).add(key, Mapper.BYTE_ARRAY.getApplier().apply(value));
     }
 
-    private void append(String key, String value) {
-        this.getLowestParent(key).add(key, Mapper.STRING.getApplier().apply(value));
+    private void append(JObject json, String key, String value) {
+        this.getLowestParent(json, key).add(key, Mapper.STRING.getApplier().apply(value));
     }
 
-    private void append(String key, NBTTagList value) {
-        this.getLowestParent(key).add(key, Mapper.LIST.getApplier().apply(value));
+    private void append(JObject json, String key, NBTTagList value) {
+        this.getLowestParent(json, key).add(key, Mapper.LIST.getApplier().apply(value));
     }
 
-    private void append(String key, NBTTagCompound value) {
-        this.getLowestParent(key).add(key, Mapper.COMPOUND.getApplier().apply(value));
+    private void append(JObject json, String key, NBTTagCompound value) {
+        this.getLowestParent(json, key).add(key, Mapper.COMPOUND.getApplier().apply(value));
     }
 
-    private void append(String key, int[] value) {
-        this.getLowestParent(key).add(key, Mapper.INT_ARRAY.getApplier().apply(value));
+    private void append(JObject json, String key, int[] value) {
+        this.getLowestParent(json, key).add(key, Mapper.INT_ARRAY.getApplier().apply(value));
     }
 
-    private void append(String key, long[] value) {
-        this.getLowestParent(key).add(key, Mapper.INT_ARRAY.getApplier().apply(value));
+    private void append(JObject json, String key, long[] value) {
+        this.getLowestParent(json, key).add(key, Mapper.INT_ARRAY.getApplier().apply(value));
     }
 
     public NBTTagCompound read(JsonObject json) {
@@ -297,8 +293,8 @@ public class NBTMapper {
         return result;
     }
 
-    private JsonObject getLowestParent(String key) {
-        JsonObject result = this.result.toJson();
+    private JsonObject getLowestParent(JObject json, String key) {
+        JsonObject result = json.toJson();
         String[] query = key.split("\\.");
 
         int index = 0;
@@ -340,7 +336,7 @@ public class NBTMapper {
 
             return new JObject().add("type", "list").add("value", array);
         }),
-        COMPOUND(value -> new JObject().add("type", "compound").add("value", new NBTMapper().from((NBTTagCompound) value, false).getResult())),
+        COMPOUND(value -> new JObject().add("type", "compound").add("value", new NBTMapper().from((NBTTagCompound) value, false))),
         INT_ARRAY(value -> new JObject().add("type", "int[]").add("value", intArray((int[]) value))),
         LONG_ARRAY(value -> new JObject().add("type", "long[]").add("value", longArray((long[]) value)))
         ;

@@ -4,10 +4,15 @@ package net.impactdev.gts.api.util;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import net.impactdev.impactor.api.json.factory.JElement;
 import net.impactdev.impactor.api.logging.Logger;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +22,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Prints information in a pretty box
@@ -664,6 +670,34 @@ public class PrettyPrinter {
         if (printable != null) {
             printable.print(this);
         }
+        return this;
+    }
+
+    /**
+     * Print a formatted representation of the specified {@link JElement} as a pretty
+     * printed JSON output.
+     *
+     * @param json The element to print
+     * @return fluent interface
+     */
+    public PrettyPrinter add(JElement json) {
+        this.add(json.toJson());
+        return this;
+    }
+
+    /**
+     * Print a formatted representation of the specified {@link JsonElement} as a pretty
+     * printed JSON output.
+     *
+     * @param json The element to print
+     * @return fluent interface
+     */
+    public PrettyPrinter add(JsonElement json) {
+        String raw = new GsonBuilder().setPrettyPrinting().create().toJson(json);
+        for(String line : raw.split("\n")) {
+            this.add(line);
+        }
+
         return this;
     }
 

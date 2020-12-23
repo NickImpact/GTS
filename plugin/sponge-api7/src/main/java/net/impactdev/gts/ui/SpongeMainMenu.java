@@ -113,7 +113,7 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 				.add(Keys.DISPLAY_NAME, PARSER.parse(cBids.getTitle(), Lists.newArrayList(() -> this.viewer)))
 				.add(Keys.ITEM_LORE, PARSER.parse(cBids.getLore(), Lists.newArrayList(
 						() -> this.viewer,
-						() -> new WaitingInteger("(Calculating...)")
+						this.viewer::getUniqueId
 				)))
 				.build()
 		);
@@ -218,7 +218,7 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 								.add(Keys.DISPLAY_NAME, PARSER.parse(cBids.getTitle(), Lists.newArrayList(() -> this.viewer)))
 								.add(Keys.ITEM_LORE, PARSER.parse(cBids.getLore(), Lists.newArrayList(
 										() -> this.viewer,
-										() -> new WaitingInteger(amount.get())
+										this.viewer::getUniqueId
 								)))
 								.build()
 						);

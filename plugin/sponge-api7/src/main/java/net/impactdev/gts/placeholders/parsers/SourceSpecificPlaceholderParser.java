@@ -39,4 +39,11 @@ public class SourceSpecificPlaceholderParser<T> implements PlaceholderParser {
         return this.name;
     }
 
+    public Class<T> getSourceType() {
+        return this.sourceType;
+    }
+
+    public Function<T, Text> getParser() {
+        return this.parser;
+    }
 }

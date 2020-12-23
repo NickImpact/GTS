@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.commands.GTSCommandManager;

@@ -9,10 +9,10 @@ import com.google.common.collect.Lists;
 import net.impactdev.gts.api.listings.makeup.Fees;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.util.WaitingInteger;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.utils.EconomicFormatter;
+import net.impactdev.gts.placeholders.concurrent.AsyncUserSourcedPlaceholder;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
@@ -55,11 +55,13 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.StringJoiner;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class GTSSpongePlaceholderManager {
 
@@ -363,12 +365,40 @@ public class GTSSpongePlaceholderManager {
                 container,
                 context -> Text.of(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER))
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                WaitingInteger.class,
-                "active_bids",
-                "GTS - Active Bids for a Player",
-                Text::of
-        ));
+//        this.register(new AsyncPlaceholder<>(
+//                Integer.class,
+//                "active_bids",
+//                "GTS - Active Bids for a Player",
+//                0,
+//                value -> {
+//                    return Text.EMPTY;
+//                }
+//        ));
+        this.register(AsyncUserSourcedPlaceholder.builder()
+                .type(Integer.class)
+                .id("active_bids")
+                .name("GTS - Active Bids (Async)")
+                .parser(Text::of)
+                .loader((uuid, executor) -> GTSPlugin.getInstance().getStorage()
+                        .fetchListings(Lists.newArrayList(
+                                listing -> listing instanceof Auction,
+                                listing -> !listing.hasExpired()
+                        ))
+                        .thenApply(listings -> listings.stream().map(listing -> (Auction) listing).collect(Collectors.toList()))
+                        .thenApply(auctions -> {
+                            int bids = 0;
+                            for (Auction auction : auctions) {
+                                if (auction.getBids().containsKey(uuid)) {
+                                    ++bids;
+                                }
+                            }
+
+                            return bids;
+                        })
+                )
+                .def(0)
+                .build()
+        );
         this.register(new SourceSpecificPlaceholderParser<>(
                 TextComponent.class,
                 "claim_item",
