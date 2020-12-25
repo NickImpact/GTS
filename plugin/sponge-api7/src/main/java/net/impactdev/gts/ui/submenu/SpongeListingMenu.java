@@ -350,6 +350,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		);
 		back.addListener(clickable -> {
 			this.cancelIfRunning();
+			this.getView().close(this.getViewer());
 			SpongeMainMenu menu = new SpongeMainMenu(this.getViewer());
 			menu.open();
 		});
