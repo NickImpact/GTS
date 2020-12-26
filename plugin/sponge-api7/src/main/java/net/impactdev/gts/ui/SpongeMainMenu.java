@@ -123,11 +123,7 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 		this.subscription = Impactor.getInstance().getEventBus().subscribe(PlaceholderReadyEvent.class, event -> {
 			if(event.getPlaceholderID().equals("gts:active_bids")) {
 				if(event.getSource().equals(this.getViewer().getUniqueId())) {
-					GTSPlugin.getInstance().getPluginLogger().debug("Active Bids placeholder marked available");
-
 					int amount = (int) event.getValue();
-					GTSPlugin.getInstance().getPluginLogger().debug("Value = " + amount);
-
 					TitleLorePair proper = readMessageConfigOption(
 							amount == 1 ? MsgConfigKeys.UI_MAIN_CURRENT_BIDS_SINGLE :
 									MsgConfigKeys.UI_MAIN_CURRENT_BIDS_MULTI
