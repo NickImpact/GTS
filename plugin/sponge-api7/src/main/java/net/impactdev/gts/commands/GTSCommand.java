@@ -2,19 +2,12 @@ package net.impactdev.gts.commands;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandIssuer;
+import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
-import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.gts.util.GTSInfoGenerator;
 import net.impactdev.impactor.api.Impactor;
@@ -23,11 +16,6 @@ import net.impactdev.gts.ui.admin.SpongeAdminMenu;
 import net.impactdev.impactor.api.services.text.MessageService;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
-
-import javax.net.ssl.HttpsURLConnection;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
 
 @CommandAlias("gts")
 @CommandPermission(GTSPermissions.DEFAULT)
@@ -38,8 +26,8 @@ public class GTSCommand extends BaseCommand {
         new SpongeMainMenu(issuer).open();
     }
 
-    @Subcommand("ignore")
-    public void ignore(Player issuer) {
+    @CatchUnknown
+    public void invalid(CommandIssuer issuer) {
 
     }
 
