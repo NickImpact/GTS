@@ -39,14 +39,27 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
 
     @Override
     public Text parse(PlaceholderContext context) {
+        UUID user = context.getAssociatedObject()
+                .filter(source -> UUID.class.isAssignableFrom(source.getClass()) || Player.class.isAssignableFrom(source.getClass()))
+                .map(source -> {
+                    if(Player.class.isAssignableFrom(source.getClass())) {
+                        return ((Player) source).getUniqueId();
+                    } else {
+                        return (UUID) source;
+                    }
+                })
+                .orElse(null);
+
         AtomicReference<Optional<Text>> fallback = new AtomicReference<>(Optional.empty());
         Optional<String> arguments = context.getArgumentString();
         if(arguments.isPresent()) {
             String[] args = arguments.get().split(";");
             for(String arg : args) {
                 String[] focus = arg.split("=");
-                if(focus.length > 1 && focus[0].equalsIgnoreCase("fallback")) {
-                    fallback.set(Optional.of(TextSerializers.FORMATTING_CODE.deserialize(focus[1])));
+                if(focus.length > 1) {
+                    if(focus[0].equalsIgnoreCase("fallback")) {
+                        fallback.set(Optional.of(TextSerializers.FORMATTING_CODE.deserialize(focus[1])));
+                    }
                 }
             }
         }
@@ -69,7 +82,7 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
                     if(result == null) {
                         this.cache.get(source).thenAccept(value -> {
                             this.last.put(source, value);
-                            Impactor.getInstance().getEventBus().post(PlaceholderReadyEvent.class, source, this.getId());
+                            Impactor.getInstance().getEventBus().post(PlaceholderReadyEvent.class, source, this.getId(), value);
                         });
                     }
                     return result;
@@ -78,17 +91,6 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
                 .orElse(Text.EMPTY);
 
         if(out.isEmpty()) {
-            UUID user = context.getAssociatedObject()
-                    .filter(source -> UUID.class.isAssignableFrom(source.getClass()) || Player.class.isAssignableFrom(source.getClass()))
-                    .map(source -> {
-                        if(Player.class.isAssignableFrom(source.getClass())) {
-                            return ((Player) source).getUniqueId();
-                        } else {
-                            return (UUID) source;
-                        }
-                    })
-                    .orElse(null);
-
             if(user != null && fallback.get().isPresent()) {
                 Boolean result = this.initialized.get(user);
                 if(result != null && result) {

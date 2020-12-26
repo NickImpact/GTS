@@ -249,7 +249,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	public static final ConfigKey<TitleLorePair> UI_MAIN_CURRENT_BIDS_SINGLE = customKey(c -> {
 		String title = c.getString("ui.menus.main.bids.title", "&aView Bids");
-		List<String> lore = c.getStringList("ui.menus.main.bids.lore", Lists.newArrayList(
+		List<String> lore = c.getStringList("ui.menus.main.bids.lore.single", Lists.newArrayList(
 				"&7Items that you have an active",
 				"&7bid against can be found here",
 				"&7for your convenience",
@@ -263,7 +263,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	});
 	public static final ConfigKey<TitleLorePair> UI_MAIN_CURRENT_BIDS_MULTI = customKey(c -> {
 		String title = c.getString("ui.menus.main.bids.title", "&aView Bids");
-		List<String> lore = c.getStringList("ui.menus.main.bids.lore", Lists.newArrayList(
+		List<String> lore = c.getStringList("ui.menus.main.bids.lore.multi", Lists.newArrayList(
 				"&7Items that you have an active",
 				"&7bid against can be found here",
 				"&7for your convenience",

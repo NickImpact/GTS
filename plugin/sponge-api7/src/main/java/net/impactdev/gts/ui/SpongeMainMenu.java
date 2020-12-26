@@ -1,13 +1,14 @@
 package net.impactdev.gts.ui;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.api.events.placeholders.PlaceholderReadyEvent;
 import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.util.WaitingInteger;
 import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
 import net.impactdev.gts.sponge.listings.ui.creator.SpongeEntryTypeSelectionMenu;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.gts.ui.submenu.settings.PlayerSettingsMenu;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.event.EventSubscription;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
 import net.impactdev.impactor.sponge.ui.SpongeLayout;
@@ -28,8 +29,6 @@ import org.spongepowered.api.text.Text;
 
 import java.util.List;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
@@ -40,10 +39,14 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 	private final SpongeUI view;
 	private final Player viewer;
 
+	private EventSubscription<PlaceholderReadyEvent> subscription;
+
 	public SpongeMainMenu(Player viewer) {
 		this.viewer = viewer;
 		this.view = this.construct();
-		this.applyActiveBids();
+		this.view.attachCloseListener(close -> {
+			this.subscription.close();
+		});
 	}
 
 	@Override
@@ -117,6 +120,51 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 				)))
 				.build()
 		);
+		this.subscription = Impactor.getInstance().getEventBus().subscribe(PlaceholderReadyEvent.class, event -> {
+			if(event.getPlaceholderID().equals("gts:active_bids")) {
+				if(event.getSource().equals(this.getViewer().getUniqueId())) {
+					GTSPlugin.getInstance().getPluginLogger().debug("Active Bids placeholder marked available");
+
+					int amount = (int) event.getValue();
+					GTSPlugin.getInstance().getPluginLogger().debug("Value = " + amount);
+
+					TitleLorePair proper = readMessageConfigOption(
+							amount == 1 ? MsgConfigKeys.UI_MAIN_CURRENT_BIDS_SINGLE :
+									MsgConfigKeys.UI_MAIN_CURRENT_BIDS_MULTI
+					);
+
+					final Text name = PARSER.parse(proper.getTitle(), Lists.newArrayList(() -> this.viewer));
+					final List<Text> lore = PARSER.parse(proper.getLore(), Lists.newArrayList(
+						() -> this.viewer,
+						this.viewer::getUniqueId
+					));
+
+					Impactor.getInstance().getScheduler().executeSync(() -> {
+						ItemStack result = ItemStack.builder()
+								.from(bids.getDisplay())
+								.add(Keys.DISPLAY_NAME, name)
+								.add(Keys.ITEM_LORE, lore)
+								.build();
+
+						SpongeIcon icon = new SpongeIcon(result);
+						icon.addListener(clickable -> {
+							new SpongeListingMenu(
+									this.viewer,
+									listing -> {
+										if(listing instanceof Auction) {
+											Auction auction = (Auction) listing;
+											return auction.getBids().containsKey(this.viewer.getUniqueId());
+										}
+
+										return false;
+									}
+							).open();
+						});
+						this.view.setSlot(33, icon);
+					});
+				}
+			}
+		});
 		bids.addListener(clickable -> {
 			new SpongeListingMenu(
 					this.viewer,
@@ -190,58 +238,6 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 		});
 
 		icon.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(lore, Lists.newArrayList(() -> this.viewer)));
-	}
-
-	private void applyActiveBids() {
-		GTSPlugin.getInstance().getStorage()
-				.fetchListings(Lists.newArrayList(
-						listing -> listing instanceof Auction,
-						listing -> !listing.hasExpired()
-				))
-				.thenApply(listings -> listings.stream().map(listing -> (Auction) listing).collect(Collectors.toList()))
-				.thenAccept(auctions -> {
-					AtomicInteger amount = new AtomicInteger(0);
-					for(Auction auction : auctions) {
-						if(auction.getBids().containsKey(this.viewer.getUniqueId())) {
-							amount.incrementAndGet();
-						}
-					}
-
-					Impactor.getInstance().getScheduler().executeSync(() -> {
-						TitleLorePair cBids = readMessageConfigOption(
-								amount.get() == 1 ? MsgConfigKeys.UI_MAIN_CURRENT_BIDS_SINGLE :
-										MsgConfigKeys.UI_MAIN_CURRENT_BIDS_MULTI
-						);
-
-						SpongeIcon bids = new SpongeIcon(ItemStack.builder()
-								.itemType(ItemTypes.KNOWLEDGE_BOOK)
-								.add(Keys.DISPLAY_NAME, PARSER.parse(cBids.getTitle(), Lists.newArrayList(() -> this.viewer)))
-								.add(Keys.ITEM_LORE, PARSER.parse(cBids.getLore(), Lists.newArrayList(
-										() -> this.viewer,
-										this.viewer::getUniqueId
-								)))
-								.build()
-						);
-						bids.addListener(clickable -> {
-							new SpongeListingMenu(
-									this.viewer,
-									listing -> {
-										if(listing instanceof Auction) {
-											Auction auction = (Auction) listing;
-											return auction.getBids().containsKey(this.viewer.getUniqueId());
-										}
-
-										return false;
-									}
-							).open();
-						});
-						this.view.setSlot(33, bids);
-					});
-				})
-				.exceptionally(e -> {
-					ExceptionWriter.write(e);
-					return null;
-				});
 	}
 
 	public static class MainMenuCreator implements Creator {

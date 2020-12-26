@@ -20,4 +20,8 @@ public interface PlaceholderReadyEvent extends ImpactorEvent {
     @NonNull
     String getPlaceholderID();
 
+    @Param(2)
+    @NonNull
+    Object getValue();
+
 }
