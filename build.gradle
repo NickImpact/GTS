@@ -28,7 +28,7 @@ plugins {
 }
 
 group = 'me.nickimpact.gts'
-version = "6.0.10-SNAPSHOT"
+version = "6.0.10"
 
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'
@@ -80,7 +80,7 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    version = "6.0.10-SNAPSHOT${project.ext.run}"
+    version = "6.0.10${project.ext.run}"
     group = 'me.nickimpact.gts'
 
     repositories {
@@ -90,6 +90,10 @@ subprojects {
         maven {
             name = "Impact-Dev"
             url = "https://maven.impactdev.net/repository/development/"
+        }
+        maven {
+            name = 'sonatype-oss'
+            url = 'https://oss.sonatype.org/content/repositories/snapshots/'
         }
     }
 
