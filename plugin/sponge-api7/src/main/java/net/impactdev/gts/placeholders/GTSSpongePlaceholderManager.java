@@ -365,15 +365,6 @@ public class GTSSpongePlaceholderManager {
                 container,
                 context -> Text.of(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER))
         ));
-//        this.register(new AsyncPlaceholder<>(
-//                Integer.class,
-//                "active_bids",
-//                "GTS - Active Bids for a Player",
-//                0,
-//                value -> {
-//                    return Text.EMPTY;
-//                }
-//        ));
         this.register(AsyncUserSourcedPlaceholder.builder()
                 .type(Integer.class)
                 .id("active_bids")
