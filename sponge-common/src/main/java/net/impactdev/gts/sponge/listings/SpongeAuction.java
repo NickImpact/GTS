@@ -24,6 +24,7 @@ import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.SortedMap;
+import java.util.SortedSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
@@ -100,7 +101,15 @@ public class SpongeAuction extends SpongeListing implements Auction {
 
 	@Override
 	public Optional<Bid> getCurrentBid(UUID uuid) {
-		return this.getHighBid().map(Tuple::getSecond);
+		return Optional.of(this.getBids().get(uuid))
+				.map(set -> {
+					if(set.isEmpty()) {
+						return null;
+					}
+
+					return set;
+				})
+				.map(SortedSet::first);
 	}
 
 	@Override
