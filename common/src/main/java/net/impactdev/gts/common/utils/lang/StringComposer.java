@@ -1,6 +1,6 @@
 package net.impactdev.gts.common.utils.lang;
 
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
 
 import java.util.List;
 import java.util.StringJoiner;

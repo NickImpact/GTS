@@ -2,11 +2,10 @@ package net.impactdev.gts.common.listings;
 
 import com.google.gson.JsonObject;
 import net.impactdev.impactor.api.json.factory.JObject;
-import lombok.AllArgsConstructor;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.makeup.Display;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,10 +20,13 @@ import java.util.UUID;
  * NOTE: This class is only intended for references. As such, all other functionality other than data fetching
  * will be unsupported, and throw an error during any attempt to call these functions.
  */
-@AllArgsConstructor
 public class JsonStoredEntry implements Entry<JsonObject, Void> {
 
 	private final JsonObject data;
+
+	public JsonStoredEntry(JsonObject data) {
+		this.data = data;
+	}
 
 	@Override
 	public JsonObject getOrCreateElement() {

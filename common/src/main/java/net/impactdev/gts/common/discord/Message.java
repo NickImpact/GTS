@@ -1,10 +1,6 @@
 package net.impactdev.gts.common.discord;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import lombok.Getter;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
 
@@ -20,7 +16,7 @@ public class Message {
 	private String username;
 	private String avatarUrl;
 
-	@Getter private transient final List<String> webhooks;
+	private transient final List<String> webhooks;
 
 	public Message(String username, String avatar, DiscordOption option) {
 		this.username = username;
@@ -31,6 +27,10 @@ public class Message {
 	public Message addEmbed(Embed embed) {
 		this.embeds.add(embed);
 		return this;
+	}
+
+	public List<String> getWebhooks() {
+		return this.webhooks;
 	}
 
 	HttpsURLConnection send(String url) throws Exception {

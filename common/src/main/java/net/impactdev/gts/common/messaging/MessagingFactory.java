@@ -1,8 +1,5 @@
 package net.impactdev.gts.common.messaging;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.MessengerProvider;
@@ -12,11 +9,17 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-@RequiredArgsConstructor
 public abstract class MessagingFactory<P extends GTSPlugin> {
 
-	@Getter(value = AccessLevel.PROTECTED)
 	private final P plugin;
+
+	public MessagingFactory(P plugin) {
+		this.plugin = plugin;
+	}
+
+	protected final P getPlugin() {
+		return this.plugin;
+	}
 
 	public final InternalMessagingService getInstance() {
 		String messageType = this.plugin.getConfiguration().get(ConfigKeys.MESSAGE_SERVICE);

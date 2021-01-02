@@ -10,16 +10,7 @@ dependencies {
     shadow 'net.impactdev.impactor:bungee:3.0.0-SNAPSHOT'
     shadow 'net.md-5:bungeecord-api:1.15-SNAPSHOT'
     shadow 'com.imaginarycode.minecraft:RedisBungee:0.4'
-    shadow('net.kyori:text-api:3.0.3') {
-        exclude(module: 'checker-qual')
-    }
-    shadow('net.kyori:text-serializer-legacy:3.0.3') {
-        exclude(module: 'text-api')
-    }
-    shadow('net.kyori:text-serializer-gson:3.0.3') {
-        exclude(module: 'text-api')
-        exclude(module: 'gson')
-    }
+    shadow 'net.kyori:adventure-api:4.3.0'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 

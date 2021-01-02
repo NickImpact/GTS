@@ -7,6 +7,6 @@ subprojects {
     dependencies {
         compile project(':api')
         compile project(':common')
-        compile project(':sponge')
+        compile project(':sponge-common')
     }
 }

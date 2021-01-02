@@ -17,8 +17,8 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.impactor.api.services.text.MessageService;
-import net.kyori.text.Component;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import javax.net.ssl.HttpsURLConnection;

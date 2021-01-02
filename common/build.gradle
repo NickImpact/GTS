@@ -30,22 +30,12 @@ repositories {
 
 dependencies {
     compile project(':api')
-    shadow "org.projectlombok:lombok:1.18.4"
     shadow 'com.zaxxer:HikariCP:3.3.1'
     shadow 'ninja.leaping.configurate:configurate-core:3.3'
     shadow 'ninja.leaping.configurate:configurate-hocon:3.3'
     shadow 'ninja.leaping.configurate:configurate-yaml:3.3'
     shadow 'ninja.leaping.configurate:configurate-gson:3.3'
     shadow 'redis.clients:jedis:2.10.2'
-    shadow('net.kyori:text-api:3.0.3') {
-        exclude(module: 'checker-qual')
-    }
-    shadow('net.kyori:text-serializer-legacy:3.0.3') {
-        exclude(module: 'text-api')
-    }
-    shadow('net.kyori:text-serializer-gson:3.0.3') {
-        exclude(module: 'text-api')
-        exclude(module: 'gson')
-    }
+    shadow 'net.kyori:adventure-api:4.3.0'
     shadow('io.github.classgraph:classgraph:4.8.90')
 }

@@ -16,19 +16,21 @@ buildscript {
         }
     }
     dependencies {
+        classpath 'com.google.guava:guava:27.1-jre'
         classpath 'org.hibernate.build.gradle:gradle-maven-publish-auth:2.0.1'
     }
 }
 
 plugins {
-    id 'com.qixalite.spongestart' version '1.6.2'
+    id 'java'
     id 'maven'
+    id 'idea'
     id 'com.github.johnrengelman.shadow' version '4.0.4'
     id 'ninja.miserable.blossom' version '1.0.1'
 }
 
 group = 'me.nickimpact.gts'
-version = "6.0.10"
+version = "${project.properties['pluginVersion']}"
 
 apply plugin: 'maven-publish'
 apply plugin: 'maven-publish-auth'
@@ -80,7 +82,7 @@ subprojects {
         options.encoding = 'UTF-8'
     }
 
-    version = "6.0.10${project.ext.run}"
+    version = "${project.properties['pluginVersion']}${project.ext.run}"
     group = 'me.nickimpact.gts'
 
     repositories {
@@ -107,7 +109,6 @@ subprojects {
     
     dependencies {
         shadow "net.impactdev.impactor:api:3.0.0-SNAPSHOT"
-        shadow "org.projectlombok:lombok:1.18.4"
         shadow 'com.google.guava:guava:27.1-jre'
         shadow 'com.google.code.gson:gson:2.8.0'
         shadow 'com.github.ben-manes.caffeine:caffeine:2.8.2'
