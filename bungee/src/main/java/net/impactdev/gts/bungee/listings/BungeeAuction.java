@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableSet;
 import java.util.Optional;
+import java.util.SortedSet;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -53,7 +54,15 @@ public class BungeeAuction extends BungeeListing implements Auction {
 
     @Override
     public Optional<Bid> getCurrentBid(UUID uuid) {
-        return this.getHighBid().map(Tuple::getSecond);
+        return Optional.of(this.getBids().get(uuid))
+                .map(set -> {
+                    if(set.isEmpty()) {
+                        return null;
+                    }
+
+                    return set;
+                })
+                .map(SortedSet::first);
     }
 
     @Override

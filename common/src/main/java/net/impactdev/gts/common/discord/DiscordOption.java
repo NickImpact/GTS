@@ -1,20 +1,34 @@
 package net.impactdev.gts.common.discord;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 
 import java.awt.*;
 import java.util.List;
 
-@Getter
-@RequiredArgsConstructor
 public class DiscordOption {
 
 	private final String descriptor;
 	private final Color color;
 	private final List<String> webhookChannels;
+
+	public DiscordOption(String descriptor, Color color, List<String> webhookChannels) {
+		this.descriptor = descriptor;
+		this.color = color;
+		this.webhookChannels = webhookChannels;
+	}
+
+	public String getDescriptor() {
+		return this.descriptor;
+	}
+
+	public Color getColor() {
+		return this.color;
+	}
+
+	public List<String> getWebhookChannels() {
+		return this.webhookChannels;
+	}
 
 	public static DiscordOption fetch(Options option) {
 		return GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.DISCORD_LINKS).get(option);

@@ -1,9 +1,8 @@
 package net.impactdev.gts.api.listings.prices;
 
 import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.makeup.Display;
-import net.kyori.text.TextComponent;
+import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;

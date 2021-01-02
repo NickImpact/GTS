@@ -1,7 +1,6 @@
 package net.impactdev.gts.common.messaging.redis;
 
 import net.impactdev.impactor.api.Impactor;
-import lombok.RequiredArgsConstructor;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.message.OutgoingMessage;
@@ -11,12 +10,15 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.JedisPubSub;
 
-@RequiredArgsConstructor
 public class RedisMessenger implements Messenger {
 
 	private static final String CHANNEL = "gts:update";
 
 	private final IncomingMessageConsumer consumer;
+
+	public RedisMessenger(IncomingMessageConsumer consumer) {
+		this.consumer = consumer;
+	}
 
 	private JedisPool jedisPool;
 	private Subscription sub;
@@ -62,9 +64,12 @@ public class RedisMessenger implements Messenger {
 		this.jedisPool.destroy();
 	}
 
-	@RequiredArgsConstructor
 	private static class Subscription extends JedisPubSub {
 		private final RedisMessenger parent;
+
+		public Subscription(RedisMessenger parent) {
+			this.parent = parent;
+		}
 
 		@Override
 		public void onMessage(String channel, String msg) {

@@ -3,7 +3,6 @@ package net.impactdev.gts.bungee.messaging.types;
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 import com.imaginarycode.minecraft.redisbungee.RedisBungeeAPI;
 import com.imaginarycode.minecraft.redisbungee.events.PubSubMessageEvent;
-import lombok.RequiredArgsConstructor;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.message.OutgoingMessage;
@@ -12,7 +11,6 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-@RequiredArgsConstructor
 public class RedisBungeeMessenger implements Messenger, Listener {
 
 	private static final String CHANNEL = "gts:update";
@@ -20,6 +18,11 @@ public class RedisBungeeMessenger implements Messenger, Listener {
 	private final GTSBungeePlugin plugin;
 	private final IncomingMessageConsumer consumer;
 	private RedisBungeeAPI redisBungee;
+
+	public RedisBungeeMessenger(GTSBungeePlugin plugin, IncomingMessageConsumer consumer) {
+		this.plugin = plugin;
+		this.consumer = consumer;
+	}
 
 	public void init() {
 		this.redisBungee = RedisBungee.getApi();
