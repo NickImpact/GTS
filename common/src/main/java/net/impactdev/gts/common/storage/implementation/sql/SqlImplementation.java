@@ -36,6 +36,7 @@ import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.NotificationSetting;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.util.TriState;
+import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
@@ -345,22 +346,21 @@ public class SqlImplementation implements StorageImplementation {
 					Auction auction = (Auction) listing;
 					if(auction.getLister().equals(user) || auction.getHighBid().map(bid -> bid.getFirst().equals(user)).orElse(false)) {
 						boolean state = auction.getLister().equals(user);
-						boolean claimed = this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
+						SimilarPair<Boolean> claimed = this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
 							ps.setString(1, auction.getID().toString());
 							return this.results(ps, results -> {
-								if (results.next()) {
-									if(state && results.getBoolean("lister")) {
-										return true;
-									} else {
-										return results.getBoolean("winner");
-									}
+								if(results.next()) {
+									return new SimilarPair<>(results.getBoolean("lister"), results.getBoolean("winner"));
+								} else {
+									return new SimilarPair<>(false, false);
 								}
-								return false;
 							});
 						});
 
-						if(!claimed) {
-							builder.append(auction, !state);
+						if(state && !claimed.getFirst()) {
+							builder.append(auction, false);
+						} else if(!state && !claimed.getSecond()) {
+							builder.append(auction, true);
 						}
 					}
 				} else {
@@ -802,6 +802,10 @@ public class SqlImplementation implements StorageImplementation {
 											.deserialize(new JObject().add("value", incoming.getDouble("price")).toJson());
 
 									JsonObject json = GTSPlugin.getInstance().getGson().fromJson(incoming.getString("entry"), JsonObject.class);
+									if(!json.has("element")) {
+										continue;
+									}
+
 									Entry<?, ?> entry = GTSService.getInstance().getGTSComponentManager()
 											.getLegacyEntryDeserializer(json.get("type").getAsString())
 											.orElseThrow(() -> new IllegalStateException("No deserializer for legacy entry type: " + json.get("type").getAsString()))
@@ -824,6 +828,9 @@ public class SqlImplementation implements StorageImplementation {
 								} catch (IllegalStateException e) {
 									GTSPlugin.getInstance().getPluginLogger().error("Failed to read listing with ID: " + id.toString());
 									GTSPlugin.getInstance().getPluginLogger().error("  * " + e.getMessage());
+								} catch (Exception e) {
+									GTSPlugin.getInstance().getPluginLogger().error("Unexpectedly failed to read listing with ID: " + id.toString());
+									ExceptionWriter.write(e);
 								} finally {
 									parsed.incrementAndGet();
 								}

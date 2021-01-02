@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.data.registry.GTSComponentManager;
 import net.impactdev.gts.api.extension.Extension;
+import net.impactdev.gts.api.maintenance.MaintenanceManager;
 import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.api.searching.Searcher;
 import net.impactdev.gts.common.listings.GTSComponentManagerImpl;
@@ -15,12 +16,18 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class GTSAPIProvider implements GTSService {
 
 	private final GTSComponentManager entryManagerRegistry = new GTSComponentManagerImpl();
 	private final PlayerSettingsManager playerSettingsManager = new PlayerSettingsManagerImpl();
 	private final List<Searcher> searchers = Lists.newArrayList();
+
+	@Override
+	public UUID getServerID() {
+		return null;
+	}
 
 	@Override
 	public ImmutableList<Extension> getAllExtensions() {
@@ -35,6 +42,11 @@ public class GTSAPIProvider implements GTSService {
 	@Override
 	public PlayerSettingsManager getPlayerSettingsManager() {
 		return this.playerSettingsManager;
+	}
+
+	@Override
+	public MaintenanceManager getMaintenanceManager() {
+		return null;
 	}
 
 	@Override

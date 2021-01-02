@@ -1,14 +1,12 @@
 package net.impactdev.gts.common.ui;
 
 import com.google.common.collect.Lists;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.gui.Icon;
 import net.impactdev.impactor.api.gui.InventoryDimensions;
 import net.impactdev.impactor.api.gui.Page;
 import net.impactdev.impactor.api.gui.UI;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
-import lombok.Getter;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 
 import java.util.Arrays;
@@ -51,7 +49,6 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	private int page;
 	protected L layout;
 
-	@Getter
 	private List<T> contents = Lists.newArrayList();
 	private Function<T, I> applier;
 	private Comparator<T> sorter;
@@ -99,6 +96,10 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 
 	public void setPage(int page) {
 		this.page = page;
+	}
+
+	public List<T> getContents() {
+		return this.contents;
 	}
 
 	protected abstract S getTitle();
