@@ -154,7 +154,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		Sponge.getEventManager().registerListeners(this.bootstrap, new JoinListener());
 
-		if(this.config.get(ConfigKeys.ITEMS_ALLOW_ANVIL_NAMES)) {
+		if(!this.config.get(ConfigKeys.ITEMS_ALLOW_ANVIL_NAMES)) {
 			Sponge.getEventManager().registerListeners(this.bootstrap, new AnvilRenameListener());
 		}
 	}

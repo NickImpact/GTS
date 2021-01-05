@@ -13,6 +13,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
@@ -134,6 +135,13 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 					.query(QueryOperationTypes.ITEM_STACK_EXACT.of(rep))
 					.first();
 			if(slot.peek().isPresent()) {
+				NBTTagCompound nbt = NBTTranslator.getInstance().translate(slot.peek().get().toContainer());
+				if(nbt.hasKey("tag")) {
+					if(nbt.getCompoundTag("tag").hasKey("GTS-Anvil")) {
+						return;
+					}
+				}
+
 				slot.poll();
 				result.set(true);
 			}
