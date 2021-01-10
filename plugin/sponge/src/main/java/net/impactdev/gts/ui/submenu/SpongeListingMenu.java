@@ -484,7 +484,11 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 	private Task schedule() {
 		return Sponge.getScheduler().createTaskBuilder()
-				.execute(this::apply)
+				.execute(() -> {
+					if(Sponge.getServer().getTicksPerSecond() >= 18) {
+						this.apply();
+					}
+				})
 				.interval(1, TimeUnit.SECONDS)
 				.submit(GTSPlugin.getInstance().getBootstrap());
 	}

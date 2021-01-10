@@ -93,7 +93,11 @@ public class SpongeSelectedListingMenu {
 
         if(update) {
             Task task = Sponge.getScheduler().createTaskBuilder()
-                    .execute(this::update)
+                    .execute(() -> {
+                        if(Sponge.getServer().getTicksPerSecond() >= 18) {
+                            this.update();
+                        }
+                    })
                     .interval(1, TimeUnit.SECONDS)
                     .submit(GTSPlugin.getInstance().getBootstrap());
             this.display.attachCloseListener(close -> task.cancel());
