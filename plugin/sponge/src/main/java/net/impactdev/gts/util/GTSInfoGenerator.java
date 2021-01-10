@@ -1,16 +1,19 @@
 package net.impactdev.gts.util;
 
-import co.aikar.commands.CommandIssuer;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.extension.Extension;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.services.text.MessageService;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.text.Text;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -31,13 +34,15 @@ public class GTSInfoGenerator {
     private List<String> processor = Lists.newArrayList();
     private int max = -1;
 
-    public GTSInfoGenerator(CommandIssuer issuer) {
+    public GTSInfoGenerator(CommandSource issuer) {
         if(path == null) {
             path = GTSPlugin.getInstance().getBootstrap().getDataDirectory();
         }
     }
 
-    public CompletableFuture<String> create(CommandIssuer issuer) {
+    public CompletableFuture<String> create(CommandSource issuer) {
+        MessageService<Text> service = Utilities.PARSER;
+
         return CompletableFuture.supplyAsync(() -> {
             try {
                 File file = new File(path.toFile(), this.createName());
@@ -60,7 +65,7 @@ public class GTSInfoGenerator {
             }
         }, Impactor.getInstance().getScheduler().async())
                 .exceptionally(e -> {
-                    issuer.sendMessage("An error occurred during processing, please check console for more info");
+                    issuer.sendMessage(service.parse("{{gts:error}} An error occurred during processing, please check console for more info"));
                     ExceptionWriter.write(e);
                     return null;
                 });

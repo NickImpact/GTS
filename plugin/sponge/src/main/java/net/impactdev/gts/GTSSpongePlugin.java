@@ -245,7 +245,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				Dependency.KYORI_TEXT_SERIALIZER_LEGACY,
 				Dependency.KYORI_TEXT_SERIALIZER_GSON,
 				Dependency.CAFFEINE,
-				Dependency.ACF_SPONGE,
 				Dependency.MXPARSER
 		);
 	}

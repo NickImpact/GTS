@@ -1,6 +1,7 @@
 package net.impactdev.gts.commands;
 
-import co.aikar.commands.SpongeCommandManager;
+import net.impactdev.gts.commands.executors.GlobalExecutor;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import org.spongepowered.api.plugin.PluginContainer;
 
 public class GTSCommandManager {
@@ -12,8 +13,7 @@ public class GTSCommandManager {
     }
 
     public void register() {
-        SpongeCommandManager commands = new SpongeCommandManager(this.container);
-        commands.registerCommand(new GTSCommand());
+        new GlobalExecutor(GTSPlugin.getInstance()).register();
     }
 
 }
