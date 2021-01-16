@@ -15,6 +15,9 @@ import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
+import net.impactdev.gts.common.discord.DiscordNotifier;
+import net.impactdev.gts.common.discord.DiscordOption;
+import net.impactdev.gts.common.discord.Message;
 import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.sponge.listings.SpongeAuction;
@@ -348,10 +351,24 @@ public class SpongeSelectedListingMenu {
                                             service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
                                                     Lists.newArrayList(() -> ((BuyItNow) this.listing).getPrice().getText())
                                             );
+
+                                            Message message = SpongeListingManager.notifier.forgeMessage(
+                                                    DiscordOption.fetch(DiscordOption.Options.Remove),
+                                                    MsgConfigKeys.DISCORD_REMOVAL_TEMPLATE,
+                                                    this.listing
+                                            );
+                                            SpongeListingManager.notifier.sendMessage(message);
                                         }
                                     } else {
                                         if (this.listing.getEntry().give(this.viewer.getUniqueId())) {
                                             this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_RETURNED)));
+
+                                            Message message = SpongeListingManager.notifier.forgeMessage(
+                                                    DiscordOption.fetch(DiscordOption.Options.Remove),
+                                                    MsgConfigKeys.DISCORD_REMOVAL_TEMPLATE,
+                                                    this.listing
+                                            );
+                                            SpongeListingManager.notifier.sendMessage(message);
                                         } else {
                                             this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
 
@@ -381,6 +398,12 @@ public class SpongeSelectedListingMenu {
                                 Impactor.getInstance().getScheduler().executeSync(() -> {
                                     if (this.listing.getEntry().give(this.viewer.getUniqueId())) {
                                         this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_RETURNED)));
+                                        Message message = SpongeListingManager.notifier.forgeMessage(
+                                                DiscordOption.fetch(DiscordOption.Options.Remove),
+                                                MsgConfigKeys.DISCORD_REMOVAL_TEMPLATE,
+                                                this.listing
+                                        );
+                                        SpongeListingManager.notifier.sendMessage(message);
                                     } else {
                                         this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
 

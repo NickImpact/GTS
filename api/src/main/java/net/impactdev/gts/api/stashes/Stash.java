@@ -1,6 +1,7 @@
 package net.impactdev.gts.api.stashes;
 
 import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.util.TriState;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.utilities.Builder;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
@@ -42,7 +43,7 @@ public interface Stash {
 	 *
 	 * @return The list of items contained by this Stash
 	 */
-	List<Tuple<Listing, Boolean>> getStashContents();
+	List<Tuple<Listing, TriState>> getStashContents();
 
 	/**
 	 * Allows the player to claim a set of items from the stash. If any items remain in the stash
@@ -61,7 +62,18 @@ public interface Stash {
 
 	interface StashBuilder extends Builder<Stash, StashBuilder> {
 
-		StashBuilder append(Listing listing, boolean purchased);
+		/**
+		 * Appends a listing to the stash with the specified context. Context means are as such:
+		 *
+		 * <code>true</code>: The user purchased the listing
+		 * <code>false</code>: The user listed the listing
+		 * <code>undefined</code>: This listing is an auction and the user bid on the listing, but didn't win
+		 *
+		 * @param listing
+		 * @param context
+		 * @return
+		 */
+		StashBuilder append(Listing listing, TriState context);
 
 	}
 

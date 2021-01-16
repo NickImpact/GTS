@@ -1,6 +1,7 @@
 package net.impactdev.gts.sponge.stash;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.listings.Listing;
@@ -12,21 +13,21 @@ import java.util.UUID;
 
 public class SpongeStash implements Stash {
 
-    private final List<Tuple<Listing, Boolean>> stash;
+    private final List<Tuple<Listing, TriState>> stash;
 
     public SpongeStash(SpongeStashBuilder builder) {
         this.stash = builder.stash;
     }
 
     @Override
-    public List<Tuple<Listing, Boolean>> getStashContents() {
+    public List<Tuple<Listing, TriState>> getStashContents() {
         return this.stash;
     }
 
     @Override
     public boolean claim(UUID claimer, UUID listing) {
-        Tuple<Listing, Boolean> data = this.stash.stream().filter(x -> x.getFirst().getID().equals(listing)).findAny().orElseThrow(() -> new IllegalStateException("Stash claim attempt on missing Listing data"));
-        if(data.getSecond()) {
+        Tuple<Listing, TriState> data = this.stash.stream().filter(x -> x.getFirst().getID().equals(listing)).findAny().orElseThrow(() -> new IllegalStateException("Stash claim attempt on missing Listing data"));
+        if(data.getSecond() == TriState.TRUE) {
             if(data.getFirst() instanceof Auction) {
                 Auction auction = (Auction) data.getFirst();
                 MonetaryPrice value = new MonetaryPrice(auction.getCurrentPrice());
@@ -34,8 +35,18 @@ public class SpongeStash implements Stash {
 
                 return true;
             }
-        } else {
+        } else if(data.getSecond() == TriState.FALSE) {
             return data.getFirst().getEntry().give(claimer);
+        } else {
+            if(data.getFirst() instanceof Auction) {
+                Auction auction = (Auction) data.getFirst();
+                Auction.Bid bid = auction.getCurrentBid(claimer).orElseThrow(() -> new IllegalStateException("Unable to locate bid for user where required"));
+
+                MonetaryPrice value = new MonetaryPrice(bid.getAmount());
+                value.reward(claimer);
+
+                return true;
+            }
         }
 
         return false;
@@ -43,11 +54,11 @@ public class SpongeStash implements Stash {
 
     public static class SpongeStashBuilder implements StashBuilder {
 
-        private final List<Tuple<Listing, Boolean>> stash = Lists.newArrayList();
+        private final List<Tuple<Listing, TriState>> stash = Lists.newArrayList();
 
         @Override
-        public StashBuilder append(Listing listing, boolean purchased) {
-            this.stash.add(new Tuple<>(listing, purchased));
+        public StashBuilder append(Listing listing, TriState context) {
+            this.stash.add(new Tuple<>(listing, context));
             return this;
         }
 

@@ -9,6 +9,7 @@ CREATE TABLE `{prefix}auction_claims` (
     `auction`           VARCHAR(36)     NOT NULL,
     `lister`            TINYINT(1)      NOT NULL,
     `winner`            TINYINT(1)      NOT NULL,
+    `others`            MEDIUMTEXT      NOT NULL,
     PRIMARY KEY (`auction`)
 ) DEFAULT CHARSET = utf8;
 
@@ -26,3 +27,8 @@ CREATE TABLE `{prefix}stashes` (
     `data`              TEXT            NOT NULL,
     PRIMARY KEY (`uuid`)
 ) DEFAULT CHARSET = utf8;
+
+SELECT count(*) INTO @result FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA='{database}' AND TABLE_NAME='{prefix}auction_claims';
+set @query = IF(@result < 4, 'SELECT * FROM `{prefix}auction_claims`', 'ALTER TABLE `{prefix}auction_claims` ADD `others` MEDIUMTEXT NOT NULL;');
+prepare stmt from @query;
+EXECUTE stmt;

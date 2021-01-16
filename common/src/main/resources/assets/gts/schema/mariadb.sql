@@ -9,6 +9,7 @@ CREATE TABLE `{prefix}auction_claims` (
     `auction`           VARCHAR(36)     NOT NULL,
     `lister`            TINYINT(1)      NOT NULL,
     `winner`            TINYINT(1)      NOT NULL,
+    `others`            MEDIUMTEXT      NOT NULL,
     PRIMARY KEY (`auction`)
 ) DEFAULT CHARSET = utf8;
 
@@ -26,3 +27,5 @@ CREATE TABLE `{prefix}stashes` (
     `data`              TEXT            NOT NULL,
     PRIMARY KEY (`uuid`)
 ) DEFAULT CHARSET = utf8;
+
+ALTER TABLE `{prefix}auction_claims` ADD COLUMN IF NOT EXISTS `others` MEDIUMTEXT;

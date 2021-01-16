@@ -27,9 +27,11 @@ package net.impactdev.gts.common.storage.implementation.sql;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.TreeMultimap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
@@ -44,6 +46,7 @@ import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.Auctio
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
+import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.storage.sql.ConnectionFactory;
 import net.impactdev.gts.api.GTSService;
@@ -85,10 +88,11 @@ public class SqlImplementation implements StorageImplementation {
 	private static final String GET_ALL_USER_LISTINGS = "SELECT id FROM `{prefix}listings` WHERE lister=?";
  	private static final String DELETE_LISTING = "DELETE FROM `{prefix}listings` WHERE id=?";
 
-	private static final String ADD_AUCTION_CLAIM_STATUS = "INSERT INTO `{prefix}auction_claims` (auction, lister, winner) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE lister=VALUES(lister), winner=VALUES(winner)";
+	private static final String ADD_AUCTION_CLAIM_STATUS = "INSERT INTO `{prefix}auction_claims` (auction, lister, winner, others) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE lister=VALUES(lister), winner=VALUES(winner), others=VALUES(others)";
 	private static final String GET_AUCTION_CLAIM_STATUS = "SELECT * FROM `{prefix}auction_claims` WHERE auction=?";
 	private static final String UPDATE_AUCTION_CLAIM_LISTER = "UPDATE `{prefix}auction_claims` SET lister=? WHERE auction=?";
 	private static final String UPDATE_AUCTION_CLAIM_WINNER = "UPDATE `{prefix}auction_claims` SET winner=? WHERE auction=?";
+	private static final String UPDATE_AUCTION_CLAIM_OTHER = "UPDATE `{prefix}auction_claims` SET others=? WHERE auction=?";
 	private static final String DELETE_AUCTION_CLAIM_STATUS = "DELETE FROM `{prefix}auction_claims` WHERE auction=?";
 
 	private static final String APPLY_PLAYER_SETTINGS = "INSERT INTO `{prefix}player_settings` (uuid, pub_notif, sell_notif, bid_notif, outbid_notif) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE pub_notif=VALUES(pub_notif), sell_notif=VALUES(sell_notif), bid_notif=VALUES(bid_notif), outbid_notif=VALUES(outbid_notif)";
@@ -102,7 +106,7 @@ public class SqlImplementation implements StorageImplementation {
 	public SqlImplementation(GTSPlugin plugin, ConnectionFactory connectionFactory, String tablePrefix) {
 		this.plugin = plugin;
 		this.connectionFactory = connectionFactory;
-		this.processor = connectionFactory.getStatementProcessor().compose(s -> s.replace("{prefix}", tablePrefix));
+		this.processor = connectionFactory.getStatementProcessor().compose(s -> s.replace("{prefix}", tablePrefix).replace("{database}", GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.STORAGE_CREDENTIALS).getDatabase()));
 	}
 
 	@Override
@@ -154,7 +158,10 @@ public class SqlImplementation implements StorageImplementation {
 										s.addBatch(result);
 									} else {
 										int start = result.indexOf('`');
-										if (!this.tableExists(result.substring(start + 1, result.indexOf('`', start + 1)))) {
+										String table = result.substring(start + 1, result.indexOf('`', start + 1));
+										if (result.startsWith("CREATE TABLE") && !this.tableExists(table)) {
+											s.addBatch(result);
+										} else if(!result.startsWith("CREATE TABLE") && this.tableExists(table)) {
 											s.addBatch(result);
 										}
 									}
@@ -358,15 +365,17 @@ public class SqlImplementation implements StorageImplementation {
 						});
 
 						if(state && !claimed.getFirst()) {
-							builder.append(auction, false);
+							builder.append(auction, TriState.FALSE);
 						} else if(!state && !claimed.getSecond()) {
-							builder.append(auction, true);
+							builder.append(auction, TriState.TRUE);
 						}
+					} else if(auction.getBids().containsKey(user)) {
+						builder.append(auction, TriState.UNDEFINED);
 					}
 				} else {
 					BuyItNow bin = (BuyItNow) listing;
 					if(bin.getLister().equals(user)) {
-						builder.append(bin, false);
+						builder.append(bin, TriState.FALSE);
 					}
 				}
 			}
@@ -553,25 +562,43 @@ public class SqlImplementation implements StorageImplementation {
 					return builder.build();
 				}
 
+				Auction auction = listing.map(l -> (Auction) l).get();
+				boolean claimer = auction.getHighBid().get().getFirst().equals(request.getActor());
+
 				return this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
 					ps.setString(1, request.getListingID().toString());
 					return this.results(ps, results -> {
 						int result;
 						boolean lister;
 						boolean winner;
+						List<UUID> others = Lists.newArrayList();
 
 						if(results.next()) {
-							String key = isLister ? UPDATE_AUCTION_CLAIM_LISTER : UPDATE_AUCTION_CLAIM_WINNER;
+							if(results.getString("others") == null) {
+								others = Lists.newArrayList();
+							} else {
+								others = GTSPlugin.getInstance().getGson().fromJson(results.getString("others"), new TypeToken<List<UUID>>(){}.getType());
+							}
+
+							String key = isLister ? UPDATE_AUCTION_CLAIM_LISTER : claimer ? UPDATE_AUCTION_CLAIM_WINNER : UPDATE_AUCTION_CLAIM_OTHER;
 							try (PreparedStatement update = connection.prepareStatement(this.processor.apply(key))) {
-								update.setBoolean(1, true);
+								if(claimer) {
+									update.setBoolean(1, true);
+								} else {
+									others.add(request.getActor());
+									update.setString(1, GTSPlugin.getInstance().getGson().toJson(others));
+								}
 								update.setString(2, request.getListingID().toString());
 								result = update.executeUpdate();
 							}
 
 							lister = results.getBoolean("lister") || key.equals(UPDATE_AUCTION_CLAIM_LISTER);
 							winner = results.getBoolean("winner") || key.equals(UPDATE_AUCTION_CLAIM_WINNER);
+							boolean all = lister && winner && auction.getBids().keySet().stream()
+									.filter(bidder -> !auction.getHighBid().get().getFirst().equals(bidder))
+									.allMatch(others::contains);
 
-							if(result > 0 && lister && winner) {
+							if(result > 0 && all) {
 								try(PreparedStatement delete = connection.prepareStatement(this.processor.apply(DELETE_AUCTION_CLAIM_STATUS))) {
 									delete.setString(1, request.getListingID().toString());
 									result = delete.executeUpdate();
@@ -580,16 +607,27 @@ public class SqlImplementation implements StorageImplementation {
 								}
 							}
 						} else {
+							if(!claimer) {
+								others.add(request.getActor());
+							}
+
 							try(PreparedStatement append = connection.prepareStatement(this.processor.apply(ADD_AUCTION_CLAIM_STATUS))) {
 								append.setString(1, request.getListingID().toString());
 								append.setBoolean(2, isLister);
 								append.setBoolean(3, !isLister);
+								append.setString(4, GTSPlugin.getInstance().getGson().toJson(others));
 								result = append.executeUpdate();
 							}
 
 							lister = isLister;
 							winner = !isLister;
 						}
+
+						ImmutableList<UUID> o = ImmutableList.copyOf(others);
+						Map<UUID, Boolean> claimed = Maps.newHashMap();
+						auction.getBids().keySet().stream()
+								.filter(bidder -> !auction.getHighBid().get().getFirst().equals(bidder))
+								.forEach(bidder -> claimed.put(bidder, o.contains(bidder)));
 
 						ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
 								.id(response)
@@ -600,7 +638,8 @@ public class SqlImplementation implements StorageImplementation {
 								.successful()
 								.auction()
 								.lister(lister)
-								.winner(winner);
+								.winner(winner)
+								.others(claimed);
 						if(result > 0) {
 							builder.successful();
 						} else {

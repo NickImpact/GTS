@@ -2,6 +2,7 @@ package net.impactdev.gts.api.messaging.message.type.listings;
 
 import net.impactdev.gts.api.messaging.message.OutgoingMessage;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
+import net.impactdev.gts.api.util.TriState;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Optional;
@@ -77,6 +78,16 @@ public interface ClaimMessage extends OutgoingMessage {
              * @return True if the winner has claimed part of the auction, false otherwise
              */
             boolean hasWinnerClaimed();
+
+            /**
+             * Specifies whether or not a particular user has claimed their bid they placed on an auction
+             * that they did not win.
+             *
+             * @param uuid The ID of the user
+             * @return True if the user has claimed, false if not, undefined if they are not available
+             * within the contextual query
+             */
+            TriState hasOtherBidderClaimed(UUID uuid);
 
         }
 

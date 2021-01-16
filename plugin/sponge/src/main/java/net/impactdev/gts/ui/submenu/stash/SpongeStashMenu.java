@@ -7,6 +7,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
+import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
@@ -59,7 +60,7 @@ import java.util.function.Supplier;
 import static net.impactdev.gts.sponge.utils.Utilities.PARSER;
 import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
-public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, Boolean>> implements Historical<SpongeMainMenu> {
+public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, TriState>> implements Historical<SpongeMainMenu> {
 
     private static final ExecutorService CLAIMER = Executors.newFixedThreadPool(
             Runtime.getRuntime().availableProcessors(),
@@ -170,7 +171,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, Boolean>> im
                 AtomicBoolean ready = new AtomicBoolean(true);
                 CountDownLatch finished = new CountDownLatch(this.getContents().size());
 
-                for(Tuple<Listing, Boolean> entry : ImmutableList.copyOf(this.getContents())) {
+                for(Tuple<Listing, TriState> entry : ImmutableList.copyOf(this.getContents())) {
                     while(!ready.get()) {}
                     ready.set(false);
 
@@ -264,7 +265,14 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, Boolean>> im
 
                                     Impactor.getInstance().getScheduler().executeSync(() -> {
                                         try {
-                                            if (listing.getEntry().give(this.getViewer().getUniqueId())) {
+                                            if(entry.getSecond() == TriState.UNDEFINED) {
+                                                Auction.Bid bid = auction.getCurrentBid(this.getViewer().getUniqueId()).orElseThrow(() -> new IllegalStateException("Unable to locate bid for user where required"));
+
+                                                MonetaryPrice value = new MonetaryPrice(bid.getAmount());
+                                                value.reward(this.getViewer().getUniqueId());
+
+                                                successful.getAndIncrement();
+                                            } else if (listing.getEntry().give(this.getViewer().getUniqueId())) {
                                                 successful.incrementAndGet();
                                             } else {
                                                 // Re-append data as our claim request will have deleted it
@@ -343,7 +351,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, Boolean>> im
     }
 
     @Override
-    protected Consumer<List<Tuple<Listing, Boolean>>> applyWhenReady() {
+    protected Consumer<List<Tuple<Listing, TriState>>> applyWhenReady() {
         return stash -> {};
     }
 

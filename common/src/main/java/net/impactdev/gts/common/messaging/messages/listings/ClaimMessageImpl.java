@@ -1,19 +1,24 @@
 package net.impactdev.gts.common.messaging.messages.listings;
 
+import com.google.common.collect.Maps;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.common.messaging.messages.AbstractMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.utilities.Builder;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -166,8 +171,21 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                 boolean winner = Optional.ofNullable(raw.get("winner"))
                         .map(JsonElement::getAsBoolean)
                         .orElseThrow(() -> new IllegalStateException("Failed to locate winner status"));
+                Map<UUID, Boolean> others = Optional.ofNullable(raw.get("others"))
+                        .map(element -> {
+                            Map<UUID, Boolean> result = Maps.newHashMap();
+                            JsonArray array = element.getAsJsonArray();
+                            for(JsonElement entry : array) {
+                                entry.getAsJsonObject().entrySet().forEach(e -> {
+                                    result.put(UUID.fromString(e.getKey()), e.getValue().getAsBoolean());
+                                });
+                            }
 
-                return auc.lister(lister).winner(winner).build();
+                            return result;
+                        })
+                        .orElseThrow(() -> new IllegalStateException("Failed to locate others status"));
+
+                return auc.lister(lister).winner(winner).others(others).build();
             } else {
                 return builder.build();
             }
@@ -243,10 +261,13 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
             private final boolean lister;
             private final boolean winner;
 
+            private final Map<UUID, Boolean> others;
+
             public AuctionClaimResponseImpl(AuctionClaimResponseBuilder builder) {
                 super(builder);
                 this.lister = builder.lister;
                 this.winner = builder.winner;
+                this.others = builder.others;
             }
 
             @Override
@@ -260,9 +281,19 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
             }
 
             @Override
+            public TriState hasOtherBidderClaimed(UUID uuid) {
+                return Optional.ofNullable(this.others.get(uuid))
+                        .map(TriState::fromBoolean)
+                        .orElse(TriState.UNDEFINED);
+            }
+
+            @Override
             public void print(PrettyPrinter printer) {
                 super.print(printer);
-
+                printer.add();
+                printer.add("Lister Claimed: " + this.lister);
+                printer.add("Winner Claimed: " + this.winner);
+                printer.add("Others: " + this.others);
 
             }
 
@@ -281,6 +312,13 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                                 .add("auction", this.auction)
                                 .add("lister", this.lister)
                                 .add("winner", this.winner)
+                                .consume(o -> {
+                                    JArray others = new JArray();
+                                    this.others.forEach((user, state) -> {
+                                        others.add(new JObject().add(user.toString(), state));
+                                    });
+                                    o.add("others", others);
+                                })
                                 .add("successful", this.successful)
                                 .add("error", this.error.ordinal())
                                 .toJson()
@@ -296,6 +334,8 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                 private boolean lister;
                 private boolean winner;
 
+                private Map<UUID, Boolean> others = Maps.newHashMap();
+
                 public AuctionClaimResponseBuilder lister(boolean state) {
                     this.lister = state;
                     return this;
@@ -303,6 +343,11 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
 
                 public AuctionClaimResponseBuilder winner(boolean state) {
                     this.winner = state;
+                    return this;
+                }
+
+                public AuctionClaimResponseBuilder others(Map<UUID, Boolean> others) {
+                    this.others = others;
                     return this;
                 }
 
