@@ -26,6 +26,7 @@ import net.impactdev.gts.util.OreVersionChecker;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.dependencies.Dependency;
+import net.impactdev.impactor.api.dependencies.DependencyManager;
 import net.impactdev.impactor.api.plugin.PluginMetadata;
 import net.impactdev.impactor.api.storage.StorageType;
 import net.impactdev.impactor.sponge.configuration.SpongeConfig;
@@ -138,6 +139,14 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		String language = this.config.get(ConfigKeys.LANGUAGE);
 		this.msgConfig = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "lang/" + language.toLowerCase() + ".conf"), true), new MsgConfigKeys());
+
+		if(this.getConfiguration().get(ConfigKeys.REDIS_ENABLED)) {
+			this.getPluginLogger().info("Setting up Redis Client...");
+			Impactor.getInstance().getRegistry().get(DependencyManager.class).loadDependencies(Lists.newArrayList(
+					Dependency.JEDIS,
+					Dependency.COMMONS_POOL_2
+			));
+		}
 
 		this.getPluginLogger().info("Sending load event to available extensions...");
 		this.extensionManager = new SimpleExtensionManager(this);
