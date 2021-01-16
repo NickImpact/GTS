@@ -1,14 +1,18 @@
 package net.impactdev.gts.listings;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.data.NBTMapper;
 import net.impactdev.gts.listings.data.NBTTranslator;
+import net.impactdev.gts.sponge.utils.Utilities;
+import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.sponge.listings.makeup.SpongeDisplay;
 import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
+import net.impactdev.impactor.api.services.text.MessageService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -31,11 +35,13 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.text.serializer.TextSerializers;
 
+import javax.rmi.CORBA.Util;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @GTSKeyMarker("items")
 public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
@@ -157,10 +163,12 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	@Override
 	public List<String> getDetails() {
-		return Lists.newArrayList(
-				"Testing",
-				"123"
-		);
+		MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+		return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_SELECTED_REMOVE_LORE), Lists.newArrayList(this::getOrCreateElement))
+				.stream()
+				.map(Text::toPlain)
+				.collect(Collectors.toList());
 	}
 
 	@Override

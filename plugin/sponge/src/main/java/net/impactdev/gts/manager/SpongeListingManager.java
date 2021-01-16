@@ -66,7 +66,7 @@ import java.util.stream.Collectors;
 
 public class SpongeListingManager implements ListingManager<SpongeListing, SpongeAuction, SpongeBuyItNow> {
 
-	private final DiscordNotifier notifier = new DiscordNotifier(GTSPlugin.getInstance());
+	public static final DiscordNotifier notifier = new DiscordNotifier(GTSPlugin.getInstance());
 
 	@Override
 	public String getServiceName() {
@@ -252,14 +252,14 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				GTSPlugin.getInstance().getMessagingService().sendPublishNotice(listing.getID(), lister, listing instanceof Auction);
 
 				if(listing instanceof BuyItNow) {
-					Message message = this.notifier.forgeMessage(
+					Message message = notifier.forgeMessage(
 							DiscordOption.fetch(DiscordOption.Options.List_BIN),
 							MsgConfigKeys.DISCORD_PUBLISH_TEMPLATE,
 							listing
 					);
-					this.notifier.sendMessage(message);
+					notifier.sendMessage(message);
 				} else {
-					this.notifier.sendMessage(this.notifier.forgeMessage(
+					notifier.sendMessage(notifier.forgeMessage(
 							DiscordOption.fetch(DiscordOption.Options.List_Auction),
 							MsgConfigKeys.DISCORD_PUBLISH_AUCTION_TEMPLATE,
 							listing
@@ -321,12 +321,12 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 					return false;
 				}
 
-				Message message = this.notifier.forgeMessage(
+				Message message = notifier.forgeMessage(
 						DiscordOption.fetch(DiscordOption.Options.Bid),
 						MsgConfigKeys.DISCORD_BID_TEMPLATE,
 						listing, amount, bidder
 				);
-				this.notifier.sendMessage(message);
+				notifier.sendMessage(message);
 
 				return GTSPlugin.getInstance().getMessagingService().publishBid(listing.getID(), bidder, amount)
 						.thenApply(response -> {

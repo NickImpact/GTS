@@ -1,9 +1,5 @@
 package net.impactdev.gts.listeners;
 
-import net.impactdev.gts.api.util.PrettyPrinter;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.listings.SpongeItemEntry;
-import net.impactdev.gts.listings.data.NBTTranslator;
 import net.minecraft.nbt.NBTTagCompound;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.item.inventory.UpdateAnvilEvent;
