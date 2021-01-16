@@ -41,9 +41,10 @@ import java.util.concurrent.TimeUnit;
 		id = "gts",
 		name = "GTS",
 		version = "@version@",
-		description = "@gts_description",
+		description = "@description@",
 		dependencies = {
-				@Dependency(id = "impactor", version = "[3.0.0,)")
+				@Dependency(id = "impactor", version = "[3.0.0,)"),
+				@Dependency(id = "protocolcontrol", version = "[0.0.2,)")
 		})
 public class GTSSpongeBootstrap implements GTSBootstrap {
 
