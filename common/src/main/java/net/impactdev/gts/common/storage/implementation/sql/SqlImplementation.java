@@ -294,6 +294,7 @@ public class SqlImplementation implements StorageImplementation {
 						entries.add(auction);
 					}
 				} catch (Exception e) {
+					this.plugin.getPluginLogger().error("Unable to read listing with ID: " + results.getString("id"));
 					ExceptionWriter.write(e);
 					++failed;
 				}
@@ -563,7 +564,7 @@ public class SqlImplementation implements StorageImplementation {
 				}
 
 				Auction auction = listing.map(l -> (Auction) l).get();
-				boolean claimer = auction.getHighBid().get().getFirst().equals(request.getActor());
+				boolean claimer = isLister || auction.getHighBid().get().getFirst().equals(request.getActor());
 
 				return this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
 					ps.setString(1, request.getListingID().toString());
@@ -613,8 +614,8 @@ public class SqlImplementation implements StorageImplementation {
 
 							try(PreparedStatement append = connection.prepareStatement(this.processor.apply(ADD_AUCTION_CLAIM_STATUS))) {
 								append.setString(1, request.getListingID().toString());
-								append.setBoolean(2, isLister);
-								append.setBoolean(3, !isLister);
+								append.setBoolean(2, isLister && claimer);
+								append.setBoolean(3, !isLister && claimer);
 								append.setString(4, GTSPlugin.getInstance().getGson().toJson(others));
 								result = append.executeUpdate();
 							}
