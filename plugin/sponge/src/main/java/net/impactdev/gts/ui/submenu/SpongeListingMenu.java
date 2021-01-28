@@ -7,6 +7,7 @@ import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.searching.Searcher;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.gui.InventoryDimensions;
@@ -69,9 +70,9 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 	private @Nullable Searching searchQuery;
 
-	/** True = Quick Purchase, false = Auction */
-	private boolean mode = false;
-	private CircularLinkedList<Sorter> sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
+	/** True = Auction, false = Quick Purchase */
+	private boolean mode;
+	private CircularLinkedList<Sorter> sorter;
 
 	@SafeVarargs
 	public SpongeListingMenu(Player viewer, Predicate<SpongeListing>... conditions) {
@@ -89,7 +90,15 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 						return !expired;
 				}
 		);
-		this.conditions.add(QUICK_PURCHASE_ONLY);
+
+		this.mode = !GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED).get();
+		if(this.mode) {
+			this.conditions.add(AUCTIONS_ONLY);
+			this.sorter = Sorter.AUCTION_ONLY.copy();
+		} else {
+			this.conditions.add(QUICK_PURCHASE_ONLY);
+			this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
+		}
 		this.conditions.addAll(Arrays.asList(conditions));
 		this.setSorter(this.sorter.copy().next().get().getComparator());
 
@@ -311,35 +320,39 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		layout.slot(sorter, 51);
 
 		qIcon.addListener(clickable -> {
-			this.conditions.removeIf(c -> c instanceof QuickPurchaseOnly);
-			this.conditions.add(AUCTIONS_ONLY);
+			if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_ENABLED)) {
+				this.conditions.removeIf(c -> c instanceof QuickPurchaseOnly);
+				this.conditions.add(AUCTIONS_ONLY);
 
-			this.mode = true;
-			this.sorter = Sorter.AUCTION_ONLY.copy();
-			this.sorter.reset();
-			this.setSorter(this.sorter.getCurrent().get().getComparator());
-			sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), Lists.newArrayList(this::getViewer)));
-			this.getView().setSlot(51, sorter);
+				this.mode = true;
+				this.sorter = Sorter.AUCTION_ONLY.copy();
+				this.sorter.reset();
+				this.setSorter(this.sorter.getCurrent().get().getComparator());
+				sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), Lists.newArrayList(this::getViewer)));
+				this.getView().setSlot(51, sorter);
 
-			this.getView().setSlot(50, aIcon);
-			this.apply();
+				this.getView().setSlot(50, aIcon);
+				this.apply();
+			}
 		});
 		aIcon.addListener(clickable -> {
-			this.conditions.add(QUICK_PURCHASE_ONLY);
-			this.conditions.removeIf(c -> c instanceof AuctionsOnly);
+			if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED).get()) {
+				this.conditions.add(QUICK_PURCHASE_ONLY);
+				this.conditions.removeIf(c -> c instanceof AuctionsOnly);
 
-			this.mode = false;
-			this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
-			this.sorter.reset();
-			this.setSorter(this.sorter.getCurrent().get().getComparator());
-			sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), Lists.newArrayList(this::getViewer)));
-			this.getView().setSlot(51, sorter);
+				this.mode = false;
+				this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
+				this.sorter.reset();
+				this.setSorter(this.sorter.getCurrent().get().getComparator());
+				sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), Lists.newArrayList(this::getViewer)));
+				this.getView().setSlot(51, sorter);
 
-			this.getView().setSlot(50, qIcon);
-			this.apply();
+				this.getView().setSlot(50, qIcon);
+				this.apply();
+			}
 		});
 
-		layout.slot(qIcon, 50);
+		layout.slot(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED).get() ? qIcon : aIcon, 50);
 
 		SpongeIcon back = new SpongeIcon(ItemStack.builder()
 				.itemType(ItemTypes.BARRIER)

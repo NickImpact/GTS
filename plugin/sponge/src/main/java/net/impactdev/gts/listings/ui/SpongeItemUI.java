@@ -1,6 +1,8 @@
 package net.impactdev.gts.listings.ui;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.common.config.ConfigKeys;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
@@ -136,7 +138,7 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
         SpongeIcon price = this.createPriceIcon();
         slb.slot(price, 38);
 
-        slb.slot(this.createBINIcon(), 40);
+        slb.slot(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED).get() ? this.createBINIcon() : this.createAuctionIcon(), 40);
 
         SpongeIcon time = this.createTimeIcon();
         slb.slot(time, 42);

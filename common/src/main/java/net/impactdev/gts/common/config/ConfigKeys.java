@@ -5,9 +5,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.common.config.types.time.TimeKey;
+import net.impactdev.gts.common.config.wrappers.AtLeastOne;
 import net.impactdev.gts.common.config.wrappers.LazyBlacklist;
 import net.impactdev.gts.common.discord.DiscordOption;
-import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.configuration.ConfigKeyHolder;
@@ -168,6 +168,8 @@ public class ConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<Boolean> PRICE_CONTROL_ENABLED = booleanKey("pricing.control.enabled", true);
 
 	public static final ConfigKey<Boolean> AUCTIONS_ALLOW_CANCEL_WITH_BIDS = booleanKey("auctions.allow-cancel-with-bids", false);
+	public static final ConfigKey<Boolean> AUCTIONS_ENABLED = booleanKey("auctions.enabled", true);
+	public static final ConfigKey<AtLeastOne> BINS_ENABLED = customKey(c -> new AtLeastOne(AUCTIONS_ENABLED, c.getBoolean("buyitnow.enabled", true)));
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

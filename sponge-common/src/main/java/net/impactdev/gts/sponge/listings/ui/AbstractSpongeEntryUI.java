@@ -126,16 +126,18 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
                 .build();
         SpongeIcon icon = new SpongeIcon(bin);
         icon.addListener(clickable -> {
-            this.auction = true;
-            if(!(this.price instanceof MonetaryPrice)) {
-                if (this.chosen != null) {
-                    this.price = new MonetaryPrice(this.getMinimumMonetaryPrice(this.chosen));
-                } else {
-                    this.price = new MonetaryPrice(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTINGS_MIN_PRICE));
+            if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_ENABLED)) {
+                this.auction = true;
+                if (!(this.price instanceof MonetaryPrice)) {
+                    if (this.chosen != null) {
+                        this.price = new MonetaryPrice(this.getMinimumMonetaryPrice(this.chosen));
+                    } else {
+                        this.price = new MonetaryPrice(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTINGS_MIN_PRICE));
+                    }
                 }
+                this.display.setSlot(this.getPriceSlot(), this.createPriceIcon());
+                this.display.setSlot(this.getSelectionTypeSlot(), this.createAuctionIcon());
             }
-            this.display.setSlot(this.getPriceSlot(), this.createPriceIcon());
-            this.display.setSlot(this.getSelectionTypeSlot(), this.createAuctionIcon());
         });
         return icon;
     }
@@ -150,9 +152,11 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
                 .build();
         SpongeIcon icon = new SpongeIcon(bin);
         icon.addListener(clickable -> {
-            this.auction = false;
-            this.display.setSlot(this.getPriceSlot(), this.createPriceIcon());
-            this.display.setSlot(this.getSelectionTypeSlot(), this.createBINIcon());
+            if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED).get()) {
+                this.auction = false;
+                this.display.setSlot(this.getPriceSlot(), this.createPriceIcon());
+                this.display.setSlot(this.getSelectionTypeSlot(), this.createBINIcon());
+            }
         });
         return icon;
     }
