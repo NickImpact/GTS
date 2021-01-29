@@ -173,10 +173,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 			throw new LackingServiceException(EconomyService.class);
 		}
 
-		if(!Sponge.getPluginManager().getPlugin("protocolcontrol").isPresent()) {
-			throw new LackingServiceException("Protocol Control");
-		}
-
 		MonetaryPrice.setEconomy(this.getEconomy());
 
 		final Version current = new Version(this.getMetadata().getVersion());
@@ -188,8 +184,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				});
 			}
 		});
-
-		this.runCleanOperation();
 	}
 
 	public MessagingFactory<?> getMessagingFactory() {
@@ -329,29 +323,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 				throw new RuntimeException(e);
 			}
 		}
-	}
-
-	/**
-	 * Runs a query that will update and remove any listings that have found themselves locked in the database
-	 * with no chance of removal by normal means.
-	 *
-	 * @deprecated This function is temporary in that it is simply meant to resolve issues with the database
-	 * for early 6.0.0 builds.
-	 */
-	@Deprecated
-	private void runCleanOperation() {
-		this.getStorage().fetchListings(Lists.newArrayList(l -> l instanceof Auction))
-				.thenAccept(listings -> {
-					this.getStorage().clean(listings.stream()
-							.map(l -> (Auction) l)
-							.filter(a -> !a.hasAnyBidsPlaced())
-							.collect(Collectors.toList())
-					).thenAccept(amount -> {
-						if(amount > 0) {
-							this.getPluginLogger().debug("GTS detected " + amount + " listings stuck in storage. These listings have been now been removed!");
-						}
-					});
-				});
 	}
 
 }
