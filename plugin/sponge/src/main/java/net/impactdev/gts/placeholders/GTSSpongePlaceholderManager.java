@@ -84,13 +84,13 @@ public class GTSSpongePlaceholderManager {
 
         this.register(this.create("prefix", "GTS Prefix", container, context -> processor.parse(msgConf.get(MsgConfigKeys.PREFIX))));
         this.register(this.create("error", "GTS Error Prefix", container, context -> processor.parse(msgConf.get(MsgConfigKeys.ERROR_PREFIX))));
-        this.register(new SourceSpecificPlaceholderParser<>(
+        this.register(new SourceSpecificPlaceholderParser.Decorative<>(
                 Listing.class,
                 "seller",
                 "GTS - Listing Seller",
                 listing -> this.calculateDisplayName(listing.getLister())
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
+        this.register(new SourceSpecificPlaceholderParser.Decorative<>(
                 UUID.class,
                 "purchaser",
                 "GTS - Listing Purchaser",
@@ -104,7 +104,7 @@ public class GTSSpongePlaceholderManager {
                 "GTS - Listing ID",
                 listing -> Component.text(listing.getID().toString())
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
+        this.register(new SourceSpecificPlaceholderParser.Decorative<>(
                 Listing.class,
                 "listing_name",
                 "GTS - Listing Name",
@@ -429,16 +429,18 @@ public class GTSSpongePlaceholderManager {
 
                     AtomicReference<Style> style = new AtomicReference<>(Style.empty());
 
-                    Optional<String> prefix = this.getOptionFromSubject(user, "prefix");
-                    prefix.ifPresent(pre -> {
-                        style.set(this.parseStyle(prefix.get()));
+                    if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.SHOULD_SHOW_USER_PREFIX)) {
+                        Optional<String> prefix = this.getOptionFromSubject(user, "prefix");
+                        prefix.ifPresent(pre -> {
+                            style.set(this.parseStyle(prefix.get()));
 
-                        TextComponent p = Component.text()
-                                .append(Component.text(pre.replaceAll(STYLE_LOCATOR.pattern(), "")))
-                                .style(style.get())
-                                .build();
-                        component.append(p);
-                    });
+                            TextComponent p = Component.text()
+                                    .append(Component.text(pre.replaceAll(STYLE_LOCATOR.pattern(), "")))
+                                    .style(style.get())
+                                    .build();
+                            component.append(p);
+                        });
+                    }
 
                     Optional<String> color = this.getOptionFromSubject(user, "color");
                     NamedTextColor translated = color.map(NamedTextColor.NAMES::value).orElse(null);

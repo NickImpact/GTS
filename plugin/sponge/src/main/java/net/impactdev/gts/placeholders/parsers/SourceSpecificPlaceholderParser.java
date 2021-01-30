@@ -1,7 +1,10 @@
 package net.impactdev.gts.placeholders.parsers;
 
 import net.impactdev.gts.sponge.utils.Utilities;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.Style;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.placeholder.PlaceholderContext;
 import org.spongepowered.api.text.placeholder.PlaceholderParser;
@@ -47,5 +50,13 @@ public class SourceSpecificPlaceholderParser<T> implements PlaceholderParser {
 
     public Function<T, TextComponent> getParser() {
         return this.parser;
+    }
+
+    public static class Decorative<T> extends SourceSpecificPlaceholderParser<T> {
+
+        public Decorative(Class<T> sourceType, String id, String name, Function<T, TextComponent> parser) {
+            super(sourceType, id, name, parser.andThen(component -> component.append(Component.text().style(Style.empty()))));
+        }
+
     }
 }

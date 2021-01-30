@@ -171,6 +171,8 @@ public class ConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<Boolean> AUCTIONS_ENABLED = booleanKey("auctions.enabled", true);
 	public static final ConfigKey<AtLeastOne> BINS_ENABLED = customKey(c -> new AtLeastOne(AUCTIONS_ENABLED, c.getBoolean("buyitnow.enabled", true)));
 
+	public static final ConfigKey<Boolean> SHOULD_SHOW_USER_PREFIX = booleanKey("should-show-user-prefix", true);
+
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
 
