@@ -76,7 +76,7 @@ allprojects {
         } else {
             def process = 'git log $(git describe --tags --abbrev=0)..HEAD'.execute()
             process.waitFor()
-            ext.sinceLastRelease = process.exitValue ? 'Unknown' : process.text.trim()
+            ext.sinceLastRelease = process.exitValue() ? 'Unknown' : process.text.trim()
         }
     }
 
