@@ -6,7 +6,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.auctions.Auction;
+import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.bungee.listings.BungeeAuction;
+import net.impactdev.gts.bungee.listings.BungeeBIN;
 import net.impactdev.gts.bungee.messaging.interpreters.BungeeAuctionInterpreter;
 import net.impactdev.gts.bungee.messaging.interpreters.BungeeListingInterpreter;
 import net.impactdev.gts.common.api.ApiRegistrationUtil;
@@ -66,8 +68,10 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 		Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
 		Impactor.getInstance().getRegistry().register(Blacklist.class, new BlacklistImpl());
 
+		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(BuyItNow.class, new ResourceManagerImpl<>("BIN", "N/A", BungeeBIN::deserialize));
 		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(Auction.class, new ResourceManagerImpl<>("Auctions", "N/A", BungeeAuction::deserialize));
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(Auction.AuctionBuilder.class, BungeeAuction.BungeeAuctionBuilder::new);
+		Impactor.getInstance().getRegistry().registerBuilderSupplier(BuyItNow.BuyItNowBuilder.class, BungeeBIN.BungeeBINBuilder::new);
 
 		this.config = new BungeeConfig(new BungeeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
 		this.storage = new StorageFactory(this).getInstance(StorageType.MARIADB);

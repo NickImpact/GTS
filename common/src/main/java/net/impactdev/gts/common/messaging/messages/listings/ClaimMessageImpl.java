@@ -305,8 +305,11 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                 printer.add();
                 printer.add("Lister Claimed: " + this.lister);
                 printer.add("Winner Claimed: " + this.winner);
-                printer.add("Others: " + this.others);
+                printer.add("Others:");
+                for(UUID id : this.others.keySet()) {
+                    printer.add("  - " + id.toString());
 
+                }
             }
 
             @Override
