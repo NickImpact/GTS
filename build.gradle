@@ -50,12 +50,6 @@ allprojects {
         }
     }
 
-    task checkWin {
-        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
-            ext.windows = true
-        }
-    }
-
     task gitHash {
         def process = 'git rev-parse HEAD'.execute()
         process.waitFor()
@@ -69,7 +63,7 @@ allprojects {
     }
 
     task gitSinceLastRelease {
-        if(checkWin.ext.windows) {
+        if(Os.isFamily(Os.FAMILY_WINDOWS)) {
             def set = 'git describe --tags'.execute()
             set.waitFor()
 
