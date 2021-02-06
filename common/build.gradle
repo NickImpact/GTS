@@ -24,7 +24,7 @@ minecraft {
 repositories {
     maven {
         name 'sponge-repo'
-        url 'https://repo.spongepowered.org/maven'
+        url 'https://repo-new.spongepowered.org/maven'
     }
 }
 

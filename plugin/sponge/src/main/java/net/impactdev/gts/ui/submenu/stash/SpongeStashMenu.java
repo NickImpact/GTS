@@ -208,7 +208,8 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, TriState>> i
                                                     GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
                                                             auction.getID(),
                                                             actual.hasListerClaimed(),
-                                                            actual.hasWinnerClaimed()
+                                                            actual.hasWinnerClaimed(),
+                                                            actual.getAllOtherClaimers()
                                                     );
                                                 }
                                             } else {
@@ -220,7 +221,8 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, TriState>> i
                                                     GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
                                                             auction.getID(),
                                                             actual.hasListerClaimed(),
-                                                            actual.hasWinnerClaimed()
+                                                            actual.hasWinnerClaimed(),
+                                                            actual.getAllOtherClaimers()
                                                     );
                                                 }
                                             }
@@ -279,7 +281,8 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, TriState>> i
                                                 GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
                                                         auction.getID(),
                                                         actual.hasListerClaimed(),
-                                                        actual.hasWinnerClaimed()
+                                                        actual.hasWinnerClaimed(),
+                                                        actual.getAllOtherClaimers()
                                                 );
                                             }
                                         } finally {

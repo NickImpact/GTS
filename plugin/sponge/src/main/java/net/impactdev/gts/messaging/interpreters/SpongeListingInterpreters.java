@@ -1,6 +1,5 @@
 package net.impactdev.gts.messaging.interpreters;
 
-import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;

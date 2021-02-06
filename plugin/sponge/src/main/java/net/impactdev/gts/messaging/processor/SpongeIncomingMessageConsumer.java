@@ -122,6 +122,7 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 		if (message instanceof UpdateMessage) {
 			UpdateMessage msg = (UpdateMessage) message;
 
+			GTSPlugin.getInstance().getPluginLogger().info("Received message with ID: " + message.getID());
 			Optional.ofNullable(this.getInternalConsumer(msg.getClass()))
 					.orElseThrow(() -> new IllegalStateException("No consumer available for " + msg.getClass().getName()))
 					.consume(message);

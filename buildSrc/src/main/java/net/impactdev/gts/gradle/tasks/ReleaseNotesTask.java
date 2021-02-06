@@ -12,7 +12,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import java.util.StringJoiner;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ReleaseNotesTask extends DefaultTask {
 
@@ -22,6 +25,7 @@ public class ReleaseNotesTask extends DefaultTask {
     public String hash;
     public String sponge;
     public String message;
+    public String sinceLastRelease;
     public ReleaseLevel level;
 
     public String getVersion() {
@@ -46,6 +50,10 @@ public class ReleaseNotesTask extends DefaultTask {
 
     public ReleaseLevel getLevel() {
         return this.level;
+    }
+
+    public String getSinceLastRelease() {
+        return this.sinceLastRelease;
     }
 
     @TaskAction
@@ -103,7 +111,21 @@ public class ReleaseNotesTask extends DefaultTask {
         CHANGES("changes", task -> {
             Optional<String> result = task.getChangesForVersion();
             return result.orElse("No release notes available for this version...");
-        });
+        }),
+        SINCE_LAST_RELEASE("since-last-release", task -> {
+            Pattern pattern = Pattern.compile("(?<commit>[0-9a-z]+)( [(].+[)])? (?<message>.+)");
+            Matcher matcher = pattern.matcher(task.getSinceLastRelease());
+            StringJoiner joiner = new StringJoiner("\n");
+            while(matcher.find()) {
+                String commit = matcher.group("commit");
+                commit = "[" + commit.substring(0, 7) + "](https://github.com/NickImpact/GTS/commit/" + commit + ")";
+
+                joiner.add(commit + " " + matcher.group("message") + "  ");
+            }
+
+            return joiner.toString();
+        })
+        ;
 
         private final String key;
         private final Function<ReleaseNotesTask, String> replacement;

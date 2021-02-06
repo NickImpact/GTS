@@ -30,6 +30,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
+import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
@@ -163,18 +164,6 @@ public class GTSStorageImpl implements GTSStorage {
             try {
                 lock.lock();
                 return this.implementation.processClaimRequest(request);
-            } catch (Exception e) {
-//                return new AuctionClaimMessage.ClaimResponse(
-//                        GTSPlugin.getInstance().getMessagingService().generatePingID(),
-//                        request.getID(),
-//                        request.getAuctionID(),
-//                        request.getActor(),
-//                        false,
-//                        false,
-//                        false,
-//                        ErrorCodes.FATAL_ERROR
-//                );
-                return null;
             } finally {
                 lock.unlock();
             }
@@ -182,13 +171,13 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<Boolean> appendOldClaimStatus(UUID auction, boolean lister, boolean winner) {
+    public CompletableFuture<Boolean> appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) {
         return this.schedule(() -> {
             ReentrantLock lock = this.locks.get(auction);
 
             try {
                 lock.lock();
-                return this.implementation.appendOldClaimStatus(auction, lister, winner);
+                return this.implementation.appendOldClaimStatus(auction, lister, winner, others);
             } finally {
                 lock.unlock();
             }

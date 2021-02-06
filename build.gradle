@@ -3,6 +3,7 @@ import net.impactdev.gts.gradle.enums.ReleaseLevel
 import net.impactdev.gts.gradle.tasks.PostToDiscord
 import net.impactdev.gts.gradle.tasks.ReleaseNotesTask
 import net.impactdev.gts.gradle.tasks.UploadToOre
+import org.apache.tools.ant.taskdefs.condition.Os
 
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
@@ -49,6 +50,12 @@ allprojects {
         }
     }
 
+    task checkWin {
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            ext.windows = true
+        }
+    }
+
     task gitHash {
         def process = 'git rev-parse HEAD'.execute()
         process.waitFor()
@@ -59,6 +66,24 @@ allprojects {
         def process = 'git log -1 --format=%B'.execute()
         process.waitFor()
         ext.message = process.exitValue() ? 'Unknown' : process.text.trim()
+    }
+
+    task gitSinceLastRelease {
+        if(checkWin.ext.windows) {
+            def set = 'git describe --tags'.execute()
+            set.waitFor()
+
+            ext.result = set.text.trim()
+            ext.tag = ext.result.substring(0, ext.result.indexOf('-'))
+
+            def read = 'git log '.concat(ext.tag).concat('..HEAD --oneline --no-abbrev-commit').execute()
+            read.waitFor()
+            ext.sinceLastRelease = read.exitValue() ? 'Unknown' : read.text.trim()
+        } else {
+            def process = 'git log $(git describe --tags --abbrev=0)..HEAD'.execute()
+            process.waitFor()
+            ext.sinceLastRelease = process.exitValue ? 'Unknown' : process.text.trim()
+        }
     }
 
     ext {
@@ -136,6 +161,7 @@ task genChangelog(type: ReleaseNotesTask) {
     hash = gitHash.ext.commit
     sponge = project.ext.sponge
     message = gitMessage.ext.message
+    sinceLastRelease = gitSinceLastRelease.ext.sinceLastRelease
     level = ReleaseLevel.get(version)
 }
 

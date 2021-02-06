@@ -8,6 +8,7 @@ import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.bungee.listings.BungeeAuction;
 import net.impactdev.gts.bungee.messaging.interpreters.BungeeAuctionInterpreter;
+import net.impactdev.gts.bungee.messaging.interpreters.BungeeListingInterpreter;
 import net.impactdev.gts.common.api.ApiRegistrationUtil;
 import net.impactdev.gts.common.api.GTSAPIProvider;
 import net.impactdev.gts.common.data.ResourceManagerImpl;
@@ -77,6 +78,7 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 		BungeePingPongInterpreter.registerInterpreters(this);
 		new BungeeBINRemoveInterpreter().register(this);
 		new BungeeAuctionInterpreter().register(this);
+		new BungeeListingInterpreter().register(this);
 	}
 
 	@Override
@@ -152,7 +154,8 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 				Dependency.KYORI_TEXT,
 				Dependency.KYORI_TEXT_SERIALIZER_LEGACY,
 				Dependency.KYORI_TEXT_SERIALIZER_GSON,
-				Dependency.CAFFEINE
+				Dependency.CAFFEINE,
+				Dependency.MXPARSER
 		);
 	}
 }

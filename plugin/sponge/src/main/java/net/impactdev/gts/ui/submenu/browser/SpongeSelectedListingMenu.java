@@ -451,13 +451,21 @@ public class SpongeSelectedListingMenu {
                 }
             } else {
                 if(((Auction) this.listing).hasAnyBidsPlaced()) {
-                    sources.add(() -> new MonetaryPrice(((Auction) this.listing).getCurrentPrice()).getText());
+                    sources.add(() -> new MonetaryPrice(((Auction) this.listing).getHighBid().get().getSecond().getAmount()).getText());
                 } else {
                     sources.add(() -> this.listing.getEntry().getName());
                 }
             }
         } else {
-            sources.add(() -> this.listing.getEntry().getName());
+            if(this.listing instanceof Auction) {
+                Auction auction = (Auction) this.listing;
+                if(auction.getHighBid().get().getFirst().equals(this.viewer.getUniqueId())) {
+                    sources.add(() -> this.listing.getEntry().getName());
+                } else {
+                    double amount = auction.getCurrentBid(this.viewer.getUniqueId()).get().getAmount();
+                    sources.add(() -> new MonetaryPrice(amount).getText());
+                }
+            }
         }
 
         SpongeIcon collect = new SpongeIcon(ItemStack.builder()
@@ -522,7 +530,7 @@ public class SpongeSelectedListingMenu {
                                         Impactor.getInstance().getScheduler().executeSync(() -> {
                                             // This is the user attempting to receive the money for the auction
 
-                                            MonetaryPrice wrapper = new MonetaryPrice(auction.getCurrentPrice());
+                                            MonetaryPrice wrapper = new MonetaryPrice(auction.getHighBid().get().getSecond().getAmount());
                                             if (wrapper.reward(this.viewer.getUniqueId())) {
                                                 this.viewer.sendMessage(service.parse(
                                                         Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
@@ -534,7 +542,8 @@ public class SpongeSelectedListingMenu {
                                                 GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
                                                         auction.getID(),
                                                         response.hasListerClaimed(),
-                                                        response.hasWinnerClaimed()
+                                                        response.hasWinnerClaimed(),
+                                                        response.getAllOtherClaimers()
                                                 );
                                             }
                                         });
@@ -590,19 +599,41 @@ public class SpongeSelectedListingMenu {
                                     // This is the user attempting to receive the money for the auction
 
                                     Auction auction = (Auction) this.listing;
-                                    if(auction.getEntry().give(this.viewer.getUniqueId())) {
-                                        this.viewer.sendMessage(service.parse(
-                                                Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
-                                                Lists.newArrayList(() -> auction.getEntry().getName())
-                                        ));
-                                    } else {
-                                        this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
 
-                                        GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
-                                                auction.getID(),
-                                                response.hasListerClaimed(),
-                                                response.hasWinnerClaimed()
-                                        );
+                                    if(auction.getHighBid().get().getFirst().equals(this.viewer.getUniqueId())) {
+                                        if (auction.getEntry().give(this.viewer.getUniqueId())) {
+                                            this.viewer.sendMessage(service.parse(
+                                                    Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
+                                                    Lists.newArrayList(() -> auction.getEntry().getName())
+                                            ));
+                                        } else {
+                                            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+
+                                            GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
+                                                    auction.getID(),
+                                                    response.hasListerClaimed(),
+                                                    response.hasWinnerClaimed(),
+                                                    response.getAllOtherClaimers()
+                                            );
+                                        }
+                                    } else {
+                                        double bid = auction.getCurrentBid(this.viewer.getUniqueId()).get().getAmount();
+                                        MonetaryPrice price = new MonetaryPrice(bid);
+                                        if(price.reward(this.viewer.getUniqueId())) {
+                                            this.viewer.sendMessage(service.parse(
+                                                    Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
+                                                    Lists.newArrayList(price::getText)
+                                            ));
+                                        } else {
+                                            this.viewer.sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+
+                                            GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
+                                                    auction.getID(),
+                                                    response.hasListerClaimed(),
+                                                    response.hasWinnerClaimed(),
+                                                    response.getAllOtherClaimers()
+                                            );
+                                        }
                                     }
                                 });
                             } else {

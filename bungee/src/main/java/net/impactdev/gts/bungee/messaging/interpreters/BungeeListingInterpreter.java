@@ -34,8 +34,9 @@ public class BungeeListingInterpreter implements Interpreter {
                 PublishListingMessageImpl.class, message -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(message)
         );
         consumer.registerInternalConsumer(
-                ClaimMessage.Request.class, request -> {
-                    request.respond().thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
+                ClaimMessageImpl.ClaimRequestImpl.class, request -> {
+                    request.respond()
+                            .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
     }

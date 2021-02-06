@@ -29,7 +29,7 @@ repositories {
     mavenCentral()
     maven {
         name 'sponge-repo'
-        url 'https://repo.spongepowered.org/maven'
+        url 'https://repo.spongepowered.org/repository/sponge-legacy'
     }
     maven { url = "https://repo.aikar.co/content/groups/aikar/" }
     maven { url = "https://hub.spigotmc.org/nexus/content/groups/public/" }
@@ -57,7 +57,6 @@ shadowJar {
     relocate ('net.kyori.examination', 'net.impactdev.impactor.relocations.examination')
     relocate ('com.github.benmanes.caffeine', 'net.impactdev.impactor.relocations.caffeine')
     relocate ('io.github.classgraph', 'net.impactdev.impactor.relocations.classgraph')
-    relocate ('co.aikar.commands', 'net.impactdev.impactor.relocations.commands')
     relocate ('org.mariuszgromada.math.mxparser', 'net.impactdev.impactor.relocations.mxparser')
     relocate ('redis.clients.jedis', 'net.impactdev.impactor.relocations.jedis')
     relocate ('org.apache.commons.pool2', 'net.impactdev.impactor.relocations.commonspool2')

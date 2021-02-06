@@ -1,5 +1,6 @@
 package net.impactdev.gts.common.messaging.messages.listings;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -18,6 +19,7 @@ import net.impactdev.impactor.api.utilities.Builder;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -133,6 +135,9 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
 
             JsonObject raw = content.getAsJsonObject();
 
+            UUID request = Optional.ofNullable(raw.get("request"))
+                    .map(x -> UUID.fromString(x.getAsString()))
+                    .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
             UUID listing = Optional.ofNullable(raw.get("listing"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
@@ -154,6 +159,8 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                     .orElse(null);
 
             ClaimResponseBuilder builder = ClaimResponseImpl.builder()
+                    .id(id)
+                    .request(request)
                     .listing(listing)
                     .actor(actor)
                     .receiver(receiver)
@@ -251,7 +258,7 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                             })
                             .add("auction", this.auction)
                             .add("successful", this.successful)
-                            .add("error", this.error.ordinal())
+                            .consume(o -> this.getErrorCode().ifPresent(e -> o.add("error", e.ordinal())))
                             .toJson()
             );
         }
@@ -288,6 +295,11 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
             }
 
             @Override
+            public List<UUID> getAllOtherClaimers() {
+                return Lists.newArrayList(this.others.keySet());
+            }
+
+            @Override
             public void print(PrettyPrinter printer) {
                 super.print(printer);
                 printer.add();
@@ -320,7 +332,7 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                                     o.add("others", others);
                                 })
                                 .add("successful", this.successful)
-                                .add("error", this.error.ordinal())
+                                .consume(o -> this.getErrorCode().ifPresent(e -> o.add("error", e.ordinal())))
                                 .toJson()
                 );
             }

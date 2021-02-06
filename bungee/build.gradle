@@ -19,7 +19,9 @@ shadowJar {
     exclude 'Impactor*.jar'
 
     relocate ('com.github.benmanes.caffeine', 'net.impactdev.impactor.relocations.caffeine')
-    relocate ('net.kyori.text', 'net.impactdev.impactor.relocations.text')
+    relocate ('net.kyori.adventure', 'net.impactdev.impactor.relocations.adventure')
+    relocate ('net.kyori.examination', 'net.impactdev.impactor.relocations.examination')
+    relocate ('org.mariuszgromada.math.mxparser', 'net.impactdev.impactor.relocations.mxparser')
 }
 
 processResources {

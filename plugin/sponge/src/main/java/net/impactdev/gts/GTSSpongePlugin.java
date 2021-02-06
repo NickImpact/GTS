@@ -74,7 +74,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 

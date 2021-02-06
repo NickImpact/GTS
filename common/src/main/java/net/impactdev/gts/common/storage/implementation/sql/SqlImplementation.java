@@ -371,7 +371,24 @@ public class SqlImplementation implements StorageImplementation {
 							builder.append(auction, TriState.TRUE);
 						}
 					} else if(auction.getBids().containsKey(user)) {
-						builder.append(auction, TriState.UNDEFINED);
+						boolean result = this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
+							ps.setString(1, auction.getID().toString());
+							return this.results(ps, results -> {
+								if(results.next()) {
+									List<UUID> others = GTSPlugin.getInstance().getGson()
+											.fromJson(results.getString("others"), new TypeToken<List<UUID>>() {
+											}.getType());
+
+									return others.contains(user);
+								}
+
+								return false;
+							});
+						});
+
+						if(!result) {
+							builder.append(auction, TriState.UNDEFINED);
+						}
 					}
 				} else {
 					BuyItNow bin = (BuyItNow) listing;
@@ -668,11 +685,12 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner) throws Exception {
+	public boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) throws Exception {
 		return this.query(ADD_AUCTION_CLAIM_STATUS, (connection, ps) -> {
 			ps.setString(1, auction.toString());
 			ps.setBoolean(2, lister);
 			ps.setBoolean(3, winner);
+			ps.setString(4, GTSPlugin.getInstance().getGson().toJson(others));
 			return ps.executeUpdate() != 0;
 		});
 	}

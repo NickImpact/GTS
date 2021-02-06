@@ -5,6 +5,7 @@ import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.gts.api.util.TriState;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -88,6 +89,14 @@ public interface ClaimMessage extends OutgoingMessage {
              * within the contextual query
              */
             TriState hasOtherBidderClaimed(UUID uuid);
+
+            /**
+             * Specifies the list of users who have lost this auction, and have already claimed their money
+             * back from their loss.
+             *
+             * @return The list of users who lost this auction and claimed their money back
+             */
+            List<UUID> getAllOtherClaimers();
 
         }
 

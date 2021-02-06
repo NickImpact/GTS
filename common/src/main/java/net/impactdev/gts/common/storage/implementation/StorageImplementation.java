@@ -128,7 +128,7 @@ public interface StorageImplementation {
 
     ClaimMessage.Response processClaimRequest(ClaimMessage.Request request) throws Exception;
 
-    boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner) throws Exception;
+    boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) throws Exception;
 
     AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception;
 

@@ -177,7 +177,7 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     @Override
-    public boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner) throws Exception {
+    public boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) throws Exception {
         return false;
     }
 

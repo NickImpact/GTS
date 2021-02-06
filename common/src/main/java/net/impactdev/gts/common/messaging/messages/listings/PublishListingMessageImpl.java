@@ -71,6 +71,7 @@ public class PublishListingMessageImpl extends AbstractMessage implements Publis
                 new JObject()
                         .add("listing", this.listing.toString())
                         .add("actor", this.actor.toString())
+                        .add("auction", this.auction)
                         .toJson()
         );
     }
