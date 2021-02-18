@@ -5,8 +5,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.impactdev.gts.api.listings.makeup.Display;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
+import net.impactdev.gts.api.stashes.StashedContent;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.gts.ui.SpongeMainMenu;
@@ -31,7 +31,6 @@ import net.impactdev.gts.sponge.listings.SpongeListing;
 import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
 import net.impactdev.gts.sponge.ui.SpongeAsyncPage;
 import net.impactdev.gts.sponge.utils.Utilities;
-import org.checkerframework.checker.units.qual.A;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
@@ -45,22 +44,19 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static net.impactdev.gts.sponge.utils.Utilities.PARSER;
 import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
-public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, TriState>> implements Historical<SpongeMainMenu> {
+public class SpongeStashMenu extends SpongeAsyncPage<StashedContent> implements Historical<SpongeMainMenu> {
 
     private static final ExecutorService CLAIMER = Executors.newFixedThreadPool(
             Runtime.getRuntime().availableProcessors(),
@@ -79,7 +75,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, TriState>> i
         final Config lang = GTSPlugin.getInstance().getMsgConfig();
         final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
         this.applier(content -> {
-            SpongeListing listing = (SpongeListing) content.getFirst();
+            SpongeListing listing = (SpongeListing) content.getListing();
 
             Display<ItemStack> display = listing.getEntry().getDisplay(viewer.getUniqueId(), listing);
             ItemStack item = display.get();
@@ -171,11 +167,11 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, TriState>> i
                 AtomicBoolean ready = new AtomicBoolean(true);
                 CountDownLatch finished = new CountDownLatch(this.getContents().size());
 
-                for(Tuple<Listing, TriState> entry : ImmutableList.copyOf(this.getContents())) {
+                for(StashedContent entry : ImmutableList.copyOf(this.getContents())) {
                     while(!ready.get()) {}
                     ready.set(false);
 
-                    Listing listing = entry.getFirst();
+                    Listing listing = entry.getListing();
                     boolean lister = listing.getLister().equals(this.getViewer().getUniqueId());
 
                     GTSPlugin.getInstance().getMessagingService().requestClaim(
@@ -267,7 +263,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, TriState>> i
 
                                     Impactor.getInstance().getScheduler().executeSync(() -> {
                                         try {
-                                            if(entry.getSecond() == TriState.UNDEFINED) {
+                                            if(entry.getContext() == TriState.UNDEFINED) {
                                                 Auction.Bid bid = auction.getCurrentBid(this.getViewer().getUniqueId()).orElseThrow(() -> new IllegalStateException("Unable to locate bid for user where required"));
 
                                                 MonetaryPrice value = new MonetaryPrice(bid.getAmount());
@@ -354,7 +350,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<Tuple<Listing, TriState>> i
     }
 
     @Override
-    protected Consumer<List<Tuple<Listing, TriState>>> applyWhenReady() {
+    protected Consumer<List<StashedContent>> applyWhenReady() {
         return stash -> {};
     }
 

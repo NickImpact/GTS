@@ -46,7 +46,6 @@ import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.Auctio
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
-import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.storage.sql.ConnectionFactory;
 import net.impactdev.gts.api.GTSService;

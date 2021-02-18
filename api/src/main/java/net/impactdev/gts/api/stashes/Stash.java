@@ -4,7 +4,6 @@ import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.utilities.Builder;
-import net.impactdev.impactor.api.utilities.mappings.Tuple;
 
 import java.util.List;
 import java.util.UUID;
@@ -43,7 +42,7 @@ public interface Stash {
 	 *
 	 * @return The list of items contained by this Stash
 	 */
-	List<Tuple<Listing, TriState>> getStashContents();
+	List<StashedContent> getStashContents();
 
 	/**
 	 * Allows the player to claim a set of items from the stash. If any items remain in the stash
@@ -69,9 +68,9 @@ public interface Stash {
 		 * <code>false</code>: The user listed the listing
 		 * <code>undefined</code>: This listing is an auction and the user bid on the listing, but didn't win
 		 *
-		 * @param listing
-		 * @param context
-		 * @return
+		 * @param listing The listing that is apart of the stashed content
+		 * @param context The contextual reason on what caused this listing to appear in the stash
+		 * @return The builder as updated following this call
 		 */
 		StashBuilder append(Listing listing, TriState context);
 

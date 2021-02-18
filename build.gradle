@@ -35,9 +35,6 @@ allprojects {
     version = "6.1.0-SNAPSHOT"
 }
 
-apply plugin: 'maven-publish'
-apply plugin: 'maven-publish-auth'
-
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
     sourceCompatibility = targetCompatibility = "1.8"
@@ -239,6 +236,32 @@ task deploy {
     dependsOn(uploadToOre)
     dependsOn(sendToDiscordPlugins)
     dependsOn(sendToDiscordReforgedExtension)
+}
+
+apply plugin: 'maven-publish'
+apply plugin: 'maven-publish-auth'
+
+publishing {
+    repositories {
+        maven {
+            name = "ImpactDev-Public"
+            url = "https://maven.impactdev.net/repository/development/"
+            credentials {
+                username System.getenv('NEXUS_USER')
+                password System.getenv('NEXUS_PW')
+            }
+        }
+    }
+
+    publications {
+        api(MavenPublication) {
+            def project = project(':api')
+            from project.components.java
+            groupId project.group
+            artifactId "api"
+            version project.version
+        }
+    }
 }
 
 build.dependsOn shadowJar
