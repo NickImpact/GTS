@@ -623,6 +623,17 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> UPDATE_LATEST = stringKey("general.update-check.latest", "{{gts:prefix}} You're using the latest version!");
 	public static final ConfigKey<String> UPDATE_SNAPSHOT = stringKey("general.update-check.snapshot", "{{gts:prefix}} You're using a snapshot version of GTS, things may not work correctly!");
 
+	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_TITLE = stringKey("admin.listing-editor.title", "&cGTS &7\u00bb &3Listing Editor");
+	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_TITLE = stringKey("admin.listing-editor.icons.delete.title", "&aDelete Listing");
+	public static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_LORE = listKey("admin.listing-editor.icons.delete.lore", Lists.newArrayList(
+
+	));
+	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS = stringKey("admin.listing-editor.responses.success", "{{gts:prefix}} The target listing has been deleted!");
+	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_FAILURE = stringKey("admin.listing-editor.responses.error", "{{gts:error}} The target listing failed to be deleted, with error code &7(&c{{gts:error_code}}&7)");
+	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER = stringKey("admin.listing-editor.responses.user-delete", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin!");
+	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN = stringKey("admin.listing-editor.responses.user-return", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin, but the item was returned to you!");
+	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN_STASH = stringKey("admin.listing-editor.responses.user-stash", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin, but the item was returned to your stash!");
+
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
 

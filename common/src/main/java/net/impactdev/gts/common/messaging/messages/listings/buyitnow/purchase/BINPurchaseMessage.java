@@ -112,7 +112,7 @@ public abstract class BINPurchaseMessage extends AbstractMessage implements BuyI
             UUID seller = Optional.ofNullable(raw.get("seller"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElseThrow(() -> new IllegalStateException("Unable to locate seller ID"));
-            boolean successful = Optional.ofNullable(raw.get("actor"))
+            boolean successful = Optional.ofNullable(raw.get("successful"))
                     .map(JsonElement::getAsBoolean)
                     .orElseThrow(() -> new IllegalStateException("Unable to locate successful status marker"));
             ErrorCode error = Optional.ofNullable(raw.get("error"))
@@ -143,7 +143,12 @@ public abstract class BINPurchaseMessage extends AbstractMessage implements BuyI
                     TYPE,
                     this.getID(),
                     new JObject()
+                            .add("request", this.request.toString())
                             .add("listing", this.listing.toString())
+                            .add("actor", this.actor.toString())
+                            .add("seller", this.seller.toString())
+                            .add("successful", this.successful)
+                            .consume(o -> this.getErrorCode().ifPresent(e -> o.add("error", e.ordinal())))
                             .toJson()
             );
         }

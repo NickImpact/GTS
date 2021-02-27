@@ -25,182 +25,252 @@
 
 package net.impactdev.gts.common.storage.implementation.file;
 
-import net.impactdev.gts.common.plugin.GTSPlugin;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.google.common.collect.ForwardingSet;
 
 import java.io.IOException;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.ClosedWatchServiceException;
+import java.nio.file.FileSystem;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-public class FileWatcher {
+public class FileWatcher implements AutoCloseable {
 
-    private static final WatchEvent.Kind[] KINDS = new WatchEvent.Kind[]{
-            StandardWatchEventKinds.ENTRY_CREATE,
-            StandardWatchEventKinds.ENTRY_DELETE,
-            StandardWatchEventKinds.ENTRY_MODIFY
-    };
+    /**
+     * Get a {@link WatchKey} from the given {@link WatchService} in the given {@link Path directory}.
+     *
+     * @param watchService the watch service
+     * @param directory the directory
+     * @return the watch key
+     * @throws IOException if unable to register
+     */
+    private static WatchKey register(WatchService watchService, Path directory) throws IOException {
+        return directory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
+    }
 
-    private final Path basePath;
+    /** The watch service */
+    private final WatchService service;
+
+    /** A map of all registered watch keys */
+    private final Map<WatchKey, Path> keys = Collections.synchronizedMap(new HashMap<>());
+
+    /** If this file watcher should discover directories */
+    private final boolean autoRegisterNewSubDirectories;
+
+    /** The thread currently being used to wait for & process watch events */
+    private final AtomicReference<Thread> processingThread = new AtomicReference<>();
+
+    private final Path base;
+
     private final Map<Path, WatchedLocation> watchedLocations;
 
-    // the watchservice instance
-    private final WatchService watchService;
-
-    private boolean initialised = false;
-
-    public FileWatcher(GTSPlugin plugin, Path basePath) throws IOException {
+    public FileWatcher(Path base, boolean autoRegisterNewSubDirectories) throws IOException {
+        this.base = base;
+        this.service = base.getFileSystem().newWatchService();
+        this.autoRegisterNewSubDirectories = autoRegisterNewSubDirectories;
         this.watchedLocations = Collections.synchronizedMap(new HashMap<>());
-        this.basePath = basePath;
-        this.watchService = basePath.getFileSystem().newWatchService();
-//
-//        plugin.getAsyncExecutor().schedule(this::initLocations, 5, TimeUnit.SECONDS);
-//        plugin.getAsyncExecutor().scheduleAtFixedRate(this::tick, 0, 1, TimeUnit.SECONDS);
     }
 
+    /**
+     * Register a watch key in the given directory.
+     *
+     * @param directory the directory
+     * @throws IOException if unable to register a key
+     */
+    public void register(Path directory) throws IOException {
+        final WatchKey key = register(this.service, directory);
+        this.keys.put(key, directory);
+    }
+
+    /**
+     * Register a watch key recursively in the given directory.
+     *
+     * @param root the root directory
+     * @throws IOException if unable to register a key
+     */
+    public void registerRecursively(Path root) throws IOException {
+        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                FileWatcher.this.register(dir);
+                return super.preVisitDirectory(dir, attrs);
+            }
+        });
+    }
+
+    /**
+     * Gets a {@link WatchedLocation} instance for a given path.
+     *
+     * @param path the path to get a watcher for
+     * @return the watched location
+     */
     public WatchedLocation getWatcher(Path path) {
-        Path relativePath = this.basePath.relativize(path);
-        return this.watchedLocations.computeIfAbsent(relativePath, p -> new WatchedLocation(this, p));
+        if (path.isAbsolute()) {
+            path = this.base.relativize(path);
+        }
+        return this.watchedLocations.computeIfAbsent(path, WatchedLocation::new);
     }
 
-    public void close() {
-        if (this.watchService == null) {
+    /**
+     * Process an observed watch event.
+     *
+     * @param event the event
+     * @param path the resolved event context
+     */
+    protected void processEvent(WatchEvent<Path> event, Path path) {
+        Path relative = this.base.relativize(path);
+        if(relative.getNameCount() == 0) {
             return;
         }
 
+        // pass the event onto all watched locations that match
+        for (Map.Entry<Path, WatchedLocation> entry : this.watchedLocations.entrySet()) {
+            if (relative.startsWith(entry.getKey())) {
+                entry.getValue().onEvent(event, relative);
+            }
+        }
+    }
+
+    /**
+     * Processes {@link WatchEvent}s from the watch service until it is closed, or until
+     * the thread is interrupted.
+     */
+    public final void runEventProcessingLoop() {
+        if (!this.processingThread.compareAndSet(null, Thread.currentThread())) {
+            throw new IllegalStateException("A thread is already processing events for this watcher.");
+        }
+
+        while (true) {
+            // poll for a key from the watch service
+            WatchKey key;
+            try {
+                key = this.service.take();
+            } catch (InterruptedException | ClosedWatchServiceException e) {
+                break;
+            }
+
+            // find the directory the key is watching
+            Path directory = this.keys.get(key);
+            if (directory == null) {
+                key.cancel();
+                continue;
+            }
+
+            // process each watch event the key has
+            for (WatchEvent<?> ev : key.pollEvents()) {
+                @SuppressWarnings("unchecked")
+                WatchEvent<Path> event = (WatchEvent<Path>) ev;
+
+                Path context = event.context();
+
+                // ignore contexts with a name count of zero
+                if (context == null || context.getNameCount() == 0) {
+                    continue;
+                }
+
+                // resolve the context of the event against the directory being watched
+                Path file = directory.resolve(context);
+
+                // if the file is a regular file, send the event on to be processed
+                if (Files.isRegularFile(file)) {
+                    this.processEvent(event, file);
+                }
+
+                // handle recursive directory creation
+                if (this.autoRegisterNewSubDirectories && event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
+                    try {
+                        if (Files.isDirectory(file, LinkOption.NOFOLLOW_LINKS)) {
+                            this.registerRecursively(file);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            // reset the key
+            boolean valid = key.reset();
+            if (!valid) {
+                this.keys.remove(key);
+            }
+        }
+
+        this.processingThread.compareAndSet(Thread.currentThread(), null);
+    }
+
+    @Override
+    public void close() {
         try {
-            this.watchService.close();
+            this.service.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void initLocations() {
-        for (WatchedLocation loc : this.watchedLocations.values()) {
-            try {
-                loc.setup();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        this.initialised = true;
-    }
+    public static final class WatchedLocation {
 
-    private void tick() {
-        List<Path> expired = new ArrayList<>();
-        for (Map.Entry<Path, WatchedLocation> ent : this.watchedLocations.entrySet()) {
-            boolean valid = ent.getValue().tick();
-            if (!valid) {
-                new RuntimeException("WatchKey no longer valid: " + ent.getKey().toString()).printStackTrace();
-                expired.add(ent.getKey());
-            }
-        }
-        expired.forEach(this.watchedLocations::remove);
-    }
+        private final Path path;
 
-    private static boolean isFileTemporary(String fileName) {
-        return fileName.endsWith(".tmp") || fileName.endsWith(".swp") || fileName.endsWith(".swx") || fileName.endsWith(".swpz");
-    }
+        private final Set<String> recentlyModifiedFiles = new ExpiringSet<>(5, TimeUnit.SECONDS);
 
-    /**
-     * Encapsulates a "watcher" in a specific directory.
-     */
-    public final class WatchedLocation {
-        // the parent watcher
-        private final FileWatcher watcher;
-
-        // the relative path to the directory being watched
-        private final Path relativePath;
-
-        // the absolute path to the directory being watched
-        private final Path absolutePath;
-
-        // the times of recent changes
-        private final Map<String, Long> lastChange = Collections.synchronizedMap(new HashMap<>());
-
-        // if the key is registered
-        private boolean ready = false;
-
-        // the watch key
-        private WatchKey key = null;
-
-        // the callback functions
         private final List<Consumer<Path>> callbacks = new CopyOnWriteArrayList<>();
 
-        private WatchedLocation(FileWatcher watcher, Path relativePath) {
-            this.watcher = watcher;
-            this.relativePath = relativePath;
-            this.absolutePath = this.watcher.basePath.resolve(this.relativePath);
+        WatchedLocation(Path path) {
+            this.path = path;
         }
 
-        private synchronized void setup() throws IOException {
-            if (this.ready) {
+        void onEvent(WatchEvent<Path> event, Path path) {
+            Path relative = this.path.relativize(path);
+
+            String name = relative.toString();
+            if(!this.recentlyModifiedFiles.add(name)) {
                 return;
             }
 
-            this.key = this.absolutePath.register(this.watcher.watchService, KINDS);
-            this.ready = true;
-        }
-
-        private boolean tick() {
-            if (!this.ready) {
-                // await init
-                if (!FileWatcher.this.initialised) {
-                    return true;
-                }
-
-                try {
-                    setup();
-                    return true;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return false;
-                }
+            for(Consumer<Path> callback : this.callbacks) {
+                callback.accept(relative);
             }
-
-            // remove old change entries.
-            long expireTime = System.currentTimeMillis() - TimeUnit.SECONDS.toMillis(4);
-            this.lastChange.values().removeIf(lastChange -> lastChange < expireTime);
-
-            List<WatchEvent<?>> watchEvents = this.key.pollEvents();
-            for (WatchEvent<?> event : watchEvents) {
-                Path context = (Path) event.context();
-
-                if (context == null) {
-                    continue;
-                }
-
-                String fileName = context.toString();
-
-                // ignore temporary changes
-                if (isFileTemporary(fileName)) {
-                    continue;
-                }
-
-                // ignore changes already registered to the system
-                if (this.lastChange.containsKey(fileName)) {
-                    continue;
-                }
-                this.lastChange.put(fileName, System.currentTimeMillis());
-
-                // process the change
-                for(Consumer<Path> callback : callbacks) {
-                    callback.accept(context);
-                }
-            }
-
-            // reset the watch key.
-            return this.key.reset();
         }
 
-        public void recordChange(String fileName) {
-            this.lastChange.put(fileName, System.currentTimeMillis());
+        public void record(String filename) {
+            this.recentlyModifiedFiles.add(filename);
         }
 
-        public void addListener(Consumer<Path> updateConsumer) {
-            this.callbacks.add(updateConsumer);
+        public void addListener(Consumer<Path> listener) {
+            this.callbacks.add(listener);
         }
     }
 
+    public static class ExpiringSet<E> extends ForwardingSet<E> {
+
+        private final Set<E> view;
+
+        public ExpiringSet(long duration, TimeUnit unit) {
+            Cache<E, Boolean> cache = Caffeine.newBuilder().expireAfterAccess(duration, unit).build();
+            this.view = Collections.newSetFromMap(cache.asMap());
+        }
+
+        @Override
+        protected Set<E> delegate() {
+            return this.view;
+        }
+    }
 }

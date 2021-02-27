@@ -7,13 +7,16 @@ import com.google.gson.GsonBuilder;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
+import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.bungee.listings.BungeeAuction;
 import net.impactdev.gts.bungee.listings.BungeeBIN;
+import net.impactdev.gts.bungee.messaging.interpreters.BungeeAdminInterpreters;
 import net.impactdev.gts.bungee.messaging.interpreters.BungeeAuctionInterpreter;
 import net.impactdev.gts.bungee.messaging.interpreters.BungeeListingInterpreter;
 import net.impactdev.gts.common.api.ApiRegistrationUtil;
 import net.impactdev.gts.common.api.GTSAPIProvider;
 import net.impactdev.gts.common.data.ResourceManagerImpl;
+import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.dependencies.Dependency;
@@ -27,7 +30,7 @@ import net.impactdev.gts.api.blacklist.Blacklist;
 import net.impactdev.gts.api.extension.ExtensionManager;
 import net.impactdev.gts.api.storage.GTSStorage;
 import net.impactdev.gts.bungee.messaging.BungeeMessagingFactory;
-import net.impactdev.gts.bungee.messaging.interpreters.BungeeBINRemoveInterpreter;
+import net.impactdev.gts.bungee.messaging.interpreters.BungeeBINInterpreters;
 import net.impactdev.gts.bungee.messaging.interpreters.BungeePingPongInterpreter;
 import net.impactdev.gts.common.blacklist.BlacklistImpl;
 import net.impactdev.gts.common.config.ConfigKeys;
@@ -72,6 +75,7 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(Auction.class, new ResourceManagerImpl<>("Auctions", "N/A", BungeeAuction::deserialize));
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(Auction.AuctionBuilder.class, BungeeAuction.BungeeAuctionBuilder::new);
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(BuyItNow.BuyItNowBuilder.class, BungeeBIN.BungeeBINBuilder::new);
+		Impactor.getInstance().getRegistry().registerBuilderSupplier(ForceDeleteMessage.Response.ResponseBuilder.class, ForceDeleteMessageImpl.ForceDeleteResponse.ForcedDeleteResponseBuilder::new);
 
 		this.config = new BungeeConfig(new BungeeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
 		this.storage = new StorageFactory(this).getInstance(StorageType.MARIADB);
@@ -80,9 +84,10 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 
 		BungeePingPongInterpreter.registerDecoders(this);
 		BungeePingPongInterpreter.registerInterpreters(this);
-		new BungeeBINRemoveInterpreter().register(this);
+		new BungeeBINInterpreters().register(this);
 		new BungeeAuctionInterpreter().register(this);
 		new BungeeListingInterpreter().register(this);
+		new BungeeAdminInterpreters().register(this);
 	}
 
 	@Override

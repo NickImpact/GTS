@@ -29,6 +29,7 @@ import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import net.impactdev.gts.api.listings.auctions.Auction;
+import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.impactor.api.Impactor;
@@ -227,8 +228,17 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<Integer> clean(List<Auction> query) {
-        return this.schedule(() -> this.implementation.clean(query));
+    public CompletableFuture<ForceDeleteMessage.Response> processForcedDeletion(ForceDeleteMessage.Request request) {
+        return this.schedule(() -> {
+            ReentrantLock lock = this.locks.get(request.getListingID());
+
+            try {
+                lock.lock();
+                return this.implementation.processForcedDeletion(request);
+            } finally {
+                lock.unlock();
+            }
+        });
     }
 
     public CompletableFuture<Boolean> sendListingUpdate(Listing listing) {

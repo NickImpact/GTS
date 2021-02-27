@@ -36,9 +36,11 @@ import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
+import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.gts.common.messaging.messages.listings.PublishListingMessageImpl;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
@@ -431,6 +433,61 @@ public class GTSMessagingService implements InternalMessagingService {
             BuyItNowMessage.Remove.Response response = new BINRemoveMessage.Response(
                     UUID.randomUUID(), request.getID(), listing, actor, receiver, shouldReceive, false, error
             );
+
+            long end = System.nanoTime();
+            response.setResponseTime(TimeUnit.SECONDS.toMillis(
+                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
+                            (end - start.get()) / 1_000_000_000
+            ));
+
+            this.populate(debugger, request, response);
+            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+
+            return response;
+        });
+    }
+
+    @Override
+    public CompletableFuture<ForceDeleteMessage.Response> requestForcedDeletion(UUID listing, UUID actor, boolean give) {
+        PrettyPrinter debugger = new PrettyPrinter(53).add("Admin - Forced Deletion").center().hr();
+        final AtomicReference<ForceDeleteMessage.Request> reference = new AtomicReference<>();
+        final AtomicLong start = new AtomicLong();
+
+        return CompletableFutureManager.makeFuture(() -> {
+            start.set(System.nanoTime());
+            ForceDeleteMessage.Request request = new ForceDeleteMessageImpl.ForceDeleteRequest(this.generatePingID(), listing, actor, give);
+            reference.set(request);
+
+            ForceDeleteMessage.Response response = this.await(request);
+            this.populate(debugger, request, response);
+
+            return response;
+        }).applyToEither(
+                this.timeoutAfter(5, TimeUnit.SECONDS),
+                response -> {
+                    debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+                    return response;
+                }
+        ).exceptionally(completion -> {
+            Throwable e = completion.getCause();
+
+            ErrorCode error;
+            if(e instanceof MessagingException) {
+                error = ((MessagingException) e).getError();
+            } else {
+                error = ErrorCodes.FATAL_ERROR;
+                ExceptionWriter.write(e);
+            }
+
+            ForceDeleteMessage.Request request = reference.get();
+            ForceDeleteMessage.Response response = ForceDeleteMessage.Response.builder()
+                    .request(request.getID())
+                    .listing(request.getListingID())
+                    .actor(request.getActor())
+                    .data(null)
+                    .successful(false)
+                    .error(error)
+                    .build();
 
             long end = System.nanoTime();
             response.setResponseTime(TimeUnit.SECONDS.toMillis(

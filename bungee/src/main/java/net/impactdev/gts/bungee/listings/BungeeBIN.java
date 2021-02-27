@@ -2,7 +2,6 @@ package net.impactdev.gts.bungee.listings;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.prices.Price;
@@ -41,14 +40,8 @@ public class BungeeBIN extends BungeeListing implements BuyItNow {
 
     @Override
     public JObject serialize() {
-        Preconditions.checkArgument(this.getPrice().getClass().isAnnotationPresent(GTSKeyMarker.class), "A Price type must be annotated with GTSKeyMarker");
-
         JObject json = super.serialize();
-        JObject price = new JObject()
-                .add("key", this.getPrice().getClass().getAnnotation(GTSKeyMarker.class).value())
-                .add("content", this.getPrice().serialize())
-                .add("purchased", this.purchased);
-        json.add("price", price);
+        json.add("price", this.price.getPrice());
         json.add("type", "bin");
 
         return json;

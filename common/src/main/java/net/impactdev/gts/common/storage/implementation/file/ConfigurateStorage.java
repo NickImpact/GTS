@@ -25,10 +25,14 @@
 
 package net.impactdev.gts.common.storage.implementation.file;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
+import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
@@ -37,14 +41,22 @@ import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.storage.implementation.file.loaders.ConfigurateLoader;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import ninja.leaping.configurate.ConfigurationNode;
+import ninja.leaping.configurate.SimpleConfigurationNode;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 
 public class ConfigurateStorage implements StorageImplementation {
 
@@ -59,9 +71,23 @@ public class ConfigurateStorage implements StorageImplementation {
     private Path dataDir;
     private String dataDirName;
 
-    private Path userDir;
+    private final Map<Group, FileGroup> fileGroups;
+    private final FileGroup users;
+    private final FileGroup listings;
 
-    private FileWatcher.WatchedLocation userWatcher = null;
+    private final FileWatcher watcher;
+
+    private enum Group {
+        USERS,
+        LISTINGS,
+    }
+
+    private static final class FileGroup {
+        private Path directory;
+        private FileWatcher.WatchedLocation watcher;
+    }
+
+    private final LoadingCache<Path, ReentrantLock> ioLocks;
 
     public ConfigurateStorage(GTSPlugin plugin, String implementationName, ConfigurateLoader loader, String extension, String dataDirName) {
         this.plugin = plugin;
@@ -69,6 +95,28 @@ public class ConfigurateStorage implements StorageImplementation {
         this.loader = loader;
         this.extension = extension;
         this.dataDirName = dataDirName;
+
+        this.users = new FileGroup();
+        this.listings = new FileGroup();
+
+        EnumMap<Group, FileGroup> fileGroups = new EnumMap<>(Group.class);
+        fileGroups.put(Group.USERS, this.users);
+        fileGroups.put(Group.LISTINGS, this.listings);
+        this.fileGroups = ImmutableMap.copyOf(fileGroups);
+
+        FileWatcher watcher;
+        try {
+            watcher = new FileWatcher(Paths.get("gts"), true);
+        } catch (Throwable e) {
+            GTSPlugin.getInstance().getPluginLogger().error("Error occurred whilst trying to create a file watcher...");
+            ExceptionWriter.write(e);
+            watcher = null;
+        }
+        this.watcher = watcher;
+
+        this.ioLocks = Caffeine.newBuilder()
+                .expireAfterAccess(10, TimeUnit.MINUTES)
+                .build(key -> new ReentrantLock());
     }
 
     @Override
@@ -83,29 +131,53 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public void init() throws Exception {
-        this.dataDir = this.plugin.getConfigDir().resolve(this.dataDirName);
+        this.dataDir = Paths.get("gts");
         this.createDirectoriesIfNotExists(this.dataDir);
 
-        this.userDir = this.dataDir.resolve("data");
-        this.createDirectoriesIfNotExists(this.userDir);
+        this.users.directory = this.dataDir.resolve("users");
+        this.listings.directory = this.dataDir.resolve("listings");
 
-        FileWatcher watcher = new FileWatcher(this.plugin, this.dataDir);
-        this.userWatcher = watcher.getWatcher(this.userDir);
-        this.userWatcher.addListener(path -> {
-//            String s = path.getFileName().toString();
-//
-//            if (!s.endsWith(this.extension)) {
-//                return;
-//            }
-//
-//            String user = s.substring(0, s.length() - this.extension.length());
-//            UUID uuid;
-//            try {
-//                uuid = UUID.fromString(user);
-//            } catch (Exception e) {
-//                return;
-//            }
-        });
+        Function<String, UUID> uuidParser = input -> {
+            try {
+                return UUID.fromString(input);
+            } catch (IllegalArgumentException e) {
+                return null;
+            }
+        };
+
+        if(this.watcher != null) {
+            this.users.watcher = this.watcher.getWatcher(this.users.directory);
+            this.users.watcher.addListener(path -> {
+                String file = path.getFileName().toString();
+                if(!file.endsWith(this.extension)) {
+                    return;
+                }
+
+                String user = file.substring(0, file.length() - this.extension.length());
+                UUID id = uuidParser.apply(user);
+                if(id == null) {
+                    return;
+                }
+
+                String name = GTSPlugin.getInstance().getPlayerDisplayName(id);
+                this.plugin.getPluginLogger().info("[File Watcher] Detected change in user file for " + name);
+            });
+            this.listings.watcher = this.watcher.getWatcher(this.listings.directory);
+            this.listings.watcher.addListener(path -> {
+                String file = path.getFileName().toString();
+                if(!file.endsWith(this.extension)) {
+                    return;
+                }
+
+                String user = file.substring(0, file.length() - this.extension.length());
+                UUID id = uuidParser.apply(user);
+                if(id == null) {
+                    return;
+                }
+
+                this.plugin.getPluginLogger().info("[File Watcher] Detected change in listing file with ID: " + id);
+            });
+        }
     }
 
     @Override
@@ -113,6 +185,13 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public boolean addListing(Listing listing) throws Exception {
+        try {
+            ConfigurationNode file = SimpleConfigurationNode.root();
+            file.getNode("data").setValue(listing.serialize().toJson());
+        } catch (Exception e) {
+            return false;
+        }
+
         return false;
     }
 
@@ -192,35 +271,17 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     @Override
-    public int clean(List<Auction> query) throws Exception {
-        return 0;
+    public ForceDeleteMessage.Response processForcedDeletion(ForceDeleteMessage.Request request) throws Exception {
+        return null;
     }
 
-    private ConfigurationNode readFile(String name) throws IOException {
-        Path file = this.userDir.resolve(name + this.extension);
-        if(this.userWatcher != null) {
-            this.userWatcher.recordChange(file.getFileName().toString());
-        }
-
-        if(!Files.exists(file)) {
-            return null;
-        }
-
-        return this.loader.loader(file).load();
+    private ConfigurationNode readFile(UUID uuid) throws IOException {
+        //Path file = this.getDirectory()
+        return null;
     }
 
     private void saveFile(String name, ConfigurationNode node) throws IOException {
-        Path file = this.userDir.resolve(name + this.extension);
-        if(this.userWatcher != null) {
-            this.userWatcher.recordChange(file.getFileName().toString());
-        }
 
-        if(node == null) {
-            Files.deleteIfExists(file);
-            return;
-        }
-
-        this.loader.loader(file).save(node);
     }
 
     private void createDirectoriesIfNotExists(Path path) throws IOException {

@@ -79,7 +79,7 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 				.build()
 		);
 		browser.addListener(clickable -> {
-			SpongeListingMenu b = new SpongeListingMenu(this.viewer);
+			SpongeListingMenu b = new SpongeListingMenu(this.viewer, false);
 			b.open();
 		});
 		slb.slot(browser, 13);
@@ -106,7 +106,7 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 				.build()
 		);
 		personalIcon.addListener(clickable -> {
-			new SpongeListingMenu(this.viewer, listing -> listing.getLister().equals(this.viewer.getUniqueId())).open();
+			new SpongeListingMenu(this.viewer, false, listing -> listing.getLister().equals(this.viewer.getUniqueId())).open();
 		});
 		slb.slot(personalIcon, 29);
 
@@ -146,6 +146,7 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 						icon.addListener(clickable -> {
 							new SpongeListingMenu(
 									this.viewer,
+									false,
 									listing -> {
 										if(listing instanceof Auction) {
 											Auction auction = (Auction) listing;
@@ -164,6 +165,7 @@ public class SpongeMainMenu implements SpongeMainPageProvider {
 		bids.addListener(clickable -> {
 			new SpongeListingMenu(
 					this.viewer,
+					false,
 					listing -> {
 						if(listing instanceof Auction) {
 							Auction auction = (Auction) listing;

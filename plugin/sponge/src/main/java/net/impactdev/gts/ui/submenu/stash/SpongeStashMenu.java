@@ -269,7 +269,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<StashedContent> implements 
                                                 MonetaryPrice value = new MonetaryPrice(bid.getAmount());
                                                 value.reward(this.getViewer().getUniqueId());
 
-                                                successful.getAndIncrement();
+                                                successful.incrementAndGet();
                                             } else if (listing.getEntry().give(this.getViewer().getUniqueId())) {
                                                 successful.incrementAndGet();
                                             } else {
@@ -296,6 +296,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<StashedContent> implements 
                     finished.await();
                 } catch (Exception ignored) {}
 
+                while(!ready.get()) {}
                 this.getViewer().sendMessage(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STASH_COLLECT_ALL_RESULTS), Lists.newArrayList(successful::get)));
             }, CLAIMER);
         });

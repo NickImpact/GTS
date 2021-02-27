@@ -34,6 +34,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.NotificationSetting;
 import net.impactdev.gts.api.player.PlayerSettings;
@@ -760,7 +761,7 @@ public class SqlImplementation implements StorageImplementation {
 					request.getRecipient().orElse(null),
 					request.shouldReturnListing(),
 					success,
-					error
+					success ? null : error
 			);
 		};
 
@@ -775,35 +776,33 @@ public class SqlImplementation implements StorageImplementation {
 			return processor.apply(false, ErrorCodes.ALREADY_PURCHASED);
 		}
 
-		return processor.apply(this.deleteListing(request.getListingID()), null);
+		return processor.apply(this.deleteListing(request.getListingID()), ErrorCodes.FATAL_ERROR);
 	}
 
 	@Override
-	public int clean(List<Auction> query) throws Exception {
-		return this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
-			AtomicInteger cleaned = new AtomicInteger();
-
-			for(Auction auction : query) {
-				ps.setString(1, auction.getID().toString());
-				this.results(ps, results -> {
-					if(results.next()) {
-						if(results.getBoolean("lister")) {
-							try(PreparedStatement delete = connection.prepareStatement(this.processor.apply(DELETE_AUCTION_CLAIM_STATUS))) {
-								delete.setString(1, auction.getID().toString());
-								delete.executeUpdate();
-
-								this.deleteListing(auction.getID());
-								cleaned.incrementAndGet();
-							}
-						}
-					}
-
-					return null;
-				});
-			}
-
-			return cleaned.get();
-		});
+	public ForceDeleteMessage.Response processForcedDeletion(ForceDeleteMessage.Request request) throws Exception {
+		Optional<Listing> listing = this.getListing(request.getListingID());
+		if(listing.isPresent()) {
+			boolean successful = this.deleteListing(request.getListingID());
+			return ForceDeleteMessage.Response.builder()
+					.request(request.getID())
+					.listing(request.getListingID())
+					.actor(request.getActor())
+					.data(listing.get())
+					.give(request.shouldGive())
+					.successful(successful)
+					.error(successful ? null : ErrorCodes.FATAL_ERROR)
+					.build();
+		} else {
+			return ForceDeleteMessage.Response.builder()
+					.request(request.getID())
+					.listing(request.getListingID())
+					.actor(request.getActor())
+					.successful(false)
+					.give(request.shouldGive())
+					.error(ErrorCodes.LISTING_MISSING)
+					.build();
+		}
 	}
 
 	private boolean tableExists(String table) throws SQLException {

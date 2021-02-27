@@ -45,6 +45,10 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 
 	@Override
 	public <T extends MessageType.Response> void processRequest(UUID request, T response) {
+		if(this.requests.get(request) == null) {
+			return;
+		}
+
 		((Consumer<T>) this.requests.get(request)).accept(response);
 		this.requests.remove(request);
 	}

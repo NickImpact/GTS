@@ -8,6 +8,7 @@ import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.searching.Searcher;
 import net.impactdev.gts.common.config.ConfigKeys;
+import net.impactdev.gts.ui.admin.editor.SpongeListingEditorMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.gui.InventoryDimensions;
@@ -74,8 +75,11 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private boolean mode;
 	private CircularLinkedList<Sorter> sorter;
 
+	/** If the menu was opened in editor mode */
+	private boolean editor;
+
 	@SafeVarargs
-	public SpongeListingMenu(Player viewer, Predicate<SpongeListing>... conditions) {
+	public SpongeListingMenu(Player viewer, boolean editor, Predicate<SpongeListing>... conditions) {
 		super(GTSPlugin.getInstance(),
 				viewer,
 				Impactor.getInstance().getRegistry().get(ListingManager.class).fetchListings(),
@@ -91,6 +95,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 				}
 		);
 
+		this.editor = editor;
 		this.mode = !GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED).get();
 		if(this.mode) {
 			this.conditions.add(AUCTIONS_ONLY);
@@ -146,7 +151,11 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 			SpongeIcon icon = new SpongeIcon(item);
 			icon.addListener(clickable -> {
 				this.getView().close(this.getViewer());
-				new SpongeSelectedListingMenu(this.getViewer(), listing, () -> new SpongeListingMenu(this.getViewer()), false, true).open();
+				if(!this.editor) {
+					new SpongeSelectedListingMenu(this.getViewer(), listing, () -> new SpongeListingMenu(this.getViewer(), false), false, true).open();
+				} else {
+					new SpongeListingEditorMenu(this.getViewer(), listing, () -> new SpongeListingMenu(this.getViewer(), false)).open();
+				}
 			});
 			return icon;
 		});
@@ -304,7 +313,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 							} else {
 								this.conditions.removeIf(p -> p instanceof Searching);
 							}
-							new SpongeListingMenu(this.getViewer(), this.conditions.toArray(new Predicate[]{})).open();
+							new SpongeListingMenu(this.getViewer(), this.editor, this.conditions.toArray(new Predicate[]{})).open();
 						});
 
 						return true;

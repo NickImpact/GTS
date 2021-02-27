@@ -96,7 +96,7 @@ public class StorageFactory {
                         "YAML",
                         new YamlLoader(),
                         ".yml",
-                        "yaml-storage"
+                        "yaml"
                 );
             case JSON:
                 return new ConfigurateStorage(
@@ -104,7 +104,7 @@ public class StorageFactory {
                         "JSON",
                         new JsonLoader(),
                         ".json",
-                        "json-storage"
+                        "json"
                 );
             case HOCON:
                 return new ConfigurateStorage(
@@ -112,7 +112,7 @@ public class StorageFactory {
                         "HOCON",
                         new HoconLoader(),
                         ".hocon",
-                        "hocon-storage"
+                        "hocon"
                 );
         }
     }

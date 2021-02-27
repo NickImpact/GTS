@@ -1,6 +1,7 @@
 package net.impactdev.gts.ui.admin;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
 import net.impactdev.impactor.sponge.ui.SpongeLayout;
@@ -70,7 +71,7 @@ public class SpongeAdminMenu {
                 .build()
         );
         manager.addListener(clickable -> {
-
+            new SpongeListingMenu(clickable.getPlayer(), true).open();
         });
 
         SpongeIcon pricing = new SpongeIcon(ItemStack.builder()

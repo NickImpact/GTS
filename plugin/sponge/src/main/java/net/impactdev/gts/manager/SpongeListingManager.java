@@ -415,12 +415,12 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 												return false;
 											});
 
-									Message message = this.notifier.forgeMessage(
+									Message message = notifier.forgeMessage(
 											DiscordOption.fetch(DiscordOption.Options.Purchase),
 											MsgConfigKeys.DISCORD_PURCHASE_TEMPLATE,
 											listing, buyer
 									);
-									this.notifier.sendMessage(message);
+									notifier.sendMessage(message);
 								} else {
 									Sponge.getServer().getPlayer(buyer).ifPresent(player -> {
 										player.sendMessage(parser.parse(

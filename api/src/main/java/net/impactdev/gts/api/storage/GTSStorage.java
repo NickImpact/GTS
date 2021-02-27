@@ -2,6 +2,7 @@ package net.impactdev.gts.api.storage;
 
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
+import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
@@ -101,16 +102,8 @@ public interface GTSStorage {
 
 	//------------------------------------------------------------------------------------------------------------------
 	//
-	//  Deprecated providers, scheduled to be removed with next minor version update
+	//  Admin based message processing
 	//
 	//------------------------------------------------------------------------------------------------------------------
-
-	/**
-	 * Attempts to clean the database of auctions stuck in the GTS from early 6.0.0 versions
-	 *
-	 * @param query The list of auctions that may need to be deleted
-	 * @return A completable future marking the processing of this operation
-	 */
-	@Deprecated
-	CompletableFuture<Integer> clean(List<Auction> query);
+	CompletableFuture<ForceDeleteMessage.Response> processForcedDeletion(ForceDeleteMessage.Request request);
 }

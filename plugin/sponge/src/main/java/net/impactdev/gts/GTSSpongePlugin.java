@@ -5,8 +5,10 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.impactdev.gts.api.listings.manager.ListingManager;
+import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.commands.GTSCommandManager;
+import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
 import net.impactdev.gts.common.player.PlayerSettingsImpl;
 import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.gts.common.utils.Version;
@@ -17,6 +19,7 @@ import net.impactdev.gts.listings.data.SpongeItemManager;
 import net.impactdev.gts.listings.legacy.SpongeLegacyItemStorable;
 import net.impactdev.gts.listings.searcher.SpongeItemSearcher;
 import net.impactdev.gts.listings.searcher.SpongeUserSearcher;
+import net.impactdev.gts.messaging.interpreters.SpongeAdminInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeAuctionInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeBINInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeListingInterpreters;
@@ -289,6 +292,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		new SpongeBINInterpreters().register(this);
 		new SpongeAuctionInterpreters().register(this);
 		new SpongeListingInterpreters().register(this);
+		new SpongeAdminInterpreters().register(this);
 	}
 
 	private void supplyBuilders() {
@@ -297,6 +301,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(Stash.StashBuilder.class, SpongeStash.SpongeStashBuilder::new);
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(SpongeMainPageProvider.Creator.class, SpongeMainMenu.MainMenuCreator::new);
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(PlayerSettings.PlayerSettingsBuilder.class, PlayerSettingsImpl.PlayerSettingsImplBuilder::new);
+		Impactor.getInstance().getRegistry().registerBuilderSupplier(ForceDeleteMessage.Response.ResponseBuilder.class, ForceDeleteMessageImpl.ForceDeleteResponse.ForcedDeleteResponseBuilder::new);
 	}
 
 	@Override
