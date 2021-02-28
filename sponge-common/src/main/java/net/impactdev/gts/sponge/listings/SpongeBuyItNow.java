@@ -50,7 +50,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 
 		JObject json = super.serialize();
 		JObject price = new JObject()
-				.add("key", this.getPrice().getClass().getAnnotation(GTSKeyMarker.class).value())
+				.add("key", this.getPrice().getClass().getAnnotation(GTSKeyMarker.class).value()[0])
 				.add("content", this.getPrice().serialize())
 				.add("purchased", this.purchased);
 		json.add("price", price);

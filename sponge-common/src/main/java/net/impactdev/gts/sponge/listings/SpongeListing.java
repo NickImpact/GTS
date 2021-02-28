@@ -68,7 +68,7 @@ public abstract class SpongeListing implements Listing {
 				.add("expiration", this.getExpiration().toString());
 
 		JObject entry = new JObject()
-				.add("key", this.getEntry().getClass().getAnnotation(GTSKeyMarker.class).value())
+				.add("key", this.getEntry().getClass().getAnnotation(GTSKeyMarker.class).value()[0])
 				.add("content", this.getEntry().serialize());
 
 		return new JObject()

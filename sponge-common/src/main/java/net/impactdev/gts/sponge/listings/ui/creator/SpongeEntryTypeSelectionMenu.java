@@ -2,6 +2,7 @@ package net.impactdev.gts.sponge.listings.ui.creator;
 
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.GTSService;
+import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.entries.EntryManager;
 import net.impactdev.gts.common.config.MsgConfigKeys;
@@ -37,7 +38,7 @@ public class SpongeEntryTypeSelectionMenu {
     private final SpongePage<Map.Entry<String, EntryManager<? extends Entry<?, ?>, ?>>> display;
 
     public SpongeEntryTypeSelectionMenu(Player player) {
-        Map<String, EntryManager<? extends Entry<?, ?>, ?>> managers = GTSService.getInstance().getGTSComponentManager().getAllEntryManagers();
+        Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>, ?>> managers = GTSService.getInstance().getGTSComponentManager().getAllEntryManagers();
         final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
         SpongePage.SpongePageBuilder builder = SpongePage.builder()
@@ -62,7 +63,7 @@ public class SpongeEntryTypeSelectionMenu {
         if(overrides.isPresent()) {
             Mappings mappings = overrides.get();
             Queue<Integer> slots = mappings.createQueue();
-            for(Map.Entry<String, EntryManager<? extends Entry<?, ?>, ?>> entry : managers.entrySet()) {
+            for(Map.Entry<GTSKeyMarker, EntryManager<? extends Entry<?, ?>, ?>> entry : managers.entrySet()) {
                 SpongeIcon icon = this.createIcon(entry.getValue().getName(), entry.getValue());
                 this.display.getView().setSlot(slots.poll(), icon);
             }

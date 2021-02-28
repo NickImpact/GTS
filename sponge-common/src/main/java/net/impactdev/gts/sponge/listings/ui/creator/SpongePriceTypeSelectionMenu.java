@@ -1,6 +1,7 @@
 package net.impactdev.gts.sponge.listings.ui.creator;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
 import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
@@ -47,7 +48,7 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
     public SpongePriceTypeSelectionMenu(Player player, AbstractSpongeEntryUI<?> parent, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>> callback) {
         this.viewer = player;
 
-        Map<String, PriceManager<? extends Price<?, ?, ?>, ?>> resources = GTSService.getInstance().getGTSComponentManager().getAllPriceManagers();
+        Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>, ?>> resources = GTSService.getInstance().getGTSComponentManager().getAllPriceManagers();
         this.parent = parent;
         this.callback = callback;
 
@@ -74,7 +75,7 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
         if(overrides.isPresent()) {
             Mappings mappings = overrides.get();
             Queue<Integer> slots = mappings.createQueue();
-            for(Map.Entry<String, PriceManager<? extends Price<?, ?, ?>, ?>> entry : resources.entrySet()) {
+            for(Map.Entry<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>, ?>> entry : resources.entrySet()) {
                 SpongeIcon icon = this.createIcon(entry.getValue().getName(), entry.getValue());
                 this.display.getView().setSlot(slots.poll(), icon);
             }

@@ -27,7 +27,7 @@ public interface GTSComponentManager {
 
     <T extends Entry<?, ?>> Optional<EntryManager<T, ?>> getEntryManager(String key);
 
-    Map<String, EntryManager<? extends Entry<?, ?>, ?>> getAllEntryManagers();
+    Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>, ?>> getAllEntryManagers();
 
     // Prices
 
@@ -35,7 +35,7 @@ public interface GTSComponentManager {
 
     <T extends Price<?, ?, ?>> Optional<PriceManager<T, ?>> getPriceManager(String key);
 
-    Map<String, PriceManager<? extends Price<?, ?, ?>, ?>> getAllPriceManagers();
+    Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>, ?>> getAllPriceManagers();
 
     DeserializerRegistry getDeserializerRegistry();
 

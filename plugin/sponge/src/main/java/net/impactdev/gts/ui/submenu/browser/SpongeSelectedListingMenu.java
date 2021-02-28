@@ -51,6 +51,7 @@ import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.Text;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -305,9 +306,9 @@ public class SpongeSelectedListingMenu {
 
                 Price<?, ?, ?> price = bin.getPrice();
                 Optional<PriceManager.PriceSelectorUI<SpongeUI>> selector = GTSService.getInstance().getGTSComponentManager()
-                        .getPriceManager(price.getClass().getAnnotation(GTSKeyMarker.class).value())
+                        .getPriceManager(price.getClass().getAnnotation(GTSKeyMarker.class).value()[0])
                         .map(ui -> (PriceManager<?, Player>) ui)
-                        .orElseThrow(() -> new IllegalStateException("Unable to find price manager for " + price.getClass().getAnnotation(GTSKeyMarker.class).value()))
+                        .orElseThrow(() -> new IllegalStateException("Unable to find price manager for " + price.getClass().getAnnotation(GTSKeyMarker.class).value()[0]))
                         .getSelector(this.viewer, price, source -> {
                             SpongeListingManager manager = (SpongeListingManager) Impactor.getInstance().getRegistry().get(ListingManager.class);
                             manager.purchase(this.viewer.getUniqueId(), (SpongeBuyItNow) bin, source);

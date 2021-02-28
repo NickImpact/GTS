@@ -23,8 +23,8 @@ import java.util.Optional;
 public class GTSComponentManagerImpl implements GTSComponentManager {
 
     private final Map<Class<? extends Listing>, ResourceManager<? extends Listing>> listings = Maps.newHashMap();
-    private final Map<String, EntryManager<? extends Entry<?, ?>, ?>> managers = new LinkedHashMap<>();
-    private final Map<String, PriceManager<? extends Price<?, ?, ?>, ?>> prices = Maps.newHashMap();
+    private final Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>, ?>> managers = new LinkedHashMap<>();
+    private final Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>, ?>> prices = Maps.newHashMap();
 
     private final Map<String, Storable.Deserializer<?>> legacy = Maps.newHashMap();
 
@@ -49,17 +49,29 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
     public <T extends Entry<?, ?>> void registerEntryManager(Class<T> type, EntryManager<T, ?> manager) {
         Preconditions.checkArgument(type.isAnnotationPresent(GTSKeyMarker.class), "An Entry type must be annotated with GTSKeyMarker");
 
-        this.managers.put(type.getAnnotation(GTSKeyMarker.class).value().toLowerCase(), manager);
+        this.managers.put(type.getAnnotation(GTSKeyMarker.class), manager);
         manager.supplyDeserializers();
     }
 
     @Override
     public <T extends Entry<?, ?>> Optional<EntryManager<T, ?>> getEntryManager(String key) {
-        return Optional.ofNullable((EntryManager<T, ?>) this.managers.get(key.toLowerCase()));
+        return this.managers.keySet().stream()
+                .filter(marker -> {
+                    for (String id : marker.value()) {
+                        if (id.equals(key)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                })
+                .map(this.managers::get)
+                .findAny()
+                .map(x -> (EntryManager<T, ?>) x);
     }
 
     @Override
-    public Map<String, EntryManager<? extends Entry<?, ?>, ?>> getAllEntryManagers() {
+    public Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>, ?>> getAllEntryManagers() {
         return this.managers;
     }
 
@@ -67,16 +79,28 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
     public <T extends Price<?, ?, ?>> void registerPriceManager(Class<T> type, PriceManager<T, ?> resource) {
         Preconditions.checkArgument(type.isAnnotationPresent(GTSKeyMarker.class), "A Price type must be annotated with GTSKeyMarker");
 
-        this.prices.put(type.getAnnotation(GTSKeyMarker.class).value(), resource);
+        this.prices.put(type.getAnnotation(GTSKeyMarker.class), resource);
     }
 
     @Override
     public <T extends Price<?, ?, ?>> Optional<PriceManager<T, ?>> getPriceManager(String key) {
-        return Optional.ofNullable((PriceManager<T, ?>) this.prices.get(key));
+        return this.prices.keySet().stream()
+                .filter(marker -> {
+                    for (String id : marker.value()) {
+                        if (id.equals(key)) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                })
+                .map(this.prices::get)
+                .findAny()
+                .map(x -> (PriceManager<T, ?>) x);
     }
 
     @Override
-    public Map<String, PriceManager<? extends Price<?, ?, ?>, ?>> getAllPriceManagers() {
+    public Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>, ?>> getAllPriceManagers() {
         return this.prices;
     }
 
