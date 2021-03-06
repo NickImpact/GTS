@@ -68,7 +68,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 		JsonObject element = json.getAsJsonObject("entry");
 		EntryManager<?, ?> entryManager = GTSService.getInstance().getGTSComponentManager()
 				.getEntryManager(element.get("key").getAsString())
-				.orElseThrow(() -> new RuntimeException("JSON Data for entry is missing mapping key"));
+				.orElseThrow(() -> new RuntimeException("No Entry Manager found for key: " + element.get("key").getAsString()));
 		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));
 
 		JsonObject price = json.getAsJsonObject("price");

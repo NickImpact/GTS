@@ -1,8 +1,15 @@
 package net.impactdev.gts.util;
 
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.extension.Extension;
+import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.listings.auctions.Auction;
+import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
+import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
@@ -22,6 +29,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -87,6 +95,10 @@ public class GTSInfoGenerator {
         this.append("Connection Information");
         this.append(this.separator());
         this.append(this.connections());
+        this.append(this.separator());
+        this.append("Listings Information");
+        this.append(this.separator());
+        this.append(this.listings());
         this.append(this.separator());
     }
 
@@ -182,6 +194,28 @@ public class GTSInfoGenerator {
         } catch (Exception ignored) {}
 
         return results;
+    }
+
+    private List<String> listings() {
+        ListingManager<?, ?, ?> manager = Impactor.getInstance().getRegistry().get(ListingManager.class);
+        final List<String> output = Lists.newArrayList();
+        Gson writer = new GsonBuilder().setPrettyPrinting().create();
+        manager.fetchListings().thenAccept(listings -> {
+            output.add("Stored Listings: " + listings.size());
+            output.add("Buy It Now: " + listings.stream().filter(x -> x instanceof BuyItNow).count());
+            output.add("Auction: " + listings.stream().filter(x -> x instanceof Auction).count());
+
+            output.add("");
+            output.add("Listing Data:");
+            for(Listing listing : listings) {
+                JsonObject json = listing.serialize().toJson();
+
+                String raw = writer.toJson(json);
+                output.addAll(Arrays.asList(raw.split("\n")));
+            }
+        }).join();
+
+        return output;
     }
 
     private final String SEPARATOR = "{{separator}}";
