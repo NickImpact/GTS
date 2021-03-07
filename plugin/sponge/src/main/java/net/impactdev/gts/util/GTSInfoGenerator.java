@@ -13,6 +13,7 @@ import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+import net.impactdev.gts.messaging.types.PluginMessageMessenger;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
@@ -174,12 +175,18 @@ public class GTSInfoGenerator {
     private List<String> connections() {
         List<String> results = Lists.newArrayList();
         results.add("Messaging Service: " + GTSPlugin.getInstance().getMessagingService().getName());
-        try {
-            GTSPlugin.getInstance().getMessagingService().sendPing()
-                    .thenAccept(pong -> results.add("  - Response Time: " + pong.getResponseTime() + " ms"))
-                    .get(5, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            results.add("  - Response Time: Timed Out");
+
+        boolean not = !(GTSPlugin.getInstance().getMessagingService().getMessenger() instanceof PluginMessageMessenger);
+        if(not || Sponge.getServer().getOnlinePlayers().size() > 0) {
+            try {
+                GTSPlugin.getInstance().getMessagingService().sendPing()
+                        .thenAccept(pong -> results.add("  - Response Time: " + pong.getResponseTime() + " ms"))
+                        .get(5, TimeUnit.SECONDS);
+            } catch (Exception e) {
+                results.add("  - Response Time: Timed Out");
+            }
+        } else {
+            results.add("  - No players online, unable to send ping request");
         }
 
         results.add("Storage Type: " + GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.STORAGE_METHOD));
@@ -205,13 +212,16 @@ public class GTSInfoGenerator {
             output.add("Buy It Now: " + listings.stream().filter(x -> x instanceof BuyItNow).count());
             output.add("Auction: " + listings.stream().filter(x -> x instanceof Auction).count());
 
-            output.add("");
-            output.add("Listing Data:");
-            for(Listing listing : listings) {
-                JsonObject json = listing.serialize().toJson();
+            if(listings.size() > 0) {
+                output.add("");
+                output.add("Listing Data:");
+                for (Listing listing : listings) {
+                    JsonObject json = listing.serialize().toJson();
 
-                String raw = writer.toJson(json);
-                output.addAll(Arrays.asList(raw.split("\n")));
+                    String raw = writer.toJson(json);
+                    output.addAll(Arrays.asList(raw.split("\n")));
+                    output.add("");
+                }
             }
         }).join();
 
