@@ -212,7 +212,8 @@ task sendToDiscordPlugins(type: PostToDiscord) {
     level = ReleaseLevel.get(version)
     files = Lists.newArrayList(
             new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-${project.version}.jar").toString()),
-            new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Bungee-${project.version}.jar").toString())
+            new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Bungee-${project.version}.jar").toString()),
+            new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Velocity-${project.version}.jar").toString())
     )
     force = true
 }
@@ -233,10 +234,27 @@ task sendToDiscordReforgedExtension(type: PostToDiscord) {
     force = true
 }
 
+task sendToDiscordGenerationsExtension(type: PostToDiscord) {
+    dependsOn(copyJars)
+
+    webhookID = project.properties['discord_webhook_id_generations']?.toString() ?: System.getenv("DISCORD_WEBHOOK_ID_GENERATIONS")
+    webhookToken = project.properties['discord_webhook_token_generations']?.toString() ?: System.getenv("DISCORD_WEBHOOK_TOKEN_GENERATIONS")
+    memberRole = project.properties['discord_member_id']?.toString() ?: System.getenv("DISCORD_WEBHOOK_MEMBER_ROLE")
+
+    content = "GTS Extension {{content:version}} for Reforged is now available!"
+    version = project.version
+    level = ReleaseLevel.get(version)
+    files = Lists.newArrayList(
+            new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Extension-Generations-${project.version}.jar").toString())
+    )
+    force = true
+}
+
 task deploy {
     dependsOn(uploadToOre)
     dependsOn(sendToDiscordPlugins)
     dependsOn(sendToDiscordReforgedExtension)
+    dependsOn(sendToDiscordGenerationsExtension)
 }
 
 apply plugin: 'maven-publish'
