@@ -123,7 +123,7 @@ subprojects {
     }
 
     dependencies {
-        shadow "net.impactdev.impactor:api:3.0.0-SNAPSHOT"
+        shadow "net.impactdev.impactor:api:3.1.2-SNAPSHOT"
         shadow 'com.google.guava:guava:27.1-jre'
         shadow 'com.google.code.gson:gson:2.8.0'
         shadow 'com.github.ben-manes.caffeine:caffeine:2.8.2'
@@ -186,6 +186,7 @@ task copyJars(type: Copy) {
     exclude 'generations*.jar'
     exclude 'bungee*.jar'
     exclude 'pixelmon*.jar'
+    exclude 'velocity*.jar'
 }
 
 task uploadToOre(type: UploadToOre) {
@@ -259,6 +260,62 @@ publishing {
             from project.components.java
             groupId project.group
             artifactId "api"
+            version project.version
+        }
+
+        common(MavenPublication) {
+            def project = project(':common')
+            from project.components.java
+            groupId project.group
+            artifactId "common"
+            version project.version
+        }
+
+        bungee(MavenPublication) {
+            def project = project(':bungee')
+            from project.components.java
+            groupId project.group
+            artifactId "bungee"
+            version project.version
+        }
+
+        velocity(MavenPublication) {
+            def project = project(':velocity')
+            from project.components.java
+            groupId project.group
+            artifactId "velocity"
+            version project.version
+        }
+
+        sponge_common(MavenPublication) {
+            def project = project(':sponge-common')
+            from project.components.java
+            groupId project.group
+            artifactId "sponge-common"
+            version project.version
+        }
+
+        plugin_sponge(MavenPublication) {
+            def project = project(':plugin:sponge')
+            from project.components.java
+            groupId project.group
+            artifactId "plugin-sponge"
+            version project.version
+        }
+
+        reforged_sponge(MavenPublication) {
+            def project = project(':pixelmon:reforged:sponge')
+            from project.components.java
+            groupId project.group
+            artifactId "reforged-sponge"
+            version project.version
+        }
+
+        generations_sponge(MavenPublication) {
+            def project = project(':pixelmon:generations:sponge')
+            from project.components.java
+            groupId project.group
+            artifactId "generations-sponge"
             version project.version
         }
     }

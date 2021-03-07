@@ -12,6 +12,7 @@ dependencies {
     compile project(':api')
     compile project(':common')
     shadow('com.velocitypowered:velocity-api:1.1.2')
+    shadow('net.impactdev.impactor:velocity:3.1.2-SNAPSHOT')
 
     shadow('net.kyori:text-api:3.0.3') {
         exclude(module: 'checker-qual')
@@ -31,7 +32,8 @@ shadowJar {
     exclude 'Impactor*.jar'
 
     relocate ('com.github.benmanes.caffeine', 'net.impactdev.impactor.relocations.caffeine')
-    relocate ('net.kyori.text', 'net.impactdev.impactor.relocations.text')
+    relocate ('io.github.classgraph', 'net.impactdev.impactor.relocations.classgraph')
+    relocate ('org.mariuszgromada.math.mxparser', 'net.impactdev.impactor.relocations.mxparser')
 }
 
 processResources {
@@ -40,3 +42,12 @@ processResources {
         include 'plugin.yml'
     }
 }
+
+blossom {
+    blossomSourceReplacementJava.output = file("$buildDir/sources/java")
+    replaceToken '@version@', version
+    replaceToken '@git_commit@', gitHash.commit
+    replaceToken '@description@', 'A player controlled market system'
+}
+
+blossomSourceReplacementJava.dependsOn(gitHash)

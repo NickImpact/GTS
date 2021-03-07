@@ -62,7 +62,6 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 				.build(), bootstrap.getLogger()
 		);
 		this.bootstrap = bootstrap;
-		PluginRegistry.register(this);
 	}
 
 	public void enable() {
