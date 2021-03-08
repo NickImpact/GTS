@@ -123,7 +123,7 @@ subprojects {
     }
 
     dependencies {
-        shadow "net.impactdev.impactor:api:3.1.2-SNAPSHOT"
+        shadow "net.impactdev.impactor:api:3.1.2"
         shadow 'com.google.guava:guava:27.1-jre'
         shadow 'com.google.code.gson:gson:2.8.0'
         shadow 'com.github.ben-manes.caffeine:caffeine:2.8.2'

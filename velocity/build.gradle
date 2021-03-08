@@ -12,7 +12,7 @@ dependencies {
     compile project(':api')
     compile project(':common')
     shadow('com.velocitypowered:velocity-api:1.1.2')
-    shadow('net.impactdev.impactor:velocity:3.1.2-SNAPSHOT')
+    shadow('net.impactdev.impactor:velocity:3.1.2')
 
     shadow('net.kyori:text-api:3.0.3') {
         exclude(module: 'checker-qual')

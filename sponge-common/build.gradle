@@ -9,7 +9,7 @@ repositories {
 dependencies {
     compile project(':api')
     shadow project(':common')
-    shadow 'net.impactdev.impactor:sponge:3.0.0-SNAPSHOT'
+    shadow 'net.impactdev.impactor:sponge:3.1.2'
     shadow 'org.spongepowered:spongeapi:7.3.0'
     shadow 'net.kyori:adventure-api:4.3.0'
     shadow 'net.kyori:adventure-text-serializer-gson:4.3.0'
