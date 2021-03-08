@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
@@ -60,6 +61,10 @@ public class SpongeListingInterpreters implements Interpreter {
 
         consumer.registerInternalConsumer(
                 PublishListingMessageImpl.class, message -> {
+                    if(!GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.USE_MULTI_SERVER)) {
+                        return;
+                    }
+
                     GTSPlugin.getInstance().getStorage().getListing(message.getListingID()).thenAccept(listing -> {
                         if(listing.isPresent()) {
                             Listing working = listing.get();
