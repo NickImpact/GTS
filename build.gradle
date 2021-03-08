@@ -32,7 +32,7 @@ plugins {
 
 allprojects {
     group = 'me.nickimpact.gts'
-    version = "6.1.0"
+    version = "6.1.1-SNAPSHOT"
 }
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
@@ -65,7 +65,12 @@ allprojects {
             set.waitFor()
 
             ext.result = set.text.trim()
-            ext.tag = ext.result.substring(0, ext.result.indexOf('-'))
+
+            if(ext.result.contains('-')) {
+                ext.tag = ext.result.substring(0, ext.result.indexOf('-'))
+            } else {
+                ext.tag = ext.result
+            }
 
             def read = 'git log '.concat(ext.tag).concat('..HEAD --oneline --no-abbrev-commit').execute()
             read.waitFor()
