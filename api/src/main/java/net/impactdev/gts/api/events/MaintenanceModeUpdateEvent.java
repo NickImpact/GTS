@@ -8,12 +8,9 @@ import java.util.UUID;
 public interface MaintenanceModeUpdateEvent {
 
     @Param(0)
-    UUID getServer();
-
-    @Param(1)
     MaintenanceMode getMode();
 
-    @Param(2)
+    @Param(1)
     boolean getNewState();
 
 }

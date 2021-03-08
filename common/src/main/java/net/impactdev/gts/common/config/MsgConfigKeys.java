@@ -634,6 +634,14 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN = stringKey("admin.listing-editor.responses.user-return", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin, but the item was returned to you!");
 	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN_STASH = stringKey("admin.listing-editor.responses.user-stash", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin, but the item was returned to your stash!");
 
+	public static final ConfigKey<List<String>> ITEM_DISCORD_DETAILS = listKey("discord.items.details", Lists.newArrayList(
+			"Lore:",
+			"{{gts:item_lore}}",
+			"",
+			"Enchantments:",
+			"{{gts:item_enchantments}}"
+	));
+
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
 

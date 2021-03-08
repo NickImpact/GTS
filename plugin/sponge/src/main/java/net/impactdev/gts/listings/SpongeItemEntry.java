@@ -165,7 +165,7 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	public List<String> getDetails() {
 		MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
 
-		return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_SELECTED_REMOVE_LORE), Lists.newArrayList(this::getOrCreateElement))
+		return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ITEM_DISCORD_DETAILS), Lists.newArrayList(this::getOrCreateElement))
 				.stream()
 				.map(Text::toPlain)
 				.collect(Collectors.toList());

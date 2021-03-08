@@ -37,6 +37,9 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.item.enchantment.Enchantment;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.permission.Subject;
@@ -389,6 +392,55 @@ public class GTSSpongePlaceholderManager {
                 "claim_item",
                 "GTS - The item a user is claiming",
                 result -> result
+        ));
+
+        // Item Based Placeholders
+        this.register(new SourceSpecificPlaceholderParser<>(
+                ItemStackSnapshot.class,
+                "item_lore",
+                "GTS - An Item's Lore",
+                snapshot -> {
+                    Text result = Text.EMPTY;
+                    List<Text> lines = snapshot.get(Keys.ITEM_LORE).orElse(Lists.newArrayList());
+
+                    if(lines.size() > 0) {
+                        for (int i = 0; i < lines.size() - 1; i++) {
+                            result = Text.of(result, lines.get(i), Text.NEW_LINE);
+                        }
+
+                        result = Text.of(result, lines.get(lines.size() - 1));
+                    }
+
+                    return Utilities.toComponent(result);
+                }
+        ));
+        this.register(new SourceSpecificPlaceholderParser<>(
+                ItemStackSnapshot.class,
+                "item_enchantments",
+                "GTS - An Item's Enchantments",
+                snapshot -> {
+                    Text result = Text.EMPTY;
+                    List<Text> lines = snapshot.get(Keys.ITEM_ENCHANTMENTS)
+                            .map(enchantments -> {
+                                List<Text> data = Lists.newArrayList();
+                                for(Enchantment enchantment : enchantments) {
+                                    data.add(Text.of(enchantment.getType().getTranslation().get()));
+                                }
+
+                                return data;
+                            })
+                            .orElse(Lists.newArrayList());
+
+                    if(lines.size() > 0) {
+                        for (int i = 0; i < lines.size() - 1; i++) {
+                            result = Text.of(result, lines.get(i), Text.NEW_LINE);
+                        }
+
+                        result = Text.of(result, lines.get(lines.size() - 1));
+                    }
+
+                    return Utilities.toComponent(result);
+                }
         ));
     }
 

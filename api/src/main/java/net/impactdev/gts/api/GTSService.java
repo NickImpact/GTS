@@ -18,14 +18,6 @@ public interface GTSService {
 	}
 
 	/**
-	 * Represents the ID of the server per this runtime environment. This ID changes per run of the plugin,
-	 * and is meant purely to help aid in indicating an acting server.
-	 *
-	 * @return
-	 */
-	UUID getServerID();
-
-	/**
 	 * Returns an unmodifiable list of extensions currently hooked and running with GTS
 	 *
 	 * @return An immutable list of all loaded extensions hooked to GTS

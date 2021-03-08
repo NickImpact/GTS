@@ -25,11 +25,6 @@ public class GTSAPIProvider implements GTSService {
 	private final List<Searcher> searchers = Lists.newArrayList();
 
 	@Override
-	public UUID getServerID() {
-		return null;
-	}
-
-	@Override
 	public ImmutableList<Extension> getAllExtensions() {
 		return ImmutableList.copyOf(GTSPlugin.getInstance().getExtensionManager().getLoadedExtensions());
 	}
