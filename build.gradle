@@ -194,7 +194,7 @@ task copyJars(type: Copy) {
     exclude 'velocity*.jar'
 }
 
-task uploadToOre(type: UploadToOre) {
+task publishToOre(type: UploadToOre) {
     dependsOn(genChangelog)
     dependsOn(copyJars)
 
@@ -255,8 +255,7 @@ task sendToDiscordGenerationsExtension(type: PostToDiscord) {
     force = true
 }
 
-task deploy {
-    dependsOn(uploadToOre)
+task publishToDiscord {
     dependsOn(sendToDiscordPlugins)
     dependsOn(sendToDiscordReforgedExtension)
     dependsOn(sendToDiscordGenerationsExtension)
