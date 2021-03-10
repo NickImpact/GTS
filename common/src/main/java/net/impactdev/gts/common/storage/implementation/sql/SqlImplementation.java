@@ -375,11 +375,12 @@ public class SqlImplementation implements StorageImplementation {
 							ps.setString(1, auction.getID().toString());
 							return this.results(ps, results -> {
 								if(results.next()) {
-									List<UUID> others = GTSPlugin.getInstance().getGson()
-											.fromJson(results.getString("others"), new TypeToken<List<UUID>>() {
-											}.getType());
+									List<UUID> others = GTSPlugin.getInstance().getGson().fromJson(
+											results.getString("others"),
+											new TypeToken<List<UUID>>() {}.getType()
+									);
 
-									return others.contains(user);
+									return Optional.ofNullable(others).orElse(Lists.newArrayList()).contains(user);
 								}
 
 								return false;
