@@ -43,6 +43,7 @@ import net.impactdev.gts.common.storage.StorageFactory;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
@@ -53,6 +54,8 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 
 	private GTSStorage storage;
 	private InternalMessagingService messagingService;
+
+	private Environment environment;
 
 	public GTSBungeePlugin(GTSBungeeBootstrap bootstrap) {
 		super(PluginMetadata.builder()
@@ -105,7 +108,13 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 
 	@Override
 	public Environment getEnvironment() {
-		return null;
+		Environment environment = Optional.ofNullable(this.environment)
+				.orElseGet(() -> (this.environment = new Environment()));
+		environment.append(this.bootstrap.getProxy().getName(), this.bootstrap.getProxy().getVersion());
+		environment.append("Impactor", this.bootstrap.getProxy().getPluginManager().getPlugin("impactor").getDescription().getVersion());
+		environment.append("GTS", this.getMetadata().getVersion());
+
+		return environment;
 	}
 
 	@Override

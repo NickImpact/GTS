@@ -48,6 +48,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class GTSVelocityPlugin extends AbstractVelocityPlugin implements GTSPlugin {
@@ -60,6 +61,8 @@ public class GTSVelocityPlugin extends AbstractVelocityPlugin implements GTSPlug
 
     private GTSStorage storage;
     private InternalMessagingService messagingService;
+
+    private Environment environment;
 
     public GTSVelocityPlugin(GTSVelocityBootstrap bootstrap) {
         super(PluginMetadata.builder()
@@ -111,7 +114,13 @@ public class GTSVelocityPlugin extends AbstractVelocityPlugin implements GTSPlug
 
     @Override
     public Environment getEnvironment() {
-        return null;
+        Environment environment = Optional.ofNullable(this.environment)
+                .orElseGet(() -> (this.environment = new Environment()));
+        environment.append(this.bootstrap.getProxy().getVersion().getName(), this.bootstrap.getProxy().getVersion().getVersion() + " - " + this.bootstrap.getProxy().getVersion().getVendor());
+        environment.append("Impactor", this.bootstrap.getProxy().getPluginManager().getPlugin("impactor").get().getDescription().getVersion().get());
+        environment.append("GTS", this.getMetadata().getVersion());
+
+        return environment;
     }
 
     @Override
