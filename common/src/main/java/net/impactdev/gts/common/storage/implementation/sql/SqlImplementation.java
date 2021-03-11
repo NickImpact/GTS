@@ -68,6 +68,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -77,7 +78,11 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class SqlImplementation implements StorageImplementation {
 
@@ -157,12 +162,8 @@ public class SqlImplementation implements StorageImplementation {
 									if(result.startsWith("set mode")) {
 										s.addBatch(result);
 									} else {
-										int start = result.indexOf('`');
-										String table = result.substring(start + 1, result.indexOf('`', start + 1));
-										if (result.startsWith("CREATE TABLE") && !this.tableExists(table)) {
-											s.addBatch(result);
-										} else if(!result.startsWith("CREATE TABLE") && this.tableExists(table)) {
-											s.addBatch(result);
+										if(SchemaReaders.any(this, result)) {
+											SchemaReaders.first(this, result, s);
 										}
 									}
 								}
@@ -915,6 +916,62 @@ public class SqlImplementation implements StorageImplementation {
 			}
 
 		}
+	}
+
+	private enum SchemaReaders {
+		CREATE_TABLE((impl, in) -> in.startsWith("CREATE TABLE"), (impl, in) -> !impl.tableExists(getTable(in))),
+		ALTER_TABLE((impl, in) -> in.startsWith("ALTER TABLE"), (impl, in) -> impl.tableExists(getTable(in))),
+		ANY((impl, input) -> true, (impl, input) -> true);
+
+		private final SchemaPredicate initial;
+		private final SchemaPredicate last;
+
+		SchemaReaders(SchemaPredicate initial, SchemaPredicate last) {
+			this.initial = initial;
+			this.last = last;
+		}
+
+		public static boolean any(SqlImplementation impl, String in) {
+			return Arrays.stream(values()).map(sr -> {
+				try {
+					return sr.initial.test(impl, in);
+				} catch (Exception e) {
+					ExceptionWriter.write(e);
+					return false;
+				}
+			}).filter(x -> x).findAny().orElse(false);
+		}
+
+		public static void first(SqlImplementation impl, String in, Statement statement) throws Exception {
+			for(SchemaReaders reader : SchemaReaders.values()) {
+				if(reader != ANY) {
+					if (reader.initial.test(impl, in) && reader.last.test(impl, in)) {
+						statement.addBatch(in);
+						return;
+					}
+				} else {
+					for(SchemaReaders r : Arrays.stream(SchemaReaders.values()).filter(sr -> sr != ANY).collect(Collectors.toList())) {
+						if(r.initial.test(impl, in)) {
+							return;
+						}
+					}
+
+					statement.addBatch(in);
+				}
+			}
+		}
+
+		private static String getTable(String in) {
+			int start = in.indexOf('`');
+			return in.substring(start + 1, in.indexOf('`', start + 1));
+		}
+
+	}
+
+	private interface SchemaPredicate {
+
+		boolean test(SqlImplementation impl, String input) throws Exception;
+
 	}
 
 }
