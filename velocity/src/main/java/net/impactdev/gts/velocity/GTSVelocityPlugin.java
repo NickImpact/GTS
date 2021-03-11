@@ -19,6 +19,7 @@ import net.impactdev.gts.common.data.ResourceManagerImpl;
 import net.impactdev.gts.common.messaging.InternalMessagingService;
 import net.impactdev.gts.common.messaging.MessagingFactory;
 import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
+import net.impactdev.gts.common.plugin.Environment;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
 import net.impactdev.gts.common.storage.StorageFactory;
@@ -106,6 +107,11 @@ public class GTSVelocityPlugin extends AbstractVelocityPlugin implements GTSPlug
     @Override
     public GTSVelocityBootstrap getBootstrap() {
         return this.bootstrap;
+    }
+
+    @Override
+    public Environment getEnvironment() {
+        return null;
     }
 
     @Override

@@ -25,10 +25,30 @@ public interface GTSPlugin extends ImpactorPlugin, Configurable, Depending, Tran
 
 	<T extends GTSPlugin> T as(Class<T> type);
 
+	/**
+	 *
+	 *
+	 * @return
+	 */
 	GTSBootstrap getBootstrap();
 
+	/**
+	 * Fetches information regarding the environment
+	 *
+	 * @return
+	 */
+	Environment getEnvironment();
+
+	/**
+	 *
+	 * @return
+	 */
 	Gson getGson();
 
+	/**
+	 *
+	 * @return
+	 */
 	GTSStorage getStorage();
 
 	ExtensionManager getExtensionManager();
@@ -42,5 +62,4 @@ public interface GTSPlugin extends ImpactorPlugin, Configurable, Depending, Tran
 	default InputStream getResourceStream(String path) {
 		return this.getClass().getClassLoader().getResourceAsStream(path);
 	}
-
 }

@@ -5,12 +5,14 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ichorpowered.protocolcontrol.service.ProtocolService;
+import net.impactdev.gts.api.extension.Extension;
 import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.commands.GTSCommandManager;
 import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
 import net.impactdev.gts.common.player.PlayerSettingsImpl;
+import net.impactdev.gts.common.plugin.Environment;
 import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.gts.common.utils.Version;
 import net.impactdev.gts.listeners.AnvilRenameListener;
@@ -78,6 +80,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
@@ -92,6 +95,8 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	private InternalMessagingService messagingService;
 
 	private SimpleExtensionManager extensionManager;
+
+	private Environment environment = null;
 
 	public GTSSpongePlugin(GTSSpongeBootstrap bootstrap, org.slf4j.Logger fallback) {
 		super(PluginMetadata.builder()
@@ -215,6 +220,29 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 	@Override
 	public GTSSpongeBootstrap getBootstrap() {
 		return this.bootstrap;
+	}
+
+	@SuppressWarnings("OptionalGetWithoutIsPresent")
+	@Override
+	public Environment getEnvironment() {
+		Environment environment = Optional.ofNullable(this.environment)
+				.orElseGet(() -> (this.environment = new Environment()));
+		environment.append("Sponge", Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getName() + " " + Sponge.getGame().getPlatform().getContainer(Platform.Component.IMPLEMENTATION).getVersion().orElse("?"));
+		environment.append("Impactor", Sponge.getPluginManager().getPlugin("impactor").get().getVersion().get());
+		environment.append("GTS", this.getMetadata().getVersion());
+
+		Sponge.getServiceManager().getRegistration(EconomyService.class).ifPresent(provider -> {
+			environment.append(provider.getPlugin().getName(), provider.getPlugin().getVersion().orElse("Unknown"));
+		});
+		Sponge.getServiceManager().getRegistration(ProtocolService.class).ifPresent(provider -> {
+			environment.append(provider.getPlugin().getName(), provider.getPlugin().getVersion().orElse("Unknown"));
+		});
+
+		for(Extension extension : GTSService.getInstance().getAllExtensions()) {
+			environment.append(extension.getMetadata().getName(), extension.getMetadata().getVersion());
+		}
+
+		return environment;
 	}
 
 	@Override

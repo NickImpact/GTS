@@ -17,6 +17,7 @@ import net.impactdev.gts.common.api.ApiRegistrationUtil;
 import net.impactdev.gts.common.api.GTSAPIProvider;
 import net.impactdev.gts.common.data.ResourceManagerImpl;
 import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
+import net.impactdev.gts.common.plugin.Environment;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.dependencies.Dependency;
@@ -100,6 +101,11 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 	@Override
 	public GTSBungeeBootstrap getBootstrap() {
 		return this.bootstrap;
+	}
+
+	@Override
+	public Environment getEnvironment() {
+		return null;
 	}
 
 	@Override

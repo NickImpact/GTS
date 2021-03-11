@@ -1,5 +1,6 @@
 package net.impactdev.gts.common.utils.exceptions;
 
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.impactor.api.logging.Logger;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 
@@ -21,17 +22,14 @@ public class ExceptionWriter {
      * @param exception The exception we wish to write out
      */
     public static void write(Throwable exception) {
-        Logger logger = GTSPlugin.getInstance().getPluginLogger();
-        try(StringWriter sw = new StringWriter(); PrintWriter pw = new PrintWriter(sw)) {
-            exception.printStackTrace(pw);
-            pw.flush();
-            String[] trace = sw.toString().split("(\r)?\n");
-            for(String s : trace) {
-                logger.error("&c" + s);
-            }
-        } catch (IOException e) {
-            exception.printStackTrace();
-        }
+        PrettyPrinter printer = new PrettyPrinter(100);
+        printer.add("GTS Encountered an Exception!").center();
+        printer.hr('*');
+        printer.add("Version Information:")
+                .add(GTSPlugin.getInstance().getEnvironment())
+                .hr('-');
+        printer.add(exception);
+        printer.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.ERROR);
     }
 
 }
