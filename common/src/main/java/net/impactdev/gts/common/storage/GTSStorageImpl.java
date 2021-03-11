@@ -87,6 +87,7 @@ public class GTSStorageImpl implements GTSStorage {
         } catch (Exception e) {
             // Log the failure
             ExceptionWriter.write(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -98,7 +99,7 @@ public class GTSStorageImpl implements GTSStorage {
             this.implementation.shutdown();
         } catch (Exception e) {
             // Log the failure
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

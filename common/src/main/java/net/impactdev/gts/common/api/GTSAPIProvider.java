@@ -24,6 +24,8 @@ public class GTSAPIProvider implements GTSService {
 	private final PlayerSettingsManager playerSettingsManager = new PlayerSettingsManagerImpl();
 	private final List<Searcher> searchers = Lists.newArrayList();
 
+	private boolean safe = false;
+
 	@Override
 	public ImmutableList<Extension> getAllExtensions() {
 		return ImmutableList.copyOf(GTSPlugin.getInstance().getExtensionManager().getLoadedExtensions());
@@ -52,6 +54,15 @@ public class GTSAPIProvider implements GTSService {
 	@Override
 	public List<Searcher> getSearchers() {
 		return this.searchers;
+	}
+
+	@Override
+	public boolean isInSafeMode() {
+		return this.safe;
+	}
+
+	public void setSafeMode() {
+		this.safe = true;
 	}
 
 }

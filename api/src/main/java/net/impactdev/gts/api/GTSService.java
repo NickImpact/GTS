@@ -64,4 +64,13 @@ public interface GTSService {
 	 */
 	List<Searcher> getSearchers();
 
+	/**
+	 * Indicates whether or not the plugin has been set into safe mode. Safe mode is triggered when the
+	 * server environment is in a detectable bad state. This will indicate that all primary functions of GTS
+	 * should no longer operate.
+	 *
+	 * @return True if the plugin is in safe mode, false otherwise
+	 */
+	boolean isInSafeMode();
+
 }

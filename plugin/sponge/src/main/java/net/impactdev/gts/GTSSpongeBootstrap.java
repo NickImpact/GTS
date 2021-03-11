@@ -4,7 +4,10 @@ import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import net.impactdev.gts.api.blacklist.Blacklist;
 import net.impactdev.gts.api.events.extension.PluginReloadEvent;
+import net.impactdev.gts.api.exceptions.LackingServiceException;
 import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.gts.commands.executors.safety.SafeModeExecutor;
+import net.impactdev.gts.common.api.GTSAPIProvider;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.placeholders.GTSSpongePlaceholderManager;
 import net.impactdev.impactor.api.Impactor;
@@ -30,6 +33,7 @@ import org.spongepowered.api.plugin.Dependency;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.scheduler.Task;
+import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.text.placeholder.PlaceholderParser;
 
 import java.io.InputStream;
@@ -165,6 +169,9 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 		Sponge.getScheduler().getScheduledTasks(this).forEach(Task::cancel);
 
 		Sponge.getEventManager().registerListener(this, GameStartedServerEvent.class, event -> this.displayErrorOnStart());
+
+		((GTSAPIProvider) GTSService.getInstance()).setSafeMode();
+		new SafeModeExecutor(this.plugin).register();
 	}
 
 	private void displayErrorOnStart() {
@@ -177,21 +184,31 @@ public class GTSSpongeBootstrap implements GTSBootstrap {
 				.add("No commands, listeners, or tasks are registered.")
 				.add()
 				.add("This means the plugin is set to not function and is in safe mode!")
-				.add()
-				.add("Below is the encountered stacktrace:")
-				.hr('-');
+				.add();
 
 		if(!this.getLaunchError().isPresent()) {
 			printer.add("No exception information was logged...");
 		} else {
-			printer.add(this.getLaunchError().get());
+			Throwable error = this.getLaunchError().get();
+			if(error instanceof LackingServiceException) {
+				if(((LackingServiceException) error).getLacking().equals(EconomyService.class)) {
+					printer.add("You are missing an Economy Service")
+							.add("This plugin will not function without one...")
+							.add()
+							.add("Please install a compatible service from Ore!");
+				}
+			} else {
+				printer.add("Below is the encountered stacktrace:")
+						.hr('-')
+						.add(this.getLaunchError().get())
+						.hr('-')
+						.add("If this error persists, ensure you are running the latest GTS versions")
+						.add("If you are on latest, please report this error to the GTS team at here:")
+						.add("https://github.com/NickImpact/GTS/issues");
+			}
 		}
 
 		printer.hr('-')
-				.add("If this error persists, ensure you are running the latest GTS versions")
-				.add("If you are on latest, please report this error to the GTS team at here:")
-				.add("https://github.com/NickImpact/GTS/issues")
-				.hr('-')
 				.add("Server Information").center()
 				.hr('-')
 				.add("Impactor Version: " + Sponge.getPluginManager().getPlugin("impactor").get().getVersion().get())

@@ -31,7 +31,6 @@ repositories {
         name 'sponge-repo'
         url 'https://repo.spongepowered.org/repository/sponge-legacy'
     }
-    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
     maven { url = "https://hub.spigotmc.org/nexus/content/groups/public/" }
     maven {
         name = "Github Packages - Protocol Control"
@@ -45,6 +44,7 @@ repositories {
         name = "CodeMC"
         url = "https://repo.codemc.org/repository/maven-public"
     }
+    maven { url "https://repo.ichorpowered.com/repository/maven-public" }
 }
 
 shadowJar {
@@ -76,6 +76,7 @@ dependencies {
     shadow 'org.spongepowered:spongeapi:7.3.0'
     shadow 'net.kyori:adventure-api:4.3.0'
     shadow 'net.kyori:adventure-text-serializer-legacy:4.3.0'
+    shadow 'com.ichorpowered:protocolcontrol:0.0.2'
 }
 
 sourceMainJava.finalizedBy(blossomSourceReplacementJava)

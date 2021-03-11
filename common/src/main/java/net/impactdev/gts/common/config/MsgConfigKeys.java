@@ -642,6 +642,8 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"{{gts:item_enchantments}}"
 	));
 
+	public static final ConfigKey<String> SAFE_MODE_FEEDBACK = stringKey("general.feedback.safe-mode", "{{gts:error}} &cThe plugin is currently in safe mode! All functionality is disabled!");
+
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
 
