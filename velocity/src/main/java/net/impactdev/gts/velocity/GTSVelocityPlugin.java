@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.velocitypowered.api.proxy.Player;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.blacklist.Blacklist;
 import net.impactdev.gts.api.extension.ExtensionManager;
@@ -152,7 +153,7 @@ public class GTSVelocityPlugin extends AbstractVelocityPlugin implements GTSPlug
 
     @Override
     public String getPlayerDisplayName(UUID id) {
-        return null;
+        return this.getBootstrap().getProxy().getPlayer(id).map(Player::getUsername).orElse("Unknown");
     }
 
     @Override
@@ -188,9 +189,8 @@ public class GTSVelocityPlugin extends AbstractVelocityPlugin implements GTSPlug
     }
 
     private void copyResource(Path path, Path destination) {
-        Path base = Paths.get("assets", "gts");
         if(!Files.exists(destination.resolve(path))) {
-            try (InputStream resource = this.getResourceStream(base.resolve(path).toString().replace("\\", "/"))) {
+            try (InputStream resource = this.getResourceStream(path.toString().replace("\\", "/"))) {
                 Files.createDirectories(destination.resolve(path).getParent());
                 Files.copy(resource, destination.resolve(path));
             } catch (IOException e) {

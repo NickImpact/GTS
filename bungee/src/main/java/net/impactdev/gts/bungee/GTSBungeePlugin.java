@@ -41,7 +41,11 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.StorageFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -80,7 +84,8 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(BuyItNow.BuyItNowBuilder.class, BungeeBIN.BungeeBINBuilder::new);
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(ForceDeleteMessage.Response.ResponseBuilder.class, ForceDeleteMessageImpl.ForceDeleteResponse.ForcedDeleteResponseBuilder::new);
 
-		this.config = new BungeeConfig(new BungeeConfigAdapter(this, new File(this.getConfigDir().toFile(), "main.conf")), new ConfigKeys());
+		this.copyResource(Paths.get("gts.conf"), this.getConfigDir());
+		this.config = new BungeeConfig(new BungeeConfigAdapter(this, new File(this.getConfigDir().toFile(), "gts.conf")), new ConfigKeys());
 		this.storage = new StorageFactory(this).getInstance(StorageType.MARIADB);
 
 		this.messagingService = this.getMessagingFactory().getInstance();
@@ -139,7 +144,11 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 
 	@Override
 	public ImmutableList<StorageType> getMultiServerCompatibleStorageOptions() {
-		return ImmutableList.<StorageType>builder().build();
+		return ImmutableList.<StorageType>builder()
+				.add(StorageType.MYSQL, StorageType.MARIADB)
+				.add(StorageType.MONGODB)
+				.add(StorageType.POSTGRESQL)
+				.build();
 	}
 
 	@Override
@@ -180,5 +189,16 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 				Dependency.CAFFEINE,
 				Dependency.MXPARSER
 		);
+	}
+
+	private void copyResource(Path path, Path destination) {
+		if(!Files.exists(destination.resolve(path))) {
+			try (InputStream resource = this.getResourceStream(path.toString().replace("\\", "/"))) {
+				Files.createDirectories(destination.resolve(path).getParent());
+				Files.copy(resource, destination.resolve(path));
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }
