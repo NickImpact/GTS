@@ -20,6 +20,7 @@ import net.impactdev.gts.api.listings.ui.EntryUI;
 import net.impactdev.gts.api.util.TriConsumer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
@@ -35,6 +36,7 @@ import org.spongepowered.api.text.Text;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -78,13 +80,14 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 	}
 
 	@Override
-	public void pay(UUID payer, @Nullable Object source) {
+	public void pay(UUID payer, @Nullable Object source, @NonNull AtomicBoolean marker) {
 		economy.getOrCreateAccount(payer).get().withdraw(economy.getDefaultCurrency(), this.price, Cause.builder()
 				.append(payer)
 				.build(EventContext.builder()
 						.add(EventContextKeys.PLUGIN, Utilities.getPluginContainer())
 						.build()
 				));
+		marker.set(true);
 	}
 
 	@Override

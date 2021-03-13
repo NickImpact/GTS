@@ -3,9 +3,11 @@ package net.impactdev.gts.api.listings.prices;
 import net.impactdev.gts.api.data.Storable;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.kyori.adventure.text.TextComponent;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Represents a value which a player will pay to purchase (or bid) on a listing.
@@ -54,8 +56,12 @@ public interface Price<P, S, I> extends Storable {
 	 * can actually complete the payment, via {@link #canPay(UUID)}.
 	 *
 	 * @param payer The user paying for the listing
+	 * @param source Source data that might need to be written to the price
+	 * @param marker A reference to the caller that will inform it that the data has been processed and is
+	 *               ready for updating. This field MUST be updated per implementation. Failure to set it
+	 *               accordingly will result in loss of data
 	 */
-	void pay(UUID payer, @Nullable Object source);
+	void pay(UUID payer, @Nullable Object source, @NonNull AtomicBoolean marker);
 
 	/**
 	 * Processes the receiving end of a payment. Sometimes, a price may be unable to be completed due to offline

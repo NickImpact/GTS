@@ -5,9 +5,11 @@ import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.kyori.adventure.text.TextComponent;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class JsonStoredPrice implements Price<JsonObject, Void, Void> {
 
@@ -38,7 +40,7 @@ public class JsonStoredPrice implements Price<JsonObject, Void, Void> {
     }
 
     @Override
-    public void pay(UUID payer, @Nullable Object source) {
+    public void pay(UUID payer, @Nullable Object source, @NonNull AtomicBoolean marker) {
         throw new UnsupportedOperationException();
     }
 

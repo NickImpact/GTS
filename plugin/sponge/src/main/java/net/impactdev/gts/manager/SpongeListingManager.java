@@ -391,11 +391,14 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 					Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(
 							parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_TO_ESCROW))
 					));
-					listing.getPrice().pay(buyer, source);
 
+					final AtomicBoolean marker = new AtomicBoolean(false);
 					return GTSPlugin.getInstance().getMessagingService().requestBINPurchase(listing.getID(), buyer, source)
 							.thenApply(response -> {
 								if(response.wasSuccessful()) {
+									listing.getPrice().pay(buyer, source, marker);
+									while(!marker.get()) {}
+
 									listing.getEntry().give(buyer);
 
 									Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessages(
