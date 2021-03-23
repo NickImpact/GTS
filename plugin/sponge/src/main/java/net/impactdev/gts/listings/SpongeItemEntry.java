@@ -1,8 +1,10 @@
 package net.impactdev.gts.listings;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.data.NBTMapper;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.listings.data.NBTTranslator;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
@@ -141,10 +143,12 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 					.query(QueryOperationTypes.ITEM_STACK_EXACT.of(rep))
 					.first();
 			if(slot.peek().isPresent()) {
-				NBTTagCompound nbt = NBTTranslator.getInstance().translate(slot.peek().get().toContainer());
-				if(nbt.hasKey("tag")) {
-					if(nbt.getCompoundTag("tag").hasKey("GTS-Anvil")) {
-						return;
+				if(!GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.ITEMS_ALLOW_ANVIL_NAMES)) {
+					NBTTagCompound nbt = NBTTranslator.getInstance().translate(slot.peek().get().toContainer());
+					if (nbt.hasKey("tag")) {
+						if (nbt.getCompoundTag("tag").hasKey("GTS-Anvil")) {
+							return;
+						}
 					}
 				}
 
