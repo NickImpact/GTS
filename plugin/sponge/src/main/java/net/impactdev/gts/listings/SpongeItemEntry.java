@@ -145,8 +145,9 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 			if(slot.peek().isPresent()) {
 				if(!GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.ITEMS_ALLOW_ANVIL_NAMES)) {
 					NBTTagCompound nbt = NBTTranslator.getInstance().translate(slot.peek().get().toContainer());
-					if (nbt.hasKey("tag")) {
-						if (nbt.getCompoundTag("tag").hasKey("GTS-Anvil")) {
+					GTSPlugin.getInstance().getPluginLogger().info(nbt.toString());
+					if (nbt.hasKey("UnsafeData")) {
+						if (nbt.getCompoundTag("UnsafeData").hasKey("GTS-Anvil")) {
 							return;
 						}
 					}
