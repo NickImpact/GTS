@@ -86,7 +86,6 @@ public class GTSStorageImpl implements GTSStorage {
             this.implementation.init();
         } catch (Exception e) {
             // Log the failure
-            ExceptionWriter.write(e);
             throw new RuntimeException(e);
         }
     }

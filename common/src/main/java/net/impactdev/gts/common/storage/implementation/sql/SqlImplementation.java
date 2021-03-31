@@ -445,26 +445,31 @@ public class SqlImplementation implements StorageImplementation {
 			ps.setString(1, request.getListingID().toString());
 			return this.results(ps, results -> {
 				boolean successful = results.next();
-				BuyItNow listing = null;
-
-				JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
-				if(!json.has("type")) {
-					throw new JsonParseException("Invalid Listing: Missing type");
-				}
-
-				String type = json.get("type").getAsString();
-				if(type.equals("bin")) {
-					listing = GTSService.getInstance().getGTSComponentManager()
-							.getListingResourceManager(BuyItNow.class)
-							.get()
-							.getDeserializer()
-							.deserialize(json);
-				} else {
-					throw new IllegalArgumentException("Can't purchase an Auction");
-				}
-
+				UUID seller = Listing.SERVER_ID;
 				if(successful) {
-					successful = !listing.isPurchased();
+					BuyItNow listing = null;
+
+					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
+					if (!json.has("type")) {
+						throw new JsonParseException("Invalid Listing: Missing type");
+					}
+
+					String type = json.get("type").getAsString();
+					if (type.equals("bin")) {
+						listing = GTSService.getInstance().getGTSComponentManager()
+								.getListingResourceManager(BuyItNow.class)
+								.get()
+								.getDeserializer()
+								.deserialize(json);
+					} else {
+						throw new IllegalArgumentException("Can't purchase an Auction");
+					}
+
+					seller = listing.getLister();
+
+					if (successful) {
+						successful = !listing.isPurchased();
+					}
 				}
 
 				return new BINPurchaseMessage.Response(
@@ -472,7 +477,7 @@ public class SqlImplementation implements StorageImplementation {
 						request.getID(),
 						request.getListingID(),
 						request.getActor(),
-						listing != null ? listing.getLister() : Listing.SERVER_ID,
+						seller,
 						successful,
 						successful ? null : ErrorCodes.ALREADY_PURCHASED
 				);

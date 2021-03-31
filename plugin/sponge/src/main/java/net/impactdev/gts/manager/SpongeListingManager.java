@@ -434,8 +434,6 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 										player.sendMessage(parser.parse(
 												Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)
 										));
-
-										listing.getPrice().reward(buyer);
 									});
 								}
 
