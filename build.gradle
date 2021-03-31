@@ -32,7 +32,7 @@ plugins {
 
 allprojects {
     group = 'net.impactdev.gts'
-    version = "6.1.4"
+    version = "6.1.5-SNAPSHOT"
 }
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
