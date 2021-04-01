@@ -26,6 +26,7 @@
 package net.impactdev.gts.api.extension;
 
 import net.impactdev.gts.api.GTSService;
+import net.impactdev.gts.api.commands.GTSCommandExecutor;
 import net.impactdev.impactor.api.dependencies.Dependency;
 import net.impactdev.impactor.api.plugin.ImpactorPlugin;
 import net.impactdev.impactor.api.plugin.components.Configurable;
@@ -33,6 +34,7 @@ import net.impactdev.impactor.api.plugin.components.Translatable;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents an extension that is meant to hook into GTS
@@ -59,11 +61,23 @@ public interface Extension extends ImpactorPlugin, Configurable, Translatable {
      */
     void enable(GTSService service);
 
-    List<Dependency> getRequiredDependencies();
-
     /**
      * Unloads the extension. Fired during server shutdown
      */
     void unload();
+
+    /**
+     * Specifies an additional list of dependencies that this extension will require to function
+     *
+     * @return The list of dependencies required for normal operations of the extension
+     */
+    List<Dependency> getRequiredDependencies();
+
+    /**
+     * Returns a set of command executors that this extension would like to supply
+     *
+     * @return A set of executors for the extension, if any
+     */
+    Set<GTSCommandExecutor<?, ?>> getExecutors();
 
 }

@@ -1,10 +1,11 @@
 package net.impactdev.gts.commands.executors;
 
-import net.impactdev.gts.commands.annotations.Alias;
-import net.impactdev.gts.commands.annotations.Permission;
+import net.impactdev.gts.api.commands.annotations.Alias;
+import net.impactdev.gts.api.commands.annotations.Permission;
 import net.impactdev.gts.commands.executors.subs.AdminExecutor;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
+import net.impactdev.gts.sponge.commands.GTSCmdExecutor;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
@@ -14,19 +15,12 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
-import java.util.Optional;
-
 @Alias("gts")
 @Permission(GTSPermissions.DEFAULT)
 public class GlobalExecutor extends GTSCmdExecutor {
 
     public GlobalExecutor(GTSPlugin plugin) {
         super(plugin);
-    }
-
-    @Override
-    public Optional<Text> getDescription() {
-        return Optional.empty();
     }
 
     @Override

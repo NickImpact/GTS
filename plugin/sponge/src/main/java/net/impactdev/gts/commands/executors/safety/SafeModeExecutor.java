@@ -1,9 +1,8 @@
 package net.impactdev.gts.commands.executors.safety;
 
-import net.impactdev.gts.api.messaging.message.Message;
-import net.impactdev.gts.commands.annotations.Alias;
-import net.impactdev.gts.commands.annotations.Permission;
-import net.impactdev.gts.commands.executors.GTSCmdExecutor;
+import net.impactdev.gts.api.commands.annotations.Alias;
+import net.impactdev.gts.api.commands.annotations.Permission;
+import net.impactdev.gts.sponge.commands.GTSCmdExecutor;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
@@ -17,19 +16,12 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.text.Text;
 
-import java.util.Optional;
-
 @Alias("gts")
 @Permission(GTSPermissions.DEFAULT)
 public class SafeModeExecutor extends GTSCmdExecutor {
 
     public SafeModeExecutor(GTSPlugin plugin) {
         super(plugin);
-    }
-
-    @Override
-    public Optional<Text> getDescription() {
-        return Optional.empty();
     }
 
     @Override

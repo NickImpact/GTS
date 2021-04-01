@@ -28,6 +28,7 @@ package net.impactdev.gts.common.extension;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import net.impactdev.gts.api.commands.GTSCommandExecutor;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.dependencies.Dependency;
 import net.impactdev.impactor.api.dependencies.DependencyManager;
@@ -196,6 +197,9 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
     public void enableExtensions() {
         for(Extension extension : this.getLoadedExtensions()) {
             extension.enable(GTSService.getInstance());
+            for(GTSCommandExecutor<?, ?> executor : extension.getExecutors()) {
+                executor.register();
+            }
         }
     }
 

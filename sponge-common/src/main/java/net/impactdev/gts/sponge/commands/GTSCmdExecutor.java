@@ -1,8 +1,9 @@
-package net.impactdev.gts.commands.executors;
+package net.impactdev.gts.sponge.commands;
 
 import com.google.common.collect.Lists;
-import net.impactdev.gts.commands.annotations.Alias;
-import net.impactdev.gts.commands.annotations.Permission;
+import net.impactdev.gts.api.commands.GTSCommandExecutor;
+import net.impactdev.gts.api.commands.annotations.Alias;
+import net.impactdev.gts.api.commands.annotations.Permission;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import org.spongepowered.api.Sponge;
@@ -10,14 +11,12 @@ import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandExecutor;
 import org.spongepowered.api.command.spec.CommandSpec;
-import org.spongepowered.api.text.Text;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-public abstract class GTSCmdExecutor implements CommandExecutor {
+public abstract class GTSCmdExecutor implements CommandExecutor, GTSCommandExecutor<CommandElement, CommandSpec> {
 
     protected final GTSPlugin plugin;
     private final String permission;
@@ -48,17 +47,11 @@ public abstract class GTSCmdExecutor implements CommandExecutor {
         return Lists.newArrayList(this.getClass().getAnnotation(Alias.class).value());
     }
 
-    public abstract Optional<Text> getDescription();
-
-    public abstract CommandElement[] getArguments();
-
-    public abstract GTSCmdExecutor[] getSubcommands();
-
-    protected CommandSpec build() {
-        GTSCmdExecutor[] subcommands = this.getSubcommands();
+    public CommandSpec build() {
+        GTSCommandExecutor<CommandElement, CommandSpec>[] subcommands = this.getSubcommands();
         Map<List<String>, CommandSpec> children = new HashMap<>();
         if(subcommands != null) {
-            for(GTSCmdExecutor child : subcommands) {
+            for(GTSCommandExecutor<CommandElement, CommandSpec> child : subcommands) {
                 children.put(child.getAliases(), child.build());
             }
         }
@@ -71,14 +64,9 @@ public abstract class GTSCmdExecutor implements CommandExecutor {
         return CommandSpec.builder()
                 .children(children)
                 .permission(this.permission)
-                .description(this.getDescription().orElse(Text.EMPTY))
                 .executor(this)
                 .arguments(arguments)
                 .build();
-    }
-
-    private boolean hasNeededAnnotations() {
-        return this.getClass().isAnnotationPresent(Alias.class) && this.getClass().isAnnotationPresent(Permission.class);
     }
 
 }
