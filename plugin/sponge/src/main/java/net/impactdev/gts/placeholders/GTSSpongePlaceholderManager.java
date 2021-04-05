@@ -12,7 +12,7 @@ import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.utils.EconomicFormatter;
-import net.impactdev.gts.placeholders.concurrent.AsyncUserSourcedPlaceholder;
+import net.impactdev.gts.placeholders.parsers.concurrent.AsyncUserSourcedPlaceholder;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
@@ -34,6 +34,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.spongepowered.api.Sponge;
@@ -479,112 +480,22 @@ public class GTSSpongePlaceholderManager {
                 .map(user -> {
                     TextComponent.Builder component = Component.text();
 
-                    AtomicReference<Style> style = new AtomicReference<>(Style.empty());
-
                     if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.SHOULD_SHOW_USER_PREFIX)) {
                         Optional<String> prefix = this.getOptionFromSubject(user, "prefix");
-                        prefix.ifPresent(pre -> {
-                            style.set(this.parseStyle(prefix.get()));
-
-                            TextComponent p = Component.text()
-                                    .append(Component.text(pre.replaceAll(STYLE_LOCATOR.pattern(), "")))
-                                    .style(style.get())
-                                    .build();
-                            component.append(p);
-                        });
+                        prefix.ifPresent(pre -> component.append(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix.get())));
                     }
 
                     Optional<String> color = this.getOptionFromSubject(user, "color");
                     NamedTextColor translated = color.map(NamedTextColor.NAMES::value).orElse(null);
-                    Style inherit = style.get().merge(Style.style().color(translated).build(), Style.Merge.COLOR);
 
-                    return component.append(Component.space())
-                            .append(Component.text()
-                                    .append(Component.text(user.getName()))
-                                    .style(inherit)
-                                    .build()
-                            )
-                            .build();
+                    Component name = Component.text(user.getName());
+                    if(translated != null) {
+                        name = name.color(translated);
+                    }
+
+                    return component.append(name).build();
                 })
                 .orElse(Component.text("Unknown"));
-    }
-
-    private static final Pattern STYLE_LOCATOR = Pattern.compile("([&][a-f0-9klmnor])");
-
-    private static final BiMap<Character, NamedTextColor> ID_TO_COLOR =
-            HashBiMap.create(
-                    ImmutableMap.<Character, NamedTextColor>builder()
-                            .put('0', NamedTextColor.BLACK)
-                            .put('1', NamedTextColor.DARK_BLUE)
-                            .put('2', NamedTextColor.DARK_GREEN)
-                            .put('3', NamedTextColor.DARK_AQUA)
-                            .put('4', NamedTextColor.DARK_RED)
-                            .put('5', NamedTextColor.DARK_PURPLE)
-                            .put('6', NamedTextColor.GOLD)
-                            .put('7', NamedTextColor.GRAY)
-                            .put('8', NamedTextColor.DARK_GRAY)
-                            .put('9', NamedTextColor.BLUE)
-                            .put('a', NamedTextColor.GREEN)
-                            .put('b', NamedTextColor.AQUA)
-                            .put('c', NamedTextColor.RED)
-                            .put('d', NamedTextColor.LIGHT_PURPLE)
-                            .put('e', NamedTextColor.YELLOW)
-                            .put('f', NamedTextColor.WHITE)
-                            .build()
-            );
-    private static final BiMap<Character, Style> ID_TO_STYLE =
-            HashBiMap.create(
-                    ImmutableMap.<Character, Style>builder()
-                            .put('l', Style.style(TextDecoration.BOLD))
-                            .put('o', Style.style(TextDecoration.ITALIC))
-                            .put('n', Style.style(TextDecoration.UNDERLINED))
-                            .put('m', Style.style(TextDecoration.STRIKETHROUGH))
-                            .put('k', Style.style(TextDecoration.OBFUSCATED))
-                            .put('r', Style.empty())
-                            .build()
-            );
-
-    private NamedTextColor getColor(String style) {
-        Pattern pattern = Pattern.compile("[a-f0-9]");
-        Matcher matcher = pattern.matcher(style);
-
-        NamedTextColor color = null;
-        while(matcher.find()) {
-            color = ID_TO_COLOR.get(matcher.group().charAt(0));
-        }
-
-        return color;
-    }
-
-    private Style parseStyle(String in) {
-        Queue<String> queue = EvictingQueue.create(2);
-        Matcher matcher = STYLE_LOCATOR.matcher(in);
-        while(matcher.find()) {
-            queue.add(matcher.group(1));
-        }
-
-        StringJoiner joiner = new StringJoiner("");
-        for(String s : queue) {
-            joiner.add(s);
-        }
-
-        return this.getStyle(joiner.toString());
-    }
-
-    private Style getStyle(String style) {
-        Style result = Style.empty();
-        NamedTextColor color = this.getColor(style);
-        if(color != null) {
-            result = result.color(color);
-        }
-
-        Pattern pattern = Pattern.compile("[k-or]");
-        Matcher matcher = pattern.matcher(style);
-        while(matcher.find()) {
-            result = result.merge(ID_TO_STYLE.get(matcher.group().charAt(0)));
-        }
-
-        return result;
     }
 
 }

@@ -28,7 +28,6 @@ import org.spongepowered.api.text.Text;
 
 import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 
 public class TimeSelectMenu {
