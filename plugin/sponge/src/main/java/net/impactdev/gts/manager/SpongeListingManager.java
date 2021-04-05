@@ -8,6 +8,7 @@ import net.impactdev.gts.api.events.auctions.BidEvent;
 import net.impactdev.gts.api.events.buyitnow.PurchaseListingEvent;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.makeup.Fees;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.util.PrettyPrinter;
@@ -59,6 +60,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
@@ -393,10 +395,11 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 					));
 
 					final AtomicBoolean marker = new AtomicBoolean(false);
+					listing.getPrice().pay(buyer, source, marker);
+
 					return GTSPlugin.getInstance().getMessagingService().requestBINPurchase(listing.getID(), buyer, source)
 							.thenApply(response -> {
 								if(response.wasSuccessful()) {
-									listing.getPrice().pay(buyer, source, marker);
 									while(!marker.get()) {}
 
 									listing.getEntry().give(buyer);
@@ -434,10 +437,28 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 										player.sendMessage(parser.parse(
 												Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)
 										));
+
+										listing.getPrice().reward(buyer);
 									});
 								}
 
 								return response.wasSuccessful();
+							})
+							.exceptionally(throwable -> {
+								final ErrorCode error = throwable instanceof TimeoutException ? ErrorCodes.REQUEST_TIMED_OUT : ErrorCodes.FATAL_ERROR;
+								Sponge.getServer().getPlayer(buyer).ifPresent(player -> {
+									player.sendMessage(parser.parse(
+											Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
+											Lists.newArrayList(() -> error)
+									));
+
+									player.sendMessage(parser.parse(
+											Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)
+									));
+
+									listing.getPrice().reward(buyer);
+								});
+								return false;
 							})
 							.get(5, TimeUnit.SECONDS);
 				}
