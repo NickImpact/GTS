@@ -39,3 +39,9 @@ dependencies {
     shadow 'net.kyori:adventure-api:4.3.0'
     shadow('io.github.classgraph:classgraph:4.8.90')
 }
+
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+    }
+}
