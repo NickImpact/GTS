@@ -478,7 +478,8 @@ public class GTSSpongePlaceholderManager {
         UserStorageService service = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
         return service.get(id)
                 .map(user -> {
-                    TextComponent.Builder component = Component.text();
+                    TextComponent.Builder component = Component.text()
+                            .resetStyle();
 
                     if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.SHOULD_SHOW_USER_PREFIX)) {
                         Optional<String> prefix = this.getOptionFromSubject(user, "prefix");
@@ -491,11 +492,23 @@ public class GTSSpongePlaceholderManager {
                     Component name = Component.text(user.getName());
                     if(translated != null) {
                         name = name.color(translated);
+                    } else {
+                        Style style = this.getDeepestStyle(component.build());
+                        name = name.style(style);
                     }
 
-                    return component.append(name).build();
+                    return component.append(Component.space()).append(name).build();
                 })
                 .orElse(Component.text("Unknown"));
+    }
+
+    private Style getDeepestStyle(Component component) {
+        if(component.children().isEmpty()) {
+            return component.style();
+        }
+
+        int size = component.children().size();
+        return this.getDeepestStyle(component.children().get(size - 1));
     }
 
 }

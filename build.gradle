@@ -32,7 +32,7 @@ plugins {
 
 allprojects {
     group = 'net.impactdev.gts'
-    version = "6.1.5"
+    version = "6.1.6-SNAPSHOT"
 }
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
@@ -277,14 +277,6 @@ publishing {
     }
 
     publications {
-        api(MavenPublication) {
-            def project = project(':api')
-            from project.components.java
-            groupId project.group
-            artifactId "api"
-            version project.version
-        }
-
         common(MavenPublication) {
             def project = project(':common')
             from project.components.java
