@@ -136,7 +136,7 @@ public class GTSInfoGenerator {
     }
 
     private String createName() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH_mm_ss");
         LocalDateTime time = LocalDateTime.now();
         return "gts-info-" + time.format(formatter) + ".txt";
     }
