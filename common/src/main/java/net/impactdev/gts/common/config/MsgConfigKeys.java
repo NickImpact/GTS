@@ -42,6 +42,9 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<List<String>> PURCHASE_PAY = listKey("general.prices.pay", Lists.newArrayList(
 			"{{gts:prefix}} &7You have purchased a &a{{gts:listing_details}} &7for &e{{gts:bin_price}}&7!"
 	));
+	public static final ConfigKey<List<String>> PURCHASE_PAY_FAIL_TO_GIVE = listKey("general.prices.pay-fail-to-give", Lists.newArrayList(
+			"{{gts:error}} &7The listing could not be rewarded at this time, please check your stash!"
+	));
 	public static final ConfigKey<List<String>> PURCHASE_RECEIVE = listKey("general.prices.receive", Lists.newArrayList(
 			"{{gts:prefix}} &a{{gts:purchaser}} &7purchased your &a{{gts:listing_name}} &7listing for &a{{gts:bin_price}}&7!"
 	));
@@ -642,7 +645,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"{{gts:item_enchantments}}"
 	));
 
-	public static final ConfigKey<String> SAFE_MODE_FEEDBACK = stringKey("general.feedback.safe-mode", "{{gts:error}} &cThe plugin is currently in safe mode! All functionality is disabled!");
+	public static final ConfigKey<String> SAFE_MODE_FEEDBACK = stringKey("general.feedback.safe-mode", "{{gts:error}} &cThe plugin is currently in safe mode! All functionality is disabled! Reason: &7(&c{{gts:error_code}}&7)");
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

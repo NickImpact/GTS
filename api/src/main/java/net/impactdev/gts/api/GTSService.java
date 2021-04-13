@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.impactdev.gts.api.data.registry.GTSComponentManager;
 import net.impactdev.gts.api.extension.Extension;
 import net.impactdev.gts.api.maintenance.MaintenanceManager;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.api.searching.Searcher;
 
@@ -72,5 +73,13 @@ public interface GTSService {
 	 * @return True if the plugin is in safe mode, false otherwise
 	 */
 	boolean isInSafeMode();
+
+	/**
+	 * Represents the error code for the triggering of safe mode. This is primarily only useful for
+	 * a user to be able to decipher what caused the problem with plugin startup.
+	 *
+	 * @return The error code that caused safe mode to be triggered.
+	 */
+	ErrorCode getSafeModeReason();
 
 }

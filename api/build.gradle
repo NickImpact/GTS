@@ -12,14 +12,3 @@ javadocJar {
     archiveName = "GTS-API-${project.version}-javadocs.jar"
 }
 
-publishing {
-    publications {
-        api(MavenPublication) {
-            def project = project(':api')
-            from project.components.java
-            groupId project.group
-            artifactId "api"
-            version project.version
-        }
-    }
-}

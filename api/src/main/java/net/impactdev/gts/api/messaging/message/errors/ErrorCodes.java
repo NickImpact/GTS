@@ -14,6 +14,7 @@ public class ErrorCodes {
     public static final ErrorCode REQUEST_TIMED_OUT = create("TIMEOUT", "Failed to receive a response within 5 seconds");
     public static final ErrorCode THIRD_PARTY_CANCELLED = create("OUTSIDE_CANCEL", "An outside source cancelled your request");
     public static final ErrorCode LISTING_EXPIRED = create("EXPIRED", "The listing has expired");
+    public static final ErrorCode FAILED_TO_GIVE = create("UNABLE_TO_GIVE", "The item could not be rewarded successfully");
 
     // BIN
     public static final ErrorCode ALREADY_PURCHASED = create("PURCHASED", "Listing already purchased");
@@ -25,6 +26,9 @@ public class ErrorCodes {
     // Fatal
     public static final ErrorCode FATAL_ERROR = create("FATAL", "A fatal error occurred...");
     public static final ErrorCode UNKNOWN = create("UNKNOWN", "Literally no idea what happened");
+
+    // Safe Mode Reasons
+    public static final ErrorCode ECONOMY = create("LACKING_ECONOMY", "You are missing an economy plugin!");
 
     private static final List<ErrorCode> KEYS;
 

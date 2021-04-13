@@ -17,15 +17,30 @@ public class BungeeBIN extends BungeeListing implements BuyItNow {
     private final JsonStoredPrice price;
     private boolean purchased;
 
+    private final UUID purchaser;
+    private final boolean stashed;
+
     public BungeeBIN(BungeeBINBuilder builder) {
         super(builder.id, builder.lister, builder.entry, builder.expiration);
         this.price = builder.price;
         this.purchased = builder.purchased;
+        this.stashed = builder.stashed;
+        this.purchaser = builder.purchaser;
     }
 
     @Override
     public Price<?, ?, ?> getPrice() {
         return this.price;
+    }
+
+    @Override
+    public UUID purchaser() {
+        return this.purchaser;
+    }
+
+    @Override
+    public boolean stashedForPurchaser() {
+        return this.stashed;
     }
 
     @Override
@@ -44,6 +59,11 @@ public class BungeeBIN extends BungeeListing implements BuyItNow {
         json.add("price", this.price.getPrice());
         json.add("type", "bin");
 
+        json.add("stashed", this.stashed);
+        if(this.stashed) {
+            json.add("purchaser", this.purchaser.toString());
+        }
+
         return json;
     }
 
@@ -61,6 +81,11 @@ public class BungeeBIN extends BungeeListing implements BuyItNow {
         if(price.has("purchased") && price.get("purchased").getAsBoolean()) {
             builder.purchased();
         }
+        if(json.get("stashed").getAsBoolean()) {
+            builder.stashedForPurchaser();
+            builder.purchaser(UUID.fromString(json.get("purchaser").getAsString()));
+        }
+
         return builder.build();
     }
 
@@ -72,6 +97,9 @@ public class BungeeBIN extends BungeeListing implements BuyItNow {
         private JsonStoredPrice price;
         private boolean purchased;
         private LocalDateTime expiration;
+
+        private UUID purchaser;
+        private boolean stashed;
 
         @Override
         public BuyItNowBuilder id(UUID id) {
@@ -102,6 +130,18 @@ public class BungeeBIN extends BungeeListing implements BuyItNow {
         @Override
         public BuyItNowBuilder purchased() {
             this.purchased = true;
+            return this;
+        }
+
+        @Override
+        public BuyItNowBuilder purchaser(UUID purchaser) {
+            this.purchaser = purchaser;
+            return this;
+        }
+
+        @Override
+        public BuyItNowBuilder stashedForPurchaser() {
+            this.stashed = true;
             return this;
         }
 

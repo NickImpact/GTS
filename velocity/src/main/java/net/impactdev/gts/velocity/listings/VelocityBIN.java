@@ -16,16 +16,30 @@ public class VelocityBIN extends VelocityListing implements BuyItNow {
 
     private final JsonStoredPrice price;
     private boolean purchased;
+    private final UUID purchaser;
+    private final boolean stashed;
 
     public VelocityBIN(VelocityBINBuilder builder) {
         super(builder.id, builder.lister, builder.entry, builder.expiration);
         this.price = builder.price;
         this.purchased = builder.purchased;
+        this.stashed = builder.stashed;
+        this.purchaser = builder.purchaser;
     }
 
     @Override
     public Price<?, ?, ?> getPrice() {
         return this.price;
+    }
+
+    @Override
+    public UUID purchaser() {
+        return this.purchaser;
+    }
+
+    @Override
+    public boolean stashedForPurchaser() {
+        return this.stashed;
     }
 
     @Override
@@ -61,6 +75,11 @@ public class VelocityBIN extends VelocityListing implements BuyItNow {
         if(price.has("purchased") && price.get("purchased").getAsBoolean()) {
             builder.purchased();
         }
+        if(json.get("stashed").getAsBoolean()) {
+            builder.stashedForPurchaser();
+            builder.purchaser(UUID.fromString(json.get("purchaser").getAsString()));
+        }
+
         return builder.build();
     }
 
@@ -72,6 +91,9 @@ public class VelocityBIN extends VelocityListing implements BuyItNow {
         private JsonStoredPrice price;
         private boolean purchased;
         private LocalDateTime expiration;
+
+        private UUID purchaser;
+        private boolean stashed;
 
         @Override
         public BuyItNowBuilder id(UUID id) {
@@ -102,6 +124,18 @@ public class VelocityBIN extends VelocityListing implements BuyItNow {
         @Override
         public BuyItNowBuilder purchased() {
             this.purchased = true;
+            return this;
+        }
+
+        @Override
+        public BuyItNowBuilder purchaser(UUID purchaser) {
+            this.purchaser = purchaser;
+            return this;
+        }
+
+        @Override
+        public BuyItNowBuilder stashedForPurchaser() {
+            this.stashed = true;
             return this;
         }
 

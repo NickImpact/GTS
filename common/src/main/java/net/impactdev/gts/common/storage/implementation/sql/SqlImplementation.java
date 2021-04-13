@@ -396,6 +396,10 @@ public class SqlImplementation implements StorageImplementation {
 					BuyItNow bin = (BuyItNow) listing;
 					if(bin.getLister().equals(user)) {
 						builder.append(bin, TriState.FALSE);
+					} else if(bin.stashedForPurchaser()) {
+						if(bin.purchaser().equals(user)) {
+							builder.append(bin, TriState.TRUE);
+						}
 					}
 				}
 			}

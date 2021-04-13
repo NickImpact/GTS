@@ -277,6 +277,14 @@ publishing {
     }
 
     publications {
+        api(MavenPublication) {
+            def project = project(':api')
+            from project.components.java
+            groupId project.group
+            artifactId "api"
+            version project.version
+        }
+
         common(MavenPublication) {
             def project = project(':common')
             from project.components.java
@@ -301,32 +309,32 @@ publishing {
             version project.version
         }
 
-        sponge_common(MavenPublication) {
-            def project = project(':sponge-common')
+        sponge(MavenPublication) {
+            def project = project(':sponge')
             from project.components.java
             groupId project.group
             artifactId "sponge-common"
             version project.version
         }
 
-        plugin_sponge(MavenPublication) {
-            def project = project(':plugin:sponge')
+        plugin(MavenPublication) {
+            def project = project(':plugin')
             from project.components.java
             groupId project.group
             artifactId "plugin-sponge"
             version project.version
         }
 
-        reforged_sponge(MavenPublication) {
-            def project = project(':pixelmon:reforged:sponge')
+        reforged(MavenPublication) {
+            def project = project(':pixelmon:reforged')
             from project.components.java
             groupId project.group
             artifactId "reforged-sponge"
             version project.version
         }
 
-        generations_sponge(MavenPublication) {
-            def project = project(':pixelmon:generations:sponge')
+        generations(MavenPublication) {
+            def project = project(':pixelmon:generations')
             from project.components.java
             groupId project.group
             artifactId "generations-sponge"
