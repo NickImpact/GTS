@@ -143,6 +143,8 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		GTSService.getInstance().addSearcher(new SpongeItemSearcher());
 		GTSService.getInstance().addSearcher(new SpongeUserSearcher());
 
+		this.extensionManager = new SimpleExtensionManager(this);
+
 		this.getPluginLogger().info("Setting up configuration...");
 		this.copyResource(Paths.get("gts.conf"), this.getConfigDir());
 		this.config = new SpongeConfig(new SpongeConfigAdapter(this, new File(this.getConfigDir().toFile(), "gts.conf")), new ConfigKeys());
@@ -160,7 +162,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		}
 
 		this.getPluginLogger().info("Sending load event to available extensions...");
-		this.extensionManager = new SimpleExtensionManager(this);
 		this.extensionManager.loadExtensions(this.getBootstrap().getConfigDirectory().resolve("extensions"));
 
 		this.config.get(ConfigKeys.BLACKLIST).read();
@@ -355,8 +356,14 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 			try (InputStream resource = this.getResourceStream(base.resolve(path).toString().replace("\\", "/"))) {
 				Files.createDirectories(destination.resolve(path).getParent());
 				Files.copy(resource, destination.resolve(path));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
+			} catch (NullPointerException | IOException e) {
+				GTSPlugin.getInstance().getPluginLogger().warn(path.getFileName().toString() + " does not exist! Creating it for you...");
+				try {
+					Files.createDirectories(destination.resolve(path).getParent());
+					Files.createFile(destination.resolve(path));
+				} catch (Exception e1) {
+					throw new RuntimeException(e1);
+				}
 			}
 		}
 	}
