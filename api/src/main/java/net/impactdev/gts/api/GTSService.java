@@ -9,8 +9,6 @@ import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.api.searching.Searcher;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 public interface GTSService {
 

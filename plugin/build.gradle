@@ -47,6 +47,17 @@ repositories {
     maven { url "https://repo.ichorpowered.com/repository/maven-public" }
 }
 
+dependencies {
+    compile project(':api')
+    compile project(':common')
+    compile project(':sponge')
+    shadow 'net.impactdev.impactor:sponge:3.1.2'
+    shadow 'org.spongepowered:spongeapi:7.3.0'
+    shadow 'net.kyori:adventure-api:4.3.0'
+    shadow 'net.kyori:adventure-text-serializer-legacy:4.3.0'
+    shadow 'com.ichorpowered:protocolcontrol:0.0.2'
+}
+
 shadowJar {
     archiveName = "GTS-Sponge-${project.version}.jar"
 
@@ -66,17 +77,6 @@ reobf {
     shadowJar {
         mappingType = 'SEARGE'
     }
-}
-
-dependencies {
-    compile project(':api')
-    compile project(':common')
-    compile project(':sponge')
-    shadow 'net.impactdev.impactor:sponge:3.1.2'
-    shadow 'org.spongepowered:spongeapi:7.3.0'
-    shadow 'net.kyori:adventure-api:4.3.0'
-    shadow 'net.kyori:adventure-text-serializer-legacy:4.3.0'
-    shadow 'com.ichorpowered:protocolcontrol:0.0.2'
 }
 
 sourceMainJava.finalizedBy(blossomSourceReplacementJava)

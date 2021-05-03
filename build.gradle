@@ -84,7 +84,6 @@ allprojects {
 
     ext {
         sponge = "7.3.0"
-        spigot = "1.12.2"
 
         run = ""
         if(System.getenv().containsKey("BUILD_NUMBER")) {

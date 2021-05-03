@@ -450,9 +450,9 @@ public class SqlImplementation implements StorageImplementation {
 			return this.results(ps, results -> {
 				boolean successful = results.next();
 				UUID seller = Listing.SERVER_ID;
-				if(successful) {
-					BuyItNow listing = null;
+				BuyItNow listing = null;
 
+				if(successful) {
 					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
 					if (!json.has("type")) {
 						throw new JsonParseException("Invalid Listing: Missing type");
@@ -473,6 +473,13 @@ public class SqlImplementation implements StorageImplementation {
 
 					if (successful) {
 						successful = !listing.isPurchased();
+					}
+				}
+
+				if(successful) {
+					if(listing != null) {
+						listing.markPurchased();
+						this.sendListingUpdate(listing);
 					}
 				}
 

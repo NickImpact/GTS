@@ -427,8 +427,6 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 										));
 									}
 
-									listing.markPurchased();
-
 									// We do the following such that we will ensure we populate any potential source
 									// the price may require
 									((GTSStorageImpl) GTSPlugin.getInstance().getStorage()).sendListingUpdate(listing)
