@@ -18,7 +18,7 @@ import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.commands.GTSCommandManager;
 import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
 import net.impactdev.gts.common.player.PlayerSettingsImpl;
-import net.impactdev.gts.common.plugin.Environment;
+import net.impactdev.gts.api.environment.Environment;
 import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.gts.common.utils.Version;
 import net.impactdev.gts.listeners.AnvilRenameListener;

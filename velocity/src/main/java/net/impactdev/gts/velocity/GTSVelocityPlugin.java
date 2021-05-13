@@ -20,9 +20,8 @@ import net.impactdev.gts.common.data.ResourceManagerImpl;
 import net.impactdev.gts.common.messaging.InternalMessagingService;
 import net.impactdev.gts.common.messaging.MessagingFactory;
 import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
-import net.impactdev.gts.common.plugin.Environment;
+import net.impactdev.gts.api.environment.Environment;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
 import net.impactdev.gts.common.storage.StorageFactory;
 import net.impactdev.gts.velocity.listings.VelocityAuction;
 import net.impactdev.gts.velocity.listings.VelocityBIN;
@@ -35,7 +34,6 @@ import net.impactdev.gts.velocity.messaging.interpreters.VelocityPingPongInterpr
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.dependencies.Dependency;
-import net.impactdev.impactor.api.logging.Logger;
 import net.impactdev.impactor.api.plugin.PluginMetadata;
 import net.impactdev.impactor.api.storage.StorageType;
 import net.impactdev.impactor.velocity.config.VelocityConfig;

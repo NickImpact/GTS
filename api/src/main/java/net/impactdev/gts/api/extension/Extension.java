@@ -27,6 +27,7 @@ package net.impactdev.gts.api.extension;
 
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.commands.GTSCommandExecutor;
+import net.impactdev.gts.api.environment.Environment;
 import net.impactdev.impactor.api.dependencies.Dependency;
 import net.impactdev.impactor.api.plugin.ImpactorPlugin;
 import net.impactdev.impactor.api.plugin.components.Configurable;
@@ -79,5 +80,10 @@ public interface Extension extends ImpactorPlugin, Configurable, Translatable {
      * @return A set of executors for the extension, if any
      */
     Set<GTSCommandExecutor<?, ?>> getExecutors();
+
+    /**
+     * Supplies a set of extended information regarding the environment that this extension might make use of
+     */
+    void getExtendedEnvironmentInformation(Environment environment);
 
 }

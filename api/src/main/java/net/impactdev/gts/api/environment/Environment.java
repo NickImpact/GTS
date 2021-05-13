@@ -1,4 +1,4 @@
-package net.impactdev.gts.common.plugin;
+package net.impactdev.gts.api.environment;
 
 import com.google.common.collect.Maps;
 import net.impactdev.gts.api.util.PrettyPrinter;
