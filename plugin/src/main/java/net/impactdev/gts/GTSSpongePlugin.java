@@ -241,6 +241,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		for(Extension extension : GTSService.getInstance().getAllExtensions()) {
 			environment.append(extension.getMetadata().getName(), extension.getMetadata().getVersion());
+			extension.getExtendedEnvironmentInformation(environment);
 		}
 
 		return environment;

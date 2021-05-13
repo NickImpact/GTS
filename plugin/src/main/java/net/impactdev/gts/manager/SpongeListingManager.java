@@ -429,6 +429,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 									// We do the following such that we will ensure we populate any potential source
 									// the price may require
+									listing.markPurchased();
 									((GTSStorageImpl) GTSPlugin.getInstance().getStorage()).sendListingUpdate(listing)
 											.exceptionally(e -> {
 												GTSPlugin.getInstance().getPluginLogger().error("Fatal error detected while updating listing with price, see error below:");
