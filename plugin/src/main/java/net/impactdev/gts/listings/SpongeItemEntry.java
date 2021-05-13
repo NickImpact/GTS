@@ -5,7 +5,7 @@ import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.data.NBTMapper;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.listings.data.NBTTranslator;
+import net.impactdev.gts.sponge.data.NBTTranslator;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.json.factory.JObject;

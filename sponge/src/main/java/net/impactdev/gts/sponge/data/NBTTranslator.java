@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package net.impactdev.gts.listings.data;
+package net.impactdev.gts.sponge.data;
 
 import com.google.common.collect.Lists;
 import com.google.common.reflect.TypeToken;

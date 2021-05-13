@@ -2,6 +2,7 @@ package net.impactdev.gts.api;
 
 import com.google.common.collect.ImmutableList;
 import net.impactdev.gts.api.data.registry.GTSComponentManager;
+import net.impactdev.gts.api.data.translators.DataTranslatorManager;
 import net.impactdev.gts.api.extension.Extension;
 import net.impactdev.gts.api.maintenance.MaintenanceManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
@@ -48,6 +49,8 @@ public interface GTSService {
 	 * @return The manager controlling settings regarding GTS maintenance status states
 	 */
 	MaintenanceManager getMaintenanceManager();
+
+	DataTranslatorManager getDataTranslatorManager();
 
 	/**
 	 * Registers a searching option for all listings in the listing manager.
