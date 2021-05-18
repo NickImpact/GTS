@@ -1,6 +1,5 @@
 repositories {
     mavenCentral()
-    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
 }
 
 dependencies {

@@ -29,7 +29,11 @@ dependencies {
 
 shadowJar {
     archiveName = "GTS-Velocity-${project.version}.jar"
-    exclude 'Impactor*.jar'
+
+    dependencies {
+        include project(':api')
+        include project(':common')
+    }
 
     relocate ('com.github.benmanes.caffeine', 'net.impactdev.impactor.relocations.caffeine')
     relocate ('io.github.classgraph', 'net.impactdev.impactor.relocations.classgraph')

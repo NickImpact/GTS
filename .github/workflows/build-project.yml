@@ -34,8 +34,6 @@ jobs:
         run: chmod +x gradlew
       - name: Set run number
         run: echo "BUILD_NUMBER=$(($GITHUB_RUN_NUMBER))" >> $GITHUB_ENV
-      - name: Initialize Forge Decomp Workspace
-        run: ./gradlew setupDecompWorkspace
       - name: Build with Gradle
         run: ./gradlew build
       - name: Add artifacts to build
