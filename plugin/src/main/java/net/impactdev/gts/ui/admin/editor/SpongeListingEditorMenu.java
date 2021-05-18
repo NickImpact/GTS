@@ -84,8 +84,8 @@ public class SpongeListingEditorMenu {
 
         ItemStack display = ItemStack.builder()
                 .itemType(ItemTypes.CHEST_MINECART)
-                .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_TITLE)))
-                .add(Keys.ITEM_LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_LORE)))
+                .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_RETURN_TITLE)))
+                .add(Keys.ITEM_LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_RETURN_LORE)))
                 .build();
         SpongeIcon icon = new SpongeIcon(display);
         icon.addListener(clickable -> {
@@ -111,8 +111,8 @@ public class SpongeListingEditorMenu {
 
         ItemStack display = ItemStack.builder()
                 .itemType(ItemTypes.HOPPER_MINECART)
-                .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_TITLE)))
-                .add(Keys.ITEM_LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_LORE)))
+                .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_NORETURN_TITLE)))
+                .add(Keys.ITEM_LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_NORETURN_LORE)))
                 .build();
         SpongeIcon icon = new SpongeIcon(display);
         icon.addListener(clickable -> {
