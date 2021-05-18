@@ -627,8 +627,12 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> UPDATE_SNAPSHOT = stringKey("general.update-check.snapshot", "{{gts:prefix}} You're using a snapshot version of GTS, things may not work correctly!");
 
 	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_TITLE = stringKey("admin.listing-editor.title", "&cGTS &7\u00bb &3Listing Editor");
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_TITLE = stringKey("admin.listing-editor.icons.delete.title", "&aDelete Listing");
-	public static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_LORE = listKey("admin.listing-editor.icons.delete.lore", Lists.newArrayList(
+	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_RETURN_TITLE = stringKey("admin.listing-editor.icons.delete.hopper_minecart.title", "&aDelete Listing");
+	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_NORETURN_TITLE = stringKey("admin.listing-editor.icons.delete.chest_minecart.title", "&aDelete Listing");
+	public static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_RETURN_LORE = listKey("admin.listing-editor.icons.delete.hopper_minecart.lore", Lists.newArrayList(
+
+	));
+	public static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_NORETURN_LORE = listKey("admin.listing-editor.icons.delete.chest_minecart.lore", Lists.newArrayList(
 
 	));
 	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS = stringKey("admin.listing-editor.responses.success", "{{gts:prefix}} The target listing has been deleted!");
