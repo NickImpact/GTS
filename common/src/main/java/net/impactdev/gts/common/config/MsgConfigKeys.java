@@ -628,9 +628,9 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_TITLE = stringKey("admin.listing-editor.title", "&cGTS &7\u00bb &3Listing Editor");
 	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_TITLE = stringKey("admin.listing-editor.icons.delete.title", "&aDelete Listing");
-	public static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_LORE = listKey("admin.listing-editor.icons.delete.lore", Lists.newArrayList(
-
-	));
+	public static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_LORE = listKey("admin.listing-editor.icons.delete.lore", Lists.newArrayList());
+	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_RETURN_TITLE = stringKey("admin.listing-editor.icons.delete-and-return.title", "&aDelete and Return Listing");
+	public static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_RETURN_LORE = listKey("admin.listing-editor.icons.delete-and-return.lore", Lists.newArrayList());
 	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS = stringKey("admin.listing-editor.responses.success", "{{gts:prefix}} The target listing has been deleted!");
 	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_FAILURE = stringKey("admin.listing-editor.responses.error", "{{gts:error}} The target listing failed to be deleted, with error code &7(&c{{gts:error_code}}&7)");
 	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER = stringKey("admin.listing-editor.responses.user-delete", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin!");
