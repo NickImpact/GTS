@@ -721,11 +721,19 @@ public class PrettyPrinter {
      * @return fluent interface
      */
     public PrettyPrinter add(Throwable th, int indent) {
-        while (th != null) {
-            this.add("%s: %s", th.getClass().getName(), th.getMessage());
+        this.add("%s: %s", th.getClass().getName(), th.getMessage());
+        this.add(th.getStackTrace(), indent);
+
+        return this.addCause(th.getCause(), indent);
+    }
+
+    private PrettyPrinter addCause(Throwable th, int indent) {
+        while(th != null) {
+            this.add("Caused by: %s: %s", th.getClass().getName(), th.getMessage());
             this.add(th.getStackTrace(), indent);
             th = th.getCause();
         }
+
         return this;
     }
 
