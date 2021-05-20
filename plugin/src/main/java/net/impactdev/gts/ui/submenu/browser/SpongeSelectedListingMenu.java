@@ -505,10 +505,6 @@ public class SpongeSelectedListingMenu {
                                                     .from((BuyItNow) this.listing)
                                                     .expiration(LocalDateTime.now());
 
-                                            if(((BuyItNow) this.listing).isPurchased()) {
-                                                b.purchased();
-                                            }
-
                                             BuyItNow bin = b.build();
 
                                             // Place BIN back in storage, in a state such that it'll only be
@@ -664,6 +660,11 @@ public class SpongeSelectedListingMenu {
                                                 this.viewer.sendMessage(service.parse(
                                                         Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
                                                         Lists.newArrayList(() -> ErrorCodes.FAILED_TO_GIVE)
+                                                ));
+                                            } else {
+                                                this.viewer.sendMessage(service.parse(
+                                                        Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
+                                                        Lists.newArrayList(this.listing.getEntry()::getName)
                                                 ));
                                             }
                                         });

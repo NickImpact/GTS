@@ -91,6 +91,9 @@ public interface StorageImplementation {
 
     boolean purge() throws Exception;
 
+    @Deprecated
+    boolean clean() throws Exception;
+
     // ---------------------------------------------------------
     // New methods
     // ---------------------------------------------------------

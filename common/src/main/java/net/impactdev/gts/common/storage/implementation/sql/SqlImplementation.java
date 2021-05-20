@@ -38,6 +38,7 @@ import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.NotificationSetting;
 import net.impactdev.gts.api.player.PlayerSettings;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
@@ -345,6 +346,18 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
+	public boolean clean() throws Exception {
+		if(this.tableExists(this.processor.apply("{prefix}listings_v3"))) {
+			try (Connection connection = this.connectionFactory.getConnection()) {
+				Statement statement = connection.createStatement();
+				statement.executeUpdate(this.processor.apply("DROP TABLE {prefix}listings_v3"));
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public Stash getStash(UUID user) throws Exception {
 		Stash.StashBuilder builder = Stash.builder();
 
@@ -394,7 +407,7 @@ public class SqlImplementation implements StorageImplementation {
 					}
 				} else {
 					BuyItNow bin = (BuyItNow) listing;
-					if(bin.getLister().equals(user)) {
+					if(bin.getLister().equals(user) && !bin.stashedForPurchaser()) {
 						builder.append(bin, TriState.FALSE);
 					} else if(bin.stashedForPurchaser()) {
 						if(bin.purchaser().equals(user)) {
@@ -852,6 +865,10 @@ public class SqlImplementation implements StorageImplementation {
 			AtomicInteger successful = new AtomicInteger();
 			AtomicInteger parsed = new AtomicInteger();
 
+			PrettyPrinter printer = new PrettyPrinter(80);
+			printer.add("Legacy Translation Effort").center();
+			printer.table("ID", "Parsed", "Successful");
+
 			this.ran = true;
 
 			this.query(
@@ -866,6 +883,11 @@ public class SqlImplementation implements StorageImplementation {
 									continue;
 								}
 
+								JsonObject json = GTSPlugin.getInstance().getGson().fromJson(incoming.getString("entry"), JsonObject.class);
+								if(!json.has("element")) {
+									continue;
+								}
+
 								try {
 									UUID lister = UUID.fromString(incoming.getString("owner"));
 									LocalDateTime expiration = incoming.getTimestamp("expiration").toLocalDateTime();
@@ -874,11 +896,6 @@ public class SqlImplementation implements StorageImplementation {
 											.orElseThrow(() -> new IllegalStateException("No deserializer for currency available"))
 											.getDeserializer()
 											.deserialize(new JObject().add("value", incoming.getDouble("price")).toJson());
-
-									JsonObject json = GTSPlugin.getInstance().getGson().fromJson(incoming.getString("entry"), JsonObject.class);
-									if(!json.has("element")) {
-										continue;
-									}
 
 									Entry<?, ?> entry = GTSService.getInstance().getGTSComponentManager()
 											.getLegacyEntryDeserializer(json.get("type").getAsString())
@@ -897,16 +914,23 @@ public class SqlImplementation implements StorageImplementation {
 									ps.setString(2, lister.toString());
 									ps.setString(3, GTSPlugin.getInstance().getGson().toJson(bin.serialize().toJson()));
 
+									this.query(this.processor.apply("DELETE FROM {prefix}listings_v3 WHERE ID=?"), (con, p) -> {
+										p.setString(1, id.toString());
+										p.executeUpdate();
+										return null;
+									});
+
 									ps.addBatch();
 									successful.incrementAndGet();
 								} catch (IllegalStateException e) {
-									GTSPlugin.getInstance().getPluginLogger().error("Failed to read listing with ID: " + id.toString());
+									GTSPlugin.getInstance().getPluginLogger().error("Failed to read listing with ID: " + id);
 									GTSPlugin.getInstance().getPluginLogger().error("  * " + e.getMessage());
 								} catch (Exception e) {
-									GTSPlugin.getInstance().getPluginLogger().error("Unexpectedly failed to read listing with ID: " + id.toString());
+									GTSPlugin.getInstance().getPluginLogger().error("Unexpectedly failed to read listing with ID: " + id);
 									ExceptionWriter.write(e);
 								} finally {
 									parsed.incrementAndGet();
+									printer.tr(id, parsed.get(), successful.get());
 								}
 							}
 
@@ -919,6 +943,8 @@ public class SqlImplementation implements StorageImplementation {
 						return null;
 					})
 			);
+
+			printer.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
 
 			if(successful.get() == parsed.get()) {
 				try (Connection connection = this.connectionFactory.getConnection()) {

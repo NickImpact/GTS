@@ -180,6 +180,10 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 					.expiration(input.getExpiration())
 					.purchaser(input.purchaser());
 
+			if(input.isPurchased()) {
+				builder.purchased();
+			}
+
 			if(input.stashedForPurchaser()) {
 				builder.stashedForPurchaser();
 			}

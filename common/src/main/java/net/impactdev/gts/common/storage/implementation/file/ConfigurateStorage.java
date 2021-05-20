@@ -221,6 +221,11 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     @Override
+    public boolean clean() throws Exception {
+        return false;
+    }
+
+    @Override
     public Stash getStash(UUID user) throws Exception {
         return null;
     }

@@ -1,6 +1,8 @@
 package net.impactdev.gts.commands.executors.subs;
 
+import net.impactdev.gts.api.commands.GTSCommandExecutor;
 import net.impactdev.gts.api.listings.manager.ListingManager;
+import net.impactdev.gts.api.storage.GTSStorage;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.util.GTSInfoGenerator;
 import net.impactdev.gts.api.commands.annotations.Alias;
@@ -20,6 +22,7 @@ import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
@@ -48,6 +51,7 @@ public class AdminExecutor extends GTSCmdExecutor {
         return new GTSCmdExecutor[] {
                 new Info(this.plugin),
                 new Ping(this.plugin),
+                new Clean(this.plugin),
                 new Test(this.plugin)
         };
     }
@@ -127,6 +131,40 @@ public class AdminExecutor extends GTSCmdExecutor {
 
     }
 
+    @Alias("clean")
+    @Permission(GTSPermissions.ADMIN_BASE)
+    public static class Clean extends GTSCmdExecutor {
+
+        public Clean(GTSPlugin plugin) {
+            super(plugin);
+        }
+
+        @Override
+        public CommandElement[] getArguments() {
+            return new CommandElement[0];
+        }
+
+        @Override
+        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubcommands() {
+            return new GTSCommandExecutor[0];
+        }
+
+        @Override
+        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+            MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+            src.sendMessage(service.parse("{{gts:prefix}} Erasing legacy table if it exists..."));
+            GTSStorage storage = GTSPlugin.getInstance().getStorage();
+            if(storage.clean().join()) {
+                src.sendMessage(service.parse("{{gts:prefix}} Legacy data successfully erased!"));
+            } else {
+                src.sendMessage(service.parse("{{gts:error}} Legacy data no longer exists..."));
+            }
+
+            return CommandResult.success();
+        }
+    }
+
     @Alias("test")
     @Permission(GTSPermissions.ADMIN_PING)
     public static class Test extends GTSCmdExecutor {
@@ -150,7 +188,7 @@ public class AdminExecutor extends GTSCmdExecutor {
             BuyItNow bin = BuyItNow.builder()
                     .lister(Listing.SERVER_ID)
                     .entry(new SpongeItemEntry(ItemStack.builder().itemType(ItemTypes.GRASS).add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "GTS Test Item")).build().createSnapshot()))
-                    .expiration(LocalDateTime.now().plusMinutes(60))
+                    .expiration(LocalDateTime.now())
                     .price(new MonetaryPrice(50))
                     .purchased()
                     .stashedForPurchaser()

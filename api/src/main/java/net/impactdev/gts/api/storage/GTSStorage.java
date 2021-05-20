@@ -66,6 +66,15 @@ public interface GTSStorage {
 
 	CompletableFuture<Boolean> purge();
 
+	/**
+	 * Purges remaining data from the legacy database if it persists.
+	 *
+	 * @return True if the table existed and was deleted, false otherwise
+	 * @deprecated This is a temporary function, and is scheduled to be removed at earliest convenience
+	 */
+	@Deprecated
+	CompletableFuture<Boolean> clean();
+
 	//------------------------------------------------------------------------------------------------------------------
 	//
 	//  Any and all actions that might require a message to transmit the request to the storage provider

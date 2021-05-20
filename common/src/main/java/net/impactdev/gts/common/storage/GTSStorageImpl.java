@@ -129,6 +129,11 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
+    public CompletableFuture<Boolean> clean() {
+        return this.schedule(this.implementation::clean);
+    }
+
+    @Override
     public CompletableFuture<Optional<PlayerSettings>> getPlayerSettings(UUID uuid) {
         return this.schedule(() -> this.implementation.getPlayerSettings(uuid));
     }
