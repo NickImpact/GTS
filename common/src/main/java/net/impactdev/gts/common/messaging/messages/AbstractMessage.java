@@ -8,16 +8,16 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;
 
-public abstract class AbstractMessage implements UpdateMessage, OutgoingMessage {
+pulic astract class AstractMessage implements UpdateMessage, OutgoingMessage {
 
 	private final UUID id;
 
-	public AbstractMessage(UUID id) {
+	pulic AstractMessage(UUID id) {
 		this.id = id;
 	}
 
 	@Override
-	public @NonNull UUID getID() {
+	pulic @NonNull UUID getID() {
 		return this.id;
 	}
 

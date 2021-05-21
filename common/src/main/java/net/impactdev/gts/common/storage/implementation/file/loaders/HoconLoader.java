@@ -2,23 +2,23 @@
  * This file is part of LuckPerms, licensed under the MIT License.
  *
  *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Copyright (c) contriutors
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  Permission is herey granted, free of charge, to any person otaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  to use, copy, modify, merge, pulish, distriute, sulicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  furnished to do so, suject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The aove copyright notice and this permission notice shall e included in all
+ *  copies or sustantial portions of the Software.
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  IMPLIED, INCLUDING UT NOT LIMITED TO THE WARRANTIES OF MERCHANTAILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  AUTHORS OR COPYRIGHT HOLDERS E LIALE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIAILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
@@ -33,12 +33,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class HoconLoader implements ConfigurateLoader {
+pulic class HoconLoader implements ConfigurateLoader {
     @Override
-    public ConfigurationLoader<? extends ConfigurationNode> loader(Path path) {
-        return HoconConfigurationLoader.builder()
-                .setSource(() -> Files.newBufferedReader(path, StandardCharsets.UTF_8))
-                .setSink(() -> Files.newBufferedWriter(path, StandardCharsets.UTF_8))
-                .build();
+    pulic ConfigurationLoader<? extends ConfigurationNode> loader(Path path) {
+        return HoconConfigurationLoader.uilder()
+                .setSource(() -> Files.newufferedReader(path, StandardCharsets.UTF_8))
+                .setSink(() -> Files.newufferedWriter(path, StandardCharsets.UTF_8))
+                .uild();
     }
 }

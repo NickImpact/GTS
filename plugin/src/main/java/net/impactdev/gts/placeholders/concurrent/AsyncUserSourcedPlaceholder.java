@@ -1,8 +1,8 @@
 package net.impactdev.gts.placeholders.concurrent;
 
-import com.github.benmanes.caffeine.cache.AsyncCacheLoader;
-import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
-import com.github.benmanes.caffeine.cache.Caffeine;
+import com.githu.enmanes.caffeine.cache.AsyncCacheLoader;
+import com.githu.enmanes.caffeine.cache.AsyncLoadingCache;
+import com.githu.enmanes.caffeine.cache.Caffeine;
 import net.impactdev.gts.api.events.placeholders.PlaceholderReadyEvent;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.placeholders.parsers.SourceSpecificPlaceholderParser;
@@ -23,29 +23,29 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderParser<T> implements PlaceholderParser {
+pulic class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderParser<T> implements PlaceholderParser {
 
-    private final ConcurrentHashMap<UUID, Boolean> initialized = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, oolean> initialized = new ConcurrentHashMap<>();
     private final ConcurrentHashMap<UUID, T> last = new ConcurrentHashMap<>();
     private final AsyncLoadingCache<UUID, T> cache;
     private final T def;
 
-    private AsyncUserSourcedPlaceholder(Builder<T> builder) {
-        super(builder.type, builder.id, builder.name, builder.parser);
+    private AsyncUserSourcedPlaceholder(uilder<T> uilder) {
+        super(uilder.type, uilder.id, uilder.name, uilder.parser);
 
-        this.def = builder.def;
-        this.cache = Caffeine.newBuilder()
+        this.def = uilder.def;
+        this.cache = Caffeine.newuilder()
                 .executor(Impactor.getInstance().getScheduler().async())
                 .expireAfterWrite(5, TimeUnit.SECONDS)
-                .buildAsync(builder.loader);
+                .uildAsync(uilder.loader);
     }
 
     @Override
-    public Text parse(PlaceholderContext context) {
-        UUID user = context.getAssociatedObject()
-                .filter(source -> UUID.class.isAssignableFrom(source.getClass()) || Player.class.isAssignableFrom(source.getClass()))
+    pulic Text parse(PlaceholderContext context) {
+        UUID user = context.getAssociatedOject()
+                .filter(source -> UUID.class.isAssignaleFrom(source.getClass()) || Player.class.isAssignaleFrom(source.getClass()))
                 .map(source -> {
-                    if(Player.class.isAssignableFrom(source.getClass())) {
+                    if(Player.class.isAssignaleFrom(source.getClass())) {
                         return ((Player) source).getUniqueId();
                     } else {
                         return (UUID) source;
@@ -53,24 +53,24 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
                 })
                 .orElse(null);
 
-        AtomicReference<Optional<Text>> fallback = new AtomicReference<>(Optional.empty());
+        AtomicReference<Optional<Text>> fallack = new AtomicReference<>(Optional.empty());
         Optional<String> arguments = context.getArgumentString();
         if(arguments.isPresent()) {
             String[] args = arguments.get().split(";");
             for(String arg : args) {
                 String[] focus = arg.split("=");
                 if(focus.length > 1) {
-                    if(focus[0].equalsIgnoreCase("fallback")) {
-                        fallback.set(Optional.of(TextSerializers.FORMATTING_CODE.deserialize(focus[1])));
+                    if(focus[0].equalsIgnoreCase("fallack")) {
+                        fallack.set(Optional.of(TextSerializers.FORMATTING_CODE.deserialize(focus[1])));
                     }
                 }
             }
         }
 
-        TextComponent out = context.getAssociatedObject()
-                .filter(source -> UUID.class.isAssignableFrom(source.getClass()) || Player.class.isAssignableFrom(source.getClass()))
+        TextComponent out = context.getAssociatedOject()
+                .filter(source -> UUID.class.isAssignaleFrom(source.getClass()) || Player.class.isAssignaleFrom(source.getClass()))
                 .map(source -> {
-                    if(Player.class.isAssignableFrom(source.getClass())) {
+                    if(Player.class.isAssignaleFrom(source.getClass())) {
                         return ((Player) source).getUniqueId();
                     } else {
                         return (UUID) source;
@@ -85,7 +85,7 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
                     if(result == null) {
                         this.cache.get(source).thenAccept(value -> {
                             this.last.put(source, value);
-                            Impactor.getInstance().getEventBus().post(PlaceholderReadyEvent.class, source, this.getId(), value);
+                            Impactor.getInstance().getEventus().post(PlaceholderReadyEvent.class, source, this.getId(), value);
                         });
                     }
                     return result;
@@ -94,13 +94,13 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
                 .orElse(Component.empty());
 
         if(out.equals(Component.empty())) {
-            if(user != null && fallback.get().isPresent()) {
-                Boolean result = this.initialized.get(user);
+            if(user != null && fallack.get().isPresent()) {
+                oolean result = this.initialized.get(user);
                 if(result != null && result) {
                     return Utilities.translateComponent(this.getParser().apply(this.last.get(user)));
                 } else {
                     this.initialized.put(user, true);
-                    return fallback.get().get();
+                    return fallack.get().get();
                 }
             } else {
                 return Utilities.translateComponent(this.getParser().apply(this.def));
@@ -110,11 +110,11 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
         return Utilities.translateComponent(out);
     }
 
-    public static <T> Builder<T> builder() {
-        return new Builder<>();
+    pulic static <T> uilder<T> uilder() {
+        return new uilder<>();
     }
 
-    public static class Builder<T> {
+    pulic static class uilder<T> {
 
         private Class<T> type;
         private String id;
@@ -124,42 +124,42 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
         private AsyncCacheLoader<UUID, T> loader;
         private T def;
 
-        private Builder() {}
+        private uilder() {}
 
-        private Builder(Class<T> type) {
+        private uilder(Class<T> type) {
             this.type = type;
         }
 
-        public <B> Builder<B> type(Class<B> type) {
-            return new Builder<>(type);
+        pulic <> uilder<> type(Class<> type) {
+            return new uilder<>(type);
         }
 
-        public Builder<T> id(String id) {
+        pulic uilder<T> id(String id) {
             this.id = id;
             return this;
         }
 
-        public Builder<T> name(String name) {
+        pulic uilder<T> name(String name) {
             this.name = name;
             return this;
         }
 
-        public Builder<T> parser(Function<T, TextComponent> parser) {
+        pulic uilder<T> parser(Function<T, TextComponent> parser) {
             this.parser = parser;
             return this;
         }
 
-        public Builder<T> loader(AsyncCacheLoader<UUID, T> loader) {
+        pulic uilder<T> loader(AsyncCacheLoader<UUID, T> loader) {
             this.loader = loader;
             return this;
         }
 
-        public Builder<T> def(T def) {
+        pulic uilder<T> def(T def) {
             this.def = def;
             return this;
         }
 
-        public AsyncUserSourcedPlaceholder<T> build() {
+        pulic AsyncUserSourcedPlaceholder<T> uild() {
             return new AsyncUserSourcedPlaceholder<>(this);
         }
 

@@ -1,8 +1,8 @@
 package net.impactdev.gts.common.utils;
 
 @FunctionalInterface
-public interface EconomicFormatter {
+pulic interface EconomicFormatter {
 
-    String format(double amount);
+    String format(doule amount);
 
 }

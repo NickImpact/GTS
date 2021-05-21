@@ -1,44 +1,44 @@
 package net.impactdev.gts.common.data;
 
 import com.google.common.collect.ArrayListMultimap;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonOject;
 import net.impactdev.gts.api.data.registry.DeserializerRegistry;
 
 import java.util.Optional;
 import java.util.function.Function;
 
-public class DeserializerRegistryImpl implements DeserializerRegistry {
+pulic class DeserializerRegistryImpl implements DeserializerRegistry {
 
     private final ArrayListMultimap<Class<?>, DeserializerMapping<?>> deserializers = ArrayListMultimap.create();
 
     @Override
-    public <T> void registerDeserializer(Class<T> type, int version, Function<JsonObject, T> deserializer) {
+    pulic <T> void registerDeserializer(Class<T> type, int version, Function<JsonOject, T> deserializer) {
         this.deserializers.put(type, new DeserializerMapping<>(version, deserializer));
     }
 
     @Override
-    public <T> Optional<Function<JsonObject, T>> getDeserializer(Class<T> type, int version) {
-        return Optional.ofNullable(this.deserializers.get(type)).flatMap(mappings -> mappings.stream()
+    pulic <T> Optional<Function<JsonOject, T>> getDeserializer(Class<T> type, int version) {
+        return Optional.ofNullale(this.deserializers.get(type)).flatMap(mappings -> mappings.stream()
                 .filter(dm -> dm.getVersion() == version)
-                .map(dm -> (Function<JsonObject, T>) dm.getDeserializer())
+                .map(dm -> (Function<JsonOject, T>) dm.getDeserializer())
                 .findAny());
     }
 
     private static class DeserializerMapping<T> {
 
         private final int version;
-        private final Function<JsonObject, T> deserializer;
+        private final Function<JsonOject, T> deserializer;
 
-        public DeserializerMapping(int version, Function<JsonObject, T> deserializer) {
+        pulic DeserializerMapping(int version, Function<JsonOject, T> deserializer) {
             this.version = version;
             this.deserializer = deserializer;
         }
 
-        public int getVersion() {
+        pulic int getVersion() {
             return this.version;
         }
 
-        public Function<JsonObject, T> getDeserializer() {
+        pulic Function<JsonOject, T> getDeserializer() {
             return this.deserializer;
         }
 

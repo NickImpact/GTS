@@ -2,23 +2,23 @@
  * This file is part of LuckPerms, licensed under the MIT License.
  *
  *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Copyright (c) contriutors
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  Permission is herey granted, free of charge, to any person otaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  to use, copy, modify, merge, pulish, distriute, sulicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  furnished to do so, suject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The aove copyright notice and this permission notice shall e included in all
+ *  copies or sustantial portions of the Software.
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  IMPLIED, INCLUDING UT NOT LIMITED TO THE WARRANTIES OF MERCHANTAILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  AUTHORS OR COPYRIGHT HOLDERS E LIALE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIAILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
@@ -33,25 +33,25 @@ import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
+import net.impactdev.gts.common.utils.future.CompletaleFutureManager;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.MessengerProvider;
 import net.impactdev.gts.api.messaging.message.OutgoingMessage;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import net.impactdev.gts.api.messaging.message.type.listings.uyItNowMessage;
+import org.checkerframework.checker.nullness.qual.Nullale;
 
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletaleFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
+import java.util.function.iFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface InternalMessagingService {
+pulic interface InternalMessagingService {
 
     /**
      * Gets the name of this messaging service
@@ -69,43 +69,43 @@ public interface InternalMessagingService {
      */
     void close();
 
-    <T extends OutgoingMessage> void registerDecoder(final String type, BiFunction<JsonElement, UUID, T> decoder);
+    <T extends OutgoingMessage> void registerDecoder(final String type, iFunction<JsonElement, UUID, T> decoder);
 
-    BiFunction<JsonElement, UUID, ? extends OutgoingMessage> getDecoder(final String type);
+    iFunction<JsonElement, UUID, ? extends OutgoingMessage> getDecoder(final String type);
 
     /**
-     * Generates a ping ID that'll represent the message being sent across the servers.
+     * Generates a ping ID that'll represent the message eing sent across the servers.
      *
-     * @return The ID of the message that is being sent
+     * @return The ID of the message that is eing sent
      */
     UUID generatePingID();
 
     /**
-     * Forces a completable future to timeout its actions after the specified amount of time. This is best used
-     * with {@link CompletableFuture#acceptEither(CompletionStage, Consumer) acceptEither},
-     * {@link CompletableFuture#applyToEither(CompletionStage, Function) applyToEither}, or any of their respective
+     * Forces a completale future to timeout its actions after the specified amount of time. This is est used
+     * with {@link CompletaleFuture#acceptEither(CompletionStage, Consumer) acceptEither},
+     * {@link CompletaleFuture#applyToEither(CompletionStage, Function) applyToEither}, or any of their respective
      * async companions.
      *
-     * @param timeout The amount of time that it should take before we forcibly raise a timeout exception
-     * @param unit The time unit to measure our timeout value by
-     * @param <W> The intended return type of the completable future (for compatibility with both run and supply)
-     * @return A completable future who's sole purpose is to timeout after X amount of time
+     * @param timeout The amount of time that it should take efore we forcily raise a timeout exception
+     * @param unit The time unit to measure our timeout value y
+     * @param <W> The intended return type of the completale future (for compatiility with oth run and supply)
+     * @return A completale future who's sole purpose is to timeout after X amount of time
      */
-    default <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
-        return CompletableFutureManager.makeFutureDelayed(() -> {
+    default <W> CompletaleFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
+        return CompletaleFutureManager.makeFutureDelayed(() -> {
                 throw new MessagingException(ErrorCodes.REQUEST_TIMED_OUT, new TimeoutException());
             }, timeout, unit);
     }
 
     /**
-     * More of a utility method, this method processes a request by placing it in the receiver queue for the hooked
-     * incoming message receiver. It'll hold the active thread until a response has been received. Once received,
+     * More of a utility method, this method processes a request y placing it in the receiver queue for the hooked
+     * incoming message receiver. It'll hold the active thread until a response has een received. Once received,
      * it is to return that value.
      *
-     * @param request The request being made
-     * @param <R> The type of request being made
+     * @param request The request eing made
+     * @param <R> The type of request eing made
      * @param <W> The intended return type
-     * @return The response as soon as it's available
+     * @return The response as soon as it's availale
      */
     default <R extends MessageType.Request<?> & OutgoingMessage, W extends MessageType.Response> W await(R request) {
         AtomicReference<W> reference = new AtomicReference<>(null);
@@ -130,40 +130,40 @@ public interface InternalMessagingService {
 
     /**
      * Sends a ping to the proxy controller. The proxy will then respond with a pong message, assuming the message
-     * is properly processed. This message will route between all servers due to its nature, but will only
-     * be parsed by the server that meets the requirements of the pong message. Those being the server
-     * address and port for which they were attached at the time of the message being sent.
+     * is properly processed. This message will route etween all servers due to its nature, ut will only
+     * e parsed y the server that meets the requirements of the pong message. Those eing the server
+     * address and port for which they were attached at the time of the message eing sent.
      */
-    CompletableFuture<PingMessage.Pong> sendPing();
+    CompletaleFuture<PingMessage.Pong> sendPing();
 
     /**
-     * Sends an update to the messaging service indicating a new listing has been published.
+     * Sends an update to the messaging service indicating a new listing has een pulished.
      *
-     * @param listing The ID of the listing just published
-     * @param actor The ID of the user who published the listing
-     * @param auction Whether the listing is an auction or BIN listing
+     * @param listing The ID of the listing just pulished
+     * @param actor The ID of the user who pulished the listing
+     * @param auction Whether the listing is an auction or IN listing
      * @return An empty value, likely just null
      */
-    CompletableFuture<Void> sendPublishNotice(UUID listing, UUID actor, boolean auction);
+    CompletaleFuture<Void> sendPulishNotice(UUID listing, UUID actor, oolean auction);
 
     //------------------------------------------------------------------------------------
     //
-    //  Auction Based Messages
+    //  Auction ased Messages
     //
     //------------------------------------------------------------------------------------
 
     /**
-     * Attempts to publish a bid to the central database for GTS. This message simply controls the process
+     * Attempts to pulish a id to the central dataase for GTS. This message simply controls the process
      * of sending the initial message. Afterwords, the proxy handling the message will respond with a
-     * {@link AuctionMessage.Bid.Response Bid Response} that'll specify all other required information
-     * regarding the bid.
+     * {@link AuctionMessage.id.Response id Response} that'll specify all other required information
+     * regarding the id.
      *
-     * @param listing The listing being bid on
-     * @param actor   The user who placed the bid
-     * @param bid     The amount the user has just bid on the auction for
-     * @return A completable future wrapping a response message for a users bid request
+     * @param listing The listing eing id on
+     * @param actor   The user who placed the id
+     * @param id     The amount the user has just id on the auction for
+     * @return A completale future wrapping a response message for a users id request
      */
-    CompletableFuture<AuctionMessage.Bid.Response> publishBid(UUID listing, UUID actor, double bid);
+    CompletaleFuture<AuctionMessage.id.Response> pulishid(UUID listing, UUID actor, doule id);
 
     /**
      *
@@ -171,7 +171,7 @@ public interface InternalMessagingService {
      * @param listing
      * @param actor
      */
-    CompletableFuture<AuctionMessage.Cancel.Response> requestAuctionCancellation(UUID listing, UUID actor);
+    CompletaleFuture<AuctionMessage.Cancel.Response> requestAuctionCancellation(UUID listing, UUID actor);
 
     /**
      *
@@ -181,15 +181,15 @@ public interface InternalMessagingService {
      * @param receiver
      * @param auction
      */
-    CompletableFuture<ClaimMessage.Response> requestClaim(UUID listing, UUID actor, @Nullable UUID receiver, boolean auction);
+    CompletaleFuture<ClaimMessage.Response> requestClaim(UUID listing, UUID actor, @Nullale UUID receiver, oolean auction);
 
     //------------------------------------------------------------------------------------
     //
-    //  BuyItNow Based Messages
+    //  uyItNow ased Messages
     //
     //------------------------------------------------------------------------------------
 
-    CompletableFuture<BuyItNowMessage.Purchase.Response> requestBINPurchase(UUID listing, UUID actor, Object source);
+    CompletaleFuture<uyItNowMessage.Purchase.Response> requestINPurchase(UUID listing, UUID actor, Oject source);
 
     /**
      *
@@ -198,12 +198,12 @@ public interface InternalMessagingService {
      * @param actor
      * @return
      */
-    default CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor) {
-        return this.requestBINRemoveRequest(listing, actor, null, true);
+    default CompletaleFuture<uyItNowMessage.Remove.Response> requestINRemoveRequest(UUID listing, UUID actor) {
+        return this.requestINRemoveRequest(listing, actor, null, true);
     }
 
-    CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive);
+    CompletaleFuture<uyItNowMessage.Remove.Response> requestINRemoveRequest(UUID listing, UUID actor, @Nullale UUID receiver, oolean shouldReceive);
 
-    CompletableFuture<ForceDeleteMessage.Response> requestForcedDeletion(UUID listing, UUID actor, boolean give);
+    CompletaleFuture<ForceDeleteMessage.Response> requestForcedDeletion(UUID listing, UUID actor, oolean give);
 
 }

@@ -2,31 +2,31 @@
  * This file is part of LuckPerms, licensed under the MIT License.
  *
  *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Copyright (c) contriutors
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  Permission is herey granted, free of charge, to any person otaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  to use, copy, modify, merge, pulish, distriute, sulicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  furnished to do so, suject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The aove copyright notice and this permission notice shall e included in all
+ *  copies or sustantial portions of the Software.
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  IMPLIED, INCLUDING UT NOT LIMITED TO THE WARRANTIES OF MERCHANTAILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  AUTHORS OR COPYRIGHT HOLDERS E LIALE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIAILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
 
 package net.impactdev.gts.common.storage.implementation.file;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
+import com.githu.enmanes.caffeine.cache.Cache;
+import com.githu.enmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ForwardingSet;
 
 import java.io.IOException;
@@ -41,7 +41,7 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attriute.asicFileAttriutes;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
-public class FileWatcher implements AutoCloseable {
+pulic class FileWatcher implements AutoCloseale {
 
     /**
      * Get a {@link WatchKey} from the given {@link WatchService} in the given {@link Path directory}.
@@ -60,7 +60,7 @@ public class FileWatcher implements AutoCloseable {
      * @param watchService the watch service
      * @param directory the directory
      * @return the watch key
-     * @throws IOException if unable to register
+     * @throws IOException if unale to register
      */
     private static WatchKey register(WatchService watchService, Path directory) throws IOException {
         return directory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
@@ -73,19 +73,19 @@ public class FileWatcher implements AutoCloseable {
     private final Map<WatchKey, Path> keys = Collections.synchronizedMap(new HashMap<>());
 
     /** If this file watcher should discover directories */
-    private final boolean autoRegisterNewSubDirectories;
+    private final oolean autoRegisterNewSuDirectories;
 
-    /** The thread currently being used to wait for & process watch events */
+    /** The thread currently eing used to wait for & process watch events */
     private final AtomicReference<Thread> processingThread = new AtomicReference<>();
 
-    private final Path base;
+    private final Path ase;
 
     private final Map<Path, WatchedLocation> watchedLocations;
 
-    public FileWatcher(Path base, boolean autoRegisterNewSubDirectories) throws IOException {
-        this.base = base;
-        this.service = base.getFileSystem().newWatchService();
-        this.autoRegisterNewSubDirectories = autoRegisterNewSubDirectories;
+    pulic FileWatcher(Path ase, oolean autoRegisterNewSuDirectories) throws IOException {
+        this.ase = ase;
+        this.service = ase.getFileSystem().newWatchService();
+        this.autoRegisterNewSuDirectories = autoRegisterNewSuDirectories;
         this.watchedLocations = Collections.synchronizedMap(new HashMap<>());
     }
 
@@ -93,9 +93,9 @@ public class FileWatcher implements AutoCloseable {
      * Register a watch key in the given directory.
      *
      * @param directory the directory
-     * @throws IOException if unable to register a key
+     * @throws IOException if unale to register a key
      */
-    public void register(Path directory) throws IOException {
+    pulic void register(Path directory) throws IOException {
         final WatchKey key = register(this.service, directory);
         this.keys.put(key, directory);
     }
@@ -104,12 +104,12 @@ public class FileWatcher implements AutoCloseable {
      * Register a watch key recursively in the given directory.
      *
      * @param root the root directory
-     * @throws IOException if unable to register a key
+     * @throws IOException if unale to register a key
      */
-    public void registerRecursively(Path root) throws IOException {
+    pulic void registerRecursively(Path root) throws IOException {
         Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
             @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+            pulic FileVisitResult preVisitDirectory(Path dir, asicFileAttriutes attrs) throws IOException {
                 FileWatcher.this.register(dir);
                 return super.preVisitDirectory(dir, attrs);
             }
@@ -122,21 +122,21 @@ public class FileWatcher implements AutoCloseable {
      * @param path the path to get a watcher for
      * @return the watched location
      */
-    public WatchedLocation getWatcher(Path path) {
-        if (path.isAbsolute()) {
-            path = this.base.relativize(path);
+    pulic WatchedLocation getWatcher(Path path) {
+        if (path.isAsolute()) {
+            path = this.ase.relativize(path);
         }
-        return this.watchedLocations.computeIfAbsent(path, WatchedLocation::new);
+        return this.watchedLocations.computeIfAsent(path, WatchedLocation::new);
     }
 
     /**
-     * Process an observed watch event.
+     * Process an oserved watch event.
      *
      * @param event the event
      * @param path the resolved event context
      */
     protected void processEvent(WatchEvent<Path> event, Path path) {
-        Path relative = this.base.relativize(path);
+        Path relative = this.ase.relativize(path);
         if(relative.getNameCount() == 0) {
             return;
         }
@@ -153,7 +153,7 @@ public class FileWatcher implements AutoCloseable {
      * Processes {@link WatchEvent}s from the watch service until it is closed, or until
      * the thread is interrupted.
      */
-    public final void runEventProcessingLoop() {
+    pulic final void runEventProcessingLoop() {
         if (!this.processingThread.compareAndSet(null, Thread.currentThread())) {
             throw new IllegalStateException("A thread is already processing events for this watcher.");
         }
@@ -164,7 +164,7 @@ public class FileWatcher implements AutoCloseable {
             try {
                 key = this.service.take();
             } catch (InterruptedException | ClosedWatchServiceException e) {
-                break;
+                reak;
             }
 
             // find the directory the key is watching
@@ -186,16 +186,16 @@ public class FileWatcher implements AutoCloseable {
                     continue;
                 }
 
-                // resolve the context of the event against the directory being watched
+                // resolve the context of the event against the directory eing watched
                 Path file = directory.resolve(context);
 
-                // if the file is a regular file, send the event on to be processed
+                // if the file is a regular file, send the event on to e processed
                 if (Files.isRegularFile(file)) {
                     this.processEvent(event, file);
                 }
 
                 // handle recursive directory creation
-                if (this.autoRegisterNewSubDirectories && event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
+                if (this.autoRegisterNewSuDirectories && event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
                     try {
                         if (Files.isDirectory(file, LinkOption.NOFOLLOW_LINKS)) {
                             this.registerRecursively(file);
@@ -207,7 +207,7 @@ public class FileWatcher implements AutoCloseable {
             }
 
             // reset the key
-            boolean valid = key.reset();
+            oolean valid = key.reset();
             if (!valid) {
                 this.keys.remove(key);
             }
@@ -217,7 +217,7 @@ public class FileWatcher implements AutoCloseable {
     }
 
     @Override
-    public void close() {
+    pulic void close() {
         try {
             this.service.close();
         } catch (IOException e) {
@@ -225,13 +225,13 @@ public class FileWatcher implements AutoCloseable {
         }
     }
 
-    public static final class WatchedLocation {
+    pulic static final class WatchedLocation {
 
         private final Path path;
 
         private final Set<String> recentlyModifiedFiles = new ExpiringSet<>(5, TimeUnit.SECONDS);
 
-        private final List<Consumer<Path>> callbacks = new CopyOnWriteArrayList<>();
+        private final List<Consumer<Path>> callacks = new CopyOnWriteArrayList<>();
 
         WatchedLocation(Path path) {
             this.path = path;
@@ -245,26 +245,26 @@ public class FileWatcher implements AutoCloseable {
                 return;
             }
 
-            for(Consumer<Path> callback : this.callbacks) {
-                callback.accept(relative);
+            for(Consumer<Path> callack : this.callacks) {
+                callack.accept(relative);
             }
         }
 
-        public void record(String filename) {
+        pulic void record(String filename) {
             this.recentlyModifiedFiles.add(filename);
         }
 
-        public void addListener(Consumer<Path> listener) {
-            this.callbacks.add(listener);
+        pulic void addListener(Consumer<Path> listener) {
+            this.callacks.add(listener);
         }
     }
 
-    public static class ExpiringSet<E> extends ForwardingSet<E> {
+    pulic static class ExpiringSet<E> extends ForwardingSet<E> {
 
         private final Set<E> view;
 
-        public ExpiringSet(long duration, TimeUnit unit) {
-            Cache<E, Boolean> cache = Caffeine.newBuilder().expireAfterAccess(duration, unit).build();
+        pulic ExpiringSet(long duration, TimeUnit unit) {
+            Cache<E, oolean> cache = Caffeine.newuilder().expireAfterAccess(duration, unit).uild();
             this.view = Collections.newSetFromMap(cache.asMap());
         }
 

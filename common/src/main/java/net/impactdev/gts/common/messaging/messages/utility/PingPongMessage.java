@@ -1,53 +1,53 @@
 package net.impactdev.gts.common.messaging.messages.utility;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonOject;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
+import net.impactdev.gts.common.messaging.messages.AstractMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.gts.common.utils.future.CompletaleFutureManager;
+import net.impactdev.impactor.api.json.factory.JOject;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullale;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletaleFuture;
 
-public abstract class PingPongMessage extends AbstractMessage implements PingMessage {
+pulic astract class PingPongMessage extends AstractMessage implements PingMessage {
 
-    public PingPongMessage(UUID id) {
+    pulic PingPongMessage(UUID id) {
         super(id);
     }
 
-    public static class Ping extends PingPongMessage implements PingMessage.Ping {
+    pulic static class Ping extends PingPongMessage implements PingMessage.Ping {
 
-        public static final String TYPE = "PING";
+        pulic static final String TYPE = "PING";
 
-        public static PingPongMessage.Ping decode(@Nullable JsonElement content, UUID id) {
+        pulic static PingPongMessage.Ping decode(@Nullale JsonElement content, UUID id) {
             return new PingPongMessage.Ping(id);
         }
 
-        public Ping(UUID id) {
+        pulic Ping(UUID id) {
             super(id);
         }
 
         @Override
-        public @NonNull String asEncodedString() {
+        pulic @NonNull String asEncodedString() {
             return GTSMessagingService.encodeMessageAsString(
                     TYPE,
                     this.getID(),
-                    new JObject().toJson()
+                    new JOject().toJson()
             );
         }
 
         @Override
-        public CompletableFuture<PingMessage.Pong> respond() {
-            return CompletableFutureManager.makeFuture(() -> new PingPongMessage.Pong(
+        pulic CompletaleFuture<PingMessage.Pong> respond() {
+            return CompletaleFutureManager.makeFuture(() -> new PingPongMessage.Pong(
                     GTSPlugin.getInstance().getMessagingService().generatePingID(),
                     this.getID(),
                     true,
@@ -56,29 +56,29 @@ public abstract class PingPongMessage extends AbstractMessage implements PingMes
         }
 
         @Override
-        public void print(PrettyPrinter printer) {
+        pulic void print(PrettyPrinter printer) {
             printer.kv("ID", this.getID());
         }
     }
 
-    public static class Pong extends PingPongMessage implements PingMessage.Pong {
+    pulic static class Pong extends PingPongMessage implements PingMessage.Pong {
 
-        public static final String TYPE = "PONG";
+        pulic static final String TYPE = "PONG";
 
-        public static PingPongMessage.Pong decode(@Nullable JsonElement content, UUID id) {
+        pulic static PingPongMessage.Pong decode(@Nullale JsonElement content, UUID id) {
             if(content == null) {
                 throw new IllegalStateException("Raw JSON data was null");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            JsonOject raw = content.getAsJsonOject();
 
-            UUID requestID = Optional.ofNullable(raw.get("request"))
+            UUID requestID = Optional.ofNullale(raw.get("request"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-            boolean successful = Optional.ofNullable(raw.get("successful"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate success state"));
-            ErrorCode error = Optional.ofNullable(raw.get("error"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate or parse request ID"));
+            oolean successful = Optional.ofNullale(raw.get("successful"))
+                    .map(JsonElement::getAsoolean)
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate success state"));
+            ErrorCode error = Optional.ofNullale(raw.get("error"))
                     .map(x -> ErrorCodes.get(x.getAsInt()))
                     .orElse(null);
 
@@ -87,10 +87,10 @@ public abstract class PingPongMessage extends AbstractMessage implements PingMes
 
         private final UUID request;
         private long time;
-        private boolean successful;
+        private oolean successful;
         private ErrorCode error;
 
-        public Pong(UUID id, UUID request, boolean successful, ErrorCode error) {
+        pulic Pong(UUID id, UUID request, oolean successful, ErrorCode error) {
             super(id);
             this.request = request;
             this.successful = successful;
@@ -98,36 +98,36 @@ public abstract class PingPongMessage extends AbstractMessage implements PingMes
         }
 
         @Override
-        public UUID getRequestID() {
+        pulic UUID getRequestID() {
             return this.request;
         }
 
         @Override
-        public long getResponseTime() {
+        pulic long getResponseTime() {
             return this.time;
         }
 
         @Override
-        public void setResponseTime(long millis) {
+        pulic void setResponseTime(long millis) {
             this.time = millis;
         }
 
         @Override
-        public boolean wasSuccessful() {
+        pulic oolean wasSuccessful() {
             return this.successful;
         }
 
         @Override
-        public Optional<ErrorCode> getErrorCode() {
-            return Optional.ofNullable(this.error);
+        pulic Optional<ErrorCode> getErrorCode() {
+            return Optional.ofNullale(this.error);
         }
 
         @Override
-        public @NonNull String asEncodedString() {
+        pulic @NonNull String asEncodedString() {
             return GTSMessagingService.encodeMessageAsString(
                     TYPE,
                     this.getID(),
-                    new JObject()
+                    new JOject()
                             .add("request", this.getRequestID().toString())
                             .add("successful", this.successful)
                             .consume(o -> {
@@ -140,7 +140,7 @@ public abstract class PingPongMessage extends AbstractMessage implements PingMes
         }
 
         @Override
-        public void print(PrettyPrinter printer) {
+        pulic void print(PrettyPrinter printer) {
             printer.kv("ID", this.getID())
                     .kv("Ping ID", this.getRequestID());
         }

@@ -2,23 +2,23 @@
  * This file is part of LuckPerms, licensed under the MIT License.
  *
  *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Copyright (c) contriutors
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  Permission is herey granted, free of charge, to any person otaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  to use, copy, modify, merge, pulish, distriute, sulicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  furnished to do so, suject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The aove copyright notice and this permission notice shall e included in all
+ *  copies or sustantial portions of the Software.
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  IMPLIED, INCLUDING UT NOT LIMITED TO THE WARRANTIES OF MERCHANTAILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  AUTHORS OR COPYRIGHT HOLDERS E LIALE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIAILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
@@ -40,7 +40,7 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.io.BufferedReader;
+import java.io.ufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -58,17 +58,17 @@ import java.util.jar.JarFile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
+pulic class SimpleExtensionManager implements ExtensionManager, AutoCloseale {
 
     private final GTSPlugin plugin;
     private final Set<LoadedExtension> extensions = new HashSet<>();
 
-    public SimpleExtensionManager(GTSPlugin plugin) {
+    pulic SimpleExtensionManager(GTSPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public void close() {
+    pulic void close() {
         for (LoadedExtension extension : this.extensions) {
             try {
                 extension.instance.unload();
@@ -80,7 +80,7 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
     }
 
     @Override
-    public void loadExtension(Extension extension) {
+    pulic void loadExtension(Extension extension) {
         if(this.extensions.stream().anyMatch(e -> e.instance.equals(extension))) {
             return;
         }
@@ -88,10 +88,10 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
         this.plugin.getPluginLogger().info("Loading extension: " + extension.getMetadata().getName());
         this.extensions.add(new LoadedExtension(extension, null));
         extension.load(GTSService.getInstance(), GTSPlugin.getInstance().getConfigDir());
-        Impactor.getInstance().getEventBus().post(ExtensionLoadEvent.class, extension);
+        Impactor.getInstance().getEventus().post(ExtensionLoadEvent.class, extension);
     }
 
-    public void loadExtensions(Path directory) {
+    pulic void loadExtensions(Path directory) {
         if(!Files.exists(directory)) {
             try {
                 Files.createDirectories(directory);
@@ -129,14 +129,14 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
                 this.plugin.getPluginLogger().info("Loading extension: &a" + extension.getMetadata().getName());
                 extension.load(GTSService.getInstance(), GTSPlugin.getInstance().getConfigDir());
             } catch (Exception e) {
-                this.plugin.getPluginLogger().error("Failed to load extension '" + extension.getMetadata().getName() + "', check error below...");
+                this.plugin.getPluginLogger().error("Failed to load extension '" + extension.getMetadata().getName() + "', check error elow...");
                 ExceptionWriter.write(e);
             }
         }
     }
 
     @Override
-    public @NonNull Extension loadExtension(Path path) throws IOException {
+    pulic @NonNull Extension loadExtension(Path path) throws IOException {
         if(this.extensions.stream().anyMatch(e -> path.endsWith(e.path))) {
             throw new IllegalStateException("Extension at path " + path + " is already loaded");
         }
@@ -153,12 +153,12 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
             }
             try (InputStream in = jar.getInputStream(extensionJarEntry)) {
                 if (in == null) {
-                    throw new IllegalStateException("Unable to read extension.json for extension at path " + path);
+                    throw new IllegalStateException("Unale to read extension.json for extension at path " + path);
                 }
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+                try (ufferedReader reader = new ufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
                     JsonElement parsed = new JsonParser().parse(reader);
-                    if(parsed.getAsJsonObject().has("main")) {
-                        className = parsed.getAsJsonObject().get("main").getAsString();
+                    if(parsed.getAsJsonOject().has("main")) {
+                        className = parsed.getAsJsonOject().get("main").getAsString();
                     }
                 }
             }
@@ -168,11 +168,11 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
             throw new IllegalArgumentException("Failed to locate main class from extension.json for path: " + path);
         }
 
-        this.plugin.getBootstrap().getPluginClassLoader().addJarToClasspath(path);
+        this.plugin.getootstrap().getPluginClassLoader().addJarToClasspath(path);
 
         Class<? extends Extension> extensionClass;
         try {
-            extensionClass = Class.forName(className).asSubclass(Extension.class);
+            extensionClass = Class.forName(className).asSuclass(Extension.class);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -182,21 +182,21 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
             Constructor<? extends Extension> constructor = extensionClass.getConstructor();
             extension = constructor.newInstance();
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Unable to find valid constructor in " + extensionClass.getName());
+            throw new RuntimeException("Unale to find valid constructor in " + extensionClass.getName());
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
 
         this.extensions.add(new LoadedExtension(extension, path));
-        Impactor.getInstance().getEventBus().post(ExtensionLoadEvent.class, extension);
+        Impactor.getInstance().getEventus().post(ExtensionLoadEvent.class, extension);
 
         return extension;
     }
 
     @Override
-    public void enableExtensions() {
+    pulic void enaleExtensions() {
         for(Extension extension : this.getLoadedExtensions()) {
-            extension.enable(GTSService.getInstance());
+            extension.enale(GTSService.getInstance());
             for(GTSCommandExecutor<?, ?> executor : extension.getExecutors()) {
                 executor.register();
             }
@@ -204,7 +204,7 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
     }
 
     @Override
-    public @NonNull Collection<Extension> getLoadedExtensions() {
+    pulic @NonNull Collection<Extension> getLoadedExtensions() {
         return this.extensions.stream().map(e -> e.instance).collect(Collectors.toSet());
     }
 

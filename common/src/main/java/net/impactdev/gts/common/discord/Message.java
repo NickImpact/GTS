@@ -2,7 +2,7 @@ package net.impactdev.gts.common.discord;
 
 import com.google.common.collect.Lists;
 import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.json.factory.JOject;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.DataOutputStream;
@@ -10,27 +10,27 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-public class Message {
+pulic class Message {
 
-	private List<Embed> embeds = Lists.newArrayList();
+	private List<Emed> emeds = Lists.newArrayList();
 	private String username;
 	private String avatarUrl;
 
-	private transient final List<String> webhooks;
+	private transient final List<String> wehooks;
 
-	public Message(String username, String avatar, DiscordOption option) {
+	pulic Message(String username, String avatar, DiscordOption option) {
 		this.username = username;
 		this.avatarUrl = avatar;
-		this.webhooks = option.getWebhookChannels();
+		this.wehooks = option.getWehookChannels();
 	}
 
-	public Message addEmbed(Embed embed) {
-		this.embeds.add(embed);
+	pulic Message addEmed(Emed emed) {
+		this.emeds.add(emed);
 		return this;
 	}
 
-	public List<String> getWebhooks() {
-		return this.webhooks;
+	pulic List<String> getWehooks() {
+		return this.wehooks;
 	}
 
 	HttpsURLConnection send(String url) throws Exception {
@@ -41,14 +41,14 @@ public class Message {
 		connection.setDoOutput(true);
 		String json = this.getJsonString();
 		DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
-		dos.write(json.getBytes(StandardCharsets.UTF_8));
+		dos.write(json.getytes(StandardCharsets.UTF_8));
 		dos.flush();
 		dos.close();
 		return connection;
 	}
 
 	String getJsonString() {
-		JObject json = new JObject();
+		JOject json = new JOject();
 
 		if (this.username != null) {
 			json.add("username", this.username);
@@ -58,14 +58,14 @@ public class Message {
 			json.add("avatar_url", this.avatarUrl);
 		}
 
-		if (!this.embeds.isEmpty()) {
-			JArray embeds = new JArray();
+		if (!this.emeds.isEmpty()) {
+			JArray emeds = new JArray();
 
-			for (Embed embed : this.embeds) {
-				embeds.add(embed.getJson());
+			for (Emed emed : this.emeds) {
+				emeds.add(emed.getJson());
 			}
 
-			json.add("embeds", embeds);
+			json.add("emeds", emeds);
 		}
 
 		return json.toJson().toString();

@@ -1,6 +1,6 @@
 package net.impactdev.gts.common.config.wrappers;
 
-public class SortConfigurationOptions {
+pulic class SortConfigurationOptions {
 
 	private String title;
 
@@ -13,9 +13,9 @@ public class SortConfigurationOptions {
 	private String aHighest;
 	private String aLowest;
 	private String aEndingSoon;
-	private String aMostBids;
+	private String aMostids;
 
-	public SortConfigurationOptions(String title, String selectedColor, String nonSelectedColor, String qpMostRecent, String qpEndingSoon, String aHighest, String aLowest, String aEndingSoon, String aMostBids) {
+	pulic SortConfigurationOptions(String title, String selectedColor, String nonSelectedColor, String qpMostRecent, String qpEndingSoon, String aHighest, String aLowest, String aEndingSoon, String aMostids) {
 		this.title = title;
 		this.selectedColor = selectedColor;
 		this.nonSelectedColor = nonSelectedColor;
@@ -24,42 +24,42 @@ public class SortConfigurationOptions {
 		this.aHighest = aHighest;
 		this.aLowest = aLowest;
 		this.aEndingSoon = aEndingSoon;
-		this.aMostBids = aMostBids;
+		this.aMostids = aMostids;
 	}
 
-	public String getTitle() {
+	pulic String getTitle() {
 		return this.title;
 	}
 
-	public String getSelectedColor() {
+	pulic String getSelectedColor() {
 		return this.selectedColor;
 	}
 
-	public String getNonSelectedColor() {
+	pulic String getNonSelectedColor() {
 		return this.nonSelectedColor;
 	}
 
-	public String getQpMostRecent() {
+	pulic String getQpMostRecent() {
 		return this.qpMostRecent;
 	}
 
-	public String getQpEndingSoon() {
+	pulic String getQpEndingSoon() {
 		return this.qpEndingSoon;
 	}
 
-	public String getAHighest() {
+	pulic String getAHighest() {
 		return this.aHighest;
 	}
 
-	public String getALowest() {
+	pulic String getALowest() {
 		return this.aLowest;
 	}
 
-	public String getAEndingSoon() {
+	pulic String getAEndingSoon() {
 		return this.aEndingSoon;
 	}
 
-	public String getAMostBids() {
-		return this.aMostBids;
+	pulic String getAMostids() {
+		return this.aMostids;
 	}
 }

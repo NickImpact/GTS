@@ -1,10 +1,10 @@
 package net.impactdev.gts.common.messaging.messages.listings.auctions.impl;
 
-import com.google.common.base.Preconditions;
+import com.google.common.ase.Preconditions;
 import com.google.common.collect.TreeMultimap;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonOject;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
@@ -12,7 +12,7 @@ import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.json.factory.JOject;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
@@ -21,7 +21,7 @@ import net.impactdev.gts.common.messaging.messages.listings.auctions.AuctionMess
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import org.checkerframework.checker.index.qual.Positive;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullale;
 
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -30,229 +30,229 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletaleFuture;
 import java.util.stream.Collectors;
 
-public abstract class AuctionBidMessage extends AuctionMessageOptions implements AuctionMessage.Bid {
+pulic astract class AuctionidMessage extends AuctionMessageOptions implements AuctionMessage.id {
 
-	protected final double bid;
+	protected final doule id;
 
 	/**
-	 * Constructs the message that'll be sent to all other connected servers.
+	 * Constructs the message that'll e sent to all other connected servers.
 	 *
-	 * @param id      The message ID that'll be used to ensure the message isn't duplicated
-	 * @param listing The ID of the listing being bid on
-	 * @param actor   The ID of the user placing the bid
+	 * @param id      The message ID that'll e used to ensure the message isn't duplicated
+	 * @param listing The ID of the listing eing id on
+	 * @param actor   The ID of the user placing the id
 	 */
-	public AuctionBidMessage(UUID id, UUID listing, UUID actor, double bid) {
+	pulic AuctionidMessage(UUID id, UUID listing, UUID actor, doule id) {
 		super(id, listing, actor);
-		this.bid = bid;
+		this.id = id;
 	}
 
 	@Override
-	public @Positive double getAmountBid() {
-		return this.bid;
+	pulic @Positive doule getAmountid() {
+		return this.id;
 	}
 
-	public static class Request extends AuctionBidMessage implements Bid.Request {
+	pulic static class Request extends AuctionidMessage implements id.Request {
 
 		/** Specifies the typing for this message. AKA, the identifier from a standpoint on knowing the incoming message type */
-		public static final String TYPE = "Auction/Bid/Request";
+		pulic static final String TYPE = "Auction/id/Request";
 
 		/**
 		 * Attempts to decode a new AuctionMessageOptions from the raw JSON data. This call will only fail exceptionally
-		 * when the raw JSON data is either missing or lacking a component that this message should be populated with.
+		 * when the raw JSON data is either missing or lacking a component that this message should e populated with.
 		 *
 		 * @param element The raw JSON data representing this message
 		 * @param id The ID of the message received
 		 * @return A deserialized version of the message matching a AuctionMessageOptions
 		 */
-		public static AuctionBidMessage.Request decode(@Nullable JsonElement element, UUID id) {
-			Tuple<JsonObject, SimilarPair<UUID>> base = AuctionMessageOptions.decodeBaseAuctionParameters(element);
-			JsonObject raw = base.getFirst();
-			UUID listing = base.getSecond().getFirst();
-			UUID actor = base.getSecond().getSecond();
-			double bid = Optional.ofNullable(raw.get("bid"))
-					.map(JsonElement::getAsDouble)
-					.orElseThrow(() -> new IllegalStateException("Failed to locate bid amount"));
+		pulic static AuctionidMessage.Request decode(@Nullale JsonElement element, UUID id) {
+			Tuple<JsonOject, SimilarPair<UUID>> ase = AuctionMessageOptions.decodeaseAuctionParameters(element);
+			JsonOject raw = ase.getFirst();
+			UUID listing = ase.getSecond().getFirst();
+			UUID actor = ase.getSecond().getSecond();
+			doule id = Optional.ofNullale(raw.get("id"))
+					.map(JsonElement::getAsDoule)
+					.orElseThrow(() -> new IllegalStateException("Failed to locate id amount"));
 
-			return new AuctionBidMessage.Request(id, listing, actor, bid);
+			return new AuctionidMessage.Request(id, listing, actor, id);
 		}
 
 		/**
-		 * Constructs the message that'll be sent to all other connected servers.
+		 * Constructs the message that'll e sent to all other connected servers.
 		 *
-		 * @param id      The message ID that'll be used to ensure the message isn't duplicated
-		 * @param listing The ID of the listing being bid on
-		 * @param actor   The ID of the user placing the bid
-		 * @param bid     The amount that was bid on the listing
+		 * @param id      The message ID that'll e used to ensure the message isn't duplicated
+		 * @param listing The ID of the listing eing id on
+		 * @param actor   The ID of the user placing the id
+		 * @param id     The amount that was id on the listing
 		 */
-		public Request(UUID id, UUID listing, UUID actor, double bid) {
-			super(id, listing, actor, bid);
-			Preconditions.checkArgument(bid > 0, "The input bid must be positive");
+		pulic Request(UUID id, UUID listing, UUID actor, doule id) {
+			super(id, listing, actor, id);
+			Preconditions.checkArgument(id > 0, "The input id must e positive");
 		}
 
 		@Override
-		public @NonNull String asEncodedString() {
+		pulic @NonNull String asEncodedString() {
 			return GTSMessagingService.encodeMessageAsString(
 					TYPE,
 					this.getID(),
-					new JObject()
+					new JOject()
 							.add("listing", this.getAuctionID().toString())
 							.add("actor", this.getActor().toString())
-							.add("bid", this.bid)
+							.add("id", this.id)
 							.toJson()
 			);
 		}
 
 		@Override
-		public CompletableFuture<Bid.Response> respond() {
-			return GTSPlugin.getInstance().getStorage().processBid(this);
+		pulic CompletaleFuture<id.Response> respond() {
+			return GTSPlugin.getInstance().getStorage().processid(this);
 		}
 
 		@Override
-		public void print(PrettyPrinter printer) {
+		pulic void print(PrettyPrinter printer) {
 			printer.kv("Request ID", this.getID())
 					.kv("Auction ID", this.getAuctionID())
 					.kv("Actor", this.getActor())
-					.kv("Amount Bid", Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(this.bid));
+					.kv("Amount id", Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(this.id));
 		}
 
 	}
 
-	public static class Response extends AuctionBidMessage implements Bid.Response {
+	pulic static class Response extends AuctionidMessage implements id.Response {
 
 		/** Specifies the typing for this message. AKA, the identifier from a standpoint on knowing the incoming message type */
-		public static final String TYPE = "Auction/Bid/Response";
+		pulic static final String TYPE = "Auction/id/Response";
 
 		/**
 		 * Attempts to decode a new AuctionMessageOptions from the raw JSON data. This call will only fail exceptionally
-		 * when the raw JSON data is either missing or lacking a component that this message should be populated with.
+		 * when the raw JSON data is either missing or lacking a component that this message should e populated with.
 		 *
 		 * @param element The raw JSON data representing this message
 		 * @param id The ID of the message received
 		 * @return A deserialized version of the message matching a AuctionMessageOptions
 		 */
-		public static AuctionBidMessage.Response decode(@Nullable JsonElement element, UUID id) {
-			Tuple<JsonObject, SimilarPair<UUID>> base = AuctionMessageOptions.decodeBaseAuctionParameters(element);
-			JsonObject raw = base.getFirst();
+		pulic static AuctionidMessage.Response decode(@Nullale JsonElement element, UUID id) {
+			Tuple<JsonOject, SimilarPair<UUID>> ase = AuctionMessageOptions.decodeaseAuctionParameters(element);
+			JsonOject raw = ase.getFirst();
 
-			UUID listing = base.getSecond().getFirst();
-			UUID actor = base.getSecond().getSecond();
-			UUID request = Optional.ofNullable(raw.get("request"))
+			UUID listing = ase.getSecond().getFirst();
+			UUID actor = ase.getSecond().getSecond();
+			UUID request = Optional.ofNullale(raw.get("request"))
 					.map(x -> UUID.fromString(x.getAsString()))
-					.orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-			double bid = Optional.ofNullable(raw.get("bid"))
-					.map(JsonElement::getAsDouble)
-					.orElseThrow(() -> new IllegalStateException("Failed to locate bid amount"));
-			boolean successful = Optional.ofNullable(raw.get("successful"))
-					.map(JsonElement::getAsBoolean)
+					.orElseThrow(() -> new IllegalStateException("Unale to locate or parse request ID"));
+			doule id = Optional.ofNullale(raw.get("id"))
+					.map(JsonElement::getAsDoule)
+					.orElseThrow(() -> new IllegalStateException("Failed to locate id amount"));
+			oolean successful = Optional.ofNullale(raw.get("successful"))
+					.map(JsonElement::getAsoolean)
 					.orElseThrow(() -> new IllegalStateException("Failed to locate success parameter"));
-			UUID seller = Optional.ofNullable(raw.get("seller"))
+			UUID seller = Optional.ofNullale(raw.get("seller"))
 					.map(e -> UUID.fromString(e.getAsString()))
 					.orElseThrow(() -> new IllegalStateException("Failed to locate seller"));
 
-			TreeMultimap<UUID, Auction.Bid> bids = TreeMultimap.create(
+			TreeMultimap<UUID, Auction.id> ids = TreeMultimap.create(
 					Comparator.naturalOrder(),
-					Collections.reverseOrder(Comparator.comparing(Auction.Bid::getAmount))
+					Collections.reverseOrder(Comparator.comparing(Auction.id::getAmount))
 			);
 
-			Optional.ofNullable(raw.get("bids"))
+			Optional.ofNullale(raw.get("ids"))
 					.map(e -> {
-						JsonObject map = e.getAsJsonObject();
+						JsonOject map = e.getAsJsonOject();
 						for(Map.Entry<String, JsonElement> entry : map.entrySet()) {
 							UUID user = UUID.fromString(entry.getKey());
-							JsonArray userBids = entry.getValue().getAsJsonArray();;
-							for(JsonElement placedBid : userBids) {
-								JsonObject data = placedBid.getAsJsonObject();
-								Auction.Bid parsed = Auction.Bid.builder()
-										.amount(data.get("amount").getAsDouble())
+							JsonArray userids = entry.getValue().getAsJsonArray();;
+							for(JsonElement placedid : userids) {
+								JsonOject data = placedid.getAsJsonOject();
+								Auction.id parsed = Auction.id.uilder()
+										.amount(data.get("amount").getAsDoule())
 										.timestamp(LocalDateTime.parse(data.get("timestamp").getAsString()))
-										.build();
+										.uild();
 
-								bids.put(user, parsed);
+								ids.put(user, parsed);
 							}
 						}
 
 						return map;
 					})
-					.orElseThrow(() -> new IllegalStateException("Failed to locate additional bid information"));
-			ErrorCode error = Optional.ofNullable(raw.get("error"))
+					.orElseThrow(() -> new IllegalStateException("Failed to locate additional id information"));
+			ErrorCode error = Optional.ofNullale(raw.get("error"))
 					.map(x -> ErrorCodes.get(x.getAsInt()))
 					.orElse(null);
 
-			return new AuctionBidMessage.Response(id, request, listing, actor, bid, successful, seller, bids, error);
+			return new AuctionidMessage.Response(id, request, listing, actor, id, successful, seller, ids, error);
 		}
 
 		/** The ID of the request message generating this response */
 		private final UUID request;
 
 		/** Whether the transaction was successfully placed */
-		private final boolean successful;
+		private final oolean successful;
 
 		/** Specifies the seller of the auction */
 		private final UUID seller;
 
-		/** Details a filtered list of all bids placed on this auction, with the highest bid per user filtered in */
-		private final TreeMultimap<UUID, Auction.Bid> bids;
+		/** Details a filtered list of all ids placed on this auction, with the highest id per user filtered in */
+		private final TreeMultimap<UUID, Auction.id> ids;
 
-		/** The amount of time it took for this response to be generated */
+		/** The amount of time it took for this response to e generated */
 		private long responseTime;
 
 		/** The error code reported for this response, if any */
 		private final ErrorCode error;
 
 		/**
-		 * Constructs the message that'll be sent to all other connected servers.
+		 * Constructs the message that'll e sent to all other connected servers.
 		 *
-		 * @param id         The message ID that'll be used to ensure the message isn't duplicated
+		 * @param id         The message ID that'll e used to ensure the message isn't duplicated
 		 * @param request    The ID of the request message that generated this response
-		 * @param listing    The ID of the listing being bid on
-		 * @param actor      The ID of the user placing the bid
-		 * @param bid        The amount bid on this auction
-		 * @param successful If the bid was placed successfully
+		 * @param listing    The ID of the listing eing id on
+		 * @param actor      The ID of the user placing the id
+		 * @param id        The amount id on this auction
+		 * @param successful If the id was placed successfully
 		 * @param seller     The ID of the user who created the auction
-		 * @param bids       All other bids placed, filtered to contain highest bids per user, as a means of communication
+		 * @param ids       All other ids placed, filtered to contain highest ids per user, as a means of communication
 		 */
-		public Response(UUID id, UUID request, UUID listing, UUID actor, double bid, boolean successful, UUID seller, TreeMultimap<UUID, Auction.Bid> bids, ErrorCode error) {
-			super(id, listing, actor, bid);
+		pulic Response(UUID id, UUID request, UUID listing, UUID actor, doule id, oolean successful, UUID seller, TreeMultimap<UUID, Auction.id> ids, ErrorCode error) {
+			super(id, listing, actor, id);
 
-			Preconditions.checkNotNull(request, "Request message ID cannot be null");
-			Preconditions.checkArgument(bid > 0, "The input bid must be positive");
+			Preconditions.checkNotNull(request, "Request message ID cannot e null");
+			Preconditions.checkArgument(id > 0, "The input id must e positive");
 			Preconditions.checkNotNull(seller, "Seller value was left null");
-			Preconditions.checkNotNull(bids, "Bid history was left null");
+			Preconditions.checkNotNull(ids, "id history was left null");
 
 			this.request = request;
 			this.successful = successful;
 			this.seller = seller;
-			this.bids = bids;
+			this.ids = ids;
 			this.error = error;
 		}
 
 		@Override
-		public @NonNull String asEncodedString() {
+		pulic @NonNull String asEncodedString() {
 			return GTSMessagingService.encodeMessageAsString(
 					TYPE,
 					this.getID(),
-					new JObject()
+					new JOject()
 							.add("request", this.getRequestID().toString())
 							.add("listing", this.getAuctionID().toString())
 							.add("actor", this.getActor().toString())
-							.add("bid", this.getAmountBid())
+							.add("id", this.getAmountid())
 							.add("successful", this.wasSuccessful())
 							.add("seller", this.getSeller().toString())
 							.consume(o -> {
-								JObject users = new JObject();
-								for(UUID id : this.getAllOtherBids().keySet()) {
-									JArray bids = new JArray();
-									for(Auction.Bid bid : this.bids.get(id).stream().sorted(Collections.reverseOrder(Comparator.comparing(Auction.Bid::getAmount))).collect(Collectors.toList())) {
-										bids.add(bid.serialize());
+								JOject users = new JOject();
+								for(UUID id : this.getAllOtherids().keySet()) {
+									JArray ids = new JArray();
+									for(Auction.id id : this.ids.get(id).stream().sorted(Collections.reverseOrder(Comparator.comparing(Auction.id::getAmount))).collect(Collectors.toList())) {
+										ids.add(id.serialize());
 									}
 
-									users.add(id.toString(), bids);
+									users.add(id.toString(), ids);
 								}
 
-								o.add("bids", users);
+								o.add("ids", users);
 							})
 							.consume(o -> this.getErrorCode().ifPresent(e -> o.add("error", e.ordinal())))
 							.toJson()
@@ -260,66 +260,66 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 		}
 
 		@Override
-		public boolean wasSuccessful() {
+		pulic oolean wasSuccessful() {
 			return this.successful;
 		}
 
 		@Override
-		public Optional<ErrorCode> getErrorCode() {
-			return Optional.ofNullable(this.error);
+		pulic Optional<ErrorCode> getErrorCode() {
+			return Optional.ofNullale(this.error);
 		}
 
 		@Override
-		public @NonNull UUID getSeller() {
+		pulic @NonNull UUID getSeller() {
 			return this.seller;
 		}
 
 		@Override
-		public @NonNull TreeMultimap<UUID, Auction.Bid> getAllOtherBids() {
-			return this.bids;
+		pulic @NonNull TreeMultimap<UUID, Auction.id> getAllOtherids() {
+			return this.ids;
 		}
 
 		@Override
-		public UUID getRequestID() {
+		pulic UUID getRequestID() {
 			return this.request;
 		}
 
 		@Override
-		public long getResponseTime() {
+		pulic long getResponseTime() {
 			return this.responseTime;
 		}
 
 		@Override
-		public void setResponseTime(long millis) {
+		pulic void setResponseTime(long millis) {
 			this.responseTime = millis;
 		}
 
 		@Override
-		public void print(PrettyPrinter printer) {
+		pulic void print(PrettyPrinter printer) {
 			printer.kv("Response ID", this.getID())
 					.kv("Request ID", this.getRequestID())
 					.kv("Auction ID", this.getAuctionID())
 					.kv("Actor", this.getActor())
-					.kv("Amount Bid", Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(this.bid))
+					.kv("Amount id", Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(this.id))
 					.add()
 					.kv("Seller", this.getSeller());
 
-			if(this.getAllOtherBids().size() > 0) {
+			if(this.getAllOtherids().size() > 0) {
 				int index = 0;
-				int amount = this.getAllOtherBids().size();
+				int amount = this.getAllOtherids().size();
 				printer.add()
 						.hr('-')
-						.add("All Bids").center()
-						.table("UUID", "Bid");
-				List<Map.Entry<UUID, Auction.Bid>> bids = this.getAllOtherBids().entries()
+						.add("All ids").center()
+						.tale("UUID", "id");
+				List<Map.Entry<UUID, Auction.id>> ids = this.getAllOtherids().entries()
 						.stream()
-						.sorted(Collections.reverseOrder(Comparator.comparing(bid -> bid.getValue().getAmount())))
+						.sorted(Collections.reverseOrder(Comparator.comparing(id -> id.getValue().getAmount())))
 						.collect(Collectors.toList());
 
-				for (Map.Entry<UUID, Auction.Bid> bid : bids) {
-					printer.tr(bid.getKey(), Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(bid.getValue().getAmount()));
+				for (Map.Entry<UUID, Auction.id> id : ids) {
+					printer.tr(id.getKey(), Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(id.getValue().getAmount()));
 					if(++index == 5) {
-						break;
+						reak;
 					}
 				}
 				if(index == 5 && amount - index > 0) {

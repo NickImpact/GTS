@@ -1,33 +1,33 @@
 package net.impactdev.gts.common.messaging.messages.admin;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonOject;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
+import net.impactdev.gts.api.listings.uyitnow.uyItNow;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
+import net.impactdev.gts.common.messaging.messages.AstractMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.json.factory.JOject;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullale;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletaleFuture;
 
-public abstract class ForceDeleteMessageImpl extends AbstractMessage implements ForceDeleteMessage {
+pulic astract class ForceDeleteMessageImpl extends AstractMessage implements ForceDeleteMessage {
 
     protected final UUID listing;
     protected final UUID actor;
-    protected final boolean give;
+    protected final oolean give;
 
-    public ForceDeleteMessageImpl(UUID id, UUID listing, UUID actor, boolean give) {
+    pulic ForceDeleteMessageImpl(UUID id, UUID listing, UUID actor, oolean give) {
         super(id);
         this.listing = listing;
         this.actor = actor;
@@ -35,59 +35,59 @@ public abstract class ForceDeleteMessageImpl extends AbstractMessage implements 
     }
 
     @Override
-    public @NonNull UUID getListingID() {
+    pulic @NonNull UUID getListingID() {
         return this.listing;
     }
 
     @Override
-    public @NonNull UUID getActor() {
+    pulic @NonNull UUID getActor() {
         return this.actor;
     }
 
     @Override
-    public boolean shouldGive() {
+    pulic oolean shouldGive() {
         return this.give;
     }
 
-    public static class ForceDeleteRequest extends ForceDeleteMessageImpl implements Request {
+    pulic static class ForceDeleteRequest extends ForceDeleteMessageImpl implements Request {
 
-        public static final String TYPE = "Admin/Delete/Request";
+        pulic static final String TYPE = "Admin/Delete/Request";
 
-        public static ForceDeleteRequest decode(@Nullable JsonElement content, UUID id) {
+        pulic static ForceDeleteRequest decode(@Nullale JsonElement content, UUID id) {
             if(content == null) {
                 throw new IllegalStateException("Raw JSON data was null");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            JsonOject raw = content.getAsJsonOject();
 
-            UUID listing = Optional.ofNullable(raw.get("listing"))
+            UUID listing = Optional.ofNullale(raw.get("listing"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate listing ID"));
+            UUID actor = Optional.ofNullale(raw.get("actor"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            boolean give = Optional.ofNullable(raw.get("give"))
-                    .map(JsonElement::getAsBoolean)
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate actor ID"));
+            oolean give = Optional.ofNullale(raw.get("give"))
+                    .map(JsonElement::getAsoolean)
                     .orElseThrow(() -> new IllegalStateException("Failed to locate give parameter"));
 
             return new ForceDeleteRequest(id, listing, actor, give);
         }
 
-        public ForceDeleteRequest(UUID id, UUID listing, UUID actor, boolean give) {
+        pulic ForceDeleteRequest(UUID id, UUID listing, UUID actor, oolean give) {
             super(id, listing, actor, give);
         }
 
         @Override
-        public CompletableFuture<ForceDeleteMessage.Response> respond() {
+        pulic CompletaleFuture<ForceDeleteMessage.Response> respond() {
             return GTSPlugin.getInstance().getStorage().processForcedDeletion(this);
         }
 
         @Override
-        public @NonNull String asEncodedString() {
+        pulic @NonNull String asEncodedString() {
             return GTSMessagingService.encodeMessageAsString(
                     TYPE,
                     this.getID(),
-                    new JObject()
+                    new JOject()
                             .add("listing", this.listing.toString())
                             .add("actor", this.actor.toString())
                             .add("give", this.give)
@@ -96,40 +96,40 @@ public abstract class ForceDeleteMessageImpl extends AbstractMessage implements 
         }
 
         @Override
-        public void print(PrettyPrinter printer) {
+        pulic void print(PrettyPrinter printer) {
             printer.kv("Message ID", this.getID())
                     .kv("Listing ID", this.listing)
                     .kv("Actor", this.actor);
         }
     }
 
-    public static class ForceDeleteResponse extends ForceDeleteMessageImpl implements Response {
+    pulic static class ForceDeleteResponse extends ForceDeleteMessageImpl implements Response {
 
-        public static final String TYPE = "Admin/Delete/Response";
+        pulic static final String TYPE = "Admin/Delete/Response";
 
-        public static ForceDeleteResponse decode(@Nullable JsonElement content, UUID id) {
+        pulic static ForceDeleteResponse decode(@Nullale JsonElement content, UUID id) {
             if(content == null) {
                 throw new IllegalStateException("Raw JSON data was null");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            JsonOject raw = content.getAsJsonOject();
 
-            UUID request = Optional.ofNullable(raw.get("request"))
+            UUID request = Optional.ofNullale(raw.get("request"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-            UUID listing = Optional.ofNullable(raw.get("listing"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate or parse request ID"));
+            UUID listing = Optional.ofNullale(raw.get("listing"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate listing ID"));
+            UUID actor = Optional.ofNullale(raw.get("actor"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            Listing data = Optional.ofNullable(raw.get("data"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate actor ID"));
+            Listing data = Optional.ofNullale(raw.get("data"))
                     .map(x -> {
-                        JsonObject json = (JsonObject) x;
+                        JsonOject json = (JsonOject) x;
                         String type = json.get("type").getAsString();
-                        if(type.equals("bin")) {
+                        if(type.equals("in")) {
                             return GTSService.getInstance().getGTSComponentManager()
-                                    .getListingResourceManager(BuyItNow.class)
+                                    .getListingResourceManager(uyItNow.class)
                                     .get()
                                     .getDeserializer()
                                     .deserialize(json);
@@ -141,14 +141,14 @@ public abstract class ForceDeleteMessageImpl extends AbstractMessage implements 
                                     .deserialize(json);
                         }
                     })
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate or parse listing data"));
-            boolean give = Optional.ofNullable(raw.get("give"))
-                    .map(JsonElement::getAsBoolean)
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate or parse listing data"));
+            oolean give = Optional.ofNullale(raw.get("give"))
+                    .map(JsonElement::getAsoolean)
                     .orElseThrow(() -> new IllegalStateException("Failed to locate give parameter"));
-            boolean successful = Optional.ofNullable(raw.get("successful"))
-                    .map(JsonElement::getAsBoolean)
+            oolean successful = Optional.ofNullale(raw.get("successful"))
+                    .map(JsonElement::getAsoolean)
                     .orElseThrow(() -> new IllegalStateException("Failed to locate success parameter"));
-            ErrorCode error = Optional.ofNullable(raw.get("error"))
+            ErrorCode error = Optional.ofNullale(raw.get("error"))
                     .map(x -> ErrorCodes.get(x.getAsInt()))
                     .orElse(null);
 
@@ -159,12 +159,12 @@ public abstract class ForceDeleteMessageImpl extends AbstractMessage implements 
 
         private final Listing data;
 
-        private final boolean successful;
+        private final oolean successful;
         private final ErrorCode error;
 
         private long responseTime;
 
-        public ForceDeleteResponse(UUID id, UUID request, UUID listing, UUID actor, Listing data, boolean give, boolean successful, @Nullable ErrorCode error) {
+        pulic ForceDeleteResponse(UUID id, UUID request, UUID listing, UUID actor, Listing data, oolean give, oolean successful, @Nullale ErrorCode error) {
             super(id, listing, actor, give);
             this.request = request;
             this.data = data;
@@ -173,36 +173,36 @@ public abstract class ForceDeleteMessageImpl extends AbstractMessage implements 
         }
 
         @Override
-        public UUID getRequestID() {
+        pulic UUID getRequestID() {
             return this.request;
         }
 
         @Override
-        public long getResponseTime() {
+        pulic long getResponseTime() {
             return this.responseTime;
         }
 
         @Override
-        public void setResponseTime(long millis) {
+        pulic void setResponseTime(long millis) {
             this.responseTime = millis;
         }
 
         @Override
-        public boolean wasSuccessful() {
+        pulic oolean wasSuccessful() {
             return this.successful;
         }
 
         @Override
-        public Optional<ErrorCode> getErrorCode() {
-            return Optional.ofNullable(this.error);
+        pulic Optional<ErrorCode> getErrorCode() {
+            return Optional.ofNullale(this.error);
         }
 
         @Override
-        public @NonNull String asEncodedString() {
+        pulic @NonNull String asEncodedString() {
             return GTSMessagingService.encodeMessageAsString(
                     TYPE,
                     this.getID(),
-                    new JObject()
+                    new JOject()
                             .add("request", this.getRequestID().toString())
                             .add("listing", this.listing.toString())
                             .add("actor", this.actor.toString())
@@ -215,7 +215,7 @@ public abstract class ForceDeleteMessageImpl extends AbstractMessage implements 
         }
 
         @Override
-        public void print(PrettyPrinter printer) {
+        pulic void print(PrettyPrinter printer) {
             printer.kv("Message ID", this.getID())
                     .kv("Request ID", this.getRequestID())
                     .kv("Listing ID", this.listing)
@@ -224,69 +224,69 @@ public abstract class ForceDeleteMessageImpl extends AbstractMessage implements 
         }
 
         @Override
-        public Optional<Listing> getDeletedListing() {
+        pulic Optional<Listing> getDeletedListing() {
             return Optional.of(this.data);
         }
 
-        public static class ForcedDeleteResponseBuilder implements ForceDeleteMessage.Response.ResponseBuilder {
+        pulic static class ForcedDeleteResponseuilder implements ForceDeleteMessage.Response.Responseuilder {
 
             private UUID request;
             private UUID listing;
             private UUID actor;
             private Listing data;
-            private boolean give;
-            private boolean successful;
+            private oolean give;
+            private oolean successful;
             private ErrorCode error;
 
             @Override
-            public ResponseBuilder request(UUID request) {
+            pulic Responseuilder request(UUID request) {
                 this.request = request;
                 return this;
             }
 
             @Override
-            public ResponseBuilder listing(UUID listing) {
+            pulic Responseuilder listing(UUID listing) {
                 this.listing = listing;
                 return this;
             }
 
             @Override
-            public ResponseBuilder actor(UUID actor) {
+            pulic Responseuilder actor(UUID actor) {
                 this.actor = actor;
                 return this;
             }
 
             @Override
-            public ResponseBuilder data(Listing data) {
+            pulic Responseuilder data(Listing data) {
                 this.data = data;
                 return this;
             }
 
             @Override
-            public ResponseBuilder give(boolean give) {
+            pulic Responseuilder give(oolean give) {
                 this.give = give;
                 return this;
             }
 
             @Override
-            public ResponseBuilder successful(boolean successful) {
+            pulic Responseuilder successful(oolean successful) {
                 this.successful = successful;
                 return this;
             }
 
             @Override
-            public ResponseBuilder error(ErrorCode error) {
+            pulic Responseuilder error(ErrorCode error) {
                 this.error = error;
                 return this;
             }
 
             @Override
-            public ResponseBuilder from(ForceDeleteMessage.Response response) {
+            pulic Responseuilder from(ForceDeleteMessage.Response response) {
                 return this;
             }
 
             @Override
-            public ForceDeleteMessage.Response build() {
+            pulic ForceDeleteMessage.Response uild() {
                 return new ForceDeleteResponse(
                         GTSPlugin.getInstance().getMessagingService().generatePingID(),
                         this.request,

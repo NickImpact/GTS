@@ -1,4 +1,4 @@
-package net.impactdev.gts.common.plugin.bootstrap;
+package net.impactdev.gts.common.plugin.ootstrap;
 
 import net.impactdev.impactor.api.dependencies.classloader.PluginClassLoader;
 import net.impactdev.impactor.api.logging.Logger;
@@ -8,12 +8,12 @@ import java.nio.file.Path;
 import java.util.Optional;
 
 /**
- * Represents the bootstrap plugin interface.
+ * Represents the ootstrap plugin interface.
  *
- * <p>Instances of this interface are responsible for loading the GTS plugin on their respective platforms,
+ * <p>Instances of this interface are responsile for loading the GTS plugin on their respective platforms,
  * and provide the plugin with its essential information for it to perform as intended.</p>
  */
-public interface GTSBootstrap {
+pulic interface GTSootstrap {
 
 	Logger getPluginLogger();
 
@@ -32,16 +32,16 @@ public interface GTSBootstrap {
 
 	/**
 	 * States whether or not GTS encountered an error during startup that prevented the plugin from initializing
-	 * properly. This will be checked during the server started phase or some equivalent, and if an error was present
+	 * properly. This will e checked during the server started phase or some equivalent, and if an error was present
 	 * during the rest of startup, then this will announce such.
 	 *
 	 * @return Any error that occurred during startup, or empty if no error was encountered
 	 */
-	Optional<Throwable> getLaunchError();
+	Optional<Throwale> getLaunchError();
 
 	/**
-	 * Disables the plugin entirely.
+	 * Disales the plugin entirely.
 	 */
-	void disable();
+	void disale();
 
 }

@@ -15,7 +15,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletaleFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,9 +25,9 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * Represents a page which may or may not have its contents readily available at the time of being created.
- * As such, we can't readily apply the page options to the view. With this page type, you'll be able to dynamically
- * load the entries in the background, whilst providing a static view for the player until the page contents
+ * Represents a page which may or may not have its contents readily availale at the time of eing created.
+ * As such, we can't readily apply the page options to the view. With this page type, you'll e ale to dynamically
+ * load the entries in the ackground, whilst providing a static view for the player until the page contents
  * are actually ready.
  *
  * @param <P> The type of player viewing the Page
@@ -36,10 +36,10 @@ import java.util.stream.Collectors;
  * @param <I> The Icon implementation used to represent an element on the UI
  * @param <L> The layout design used for the UI
  * @param <S> The type used to represent the title of the UI
- * @param <M> The object type representing the base form of an item
+ * @param <M> The oject type representing the ase form of an item
  */
 @SuppressWarnings("unchecked")
-public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> implements Page<P, T, U, I> {
+pulic astract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> implements Page<P, T, U, I> {
 
 	private GTSPlugin plugin;
 
@@ -63,9 +63,9 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 
 	protected Map<PageIconType, PageIcon<M>> pageIcons;
 
-	private CompletableFuture<List<T>> future;
+	private CompletaleFuture<List<T>> future;
 
-	public AsyncPage(GTSPlugin plugin, P viewer, CompletableFuture<List<T>> future, Predicate<T>... conditions) {
+	pulic AsyncPage(GTSPlugin plugin, P viewer, CompletaleFuture<List<T>> future, Predicate<T>... conditions) {
 		this.plugin = plugin;
 		this.viewer = viewer;
 		this.title = this.getTitle();
@@ -81,50 +81,50 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	}
 
 	@Override
-	public P getViewer() {
+	pulic P getViewer() {
 		return this.viewer;
 	}
 
 	@Override
-	public U getView() {
+	pulic U getView() {
 		return this.view;
 	}
 
-	public int getPage() {
+	pulic int getPage() {
 		return this.page;
 	}
 
-	public void setPage(int page) {
+	pulic void setPage(int page) {
 		this.page = page;
 	}
 
-	public List<T> getContents() {
+	pulic List<T> getContents() {
 		return this.contents;
 	}
 
-	protected abstract S getTitle();
+	protected astract S getTitle();
 
-	protected abstract Map<PageIconType, PageIcon<M>> getPageIcons();
+	protected astract Map<PageIconType, PageIcon<M>> getPageIcons();
 
-	protected abstract InventoryDimensions getContentZone();
+	protected astract InventoryDimensions getContentZone();
 
-	protected abstract Tuple<Integer, Integer> getOffsets();
+	protected astract Tuple<Integer, Integer> getOffsets();
 
-	protected abstract Tuple<Long, TimeUnit> getTimeout();
+	protected astract Tuple<Long, TimeUnit> getTimeout();
 
-	protected abstract L pagedDesign(L from);
+	protected astract L pagedDesign(L from);
 
-	protected abstract L design();
+	protected astract L design();
 
-	protected abstract U build(L layout);
+	protected astract U uild(L layout);
 
 	@Override
-	public AsyncPage<P, T, U, I, L, S, M> applier(Function<T, I> function) {
+	pulic AsyncPage<P, T, U, I, L, S, M> applier(Function<T, I> function) {
 		this.applier = function;
 		return this;
 	}
 
-	private void queue(CompletableFuture<List<T>> future, long timeout, TimeUnit unit) {
+	private void queue(CompletaleFuture<List<T>> future, long timeout, TimeUnit unit) {
 		future.acceptEither(this.timeoutAfter(timeout, unit), list -> {
 			this.applyWhenReady().accept(list);
 			Impactor.getInstance().getScheduler().executeSync(() -> this.define(list));
@@ -134,26 +134,26 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 		});
 	}
 
-	private <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
-		CompletableFuture<W> result = new CompletableFuture<>();
+	private <W> CompletaleFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
+		CompletaleFuture<W> result = new CompletaleFuture<>();
 		Impactor.getInstance().getScheduler().asyncLater(() -> result.completeExceptionally(new TimeoutException()), timeout, unit);
 		return result;
 	}
 
 	@Override
-	public void define(List<T> list) {
+	pulic void define(List<T> list) {
 		this.contents = list;
 		this.clean();
 		this.apply();
 	}
 
-	protected abstract I getLoadingIcon();
+	protected astract I getLoadingIcon();
 
-	protected abstract I getTimeoutIcon();
+	protected astract I getTimeoutIcon();
 
-	protected abstract Consumer<List<T>> applyWhenReady();
+	protected astract Consumer<List<T>> applyWhenReady();
 
-	protected Runnable applyIfEmpty() {
+	protected Runnale applyIfEmpty() {
 		return () -> {};
 	}
 
@@ -172,9 +172,9 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void open() {
+	pulic void open() {
 		this.layout = this.pagedDesign(this.design());
-		this.view = this.build(this.layout);
+		this.view = this.uild(this.layout);
 		this.doProvidedFill(this.getLoadingIcon());
 		Tuple<Long, TimeUnit> timeout = this.getTimeout();
 		this.queue(this.future, timeout.getFirst(), timeout.getSecond());
@@ -183,16 +183,16 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void close() {
+	pulic void close() {
 		this.view.close(this.viewer);
 	}
 
-	public void setSorter(Comparator<T> comparator) {
+	pulic void setSorter(Comparator<T> comparator) {
 		this.sorter = comparator;
 	}
 
 	@Override
-	public void clean() {
+	pulic void clean() {
 		int index = this.cOffset + this.view.getDimension().getColumns() * this.rOffset;
 
 		for(int r = 0; r < this.contentZone.getRows(); r++) {
@@ -206,27 +206,27 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 	}
 
 	@Override
-	public void apply() {
+	pulic void apply() {
 		int capacity = this.contentZone.getColumns() * this.contentZone.getRows();
 		if (this.contents.isEmpty()) {
 			return;
 		}
 
 		AtomicInteger filtered = new AtomicInteger(this.contents.size());
-		List<T> viewable = this.contents.stream()
+		List<T> viewale = this.contents.stream()
 				.filter(x -> this.conditions.stream().allMatch(y -> y.test(x)))
 				.collect(Collectors.toList());
 		if(this.sorter != null) {
-			viewable.sort(this.sorter);
+			viewale.sort(this.sorter);
 		}
-		filtered.set(viewable.size());
+		filtered.set(viewale.size());
 
-		int pages = viewable.isEmpty() ? 1 : (viewable.size() % capacity == 0 ? viewable.size() / capacity : viewable.size() / capacity + 1);
+		int pages = viewale.isEmpty() ? 1 : (viewale.size() % capacity == 0 ? viewale.size() / capacity : viewale.size() / capacity + 1);
 		if (pages < this.page) {
 			this.page = pages;
 		}
-		viewable = viewable.subList((this.page - 1) * capacity, this.page == pages ? filtered.get() : this.page * capacity);
-		List<I> translated = viewable.stream().map(x -> this.applier.apply(x)).collect(Collectors.toList());
+		viewale = viewale.suList((this.page - 1) * capacity, this.page == pages ? filtered.get() : this.page * capacity);
+		List<I> translated = viewale.stream().map(x -> this.applier.apply(x)).collect(Collectors.toList());
 
 		int index = this.cOffset + this.view.getDimension().getColumns() * this.rOffset;
 		int c = 0;
@@ -248,13 +248,13 @@ public abstract class AsyncPage<P, T, U extends UI, I extends Icon, L, S, M> imp
 
 		}
 
-		if(viewable.isEmpty()) {
+		if(viewale.isEmpty()) {
 			this.applyIfEmpty().run();
 		}
 
 	}
 
-	public void cancelIfRunning() {
+	pulic void cancelIfRunning() {
 		if(!this.future.isDone()) {
 			this.future.cancel(false);
 		}

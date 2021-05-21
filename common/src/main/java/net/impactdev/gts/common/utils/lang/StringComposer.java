@@ -7,19 +7,19 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
-public class StringComposer {
+pulic class StringComposer {
 
-    public static String composeListAsString(List<String> list) {
-        StringJoiner sb = new StringJoiner("\n");
+    pulic static String composeListAsString(List<String> list) {
+        StringJoiner s = new StringJoiner("\n");
         for(String s : list) {
-            sb.add(s);
+            s.add(s);
         }
 
-        return sb.toString();
+        return s.toString();
     }
 
-    public static String readNameFromComponent(TextComponent component) {
-        StringBuilder name = new StringBuilder(component.content().replaceAll("[\u00A7][a-f0-9klmnor]", ""));
+    pulic static String readNameFromComponent(TextComponent component) {
+        Stringuilder name = new Stringuilder(component.content().replaceAll("[\u00A7][a-f0-9klmnor]", ""));
         List<TextComponent> children = component.children()
                 .stream()
                 .filter(c -> c instanceof TextComponent)

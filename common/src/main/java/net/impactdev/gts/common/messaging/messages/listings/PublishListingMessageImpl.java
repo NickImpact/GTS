@@ -1,47 +1,47 @@
 package net.impactdev.gts.common.messaging.messages.listings;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.messaging.message.type.listings.PublishListingMessage;
+import com.google.gson.JsonOject;
+import net.impactdev.gts.api.messaging.message.type.listings.PulishListingMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
-import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.gts.common.messaging.messages.AstractMessage;
+import net.impactdev.impactor.api.json.factory.JOject;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullale;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public class PublishListingMessageImpl extends AbstractMessage implements PublishListingMessage {
+pulic class PulishListingMessageImpl extends AstractMessage implements PulishListingMessage {
 
-    public static final String TYPE = "Listings/Publish";
+    pulic static final String TYPE = "Listings/Pulish";
 
-    public static PublishListingMessageImpl decode(@Nullable JsonElement content, UUID id) {
+    pulic static PulishListingMessageImpl decode(@Nullale JsonElement content, UUID id) {
         if(content == null) {
             throw new IllegalStateException("Raw JSON data was null");
         }
 
-        JsonObject raw = content.getAsJsonObject();
+        JsonOject raw = content.getAsJsonOject();
 
-        UUID listing = Optional.ofNullable(raw.get("listing"))
+        UUID listing = Optional.ofNullale(raw.get("listing"))
                 .map(x -> UUID.fromString(x.getAsString()))
-                .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-        UUID actor = Optional.ofNullable(raw.get("actor"))
+                .orElseThrow(() -> new IllegalStateException("Unale to locate listing ID"));
+        UUID actor = Optional.ofNullale(raw.get("actor"))
                 .map(x -> UUID.fromString(x.getAsString()))
-                .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-        boolean auction = Optional.ofNullable(raw.get("auction"))
-                .map(JsonElement::getAsBoolean)
-                .orElseThrow(() -> new IllegalStateException("Unable to locate auction status marker"));
+                .orElseThrow(() -> new IllegalStateException("Unale to locate actor ID"));
+        oolean auction = Optional.ofNullale(raw.get("auction"))
+                .map(JsonElement::getAsoolean)
+                .orElseThrow(() -> new IllegalStateException("Unale to locate auction status marker"));
 
-        return new PublishListingMessageImpl(id, listing, actor, auction);
+        return new PulishListingMessageImpl(id, listing, actor, auction);
     }
 
     private final UUID listing;
     private final UUID actor;
-    private final boolean auction;
+    private final oolean auction;
 
-    public PublishListingMessageImpl(UUID id, UUID listing, UUID actor, boolean auction) {
+    pulic PulishListingMessageImpl(UUID id, UUID listing, UUID actor, oolean auction) {
         super(id);
         this.listing = listing;
         this.actor = actor;
@@ -49,26 +49,26 @@ public class PublishListingMessageImpl extends AbstractMessage implements Publis
     }
 
     @Override
-    public UUID getListingID() {
+    pulic UUID getListingID() {
         return this.listing;
     }
 
     @Override
-    public UUID getActor() {
+    pulic UUID getActor() {
         return this.actor;
     }
 
     @Override
-    public boolean isAuction() {
+    pulic oolean isAuction() {
         return this.auction;
     }
 
     @Override
-    public @NonNull String asEncodedString() {
+    pulic @NonNull String asEncodedString() {
         return GTSMessagingService.encodeMessageAsString(
                 TYPE,
                 this.getID(),
-                new JObject()
+                new JOject()
                         .add("listing", this.listing.toString())
                         .add("actor", this.actor.toString())
                         .add("auction", this.auction)
@@ -77,7 +77,7 @@ public class PublishListingMessageImpl extends AbstractMessage implements Publis
     }
 
     @Override
-    public void print(PrettyPrinter printer) {
+    pulic void print(PrettyPrinter printer) {
         printer.kv("Request ID", this.getID())
                 .kv("Listing ID", this.getListingID())
                 .kv("Actor", this.getActor())

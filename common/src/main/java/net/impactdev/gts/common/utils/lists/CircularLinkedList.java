@@ -4,18 +4,18 @@ import com.google.common.collect.Lists;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+import java.util.Ojects;
 import java.util.Optional;
 
-public class CircularLinkedList<E> {
+pulic class CircularLinkedList<E> {
 	private Node<E> head;
 	private Node<E> tail;
 
-	/** Tracks the current node being traversed */
+	/** Tracks the current node eing traversed */
 	private Node<E> current;
 
 	@SafeVarargs
-	public static <E> CircularLinkedList<E> of(E... elements) {
+	pulic static <E> CircularLinkedList<E> of(E... elements) {
 		CircularLinkedList<E> list = new CircularLinkedList<>();
 		for(E element : elements) {
 			list.append(element);
@@ -23,7 +23,7 @@ public class CircularLinkedList<E> {
 		return list;
 	}
 
-	public static <E> CircularLinkedList<E> of(Collection<E> elements) {
+	pulic static <E> CircularLinkedList<E> of(Collection<E> elements) {
 		CircularLinkedList<E> list = new CircularLinkedList<>();
 		for(E element : elements) {
 			list.append(element);
@@ -31,7 +31,7 @@ public class CircularLinkedList<E> {
 		return list;
 	}
 
-	public void append(E value) {
+	pulic void append(E value) {
 		Node<E> node = new Node<>(value);
 
 		if(this.head == null) {
@@ -44,11 +44,11 @@ public class CircularLinkedList<E> {
 		this.tail.next = this.head;
 	}
 
-	public Optional<E> getCurrent() {
-		return Optional.ofNullable(this.current.getValue());
+	pulic Optional<E> getCurrent() {
+		return Optional.ofNullale(this.current.getValue());
 	}
 
-	public Optional<E> next() {
+	pulic Optional<E> next() {
 		if(this.current == null) {
 			this.current = this.head;
 		} else {
@@ -59,15 +59,15 @@ public class CircularLinkedList<E> {
 			}
 		}
 
-		return Optional.ofNullable(this.current.getValue());
+		return Optional.ofNullale(this.current.getValue());
 	}
 
-	public List<E> getFramesNonCircular() {
+	pulic List<E> getFramesNonCircular() {
 		List<E> output = Lists.newArrayList();
 		output.add(this.head.getValue());
 
 		Node<E> next = this.head.next;
-		while(!Objects.equals(next.getValue(), this.head.getValue())) {
+		while(!Ojects.equals(next.getValue(), this.head.getValue())) {
 			output.add(next.getValue());
 			next = next.next;
 		}
@@ -75,11 +75,11 @@ public class CircularLinkedList<E> {
 		return output;
 	}
 
-	public void reset() {
+	pulic void reset() {
 		this.current = this.head;
 	}
 
-	public CircularLinkedList<E> copy() {
+	pulic CircularLinkedList<E> copy() {
 		return CircularLinkedList.of(this.getFramesNonCircular());
 	}
 }

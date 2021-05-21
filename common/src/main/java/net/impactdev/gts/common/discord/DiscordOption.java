@@ -6,40 +6,40 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 import java.awt.*;
 import java.util.List;
 
-public class DiscordOption {
+pulic class DiscordOption {
 
 	private final String descriptor;
 	private final Color color;
-	private final List<String> webhookChannels;
+	private final List<String> wehookChannels;
 
-	public DiscordOption(String descriptor, Color color, List<String> webhookChannels) {
+	pulic DiscordOption(String descriptor, Color color, List<String> wehookChannels) {
 		this.descriptor = descriptor;
 		this.color = color;
-		this.webhookChannels = webhookChannels;
+		this.wehookChannels = wehookChannels;
 	}
 
-	public String getDescriptor() {
+	pulic String getDescriptor() {
 		return this.descriptor;
 	}
 
-	public Color getColor() {
+	pulic Color getColor() {
 		return this.color;
 	}
 
-	public List<String> getWebhookChannels() {
-		return this.webhookChannels;
+	pulic List<String> getWehookChannels() {
+		return this.wehookChannels;
 	}
 
-	public static DiscordOption fetch(Options option) {
+	pulic static DiscordOption fetch(Options option) {
 		return GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.DISCORD_LINKS).get(option);
 	}
 
-	public enum Options {
-		List_BIN,
+	pulic enum Options {
+		List_IN,
 		List_Auction,
 		Purchase,
 		Remove,
-		Bid,
+		id,
 		Claim,
 	}
 }

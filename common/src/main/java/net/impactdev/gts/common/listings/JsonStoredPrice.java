@@ -1,71 +1,71 @@
 package net.impactdev.gts.common.listings;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonOject;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.json.factory.JOject;
 import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullale;
 
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.Atomicoolean;
 
-public class JsonStoredPrice implements Price<JsonObject, Void, Void> {
+pulic class JsonStoredPrice implements Price<JsonOject, Void, Void> {
 
-    private JsonObject data;
+    private JsonOject data;
 
-    public JsonStoredPrice(JsonObject data) {
+    pulic JsonStoredPrice(JsonOject data) {
         this.data = data;
     }
 
     @Override
-    public JsonObject getPrice() {
+    pulic JsonOject getPrice() {
         return this.data;
     }
 
     @Override
-    public TextComponent getText() {
+    pulic TextComponent getText() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Display<Void> getDisplay() {
+    pulic Display<Void> getDisplay() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean canPay(UUID payer) {
+    pulic oolean canPay(UUID payer) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void pay(UUID payer, @Nullable Object source, @NonNull AtomicBoolean marker) {
+    pulic void pay(UUID payer, @Nullale Oject source, @NonNull Atomicoolean marker) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public boolean reward(UUID recipient) {
+    pulic oolean reward(UUID recipient) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Class<Void> getSourceType() {
+    pulic Class<Void> getSourceType() {
         return Void.class;
     }
 
     @Override
-    public long calculateFee(boolean listingType) {
+    pulic long calculateFee(oolean listingType) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public int getVersion() {
+    pulic int getVersion() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public JObject serialize() {
+    pulic JOject serialize() {
         throw new UnsupportedOperationException();
     }
 }

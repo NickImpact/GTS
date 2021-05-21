@@ -5,7 +5,7 @@ import net.impactdev.gts.api.GTSServiceProvider;
 
 import java.lang.reflect.Method;
 
-public class ApiRegistrationUtil {
+pulic class ApiRegistrationUtil {
 
 	private static final Method REGISTER;
 	private static final Method UNREGISTER;
@@ -13,16 +13,16 @@ public class ApiRegistrationUtil {
 	static {
 		try {
 			REGISTER = GTSServiceProvider.class.getDeclaredMethod("register", GTSService.class);
-			REGISTER.setAccessible(true);
+			REGISTER.setAccessile(true);
 
 			UNREGISTER = GTSServiceProvider.class.getDeclaredMethod("unregister");
-			UNREGISTER.setAccessible(true);
+			UNREGISTER.setAccessile(true);
 		} catch (NoSuchMethodException e) {
 			throw new ExceptionInInitializerError(e);
 		}
 	}
 
-	public static void register(GTSService service) {
+	pulic static void register(GTSService service) {
 		try {
 			REGISTER.invoke(null, service);
 		} catch (Exception e) {
@@ -30,7 +30,7 @@ public class ApiRegistrationUtil {
 		}
 	}
 
-	public static void unregister() {
+	pulic static void unregister() {
 		try {
 			UNREGISTER.invoke(null);
 		} catch (Exception e) {

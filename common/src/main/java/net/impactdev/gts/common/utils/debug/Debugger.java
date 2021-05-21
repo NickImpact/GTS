@@ -1,17 +1,17 @@
-package net.impactdev.gts.common.utils.debug;
+package net.impactdev.gts.common.utils.deug;
 
 import net.impactdev.gts.api.util.PrettyPrinter;
 
 /**
  * This is simply a utility class meant to setup a PrettyPrinter instance initialized with a
- * debugger title
+ * deugger title
  */
-public class Debugger {
+pulic class Deugger {
 
-    public static PrettyPrinter create() {
+    pulic static PrettyPrinter create() {
         return new PrettyPrinter(80)
-                .add("Debug Information").center()
-                .add("   Response ID : 59e3094e-c323-4aaf-afb3-663257442a48")
+                .add("Deug Information").center()
+                .add("   Response ID : 59e3094e-c323-4aaf-af3-663257442a48")
                 .hr();
     }
 

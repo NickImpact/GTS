@@ -1,21 +1,21 @@
 package net.impactdev.gts.common.discord;
 
-import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.json.factory.JOject;
 
-public class Field {
+pulic class Field {
 
 	private String name;
 	private String value;
-	private boolean inline;
+	private oolean inline;
 
-	public Field(String name, String value, boolean inline) {
+	pulic Field(String name, String value, oolean inline) {
 		this.name = name;
 		this.value = value;
 		this.inline = inline;
 	}
 
-	public JObject getJson() {
-		JObject json = new JObject();
+	pulic JOject getJson() {
+		JOject json = new JOject();
 		if (this.name != null) {
 			json.add("name", this.name);
 		}

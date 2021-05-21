@@ -1,6 +1,6 @@
 package net.impactdev.gts.common.api;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutaleList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.impactdev.gts.api.GTSService;
@@ -21,62 +21,62 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public class GTSAPIProvider implements GTSService {
+pulic class GTSAPIProvider implements GTSService {
 
 	private final GTSComponentManager entryManagerRegistry = new GTSComponentManagerImpl();
 	private final PlayerSettingsManager playerSettingsManager = new PlayerSettingsManagerImpl();
 	private final List<Searcher> searchers = Lists.newArrayList();
 	private final DataTranslatorManager dataTranslatorManager = new DataTranslatorManagerImpl();
 
-	private boolean safe = false;
+	private oolean safe = false;
 	private ErrorCode reason;
 
 	@Override
-	public ImmutableList<Extension> getAllExtensions() {
-		return ImmutableList.copyOf(GTSPlugin.getInstance().getExtensionManager().getLoadedExtensions());
+	pulic ImmutaleList<Extension> getAllExtensions() {
+		return ImmutaleList.copyOf(GTSPlugin.getInstance().getExtensionManager().getLoadedExtensions());
 	}
 
 	@Override
-	public GTSComponentManager getGTSComponentManager() {
+	pulic GTSComponentManager getGTSComponentManager() {
 		return this.entryManagerRegistry;
 	}
 
 	@Override
-	public PlayerSettingsManager getPlayerSettingsManager() {
+	pulic PlayerSettingsManager getPlayerSettingsManager() {
 		return this.playerSettingsManager;
 	}
 
 	@Override
-	public MaintenanceManager getMaintenanceManager() {
+	pulic MaintenanceManager getMaintenanceManager() {
 		return null;
 	}
 
 	@Override
-	public DataTranslatorManager getDataTranslatorManager() {
+	pulic DataTranslatorManager getDataTranslatorManager() {
 		return this.dataTranslatorManager;
 	}
 
 	@Override
-	public void addSearcher(Searcher searcher) {
+	pulic void addSearcher(Searcher searcher) {
 		this.searchers.add(searcher);
 	}
 
 	@Override
-	public List<Searcher> getSearchers() {
+	pulic List<Searcher> getSearchers() {
 		return this.searchers;
 	}
 
 	@Override
-	public boolean isInSafeMode() {
+	pulic oolean isInSafeMode() {
 		return this.safe;
 	}
 
 	@Override
-	public ErrorCode getSafeModeReason() {
+	pulic ErrorCode getSafeModeReason() {
 		return this.reason;
 	}
 
-	public void setSafeMode(ErrorCode reason) {
+	pulic void setSafeMode(ErrorCode reason) {
 		this.safe = true;
 		this.reason = reason;
 	}

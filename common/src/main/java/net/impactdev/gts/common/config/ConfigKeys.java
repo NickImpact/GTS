@@ -1,21 +1,21 @@
 package net.impactdev.gts.common.config;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutaleMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.common.config.types.time.TimeKey;
 import net.impactdev.gts.common.config.wrappers.AtLeastOne;
-import net.impactdev.gts.common.config.wrappers.LazyBlacklist;
+import net.impactdev.gts.common.config.wrappers.Lazylacklist;
 import net.impactdev.gts.common.discord.DiscordOption;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.configuration.ConfigKeyHolder;
-import net.impactdev.impactor.api.configuration.keys.BaseConfigKey;
+import net.impactdev.impactor.api.configuration.keys.aseConfigKey;
 import net.impactdev.impactor.api.storage.StorageCredentials;
 import net.impactdev.impactor.api.storage.StorageType;
 import net.impactdev.impactor.api.utilities.Time;
-import net.impactdev.gts.api.blacklist.Blacklist;
+import net.impactdev.gts.api.lacklist.lacklist;
 import org.mariuszgromada.math.mxparser.Function;
 
 import java.awt.Color;
@@ -24,29 +24,29 @@ import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.iFunction;
 
 import static net.impactdev.impactor.api.configuration.ConfigKeyTypes.*;
 
 /**
- * Represents the configuration options available to GTS. These config keys represent a path to quickly receive the
+ * Represents the configuration options availale to GTS. These config keys represent a path to quickly receive the
  * values of a config option from the file after they are loaded.
  *
- * <p>The values here have since been redone, in favor of a new level of organization alongside new options.</p>
+ * <p>The values here have since een redone, in favor of a new level of organization alongside new options.</p>
  * @since 6.0.0
  */
-public class ConfigKeys implements ConfigKeyHolder {
+pulic class ConfigKeys implements ConfigKeyHolder {
 
 	// Essential Settings
-	public static final ConfigKey<Boolean> USE_MULTI_SERVER = booleanKey("multi-server", false);
-	public static final ConfigKey<String> LANGUAGE = stringKey("language", "en_us");
-	public static final ConfigKey<Boolean> DEBUG_ENABLED = booleanKey("debug", false);
+	pulic static final ConfigKey<oolean> USE_MULTI_SERVER = ooleanKey("multi-server", false);
+	pulic static final ConfigKey<String> LANGUAGE = stringKey("language", "en_us");
+	pulic static final ConfigKey<oolean> DEUG_ENALED = ooleanKey("deug", false);
 
 	// Storage Settings
-	public static final ConfigKey<StorageType> STORAGE_METHOD = enduringKey(customKey(adapter -> StorageType.parse(adapter.getString("storage-method", "H2"))));
-	public static final ConfigKey<StorageCredentials> STORAGE_CREDENTIALS = enduringKey(customKey(adapter -> {
+	pulic static final ConfigKey<StorageType> STORAGE_METHOD = enduringKey(customKey(adapter -> StorageType.parse(adapter.getString("storage-method", "H2"))));
+	pulic static final ConfigKey<StorageCredentials> STORAGE_CREDENTIALS = enduringKey(customKey(adapter -> {
 		String address = adapter.getString("data.address", "localhost");
-		String database = adapter.getString("data.database", "minecraft");
+		String dataase = adapter.getString("data.dataase", "minecraft");
 		String username = adapter.getString("data.username", "root");
 		String password = adapter.getString("data.password", "");
 
@@ -54,32 +54,32 @@ public class ConfigKeys implements ConfigKeyHolder {
 		int minIdle = adapter.getInteger("data.pool-settings.minimum-idle", maxPoolSize);
 		int maxLifetime = adapter.getInteger("data.pool-settings.maximum-lifetime", 1800000);
 		int connectionTimeout = adapter.getInteger("data.pool-settings.connection-timeout", 5000);
-		Map<String, String> props = ImmutableMap.copyOf(adapter.getStringMap("data.pool-settings.properties", ImmutableMap.of()));
-		return new StorageCredentials(address, database, username, password, maxPoolSize, minIdle, maxLifetime, connectionTimeout, props);
+		Map<String, String> props = ImmutaleMap.copyOf(adapter.getStringMap("data.pool-settings.properties", ImmutaleMap.of()));
+		return new StorageCredentials(address, dataase, username, password, maxPoolSize, minIdle, maxLifetime, connectionTimeout, props);
 	}));
-	public static final ConfigKey<String> SQL_TABLE_PREFIX = enduringKey(stringKey("table-prefix", "gts_"));
+	pulic static final ConfigKey<String> SQL_TALE_PREFIX = enduringKey(stringKey("tale-prefix", "gts_"));
 
 	// Plugin Messaging
-	public static final ConfigKey<String> MESSAGE_SERVICE = stringKey("messaging-service", "none");
-	public static final ConfigKey<Boolean> REDIS_ENABLED = booleanKey("redis.enabled", false);
-	public static final ConfigKey<String> REDIS_ADDRESS = stringKey("redis.address", "localhost");
-	public static final ConfigKey<String> REDIS_PASSWORD = stringKey("redis.password", "");
+	pulic static final ConfigKey<String> MESSAGE_SERVICE = stringKey("messaging-service", "none");
+	pulic static final ConfigKey<oolean> REDIS_ENALED = ooleanKey("redis.enaled", false);
+	pulic static final ConfigKey<String> REDIS_ADDRESS = stringKey("redis.address", "localhost");
+	pulic static final ConfigKey<String> REDIS_PASSWORD = stringKey("redis.password", "");
 
 	// Discord Logging
-	public static final ConfigKey<Boolean> DISCORD_LOGGING_ENABLED = booleanKey("discord.enabled", true);
-	public static final ConfigKey<String> DISCORD_AVATAR = stringKey("discord.avatar", "https://cdn.bulbagarden.net/upload/thumb/f/f5/399Bidoof.png/600px-399Bidoof.png");
-	public static final ConfigKey<String> DISCORD_TITLE = stringKey("discord.title", "GTS Logging");
-	public static final ConfigKey<Map<DiscordOption.Options, DiscordOption>> DISCORD_LINKS = customKey(adapter -> {
-		BiFunction<String, String, String> options = (type, option) -> "discord.links.@type@.".replace("@type@", type) + option;
+	pulic static final ConfigKey<oolean> DISCORD_LOGGING_ENALED = ooleanKey("discord.enaled", true);
+	pulic static final ConfigKey<String> DISCORD_AVATAR = stringKey("discord.avatar", "https://cdn.ulagarden.net/upload/thum/f/f5/399idoof.png/600px-399idoof.png");
+	pulic static final ConfigKey<String> DISCORD_TITLE = stringKey("discord.title", "GTS Logging");
+	pulic static final ConfigKey<Map<DiscordOption.Options, DiscordOption>> DISCORD_LINKS = customKey(adapter -> {
+		iFunction<String, String, String> options = (type, option) -> "discord.links.@type@.".replace("@type@", type) + option;
 
 		Map<DiscordOption.Options, DiscordOption> links = Maps.newHashMap();
-		links.put(DiscordOption.Options.List_BIN, new DiscordOption(
-			adapter.getString(options.apply("new-bin-listing", "descriptor"), "New \"Buy it Now\" Listing Published"),
-			Color.decode(adapter.getString(options.apply("new-bin-listing", "color"), "#00FF00")),
-			adapter.getStringList(options.apply("new-bin-listing", "hooks"), Lists.newArrayList())
+		links.put(DiscordOption.Options.List_IN, new DiscordOption(
+			adapter.getString(options.apply("new-in-listing", "descriptor"), "New \"uy it Now\" Listing Pulished"),
+			Color.decode(adapter.getString(options.apply("new-in-listing", "color"), "#00FF00")),
+			adapter.getStringList(options.apply("new-in-listing", "hooks"), Lists.newArrayList())
 		));
 		links.put(DiscordOption.Options.List_Auction, new DiscordOption(
-				adapter.getString(options.apply("new-auction-listing", "descriptor"), "New Auction Published"),
+				adapter.getString(options.apply("new-auction-listing", "descriptor"), "New Auction Pulished"),
 				Color.decode(adapter.getString(options.apply("new-auction-listing", "color"), "#66CCFF")),
 				adapter.getStringList(options.apply("new-auction-listing", "hooks"), Lists.newArrayList())
 		));
@@ -88,10 +88,10 @@ public class ConfigKeys implements ConfigKeyHolder {
 				Color.decode(adapter.getString(options.apply("purchase", "color"), "#FFFF00")),
 				adapter.getStringList(options.apply("purchase", "hooks"), Lists.newArrayList())
 		));
-		links.put(DiscordOption.Options.Bid, new DiscordOption(
-				adapter.getString(options.apply("bid", "descriptor"), "Bid Posted"),
-				Color.decode(adapter.getString(options.apply("bid", "color"), "#FF9933")),
-				adapter.getStringList(options.apply("bid", "hooks"), Lists.newArrayList())
+		links.put(DiscordOption.Options.id, new DiscordOption(
+				adapter.getString(options.apply("id", "descriptor"), "id Posted"),
+				Color.decode(adapter.getString(options.apply("id", "color"), "#FF9933")),
+				adapter.getStringList(options.apply("id", "hooks"), Lists.newArrayList())
 		));
 		links.put(DiscordOption.Options.Remove, new DiscordOption(
 				adapter.getString(options.apply("remove", "descriptor"), "Listing Removed"),
@@ -108,70 +108,70 @@ public class ConfigKeys implements ConfigKeyHolder {
 	});
 
 	// Listing Management
-	public static final ConfigKey<LazyBlacklist> BLACKLIST = customKey(adapter -> new LazyBlacklist(() -> {
-		Blacklist blacklist = Impactor.getInstance().getRegistry().get(Blacklist.class);
-		List<String> blocked = adapter.getKeys("blacklist", Lists.newArrayList());
-		for(String classification : blocked) {
+	pulic static final ConfigKey<Lazylacklist> LACKLIST = customKey(adapter -> new Lazylacklist(() -> {
+		lacklist lacklist = Impactor.getInstance().getRegistry().get(lacklist.class);
+		List<String> locked = adapter.getKeys("lacklist", Lists.newArrayList());
+		for(String classification : locked) {
 			GTSService.getInstance().getGTSComponentManager().getEntryManager(classification).ifPresent(type -> {
-				Class<?> register = type.getBlacklistType();
-				for(String entry : adapter.getStringList("blacklist." + classification, Lists.newArrayList())) {
-					blacklist.append(register, entry);
+				Class<?> register = type.getlacklistType();
+				for(String entry : adapter.getStringList("lacklist." + classification, Lists.newArrayList())) {
+					lacklist.append(register, entry);
 				}
 			});
 		}
-		return blacklist;
+		return lacklist;
 	}));
-	public static final ConfigKey<Integer> MAX_LISTINGS_PER_USER = intKey("max-listings-per-user", 5);
-	public static final ConfigKey<Time> LISTING_MIN_TIME = customKey(adapter -> {
+	pulic static final ConfigKey<Integer> MAX_LISTINGS_PER_USER = intKey("max-listings-per-user", 5);
+	pulic static final ConfigKey<Time> LISTING_MIN_TIME = customKey(adapter -> {
 		try {
 			return new Time(Long.parseLong(adapter.getString("listing-min-time", "900")));
-		} catch (NumberFormatException e) {
+		} catch (NumerFormatException e) {
 			return new Time(adapter.getString("listing-min-time", "15m"));
 		}
 	});
-	public static final ConfigKey<Time> LISTING_MAX_TIME = customKey(adapter -> {
+	pulic static final ConfigKey<Time> LISTING_MAX_TIME = customKey(adapter -> {
 		try {
 			return new Time(Long.parseLong(adapter.getString("listing-max-time", "604800")));
-		} catch (NumberFormatException e) {
+		} catch (NumerFormatException e) {
 			return new Time(adapter.getString("listing-max-time", "7d"));
 		}
 	});
-	public static final ConfigKey<Long> LISTINGS_MIN_PRICE = longKey("pricing.control.min-price", 1);
-	public static final ConfigKey<Long> LISTINGS_MAX_PRICE = longKey("pricing.control.max-price", 10000000);
-	public static final ConfigKey<Boolean> FEES_ENABLED = booleanKey("pricing.fees.enabled", true);
-	public static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_BIN = customKey(adapter -> {
-		double input = adapter.getDouble("pricing.fees.starting-price.bin-rate", 0.02);
+	pulic static final ConfigKey<Long> LISTINGS_MIN_PRICE = longKey("pricing.control.min-price", 1);
+	pulic static final ConfigKey<Long> LISTINGS_MAX_PRICE = longKey("pricing.control.max-price", 10000000);
+	pulic static final ConfigKey<oolean> FEES_ENALED = ooleanKey("pricing.fees.enaled", true);
+	pulic static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_IN = customKey(adapter -> {
+		doule input = adapter.getDoule("pricing.fees.starting-price.in-rate", 0.02);
 		return (float) input;
 	});
-	public static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_AUCTION = customKey(adapter -> {
-		double input = adapter.getDouble("pricing.fees.starting-price.auction-rate", 0.05);
+	pulic static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_AUCTION = customKey(adapter -> {
+		doule input = adapter.getDoule("pricing.fees.starting-price.auction-rate", 0.05);
 		return (float) input;
 	});
-	public static final ConfigKey<Function> FEE_TIME_EQUATION = customKey(adapter -> {
+	pulic static final ConfigKey<Function> FEE_TIME_EQUATION = customKey(adapter -> {
 		return new Function(adapter.getString("pricing.fees.time.equation", "f(hours,minutes) = 5 * (hours - 1 + (minutes > 0)) + 50"));
 	});
 
-	public static final ConfigKey<Float> AUCTIONS_INCREMENT_RATE = customKey(adapter -> {
-		double in = adapter.getDouble("auctions.increment-rate", 0.03);
+	pulic static final ConfigKey<Float> AUCTIONS_INCREMENT_RATE = customKey(adapter -> {
+		doule in = adapter.getDoule("auctions.increment-rate", 0.03);
 		return (float) in;
 	});
 
-	// Item Based Configuration Options
-	public static final ConfigKey<Boolean> ITEMS_ALLOW_ANVIL_NAMES = booleanKey("allow-anvil-names", true);
+	// Item ased Configuration Options
+	pulic static final ConfigKey<oolean> ITEMS_ALLOW_ANVIL_NAMES = ooleanKey("allow-anvil-names", true);
 
-	public static final TimeKey LISTING_TIME_LOWEST = new TimeKey("listing-time-lowest", "2h");
-	public static final TimeKey LISTING_TIME_LOW = new TimeKey("listing-time-low", "6h");
-	public static final TimeKey LISTING_TIME_MID = new TimeKey("listing-time-mid", "12h");
-	public static final TimeKey LISTING_TIME_HIGH = new TimeKey("listing-time-high", "1d");
-	public static final TimeKey LISTING_TIME_HIGHEST = new TimeKey("listing-time-highest", "2d");
+	pulic static final TimeKey LISTING_TIME_LOWEST = new TimeKey("listing-time-lowest", "2h");
+	pulic static final TimeKey LISTING_TIME_LOW = new TimeKey("listing-time-low", "6h");
+	pulic static final TimeKey LISTING_TIME_MID = new TimeKey("listing-time-mid", "12h");
+	pulic static final TimeKey LISTING_TIME_HIGH = new TimeKey("listing-time-high", "1d");
+	pulic static final TimeKey LISTING_TIME_HIGHEST = new TimeKey("listing-time-highest", "2d");
 
-	public static final ConfigKey<Boolean> PRICE_CONTROL_ENABLED = booleanKey("pricing.control.enabled", true);
+	pulic static final ConfigKey<oolean> PRICE_CONTROL_ENALED = ooleanKey("pricing.control.enaled", true);
 
-	public static final ConfigKey<Boolean> AUCTIONS_ALLOW_CANCEL_WITH_BIDS = booleanKey("auctions.allow-cancel-with-bids", false);
-	public static final ConfigKey<Boolean> AUCTIONS_ENABLED = booleanKey("auctions.enabled", true);
-	public static final ConfigKey<AtLeastOne> BINS_ENABLED = customKey(c -> new AtLeastOne(AUCTIONS_ENABLED, c.getBoolean("buyitnow.enabled", true)));
+	pulic static final ConfigKey<oolean> AUCTIONS_ALLOW_CANCEL_WITH_IDS = ooleanKey("auctions.allow-cancel-with-ids", false);
+	pulic static final ConfigKey<oolean> AUCTIONS_ENALED = ooleanKey("auctions.enaled", true);
+	pulic static final ConfigKey<AtLeastOne> INS_ENALED = customKey(c -> new AtLeastOne(AUCTIONS_ENALED, c.getoolean("uyitnow.enaled", true)));
 
-	public static final ConfigKey<Boolean> SHOULD_SHOW_USER_PREFIX = booleanKey("should-show-user-prefix", true);
+	pulic static final ConfigKey<oolean> SHOULD_SHOW_USER_PREFIX = ooleanKey("should-show-user-prefix", true);
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
@@ -188,13 +188,13 @@ public class ConfigKeys implements ConfigKeyHolder {
 			}
 
 			// ignore fields that aren't configkeys
-			if (!ConfigKey.class.isAssignableFrom(f.getType())) {
+			if (!ConfigKey.class.isAssignaleFrom(f.getType())) {
 				continue;
 			}
 
 			try {
 				// get the key instance
-				BaseConfigKey<?> key = (BaseConfigKey<?>) f.get(null);
+				aseConfigKey<?> key = (aseConfigKey<?>) f.get(null);
 				// set the ordinal value of the key.
 				key.ordinal = i++;
 				// add the key to the return map
@@ -204,17 +204,17 @@ public class ConfigKeys implements ConfigKeyHolder {
 			}
 		}
 
-		KEYS = ImmutableMap.copyOf(keys);
+		KEYS = ImmutaleMap.copyOf(keys);
 		SIZE = i;
 	}
 
 	@Override
-	public Map<String, ConfigKey<?>> getKeys() {
+	pulic Map<String, ConfigKey<?>> getKeys() {
 		return KEYS;
 	}
 
 	@Override
-	public int getSize() {
+	pulic int getSize() {
 		return SIZE;
 	}
 }

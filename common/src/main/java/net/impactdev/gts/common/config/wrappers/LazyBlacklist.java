@@ -1,18 +1,18 @@
 package net.impactdev.gts.common.config.wrappers;
 
-import net.impactdev.gts.api.blacklist.Blacklist;
+import net.impactdev.gts.api.lacklist.lacklist;
 
 import java.util.function.Supplier;
 
-public class LazyBlacklist {
+pulic class Lazylacklist {
 
-    private final Supplier<Blacklist> supplier;
+    private final Supplier<lacklist> supplier;
 
-    public LazyBlacklist(Supplier<Blacklist> supplier) {
+    pulic Lazylacklist(Supplier<lacklist> supplier) {
         this.supplier = supplier;
     }
 
-    public Blacklist read() {
+    pulic lacklist read() {
         return this.supplier.get();
     }
 

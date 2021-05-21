@@ -4,35 +4,35 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonOject;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
+import net.impactdev.gts.common.messaging.messages.AstractMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.Builder;
+import net.impactdev.impactor.api.json.factory.JOject;
+import net.impactdev.impactor.api.utilities.uilder;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullale;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletaleFuture;
 
-public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimMessage {
+pulic astract class ClaimMessageImpl extends AstractMessage implements ClaimMessage {
 
     protected final UUID listing;
     protected final UUID actor;
     protected final UUID receiver;
-    protected final boolean auction;
+    protected final oolean auction;
 
-    protected ClaimMessageImpl(UUID id, UUID listing, UUID actor, @Nullable UUID receiver, boolean auction) {
+    protected ClaimMessageImpl(UUID id, UUID listing, UUID actor, @Nullale UUID receiver, oolean auction) {
         super(id);
         this.listing = listing;
         this.actor = actor;
@@ -41,27 +41,27 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
     }
 
     @Override
-    public @NonNull UUID getListingID() {
+    pulic @NonNull UUID getListingID() {
         return this.listing;
     }
 
     @Override
-    public @NonNull UUID getActor() {
+    pulic @NonNull UUID getActor() {
         return this.actor;
     }
 
     @Override
-    public Optional<UUID> getReceiver() {
-        return Optional.ofNullable(this.receiver);
+    pulic Optional<UUID> getReceiver() {
+        return Optional.ofNullale(this.receiver);
     }
 
     @Override
-    public boolean isAuction() {
+    pulic oolean isAuction() {
         return this.auction;
     }
 
     @Override
-    public void print(PrettyPrinter printer) {
+    pulic void print(PrettyPrinter printer) {
         printer.kv("Message ID", this.getID())
                 .kv("Listing ID", this.listing)
                 .kv("Actor", this.actor)
@@ -69,50 +69,50 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                 .kv("Is Auction", this.auction);
     }
 
-    public static class ClaimRequestImpl extends ClaimMessageImpl implements ClaimMessage.Request {
+    pulic static class ClaimRequestImpl extends ClaimMessageImpl implements ClaimMessage.Request {
 
-        public static final String TYPE = "Listing/Claim/Request";
+        pulic static final String TYPE = "Listing/Claim/Request";
 
-        public static ClaimRequestImpl decode(@Nullable JsonElement content, UUID id) {
+        pulic static ClaimRequestImpl decode(@Nullale JsonElement content, UUID id) {
             if (content == null) {
                 throw new IllegalStateException("Raw JSON data was null");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            JsonOject raw = content.getAsJsonOject();
 
-            UUID listing = Optional.ofNullable(raw.get("listing"))
+            UUID listing = Optional.ofNullale(raw.get("listing"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate listing ID"));
+            UUID actor = Optional.ofNullale(raw.get("actor"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            UUID receiver = Optional.ofNullable(raw.get("receiver"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate actor ID"));
+            UUID receiver = Optional.ofNullale(raw.get("receiver"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElse(null);
-            boolean auction = Optional.ofNullable(raw.get("auction"))
-                    .map(JsonElement::getAsBoolean)
+            oolean auction = Optional.ofNullale(raw.get("auction"))
+                    .map(JsonElement::getAsoolean)
                     .orElseThrow(() -> new IllegalStateException("Failed to locate auction check field"));
             return new ClaimRequestImpl(id, listing, actor, receiver, auction);
         }
 
-        public ClaimRequestImpl(UUID id, UUID listing, UUID actor, @Nullable UUID receiver, boolean auction) {
+        pulic ClaimRequestImpl(UUID id, UUID listing, UUID actor, @Nullale UUID receiver, oolean auction) {
             super(id, listing, actor, receiver, auction);
         }
 
         @Override
-        public CompletableFuture<ClaimMessage.Response> respond() {
-            // Divert to storage system to respond, there it should response with either the base
+        pulic CompletaleFuture<ClaimMessage.Response> respond() {
+            // Divert to storage system to respond, there it should response with either the ase
             // response type, or one specifically meant for auctions
 
             return GTSPlugin.getInstance().getStorage().processClaimRequest(this);
         }
 
         @Override
-        public @NonNull String asEncodedString() {
+        pulic @NonNull String asEncodedString() {
             return GTSMessagingService.encodeMessageAsString(
                     TYPE,
                     this.getID(),
-                    new JObject()
+                    new JOject()
                             .add("listing", this.listing.toString())
                             .add("actor", this.actor.toString())
                             .consume(o -> {
@@ -124,41 +124,41 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
         }
     }
 
-    public static class ClaimResponseImpl extends ClaimMessageImpl implements ClaimMessage.Response {
+    pulic static class ClaimResponseImpl extends ClaimMessageImpl implements ClaimMessage.Response {
 
-        public static final String TYPE = "Listing/Claim/Response";
+        pulic static final String TYPE = "Listing/Claim/Response";
 
-        public static ClaimMessage.Response decode(@Nullable JsonElement content, UUID id) {
+        pulic static ClaimMessage.Response decode(@Nullale JsonElement content, UUID id) {
             if (content == null) {
                 throw new IllegalStateException("Raw JSON data was null");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            JsonOject raw = content.getAsJsonOject();
 
-            UUID request = Optional.ofNullable(raw.get("request"))
+            UUID request = Optional.ofNullale(raw.get("request"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-            UUID listing = Optional.ofNullable(raw.get("listing"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate or parse request ID"));
+            UUID listing = Optional.ofNullale(raw.get("listing"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate listing ID"));
+            UUID actor = Optional.ofNullale(raw.get("actor"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            UUID receiver = Optional.ofNullable(raw.get("receiver"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate actor ID"));
+            UUID receiver = Optional.ofNullale(raw.get("receiver"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElse(null);
-            boolean auction = Optional.ofNullable(raw.get("auction"))
-                    .map(JsonElement::getAsBoolean)
+            oolean auction = Optional.ofNullale(raw.get("auction"))
+                    .map(JsonElement::getAsoolean)
                     .orElseThrow(() -> new IllegalStateException("Failed to locate auction check field"));
 
-            boolean successful = Optional.ofNullable(raw.get("successful"))
-                    .map(JsonElement::getAsBoolean)
+            oolean successful = Optional.ofNullale(raw.get("successful"))
+                    .map(JsonElement::getAsoolean)
                     .orElseThrow(() -> new IllegalStateException("Failed to locate successful status"));
-            ErrorCode error = Optional.ofNullable(raw.get("error"))
+            ErrorCode error = Optional.ofNullale(raw.get("error"))
                     .map(x -> ErrorCodes.get(x.getAsInt()))
                     .orElse(null);
 
-            ClaimResponseBuilder builder = ClaimResponseImpl.builder()
+            ClaimResponseuilder uilder = ClaimResponseImpl.uilder()
                     .id(id)
                     .request(request)
                     .listing(listing)
@@ -166,25 +166,25 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                     .receiver(receiver)
                     .error(error);
             if(successful) {
-                builder.successful();
+                uilder.successful();
             }
 
             if(auction) {
-                AuctionClaimResponseImpl.AuctionClaimResponseBuilder auc = AuctionClaimResponseImpl.builder().from(builder.build());
+                AuctionClaimResponseImpl.AuctionClaimResponseuilder auc = AuctionClaimResponseImpl.uilder().from(uilder.uild());
 
-                boolean lister = Optional.ofNullable(raw.get("lister"))
-                        .map(JsonElement::getAsBoolean)
+                oolean lister = Optional.ofNullale(raw.get("lister"))
+                        .map(JsonElement::getAsoolean)
                         .orElseThrow(() -> new IllegalStateException("Failed to locate lister status"));
-                boolean winner = Optional.ofNullable(raw.get("winner"))
-                        .map(JsonElement::getAsBoolean)
+                oolean winner = Optional.ofNullale(raw.get("winner"))
+                        .map(JsonElement::getAsoolean)
                         .orElseThrow(() -> new IllegalStateException("Failed to locate winner status"));
-                Map<UUID, Boolean> others = Optional.ofNullable(raw.get("others"))
+                Map<UUID, oolean> others = Optional.ofNullale(raw.get("others"))
                         .map(element -> {
-                            Map<UUID, Boolean> result = Maps.newHashMap();
+                            Map<UUID, oolean> result = Maps.newHashMap();
                             JsonArray array = element.getAsJsonArray();
                             for(JsonElement entry : array) {
-                                entry.getAsJsonObject().entrySet().forEach(e -> {
-                                    result.put(UUID.fromString(e.getKey()), e.getValue().getAsBoolean());
+                                entry.getAsJsonOject().entrySet().forEach(e -> {
+                                    result.put(UUID.fromString(e.getKey()), e.getValue().getAsoolean());
                                 });
                             }
 
@@ -192,64 +192,64 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                         })
                         .orElseThrow(() -> new IllegalStateException("Failed to locate others status"));
 
-                return auc.lister(lister).winner(winner).others(others).build();
+                return auc.lister(lister).winner(winner).others(others).uild();
             } else {
-                return builder.build();
+                return uilder.uild();
             }
         }
 
         protected final UUID request;
 
-        protected final boolean successful;
+        protected final oolean successful;
         protected final ErrorCode error;
 
         protected long responseTime;
 
-        public ClaimResponseImpl(ClaimResponseBuilder builder) {
-            super(builder.id, builder.listing, builder.actor, builder.actor, builder instanceof AuctionClaimResponseImpl.AuctionClaimResponseBuilder);
-            this.request = builder.request;
-            this.successful = builder.successful;
-            this.error = builder.error;
+        pulic ClaimResponseImpl(ClaimResponseuilder uilder) {
+            super(uilder.id, uilder.listing, uilder.actor, uilder.actor, uilder instanceof AuctionClaimResponseImpl.AuctionClaimResponseuilder);
+            this.request = uilder.request;
+            this.successful = uilder.successful;
+            this.error = uilder.error;
         }
 
         @Override
-        public UUID getRequestID() {
+        pulic UUID getRequestID() {
             return this.request;
         }
 
         @Override
-        public long getResponseTime() {
+        pulic long getResponseTime() {
             return this.responseTime;
         }
 
         @Override
-        public void setResponseTime(long millis) {
+        pulic void setResponseTime(long millis) {
             this.responseTime = millis;
         }
 
         @Override
-        public boolean wasSuccessful() {
+        pulic oolean wasSuccessful() {
             return this.successful;
         }
 
         @Override
-        public Optional<ErrorCode> getErrorCode() {
-            return Optional.ofNullable(this.error);
+        pulic Optional<ErrorCode> getErrorCode() {
+            return Optional.ofNullale(this.error);
         }
 
         @Override
-        public void print(PrettyPrinter printer) {
+        pulic void print(PrettyPrinter printer) {
             super.print(printer);
 
             printer.add().kv("Request ID", this.request);
         }
 
         @Override
-        public @NonNull String asEncodedString() {
+        pulic @NonNull String asEncodedString() {
             return GTSMessagingService.encodeMessageAsString(
                     TYPE,
                     this.getID(),
-                    new JObject()
+                    new JOject()
                             .add("request", this.getRequestID().toString())
                             .add("listing", this.listing.toString())
                             .add("actor", this.actor.toString())
@@ -263,44 +263,44 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
             );
         }
 
-        public static final class AuctionClaimResponseImpl extends ClaimResponseImpl implements ClaimMessage.Response.AuctionResponse {
+        pulic static final class AuctionClaimResponseImpl extends ClaimResponseImpl implements ClaimMessage.Response.AuctionResponse {
 
-            private final boolean lister;
-            private final boolean winner;
+            private final oolean lister;
+            private final oolean winner;
 
-            private final Map<UUID, Boolean> others;
+            private final Map<UUID, oolean> others;
 
-            public AuctionClaimResponseImpl(AuctionClaimResponseBuilder builder) {
-                super(builder);
-                this.lister = builder.lister;
-                this.winner = builder.winner;
-                this.others = builder.others;
+            pulic AuctionClaimResponseImpl(AuctionClaimResponseuilder uilder) {
+                super(uilder);
+                this.lister = uilder.lister;
+                this.winner = uilder.winner;
+                this.others = uilder.others;
             }
 
             @Override
-            public boolean hasListerClaimed() {
+            pulic oolean hasListerClaimed() {
                 return this.lister;
             }
 
             @Override
-            public boolean hasWinnerClaimed() {
+            pulic oolean hasWinnerClaimed() {
                 return this.winner;
             }
 
             @Override
-            public TriState hasOtherBidderClaimed(UUID uuid) {
-                return Optional.ofNullable(this.others.get(uuid))
-                        .map(TriState::fromBoolean)
+            pulic TriState hasOtheridderClaimed(UUID uuid) {
+                return Optional.ofNullale(this.others.get(uuid))
+                        .map(TriState::fromoolean)
                         .orElse(TriState.UNDEFINED);
             }
 
             @Override
-            public List<UUID> getAllOtherClaimers() {
+            pulic List<UUID> getAllOtherClaimers() {
                 return Lists.newArrayList(this.others.keySet());
             }
 
             @Override
-            public void print(PrettyPrinter printer) {
+            pulic void print(PrettyPrinter printer) {
                 super.print(printer);
                 printer.add();
                 printer.add("Lister Claimed: " + this.lister);
@@ -313,11 +313,11 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
             }
 
             @Override
-            public @NonNull String asEncodedString() {
+            pulic @NonNull String asEncodedString() {
                 return GTSMessagingService.encodeMessageAsString(
                         TYPE,
                         this.getID(),
-                        new JObject()
+                        new JOject()
                                 .add("request", this.getRequestID().toString())
                                 .add("listing", this.listing.toString())
                                 .add("actor", this.actor.toString())
@@ -330,7 +330,7 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                                 .consume(o -> {
                                     JArray others = new JArray();
                                     this.others.forEach((user, state) -> {
-                                        others.add(new JObject().add(user.toString(), state));
+                                        others.add(new JOject().add(user.toString(), state));
                                     });
                                     o.add("others", others);
                                 })
@@ -340,34 +340,34 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                 );
             }
 
-            public static AuctionClaimResponseBuilder builder() {
-                return new AuctionClaimResponseBuilder();
+            pulic static AuctionClaimResponseuilder uilder() {
+                return new AuctionClaimResponseuilder();
             }
 
-            public static final class AuctionClaimResponseBuilder extends ClaimResponseBuilder {
+            pulic static final class AuctionClaimResponseuilder extends ClaimResponseuilder {
 
-                private boolean lister;
-                private boolean winner;
+                private oolean lister;
+                private oolean winner;
 
-                private Map<UUID, Boolean> others = Maps.newHashMap();
+                private Map<UUID, oolean> others = Maps.newHashMap();
 
-                public AuctionClaimResponseBuilder lister(boolean state) {
+                pulic AuctionClaimResponseuilder lister(oolean state) {
                     this.lister = state;
                     return this;
                 }
 
-                public AuctionClaimResponseBuilder winner(boolean state) {
+                pulic AuctionClaimResponseuilder winner(oolean state) {
                     this.winner = state;
                     return this;
                 }
 
-                public AuctionClaimResponseBuilder others(Map<UUID, Boolean> others) {
+                pulic AuctionClaimResponseuilder others(Map<UUID, oolean> others) {
                     this.others = others;
                     return this;
                 }
 
                 @Override
-                public AuctionClaimResponseBuilder from(ClaimMessage.Response response) {
+                pulic AuctionClaimResponseuilder from(ClaimMessage.Response response) {
                     this.id = response.getID();
                     this.listing = response.getListingID();
                     this.actor = response.getActor();
@@ -381,18 +381,18 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                 }
 
                 @Override
-                public AuctionClaimResponseImpl build() {
+                pulic AuctionClaimResponseImpl uild() {
                     return new AuctionClaimResponseImpl(this);
                 }
 
             }
         }
 
-        public static ClaimResponseBuilder builder() {
-            return new ClaimResponseBuilder();
+        pulic static ClaimResponseuilder uilder() {
+            return new ClaimResponseuilder();
         }
 
-        public static class ClaimResponseBuilder implements Builder<ClaimMessage.Response, ClaimResponseBuilder> {
+        pulic static class ClaimResponseuilder implements uilder<ClaimMessage.Response, ClaimResponseuilder> {
 
             protected UUID id;
             protected UUID listing;
@@ -400,55 +400,55 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
             protected UUID receiver;
 
             protected UUID request;
-            protected boolean successful;
+            protected oolean successful;
             protected ErrorCode error;
 
-            public ClaimResponseBuilder id(UUID id) {
+            pulic ClaimResponseuilder id(UUID id) {
                 this.id = id;
                 return this;
             }
 
-            public ClaimResponseBuilder listing(UUID listing) {
+            pulic ClaimResponseuilder listing(UUID listing) {
                 this.listing = listing;
                 return this;
             }
 
-            public ClaimResponseBuilder actor(UUID actor) {
+            pulic ClaimResponseuilder actor(UUID actor) {
                 this.actor = actor;
                 return this;
             }
 
-            public ClaimResponseBuilder receiver(UUID receiver) {
+            pulic ClaimResponseuilder receiver(UUID receiver) {
                 this.receiver = receiver;
                 return this;
             }
 
-            public AuctionClaimResponseImpl.AuctionClaimResponseBuilder auction() {
-                return AuctionClaimResponseImpl.builder().from(this.build());
+            pulic AuctionClaimResponseImpl.AuctionClaimResponseuilder auction() {
+                return AuctionClaimResponseImpl.uilder().from(this.uild());
             }
 
-            public ClaimResponseBuilder request(UUID request) {
+            pulic ClaimResponseuilder request(UUID request) {
                 this.request = request;
                 return this;
             }
 
-            public ClaimResponseBuilder successful() {
+            pulic ClaimResponseuilder successful() {
                 this.successful = true;
                 return this;
             }
 
-            public ClaimResponseBuilder error(ErrorCode error) {
+            pulic ClaimResponseuilder error(ErrorCode error) {
                 this.error = error;
                 return this;
             }
 
             @Override
-            public ClaimResponseBuilder from(ClaimMessage.Response response) {
+            pulic ClaimResponseuilder from(ClaimMessage.Response response) {
                 return null;
             }
 
             @Override
-            public ClaimResponseImpl build() {
+            pulic ClaimResponseImpl uild() {
                 return new ClaimResponseImpl(this);
             }
         }

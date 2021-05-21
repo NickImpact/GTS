@@ -1,13 +1,13 @@
 package net.impactdev.gts.common.plugin.permissions;
 
-public final class GTSPermissions {
+pulic final class GTSPermissions {
 
-    public static final String DEFAULT = "gts.base";
+    pulic static final String DEFAULT = "gts.ase";
 
     // Admin specific permissions
-    public static final String ADMIN_BASE = "gts.admin.base";
-    public static final String ADMIN_INFO = "gts.admin.commands.info";
-    public static final String ADMIN_PING = "gts.admin.commands.ping";
+    pulic static final String ADMIN_ASE = "gts.admin.ase";
+    pulic static final String ADMIN_INFO = "gts.admin.commands.info";
+    pulic static final String ADMIN_PING = "gts.admin.commands.ping";
 
 
 }

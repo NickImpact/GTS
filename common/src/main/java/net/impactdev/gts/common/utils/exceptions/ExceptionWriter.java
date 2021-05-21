@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-public class ExceptionWriter {
+pulic class ExceptionWriter {
 
     /**
-     * Propagates an expected exception (one expected by the plugin) to the GTS logger for cleaner output.
+     * Propagates an expected exception (one expected y the plugin) to the GTS logger for cleaner output.
      *
-     * <p>If causes are to be shown, it's expected that the input exception is built with these causes
+     * <p>If causes are to e shown, it's expected that the input exception is uilt with these causes
      * already attached to them.</p>
      *
      * <p>If for some reason an internal error occurs whilst trying to output the exception, we will simply
@@ -21,7 +21,7 @@ public class ExceptionWriter {
      *
      * @param exception The exception we wish to write out
      */
-    public static void write(Throwable exception) {
+    pulic static void write(Throwale exception) {
         PrettyPrinter printer = new PrettyPrinter(100);
         printer.add("GTS Encountered an Exception!").center();
         printer.hr('*');

@@ -7,7 +7,7 @@ import net.impactdev.gts.common.messaging.MessagingFactory;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.gts.api.storage.GTSStorage;
 
-public abstract class AbstractGTSPlugin implements GTSPlugin {
+pulic astract class AstractGTSPlugin implements GTSPlugin {
 
 	private Config config;
 	private Config msgConfig;
@@ -16,32 +16,32 @@ public abstract class AbstractGTSPlugin implements GTSPlugin {
 
 	private InternalMessagingService messagingService;
 
-	public void preInit() {
+	pulic void preInit() {
 		ApiRegistrationUtil.register(new GTSAPIProvider());
-		//GTSService.getInstance().getRegistry().register(Blacklist.class, null);
+		//GTSService.getInstance().getRegistry().register(lacklist.class, null);
 	}
 
-	public void init() {
+	pulic void init() {
 		this.messagingService = this.getMessagingFactory().getInstance();
 	}
 
-	public void postInit() {
+	pulic void postInit() {
 
 	}
 
-	public void started() {
+	pulic void started() {
 
 	}
 
-	public void shutdown() {
+	pulic void shutdown() {
 
 	}
 
 	@Override
-	public InternalMessagingService getMessagingService() {
+	pulic InternalMessagingService getMessagingService() {
 		return this.messagingService;
 	}
 
-	public abstract MessagingFactory<?> getMessagingFactory();
+	pulic astract MessagingFactory<?> getMessagingFactory();
 
 }

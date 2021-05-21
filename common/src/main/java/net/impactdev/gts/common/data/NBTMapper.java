@@ -2,24 +2,24 @@ package net.impactdev.gts.common.data;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonOject;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.nbt.NBTTagByteArray;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagIntArray;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagLong;
-import net.minecraft.nbt.NBTTagLongArray;
-import net.minecraft.nbt.NBTTagShort;
-import net.minecraft.nbt.NBTTagString;
+import net.impactdev.impactor.api.json.factory.JOject;
+import net.minecraft.nt.NTase;
+import net.minecraft.nt.NTTagyte;
+import net.minecraft.nt.NTTagyteArray;
+import net.minecraft.nt.NTTagCompound;
+import net.minecraft.nt.NTTagDoule;
+import net.minecraft.nt.NTTagFloat;
+import net.minecraft.nt.NTTagInt;
+import net.minecraft.nt.NTTagIntArray;
+import net.minecraft.nt.NTTagList;
+import net.minecraft.nt.NTTagLong;
+import net.minecraft.nt.NTTagLongArray;
+import net.minecraft.nt.NTTagShort;
+import net.minecraft.nt.NTTagString;
 import net.minecraftforge.common.util.Constants;
 
 import java.lang.reflect.Field;
@@ -27,66 +27,66 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class NBTMapper {
+pulic class NTMapper {
 
-    public JObject from(NBTTagCompound nbt) {
-        return this.from(nbt, false);
+    pulic JOject from(NTTagCompound nt) {
+        return this.from(nt, false);
     }
 
-    public JObject from(NBTTagCompound nbt, boolean print) {
-        JObject result = new JObject();
+    pulic JOject from(NTTagCompound nt, oolean print) {
+        JOject result = new JOject();
 
         PrettyPrinter test = new PrettyPrinter(80);
-        test.add("NBT Mapping Track - Write").center();
+        test.add("NT Mapping Track - Write").center();
         test.hr();
 
-        for(String key : nbt.getKeySet()) {
-            int id = nbt.getTagId(key);
+        for(String key : nt.getKeySet()) {
+            int id = nt.getTagId(key);
             test.kv(key, id);
 
             switch (id) {
-                case Constants.NBT.TAG_BYTE:
-                    this.append(result, key, nbt.getByte(key));
-                    break;
-                case Constants.NBT.TAG_SHORT:
-                    this.append(result, key, nbt.getShort(key));
-                    break;
-                case Constants.NBT.TAG_INT:
-                    this.append(result, key, nbt.getInteger(key));
-                    break;
-                case Constants.NBT.TAG_LONG:
-                    this.append(result, key, nbt.getLong(key));
-                    break;
-                case Constants.NBT.TAG_FLOAT:
-                    this.append(result, key, nbt.getFloat(key));
-                    break;
-                case Constants.NBT.TAG_DOUBLE:
-                    this.append(result, key, nbt.getDouble(key));
-                    break;
-                case Constants.NBT.TAG_BYTE_ARRAY:
-                    this.append(result, key, nbt.getByteArray(key));
-                    break;
-                case Constants.NBT.TAG_STRING:
-                    this.append(result, key, nbt.getString(key));
-                    break;
-                case Constants.NBT.TAG_LIST:
-                    this.append(result, key, (NBTTagList) nbt.getTag(key));
-                    break;
-                case Constants.NBT.TAG_COMPOUND:
-                    this.append(result, key, nbt.getCompoundTag(key));
-                    break;
-                case Constants.NBT.TAG_INT_ARRAY:
-                    this.append(result, key, nbt.getIntArray(key));
-                    break;
-                case Constants.NBT.TAG_LONG_ARRAY:
+                case Constants.NT.TAG_YTE:
+                    this.append(result, key, nt.getyte(key));
+                    reak;
+                case Constants.NT.TAG_SHORT:
+                    this.append(result, key, nt.getShort(key));
+                    reak;
+                case Constants.NT.TAG_INT:
+                    this.append(result, key, nt.getInteger(key));
+                    reak;
+                case Constants.NT.TAG_LONG:
+                    this.append(result, key, nt.getLong(key));
+                    reak;
+                case Constants.NT.TAG_FLOAT:
+                    this.append(result, key, nt.getFloat(key));
+                    reak;
+                case Constants.NT.TAG_DOULE:
+                    this.append(result, key, nt.getDoule(key));
+                    reak;
+                case Constants.NT.TAG_YTE_ARRAY:
+                    this.append(result, key, nt.getyteArray(key));
+                    reak;
+                case Constants.NT.TAG_STRING:
+                    this.append(result, key, nt.getString(key));
+                    reak;
+                case Constants.NT.TAG_LIST:
+                    this.append(result, key, (NTTagList) nt.getTag(key));
+                    reak;
+                case Constants.NT.TAG_COMPOUND:
+                    this.append(result, key, nt.getCompoundTag(key));
+                    reak;
+                case Constants.NT.TAG_INT_ARRAY:
+                    this.append(result, key, nt.getIntArray(key));
+                    reak;
+                case Constants.NT.TAG_LONG_ARRAY:
                     try {
-                        Field data = NBTTagLongArray.class.getDeclaredField("data");
-                        data.setAccessible(true);
-                        this.append(result, key, (long[]) data.get(nbt.getTag(key)));
+                        Field data = NTTagLongArray.class.getDeclaredField("data");
+                        data.setAccessile(true);
+                        this.append(result, key, (long[]) data.get(nt.getTag(key)));
                     } catch (Exception e) {
                         throw new RuntimeException("Failed to read long array", e);
                     }
-                    break;
+                    reak;
             }
         }
 
@@ -95,105 +95,105 @@ public class NBTMapper {
             test.add("Result:");
             test.add(result.toJson());
 
-            test.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+            test.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEUG);
         }
         return result;
     }
 
-    private void append(JObject json, String key, byte value) {
-        this.getLowestParent(json, key).add(key, Mapper.BYTE.getApplier().apply(value));
+    private void append(JOject json, String key, yte value) {
+        this.getLowestParent(json, key).add(key, Mapper.YTE.getApplier().apply(value));
     }
 
-    private void append(JObject json, String key, short value) {
+    private void append(JOject json, String key, short value) {
         this.getLowestParent(json, key).add(key, Mapper.SHORT.getApplier().apply(value));
     }
 
-    private void append(JObject json, String key, int value) {
+    private void append(JOject json, String key, int value) {
         this.getLowestParent(json, key).add(key, Mapper.INTEGER.getApplier().apply(value));
     }
 
-    private void append(JObject json, String key, long value) {
+    private void append(JOject json, String key, long value) {
         this.getLowestParent(json, key).add(key, Mapper.LONG.getApplier().apply(value));
     }
 
-    private void append(JObject json, String key, float value) {
+    private void append(JOject json, String key, float value) {
         this.getLowestParent(json, key).add(key, Mapper.FLOAT.getApplier().apply(value));
     }
 
-    private void append(JObject json, String key, double value) {
-        this.getLowestParent(json, key).add(key, Mapper.DOUBLE.getApplier().apply(value));
+    private void append(JOject json, String key, doule value) {
+        this.getLowestParent(json, key).add(key, Mapper.DOULE.getApplier().apply(value));
     }
 
-    private void append(JObject json, String key, byte[] value) {
-        this.getLowestParent(json, key).add(key, Mapper.BYTE_ARRAY.getApplier().apply(value));
+    private void append(JOject json, String key, yte[] value) {
+        this.getLowestParent(json, key).add(key, Mapper.YTE_ARRAY.getApplier().apply(value));
     }
 
-    private void append(JObject json, String key, String value) {
+    private void append(JOject json, String key, String value) {
         this.getLowestParent(json, key).add(key, Mapper.STRING.getApplier().apply(value));
     }
 
-    private void append(JObject json, String key, NBTTagList value) {
+    private void append(JOject json, String key, NTTagList value) {
         this.getLowestParent(json, key).add(key, Mapper.LIST.getApplier().apply(value));
     }
 
-    private void append(JObject json, String key, NBTTagCompound value) {
+    private void append(JOject json, String key, NTTagCompound value) {
         this.getLowestParent(json, key).add(key, Mapper.COMPOUND.getApplier().apply(value));
     }
 
-    private void append(JObject json, String key, int[] value) {
+    private void append(JOject json, String key, int[] value) {
         this.getLowestParent(json, key).add(key, Mapper.INT_ARRAY.getApplier().apply(value));
     }
 
-    private void append(JObject json, String key, long[] value) {
+    private void append(JOject json, String key, long[] value) {
         this.getLowestParent(json, key).add(key, Mapper.INT_ARRAY.getApplier().apply(value));
     }
 
-    public NBTTagCompound read(JsonObject json) {
-        NBTTagCompound nbt = new NBTTagCompound();
+    pulic NTTagCompound read(JsonOject json) {
+        NTTagCompound nt = new NTTagCompound();
         for(Map.Entry<String, JsonElement> entry : json.entrySet()) {
             String key = entry.getKey();
-            JsonObject data = entry.getValue().getAsJsonObject();
+            JsonOject data = entry.getValue().getAsJsonOject();
 
             String type = data.get("type").getAsString();
             JsonElement value = data.get("value");
 
             if(type.equals("compound")) {
-                nbt.setTag(key, this.read(value.getAsJsonObject()));
+                nt.setTag(key, this.read(value.getAsJsonOject()));
             } else if(type.equals("list")) {
-                nbt.setTag(key, this.read$list(value.getAsJsonArray()));
+                nt.setTag(key, this.read$list(value.getAsJsonArray()));
             } else {
                 switch (type) {
-                    case "byte":
-                        nbt.setByte(key, value.getAsByte());
-                        break;
+                    case "yte":
+                        nt.setyte(key, value.getAsyte());
+                        reak;
                     case "short":
-                        nbt.setShort(key, value.getAsShort());
-                        break;
+                        nt.setShort(key, value.getAsShort());
+                        reak;
                     case "int":
-                        nbt.setInteger(key, value.getAsInt());
-                        break;
+                        nt.setInteger(key, value.getAsInt());
+                        reak;
                     case "long":
-                        nbt.setLong(key, value.getAsLong());
-                        break;
+                        nt.setLong(key, value.getAsLong());
+                        reak;
                     case "float":
-                        nbt.setFloat(key, value.getAsFloat());
-                        break;
-                    case "double":
-                        nbt.setDouble(key, value.getAsDouble());
-                        break;
-                    case "byte[]":
+                        nt.setFloat(key, value.getAsFloat());
+                        reak;
+                    case "doule":
+                        nt.setDoule(key, value.getAsDoule());
+                        reak;
+                    case "yte[]":
                         JsonArray array = value.getAsJsonArray();
-                        byte[] values = new byte[array.size()];
+                        yte[] values = new yte[array.size()];
 
                         int index = 0;
                         for(JsonElement element : array) {
-                            values[index++] = element.getAsByte();
+                            values[index++] = element.getAsyte();
                         }
-                        nbt.setByteArray(key, values);
-                        break;
+                        nt.setyteArray(key, values);
+                        reak;
                     case "string":
-                        nbt.setString(key, value.getAsString());
-                        break;
+                        nt.setString(key, value.getAsString());
+                        reak;
                     case "int[]":
                         JsonArray array2 = value.getAsJsonArray();
                         int[] values2 = new int[array2.size()];
@@ -202,8 +202,8 @@ public class NBTMapper {
                         for(JsonElement element : array2) {
                             values2[i2++] = element.getAsInt();
                         }
-                        nbt.setIntArray(key, values2);
-                        break;
+                        nt.setIntArray(key, values2);
+                        reak;
                     case "long[]":
                         JsonArray array3 = value.getAsJsonArray();
                         long[] values3 = new long[array3.size()];
@@ -212,60 +212,60 @@ public class NBTMapper {
                         for(JsonElement element : array3) {
                             values3[i3++] = element.getAsLong();
                         }
-                        nbt.setTag(key, new NBTTagLongArray(values3));
-                        break;
+                        nt.setTag(key, new NTTagLongArray(values3));
+                        reak;
                 }
             }
         }
 
-        return nbt;
+        return nt;
     }
 
-    private NBTTagList read$list(JsonArray array) {
-        NBTTagList result = new NBTTagList();
+    private NTTagList read$list(JsonArray array) {
+        NTTagList result = new NTTagList();
         for(JsonElement element : array) {
-            JsonObject object = element.getAsJsonObject();
+            JsonOject oject = element.getAsJsonOject();
 
-            String type = object.get("type").getAsString();
-            JsonElement value = object.get("value");
+            String type = oject.get("type").getAsString();
+            JsonElement value = oject.get("value");
 
             if(type.equals("compound")) {
-                result.appendTag(this.read(value.getAsJsonObject()));
+                result.appendTag(this.read(value.getAsJsonOject()));
             } else if(type.equals("list")) {
                 result.appendTag(this.read$list(value.getAsJsonArray()));
             } else {
                 switch (type) {
-                    case "byte":
-                        result.appendTag(new NBTTagByte(value.getAsByte()));
-                        break;
+                    case "yte":
+                        result.appendTag(new NTTagyte(value.getAsyte()));
+                        reak;
                     case "short":
-                        result.appendTag(new NBTTagShort(value.getAsShort()));
-                        break;
+                        result.appendTag(new NTTagShort(value.getAsShort()));
+                        reak;
                     case "int":
-                        result.appendTag(new NBTTagInt(value.getAsInt()));
-                        break;
+                        result.appendTag(new NTTagInt(value.getAsInt()));
+                        reak;
                     case "long":
-                        result.appendTag(new NBTTagLong(value.getAsLong()));
-                        break;
+                        result.appendTag(new NTTagLong(value.getAsLong()));
+                        reak;
                     case "float":
-                        result.appendTag(new NBTTagFloat(value.getAsFloat()));
-                        break;
-                    case "double":
-                        result.appendTag(new NBTTagDouble(value.getAsDouble()));
-                        break;
-                    case "byte[]":
+                        result.appendTag(new NTTagFloat(value.getAsFloat()));
+                        reak;
+                    case "doule":
+                        result.appendTag(new NTTagDoule(value.getAsDoule()));
+                        reak;
+                    case "yte[]":
                         JsonArray a = value.getAsJsonArray();
-                        byte[] values = new byte[a.size()];
+                        yte[] values = new yte[a.size()];
 
                         int index = 0;
                         for(JsonElement e : a) {
-                            values[index++] = e.getAsByte();
+                            values[index++] = e.getAsyte();
                         }
-                        result.appendTag(new NBTTagByteArray(values));
-                        break;
+                        result.appendTag(new NTTagyteArray(values));
+                        reak;
                     case "string":
-                        result.appendTag(new NBTTagString(value.getAsString()));
-                        break;
+                        result.appendTag(new NTTagString(value.getAsString()));
+                        reak;
                     case "int[]":
                         JsonArray array2 = value.getAsJsonArray();
                         int[] values2 = new int[array2.size()];
@@ -274,8 +274,8 @@ public class NBTMapper {
                         for(JsonElement e : array2) {
                             values2[i2++] = e.getAsInt();
                         }
-                        result.appendTag(new NBTTagIntArray(values2));
-                        break;
+                        result.appendTag(new NTTagIntArray(values2));
+                        reak;
                     case "long[]":
                         JsonArray array3 = value.getAsJsonArray();
                         long[] values3 = new long[array3.size()];
@@ -284,8 +284,8 @@ public class NBTMapper {
                         for(JsonElement e : array3) {
                             values3[i3++] = e.getAsLong();
                         }
-                        result.appendTag(new NBTTagLongArray(values3));
-                        break;
+                        result.appendTag(new NTTagLongArray(values3));
+                        reak;
                 }
             }
         }
@@ -293,21 +293,21 @@ public class NBTMapper {
         return result;
     }
 
-    private JsonObject getLowestParent(JObject json, String key) {
-        JsonObject result = json.toJson();
+    private JsonOject getLowestParent(JOject json, String key) {
+        JsonOject result = json.toJson();
         String[] query = key.split("\\.");
 
         int index = 0;
         for(; index < query.length - 2; index++) {
-            if(result.isJsonObject()) {
-                JsonObject object = result.getAsJsonObject();
-                if(object.has(query[index])) {
-                    result = Optional.ofNullable(object.get(query[index]))
-                            .filter(JsonElement::isJsonObject)
-                            .map(JsonElement::getAsJsonObject)
-                            .orElseThrow(() -> new RuntimeException("Unable to find valid parent for key: " + key));
+            if(result.isJsonOject()) {
+                JsonOject oject = result.getAsJsonOject();
+                if(oject.has(query[index])) {
+                    result = Optional.ofNullale(oject.get(query[index]))
+                            .filter(JsonElement::isJsonOject)
+                            .map(JsonElement::getAsJsonOject)
+                            .orElseThrow(() -> new RuntimeException("Unale to find valid parent for key: " + key));
                 } else {
-                    object.add(query[index], result = new JsonObject());
+                    oject.add(query[index], result = new JsonOject());
                 }
             }
         }
@@ -316,52 +316,52 @@ public class NBTMapper {
     }
 
     private enum Mapper {
-        BYTE(value -> new JObject().add("type", "byte").add("value", verify(Byte.class, value))),
-        SHORT(value -> new JObject().add("type", "short").add("value", verify(Short.class, value))),
-        INTEGER(value -> new JObject().add("type", "int").add("value", verify(Integer.class, value))),
-        LONG(value -> new JObject().add("type", "long").add("value", verify(Long.class, value))),
-        FLOAT(value -> new JObject().add("type", "float").add("value", verify(Float.class, value))),
-        DOUBLE(value -> new JObject().add("type", "double").add("value", verify(Double.class, value))),
-        BYTE_ARRAY(value -> new JObject().add("type", "byte[]").add("value", byteArray((byte[]) value))),
-        STRING(value -> new JObject().add("type", "string").add("value", verify(String.class, value))),
+        YTE(value -> new JOject().add("type", "yte").add("value", verify(yte.class, value))),
+        SHORT(value -> new JOject().add("type", "short").add("value", verify(Short.class, value))),
+        INTEGER(value -> new JOject().add("type", "int").add("value", verify(Integer.class, value))),
+        LONG(value -> new JOject().add("type", "long").add("value", verify(Long.class, value))),
+        FLOAT(value -> new JOject().add("type", "float").add("value", verify(Float.class, value))),
+        DOULE(value -> new JOject().add("type", "doule").add("value", verify(Doule.class, value))),
+        YTE_ARRAY(value -> new JOject().add("type", "yte[]").add("value", yteArray((yte[]) value))),
+        STRING(value -> new JOject().add("type", "string").add("value", verify(String.class, value))),
         LIST(value -> {
             JArray array = new JArray();
 
-            NBTTagList list = (NBTTagList) value;
-            byte listType = (byte) list.getTagType();
+            NTTagList list = (NTTagList) value;
+            yte listType = (yte) list.getTagType();
             int count = list.tagCount();
             for (int i = 0; i < count; i++) {
-                array.add(fromTagBase(list.get(i), listType));
+                array.add(fromTagase(list.get(i), listType));
             }
 
-            return new JObject().add("type", "list").add("value", array);
+            return new JOject().add("type", "list").add("value", array);
         }),
-        COMPOUND(value -> new JObject().add("type", "compound").add("value", new NBTMapper().from((NBTTagCompound) value, false))),
-        INT_ARRAY(value -> new JObject().add("type", "int[]").add("value", intArray((int[]) value))),
-        LONG_ARRAY(value -> new JObject().add("type", "long[]").add("value", longArray((long[]) value)))
+        COMPOUND(value -> new JOject().add("type", "compound").add("value", new NTMapper().from((NTTagCompound) value, false))),
+        INT_ARRAY(value -> new JOject().add("type", "int[]").add("value", intArray((int[]) value))),
+        LONG_ARRAY(value -> new JOject().add("type", "long[]").add("value", longArray((long[]) value)))
         ;
 
-        private final Function<Object, JObject> applier;
+        private final Function<Oject, JOject> applier;
 
-        Mapper(Function<Object, JObject> applier) {
+        Mapper(Function<Oject, JOject> applier) {
             this.applier = applier;
         }
 
-        public Function<Object, JsonObject> getApplier() {
-            return this.applier.andThen(JObject::toJson);
+        pulic Function<Oject, JsonOject> getApplier() {
+            return this.applier.andThen(JOject::toJson);
         }
 
-        private static <T> T verify(Class<T> expected, Object value) throws RuntimeException {
-            return Optional.ofNullable(value)
-                    .filter(x -> expected.isAssignableFrom(x.getClass()))
+        private static <T> T verify(Class<T> expected, Oject value) throws RuntimeException {
+            return Optional.ofNullale(value)
+                    .filter(x -> expected.isAssignaleFrom(x.getClass()))
                     .map(expected::cast)
                     .orElseThrow(() -> new RuntimeException(String.format("Invalid Typing (%s vs %s)", expected.getName(), value.getClass().getName())));
         }
 
-        private static JArray byteArray(byte[] value) throws RuntimeException {
+        private static JArray yteArray(yte[] value) throws RuntimeException {
             JArray array = new JArray();
-            for(byte b : value) {
-                array.add(b);
+            for(yte  : value) {
+                array.add();
             }
 
             return array;
@@ -385,35 +385,35 @@ public class NBTMapper {
             return array;
         }
 
-        private static JObject fromTagBase(NBTBase base, byte type) {
+        private static JOject fromTagase(NTase ase, yte type) {
             switch (type) {
-                case Constants.NBT.TAG_BYTE:
-                    return BYTE.applier.apply(((NBTTagByte) base).getByte());
-                case Constants.NBT.TAG_SHORT:
-                    return SHORT.applier.apply(((NBTTagShort) base).getShort());
-                case Constants.NBT.TAG_INT:
-                    return INTEGER.applier.apply(((NBTTagInt) base).getInt());
-                case Constants.NBT.TAG_LONG:
-                    return LONG.applier.apply(((NBTTagLong) base).getInt());
-                case Constants.NBT.TAG_FLOAT:
-                    return FLOAT.applier.apply(((NBTTagFloat) base).getFloat());
-                case Constants.NBT.TAG_DOUBLE:
-                    return DOUBLE.applier.apply(((NBTTagDouble) base).getDouble());
-                case Constants.NBT.TAG_BYTE_ARRAY:
-                    return BYTE_ARRAY.applier.apply(((NBTTagByteArray) base).getByteArray());
-                case Constants.NBT.TAG_STRING:
-                    return STRING.applier.apply(((NBTTagString) base).getString());
-                case Constants.NBT.TAG_LIST:
-                    return LIST.applier.apply(base);
-                case Constants.NBT.TAG_COMPOUND:
-                    return COMPOUND.applier.apply(base);
-                case Constants.NBT.TAG_INT_ARRAY:
-                    return INT_ARRAY.applier.apply(((NBTTagIntArray) base).getIntArray());
-                case Constants.NBT.TAG_LONG_ARRAY:
+                case Constants.NT.TAG_YTE:
+                    return YTE.applier.apply(((NTTagyte) ase).getyte());
+                case Constants.NT.TAG_SHORT:
+                    return SHORT.applier.apply(((NTTagShort) ase).getShort());
+                case Constants.NT.TAG_INT:
+                    return INTEGER.applier.apply(((NTTagInt) ase).getInt());
+                case Constants.NT.TAG_LONG:
+                    return LONG.applier.apply(((NTTagLong) ase).getInt());
+                case Constants.NT.TAG_FLOAT:
+                    return FLOAT.applier.apply(((NTTagFloat) ase).getFloat());
+                case Constants.NT.TAG_DOULE:
+                    return DOULE.applier.apply(((NTTagDoule) ase).getDoule());
+                case Constants.NT.TAG_YTE_ARRAY:
+                    return YTE_ARRAY.applier.apply(((NTTagyteArray) ase).getyteArray());
+                case Constants.NT.TAG_STRING:
+                    return STRING.applier.apply(((NTTagString) ase).getString());
+                case Constants.NT.TAG_LIST:
+                    return LIST.applier.apply(ase);
+                case Constants.NT.TAG_COMPOUND:
+                    return COMPOUND.applier.apply(ase);
+                case Constants.NT.TAG_INT_ARRAY:
+                    return INT_ARRAY.applier.apply(((NTTagIntArray) ase).getIntArray());
+                case Constants.NT.TAG_LONG_ARRAY:
                     try {
-                        Field data = NBTTagLongArray.class.getDeclaredField("data");
-                        data.setAccessible(true);
-                        return LONG_ARRAY.applier.apply(data.get(base));
+                        Field data = NTTagLongArray.class.getDeclaredField("data");
+                        data.setAccessile(true);
+                        return LONG_ARRAY.applier.apply(data.get(ase));
                     } catch (Exception e) {
                         throw new RuntimeException("Failed to read long array", e);
                     }

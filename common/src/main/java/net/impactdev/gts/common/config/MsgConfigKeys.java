@@ -1,10 +1,10 @@
 package net.impactdev.gts.common.config;
 
-import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutaleMap;
 import com.google.common.collect.Lists;
 import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.configuration.ConfigKeyHolder;
-import net.impactdev.impactor.api.configuration.keys.BaseConfigKey;
+import net.impactdev.impactor.api.configuration.keys.aseConfigKey;
 import net.impactdev.gts.common.config.types.time.TimeLanguageOptions;
 import net.impactdev.gts.common.config.wrappers.SortConfigurationOptions;
 import net.impactdev.gts.common.config.wrappers.TitleLorePair;
@@ -17,128 +17,128 @@ import java.util.Map;
 
 import static net.impactdev.impactor.api.configuration.ConfigKeyTypes.*;
 
-public class MsgConfigKeys implements ConfigKeyHolder {
+pulic class MsgConfigKeys implements ConfigKeyHolder {
 
 	// Plugin chat prefix (replacement option for {{gts_prefix}}
-	public static final ConfigKey<String> PREFIX = stringKey("general.gts-prefix", "&eGTS &7\u00bb");
-	public static final ConfigKey<String> ERROR_PREFIX = stringKey("general.gts-prefix-error", "&eGTS &7(&cERROR&7)");
+	pulic static final ConfigKey<String> PREFIX = stringKey("general.gts-prefix", "&eGTS &7\u00");
+	pulic static final ConfigKey<String> ERROR_PREFIX = stringKey("general.gts-prefix-error", "&eGTS &7(&cERROR&7)");
 
 	// Generic messages for the program
-	// Best to support lists of text here, as a server may decide to go heavy on text formatting
-	public static final ConfigKey<List<String>> MAX_LISTINGS = listKey("general.max-listings", Lists.newArrayList(
+	// est to support lists of text here, as a server may decide to go heavy on text formatting
+	pulic static final ConfigKey<List<String>> MAX_LISTINGS = listKey("general.max-listings", Lists.newArrayList(
 			"{{gts:prefix}} &cUnfortunately, you can't deposit another listing, since you already have {{gts:max_listings}} deposited..."
 	));
-	public static final ConfigKey<List<String>> ADD_TEMPLATE = listKey("general.addition-to-seller", Lists.newArrayList(
-			"{{gts:prefix}} &7Your &a{{gts:listing_name}} &7has been added to the market!"
+	pulic static final ConfigKey<List<String>> ADD_TEMPLATE = listKey("general.addition-to-seller", Lists.newArrayList(
+			"{{gts:prefix}} &7Your &a{{gts:listing_name}} &7has een added to the market!"
 	));
 
-	public static final ConfigKey<List<String>> ADD_BROADCAST_BIN = listKey("general.addition-broadcast.buy-it-now", Lists.newArrayList(
-			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for &a{{gts:bin_price}}&7!"
+	pulic static final ConfigKey<List<String>> ADD_ROADCAST_IN = listKey("general.addition-roadcast.uy-it-now", Lists.newArrayList(
+			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for &a{{gts:in_price}}&7!"
 	));
-	public static final ConfigKey<List<String>> ADD_BROADCAST_AUCTION = listKey("general.addition-broadcast.auctions", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> ADD_ROADCAST_AUCTION = listKey("general.addition-roadcast.auctions", Lists.newArrayList(
 			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for auction, starting at &e{{gts:auction_start_price}}&7!"
 	));
 
-	public static final ConfigKey<List<String>> PURCHASE_PAY = listKey("general.prices.pay", Lists.newArrayList(
-			"{{gts:prefix}} &7You have purchased a &a{{gts:listing_details}} &7for &e{{gts:bin_price}}&7!"
+	pulic static final ConfigKey<List<String>> PURCHASE_PAY = listKey("general.prices.pay", Lists.newArrayList(
+			"{{gts:prefix}} &7You have purchased a &a{{gts:listing_details}} &7for &e{{gts:in_price}}&7!"
 	));
-	public static final ConfigKey<List<String>> PURCHASE_PAY_FAIL_TO_GIVE = listKey("general.prices.pay-fail-to-give", Lists.newArrayList(
-			"{{gts:error}} &7The listing could not be rewarded at this time, please check your stash!"
+	pulic static final ConfigKey<List<String>> PURCHASE_PAY_FAIL_TO_GIVE = listKey("general.prices.pay-fail-to-give", Lists.newArrayList(
+			"{{gts:error}} &7The listing could not e rewarded at this time, please check your stash!"
 	));
-	public static final ConfigKey<List<String>> PURCHASE_RECEIVE = listKey("general.prices.receive", Lists.newArrayList(
-			"{{gts:prefix}} &a{{gts:purchaser}} &7purchased your &a{{gts:listing_name}} &7listing for &a{{gts:bin_price}}&7!"
+	pulic static final ConfigKey<List<String>> PURCHASE_RECEIVE = listKey("general.prices.receive", Lists.newArrayList(
+			"{{gts:prefix}} &a{{gts:purchaser}} &7purchased your &a{{gts:listing_name}} &7listing for &a{{gts:in_price}}&7!"
 	));
-	public static final ConfigKey<List<String>> MIN_PRICE_ERROR = listKey("general.prices.min-price.invalid", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> MIN_PRICE_ERROR = listKey("general.prices.min-price.invalid", Lists.newArrayList(
 			"{{gts:error}} &7In order to sell your &a{{gts:listing_name}}&7, you need to list it for the price of &e{{gts:min_price}}&7..."
 	));
-	public static final ConfigKey<List<String>> MAX_PRICE_ERROR = listKey("general.prices.max-price.invalid", Lists.newArrayList(
-			"{{gts:error}} &7In order to sell your &a{{gts:listing_name}}&7, you need to list it for the price at or below &e{{gts:max_price}}&7..."
+	pulic static final ConfigKey<List<String>> MAX_PRICE_ERROR = listKey("general.prices.max-price.invalid", Lists.newArrayList(
+			"{{gts:error}} &7In order to sell your &a{{gts:listing_name}}&7, you need to list it for the price at or elow &e{{gts:max_price}}&7..."
 	));
 
 	// Error messages
-	public static final ConfigKey<String> PRICE_NOT_POSITIVE = stringKey("general.errors.non-positive-price", "{{gts:error}} Invalid price! Value must be positive!");
-	public static final ConfigKey<String> PRICE_MAX_INVALID = stringKey("general.errors.max-price.invalid", "{{gts:error}} Your request is above the max amount of &e{{gts_max_price}}&7!");
+	pulic static final ConfigKey<String> PRICE_NOT_POSITIVE = stringKey("general.errors.non-positive-price", "{{gts:error}} Invalid price! Value must e positive!");
+	pulic static final ConfigKey<String> PRICE_MAX_INVALID = stringKey("general.errors.max-price.invalid", "{{gts:error}} Your request is aove the max amount of &e{{gts_max_price}}&7!");
 
-	public static final ConfigKey<List<String>> DISCORD_PUBLISH_TEMPLATE = listKey("discord.templates.publish.buyitnow", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> DISCORD_PULISH_TEMPLATE = listKey("discord.templates.pulish.uyitnow", Lists.newArrayList(
 			"Listing ID: {{discord:listing_id}}",
 			"",
-			"Publisher: {{discord:publisher}}",
-			"Identifier: {{discord:publisher_id}}",
+			"Pulisher: {{discord:pulisher}}",
+			"Identifier: {{discord:pulisher_id}}",
 			"",
 			"Requested Price: {{discord:price}}",
 			"Expiration Time: {{discord:expiration}}"
 	));
-	public static final ConfigKey<List<String>> DISCORD_PUBLISH_AUCTION_TEMPLATE = listKey("discord.templates.publish.auction", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> DISCORD_PULISH_AUCTION_TEMPLATE = listKey("discord.templates.pulish.auction", Lists.newArrayList(
 			"Listing ID: {{discord:listing_id}}",
 			"",
-			"Publisher: {{discord:publisher}}",
-			"Identifier: {{discord:publisher_id}}",
+			"Pulisher: {{discord:pulisher}}",
+			"Identifier: {{discord:pulisher_id}}",
 			"",
-			"Starting Bid: {{discord:starting_bid}}",
+			"Starting id: {{discord:starting_id}}",
 			"Expiration Time: {{discord:expiration}}"
 	));
-	public static final ConfigKey<List<String>> DISCORD_PURCHASE_TEMPLATE = listKey("discord.templates.purchase", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> DISCORD_PURCHASE_TEMPLATE = listKey("discord.templates.purchase", Lists.newArrayList(
 			"Listing ID: {{discord:listing_id}}",
 			"",
-			"Buyer: {{discord:actor}}",
-			"Buyer Identifier: {{discord:actor_id}}",
+			"uyer: {{discord:actor}}",
+			"uyer Identifier: {{discord:actor_id}}",
 			"",
-			"Seller: {{discord:publisher}}",
-			"Seller Identifier: {{discord:publisher_id}}",
+			"Seller: {{discord:pulisher}}",
+			"Seller Identifier: {{discord:pulisher_id}}",
 			"",
 			"Price: {{discord:price}}"
 	));
-	public static final ConfigKey<List<String>> DISCORD_BID_TEMPLATE = listKey("discord.templates.bid", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> DISCORD_ID_TEMPLATE = listKey("discord.templates.id", Lists.newArrayList(
 			"Listing ID: {{discord:listing_id}}",
 			"",
-			"Bidder: {{discord:actor}}",
-			"Bidder Identifier: {{discord:actor_id}}",
-			"Bid Amount: {{discord:bid}}",
+			"idder: {{discord:actor}}",
+			"idder Identifier: {{discord:actor_id}}",
+			"id Amount: {{discord:id}}",
 			"",
-			"Seller: {{discord:publisher}}",
-			"Seller Identifier: {{discord:publisher_id}}"
+			"Seller: {{discord:pulisher}}",
+			"Seller Identifier: {{discord:pulisher_id}}"
 	));
-	public static final ConfigKey<List<String>> DISCORD_REMOVAL_TEMPLATE = listKey("discord.templates.removal", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> DISCORD_REMOVAL_TEMPLATE = listKey("discord.templates.removal", Lists.newArrayList(
 			"Listing ID: {{discord:listing_id}}",
 			"",
-			"Publisher: {{discord:publisher}}",
-			"Identifier: {{discord:publisher_id}}"
+			"Pulisher: {{discord:pulisher}}",
+			"Identifier: {{discord:pulisher_id}}"
 	));
-	public static final ConfigKey<String> LISTING_EVENT_CANCELLED = stringKey("general.listings.event-cancelled", "{{gts:error}} Your listing was blocked by an administrative source...");
+	pulic static final ConfigKey<String> LISTING_EVENT_CANCELLED = stringKey("general.listings.event-cancelled", "{{gts:error}} Your listing was locked y an administrative source...");
 
-	public static final ConfigKey<String> UNABLE_TO_TAKE_LISTING = stringKey("general.listings.unable-to-take", "{{gts:error}} Your listing failed to be taken...");
-	public static final ConfigKey<String> CONFIRM_PURCHASE = stringKey("buttons.general.confirm-purchase", "&aConfirm Purchase");
+	pulic static final ConfigKey<String> UNALE_TO_TAKE_LISTING = stringKey("general.listings.unale-to-take", "{{gts:error}} Your listing failed to e taken...");
+	pulic static final ConfigKey<String> CONFIRM_PURCHASE = stringKey("uttons.general.confirm-purchase", "&aConfirm Purchase");
 
-	public static final ConfigKey<String> AWAITING_CREATE_LISTING_TITLE = stringKey("buttons.general.awaiting.create-listing.title", "&cCreate Listing");
-	public static final ConfigKey<List<String>> AWAITING_CREATE_LISTING_LORE = listKey("buttons.general.awaiting.create-listing.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> AWAITING_CREATE_LISTING_TITLE = stringKey("uttons.general.awaiting.create-listing.title", "&cCreate Listing");
+	pulic static final ConfigKey<List<String>> AWAITING_CREATE_LISTING_LORE = listKey("uttons.general.awaiting.create-listing.lore", Lists.newArrayList(
 		"&7Select an element you",
 			"&7wish to sell/auction away",
 			"&7to create a listing!"
 	));
-	public static final ConfigKey<String> CONFIRM_CREATE_LISTING_TITLE = stringKey("buttons.general.confirm.create-listing.title", "&aCreate Listing");
-	public static final ConfigKey<List<String>> CONFIRM_CREATE_LISTING_LORE = listKey("buttons.general.confirm.create-listing.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> CONFIRM_CREATE_LISTING_TITLE = stringKey("uttons.general.confirm.create-listing.title", "&aCreate Listing");
+	pulic static final ConfigKey<List<String>> CONFIRM_CREATE_LISTING_LORE = listKey("uttons.general.confirm.create-listing.lore", Lists.newArrayList(
 			"",
 			"&eClick here to create your listing!"
 	));
 
-	public static final ConfigKey<String> AWAITING_SELECT_PRICE_TITLE = stringKey("buttons.general.awaiting.create-listing.title", "&cConfirm Price");
-	public static final ConfigKey<List<String>> AWAITING_SELECT_PRICE_LORE = listKey("buttons.general.awaiting.create-listing.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> AWAITING_SELECT_PRICE_TITLE = stringKey("uttons.general.awaiting.create-listing.title", "&cConfirm Price");
+	pulic static final ConfigKey<List<String>> AWAITING_SELECT_PRICE_LORE = listKey("uttons.general.awaiting.create-listing.lore", Lists.newArrayList(
 			"&7Please fill out price specifications",
 			"&7first to confirm your price!"
 	));
-	public static final ConfigKey<String> CONFIRM_SELECT_PRICE_TITLE = stringKey("buttons.general.confirm.select-price.title", "&aConfirm Price");
-	public static final ConfigKey<List<String>> CONFIRM_SELECT_PRICE_LORE = listKey("buttons.general.confirm.select-price.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> CONFIRM_SELECT_PRICE_TITLE = stringKey("uttons.general.confirm.select-price.title", "&aConfirm Price");
+	pulic static final ConfigKey<List<String>> CONFIRM_SELECT_PRICE_LORE = listKey("uttons.general.confirm.select-price.lore", Lists.newArrayList(
 			"",
 			"&eClick here to confirm your price!"
 	));
 
-	public static final ConfigKey<String> AWAITING_SELECTION_TITLE = stringKey("buttons.general.awaiting.selection.title", "&cConfirm Selection");
-	public static final ConfigKey<List<String>> AWAITING_SELECTION_LORE = listKey("buttons.general.awaiting.selection.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> AWAITING_SELECTION_TITLE = stringKey("uttons.general.awaiting.selection.title", "&cConfirm Selection");
+	pulic static final ConfigKey<List<String>> AWAITING_SELECTION_LORE = listKey("uttons.general.awaiting.selection.lore", Lists.newArrayList(
 			"&7Please fill out price specifications",
 			"&7first to confirm your selection!"
 	));
-	public static final ConfigKey<String> CONFIRM_SELECTION_TITLE = stringKey("buttons.general.confirm.selection.title", "&aConfirm Selection");
-	public static final ConfigKey<List<String>> CONFIRM_SELECTION_LORE = listKey("buttons.general.confirm.selection.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> CONFIRM_SELECTION_TITLE = stringKey("uttons.general.confirm.selection.title", "&aConfirm Selection");
+	pulic static final ConfigKey<List<String>> CONFIRM_SELECTION_LORE = listKey("uttons.general.confirm.selection.lore", Lists.newArrayList(
 			"",
 			"&eClick here to confirm your selection!"
 	));
@@ -146,174 +146,174 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	// -----------------------------------------------------------------------------
 	// Time
 	// -----------------------------------------------------------------------------
-	public static final ConfigKey<TimeLanguageOptions> SECONDS = customKey(c -> new TimeLanguageOptions(
+	pulic static final ConfigKey<TimeLanguageOptions> SECONDS = customKey(c -> new TimeLanguageOptions(
 			c.getString("time.seconds.singular", "Second"),
 			c.getString("time.seconds.plural", "Seconds")
 	));
-	public static final ConfigKey<TimeLanguageOptions> MINUTES = customKey(c -> new TimeLanguageOptions(
+	pulic static final ConfigKey<TimeLanguageOptions> MINUTES = customKey(c -> new TimeLanguageOptions(
 			c.getString("time.minutes.singular", "Minute"),
 			c.getString("time.minutes.plural", "Minutes")
 	));
-	public static final ConfigKey<TimeLanguageOptions> HOURS = customKey(c -> new TimeLanguageOptions(
+	pulic static final ConfigKey<TimeLanguageOptions> HOURS = customKey(c -> new TimeLanguageOptions(
 			c.getString("time.hour.singular", "Hour"),
 			c.getString("time.hour.plural", "Hours")
 	));
-	public static final ConfigKey<TimeLanguageOptions> DAYS = customKey(c -> new TimeLanguageOptions(
+	pulic static final ConfigKey<TimeLanguageOptions> DAYS = customKey(c -> new TimeLanguageOptions(
 			c.getString("time.days.singular", "Day"),
 			c.getString("time.days.plural", "Days")
 	));
-	public static final ConfigKey<TimeLanguageOptions> WEEKS = customKey(c -> new TimeLanguageOptions(
+	pulic static final ConfigKey<TimeLanguageOptions> WEEKS = customKey(c -> new TimeLanguageOptions(
 			c.getString("time.weeks.singular", "Week"),
 			c.getString("time.weeks.plural", "Weeks")
 	));
 
-	public static final ConfigKey<String> CUSTOM_TIME_TITLE = stringKey("time.custom.title", "&aCustom Duration");
-	public static final ConfigKey<List<String>> CUSTOM_TIME_LORE = listKey("time.custom.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> CUSTOM_TIME_TITLE = stringKey("time.custom.title", "&aCustom Duration");
+	pulic static final ConfigKey<List<String>> CUSTOM_TIME_LORE = listKey("time.custom.lore", Lists.newArrayList(
 			"&7Specify how long you want",
 			"&7the listing to last.",
 			"",
 			"&eClick to choose your time!"
 	));
 
-	public static final ConfigKey<String> STATUS_PURCHASED = stringKey("status.purchased", "&7Status: &aPurchased");
-	public static final ConfigKey<String> STATUS_TIME_EXPIRED = stringKey("status.time.expired", "&7Status: &cConcluded");
-	public static final ConfigKey<String> TIME_REMAINING_TRANSLATION = stringKey("status.time.remaining", "&7Ends in: &a{{gts:time_short}}");
+	pulic static final ConfigKey<String> STATUS_PURCHASED = stringKey("status.purchased", "&7Status: &aPurchased");
+	pulic static final ConfigKey<String> STATUS_TIME_EXPIRED = stringKey("status.time.expired", "&7Status: &cConcluded");
+	pulic static final ConfigKey<String> TIME_REMAINING_TRANSLATION = stringKey("status.time.remaining", "&7Ends in: &a{{gts:time_short}}");
 
-	public static final ConfigKey<String> TIME_MOMENTS_TRANSLATION = stringKey("time.moments", "Moments");
+	pulic static final ConfigKey<String> TIME_MOMENTS_TRANSLATION = stringKey("time.moments", "Moments");
 
 	// -----------------------------------------------------------------------------
-	// UI Based Configuration Options
+	// UI ased Configuration Options
 	// -----------------------------------------------------------------------------
 
 	// General Items
-	public static final ConfigKey<String> UI_GENERAL_BACK = stringKey("ui.general.back", "&cGo Back");
+	pulic static final ConfigKey<String> UI_GENERAL_ACK = stringKey("ui.general.ack", "&cGo ack");
 
 	// Main Menu
-	public static final ConfigKey<String> UI_MAIN_TITLE = stringKey("ui.menus.main.title", "&cGTS");
-	public static final ConfigKey<TitleLorePair> UI_MAIN_BROWSER = customKey(c -> {
-		String title = c.getString("ui.menus.main.browser.title", "&aBrowser");
-		List<String> lore = c.getStringList("ui.menus.main.browser.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_MAIN_TITLE = stringKey("ui.menus.main.title", "&cGTS");
+	pulic static final ConfigKey<TitleLorePair> UI_MAIN_ROWSER = customKey(c -> {
+		String title = c.getString("ui.menus.main.rowser.title", "&arowser");
+		List<String> lore = c.getStringList("ui.menus.main.rowser.lore", Lists.newArrayList(
 				"&7Find items and more for sale",
-				"&7by players across the network!",
+				"&7y players across the network!",
 				"",
-				"&7Items offered here can be",
+				"&7Items offered here can e",
 				"&edirectly purchased &7or will",
-				"&7be posted for &eauction&7. If",
+				"&7e posted for &eauction&7. If",
 				"&7the item you wish to purchase is",
 				"&7an auction, you must place the",
-				"&7top bid by the time it expires",
+				"&7top id y the time it expires",
 				"&7to acquire the item!",
 				"",
-				"&eLeft click to open the quick purchase browser!",
-				"&bRight click to open the auction browser!"
+				"&eLeft click to open the quick purchase rowser!",
+				"&Right click to open the auction rowser!"
 		));
 
 		return new TitleLorePair(title, lore);
 	});
-	public static final ConfigKey<TitleLorePair> UI_MAIN_STASH = customKey(c -> {
+	pulic static final ConfigKey<TitleLorePair> UI_MAIN_STASH = customKey(c -> {
 		String title = c.getString("ui.menus.main.stash.title", "&aStash");
 		List<String> lore = c.getStringList("ui.menus.main.stash.lore", Lists.newArrayList(
 			"&7Items that you have &eacquired",
-				"&7or &eexpired &7can be found here",
-				"&7in order to be claimed!"
+				"&7or &eexpired &7can e found here",
+				"&7in order to e claimed!"
 		));
 		return new TitleLorePair(title, lore);
 	});
-	public static final ConfigKey<String> UI_MAIN_STASH_CLICK_NOTIF = stringKey("ui.menus.main.stash.click-to-open", "&eClick to open your stash!");
-	public static final ConfigKey<TitleLorePair> UI_MAIN_SELL = customKey(c -> {
+	pulic static final ConfigKey<String> UI_MAIN_STASH_CLICK_NOTIF = stringKey("ui.menus.main.stash.click-to-open", "&eClick to open your stash!");
+	pulic static final ConfigKey<TitleLorePair> UI_MAIN_SELL = customKey(c -> {
 		String title = c.getString("ui.menus.main.sell.title", "&aSell a Good");
 		List<String> lore = c.getStringList("ui.menus.main.sell.lore", Lists.newArrayList(
-			"&7Here, you'll be able to directly",
+			"&7Here, you'll e ale to directly",
 				"&7sell items on the GTS market.",
-				"&7Items you list here will be",
-				"&7posted for quick purchase by",
+				"&7Items you list here will e",
+				"&7posted for quick purchase y",
 				"&7another player, and will expire",
-				"&7overtime if nobody ever purchases",
+				"&7overtime if noody ever purchases",
 				"&7your listing.",
 				"",
-				"&eClick to become rich!"
+				"&eClick to ecome rich!"
 		));
 
 		return new TitleLorePair(title, lore);
 	});
 
-	public static final ConfigKey<TitleLorePair> UI_MAIN_VIEW_PERSONAL_LISTINGS = customKey(c -> {
+	pulic static final ConfigKey<TitleLorePair> UI_MAIN_VIEW_PERSONAL_LISTINGS = customKey(c -> {
 		String title = c.getString("ui.menus.main.view-personal-listings.title", "&aView Your Listings");
 		List<String> lore = c.getStringList("ui.menus.main.view-personal-listings.lore", Lists.newArrayList(
 				"&7View the listings you've",
 				"&7created that are still active",
 				"&7on the market. Expired listings",
-				"&7can be found in your stash!",
+				"&7can e found in your stash!",
 				"",
 				"&eClick to view your listings!"
 		));
 		return new TitleLorePair(title, lore);
 	});
 
-	public static final ConfigKey<TitleLorePair> UI_MAIN_CURRENT_BIDS_SINGLE = customKey(c -> {
-		String title = c.getString("ui.menus.main.bids.title", "&aView Bids");
-		List<String> lore = c.getStringList("ui.menus.main.bids.lore.single", Lists.newArrayList(
+	pulic static final ConfigKey<TitleLorePair> UI_MAIN_CURRENT_IDS_SINGLE = customKey(c -> {
+		String title = c.getString("ui.menus.main.ids.title", "&aView ids");
+		List<String> lore = c.getStringList("ui.menus.main.ids.lore.single", Lists.newArrayList(
 				"&7Items that you have an active",
-				"&7bid against can be found here",
+				"&7id against can e found here",
 				"&7for your convenience",
 				"",
-				"&bYou have {{gts:active_bids|fallback=&7Loading...}} active bid",
+				"&You have {{gts:active_ids|fallack=&7Loading...}} active id",
 				"",
 				"&eClick to inspect!"
 		));
 
 		return new TitleLorePair(title, lore);
 	});
-	public static final ConfigKey<TitleLorePair> UI_MAIN_CURRENT_BIDS_MULTI = customKey(c -> {
-		String title = c.getString("ui.menus.main.bids.title", "&aView Bids");
-		List<String> lore = c.getStringList("ui.menus.main.bids.lore.multi", Lists.newArrayList(
+	pulic static final ConfigKey<TitleLorePair> UI_MAIN_CURRENT_IDS_MULTI = customKey(c -> {
+		String title = c.getString("ui.menus.main.ids.title", "&aView ids");
+		List<String> lore = c.getStringList("ui.menus.main.ids.lore.multi", Lists.newArrayList(
 				"&7Items that you have an active",
-				"&7bid against can be found here",
+				"&7id against can e found here",
 				"&7for your convenience",
 				"",
-				"&bYou have {{gts:active_bids|fallback=&7Loading...}} active bids",
+				"&You have {{gts:active_ids|fallack=&7Loading...}} active ids",
 				"",
 				"&eClick to inspect!"
 		));
 
 		return new TitleLorePair(title, lore);
 	});
-	public static final ConfigKey<TitleLorePair> UI_MAIN_PLAYER_SETTINGS = customKey(c -> {
+	pulic static final ConfigKey<TitleLorePair> UI_MAIN_PLAYER_SETTINGS = customKey(c -> {
 		String title = c.getString("ui.menus.main.player-settings.title", "&aCustomize your Settings");
 		List<String> lore = c.getStringList("ui.menus.main.player-settings.lore", Lists.newArrayList(
-				"&7Control output made by GTS",
+				"&7Control output made y GTS",
 				"&7specifically for yourself!",
 				"",
 				"&7Here, you can set flags that",
 				"&7control a specific output",
 				"&7type!",
 				"",
-				"&eClick to begin editing!"
+				"&eClick to egin editing!"
 		));
 
 		return new TitleLorePair(title, lore);
 	});
 
 	// Listings Menu
-	public static final ConfigKey<String> UI_MENU_LISTINGS_TITLE = stringKey("ui.menus.listings.title", "&cGTS &7\u00bb &3Listings");
-	public static final ConfigKey<String> UI_MENU_SEARCH_TITLE = stringKey(
+	pulic static final ConfigKey<String> UI_MENU_LISTINGS_TITLE = stringKey("ui.menus.listings.title", "&cGTS &7\u00 &3Listings");
+	pulic static final ConfigKey<String> UI_MENU_SEARCH_TITLE = stringKey(
 			"ui.menus.listings.search.title",
 			"&aSearch"
 	);
-	public static final ConfigKey<List<String>> UI_MENU_SEARCH_LORE_NO_QUERY = listKey(
+	pulic static final ConfigKey<List<String>> UI_MENU_SEARCH_LORE_NO_QUERY = listKey(
 			"ui.menus.listings.search.lore.no-query",
 			Lists.newArrayList(
-					"&7Find items by name, type,",
+					"&7Find items y name, type,",
 					"&7or any other options that",
 					"&7can identify an item.",
 					"",
-					"&eClick to begin search!"
+					"&eClick to egin search!"
 			)
 	);
-	public static final ConfigKey<List<String>> UI_MENU_SEARCH_LORE_QUERIED = listKey(
+	pulic static final ConfigKey<List<String>> UI_MENU_SEARCH_LORE_QUERIED = listKey(
 			"ui.menus.listings.search.lore.queried",
 			Lists.newArrayList(
-					"&7Find items by name, type,",
+					"&7Find items y name, type,",
 					"&7or any other options that",
 					"&7can identify an item.",
 					"",
@@ -324,19 +324,19 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			)
 	);
 
-	public static final ConfigKey<SortConfigurationOptions> UI_MENU_LISTINGS_SORT = customKey(c -> new SortConfigurationOptions(
+	pulic static final ConfigKey<SortConfigurationOptions> UI_MENU_LISTINGS_SORT = customKey(c -> new SortConfigurationOptions(
 			c.getString("ui.menus.listings.sort.title", "&aSort"),
-			c.getString("ui.menus.listings.sort.lore.coloring.selected", "&b"),
+			c.getString("ui.menus.listings.sort.lore.coloring.selected", "&"),
 			c.getString("ui.menus.listings.sort.lore.coloring.not-selected", "&7"),
 			c.getString("ui.menus.listings.sort.lore.quick-purchase.most-recent", "Most Recent"),
 			c.getString("ui.menus.listings.sort.lore.quick-purchase.ending-soon", "Ending Soon"),
-			c.getString("ui.menus.listings.sort.lore.auctions.highest-bid", "Highest Bid"),
-			c.getString("ui.menus.listings.sort.lore.auctions.lowest-bid", "Lowest Bid"),
+			c.getString("ui.menus.listings.sort.lore.auctions.highest-id", "Highest id"),
+			c.getString("ui.menus.listings.sort.lore.auctions.lowest-id", "Lowest id"),
 			c.getString("ui.menus.listings.sort.lore.auctions.ending-soon", "Ending Soon"),
-			c.getString("ui.menus.listings.sort.lore.auctions.most-bids", "Most Bids")
+			c.getString("ui.menus.listings.sort.lore.auctions.most-ids", "Most ids")
 	));
-	public static final ConfigKey<String> UI_MENU_LISTINGS_SPECIAL_LOADING = stringKey("ui.menus.listings.special.loading", "&eFetching Listings...");
-	public static final ConfigKey<TitleLorePair> UI_MENU_LISTINGS_SPECIAL_TIMED_OUT = customKey(c -> {
+	pulic static final ConfigKey<String> UI_MENU_LISTINGS_SPECIAL_LOADING = stringKey("ui.menus.listings.special.loading", "&eFetching Listings...");
+	pulic static final ConfigKey<TitleLorePair> UI_MENU_LISTINGS_SPECIAL_TIMED_OUT = customKey(c -> {
 		String title = c.getString("ui.menus.listings.special.timed-out.title", "&cFetch Timed Out");
 		List<String> lore = c.getStringList("ui.menus.listings.special.timed-out.lore", Lists.newArrayList(
 				"&7GTS failed to lookup the stored",
@@ -350,219 +350,219 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	});
 
 	// Stash Window
-	public static final ConfigKey<String> UI_MENU_STASH_TITLE = stringKey("ui.menus.stash.title", "&cGTS &7\u00bb &3Stash");
-	public static final ConfigKey<String> UI_MENU_MAIN_STASH_STATUS = stringKey("ui.menus.main.stash.status", "&b* You have items available for pickup!");
-	public static final ConfigKey<String> UI_ICON_STASH_COLLECT_ALL_TITLE = stringKey("ui.icons.stash.collect-all.title", "&aCollect All");
-	public static final ConfigKey<List<String>> UI_ICON_STASH_COLLECT_ALL_LORE = listKey("ui.icons.stash.collect-all.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_MENU_STASH_TITLE = stringKey("ui.menus.stash.title", "&cGTS &7\u00 &3Stash");
+	pulic static final ConfigKey<String> UI_MENU_MAIN_STASH_STATUS = stringKey("ui.menus.main.stash.status", "&* You have items availale for pickup!");
+	pulic static final ConfigKey<String> UI_ICON_STASH_COLLECT_ALL_TITLE = stringKey("ui.icons.stash.collect-all.title", "&aCollect All");
+	pulic static final ConfigKey<List<String>> UI_ICON_STASH_COLLECT_ALL_LORE = listKey("ui.icons.stash.collect-all.lore", Lists.newArrayList(
 			"&7Allows you to claim all your stashed",
 			"&7listings at once! Note that if you",
 			"&7don't have the space for a particular",
-			"&7listing, it'll be skipped",
+			"&7listing, it'll e skipped",
 			"",
-			"&eClick to begin your claim request!"
+			"&eClick to egin your claim request!"
 	));
 
-	public static final ConfigKey<String> STASH_COLLECT_ALL_RESULTS = stringKey("ui.menus.stash.collect-all.results", "{{gts:prefix}} &7Successfully returned {{gts:stash_returned}} listings!");
+	pulic static final ConfigKey<String> STASH_COLLECT_ALL_RESULTS = stringKey("ui.menus.stash.collect-all.results", "{{gts:prefix}} &7Successfully returned {{gts:stash_returned}} listings!");
 
-	public static final ConfigKey<String> UI_MENU_ENTRY_SELECT_TITLE = stringKey("ui.menus.entry-select.title", "&cGTS &7\u00bb &3Select Entry Type");
-	public static final ConfigKey<String> UI_MENU_PRICE_SELECT_TITLE = stringKey("ui.menus.price-select.title", "&cGTS &7\u00bb &3Select Price Type");
+	pulic static final ConfigKey<String> UI_MENU_ENTRY_SELECT_TITLE = stringKey("ui.menus.entry-select.title", "&cGTS &7\u00 &3Select Entry Type");
+	pulic static final ConfigKey<String> UI_MENU_PRICE_SELECT_TITLE = stringKey("ui.menus.price-select.title", "&cGTS &7\u00 &3Select Price Type");
 
-	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_OTHER = stringKey("ui.menus.listing-selected.purchaser", "&cGTS &7\u00bb &3Purchase Listing?");
-	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_OTHER_AUCTION = stringKey("ui.menus.listing-selected.bidder", "&cGTS &7\u00bb &3Bid on Listing?");
-	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_LISTER = stringKey("ui.menus.listing-selected.lister", "&cGTS &7\u00bb &3Remove Listing?");
-	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_CLAIM = stringKey("ui.menus.listing-selected.claim", "&cGTS &7\u00bb &3Claim Rewards?");
+	pulic static final ConfigKey<String> UI_MENU_LISTING_SELECTED_OTHER = stringKey("ui.menus.listing-selected.purchaser", "&cGTS &7\u00 &3Purchase Listing?");
+	pulic static final ConfigKey<String> UI_MENU_LISTING_SELECTED_OTHER_AUCTION = stringKey("ui.menus.listing-selected.idder", "&cGTS &7\u00 &3id on Listing?");
+	pulic static final ConfigKey<String> UI_MENU_LISTING_SELECTED_LISTER = stringKey("ui.menus.listing-selected.lister", "&cGTS &7\u00 &3Remove Listing?");
+	pulic static final ConfigKey<String> UI_MENU_LISTING_SELECTED_CLAIM = stringKey("ui.menus.listing-selected.claim", "&cGTS &7\u00 &3Claim Rewards?");
 
 	// Icons
-	public static final ConfigKey<String> UI_ICON_BIN_CREATE_TITLE = stringKey("ui.icons.bin.creator.title", "&aBIN Mode");
-	public static final ConfigKey<List<String>> UI_ICON_BIN_CREATE_LORE = listKey("ui.icons.bin.creator.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_ICON_IN_CREATE_TITLE = stringKey("ui.icons.in.creator.title", "&aIN Mode");
+	pulic static final ConfigKey<List<String>> UI_ICON_IN_CREATE_LORE = listKey("ui.icons.in.creator.lore", Lists.newArrayList(
 			"&7Set a price, then one player",
-			"&7may buy the listing at that",
+			"&7may uy the listing at that",
 			"&7price.",
 			"",
-			"&8(BIN means Buy It Now)",
+			"&8(IN means uy It Now)",
 			"",
 			"&eClick to switch to Auction Mode!"
 	));
 
-	public static final ConfigKey<String> UI_ICON_AUCTION_CREATE_TITLE = stringKey("ui.icons.auction.creator.title", "&aAuction Mode");
-	public static final ConfigKey<List<String>> UI_ICON_AUCTION_CREATE_LORE = listKey("ui.icons.auctions.creator.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_ICON_AUCTION_CREATE_TITLE = stringKey("ui.icons.auction.creator.title", "&aAuction Mode");
+	pulic static final ConfigKey<List<String>> UI_ICON_AUCTION_CREATE_LORE = listKey("ui.icons.auctions.creator.lore", Lists.newArrayList(
 			"&7A listing in which multiple",
 			"&7players compete for the listing",
-			"&7by bidding against each other",
+			"&7y idding against each other",
 			"",
-			"&eClick to switch to BIN Mode!"
+			"&eClick to switch to IN Mode!"
 	));
 
-	public static final ConfigKey<String> UI_ICON_SELECTED_REMOVE_TITLE = stringKey("ui.icons.selected.remove.title", "&cRemove Listing?");
-	public static final ConfigKey<List<String>> UI_ICON_SELECTED_REMOVE_LORE = listKey("ui.icons.selected.remove.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_ICON_SELECTED_REMOVE_TITLE = stringKey("ui.icons.selected.remove.title", "&cRemove Listing?");
+	pulic static final ConfigKey<List<String>> UI_ICON_SELECTED_REMOVE_LORE = listKey("ui.icons.selected.remove.lore", Lists.newArrayList(
 			"&7Requests a removal of your",
-			"&7listing from the &bGTS&7.",
+			"&7listing from the &GTS&7.",
 			"",
 			"&7NOTE: If your listing has already",
-			"&7been claimed, this request may",
+			"&7een claimed, this request may",
 			"&7fail...",
 			"",
 			"&eClick here to request removal!"
 	));
 
-	public static final ConfigKey<String> UI_ICON_SELECTED_CLAIM_TITLE = stringKey("ui.icons.selected.claim.title", "&eClaim your {{gts:claim_item}}?");
-	public static final ConfigKey<List<String>> UI_ICON_SELECTED_CLAIM_LORE = listKey("ui.icons.selected.remove.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_ICON_SELECTED_CLAIM_TITLE = stringKey("ui.icons.selected.claim.title", "&eClaim your {{gts:claim_item}}?");
+	pulic static final ConfigKey<List<String>> UI_ICON_SELECTED_CLAIM_LORE = listKey("ui.icons.selected.remove.lore", Lists.newArrayList(
 			"&7Requests a removal of your",
-			"&7listing from the &bGTS&7.",
+			"&7listing from the &GTS&7.",
 			"",
 			"&7NOTE: If your listing has already",
-			"&7been claimed, this request may",
+			"&7een claimed, this request may",
 			"&7fail...",
 			"",
 			"&eClick here to request removal!"
 	));
 
-	public static final ConfigKey<String> UI_ICON_PLACE_BID_TITLE = stringKey("ui.icons.auctions.place-bid.title", "&ePlace Bid");
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_LORE = listKey("ui.icons.auctions.place-bid.lore", Lists.newArrayList(
-			"&7New Bid: &6{{gts:auction_next_required_bid}}"
+	pulic static final ConfigKey<String> UI_ICON_PLACE_ID_TITLE = stringKey("ui.icons.auctions.place-id.title", "&ePlace id");
+	pulic static final ConfigKey<List<String>> UI_ICON_PLACE_ID_LORE = listKey("ui.icons.auctions.place-id.lore", Lists.newArrayList(
+			"&7New id: &6{{gts:auction_next_required_id}}"
 	));
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_WITH_USER_BID_PLACED_LORE = listKey("ui.icons.auctions.place-bid.user-previously-bid.lore", Lists.newArrayList(
-			"&7New Bid: &6{{gts:auction_next_required_bid}}",
-			"&7Your previous bid: &e{{gts:auction_previous_user_bid}}"
+	pulic static final ConfigKey<List<String>> UI_ICON_PLACE_ID_WITH_USER_ID_PLACED_LORE = listKey("ui.icons.auctions.place-id.user-previously-id.lore", Lists.newArrayList(
+			"&7New id: &6{{gts:auction_next_required_id}}",
+			"&7Your previous id: &e{{gts:auction_previous_user_id}}"
 	));
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_CAN_AFFORD = listKey("ui.icons.auctions.place-bid.appenders.can-afford", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_ICON_PLACE_ID_CAN_AFFORD = listKey("ui.icons.auctions.place-id.appenders.can-afford", Lists.newArrayList(
 			"",
-			"&eClick to bid!"
+			"&eClick to id!"
 	));
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_CANT_AFFORD = listKey("ui.icons.auctions.place-bid.appenders.cant-afford", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_ICON_PLACE_ID_CANT_AFFORD = listKey("ui.icons.auctions.place-id.appenders.cant-afford", Lists.newArrayList(
 			"",
-			"&cCan't afford bid!"
+			"&cCan't afford id!"
 	));
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_IS_TOP_BID = listKey("ui.icons.auctions.place-bid.appenders.user-is-top-bidder", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_ICON_PLACE_ID_IS_TOP_ID = listKey("ui.icons.auctions.place-id.appenders.user-is-top-idder", Lists.newArrayList(
 			"",
-			"&cYou already hold the top bid!"
+			"&cYou already hold the top id!"
 	));
 
-	public static final ConfigKey<String> UI_ICON_PLACE_CUSTOM_BID_TITLE = stringKey("ui.icons.auctions.place-bid.custom.title", "&eCustom Bid");
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_CUSTOM_BID_LORE_BASE = listKey("ui.icons.auctions.place-bid.custom.lore.base", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_ICON_PLACE_CUSTOM_ID_TITLE = stringKey("ui.icons.auctions.place-id.custom.title", "&eCustom id");
+	pulic static final ConfigKey<List<String>> UI_ICON_PLACE_CUSTOM_ID_LORE_ASE = listKey("ui.icons.auctions.place-id.custom.lore.ase", Lists.newArrayList(
 			"&7With this option, you can",
-			"&7specify a custom bid of your",
+			"&7specify a custom id of your",
 			"&7desires, so long as it's",
-			"&7at least able to meet the",
+			"&7at least ale to meet the",
 			"&7current requirement for the",
-			"&7next bid!",
+			"&7next id!",
 			"",
-			"&eClick to cast a custom bid!"
+			"&eClick to cast a custom id!"
 	));
 
-	public static final ConfigKey<String> CUSTOM_BID_INVALID = stringKey("ui.icons.auctions.place-bid.custom.actions.bid-invalid", "{{gts:error}} You must bid at least &e{{gts:auction_next_required_bid}}&7!");
+	pulic static final ConfigKey<String> CUSTOM_ID_INVALID = stringKey("ui.icons.auctions.place-id.custom.actions.id-invalid", "{{gts:error}} You must id at least &e{{gts:auction_next_required_id}}&7!");
 
-	public static final ConfigKey<String> UI_ICON_BID_HISTORY_TITLE = stringKey("ui.icons.auctions.bid-history.title", "&eBid History");
-	public static final ConfigKey<List<String>> UI_ICON_BID_HISTORY_BASE_INFO = listKey("ui.icons.auctions.bid-history.base-info", Lists.newArrayList(
-			"&7Bids Placed: &e{{gts:auction_bids}}"
+	pulic static final ConfigKey<String> UI_ICON_ID_HISTORY_TITLE = stringKey("ui.icons.auctions.id-history.title", "&eid History");
+	pulic static final ConfigKey<List<String>> UI_ICON_ID_HISTORY_ASE_INFO = listKey("ui.icons.auctions.id-history.ase-info", Lists.newArrayList(
+			"&7ids Placed: &e{{gts:auction_ids}}"
 	));
-	public static final ConfigKey<String> UI_ICON_BID_HISTORY_SEPARATOR = stringKey("ui.icons.auctions.bid-history.separator", "&8&m-------------------");
-	public static final ConfigKey<List<String>> UI_ICON_BID_HISTORY_BID_INFO = listKey("ui.icons.auctions.bid-history.bid-info", Lists.newArrayList(
-			"&7Bid: &e{{gts:auction_bid_amount}}",
-			"&7By: &e{{gts:auction_bid_actor}}",
-			"&b{{gts:auction_bid_since_placed}} ago"
+	pulic static final ConfigKey<String> UI_ICON_ID_HISTORY_SEPARATOR = stringKey("ui.icons.auctions.id-history.separator", "&8&m-------------------");
+	pulic static final ConfigKey<List<String>> UI_ICON_ID_HISTORY_ID_INFO = listKey("ui.icons.auctions.id-history.id-info", Lists.newArrayList(
+			"&7id: &e{{gts:auction_id_amount}}",
+			"&7y: &e{{gts:auction_id_actor}}",
+			"&{{gts:auction_id_since_placed}} ago"
 	));
-	public static final ConfigKey<List<String>> UI_ICON_BID_HISTORY_NO_BIDS = listKey("ui.icons.auctions.bid-history.no-bids", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_ICON_ID_HISTORY_NO_IDS = listKey("ui.icons.auctions.id-history.no-ids", Lists.newArrayList(
 			"",
-			"&7Be the first to place a",
-			"&7bid on this auction!"
+			"&7e the first to place a",
+			"&7id on this auction!"
 	));
 
 	// Price Selection
-	public static final ConfigKey<String> UI_PRICE_DISPLAY_TITLE = stringKey("ui.components.price.display.title", "&ePrice: {{gts:price_selection}}");
-	public static final ConfigKey<List<String>> UI_PRICE_DISPLAY_LORE = listKey("ui.components.price.display.lore.base", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_PRICE_DISPLAY_TITLE = stringKey("ui.components.price.display.title", "&ePrice: {{gts:price_selection}}");
+	pulic static final ConfigKey<List<String>> UI_PRICE_DISPLAY_LORE = listKey("ui.components.price.display.lore.ase", Lists.newArrayList(
 			"&7How much to list your",
-			"&7be listed on the GTS."
+			"&7e listed on the GTS."
 	));
 
-	public static final ConfigKey<List<String>> UI_PRICE_DISPLAY_FEES = listKey("ui.components.price.display.lore.fees", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_PRICE_DISPLAY_FEES = listKey("ui.components.price.display.lore.fees", Lists.newArrayList(
 			"",
 			"&7Fee: &6{{gts:price_fee}} &e({{gts:price_fee_rate}})"
 	));
 
 	// Time Selection
-	public static final ConfigKey<String> UI_TIME_SELECT_TITLE = stringKey("ui.time-select.title", "Select a Time");
+	pulic static final ConfigKey<String> UI_TIME_SELECT_TITLE = stringKey("ui.time-select.title", "Select a Time");
 
-	public static final ConfigKey<String> UI_TIME_DISPLAY_TITLE = stringKey("ui.components.time.display.title", "&eDuration: {{gts:time}}");
-	public static final ConfigKey<List<String>> UI_TIME_DISPLAY_LORE = listKey("ui.components.time.display.lore.base", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_TIME_DISPLAY_TITLE = stringKey("ui.components.time.display.title", "&eDuration: {{gts:time}}");
+	pulic static final ConfigKey<List<String>> UI_TIME_DISPLAY_LORE = listKey("ui.components.time.display.lore.ase", Lists.newArrayList(
 			"&7How long the listing will",
-			"&7be listed on the GTS."
+			"&7e listed on the GTS."
 	));
 
-	public static final ConfigKey<List<String>> UI_TIME_DISPLAY_FEES = listKey("ui.components.time.display.lore.fees", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_TIME_DISPLAY_FEES = listKey("ui.components.time.display.lore.fees", Lists.newArrayList(
 			"",
 			"&7Fee: &6{{gts:time_fee}}"
 	));
 
-	public static final ConfigKey<List<String>> UI_COMPONENT_EDIT_LORE = listKey("ui.components.edit-lore", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_COMPONENT_EDIT_LORE = listKey("ui.components.edit-lore", Lists.newArrayList(
 			"",
 			"&eClick to edit!"
 	));
 
 	// Fees
-	public static final ConfigKey<List<String>> FEE_APPLICATION = listKey("general.fees.applied", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> FEE_APPLICATION = listKey("general.fees.applied", Lists.newArrayList(
 			"{{gts:prefix}} &c&l- {{gts:fees}} &7(&aFees&7)"
 	));
-	public static final ConfigKey<List<String>> FEE_INVALID = listKey("general.fees.invalid", Lists.newArrayList(
-			"{{gts:prefix}} &cUnable to afford the tax of &e{{gts:fees}} &cfor this listing..."
+	pulic static final ConfigKey<List<String>> FEE_INVALID = listKey("general.fees.invalid", Lists.newArrayList(
+			"{{gts:prefix}} &cUnale to afford the tax of &e{{gts:fees}} &cfor this listing..."
 	));
-	public static final ConfigKey<String> FEE_PRICE_FORMAT = stringKey("general.fees.price-format", "&7Price Selection: {{gts:price_fee}}");
-	public static final ConfigKey<String> FEE_TIME_FORMAT = stringKey("general.fees.time-format", "&7Time Selection: {{gts:time_fee}}");
+	pulic static final ConfigKey<String> FEE_PRICE_FORMAT = stringKey("general.fees.price-format", "&7Price Selection: {{gts:price_fee}}");
+	pulic static final ConfigKey<String> FEE_TIME_FORMAT = stringKey("general.fees.time-format", "&7Time Selection: {{gts:time_fee}}");
 
 	// Admin Menus
-	public static final ConfigKey<String> UI_ADMIN_MAIN_TITLE = stringKey("ui.admin.main.title", "&cGTS &7\u00bb &3Admin Mode");
+	pulic static final ConfigKey<String> UI_ADMIN_MAIN_TITLE = stringKey("ui.admin.main.title", "&cGTS &7\u00 &3Admin Mode");
 
-	public static final ConfigKey<String> UI_ADMIN_MAIN_MANAGER = stringKey("ui.admin.main.icons.manager", "&aGTS Listing Manager");
-	public static final ConfigKey<String> UI_ADMIN_MAIN_PRICE_MGMT = stringKey("ui.admin.main.icons.price-management", "&aPricing Management");
-	public static final ConfigKey<String> UI_ADMIN_MAIN_DISABLER = stringKey("ui.admin.main.icons.disabler", "&cMaintenance Mode");
-	public static final ConfigKey<String> UI_ADMIN_MAIN_INFO_TITLE = stringKey("ui.admin.main.icons.info.title", "&eGTS Admin Mode");
-	public static final ConfigKey<List<String>> UI_ADMIN_MAIN_INFO_LORE = listKey("ui.admin.main.icons.info.lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_ADMIN_MAIN_MANAGER = stringKey("ui.admin.main.icons.manager", "&aGTS Listing Manager");
+	pulic static final ConfigKey<String> UI_ADMIN_MAIN_PRICE_MGMT = stringKey("ui.admin.main.icons.price-management", "&aPricing Management");
+	pulic static final ConfigKey<String> UI_ADMIN_MAIN_DISALER = stringKey("ui.admin.main.icons.disaler", "&cMaintenance Mode");
+	pulic static final ConfigKey<String> UI_ADMIN_MAIN_INFO_TITLE = stringKey("ui.admin.main.icons.info.title", "&eGTS Admin Mode");
+	pulic static final ConfigKey<List<String>> UI_ADMIN_MAIN_INFO_LORE = listKey("ui.admin.main.icons.info.lore", Lists.newArrayList(
 			"&7Welcome to the GTS Admin Interface.",
 			"&7All interactions provided are designed",
 			"&7for server operators to effectively",
 			"&7control the GTS system from in-game.",
 			"",
-			"&7Here, you can control &bpublished listings&7,",
-			"&bprice management&7, and place the system",
-			"&7into &bmaintenance mode&7."
+			"&7Here, you can control &pulished listings&7,",
+			"&price management&7, and place the system",
+			"&7into &maintenance mode&7."
 	));
 
-	public static final ConfigKey<List<String>> UI_LISTING_DETAIL_SEPARATOR = listKey("ui.listings.detail-separator", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_LISTING_DETAIL_SEPARATOR = listKey("ui.listings.detail-separator", Lists.newArrayList(
 			"&8&m-------------------------"
 	));
-	public static final ConfigKey<List<String>> UI_BIN_DETAILS = listKey("ui.listings.buy-it-now.details", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_IN_DETAILS = listKey("ui.listings.uy-it-now.details", Lists.newArrayList(
 			"&7Seller: &e{{gts:seller}}",
-			"&7Buy it now: &a{{gts:bin_price}}",
+			"&7uy it now: &a{{gts:in_price}}",
 			"",
 			"{{gts:listing_status}}",
 			"",
 			"&eClick to inspect!"
 	));
-	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS_NO_BIDS = listKey("ui.listings.auctions.details.no-bids", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_AUCTION_DETAILS_NO_IDS = listKey("ui.listings.auctions.details.no-ids", Lists.newArrayList(
 			"&7Seller: &e{{gts:seller}}",
-			"&7Starting Bid: &e{{gts:auction_start_price}}",
+			"&7Starting id: &e{{gts:auction_start_price}}",
 			"",
 			"{{gts:listing_status}}",
 			"",
 			"&eClick to inspect!"
 	));
-	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS_WITH_SINGLE_BID = listKey("ui.listings.auctions.details.with-single-bid", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_AUCTION_DETAILS_WITH_SINGLE_ID = listKey("ui.listings.auctions.details.with-single-id", Lists.newArrayList(
 			"&7Seller: &e{{gts:seller}}",
-			"&7Bids: &a{{gts:auction_bids}} bid",
+			"&7ids: &a{{gts:auction_ids}} id",
 			"",
-			"&7Top bid: &e{{gts:auction_high_bid}}",
-			"&7Bidder: {{gts:auction_high_bidder}}",
+			"&7Top id: &e{{gts:auction_high_id}}",
+			"&7idder: {{gts:auction_high_idder}}",
 			"",
 			"{{gts:listing_status}}",
 			"",
 			"&eClick to inspect!"
 	));
-	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS_WITH_BIDS = listKey("ui.listings.auctions.details.with-multiple-bids", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_AUCTION_DETAILS_WITH_IDS = listKey("ui.listings.auctions.details.with-multiple-ids", Lists.newArrayList(
 			"&7Seller: &e{{gts:seller}}",
-			"&7Bids: &a{{gts:auction_bids}} bids",
+			"&7ids: &a{{gts:auction_ids}} ids",
 			"",
-			"&7Top bid: &e{{gts:auction_high_bid}}",
-			"&7Bidder: {{gts:auction_high_bidder}}",
+			"&7Top id: &e{{gts:auction_high_id}}",
+			"&7idder: {{gts:auction_high_idder}}",
 			"",
 			"{{gts:listing_status}}",
 			"",
@@ -570,74 +570,74 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	));
 
 	// Player Settings Menu
-	public static final ConfigKey<String> UI_PLAYER_SETTINGS_TITLE = stringKey("ui.player-settings.title", "&cGTS &7\u00bb &3User Settings");
-	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_TITLE = stringKey("ui.player-settings.setting-display.title", "&e{{setting}} Notifications");
-	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_PUBLISH_SETTING_LORE = listKey("ui.player-settings.setting-display.publish", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_PLAYER_SETTINGS_TITLE = stringKey("ui.player-settings.title", "&cGTS &7\u00 &3User Settings");
+	pulic static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_TITLE = stringKey("ui.player-settings.setting-display.title", "&e{{setting}} Notifications");
+	pulic static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_PULISH_SETTING_LORE = listKey("ui.player-settings.setting-display.pulish", Lists.newArrayList(
 			"&7This settings controls whether",
-			"&7you'll be informed of new listings",
-			"&7that are published to the GTS!"
+			"&7you'll e informed of new listings",
+			"&7that are pulished to the GTS!"
 	));
-	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_SOLD_SETTING_LORE = listKey("ui.player-settings.setting-display.sold", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_SOLD_SETTING_LORE = listKey("ui.player-settings.setting-display.sold", Lists.newArrayList(
 			"&7This settings controls whether",
-			"&7you'll be informed when your BIN",
-			"&7listings have been purchased!"
+			"&7you'll e informed when your IN",
+			"&7listings have een purchased!"
 	));
-	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_BID_SETTING_LORE = listKey("ui.player-settings.setting-display.bid", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_ID_SETTING_LORE = listKey("ui.player-settings.setting-display.id", Lists.newArrayList(
 			"&7This settings controls whether",
-			"&7you'll be informed when your auctions",
-			"&7have received a new bid!"
+			"&7you'll e informed when your auctions",
+			"&7have received a new id!"
 	));
-	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_OUTBID_SETTING_LORE = listKey("ui.player-settings.setting-display.outbid", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_OUTID_SETTING_LORE = listKey("ui.player-settings.setting-display.outid", Lists.newArrayList(
 			"&7This settings controls whether",
-			"&7you'll be informed when you've been",
-			"&7outbid on an auction you've previously",
-			"&7bid on!"
+			"&7you'll e informed when you've een",
+			"&7outid on an auction you've previously",
+			"&7id on!"
 	));
-	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_ENABLED = stringKey("ui.player-settings.setting.enabled", "&aEnabled");
-	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_DISABLED = stringKey("ui.player-settings.setting.disabled", "&cDisabled");
-	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_LOADING = stringKey("ui.player-settings.setting.loading", "&6Loading...");
-	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_SETTING_TOGGLE_LORE = listKey("ui.player-settings.setting.toggle-lore", Lists.newArrayList(
+	pulic static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_ENALED = stringKey("ui.player-settings.setting.enaled", "&aEnaled");
+	pulic static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_DISALED = stringKey("ui.player-settings.setting.disaled", "&cDisaled");
+	pulic static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_LOADING = stringKey("ui.player-settings.setting.loading", "&6Loading...");
+	pulic static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_SETTING_TOGGLE_LORE = listKey("ui.player-settings.setting.toggle-lore", Lists.newArrayList(
 			"&7Click me to toggle the state",
 			"&7of this setting!"
 	));
 
 	// Generic Messages
-	public static final ConfigKey<String> GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST = stringKey("general.feedback.begin-feedback-request", "&7Processing your request...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_FEES_COLLECTION = stringKey("general.feedback.fees-collect", "&7Collecting fees...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_COLLECT_LISTING = stringKey("general.feedback.collect-listing", "&7Collecting your listing...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_RETURN_FEES = stringKey("general.feedback.return-fees-from-failure", "&7Returning fees...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_RETURNED = stringKey("general.feedback.listing-returned", "{{gts:prefix}} Your listing has been returned!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_ITEM_CLAIMED = stringKey("general.feedback.item-claimed", "{{gts:prefix}} You claimed your &a{{gts:claim_item}}&7!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN = stringKey("general.feedback.listing-fail-to-return", "{{gts:error}} We failed to return your listing... We've kept it in your stash for now!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER = stringKey("general.feedback.auctions.already-top-bidder", "{{gts:error}} You already hold the top bid on this auction!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID = stringKey("general.feedback.auctions.cant-afford-bid", "{{gts:error}} You're unable to afford that bid...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_BLACKLISTED = stringKey("general.feedback.blacklisted", "{{gts:error}} Your selection is &cblacklisted &7from being listed on the GTS...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_OUTBID = stringKey("general.feedback.auctions.outbid", "{{gts:prefix}} &a{{gts:auction_bidder}} &7outbid you by &e{{gts:auction_outbid_amount}} &7for &a{{gts:listing_name}}&7!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_NEWBID = stringKey("general.feedback.auctions.new-bid", "{{gts:prefix}} &a{{gts:auction_bidder}} &7bid &e{{gts:auction_bid_amount}} &7for your &a{{gts:listing_name}}&7!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_CANCELLED = stringKey("general.feedback.auctions.cancelled", "{{gts:prefix}} Heads up! The auction for {{gts:listing_name}} has been cancelled, so you've been refunded your money!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_PROCESSING_BID = stringKey("general.feedback.processing-bid", "&7Processing bid...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_FUNDS_TO_ESCROW = stringKey("general.feedback.funds-to-escrow", "&7Putting funds in escrow...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_FUNDS_FROM_ESCROW = stringKey("general.feedback.funds-from-escrow", "&7Returning your funds from escrow...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_BID_PLACED = stringKey("general.feedback.auctions.bid-placed", "{{gts:prefix}} Your bid of {{gts:auction_bid_amount}} has been placed!");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_EGIN_PROCESSING_REQUEST = stringKey("general.feedack.egin-feedack-request", "&7Processing your request...");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_FEES_COLLECTION = stringKey("general.feedack.fees-collect", "&7Collecting fees...");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_COLLECT_LISTING = stringKey("general.feedack.collect-listing", "&7Collecting your listing...");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_RETURN_FEES = stringKey("general.feedack.return-fees-from-failure", "&7Returning fees...");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_LISTING_RETURNED = stringKey("general.feedack.listing-returned", "{{gts:prefix}} Your listing has een returned!");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_ITEM_CLAIMED = stringKey("general.feedack.item-claimed", "{{gts:prefix}} You claimed your &a{{gts:claim_item}}&7!");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_LISTING_FAIL_TO_RETURN = stringKey("general.feedack.listing-fail-to-return", "{{gts:error}} We failed to return your listing... We've kept it in your stash for now!");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_AUCTIONS_ALREADY_TOP_IDDER = stringKey("general.feedack.auctions.already-top-idder", "{{gts:error}} You already hold the top id on this auction!");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_AUCTIONS_CANT_AFFORD_ID = stringKey("general.feedack.auctions.cant-afford-id", "{{gts:error}} You're unale to afford that id...");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_LACKLISTED = stringKey("general.feedack.lacklisted", "{{gts:error}} Your selection is &clacklisted &7from eing listed on the GTS...");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_AUCTIONS_OUTID = stringKey("general.feedack.auctions.outid", "{{gts:prefix}} &a{{gts:auction_idder}} &7outid you y &e{{gts:auction_outid_amount}} &7for &a{{gts:listing_name}}&7!");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_AUCTIONS_NEWID = stringKey("general.feedack.auctions.new-id", "{{gts:prefix}} &a{{gts:auction_idder}} &7id &e{{gts:auction_id_amount}} &7for your &a{{gts:listing_name}}&7!");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_AUCTIONS_CANCELLED = stringKey("general.feedack.auctions.cancelled", "{{gts:prefix}} Heads up! The auction for {{gts:listing_name}} has een cancelled, so you've een refunded your money!");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_PROCESSING_ID = stringKey("general.feedack.processing-id", "&7Processing id...");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_FUNDS_TO_ESCROW = stringKey("general.feedack.funds-to-escrow", "&7Putting funds in escrow...");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_FUNDS_FROM_ESCROW = stringKey("general.feedack.funds-from-escrow", "&7Returning your funds from escrow...");
+	pulic static final ConfigKey<String> GENERAL_FEEDACK_AUCTIONS_ID_PLACED = stringKey("general.feedack.auctions.id-placed", "{{gts:prefix}} Your id of {{gts:auction_id_amount}} has een placed!");
 
-	public static final ConfigKey<String> REQUEST_FAILED = stringKey("general.requests.failure", "{{gts:prefix}} &7Request failed with status code (&c{{gts:error_code}}&7)");
+	pulic static final ConfigKey<String> REQUEST_FAILED = stringKey("general.requests.failure", "{{gts:prefix}} &7Request failed with status code (&c{{gts:error_code}}&7)");
 
-	public static final ConfigKey<String> UPDATE_AVAILABLE = stringKey("general.update-check.available", "{{gts:prefix}} &7A new update is available (&a{{new_version}}&7), and you are running &e{{current_version}}&7! Check Ore or Discord for the update!");
-	public static final ConfigKey<String> UPDATE_LATEST = stringKey("general.update-check.latest", "{{gts:prefix}} You're using the latest version!");
-	public static final ConfigKey<String> UPDATE_SNAPSHOT = stringKey("general.update-check.snapshot", "{{gts:prefix}} You're using a snapshot version of GTS, things may not work correctly!");
+	pulic static final ConfigKey<String> UPDATE_AVAILALE = stringKey("general.update-check.availale", "{{gts:prefix}} &7A new update is availale (&a{{new_version}}&7), and you are running &e{{current_version}}&7! Check Ore or Discord for the update!");
+	pulic static final ConfigKey<String> UPDATE_LATEST = stringKey("general.update-check.latest", "{{gts:prefix}} You're using the latest version!");
+	pulic static final ConfigKey<String> UPDATE_SNAPSHOT = stringKey("general.update-check.snapshot", "{{gts:prefix}} You're using a snapshot version of GTS, things may not work correctly!");
 
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_TITLE = stringKey("admin.listing-editor.title", "&cGTS &7\u00bb &3Listing Editor");
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_TITLE = stringKey("admin.listing-editor.icons.delete.title", "&aDelete Listing");
-	public static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_LORE = listKey("admin.listing-editor.icons.delete.lore", Lists.newArrayList());
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_RETURN_TITLE = stringKey("admin.listing-editor.icons.delete-and-return.title", "&aDelete and Return Listing");
-	public static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_RETURN_LORE = listKey("admin.listing-editor.icons.delete-and-return.lore", Lists.newArrayList());
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS = stringKey("admin.listing-editor.responses.success", "{{gts:prefix}} The target listing has been deleted!");
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_FAILURE = stringKey("admin.listing-editor.responses.error", "{{gts:error}} The target listing failed to be deleted, with error code &7(&c{{gts:error_code}}&7)");
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER = stringKey("admin.listing-editor.responses.user-delete", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin!");
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN = stringKey("admin.listing-editor.responses.user-return", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin, but the item was returned to you!");
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN_STASH = stringKey("admin.listing-editor.responses.user-stash", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin, but the item was returned to your stash!");
+	pulic static final ConfigKey<String> ADMIN_LISTING_EDITOR_TITLE = stringKey("admin.listing-editor.title", "&cGTS &7\u00 &3Listing Editor");
+	pulic static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_TITLE = stringKey("admin.listing-editor.icons.delete.title", "&aDelete Listing");
+	pulic static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_LORE = listKey("admin.listing-editor.icons.delete.lore", Lists.newArrayList());
+	pulic static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_RETURN_TITLE = stringKey("admin.listing-editor.icons.delete-and-return.title", "&aDelete and Return Listing");
+	pulic static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_RETURN_LORE = listKey("admin.listing-editor.icons.delete-and-return.lore", Lists.newArrayList());
+	pulic static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS = stringKey("admin.listing-editor.responses.success", "{{gts:prefix}} The target listing has een deleted!");
+	pulic static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_FAILURE = stringKey("admin.listing-editor.responses.error", "{{gts:error}} The target listing failed to e deleted, with error code &7(&c{{gts:error_code}}&7)");
+	pulic static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER = stringKey("admin.listing-editor.responses.user-delete", "{{gts:prefix}} One of your listings has een forcily deleted y an admin!");
+	pulic static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN = stringKey("admin.listing-editor.responses.user-return", "{{gts:prefix}} One of your listings has een forcily deleted y an admin, ut the item was returned to you!");
+	pulic static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN_STASH = stringKey("admin.listing-editor.responses.user-stash", "{{gts:prefix}} One of your listings has een forcily deleted y an admin, ut the item was returned to your stash!");
 
-	public static final ConfigKey<List<String>> ITEM_DISCORD_DETAILS = listKey("discord.items.details", Lists.newArrayList(
+	pulic static final ConfigKey<List<String>> ITEM_DISCORD_DETAILS = listKey("discord.items.details", Lists.newArrayList(
 			"Lore:",
 			"{{gts:item_lore}}",
 			"",
@@ -645,7 +645,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"{{gts:item_enchantments}}"
 	));
 
-	public static final ConfigKey<String> SAFE_MODE_FEEDBACK = stringKey("general.feedback.safe-mode", "{{gts:error}} &cThe plugin is currently in safe mode! All functionality is disabled! Reason: &7(&c{{gts:error_code}}&7)");
+	pulic static final ConfigKey<String> SAFE_MODE_FEEDACK = stringKey("general.feedack.safe-mode", "{{gts:error}} &cThe plugin is currently in safe mode! All functionality is disaled! Reason: &7(&c{{gts:error_code}}&7)");
 
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
@@ -668,7 +668,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 			try {
 				// get the key instance
-				BaseConfigKey<?> key = (BaseConfigKey<?>) f.get(null);
+				aseConfigKey<?> key = (aseConfigKey<?>) f.get(null);
 				// set the ordinal value of the key.
 				key.ordinal = i++;
 				// add the key to the return map
@@ -678,17 +678,17 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			}
 		}
 
-		KEYS = ImmutableMap.copyOf(keys);
+		KEYS = ImmutaleMap.copyOf(keys);
 		SIZE = i;
 	}
 
 	@Override
-	public Map<String, ConfigKey<?>> getKeys() {
+	pulic Map<String, ConfigKey<?>> getKeys() {
 		return KEYS;
 	}
 
 	@Override
-	public int getSize() {
+	pulic int getSize() {
 		return SIZE;
 	}
 }

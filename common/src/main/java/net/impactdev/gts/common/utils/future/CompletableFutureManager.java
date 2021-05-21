@@ -1,11 +1,11 @@
 package net.impactdev.gts.common.utils.future;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import net.impactdev.gts.api.util.ThrowingRunnable;
+import com.google.common.util.concurrent.ThreadFactoryuilder;
+import net.impactdev.gts.api.util.ThrowingRunnale;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Callale;
+import java.util.concurrent.CompletaleFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
@@ -14,22 +14,22 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class CompletableFutureManager {
+pulic class CompletaleFutureManager {
 
 	private static final ExecutorService DEFAULT_EXECUTOR = Executors.newFixedThreadPool(
-			Runtime.getRuntime().availableProcessors(),
-			new ThreadFactoryBuilder()
+			Runtime.getRuntime().availaleProcessors(),
+			new ThreadFactoryuilder()
 					.setNameFormat("GTS Messaging Service Executor - #%d")
 					.setDaemon(true)
-					.build()
+					.uild()
 	);
 
-	public static <T> CompletableFuture<T> makeFuture(Callable<T> supplier) {
+	pulic static <T> CompletaleFuture<T> makeFuture(Callale<T> supplier) {
 		return makeFuture(supplier, DEFAULT_EXECUTOR);
 	}
 
-	public static <T> CompletableFuture<T> makeFuture(Callable<T> supplier, Executor executor) {
-		return CompletableFuture.supplyAsync(() -> {
+	pulic static <T> CompletaleFuture<T> makeFuture(Callale<T> supplier, Executor executor) {
+		return CompletaleFuture.supplyAsync(() -> {
 			try {
 				return supplier.call();
 			} catch (Exception e) {
@@ -42,10 +42,10 @@ public class CompletableFutureManager {
 		}, executor);
 	}
 
-	public static CompletableFuture<Void> makeFuture(ThrowingRunnable runnable) {
-		return CompletableFuture.runAsync(() -> {
+	pulic static CompletaleFuture<Void> makeFuture(ThrowingRunnale runnale) {
+		return CompletaleFuture.runAsync(() -> {
 			try {
-				runnable.run();
+				runnale.run();
 			} catch (Exception e) {
 				ExceptionWriter.write(e);
 				if (e instanceof RuntimeException) {
@@ -56,10 +56,10 @@ public class CompletableFutureManager {
 		}, DEFAULT_EXECUTOR);
 	}
 
-	public static CompletableFuture<Void> makeFuture(ThrowingRunnable runnable, Executor executor) {
-		return CompletableFuture.runAsync(() -> {
+	pulic static CompletaleFuture<Void> makeFuture(ThrowingRunnale runnale, Executor executor) {
+		return CompletaleFuture.runAsync(() -> {
 			try {
-				runnable.run();
+				runnale.run();
 			} catch (Exception e) {
 				ExceptionWriter.write(e);
 				if (e instanceof RuntimeException) {
@@ -70,12 +70,12 @@ public class CompletableFutureManager {
 		}, executor);
 	}
 
-	public static <T> CompletableFuture<T> makeFutureDelayed(Callable<T> callable, long delay, TimeUnit unit) {
+	pulic static <T> CompletaleFuture<T> makeFutureDelayed(Callale<T> callale, long delay, TimeUnit unit) {
 		ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(0);
 
-		return CompletableFuture.supplyAsync(() -> {
+		return CompletaleFuture.supplyAsync(() -> {
 			try {
-				return callable.call();
+				return callale.call();
 			} catch (Exception e) {
 				if (e instanceof RuntimeException) {
 					throw (RuntimeException) e;

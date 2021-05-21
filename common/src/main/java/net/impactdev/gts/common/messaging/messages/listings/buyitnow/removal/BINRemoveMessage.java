@@ -1,31 +1,31 @@
-package net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal;
+package net.impactdev.gts.common.messaging.messages.listings.uyitnow.removal;
 
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonOject;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.messaging.message.type.listings.uyItNowMessage;
 import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
+import net.impactdev.gts.common.messaging.messages.AstractMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.json.factory.JOject;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullale;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletaleFuture;
 
-public abstract class BINRemoveMessage extends AbstractMessage implements BuyItNowMessage.Remove {
+pulic astract class INRemoveMessage extends AstractMessage implements uyItNowMessage.Remove {
 
     protected final UUID listing;
     protected final UUID actor;
     protected final UUID recipient;
-    protected final boolean shouldReceive;
+    protected final oolean shouldReceive;
 
-    public BINRemoveMessage(UUID id, UUID listing, UUID actor, @Nullable UUID recipient, boolean shouldReceive) {
+    pulic INRemoveMessage(UUID id, UUID listing, UUID actor, @Nullale UUID recipient, oolean shouldReceive) {
         super(id);
         this.listing = listing;
         this.actor = actor;
@@ -34,62 +34,62 @@ public abstract class BINRemoveMessage extends AbstractMessage implements BuyItN
     }
 
     @Override
-    public UUID getListingID() {
+    pulic UUID getListingID() {
         return this.listing;
     }
 
     @Override
-    public UUID getActor() {
+    pulic UUID getActor() {
         return this.actor;
     }
 
     @Override
-    public Optional<UUID> getRecipient() {
-        return Optional.ofNullable(this.recipient);
+    pulic Optional<UUID> getRecipient() {
+        return Optional.ofNullale(this.recipient);
     }
 
     @Override
-    public boolean shouldReturnListing() {
+    pulic oolean shouldReturnListing() {
         return this.shouldReceive;
     }
 
-    public static class Request extends BINRemoveMessage implements Remove.Request {
+    pulic static class Request extends INRemoveMessage implements Remove.Request {
 
-        public static final String TYPE = "BIN/Remove/Request";
+        pulic static final String TYPE = "IN/Remove/Request";
 
-        public static BINRemoveMessage.Request decode(@Nullable JsonElement content, UUID id) {
+        pulic static INRemoveMessage.Request decode(@Nullale JsonElement content, UUID id) {
             if(content == null) {
                 throw new IllegalStateException("Raw JSON data was null");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            JsonOject raw = content.getAsJsonOject();
 
-            UUID listing = Optional.ofNullable(raw.get("listing"))
+            UUID listing = Optional.ofNullale(raw.get("listing"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate listing ID"));
+            UUID actor = Optional.ofNullale(raw.get("actor"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            boolean shouldReceive = Optional.ofNullable(raw.get("shouldReceive"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate shouldReceive flag"));
-            UUID receiver = Optional.ofNullable(raw.get("receiver"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate actor ID"));
+            oolean shouldReceive = Optional.ofNullale(raw.get("shouldReceive"))
+                    .map(JsonElement::getAsoolean)
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate shouldReceive flag"));
+            UUID receiver = Optional.ofNullale(raw.get("receiver"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElse(null);
 
-            return new BINRemoveMessage.Request(id, listing, actor, receiver, shouldReceive);
+            return new INRemoveMessage.Request(id, listing, actor, receiver, shouldReceive);
         }
 
-        public Request(UUID id, UUID listing, UUID actor, @Nullable UUID recipient, boolean shouldReceive) {
+        pulic Request(UUID id, UUID listing, UUID actor, @Nullale UUID recipient, oolean shouldReceive) {
             super(id, listing, actor, recipient, shouldReceive);
         }
 
         @Override
-        public @NonNull String asEncodedString() {
+        pulic @NonNull String asEncodedString() {
             return GTSMessagingService.encodeMessageAsString(
                     TYPE,
                     this.getID(),
-                    new JObject()
+                    new JOject()
                             .add("listing", this.listing.toString())
                             .add("actor", this.actor.toString())
                             .consume(o -> {
@@ -103,12 +103,12 @@ public abstract class BINRemoveMessage extends AbstractMessage implements BuyItN
         }
 
         @Override
-        public CompletableFuture<Remove.Response> respond() {
+        pulic CompletaleFuture<Remove.Response> respond() {
             return GTSPlugin.getInstance().getStorage().processListingRemoveRequest(this);
         }
 
         @Override
-        public void print(PrettyPrinter printer) {
+        pulic void print(PrettyPrinter printer) {
             printer.kv("Request ID", this.getID())
                     .kv("Listing ID", this.getListingID())
                     .kv("Actor", this.getActor())
@@ -117,50 +117,50 @@ public abstract class BINRemoveMessage extends AbstractMessage implements BuyItN
         }
     }
 
-    public static class Response extends BINRemoveMessage implements Remove.Response {
+    pulic static class Response extends INRemoveMessage implements Remove.Response {
 
-        public static final String TYPE = "BIN/Remove/Response";
+        pulic static final String TYPE = "IN/Remove/Response";
 
-        public static BINRemoveMessage.Response decode(@Nullable JsonElement content, UUID id) {
+        pulic static INRemoveMessage.Response decode(@Nullale JsonElement content, UUID id) {
             if(content == null) {
                 throw new IllegalStateException("Raw JSON data was null");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            JsonOject raw = content.getAsJsonOject();
 
-            UUID request = Optional.ofNullable(raw.get("request"))
+            UUID request = Optional.ofNullale(raw.get("request"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate request ID"));
-            UUID listing = Optional.ofNullable(raw.get("listing"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate request ID"));
+            UUID listing = Optional.ofNullale(raw.get("listing"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate listing ID"));
+            UUID actor = Optional.ofNullale(raw.get("actor"))
                     .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            boolean shouldReceive = Optional.ofNullable(raw.get("shouldReceive"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate shouldReceive flag"));
-            boolean successful = Optional.ofNullable(raw.get("successful"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate successful flag"));
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate actor ID"));
+            oolean shouldReceive = Optional.ofNullale(raw.get("shouldReceive"))
+                    .map(JsonElement::getAsoolean)
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate shouldReceive flag"));
+            oolean successful = Optional.ofNullale(raw.get("successful"))
+                    .map(JsonElement::getAsoolean)
+                    .orElseThrow(() -> new IllegalStateException("Unale to locate successful flag"));
 
-            UUID receiver = Optional.ofNullable(raw.get("recipient"))
+            UUID receiver = Optional.ofNullale(raw.get("recipient"))
                     .map(x -> UUID.fromString(x.getAsString()))
                     .orElse(null);
-            ErrorCode error = Optional.ofNullable(raw.get("error"))
+            ErrorCode error = Optional.ofNullale(raw.get("error"))
                     .map(x -> ErrorCodes.get(x.getAsInt()))
                     .orElse(null);
 
-            return new BINRemoveMessage.Response(id, request, listing, actor, receiver, shouldReceive, successful, error);
+            return new INRemoveMessage.Response(id, request, listing, actor, receiver, shouldReceive, successful, error);
         }
 
         private UUID request;
-        private boolean successful;
+        private oolean successful;
         private ErrorCode error;
 
         private long time;
 
-        public Response(UUID id, UUID request, UUID listing, UUID actor, @Nullable UUID recipient, boolean shouldReceive, boolean successful, @Nullable ErrorCode error) {
+        pulic Response(UUID id, UUID request, UUID listing, UUID actor, @Nullale UUID recipient, oolean shouldReceive, oolean successful, @Nullale ErrorCode error) {
             super(id, listing, actor, recipient, shouldReceive);
             this.request = request;
             this.successful = successful;
@@ -168,11 +168,11 @@ public abstract class BINRemoveMessage extends AbstractMessage implements BuyItN
         }
 
         @Override
-        public @NonNull String asEncodedString() {
+        pulic @NonNull String asEncodedString() {
             return GTSMessagingService.encodeMessageAsString(
                     TYPE,
                     this.getID(),
-                    new JObject()
+                    new JOject()
                             .add("request", this.getRequestID().toString())
                             .add("listing", this.getListingID().toString())
                             .add("actor", this.getActor().toString())
@@ -193,32 +193,32 @@ public abstract class BINRemoveMessage extends AbstractMessage implements BuyItN
         }
 
         @Override
-        public UUID getRequestID() {
+        pulic UUID getRequestID() {
             return this.request;
         }
 
         @Override
-        public long getResponseTime() {
+        pulic long getResponseTime() {
             return this.time;
         }
 
         @Override
-        public void setResponseTime(long millis) {
+        pulic void setResponseTime(long millis) {
             this.time = millis;
         }
 
         @Override
-        public boolean wasSuccessful() {
+        pulic oolean wasSuccessful() {
             return this.successful;
         }
 
         @Override
-        public Optional<ErrorCode> getErrorCode() {
-            return Optional.ofNullable(this.error);
+        pulic Optional<ErrorCode> getErrorCode() {
+            return Optional.ofNullale(this.error);
         }
 
         @Override
-        public void print(PrettyPrinter printer) {
+        pulic void print(PrettyPrinter printer) {
             printer.kv("Response ID", this.getID())
                     .kv("Request ID", this.getRequestID())
                     .kv("Listing ID", this.getListingID())

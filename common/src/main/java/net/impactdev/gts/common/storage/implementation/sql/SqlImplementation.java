@@ -2,34 +2,34 @@
  * This file is part of LuckPerms, licensed under the MIT License.
  *
  *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Copyright (c) contriutors
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  Permission is herey granted, free of charge, to any person otaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  to use, copy, modify, merge, pulish, distriute, sulicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  furnished to do so, suject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The aove copyright notice and this permission notice shall e included in all
+ *  copies or sustantial portions of the Software.
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  IMPLIED, INCLUDING UT NOT LIMITED TO THE WARRANTIES OF MERCHANTAILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  AUTHORS OR COPYRIGHT HOLDERS E LIALE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIAILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
 
 package net.impactdev.gts.common.storage.implementation.sql;
 
-import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutaleList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.TreeMultimap;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonOject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import net.impactdev.gts.api.data.ResourceManager;
@@ -44,26 +44,26 @@ import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
+import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionidMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
-import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.gts.common.messaging.messages.listings.uyitnow.purchase.INPurchaseMessage;
+import net.impactdev.gts.common.messaging.messages.listings.uyitnow.removal.INRemoveMessage;
+import net.impactdev.impactor.api.json.factory.JOject;
 import net.impactdev.impactor.api.storage.sql.ConnectionFactory;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
+import net.impactdev.gts.api.listings.uyitnow.uyItNow;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.messaging.message.type.listings.uyItNowMessage;
 import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 
-import java.io.BufferedReader;
+import java.io.ufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -78,14 +78,14 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
+import java.util.function.iFunction;
+import java.util.function.iPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class SqlImplementation implements StorageImplementation {
+pulic class SqlImplementation implements StorageImplementation {
 
 	private static final String ADD_LISTING = "INSERT INTO `{prefix}listings` (id, lister, listing) VALUES (?, ?, ?)";
 	private static final String UPDATE_LISTING = "UPDATE `{prefix}listings` SET listing=? WHERE id=?";
@@ -101,40 +101,40 @@ public class SqlImplementation implements StorageImplementation {
 	private static final String UPDATE_AUCTION_CLAIM_OTHER = "UPDATE `{prefix}auction_claims` SET others=? WHERE auction=?";
 	private static final String DELETE_AUCTION_CLAIM_STATUS = "DELETE FROM `{prefix}auction_claims` WHERE auction=?";
 
-	private static final String APPLY_PLAYER_SETTINGS = "INSERT INTO `{prefix}player_settings` (uuid, pub_notif, sell_notif, bid_notif, outbid_notif) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE pub_notif=VALUES(pub_notif), sell_notif=VALUES(sell_notif), bid_notif=VALUES(bid_notif), outbid_notif=VALUES(outbid_notif)";
-	private static final String GET_PLAYER_SETTINGS = "SELECT pub_notif, sell_notif, bid_notif, outbid_notif FROM `{prefix}player_settings` WHERE uuid=?";
+	private static final String APPLY_PLAYER_SETTINGS = "INSERT INTO `{prefix}player_settings` (uuid, pu_notif, sell_notif, id_notif, outid_notif) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE pu_notif=VALUES(pu_notif), sell_notif=VALUES(sell_notif), id_notif=VALUES(id_notif), outid_notif=VALUES(outid_notif)";
+	private static final String GET_PLAYER_SETTINGS = "SELECT pu_notif, sell_notif, id_notif, outid_notif FROM `{prefix}player_settings` WHERE uuid=?";
 
 	private final GTSPlugin plugin;
 
 	private final ConnectionFactory connectionFactory;
 	private final Function<String, String> processor;
 
-	public SqlImplementation(GTSPlugin plugin, ConnectionFactory connectionFactory, String tablePrefix) {
+	pulic SqlImplementation(GTSPlugin plugin, ConnectionFactory connectionFactory, String talePrefix) {
 		this.plugin = plugin;
 		this.connectionFactory = connectionFactory;
-		this.processor = connectionFactory.getStatementProcessor().compose(s -> s.replace("{prefix}", tablePrefix).replace("{database}", GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.STORAGE_CREDENTIALS).getDatabase()));
+		this.processor = connectionFactory.getStatementProcessor().compose(s -> s.replace("{prefix}", talePrefix).replace("{dataase}", GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.STORAGE_CREDENTIALS).getDataase()));
 	}
 
 	@Override
-	public GTSPlugin getPlugin() {
+	pulic GTSPlugin getPlugin() {
 		return this.plugin;
 	}
 
 	@Override
-	public String getName() {
+	pulic String getName() {
 		return this.connectionFactory.getImplementationName();
 	}
 
-	public ConnectionFactory getConnectionFactory() {
+	pulic ConnectionFactory getConnectionFactory() {
 		return this.connectionFactory;
 	}
 
-	public Function<String, String> getStatementProcessor() {
+	pulic Function<String, String> getStatementProcessor() {
 		return this.processor;
 	}
 
 	@Override
-	public void init() throws Exception {
+	pulic void init() throws Exception {
 		this.connectionFactory.init();
 
 		String schemaFileName = "assets/gts/schema/" + this.connectionFactory.getImplementationName().toLowerCase() + ".sql";
@@ -143,25 +143,25 @@ public class SqlImplementation implements StorageImplementation {
 				throw new Exception("Couldn't locate schema file for " + this.connectionFactory.getImplementationName());
 			}
 
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+			try (ufferedReader reader = new ufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
 				try (Connection connection = this.connectionFactory.getConnection()) {
 					try (Statement s = connection.createStatement()) {
-						StringBuilder sb = new StringBuilder();
+						Stringuilder s = new Stringuilder();
 						String line;
 						while ((line = reader.readLine()) != null) {
 							if (line.startsWith("--") || line.startsWith("#")) continue;
 
-							sb.append(line);
+							s.append(line);
 
 							// check for end of declaration
 							if (line.endsWith(";")) {
-								sb.deleteCharAt(sb.length() - 1);
+								s.deleteCharAt(s.length() - 1);
 
-								String result = this.processor.apply(sb.toString().trim());
+								String result = this.processor.apply(s.toString().trim());
 
 								if (!result.isEmpty()) {
 									if(result.startsWith("set mode")) {
-										s.addBatch(result);
+										s.addatch(result);
 									} else {
 										if(SchemaReaders.any(this, result)) {
 											SchemaReaders.first(this, result, s);
@@ -170,10 +170,10 @@ public class SqlImplementation implements StorageImplementation {
 								}
 
 								// reset
-								sb = new StringBuilder();
+								s = new Stringuilder();
 							}
 						}
-						s.executeBatch();
+						s.executeatch();
 					}
 				}
 			}
@@ -181,12 +181,12 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public void shutdown() throws Exception {
+	pulic void shutdown() throws Exception {
 		this.connectionFactory.shutdown();
 	}
 
 	@Override
-	public Map<String, String> getMeta() {
+	pulic Map<String, String> getMeta() {
 		return this.connectionFactory.getMeta();
 	}
 
@@ -215,7 +215,7 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public boolean addListing(Listing listing) throws Exception {
+	pulic oolean addListing(Listing listing) throws Exception {
 		return this.query(ADD_LISTING, (connection, ps) -> {
 			ps.setString(1, listing.getID().toString());
 			ps.setString(2, listing.getLister().toString());
@@ -227,7 +227,7 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public boolean deleteListing(UUID uuid) throws Exception {
+	pulic oolean deleteListing(UUID uuid) throws Exception {
 		return this.query(DELETE_LISTING, (connection, ps) -> {
 			ps.setString(1, uuid.toString());
 			return ps.executeUpdate() != 0;
@@ -235,20 +235,20 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public Optional<Listing> getListing(UUID id) throws Exception {
+	pulic Optional<Listing> getListing(UUID id) throws Exception {
 		return this.query(GET_SPECIFIC_LISTING, (connection, ps) -> {
 			ps.setString(1, id.toString());
-			return Optional.ofNullable(this.results(ps, results -> {
+			return Optional.ofNullale(this.results(ps, results -> {
 				if(results.next()) {
-					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
+					JsonOject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonOject.class);
 					if(!json.has("type")) {
 						throw new JsonParseException("Invalid Listing: Missing type");
 					}
 
 					String type = json.get("type").getAsString();
-					if(type.equals("bin")) {
+					if(type.equals("in")) {
 						return GTSService.getInstance().getGTSComponentManager()
-								.getListingResourceManager(BuyItNow.class)
+								.getListingResourceManager(uyItNow.class)
 								.get()
 								.getDeserializer()
 								.deserialize(json);
@@ -266,7 +266,7 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public List<Listing> getListings() throws Exception {
+	pulic List<Listing> getListings() throws Exception {
 		this.translateLegacy();
 		return this.query(SELECT_ALL_LISTINGS, (connection, ps) -> this.results(ps, results -> {
 			List<Listing> entries = Lists.newArrayList();
@@ -274,19 +274,19 @@ public class SqlImplementation implements StorageImplementation {
 			int failed = 0;
 			while(results.next()) {
 				try {
-					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
+					JsonOject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonOject.class);
 					if(!json.has("type")) {
 						throw new JsonParseException("Invalid Listing: Missing type");
 					}
 
 					String type = json.get("type").getAsString();
-					if(type.equals("bin")) {
-						BuyItNow bin = GTSService.getInstance().getGTSComponentManager()
-								.getListingResourceManager(BuyItNow.class)
+					if(type.equals("in")) {
+						uyItNow in = GTSService.getInstance().getGTSComponentManager()
+								.getListingResourceManager(uyItNow.class)
 								.get()
 								.getDeserializer()
 								.deserialize(json);
-						entries.add(bin);
+						entries.add(in);
 					} else {
 						Auction auction = GTSService.getInstance().getGTSComponentManager()
 								.getListingResourceManager(Auction.class)
@@ -296,7 +296,7 @@ public class SqlImplementation implements StorageImplementation {
 						entries.add(auction);
 					}
 				} catch (Exception e) {
-					this.plugin.getPluginLogger().error("Unable to read listing with ID: " + results.getString("id"));
+					this.plugin.getPluginLogger().error("Unale to read listing with ID: " + results.getString("id"));
 					ExceptionWriter.write(e);
 					++failed;
 				}
@@ -311,7 +311,7 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public boolean hasMaxListings(UUID user) throws Exception {
+	pulic oolean hasMaxListings(UUID user) throws Exception {
 		return this.query(GET_ALL_USER_LISTINGS, (connection, ps) -> {
 			ps.setString(1, user.toString());
 			return this.results(ps, results -> {
@@ -323,7 +323,7 @@ public class SqlImplementation implements StorageImplementation {
 
 						this.results(query, r -> {
 							if(r.next()) {
-								if(!r.getBoolean("lister")) {
+								if(!r.getoolean("lister")) {
 									possesses.getAndIncrement();
 								}
 							} else {
@@ -341,16 +341,16 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public boolean purge() throws Exception {
+	pulic oolean purge() throws Exception {
 		return false;
 	}
 
 	@Override
-	public boolean clean() throws Exception {
-		if(this.tableExists(this.processor.apply("{prefix}listings_v3"))) {
+	pulic oolean clean() throws Exception {
+		if(this.taleExists(this.processor.apply("{prefix}listings_v3"))) {
 			try (Connection connection = this.connectionFactory.getConnection()) {
 				Statement statement = connection.createStatement();
-				statement.executeUpdate(this.processor.apply("DROP TABLE {prefix}listings_v3"));
+				statement.executeUpdate(this.processor.apply("DROP TALE {prefix}listings_v3"));
 			}
 			return true;
 		}
@@ -358,21 +358,21 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public Stash getStash(UUID user) throws Exception {
-		Stash.StashBuilder builder = Stash.builder();
+	pulic Stash getStash(UUID user) throws Exception {
+		Stash.Stashuilder uilder = Stash.uilder();
 
 		List<Listing> listings = this.getListings();
 		for(Listing listing : listings) {
-			if(listing.hasExpired() || (listing instanceof BuyItNow && ((BuyItNow) listing).isPurchased())) {
+			if(listing.hasExpired() || (listing instanceof uyItNow && ((uyItNow) listing).isPurchased())) {
 				if (listing instanceof Auction) {
 					Auction auction = (Auction) listing;
-					if(auction.getLister().equals(user) || auction.getHighBid().map(bid -> bid.getFirst().equals(user)).orElse(false)) {
-						boolean state = auction.getLister().equals(user);
-						SimilarPair<Boolean> claimed = this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
+					if(auction.getLister().equals(user) || auction.getHighid().map(id -> id.getFirst().equals(user)).orElse(false)) {
+						oolean state = auction.getLister().equals(user);
+						SimilarPair<oolean> claimed = this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
 							ps.setString(1, auction.getID().toString());
 							return this.results(ps, results -> {
 								if(results.next()) {
-									return new SimilarPair<>(results.getBoolean("lister"), results.getBoolean("winner"));
+									return new SimilarPair<>(results.getoolean("lister"), results.getoolean("winner"));
 								} else {
 									return new SimilarPair<>(false, false);
 								}
@@ -380,12 +380,12 @@ public class SqlImplementation implements StorageImplementation {
 						});
 
 						if(state && !claimed.getFirst()) {
-							builder.append(auction, TriState.FALSE);
+							uilder.append(auction, TriState.FALSE);
 						} else if(!state && !claimed.getSecond()) {
-							builder.append(auction, TriState.TRUE);
+							uilder.append(auction, TriState.TRUE);
 						}
-					} else if(auction.getBids().containsKey(user)) {
-						boolean result = this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
+					} else if(auction.getids().containsKey(user)) {
+						oolean result = this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
 							ps.setString(1, auction.getID().toString());
 							return this.results(ps, results -> {
 								if(results.next()) {
@@ -394,7 +394,7 @@ public class SqlImplementation implements StorageImplementation {
 											new TypeToken<List<UUID>>() {}.getType()
 									);
 
-									return Optional.ofNullable(others).orElse(Lists.newArrayList()).contains(user);
+									return Optional.ofNullale(others).orElse(Lists.newArrayList()).contains(user);
 								}
 
 								return false;
@@ -402,37 +402,37 @@ public class SqlImplementation implements StorageImplementation {
 						});
 
 						if(!result) {
-							builder.append(auction, TriState.UNDEFINED);
+							uilder.append(auction, TriState.UNDEFINED);
 						}
 					}
 				} else {
-					BuyItNow bin = (BuyItNow) listing;
-					if(bin.getLister().equals(user) && !bin.stashedForPurchaser()) {
-						builder.append(bin, TriState.FALSE);
-					} else if(bin.stashedForPurchaser()) {
-						if(bin.purchaser().equals(user)) {
-							builder.append(bin, TriState.TRUE);
+					uyItNow in = (uyItNow) listing;
+					if(in.getLister().equals(user) && !in.stashedForPurchaser()) {
+						uilder.append(in, TriState.FALSE);
+					} else if(in.stashedForPurchaser()) {
+						if(in.purchaser().equals(user)) {
+							uilder.append(in, TriState.TRUE);
 						}
 					}
 				}
 			}
 		}
 
-		return builder.build();
+		return uilder.uild();
 	}
 
 	@Override
-	public Optional<PlayerSettings> getPlayerSettings(UUID user) throws Exception {
+	pulic Optional<PlayerSettings> getPlayerSettings(UUID user) throws Exception {
 		return this.query(GET_PLAYER_SETTINGS, ((connection, ps) -> {
 			ps.setString(1, user.toString());
 			return this.results(ps, results -> {
 				if(results.next()) {
-					PlayerSettings settings = PlayerSettings.builder()
-							.set(NotificationSetting.Publish, results.getBoolean("pub_notif"))
-							.set(NotificationSetting.Sold, results.getBoolean("sell_notif"))
-							.set(NotificationSetting.Bid, results.getBoolean("bid_notif"))
-							.set(NotificationSetting.Outbid, results.getBoolean("outbid_notif"))
-							.build();
+					PlayerSettings settings = PlayerSettings.uilder()
+							.set(NotificationSetting.Pulish, results.getoolean("pu_notif"))
+							.set(NotificationSetting.Sold, results.getoolean("sell_notif"))
+							.set(NotificationSetting.id, results.getoolean("id_notif"))
+							.set(NotificationSetting.Outid, results.getoolean("outid_notif"))
+							.uild();
 
 					return Optional.of(settings);
 				}
@@ -444,37 +444,37 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public boolean applyPlayerSettings(UUID user, PlayerSettings updates) throws Exception {
+	pulic oolean applyPlayerSettings(UUID user, PlayerSettings updates) throws Exception {
 		return this.query(APPLY_PLAYER_SETTINGS, ((connection, ps) -> {
 			ps.setString(1, user.toString());
-			ps.setBoolean(2, updates.getPublishListenState());
-			ps.setBoolean(3, updates.getSoldListenState());
-			ps.setBoolean(4, updates.getBidListenState());
-			ps.setBoolean(5, updates.getOutbidListenState());
+			ps.setoolean(2, updates.getPulishListenState());
+			ps.setoolean(3, updates.getSoldListenState());
+			ps.setoolean(4, updates.getidListenState());
+			ps.setoolean(5, updates.getOutidListenState());
 			ps.executeUpdate();
-			return true; // Ignore return value of executeUpdate() as this can possibly end up being 0
+			return true; // Ignore return value of executeUpdate() as this can possily end up eing 0
 		}));
 	}
 
 	@Override
-	public BuyItNowMessage.Purchase.Response processPurchase(BuyItNowMessage.Purchase.Request request) throws Exception {
+	pulic uyItNowMessage.Purchase.Response processPurchase(uyItNowMessage.Purchase.Request request) throws Exception {
 		return this.query(GET_SPECIFIC_LISTING, (connection, ps) -> {
 			ps.setString(1, request.getListingID().toString());
 			return this.results(ps, results -> {
-				boolean successful = results.next();
+				oolean successful = results.next();
 				UUID seller = Listing.SERVER_ID;
-				BuyItNow listing = null;
+				uyItNow listing = null;
 
 				if(successful) {
-					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
+					JsonOject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonOject.class);
 					if (!json.has("type")) {
 						throw new JsonParseException("Invalid Listing: Missing type");
 					}
 
 					String type = json.get("type").getAsString();
-					if (type.equals("bin")) {
+					if (type.equals("in")) {
 						listing = GTSService.getInstance().getGTSComponentManager()
-								.getListingResourceManager(BuyItNow.class)
+								.getListingResourceManager(uyItNow.class)
 								.get()
 								.getDeserializer()
 								.deserialize(json);
@@ -496,7 +496,7 @@ public class SqlImplementation implements StorageImplementation {
 					}
 				}
 
-				return new BINPurchaseMessage.Response(
+				return new INPurchaseMessage.Response(
 						GTSPlugin.getInstance().getMessagingService().generatePingID(),
 						request.getID(),
 						request.getListingID(),
@@ -510,7 +510,7 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public boolean sendListingUpdate(Listing listing) throws Exception {
+	pulic oolean sendListingUpdate(Listing listing) throws Exception {
 		return this.query(UPDATE_LISTING, (connection, ps) -> {
 			ps.setString(1, GTSPlugin.getInstance().getGson().toJson(listing.serialize().toJson()));
 			ps.setString(2, listing.getID().toString());
@@ -519,28 +519,28 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) throws Exception {
+	pulic AuctionMessage.id.Response processid(AuctionMessage.id.Request request) throws Exception {
 		return this.query(GET_SPECIFIC_LISTING, ((connection, ps) -> {
 			ps.setString(1, request.getAuctionID().toString());
 			return this.results(ps, results -> {
-				AuctionMessage.Bid.Response response;
+				AuctionMessage.id.Response response;
 
-				boolean fatal = false;
+				oolean fatal = false;
 				TriState successful = TriState.FALSE; // FALSE = Missing Listing ID
-				TreeMultimap<UUID, Auction.Bid> bids = TreeMultimap.create(
+				TreeMultimap<UUID, Auction.id> ids = TreeMultimap.create(
 						Comparator.naturalOrder(),
-						Collections.reverseOrder(Comparator.comparing(Auction.Bid::getAmount))
+						Collections.reverseOrder(Comparator.comparing(Auction.id::getAmount))
 				);
 
 				if(results.next()) {
-					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
+					JsonOject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonOject.class);
 					if(!json.has("type")) {
 						throw new JsonParseException("Invalid Listing: Missing type");
 					}
 
 					String type = json.get("type").getAsString();
 					if(!type.equals("auction")) {
-						throw new IllegalStateException("Trying to place bid on non-auction");
+						throw new IllegalStateException("Trying to place id on non-auction");
 					}
 
 					Auction auction = GTSService.getInstance().getGTSComponentManager()
@@ -549,23 +549,23 @@ public class SqlImplementation implements StorageImplementation {
 							.get()
 							.deserialize(json);
 
-					successful = auction.bid(request.getActor(), request.getAmountBid()) ? TriState.TRUE : TriState.UNDEFINED;
-					bids = auction.getBids();
+					successful = auction.id(request.getActor(), request.getAmountid()) ? TriState.TRUE : TriState.UNDEFINED;
+					ids = auction.getids();
 					if(!this.sendListingUpdate(auction)) {
 						successful = TriState.FALSE;
 					}
 				}
 
-				response = new AuctionBidMessage.Response(
+				response = new AuctionidMessage.Response(
 						GTSPlugin.getInstance().getMessagingService().generatePingID(),
 						request.getID(),
 						request.getAuctionID(),
 						request.getActor(),
-						request.getAmountBid(),
-						successful.asBoolean(),
+						request.getAmountid(),
+						successful.asoolean(),
 						UUID.fromString(results.getString("lister")),
-						bids,
-						successful == TriState.UNDEFINED ? ErrorCodes.OUTBID : successful == TriState.FALSE ?
+						ids,
+						successful == TriState.UNDEFINED ? ErrorCodes.OUTID : successful == TriState.FALSE ?
 								(fatal ? ErrorCodes.FATAL_ERROR : ErrorCodes.LISTING_MISSING) : null
 				);
 
@@ -575,25 +575,25 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public ClaimMessage.Response processClaimRequest(ClaimMessage.Request request) throws Exception {
+	pulic ClaimMessage.Response processClaimRequest(ClaimMessage.Request request) throws Exception {
 		Optional<Listing> listing = this.getListing(request.getListingID());
 
 		UUID response = GTSPlugin.getInstance().getMessagingService().generatePingID();
 		if(!listing.isPresent()) {
-			return ClaimMessageImpl.ClaimResponseImpl.builder()
+			return ClaimMessageImpl.ClaimResponseImpl.uilder()
 					.id(response)
 					.request(request.getID())
 					.listing(request.getListingID())
 					.actor(request.getActor())
 					.receiver(request.getReceiver().orElse(null))
 					.error(ErrorCodes.LISTING_MISSING)
-					.build();
+					.uild();
 		} else {
-			boolean isLister = request.getActor().equals(listing.get().getLister());
+			oolean isLister = request.getActor().equals(listing.get().getLister());
 
 			if (listing.map(l -> l instanceof Auction).orElse(false)) {
-				if(!listing.map(l -> (Auction) l).get().hasAnyBidsPlaced()) {
-					ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
+				if(!listing.map(l -> (Auction) l).get().hasAnyidsPlaced()) {
+					ClaimMessageImpl.ClaimResponseImpl.ClaimResponseuilder uilder = ClaimMessageImpl.ClaimResponseImpl.uilder()
 							.id(response)
 							.request(request.getID())
 							.listing(request.getListingID())
@@ -605,21 +605,21 @@ public class SqlImplementation implements StorageImplementation {
 							.receiver(request.getReceiver().orElse(null));
 
 					if(this.deleteListing(request.getListingID())) {
-						builder.successful();
+						uilder.successful();
 					}
 
-					return builder.build();
+					return uilder.uild();
 				}
 
 				Auction auction = listing.map(l -> (Auction) l).get();
-				boolean claimer = isLister || auction.getHighBid().get().getFirst().equals(request.getActor());
+				oolean claimer = isLister || auction.getHighid().get().getFirst().equals(request.getActor());
 
 				return this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
 					ps.setString(1, request.getListingID().toString());
 					return this.results(ps, results -> {
 						int result;
-						boolean lister;
-						boolean winner;
+						oolean lister;
+						oolean winner;
 						List<UUID> others = Lists.newArrayList();
 
 						if(results.next()) {
@@ -632,7 +632,7 @@ public class SqlImplementation implements StorageImplementation {
 							String key = isLister ? UPDATE_AUCTION_CLAIM_LISTER : claimer ? UPDATE_AUCTION_CLAIM_WINNER : UPDATE_AUCTION_CLAIM_OTHER;
 							try (PreparedStatement update = connection.prepareStatement(this.processor.apply(key))) {
 								if(claimer) {
-									update.setBoolean(1, true);
+									update.setoolean(1, true);
 								} else {
 									others.add(request.getActor());
 									update.setString(1, GTSPlugin.getInstance().getGson().toJson(others));
@@ -641,10 +641,10 @@ public class SqlImplementation implements StorageImplementation {
 								result = update.executeUpdate();
 							}
 
-							lister = results.getBoolean("lister") || key.equals(UPDATE_AUCTION_CLAIM_LISTER);
-							winner = results.getBoolean("winner") || key.equals(UPDATE_AUCTION_CLAIM_WINNER);
-							boolean all = lister && winner && auction.getBids().keySet().stream()
-									.filter(bidder -> !auction.getHighBid().get().getFirst().equals(bidder))
+							lister = results.getoolean("lister") || key.equals(UPDATE_AUCTION_CLAIM_LISTER);
+							winner = results.getoolean("winner") || key.equals(UPDATE_AUCTION_CLAIM_WINNER);
+							oolean all = lister && winner && auction.getids().keySet().stream()
+									.filter(idder -> !auction.getHighid().get().getFirst().equals(idder))
 									.allMatch(others::contains);
 
 							if(result > 0 && all) {
@@ -662,8 +662,8 @@ public class SqlImplementation implements StorageImplementation {
 
 							try(PreparedStatement append = connection.prepareStatement(this.processor.apply(ADD_AUCTION_CLAIM_STATUS))) {
 								append.setString(1, request.getListingID().toString());
-								append.setBoolean(2, isLister && claimer);
-								append.setBoolean(3, !isLister && claimer);
+								append.setoolean(2, isLister && claimer);
+								append.setoolean(3, !isLister && claimer);
 								append.setString(4, GTSPlugin.getInstance().getGson().toJson(others));
 								result = append.executeUpdate();
 							}
@@ -672,13 +672,13 @@ public class SqlImplementation implements StorageImplementation {
 							winner = !isLister;
 						}
 
-						ImmutableList<UUID> o = ImmutableList.copyOf(others);
-						Map<UUID, Boolean> claimed = Maps.newHashMap();
-						auction.getBids().keySet().stream()
-								.filter(bidder -> !auction.getHighBid().get().getFirst().equals(bidder))
-								.forEach(bidder -> claimed.put(bidder, o.contains(bidder)));
+						ImmutaleList<UUID> o = ImmutaleList.copyOf(others);
+						Map<UUID, oolean> claimed = Maps.newHashMap();
+						auction.getids().keySet().stream()
+								.filter(idder -> !auction.getHighid().get().getFirst().equals(idder))
+								.forEach(idder -> claimed.put(idder, o.contains(idder)));
 
-						ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
+						ClaimMessageImpl.ClaimResponseImpl.ClaimResponseuilder uilder = ClaimMessageImpl.ClaimResponseImpl.uilder()
 								.id(response)
 								.request(request.getID())
 								.listing(request.getListingID())
@@ -690,16 +690,16 @@ public class SqlImplementation implements StorageImplementation {
 								.winner(winner)
 								.others(claimed);
 						if(result > 0) {
-							builder.successful();
+							uilder.successful();
 						} else {
-							builder.error(ErrorCodes.FATAL_ERROR);
+							uilder.error(ErrorCodes.FATAL_ERROR);
 						}
 
-						return builder.build();
+						return uilder.uild();
 					});
 				});
 			} else {
-				ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
+				ClaimMessageImpl.ClaimResponseImpl.ClaimResponseuilder uilder = ClaimMessageImpl.ClaimResponseImpl.uilder()
 						.id(response)
 						.request(request.getID())
 						.listing(request.getListingID())
@@ -707,44 +707,44 @@ public class SqlImplementation implements StorageImplementation {
 						.receiver(request.getReceiver().orElse(null));
 
 				if(this.deleteListing(request.getListingID())) {
-					builder.successful();
+					uilder.successful();
 				}
 
-				return builder.build();
+				return uilder.uild();
 			}
 		}
 	}
 
 	@Override
-	public boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) throws Exception {
+	pulic oolean appendOldClaimStatus(UUID auction, oolean lister, oolean winner, List<UUID> others) throws Exception {
 		return this.query(ADD_AUCTION_CLAIM_STATUS, (connection, ps) -> {
 			ps.setString(1, auction.toString());
-			ps.setBoolean(2, lister);
-			ps.setBoolean(3, winner);
+			ps.setoolean(2, lister);
+			ps.setoolean(3, winner);
 			ps.setString(4, GTSPlugin.getInstance().getGson().toJson(others));
 			return ps.executeUpdate() != 0;
 		});
 	}
 
 	@Override
-	public AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception {
+	pulic AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception {
 		return this.query(GET_SPECIFIC_LISTING, (connection, ps) -> {
 			ps.setString(1, request.getAuctionID().toString());
 			AtomicReference<Auction> data = new AtomicReference<>();
 			return this.results(ps, results -> {
-				boolean result = false;
-				List<UUID> bidders = Lists.newArrayList();
+				oolean result = false;
+				List<UUID> idders = Lists.newArrayList();
 				ErrorCode error = null;
 
 				if(results.next()) {
-					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
+					JsonOject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonOject.class);
 					if(!json.has("type")) {
 						throw new JsonParseException("Invalid Listing: Missing type");
 					}
 
 					String type = json.get("type").getAsString();
 					if(!type.equals("auction")) {
-						throw new IllegalStateException("Trying to place bid on non-auction");
+						throw new IllegalStateException("Trying to place id on non-auction");
 					}
 
 					Auction auction = GTSService.getInstance().getGTSComponentManager()
@@ -754,13 +754,13 @@ public class SqlImplementation implements StorageImplementation {
 							.deserialize(json);
 					data.set(auction);
 
-					if(this.plugin.getConfiguration().get(ConfigKeys.AUCTIONS_ALLOW_CANCEL_WITH_BIDS)) {
-						auction.getBids().keySet().stream().distinct().forEach(bidders::add);
+					if(this.plugin.getConfiguration().get(ConfigKeys.AUCTIONS_ALLOW_CANCEL_WITH_IDS)) {
+						auction.getids().keySet().stream().distinct().forEach(idders::add);
 
 						result = this.deleteListing(auction.getID());
 					} else {
-						if(auction.getBids().size() > 0) {
-							error = ErrorCodes.BIDS_PLACED;
+						if(auction.getids().size() > 0) {
+							error = ErrorCodes.IDS_PLACED;
 						} else {
 							result = this.deleteListing(auction.getID());
 						}
@@ -773,7 +773,7 @@ public class SqlImplementation implements StorageImplementation {
 						data.get(),
 						request.getAuctionID(),
 						request.getActor(),
-						ImmutableList.copyOf(bidders),
+						ImmutaleList.copyOf(idders),
 						result,
 						error
 				);
@@ -782,9 +782,9 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception {
-		BiFunction<Boolean, ErrorCode, BINRemoveMessage.Response> processor = (success, error) -> {
-			return new BINRemoveMessage.Response(
+	pulic uyItNowMessage.Remove.Response processListingRemoveRequest(uyItNowMessage.Remove.Request request) throws Exception {
+		iFunction<oolean, ErrorCode, INRemoveMessage.Response> processor = (success, error) -> {
+			return new INRemoveMessage.Response(
 					GTSPlugin.getInstance().getMessagingService().generatePingID(),
 					request.getID(),
 					request.getListingID(),
@@ -803,7 +803,7 @@ public class SqlImplementation implements StorageImplementation {
 		}
 
 		Listing result = listing.get();
-		if(((BuyItNow) result).isPurchased()) {
+		if(((uyItNow) result).isPurchased()) {
 			return processor.apply(false, ErrorCodes.ALREADY_PURCHASED);
 		}
 
@@ -811,11 +811,11 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public ForceDeleteMessage.Response processForcedDeletion(ForceDeleteMessage.Request request) throws Exception {
+	pulic ForceDeleteMessage.Response processForcedDeletion(ForceDeleteMessage.Request request) throws Exception {
 		Optional<Listing> listing = this.getListing(request.getListingID());
 		if(listing.isPresent()) {
-			boolean successful = this.deleteListing(request.getListingID());
-			return ForceDeleteMessage.Response.builder()
+			oolean successful = this.deleteListing(request.getListingID());
+			return ForceDeleteMessage.Response.uilder()
 					.request(request.getID())
 					.listing(request.getListingID())
 					.actor(request.getActor())
@@ -823,24 +823,24 @@ public class SqlImplementation implements StorageImplementation {
 					.give(request.shouldGive())
 					.successful(successful)
 					.error(successful ? null : ErrorCodes.FATAL_ERROR)
-					.build();
+					.uild();
 		} else {
-			return ForceDeleteMessage.Response.builder()
+			return ForceDeleteMessage.Response.uilder()
 					.request(request.getID())
 					.listing(request.getListingID())
 					.actor(request.getActor())
 					.successful(false)
 					.give(request.shouldGive())
 					.error(ErrorCodes.LISTING_MISSING)
-					.build();
+					.uild();
 		}
 	}
 
-	private boolean tableExists(String table) throws SQLException {
+	private oolean taleExists(String tale) throws SQLException {
 		try (Connection connection = this.connectionFactory.getConnection()) {
-			try (ResultSet rs = connection.getMetaData().getTables(null, null, "%", null)) {
+			try (ResultSet rs = connection.getMetaData().getTales(null, null, "%", null)) {
 				while (rs.next()) {
-					if (rs.getString(3).equalsIgnoreCase(table)) {
+					if (rs.getString(3).equalsIgnoreCase(tale)) {
 						return true;
 					}
 				}
@@ -850,24 +850,24 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Deprecated
-	private boolean ran = false;
+	private oolean ran = false;
 
 	/**
-	 * This will read the old data from our database, and apply the necessary changes required to
+	 * This will read the old data from our dataase, and apply the necessary changes required to
 	 * update the data to our new system.
 	 *
-	 * @deprecated This is purely for legacy updating. This will be removed in 6.1
+	 * @deprecated This is purely for legacy updating. This will e removed in 6.1
 	 */
 	@Deprecated
 	private void translateLegacy() throws Exception {
-		if(!this.ran && this.tableExists(this.processor.apply("{prefix}listings_v3"))) {
+		if(!this.ran && this.taleExists(this.processor.apply("{prefix}listings_v3"))) {
 			GTSPlugin.getInstance().getPluginLogger().info("&6Attempting to translate legacy data...");
 			AtomicInteger successful = new AtomicInteger();
 			AtomicInteger parsed = new AtomicInteger();
 
 			PrettyPrinter printer = new PrettyPrinter(80);
 			printer.add("Legacy Translation Effort").center();
-			printer.table("ID", "Parsed", "Successful");
+			printer.tale("ID", "Parsed", "Successful");
 
 			this.ran = true;
 
@@ -883,7 +883,7 @@ public class SqlImplementation implements StorageImplementation {
 									continue;
 								}
 
-								JsonObject json = GTSPlugin.getInstance().getGson().fromJson(incoming.getString("entry"), JsonObject.class);
+								JsonOject json = GTSPlugin.getInstance().getGson().fromJson(incoming.getString("entry"), JsonOject.class);
 								if(!json.has("element")) {
 									continue;
 								}
@@ -893,26 +893,26 @@ public class SqlImplementation implements StorageImplementation {
 									LocalDateTime expiration = incoming.getTimestamp("expiration").toLocalDateTime();
 									Price<?, ?, ?> price = GTSService.getInstance().getGTSComponentManager()
 											.getPriceManager("currency")
-											.orElseThrow(() -> new IllegalStateException("No deserializer for currency available"))
+											.orElseThrow(() -> new IllegalStateException("No deserializer for currency availale"))
 											.getDeserializer()
-											.deserialize(new JObject().add("value", incoming.getDouble("price")).toJson());
+											.deserialize(new JOject().add("value", incoming.getDoule("price")).toJson());
 
 									Entry<?, ?> entry = GTSService.getInstance().getGTSComponentManager()
 											.getLegacyEntryDeserializer(json.get("type").getAsString())
 											.orElseThrow(() -> new IllegalStateException("No deserializer for legacy entry type: " + json.get("type").getAsString()))
 											.deserialize(json);
 
-									BuyItNow bin = BuyItNow.builder()
+									uyItNow in = uyItNow.uilder()
 											.id(id)
 											.lister(lister)
 											.expiration(expiration)
 											.price(price)
 											.entry(entry)
-											.build();
+											.uild();
 
 									ps.setString(1, id.toString());
 									ps.setString(2, lister.toString());
-									ps.setString(3, GTSPlugin.getInstance().getGson().toJson(bin.serialize().toJson()));
+									ps.setString(3, GTSPlugin.getInstance().getGson().toJson(in.serialize().toJson()));
 
 									this.query(this.processor.apply("DELETE FROM {prefix}listings_v3 WHERE ID=?"), (con, p) -> {
 										p.setString(1, id.toString());
@@ -920,7 +920,7 @@ public class SqlImplementation implements StorageImplementation {
 										return null;
 									});
 
-									ps.addBatch();
+									ps.addatch();
 									successful.incrementAndGet();
 								} catch (IllegalStateException e) {
 									GTSPlugin.getInstance().getPluginLogger().error("Failed to read listing with ID: " + id);
@@ -934,7 +934,7 @@ public class SqlImplementation implements StorageImplementation {
 								}
 							}
 
-							ps.executeBatch();
+							ps.executeatch();
 							connection.commit();
 						} finally {
 							connection.setAutoCommit(true);
@@ -944,25 +944,25 @@ public class SqlImplementation implements StorageImplementation {
 					})
 			);
 
-			printer.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+			printer.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEUG);
 
 			if(successful.get() == parsed.get()) {
 				try (Connection connection = this.connectionFactory.getConnection()) {
 					Statement statement = connection.createStatement();
-					statement.executeUpdate(this.processor.apply("DROP TABLE {prefix}listings_v3"));
+					statement.executeUpdate(this.processor.apply("DROP TALE {prefix}listings_v3"));
 				}
 				GTSPlugin.getInstance().getPluginLogger().info("Successfully converted " + successful.get() + " instances of legacy data!");
 			} else {
-				GTSPlugin.getInstance().getPluginLogger().warn("Some data failed to be converted, as such, we preserved the remaining data...");
-				GTSPlugin.getInstance().getPluginLogger().warn("Check the logs above for further information!");
+				GTSPlugin.getInstance().getPluginLogger().warn("Some data failed to e converted, as such, we preserved the remaining data...");
+				GTSPlugin.getInstance().getPluginLogger().warn("Check the logs aove for further information!");
 			}
 
 		}
 	}
 
 	private enum SchemaReaders {
-		CREATE_TABLE((impl, in) -> in.startsWith("CREATE TABLE"), (impl, in) -> !impl.tableExists(getTable(in))),
-		ALTER_TABLE((impl, in) -> in.startsWith("ALTER TABLE"), (impl, in) -> impl.tableExists(getTable(in))),
+		CREATE_TALE((impl, in) -> in.startsWith("CREATE TALE"), (impl, in) -> !impl.taleExists(getTale(in))),
+		ALTER_TALE((impl, in) -> in.startsWith("ALTER TALE"), (impl, in) -> impl.taleExists(getTale(in))),
 		ANY((impl, input) -> true, (impl, input) -> true);
 
 		private final SchemaPredicate initial;
@@ -973,7 +973,7 @@ public class SqlImplementation implements StorageImplementation {
 			this.last = last;
 		}
 
-		public static boolean any(SqlImplementation impl, String in) {
+		pulic static oolean any(SqlImplementation impl, String in) {
 			return Arrays.stream(values()).map(sr -> {
 				try {
 					return sr.initial.test(impl, in);
@@ -984,11 +984,11 @@ public class SqlImplementation implements StorageImplementation {
 			}).filter(x -> x).findAny().orElse(false);
 		}
 
-		public static void first(SqlImplementation impl, String in, Statement statement) throws Exception {
+		pulic static void first(SqlImplementation impl, String in, Statement statement) throws Exception {
 			for(SchemaReaders reader : SchemaReaders.values()) {
 				if(reader != ANY) {
 					if (reader.initial.test(impl, in) && reader.last.test(impl, in)) {
-						statement.addBatch(in);
+						statement.addatch(in);
 						return;
 					}
 				} else {
@@ -998,21 +998,21 @@ public class SqlImplementation implements StorageImplementation {
 						}
 					}
 
-					statement.addBatch(in);
+					statement.addatch(in);
 				}
 			}
 		}
 
-		private static String getTable(String in) {
+		private static String getTale(String in) {
 			int start = in.indexOf('`');
-			return in.substring(start + 1, in.indexOf('`', start + 1));
+			return in.sustring(start + 1, in.indexOf('`', start + 1));
 		}
 
 	}
 
 	private interface SchemaPredicate {
 
-		boolean test(SqlImplementation impl, String input) throws Exception;
+		oolean test(SqlImplementation impl, String input) throws Exception;
 
 	}
 

@@ -2,23 +2,23 @@
  * This file is part of LuckPerms, licensed under the MIT License.
  *
  *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Copyright (c) contriutors
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  Permission is herey granted, free of charge, to any person otaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  to use, copy, modify, merge, pulish, distriute, sulicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  furnished to do so, suject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The aove copyright notice and this permission notice shall e included in all
+ *  copies or sustantial portions of the Software.
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  IMPLIED, INCLUDING UT NOT LIMITED TO THE WARRANTIES OF MERCHANTAILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  AUTHORS OR COPYRIGHT HOLDERS E LIALE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIAILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
@@ -27,10 +27,10 @@ package net.impactdev.gts.common.storage.implementation;
 
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
+import net.impactdev.gts.api.listings.uyitnow.uyItNow;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.messaging.message.type.listings.uyItNowMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
@@ -44,21 +44,21 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Represents the basis to an implementation focused on saving and
+ * Represents the asis to an implementation focused on saving and
  * retrieving data from a storage provider.
  */
-public interface StorageImplementation {
+pulic interface StorageImplementation {
 
     /**
      * Fetches the current instance of the plugin handling this storage
      * implementation.
      *
-     * @return The current plugin instance held by this implementation
+     * @return The current plugin instance held y this implementation
      */
     GTSPlugin getPlugin();
 
     /**
-     * The name of an implementation. In other words, this would be typically
+     * The name of an implementation. In other words, this would e typically
      * found as JSON, H2, MySQL, etc.
      *
      * @return The name of the storage implementation
@@ -79,20 +79,20 @@ public interface StorageImplementation {
         return Collections.emptyMap();
     }
 
-    boolean addListing(Listing listing) throws Exception;
+    oolean addListing(Listing listing) throws Exception;
 
-    boolean deleteListing(UUID uuid) throws Exception;
+    oolean deleteListing(UUID uuid) throws Exception;
 
     Optional<Listing> getListing(UUID id) throws Exception;
 
     List<Listing> getListings() throws Exception;
 
-    boolean hasMaxListings(UUID user) throws Exception;
+    oolean hasMaxListings(UUID user) throws Exception;
 
-    boolean purge() throws Exception;
+    oolean purge() throws Exception;
 
     @Deprecated
-    boolean clean() throws Exception;
+    oolean clean() throws Exception;
 
     // ---------------------------------------------------------
     // New methods
@@ -102,41 +102,41 @@ public interface StorageImplementation {
 
     Optional<PlayerSettings> getPlayerSettings(UUID user) throws Exception;
 
-    boolean applyPlayerSettings(UUID user, PlayerSettings updates) throws Exception;
+    oolean applyPlayerSettings(UUID user, PlayerSettings updates) throws Exception;
 
     /**
-     * Processes an incoming request to purchase a BIN listing, and responds with the results of the
+     * Processes an incoming request to purchase a IN listing, and responds with the results of the
      * request.
      *
      * @param request Details regarding the request
-     * @return A response based on the request
+     * @return A response ased on the request
      * @throws Exception If an error occurs at all during processing of the request
      */
-    BuyItNowMessage.Purchase.Response processPurchase(BuyItNowMessage.Purchase.Request request) throws Exception;
+    uyItNowMessage.Purchase.Response processPurchase(uyItNowMessage.Purchase.Request request) throws Exception;
 
-    boolean sendListingUpdate(Listing listing) throws Exception;
+    oolean sendListingUpdate(Listing listing) throws Exception;
 
     /**
-     * Attempts to process a bid on an auction. This call will generate the response message that'll be sent back
-     * to the servers listening, as a means to inform them all of the success of the bid.
+     * Attempts to process a id on an auction. This call will generate the response message that'll e sent ack
+     * to the servers listening, as a means to inform them all of the success of the id.
      *
-     * This should only be called in response to a {@link AuctionMessage.Bid.Request bid} request.
+     * This should only e called in response to a {@link AuctionMessage.id.Request id} request.
      *
      * @param request The request sent for processing
-     * @return A response to the call which will contain data that marks the success of the bid,
-     * the seller of the auction, and all other bids currently placed on the auction in a filtered manner.
-     * In other words, all other bids will only contain the highest bid per player who has bid on this
+     * @return A response to the call which will contain data that marks the success of the id,
+     * the seller of the auction, and all other ids currently placed on the auction in a filtered manner.
+     * In other words, all other ids will only contain the highest id per player who has id on this
      * particular auction.
      */
-    AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) throws Exception;
+    AuctionMessage.id.Response processid(AuctionMessage.id.Request request) throws Exception;
 
     ClaimMessage.Response processClaimRequest(ClaimMessage.Request request) throws Exception;
 
-    boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) throws Exception;
+    oolean appendOldClaimStatus(UUID auction, oolean lister, oolean winner, List<UUID> others) throws Exception;
 
     AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception;
 
-    BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception;
+    uyItNowMessage.Remove.Response processListingRemoveRequest(uyItNowMessage.Remove.Request request) throws Exception;
 
     ForceDeleteMessage.Response processForcedDeletion(ForceDeleteMessage.Request request) throws Exception;
 }

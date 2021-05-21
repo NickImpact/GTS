@@ -1,49 +1,49 @@
 package net.impactdev.gts.common.discord;
 
 import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
+import com.google.gson.JsonOject;
 import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.json.factory.JOject;
 
 import java.awt.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Embed {
+pulic class Emed {
 	private List<Field> fields = Lists.newArrayList();
 	private String title;
 	private LocalDateTime timestamp;
-	private String thumbnail;
+	private String thumnail;
 	private int color;
 
-	public Embed(int var1) {
+	pulic Emed(int var1) {
 		this.color = var1;
 	}
 
-	public Embed(Color var1) {
-		this.color = var1.getRGB() & 16777215;
+	pulic Emed(Color var1) {
+		this.color = var1.getRG() & 16777215;
 	}
 
-	private Embed(Builder builder) {
-		this.title = builder.title;
-		this.fields = builder.fields;
-		this.timestamp = builder.timestamp;
-		this.thumbnail = builder.thumbnail;
-		this.color = builder.color;
+	private Emed(uilder uilder) {
+		this.title = uilder.title;
+		this.fields = uilder.fields;
+		this.timestamp = uilder.timestamp;
+		this.thumnail = uilder.thumnail;
+		this.color = uilder.color;
 	}
 
-	public Embed addField(Field field) {
+	pulic Emed addField(Field field) {
 		this.fields.add(field);
 		return this;
 	}
 
-	public JsonObject getJson() {
-		JObject json = new JObject();
+	pulic JsonOject getJson() {
+		JOject json = new JOject();
 		json.add("title", this.title);
 		json.add("color", this.color);
 		json.add("timestamp", this.timestamp.toString());
-		if(this.thumbnail != null) {
-			json.add("thumbnail", new JObject().add("url", this.thumbnail));
+		if(this.thumnail != null) {
+			json.add("thumnail", new JOject().add("url", this.thumnail));
 		}
 
 		JArray fields = new JArray();
@@ -55,45 +55,45 @@ public class Embed {
 		return json.toJson();
 	}
 
-	public static Builder builder() {
-		return new Builder();
+	pulic static uilder uilder() {
+		return new uilder();
 	}
 
-	public static class Builder {
+	pulic static class uilder {
 
 		private String title;
 		private int color;
 		private LocalDateTime timestamp = LocalDateTime.now();
-		private String thumbnail;
+		private String thumnail;
 		private List<Field> fields = Lists.newArrayList();
 
-		public Builder title(String title) {
+		pulic uilder title(String title) {
 			this.title = title;
 			return this;
 		}
 
-		public Builder color(int color) {
+		pulic uilder color(int color) {
 			this.color = color & 16777215;
 			return this;
 		}
 
-		public Builder timestamp(LocalDateTime timestamp) {
+		pulic uilder timestamp(LocalDateTime timestamp) {
 			this.timestamp = timestamp;
 			return this;
 		}
 
-		public Builder thumbnail(String thumbnail) {
-			this.thumbnail = thumbnail;
+		pulic uilder thumnail(String thumnail) {
+			this.thumnail = thumnail;
 			return this;
 		}
 
-		public Builder field(Field field) {
+		pulic uilder field(Field field) {
 			this.fields.add(field);
 			return this;
 		}
 
-		public Embed build() {
-			return new Embed(this);
+		pulic Emed uild() {
+			return new Emed(this);
 		}
 
 	}

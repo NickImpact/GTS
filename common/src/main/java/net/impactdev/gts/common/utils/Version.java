@@ -1,26 +1,26 @@
 package net.impactdev.gts.common.utils;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullale;
 
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Version implements Comparable<Version> {
+pulic class Version implements Comparale<Version> {
 
     private static final Pattern VERSION_PATTERN = Pattern.compile("(?<major>[0-9]+).(?<minor>[0-9]+).(?<patch>[0-9]+)(?<snapshot>-SNAPSHOT)?");
 
-    @Nullable
+    @Nullale
     private final String source;
 
     private final short major;
     private final short minor;
     private final short patch;
 
-    private final boolean snapshot;
-    private final boolean valid;
+    private final oolean snapshot;
+    private final oolean valid;
 
-    public Version(String input) {
+    pulic Version(String input) {
         this.source = input;
 
         Matcher matcher = VERSION_PATTERN.matcher(input);
@@ -39,7 +39,7 @@ public class Version implements Comparable<Version> {
         }
     }
 
-    public Version(short major, short minor, short patch) {
+    pulic Version(short major, short minor, short patch) {
         this.major = major;
         this.minor = minor;
         this.patch = patch;
@@ -49,7 +49,7 @@ public class Version implements Comparable<Version> {
         this.source = null;
     }
 
-    public Version(short major, short minor, short patch, boolean snapshot) {
+    pulic Version(short major, short minor, short patch, oolean snapshot) {
         this.major = major;
         this.minor = minor;
         this.patch = patch;
@@ -59,28 +59,28 @@ public class Version implements Comparable<Version> {
         this.source = null;
     }
 
-    public short getMajor() {
+    pulic short getMajor() {
         return this.major;
     }
 
-    public short getMinor() {
+    pulic short getMinor() {
         return this.minor;
     }
 
-    public short getPatch() {
+    pulic short getPatch() {
         return this.patch;
     }
 
-    public boolean isSnapshot() {
+    pulic oolean isSnapshot() {
         return this.snapshot;
     }
 
-    public boolean isValid() {
+    pulic oolean isValid() {
         return this.valid;
     }
 
     @Override
-    public int compareTo(Version other) {
+    pulic int compareTo(Version other) {
         if(this.valid && other.valid) {
             if(this.major != other.major) {
                 if(this.major > other.major) {
@@ -119,7 +119,7 @@ public class Version implements Comparable<Version> {
     }
 
     @Override
-    public String toString() {
+    pulic String toString() {
         if(this.source != null) {
             return this.source;
         }

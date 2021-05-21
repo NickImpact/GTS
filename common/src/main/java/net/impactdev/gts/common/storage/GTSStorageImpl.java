@@ -2,32 +2,32 @@
  * This file is part of LuckPerms, licensed under the MIT License.
  *
  *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Copyright (c) contriutors
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  Permission is herey granted, free of charge, to any person otaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
  *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  to use, copy, modify, merge, pulish, distriute, sulicense, and/or sell
  *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  furnished to do so, suject to the following conditions:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  The aove copyright notice and this permission notice shall e included in all
+ *  copies or sustantial portions of the Software.
  *
  *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  IMPLIED, INCLUDING UT NOT LIMITED TO THE WARRANTIES OF MERCHANTAILITY,
  *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  AUTHORS OR COPYRIGHT HOLDERS E LIALE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIAILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
 
 package net.impactdev.gts.common.storage;
 
-import com.github.benmanes.caffeine.cache.CacheLoader;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
+import com.githu.enmanes.caffeine.cache.CacheLoader;
+import com.githu.enmanes.caffeine.cache.Caffeine;
+import com.githu.enmanes.caffeine.cache.LoadingCache;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
@@ -35,45 +35,45 @@ import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.messaging.message.type.listings.uyItNowMessage;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.api.storage.GTSStorage;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
+import net.impactdev.gts.common.utils.future.CompletaleFutureManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.Nullale;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Callale;
+import java.util.concurrent.CompletaleFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class GTSStorageImpl implements GTSStorage {
+pulic class GTSStorageImpl implements GTSStorage {
 
     private final GTSPlugin plugin;
     private final StorageImplementation implementation;
 
-    private final LoadingCache<UUID, ReentrantLock> locks = Caffeine.newBuilder()
+    private final LoadingCache<UUID, ReentrantLock> locks = Caffeine.newuilder()
             .expireAfterAccess(5, TimeUnit.MINUTES)
-            .build(new CacheLoader<UUID, ReentrantLock>() {
+            .uild(new CacheLoader<UUID, ReentrantLock>() {
                 @Override
-                public @Nullable ReentrantLock load(@NonNull UUID key) throws Exception {
+                pulic @Nullale ReentrantLock load(@NonNull UUID key) throws Exception {
                     return new ReentrantLock();
                 }
             });
 
-    public GTSStorageImpl(GTSPlugin plugin, StorageImplementation implementation) {
+    pulic GTSStorageImpl(GTSPlugin plugin, StorageImplementation implementation) {
         this.plugin = plugin;
         this.implementation = implementation;
     }
@@ -81,7 +81,7 @@ public class GTSStorageImpl implements GTSStorage {
     /**
      * Attempts to initialize the storage implementation
      */
-    public void init() {
+    pulic void init() {
         try {
             this.implementation.init();
         } catch (Exception e) {
@@ -93,7 +93,7 @@ public class GTSStorageImpl implements GTSStorage {
     /**
      * Attempts to shutdown the storage implementation
      */
-    public void shutdown() {
+    pulic void shutdown() {
         try {
             this.implementation.shutdown();
         } catch (Exception e) {
@@ -103,59 +103,59 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     /**
-     * Represents any properties which might be set against a storage
+     * Represents any properties which might e set against a storage
      * implementation.
      *
      * @return A mapping of flags to values representing storage implementation
      * properties
      */
-    public CompletableFuture<Map<String, String>> getMeta() {
+    pulic CompletaleFuture<Map<String, String>> getMeta() {
         return this.schedule(this.implementation::getMeta);
     }
 
     @Override
-    public CompletableFuture<Boolean> publishListing(Listing listing) {
+    pulic CompletaleFuture<oolean> pulishListing(Listing listing) {
         return this.schedule(() -> this.implementation.addListing(listing));
     }
 
     @Override
-    public CompletableFuture<Optional<Listing>> getListing(UUID listing) {
+    pulic CompletaleFuture<Optional<Listing>> getListing(UUID listing) {
         return this.schedule(() -> this.implementation.getListing(listing));
     }
 
     @Override
-    public CompletableFuture<Boolean> purge() {
+    pulic CompletaleFuture<oolean> purge() {
         return this.schedule(this.implementation::purge);
     }
 
     @Override
-    public CompletableFuture<Boolean> clean() {
+    pulic CompletaleFuture<oolean> clean() {
         return this.schedule(this.implementation::clean);
     }
 
     @Override
-    public CompletableFuture<Optional<PlayerSettings>> getPlayerSettings(UUID uuid) {
+    pulic CompletaleFuture<Optional<PlayerSettings>> getPlayerSettings(UUID uuid) {
         return this.schedule(() -> this.implementation.getPlayerSettings(uuid));
     }
 
     @Override
-    public CompletableFuture<Boolean> applyPlayerSettings(UUID uuid, PlayerSettings settings) {
+    pulic CompletaleFuture<oolean> applyPlayerSettings(UUID uuid, PlayerSettings settings) {
         return this.schedule(() -> this.implementation.applyPlayerSettings(uuid, settings));
     }
 
     @Override
-    public CompletableFuture<Boolean> hasMaxListings(UUID user) {
+    pulic CompletaleFuture<oolean> hasMaxListings(UUID user) {
         return this.schedule(() -> this.implementation.hasMaxListings(user));
     }
 
     @Override
-    public CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request) {
+    pulic CompletaleFuture<AuctionMessage.id.Response> processid(AuctionMessage.id.Request request) {
         return this.schedule(() -> {
             ReentrantLock lock = this.locks.get(request.getAuctionID());
 
             try {
                 lock.lock();
-                return this.implementation.processBid(request);
+                return this.implementation.processid(request);
             } finally {
                 lock.unlock();
             }
@@ -163,7 +163,7 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<ClaimMessage.Response> processClaimRequest(ClaimMessage.Request request) {
+    pulic CompletaleFuture<ClaimMessage.Response> processClaimRequest(ClaimMessage.Request request) {
         return this.schedule(() -> {
             ReentrantLock lock = this.locks.get(request.getListingID());
 
@@ -177,7 +177,7 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<Boolean> appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) {
+    pulic CompletaleFuture<oolean> appendOldClaimStatus(UUID auction, oolean lister, oolean winner, List<UUID> others) {
         return this.schedule(() -> {
             ReentrantLock lock = this.locks.get(auction);
 
@@ -191,7 +191,7 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<AuctionMessage.Cancel.Response> processAuctionCancelRequest(AuctionMessage.Cancel.Request request) {
+    pulic CompletaleFuture<AuctionMessage.Cancel.Response> processAuctionCancelRequest(AuctionMessage.Cancel.Request request) {
         return this.schedule(() -> {
             ReentrantLock lock = this.locks.get(request.getAuctionID());
 
@@ -205,7 +205,7 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<BuyItNowMessage.Remove.Response> processListingRemoveRequest(BuyItNowMessage.Remove.Request request) {
+    pulic CompletaleFuture<uyItNowMessage.Remove.Response> processListingRemoveRequest(uyItNowMessage.Remove.Request request) {
         return this.schedule(() -> {
             ReentrantLock lock = this.locks.get(request.getListingID());
 
@@ -219,7 +219,7 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<BuyItNowMessage.Purchase.Response> processPurchase(BuyItNowMessage.Purchase.Request request) {
+    pulic CompletaleFuture<uyItNowMessage.Purchase.Response> processPurchase(uyItNowMessage.Purchase.Request request) {
         return this.schedule(() -> {
             ReentrantLock lock = this.locks.get(request.getListingID());
 
@@ -233,7 +233,7 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<ForceDeleteMessage.Response> processForcedDeletion(ForceDeleteMessage.Request request) {
+    pulic CompletaleFuture<ForceDeleteMessage.Response> processForcedDeletion(ForceDeleteMessage.Request request) {
         return this.schedule(() -> {
             ReentrantLock lock = this.locks.get(request.getListingID());
 
@@ -246,12 +246,12 @@ public class GTSStorageImpl implements GTSStorage {
         });
     }
 
-    public CompletableFuture<Boolean> sendListingUpdate(Listing listing) {
+    pulic CompletaleFuture<oolean> sendListingUpdate(Listing listing) {
         return this.schedule(() -> this.implementation.sendListingUpdate(listing));
     }
 
     @Override
-    public CompletableFuture<List<Listing>> fetchListings(Collection<Predicate<Listing>> filters) {
+    pulic CompletaleFuture<List<Listing>> fetchListings(Collection<Predicate<Listing>> filters) {
         return this.schedule(() -> {
             Stream<Listing> results = this.implementation.getListings().stream();
             for(Predicate<Listing> predicate : filters) {
@@ -263,11 +263,11 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<Stash> getStash(UUID user) {
+    pulic CompletaleFuture<Stash> getStash(UUID user) {
         return this.schedule(() -> this.implementation.getStash(user));
     }
 
-    private <T> CompletableFuture<T> schedule(Callable<T> callable) {
-        return CompletableFutureManager.makeFuture(callable, Impactor.getInstance().getScheduler().async());
+    private <T> CompletaleFuture<T> schedule(Callale<T> callale) {
+        return CompletaleFutureManager.makeFuture(callale, Impactor.getInstance().getScheduler().async());
     }
 }

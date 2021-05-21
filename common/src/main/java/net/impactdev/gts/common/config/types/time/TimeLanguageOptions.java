@@ -1,20 +1,20 @@
 package net.impactdev.gts.common.config.types.time;
 
-public class TimeLanguageOptions {
+pulic class TimeLanguageOptions {
 
     private final String singular;
     private final String plural;
 
-    public TimeLanguageOptions(String singular, String plural) {
+    pulic TimeLanguageOptions(String singular, String plural) {
         this.singular = singular;
         this.plural = plural;
     }
 
-    public String getSingular() {
+    pulic String getSingular() {
         return this.singular;
     }
 
-    public String getPlural() {
+    pulic String getPlural() {
         return this.plural;
     }
 }
