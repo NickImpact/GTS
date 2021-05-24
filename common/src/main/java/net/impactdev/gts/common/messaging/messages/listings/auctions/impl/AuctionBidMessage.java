@@ -288,7 +288,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 		}
 
 		@Override
-		public Boolean wasSniped() {
+		public boolean wasSniped() {
 			return this.sniped;
 		}
 

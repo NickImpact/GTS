@@ -82,7 +82,7 @@ public interface AuctionMessage extends OutgoingMessage {
 			 */
 			@NonNull TreeMultimap<UUID, Auction.Bid> getAllOtherBids();
 
-			Boolean wasSniped();
+			boolean wasSniped();
 
 		}
 	}
