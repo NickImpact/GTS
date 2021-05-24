@@ -69,6 +69,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -527,6 +528,7 @@ public class SqlImplementation implements StorageImplementation {
 
 				boolean fatal = false;
 				TriState successful = TriState.FALSE; // FALSE = Missing Listing ID
+				boolean sniped = false;
 				TreeMultimap<UUID, Auction.Bid> bids = TreeMultimap.create(
 						Comparator.naturalOrder(),
 						Collections.reverseOrder(Comparator.comparing(Auction.Bid::getAmount))
@@ -551,9 +553,19 @@ public class SqlImplementation implements StorageImplementation {
 
 					successful = auction.bid(request.getActor(), request.getAmountBid()) ? TriState.TRUE : TriState.UNDEFINED;
 					bids = auction.getBids();
+					boolean snipingProtection =  GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_SNIPING_BIDS_ENABLED);
+					long snipingTime = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_MINIMUM_SNIPING_TIME).getTime();
+					long setTime = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_SET_TIME).getTime();
+					long timeDifference = ChronoUnit.SECONDS.between(LocalDateTime.now(), auction.getExpiration());
+					if (snipingTime >= timeDifference) {
+						if (snipingProtection) {
+							sniped = true;
+						}
+					}
 					if(!this.sendListingUpdate(auction)) {
 						successful = TriState.FALSE;
 					}
+
 				}
 
 				response = new AuctionBidMessage.Response(
@@ -563,6 +575,7 @@ public class SqlImplementation implements StorageImplementation {
 						request.getActor(),
 						request.getAmountBid(),
 						successful.asBoolean(),
+						sniped,
 						UUID.fromString(results.getString("lister")),
 						bids,
 						successful == TriState.UNDEFINED ? ErrorCodes.OUTBID : successful == TriState.FALSE ?

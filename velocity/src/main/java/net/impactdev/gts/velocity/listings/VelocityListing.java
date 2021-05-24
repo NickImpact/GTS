@@ -14,7 +14,7 @@ public abstract class VelocityListing implements Listing {
     private final UUID lister;
     private final JsonStoredEntry entry;
     private final LocalDateTime published;
-    private final LocalDateTime expiration;
+    private LocalDateTime expiration;
 
     public VelocityListing(UUID id, UUID lister, JsonStoredEntry entry, LocalDateTime expiration) {
         this(id, lister, entry, LocalDateTime.now(), expiration);
@@ -51,6 +51,11 @@ public abstract class VelocityListing implements Listing {
     @Override
     public LocalDateTime getExpiration() {
         return this.expiration;
+    }
+
+    @Override
+    public void setExpiration(LocalDateTime expiration) {
+        this.expiration = expiration;
     }
 
     @Override

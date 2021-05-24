@@ -226,6 +226,7 @@ public class GTSMessagingService implements InternalMessagingService {
                     actor,
                     bid,
                     false,
+                    false,
                     Listing.SERVER_ID,
                     TreeMultimap.create(),
                     error

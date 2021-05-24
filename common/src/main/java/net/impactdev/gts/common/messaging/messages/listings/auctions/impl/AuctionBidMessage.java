@@ -148,6 +148,9 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 			boolean successful = Optional.ofNullable(raw.get("successful"))
 					.map(JsonElement::getAsBoolean)
 					.orElseThrow(() -> new IllegalStateException("Failed to locate success parameter"));
+			boolean sniped = Optional.ofNullable(raw.get("sniped"))
+					.map(JsonElement::getAsBoolean)
+					.orElseThrow(() -> new IllegalStateException("Failed to locate sniped parameter"));
 			UUID seller = Optional.ofNullable(raw.get("seller"))
 					.map(e -> UUID.fromString(e.getAsString()))
 					.orElseThrow(() -> new IllegalStateException("Failed to locate seller"));
@@ -181,7 +184,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 					.map(x -> ErrorCodes.get(x.getAsInt()))
 					.orElse(null);
 
-			return new AuctionBidMessage.Response(id, request, listing, actor, bid, successful, seller, bids, error);
+			return new AuctionBidMessage.Response(id, request, listing, actor, bid, successful, sniped, seller, bids, error);
 		}
 
 		/** The ID of the request message generating this response */
@@ -189,6 +192,9 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 
 		/** Whether the transaction was successfully placed */
 		private final boolean successful;
+
+		/** Whether the Bid was sniped or not */
+		private final boolean sniped;
 
 		/** Specifies the seller of the auction */
 		private final UUID seller;
@@ -214,7 +220,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 		 * @param seller     The ID of the user who created the auction
 		 * @param bids       All other bids placed, filtered to contain highest bids per user, as a means of communication
 		 */
-		public Response(UUID id, UUID request, UUID listing, UUID actor, double bid, boolean successful, UUID seller, TreeMultimap<UUID, Auction.Bid> bids, ErrorCode error) {
+		public Response(UUID id, UUID request, UUID listing, UUID actor, double bid, boolean successful, boolean sniped, UUID seller, TreeMultimap<UUID, Auction.Bid> bids, ErrorCode error) {
 			super(id, listing, actor, bid);
 
 			Preconditions.checkNotNull(request, "Request message ID cannot be null");
@@ -227,6 +233,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 			this.seller = seller;
 			this.bids = bids;
 			this.error = error;
+			this.sniped = sniped;
 		}
 
 		@Override
@@ -240,6 +247,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 							.add("actor", this.getActor().toString())
 							.add("bid", this.getAmountBid())
 							.add("successful", this.wasSuccessful())
+							.add("sniped", this.wasSniped())
 							.add("seller", this.getSeller().toString())
 							.consume(o -> {
 								JObject users = new JObject();
@@ -277,6 +285,11 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 		@Override
 		public @NonNull TreeMultimap<UUID, Auction.Bid> getAllOtherBids() {
 			return this.bids;
+		}
+
+		@Override
+		public Boolean wasSniped() {
+			return this.sniped;
 		}
 
 		@Override

@@ -170,7 +170,21 @@ public class ConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<Boolean> AUCTIONS_ALLOW_CANCEL_WITH_BIDS = booleanKey("auctions.allow-cancel-with-bids", false);
 	public static final ConfigKey<Boolean> AUCTIONS_ENABLED = booleanKey("auctions.enabled", true);
 	public static final ConfigKey<AtLeastOne> BINS_ENABLED = customKey(c -> new AtLeastOne(AUCTIONS_ENABLED, c.getBoolean("buyitnow.enabled", true)));
-
+	public static final ConfigKey<Boolean> AUCTIONS_SNIPING_BIDS_ENABLED = booleanKey("auctions.bid-sniping.enabled", false);
+	public static final ConfigKey<Time> AUCTIONS_MINIMUM_SNIPING_TIME = customKey(adapter -> {
+		try {
+			return new Time(Long.parseLong(adapter.getString("auctions.bid-sniping.minimum-time", "30")));
+		} catch (NumberFormatException e) {
+			return new Time(adapter.getString("auctions.bid-sniping.minimum-time", "30s"));
+		}
+	});
+	public static final ConfigKey<Time> AUCTIONS_SET_TIME = customKey(adapter -> {
+		try {
+			return new Time(Long.parseLong(adapter.getString("auctions.bid-sniping.set-time", "60")));
+		} catch (NumberFormatException e) {
+			return new Time(adapter.getString("auctions.bid-sniping.listing-set-time", "1m"));
+		}
+	});
 	public static final ConfigKey<Boolean> SHOULD_SHOW_USER_PREFIX = booleanKey("should-show-user-prefix", true);
 
 	private static final Map<String, ConfigKey<?>> KEYS;
