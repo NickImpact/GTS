@@ -24,6 +24,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.InventoryTransformation;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
@@ -120,13 +121,16 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 		Optional<Player> player = Sponge.getServer().getPlayer(receiver);
 		if(player.isPresent()) {
 			MainPlayerInventory inventory = player.get().getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
-			return inventory.transform(InventoryTransformation.of(
+			Inventory target = inventory.transform(InventoryTransformation.of(
 					QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
 					QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class))
-				)
-				.offer(this.getOrCreateElement().createStack())
-				.getType()
-				.equals(InventoryTransactionResult.Type.SUCCESS);
+			);
+
+			if(target.canFit(this.getOrCreateElement().createStack())) {
+				return target.offer(this.getOrCreateElement().createStack())
+						.getType()
+						.equals(InventoryTransactionResult.Type.SUCCESS);
+			}
 		}
 
 		return false;

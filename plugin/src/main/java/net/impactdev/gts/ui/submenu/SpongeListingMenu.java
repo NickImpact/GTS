@@ -1,8 +1,11 @@
 package net.impactdev.gts.ui.submenu;
 
+import co.aikar.timings.Timing;
+import co.aikar.timings.Timings;
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.makeup.Display;
@@ -66,6 +69,11 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private static final AuctionsOnly AUCTIONS_ONLY = new AuctionsOnly();
 
 	private static final MessageService<Text> PARSER = Utilities.PARSER;
+
+	private static final Timing tracker = Timings.of(
+			GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer(),
+			"Listing Menu Updates"
+	);
 
 	private Task runner;
 
@@ -507,8 +515,10 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private Task schedule() {
 		return Sponge.getScheduler().createTaskBuilder()
 				.execute(() -> {
-					if(Sponge.getServer().getTicksPerSecond() >= 18) {
-						this.apply();
+					try(final Timing dummy = tracker.startTiming()) {
+						if (Sponge.getServer().getTicksPerSecond() >= 18) {
+							this.apply();
+						}
 					}
 				})
 				.interval(1, TimeUnit.SECONDS)

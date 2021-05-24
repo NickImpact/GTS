@@ -879,12 +879,7 @@ public class SqlImplementation implements StorageImplementation {
 			AtomicInteger successful = new AtomicInteger();
 			AtomicInteger parsed = new AtomicInteger();
 
-			PrettyPrinter printer = new PrettyPrinter(80);
-			printer.add("Legacy Translation Effort").center();
-			printer.table("ID", "Parsed", "Successful");
-
 			this.ran = true;
-
 			this.query(
 					this.processor.apply("SELECT * from {prefix}listings_v3"),
 					(connection, query) -> this.results(query, incoming -> {
@@ -944,7 +939,6 @@ public class SqlImplementation implements StorageImplementation {
 									ExceptionWriter.write(e);
 								} finally {
 									parsed.incrementAndGet();
-									printer.tr(id, parsed.get(), successful.get());
 								}
 							}
 
@@ -957,8 +951,6 @@ public class SqlImplementation implements StorageImplementation {
 						return null;
 					})
 			);
-
-			printer.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
 
 			if(successful.get() == parsed.get()) {
 				try (Connection connection = this.connectionFactory.getConnection()) {
