@@ -559,6 +559,7 @@ public class SqlImplementation implements StorageImplementation {
 					long timeDifference = ChronoUnit.SECONDS.between(LocalDateTime.now(), auction.getExpiration());
 					if (snipingTime >= timeDifference) {
 						if (snipingProtection) {
+							auction.setExpiration(LocalDateTime.now().plus(setTime, ChronoUnit.SECONDS));
 							sniped = true;
 						}
 					}
