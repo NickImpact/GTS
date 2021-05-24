@@ -75,6 +75,11 @@ public interface Listing extends Storable {
 	LocalDateTime getExpiration();
 
 	/**
+	 * Sets the new expiration. Make sure to update the listing after using this.
+	 */
+	void setExpiration(LocalDateTime expiration);
+
+	/**
 	 * Attempts to verify whether or not a listing has expired. If a listing has no expiration, this call will
 	 * always be false. If an expiration does exist, this call will verify its validity based on the marked
 	 * expiration time with the current time at the time of the call.

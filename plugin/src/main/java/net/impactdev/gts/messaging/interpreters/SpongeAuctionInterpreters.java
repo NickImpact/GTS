@@ -3,9 +3,11 @@ package net.impactdev.gts.messaging.interpreters;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.GTSService;
+import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
 import net.impactdev.gts.api.player.PlayerSettingsManager;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
@@ -13,6 +15,7 @@ import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.Auctio
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.services.text.MessageService;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.event.cause.Cause;
@@ -64,7 +67,6 @@ public class SpongeAuctionInterpreters implements Interpreter {
         consumer.registerInternalConsumer(
                 AuctionBidMessage.Response.class, response -> {
                     consumer.processRequest(response.getRequestID(), response);
-
                     if(response.wasSuccessful()) {
                         GTSPlugin.getInstance().getStorage().getListing(response.getAuctionID()).thenAccept(listing -> {
                             PlayerSettingsManager manager = GTSService.getInstance().getPlayerSettingsManager();
@@ -75,9 +77,9 @@ public class SpongeAuctionInterpreters implements Interpreter {
                                             manager.retrieve(user).thenAccept(settings -> {
                                                 if (settings.getOutbidListenState()) {
                                                     double difference = response.getAmountBid() - bid.getAmount();
-                                                    player.sendMessages(service.parse(
-                                                            Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_OUTBID),
-                                                            Lists.newArrayList(() -> info, response::getActor, () -> difference)
+                                                    ConfigKey<String> key = response.wasSniped() ? MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_OUTBIDSNIPED : MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_OUTBID;
+                                                    player.sendMessages(service.parse(Utilities.readMessageConfigOption(key),
+                                                            Lists.newArrayList(() -> info, response::getActor, () -> difference, () -> GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_SET_TIME))
                                                     ));
                                                 }
                                             });
@@ -88,10 +90,12 @@ public class SpongeAuctionInterpreters implements Interpreter {
                                 Sponge.getServer().getPlayer(info.getLister()).ifPresent(player -> {
                                     manager.retrieve(info.getLister()).thenAccept(settings -> {
                                         if(settings.getBidListenState()) {
+                                            ConfigKey<String> key = response.wasSniped() ? MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_NEWBIDSNIPED : MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_NEWBID;
                                             player.sendMessage(service.parse(
-                                                    Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_NEWBID),
-                                                    Lists.newArrayList(() -> info, response::getActor, () -> new Auction.BidContext(response.getActor(), new Auction.Bid(response.getAmountBid())))
+                                                    Utilities.readMessageConfigOption(key),
+                                                    Lists.newArrayList(() -> info, response::getActor, () -> new Auction.BidContext(response.getActor(), new Auction.Bid(response.getAmountBid())), () -> GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_SET_TIME))
                                             ));
+
                                         }
                                     });
                                 });

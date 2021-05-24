@@ -17,6 +17,7 @@ import net.impactdev.gts.common.storage.GTSStorageImpl;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
+import net.impactdev.impactor.api.configuration.ConfigKey;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.gts.api.events.PublishListingEvent;
 import net.impactdev.gts.api.listings.auctions.Auction;
@@ -336,9 +337,10 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 							if(response.wasSuccessful()) {
 								Auction.BidContext context = new Auction.BidContext(bidder, new Auction.Bid(amount));
 								Sponge.getServer().getPlayer(bidder).ifPresent(player -> {
+									ConfigKey<String> key = response.wasSniped() ? MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_BID_PLACEDSNIPED : MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_BID_PLACED;
 									player.sendMessage(service.parse(
-											Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_BID_PLACED),
-											Lists.newArrayList(() -> context)
+											Utilities.readMessageConfigOption(key),
+											Lists.newArrayList(() -> context, () -> GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_SET_TIME))
 									));
 								});
 							} else {

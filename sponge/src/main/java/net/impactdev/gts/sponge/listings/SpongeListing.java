@@ -15,7 +15,7 @@ public abstract class SpongeListing implements Listing {
 	private final UUID lister;
 	private final SpongeEntry<?> entry;
 	private final LocalDateTime published;
-	private final LocalDateTime expiration;
+	private LocalDateTime expiration;
 
 	public SpongeListing(UUID id, UUID lister, SpongeEntry<?> entry, LocalDateTime expiration) {
 		this(id, lister, entry, LocalDateTime.now(), expiration);
@@ -52,6 +52,11 @@ public abstract class SpongeListing implements Listing {
 	@Override
 	public LocalDateTime getExpiration() {
 		return this.expiration;
+	}
+
+	@Override
+	public void setExpiration(LocalDateTime expiration) {
+		this.expiration = expiration;
 	}
 
 	@Override

@@ -613,12 +613,15 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID = stringKey("general.feedback.auctions.cant-afford-bid", "{{gts:error}} You're unable to afford that bid...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_BLACKLISTED = stringKey("general.feedback.blacklisted", "{{gts:error}} Your selection is &cblacklisted &7from being listed on the GTS...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_OUTBID = stringKey("general.feedback.auctions.outbid", "{{gts:prefix}} &a{{gts:auction_bidder}} &7outbid you by &e{{gts:auction_outbid_amount}} &7for &a{{gts:listing_name}}&7!");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_OUTBIDSNIPED = stringKey("general.feedback.auctions.outbid-sniped", "{{gts:prefix}} &a{{gts:auction_bidder}} &7outbid you by &e{{gts:auction_outbid_amount}} &7for &a{{gts:listing_name}}, &7but the expiry time of the auction has been set to &e{{gts:time}} &7due to bid sniping prevention!");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_NEWBID = stringKey("general.feedback.auctions.new-bid", "{{gts:prefix}} &a{{gts:auction_bidder}} &7bid &e{{gts:auction_bid_amount}} &7for your &a{{gts:listing_name}}&7!");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_NEWBIDSNIPED = stringKey("general.feedback.auctions.new-bid-sniped", "{{gts:prefix}} &a{{gts:auction_bidder}} &7bid &e{{gts:auction_bid_amount}} &7for your &a{{gts:listing_name}}, &7but the expiry time of the auction has been set to &e{{gts:time}} &7due to bid sniping prevention!");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_CANCELLED = stringKey("general.feedback.auctions.cancelled", "{{gts:prefix}} Heads up! The auction for {{gts:listing_name}} has been cancelled, so you've been refunded your money!");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_PROCESSING_BID = stringKey("general.feedback.processing-bid", "&7Processing bid...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_FUNDS_TO_ESCROW = stringKey("general.feedback.funds-to-escrow", "&7Putting funds in escrow...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_FUNDS_FROM_ESCROW = stringKey("general.feedback.funds-from-escrow", "&7Returning your funds from escrow...");
 	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_BID_PLACED = stringKey("general.feedback.auctions.bid-placed", "{{gts:prefix}} Your bid of {{gts:auction_bid_amount}} has been placed!");
+	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_BID_PLACEDSNIPED = stringKey("general.feedback.auctions.bid-placed-sniped", "{{gts:prefix}} &7Your bid of {{gts:auction_bid_amount}} has been placed, but the expiry time of the auction has been set to &e{{gts:time}} &7due to bid sniping prevention!");
 
 	public static final ConfigKey<String> REQUEST_FAILED = stringKey("general.requests.failure", "{{gts:prefix}} &7Request failed with status code (&c{{gts:error_code}}&7)");
 
