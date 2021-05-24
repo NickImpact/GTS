@@ -75,7 +75,7 @@ public interface Listing extends Storable {
 	LocalDateTime getExpiration();
 
 	/**
-	 * Sets the new expiration. Make sure to send a Request after using this method to update it.
+	 * Sets the new expiration. Make sure to update the listing after using this.
 	 */
 	void setExpiration(LocalDateTime expiration);
 
