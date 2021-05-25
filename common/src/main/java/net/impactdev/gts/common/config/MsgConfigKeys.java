@@ -352,6 +352,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	// Stash Window
 	public static final ConfigKey<String> UI_MENU_STASH_TITLE = stringKey("ui.menus.stash.title", "&cGTS &7\u00bb &3Stash");
 	public static final ConfigKey<String> UI_MENU_MAIN_STASH_STATUS = stringKey("ui.menus.main.stash.status", "&b* You have items available for pickup!");
+	public static final ConfigKey<String> STASH_COLLECT_JOIN_MESSAGE = stringKey("ui.menus.main.stash.collect.join", "&b* You have items to collect in your GTS Stash!");
 	public static final ConfigKey<String> UI_ICON_STASH_COLLECT_ALL_TITLE = stringKey("ui.icons.stash.collect-all.title", "&aCollect All");
 	public static final ConfigKey<List<String>> UI_ICON_STASH_COLLECT_ALL_LORE = listKey("ui.icons.stash.collect-all.lore", Lists.newArrayList(
 			"&7Allows you to claim all your stashed",
