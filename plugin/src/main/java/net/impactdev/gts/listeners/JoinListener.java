@@ -41,5 +41,20 @@ public class JoinListener {
         }
 
     }
+    
+    @Listener
+    public void onPlayerLogin(ClientConnectionEvent.Login event) {
+        Sponge.getScheduler().createTaskBuilder().execute(() -> {
+        final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+            final Optional<Player> player = Sponge.getServer().getPlayer(event.getTargetUser().getUniqueId());
+            GTSPlugin.getInstance().getStorage().getStash( player.get().getUniqueId() ).thenAccept(
+                stash -> {
+                    if (!stash.isEmpty()) {
+                        player.get().sendMessage( parser.parse( Utilities.readMessageConfigOption( MsgConfigKeys.STASH_COLLECT_JOIN_MESSAGE ) ) );
+                        player.get().playSound( SoundTypes.BLOCK_CHEST_OPEN, player.get().getPosition(), 1 );
+                    }
+                });
+        }).delay( 4, TimeUnit.SECONDS).submit(GTSPlugin.getInstance().getBootstrap());
+    }
 
 }
