@@ -6,12 +6,10 @@ import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.events.auctions.BidEvent;
 import net.impactdev.gts.api.events.buyitnow.PurchaseListingEvent;
-import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.makeup.Fees;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.player.PlayerSettingsManager;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.storage.GTSStorageImpl;
 import net.impactdev.gts.sponge.utils.Utilities;
@@ -197,7 +195,14 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 				if(check.get()) {
 					player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_COLLECT_LISTING), sources));
-					if (!listing.getEntry().take(lister)) {
+					AtomicBoolean hold = new AtomicBoolean(false);
+					AtomicBoolean result = new AtomicBoolean(false);
+					Impactor.getInstance().getScheduler().sync().execute(() -> {
+						result.set(listing.getEntry().take(lister));
+						hold.set(true);
+					});
+					while(!hold.get()) {}
+					if (!result.get()) {
 						player.sendMessage(parser.parse(lang.get(MsgConfigKeys.UNABLE_TO_TAKE_LISTING)));
 						if(fees.get().doubleValue() > 0) {
 							EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
