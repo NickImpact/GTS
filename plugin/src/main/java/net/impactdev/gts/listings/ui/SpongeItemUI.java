@@ -48,10 +48,11 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
                                         this.viewer.sendMessage(Text.of(TextColors.RED, "You've already selected an item..."));
                                         return;
                                     }
-
+                            
+                                    MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
                                     Blacklist blacklist = Impactor.getInstance().getRegistry().get(Blacklist.class);
                                     if(blacklist.isBlacklisted(ItemType.class, clicked.getType().getName())) {
-                                        this.viewer.sendMessage(Text.of(TextColors.RED, "Blacklisted"));
+                                        this.viewer.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_BLACKLISTED)));
                                         this.viewer.playSound(SoundTypes.BLOCK_ANVIL_LAND, this.viewer.getPosition(), 1, 1);
                                         return;
                                     }
