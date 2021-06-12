@@ -33,6 +33,7 @@ import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.MessengerProvider;
@@ -113,7 +114,14 @@ public interface InternalMessagingService {
 
         GTSPlugin.getInstance().getMessagingService().getMessenger().getMessageConsumer().registerRequest(request.getID(), reference::set);
         GTSPlugin.getInstance().getMessagingService().getMessenger().sendOutgoingMessage(request);
-        while(reference.get() == null) {}
+        while(reference.get() == null) {
+            try {
+                //noinspection BusyWait
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                ExceptionWriter.write(e);
+            }
+        }
 
         long finish = System.nanoTime();
         return reference.updateAndGet(response -> {

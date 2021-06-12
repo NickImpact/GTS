@@ -201,7 +201,14 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 						result.set(listing.getEntry().take(lister));
 						hold.set(true);
 					});
-					while(!hold.get()) {}
+					while(!hold.get()) {
+						try {
+							//noinspection BusyWait
+							Thread.sleep(50);
+						} catch (InterruptedException e) {
+							ExceptionWriter.write(e);
+						}
+					}
 					if (!result.get()) {
 						player.sendMessage(parser.parse(lang.get(MsgConfigKeys.UNABLE_TO_TAKE_LISTING)));
 						if(fees.get().doubleValue() > 0) {
