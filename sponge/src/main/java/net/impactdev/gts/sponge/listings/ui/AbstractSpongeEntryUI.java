@@ -34,6 +34,7 @@ import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
@@ -173,6 +174,11 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
                 .build();
         SpongeIcon confirm = new SpongeIcon(rep);
         confirm.addListener(clickable -> {
+            if(clickable.getEvent() instanceof ClickInventoryEvent.Drop)
+            {
+                return;
+            }
+
             SpongeEntry<?> entry = this.getSelection().createFromSelection();
 
             SpongeListing listing;

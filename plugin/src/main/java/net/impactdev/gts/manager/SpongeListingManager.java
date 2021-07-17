@@ -415,7 +415,14 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 					return GTSPlugin.getInstance().getMessagingService().requestBINPurchase(listing.getID(), buyer, source)
 							.thenApply(response -> {
 								if(response.wasSuccessful()) {
-									while(!marker.get()) {}
+									while(!marker.get()) {
+										try {
+											//noinspection BusyWait
+											Thread.sleep(50);
+										} catch (InterruptedException e) {
+											ExceptionWriter.write(e);
+										}
+									}
 
 									Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessages(
 											parser.parse(lang.get(MsgConfigKeys.PURCHASE_PAY), Lists.newArrayList(
