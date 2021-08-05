@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ichorpowered.protocolcontrol.service.ProtocolService;
+import net.impactdev.gts.listeners.PlayerItemListingListener;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.listings.legacy.SpongeLegacyItemStorable;
 import net.impactdev.gts.listings.searcher.SpongeItemSearcher;
@@ -174,6 +175,8 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		this.extensionManager.enableExtensions();
 
 		Sponge.getEventManager().registerListeners(this.bootstrap, new JoinListener());
+
+		new PlayerItemListingListener().registerListener();
 
 		if(!this.config.get(ConfigKeys.ITEMS_ALLOW_ANVIL_NAMES)) {
 			Sponge.getEventManager().registerListeners(this.bootstrap, new AnvilRenameListener());
