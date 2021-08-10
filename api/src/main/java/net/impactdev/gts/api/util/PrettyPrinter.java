@@ -796,7 +796,7 @@ public class PrettyPrinter {
         } else if (object instanceof Throwable) {
             return this.add((Throwable)object, indent);
         } else if (object.getClass().isArray()) {
-            return this.add((Object[])object, indent + "%s");
+            return this.add((Object[])object, margin + "%s");
         }
         return this.add("%s%s", margin, object);
     }

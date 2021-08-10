@@ -28,6 +28,9 @@ package net.impactdev.gts.common.storage.implementation.file;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ForwardingSet;
+import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+import net.impactdev.impactor.api.Impactor;
 
 import java.io.IOException;
 import java.nio.file.ClosedWatchServiceException;
@@ -87,6 +90,9 @@ public class FileWatcher implements AutoCloseable {
         this.service = base.getFileSystem().newWatchService();
         this.autoRegisterNewSubDirectories = autoRegisterNewSubDirectories;
         this.watchedLocations = Collections.synchronizedMap(new HashMap<>());
+
+        this.registerRecursively(this.base);
+        Impactor.getInstance().getScheduler().executeAsync(this::runEventProcessingLoop);
     }
 
     /**
@@ -164,6 +170,7 @@ public class FileWatcher implements AutoCloseable {
             try {
                 key = this.service.take();
             } catch (InterruptedException | ClosedWatchServiceException e) {
+                ExceptionWriter.write(e);
                 break;
             }
 
@@ -178,7 +185,6 @@ public class FileWatcher implements AutoCloseable {
             for (WatchEvent<?> ev : key.pollEvents()) {
                 @SuppressWarnings("unchecked")
                 WatchEvent<Path> event = (WatchEvent<Path>) ev;
-
                 Path context = event.context();
 
                 // ignore contexts with a name count of zero
@@ -201,7 +207,7 @@ public class FileWatcher implements AutoCloseable {
                             this.registerRecursively(file);
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        ExceptionWriter.write(e);
                     }
                 }
             }

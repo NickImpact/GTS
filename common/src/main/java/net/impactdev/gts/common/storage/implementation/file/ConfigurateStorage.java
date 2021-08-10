@@ -27,8 +27,13 @@ package net.impactdev.gts.common.storage.implementation.file;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
@@ -38,13 +43,16 @@ import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.storage.implementation.file.loaders.ConfigurateLoader;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+import net.impactdev.impactor.api.json.factory.JArray;
+import net.impactdev.impactor.api.json.factory.JObject;
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.SimpleConfigurationNode;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -52,11 +60,11 @@ import java.nio.file.Paths;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Function;
 
 public class ConfigurateStorage implements StorageImplementation {
 
@@ -65,26 +73,13 @@ public class ConfigurateStorage implements StorageImplementation {
 
     // The loader responsible for I/O
     private final ConfigurateLoader loader;
-
     private String extension;
-
-    private Path dataDir;
     private String dataDirName;
-
-    private final Map<Group, FileGroup> fileGroups;
-    private final FileGroup users;
-    private final FileGroup listings;
-
-    private final FileWatcher watcher;
+    private Map<Group, Path> fileGroups;
 
     private enum Group {
         USERS,
         LISTINGS,
-    }
-
-    private static final class FileGroup {
-        private Path directory;
-        private FileWatcher.WatchedLocation watcher;
     }
 
     private final LoadingCache<Path, ReentrantLock> ioLocks;
@@ -95,24 +90,6 @@ public class ConfigurateStorage implements StorageImplementation {
         this.loader = loader;
         this.extension = extension;
         this.dataDirName = dataDirName;
-
-        this.users = new FileGroup();
-        this.listings = new FileGroup();
-
-        EnumMap<Group, FileGroup> fileGroups = new EnumMap<>(Group.class);
-        fileGroups.put(Group.USERS, this.users);
-        fileGroups.put(Group.LISTINGS, this.listings);
-        this.fileGroups = ImmutableMap.copyOf(fileGroups);
-
-        FileWatcher watcher;
-        try {
-            watcher = new FileWatcher(Paths.get("gts"), true);
-        } catch (Throwable e) {
-            GTSPlugin.getInstance().getPluginLogger().error("Error occurred whilst trying to create a file watcher...");
-            ExceptionWriter.write(e);
-            watcher = null;
-        }
-        this.watcher = watcher;
 
         this.ioLocks = Caffeine.newBuilder()
                 .expireAfterAccess(10, TimeUnit.MINUTES)
@@ -131,53 +108,20 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public void init() throws Exception {
-        this.dataDir = Paths.get("gts");
-        this.createDirectoriesIfNotExists(this.dataDir);
+        Path dataDir = this.getResourcePath();
+        this.createDirectoriesIfNotExists(dataDir);
 
-        this.users.directory = this.dataDir.resolve("users");
-        this.listings.directory = this.dataDir.resolve("listings");
+        Path users = dataDir.resolve(this.dataDirName).resolve("users");
+        Path listings = dataDir.resolve(this.dataDirName).resolve("listings");
 
-        Function<String, UUID> uuidParser = input -> {
-            try {
-                return UUID.fromString(input);
-            } catch (IllegalArgumentException e) {
-                return null;
-            }
-        };
+        EnumMap<Group, Path> fileGroups = new EnumMap<>(Group.class);
+        fileGroups.put(Group.USERS, users);
+        fileGroups.put(Group.LISTINGS, listings);
+        this.fileGroups = ImmutableMap.copyOf(fileGroups);
+    }
 
-        if(this.watcher != null) {
-            this.users.watcher = this.watcher.getWatcher(this.users.directory);
-            this.users.watcher.addListener(path -> {
-                String file = path.getFileName().toString();
-                if(!file.endsWith(this.extension)) {
-                    return;
-                }
-
-                String user = file.substring(0, file.length() - this.extension.length());
-                UUID id = uuidParser.apply(user);
-                if(id == null) {
-                    return;
-                }
-
-                String name = GTSPlugin.getInstance().getPlayerDisplayName(id);
-                this.plugin.getPluginLogger().info("[File Watcher] Detected change in user file for " + name);
-            });
-            this.listings.watcher = this.watcher.getWatcher(this.listings.directory);
-            this.listings.watcher.addListener(path -> {
-                String file = path.getFileName().toString();
-                if(!file.endsWith(this.extension)) {
-                    return;
-                }
-
-                String user = file.substring(0, file.length() - this.extension.length());
-                UUID id = uuidParser.apply(user);
-                if(id == null) {
-                    return;
-                }
-
-                this.plugin.getPluginLogger().info("[File Watcher] Detected change in listing file with ID: " + id);
-            });
-        }
+    protected Path getResourcePath() {
+        return Paths.get("gts");
     }
 
     @Override
@@ -185,29 +129,44 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public boolean addListing(Listing listing) throws Exception {
-        try {
-            ConfigurationNode file = SimpleConfigurationNode.root();
-            file.getNode("data").setValue(listing.serialize().toJson());
-        } catch (Exception e) {
-            return false;
+        ConfigurationNode file = SimpleConfigurationNode.root();
+
+        for(Map.Entry<String, JsonElement> entry : listing.serialize().toJson().entrySet()) {
+            this.writePath(file, entry.getKey(), entry.getValue());
         }
 
-        return false;
+        this.saveFile(Group.LISTINGS, listing.getID(), file);
+        return true;
     }
 
     @Override
     public boolean deleteListing(UUID uuid) throws Exception {
-        return false;
+        this.saveFile(Group.LISTINGS, uuid, null);
+        return true;
     }
 
     @Override
     public Optional<Listing> getListing(UUID id) throws Exception {
-        return Optional.empty();
+        return Optional.ofNullable(this.from(this.readFile(Group.LISTINGS, id)));
     }
 
     @Override
     public List<Listing> getListings() throws Exception {
-        return null;
+        List<Listing> output = Lists.newArrayList();
+
+        Path parent = this.fileGroups.get(Group.LISTINGS);
+        File[] categories = parent.toFile().listFiles(((dir, name) -> dir.isDirectory()));
+        if(categories == null) {
+            return output;
+        }
+
+        for(File category : categories) {
+            for(File data : category.listFiles(((dir, name) -> name.endsWith(this.extension)))) {
+                output.add(this.from(this.readFile(Group.LISTINGS, UUID.fromString(data.getName().split("[.]")[0]))));
+            }
+        }
+
+        return output;
     }
 
     @Override
@@ -227,7 +186,7 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public Stash getStash(UUID user) throws Exception {
-        return null;
+        return Stash.builder().build();
     }
 
     @Override
@@ -280,13 +239,55 @@ public class ConfigurateStorage implements StorageImplementation {
         return null;
     }
 
-    private ConfigurationNode readFile(UUID uuid) throws IOException {
-        //Path file = this.getDirectory()
-        return null;
+    private ConfigurationNode readFile(Group group, UUID uuid) throws IOException {
+        Path target = this.fileGroups.get(group).resolve(uuid.toString().substring(0, 2)).resolve(uuid + this.extension);
+
+        ReentrantLock lock = Objects.requireNonNull(this.ioLocks.get(target));
+        lock.lock();
+        try {
+            return this.loader.loader(target).load();
+        } finally {
+            lock.unlock();
+        }
     }
 
-    private void saveFile(String name, ConfigurationNode node) throws IOException {
+    private Listing from(ConfigurationNode node) {
+        JObject json = new JObject();
+        this.fill(json, node, true);
+        JsonObject result = json.toJson();
 
+        String type = result.get("type").getAsString();
+        if(type.equals("bin")) {
+            return GTSService.getInstance().getGTSComponentManager()
+                    .getListingResourceManager(BuyItNow.class)
+                    .get()
+                    .getDeserializer()
+                    .deserialize(result);
+        } else {
+            return GTSService.getInstance().getGTSComponentManager()
+                    .getListingResourceManager(Auction.class)
+                    .get()
+                    .getDeserializer()
+                    .deserialize(result);
+        }
+    }
+
+    private void saveFile(Group group, UUID name, ConfigurationNode node) throws IOException {
+        Path target = this.fileGroups.get(group).resolve(name.toString().substring(0, 2)).resolve(name + this.extension);
+
+        this.createDirectoriesIfNotExists(target.getParent());
+        ReentrantLock lock = Objects.requireNonNull(this.ioLocks.get(target));
+        lock.lock();
+        try {
+            if(node == null) {
+                Files.deleteIfExists(target);
+                return;
+            }
+
+            this.loader.loader(target).save(node);
+        } finally {
+            lock.unlock();
+        }
     }
 
     private void createDirectoriesIfNotExists(Path path) throws IOException {
@@ -297,10 +298,117 @@ public class ConfigurateStorage implements StorageImplementation {
         Files.createDirectories(path);
     }
 
-    // used to report i/o exceptions which took place in a specific file
-    private RuntimeException reportException(String file, Exception ex) throws RuntimeException {
-        this.plugin.getPluginLogger().warn("Exception thrown whilst performing i/o: " + file);
-        ex.printStackTrace();
-        throw Throwables.propagate(ex);
+    private void fill(JObject target, ConfigurationNode working, boolean empty) {
+        if(working.hasListChildren()) {
+            JArray array = new JArray();
+            for(ConfigurationNode child : working.getChildrenList()) {
+                this.fillArray(array, child);
+            }
+            target.add(working.getKey().toString(), array);
+        } else if(working.hasMapChildren()) {
+            JObject child = new JObject();
+            for(Map.Entry<Object, ? extends ConfigurationNode> entry : working.getChildrenMap().entrySet()) {
+                this.fill(empty ? target : child, entry.getValue(), false);
+            }
+            if(!empty) {
+                target.add(working.getKey().toString(), child);
+            }
+        } else {
+            String key = working.getKey().toString();
+            Class<?> typing = working.getValue().getClass();
+            if(typing.equals(String.class)) {
+                target.add(key, working.getString());
+            } else if(Number.class.isAssignableFrom(typing)) {
+                double value = working.getDouble();
+                target.add(key, value);
+            } else if(typing.equals(Boolean.class)) {
+                target.add(key, working.getBoolean());
+            } else {
+                throw new IllegalStateException("Invalid value for location: " + typing);
+            }
+        }
+    }
+
+    private void fillArray(JArray array, ConfigurationNode working) {
+        if(working.hasMapChildren()) {
+            JObject child = new JObject();
+            for(Map.Entry<Object, ? extends ConfigurationNode> entry : working.getChildrenMap().entrySet()) {
+                this.fill(child, entry.getValue(), true);
+            }
+            array.add(child);
+        } else if(working.hasListChildren()) {
+            JArray aChild = new JArray();
+            for(ConfigurationNode child : working.getChildrenList()) {
+                this.fillArray(array, child);
+            }
+            array.add(aChild);
+        } else {
+            Class<?> typing = working.getValue().getClass();
+            if(typing.equals(String.class)) {
+                array.add(working.getString());
+            } else if(Number.class.isAssignableFrom(typing)) {
+                double value = working.getDouble();
+                array.add(value);
+            } else {
+                throw new IllegalStateException("Invalid value for location: " + typing);
+            }
+        }
+    }
+
+    private void writePath(ConfigurationNode parent, String key, JsonElement value) {
+        if(value.isJsonObject()) {
+            JsonObject object = value.getAsJsonObject();
+            ConfigurationNode child = SimpleConfigurationNode.root();
+            for(Map.Entry<String, JsonElement> path : object.entrySet()) {
+                this.writePath(child, path.getKey(), path.getValue());
+            }
+
+            parent.getNode(key).setValue(child);
+        } else {
+            if(value.isJsonPrimitive()) {
+                JsonPrimitive primitive = value.getAsJsonPrimitive();
+                if(primitive.isNumber()) {
+                    Number number = primitive.getAsNumber();
+                    parent.getNode(key).setValue(number);
+                } else if(primitive.isBoolean()) {
+                    parent.getNode(key).setValue(primitive.getAsBoolean());
+                } else {
+                    parent.getNode(key).setValue(primitive.getAsString());
+                }
+            } else if(value.isJsonArray()) {
+                this.writeArrayToPath(parent, key, value.getAsJsonArray());
+            }
+        }
+    }
+
+    private void writeArrayToPath(ConfigurationNode parent, String key, JsonArray array) {
+        List<Object> output = Lists.newArrayList();
+        for(JsonElement element : array) {
+            if(element.isJsonObject()) {
+                ConfigurationNode target = SimpleConfigurationNode.root();
+                JsonObject json = element.getAsJsonObject();
+                for(Map.Entry<String, JsonElement> child : json.entrySet()) {
+                    this.writePath(target, child.getKey(), child.getValue());
+                }
+                output.add(target);
+            } else if(element.isJsonArray()) {
+                ConfigurationNode target = SimpleConfigurationNode.root();
+                this.writeArrayToPath(target, key, element.getAsJsonArray());
+                output.add(target);
+            } else {
+                if(element.isJsonPrimitive()) {
+                    JsonPrimitive primitive = element.getAsJsonPrimitive();
+                    if(primitive.isNumber()) {
+                        Number number = primitive.getAsNumber();
+                        output.add(number);
+                    } else if(primitive.isBoolean()) {
+                        output.add(primitive.getAsBoolean());
+                    } else {
+                        output.add(primitive.getAsString());
+                    }
+                }
+            }
+        }
+        parent.getNode(key).setValue(output);
     }
 }
