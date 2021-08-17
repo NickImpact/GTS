@@ -5,6 +5,8 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ichorpowered.protocolcontrol.service.ProtocolService;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.listings.legacy.SpongeLegacyItemStorable;
 import net.impactdev.gts.listings.searcher.SpongeItemSearcher;
@@ -136,14 +138,11 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 
 		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(BuyItNow.class, new ResourceManagerImpl<>("BIN", "minecraft:emerald", SpongeBuyItNow::deserialize));
 		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(Auction.class, new ResourceManagerImpl<>("Auctions", "minecraft:gold_ingot", SpongeAuction::deserialize));
-		GTSService.getInstance().getGTSComponentManager().registerEntryManager(SpongeItemEntry.class, new SpongeItemManager());
 		GTSService.getInstance().getGTSComponentManager().registerPriceManager(MonetaryPrice.class, new MonetaryPrice.MonetaryPriceManager());
-		GTSService.getInstance().getGTSComponentManager().registerLegacyEntryDeserializer("item", new SpongeLegacyItemStorable());
 
 		GTSService.getInstance().addSearcher(new SpongeItemSearcher());
 		GTSService.getInstance().addSearcher(new SpongeUserSearcher());
 
-		this.extensionManager = new SimpleExtensionManager(this);
 
 		this.getPluginLogger().info("Setting up configuration...");
 		this.copyResource(Paths.get("gts.conf"), this.getConfigDir());
@@ -161,8 +160,34 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 			));
 		}
 
+		if(this.config.get(ConfigKeys.ENABLE_ITEMS)) {
+			GTSService.getInstance().getGTSComponentManager().registerEntryManager(SpongeItemEntry.class, new SpongeItemManager());
+			GTSService.getInstance().getGTSComponentManager().registerLegacyEntryDeserializer("item", new SpongeLegacyItemStorable());
+		}
+
 		this.getPluginLogger().info("Sending load event to available extensions...");
+		this.extensionManager = new SimpleExtensionManager(this);
 		this.extensionManager.loadExtensions(this.getBootstrap().getConfigDirectory().resolve("extensions"));
+
+		if(!this.config.get(ConfigKeys.ENABLE_ITEMS)
+				&& this.extensionManager.getLoadedExtensions().isEmpty()
+				&& GTSService.getInstance().getGTSComponentManager().getAllEntryManagers().isEmpty()) {
+			new PrettyPrinter(80)
+					.add("No Entry Types Available").center()
+					.hr('-')
+					.add("It seems you've disabled the ability to list items on the market,")
+					.add("but do not have any compatible extensions installed that provide")
+					.add("other types of entries. GTS is not setup to handle this, and has")
+					.add("enforced safe mode to avoid runtime errors!")
+					.add()
+					.add("Please re-enable the items capability of GTS, or install an extension")
+					.add("that provides other entry types to proceed with plugin usage. If you truly")
+					.add("wish to turn off all entry types, please consult maintenance mode, where you")
+					.add("can effectively disable features of the plugin without hurting performance.")
+					.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.ERROR);
+			((GTSAPIProvider) GTSService.getInstance()).setSafeMode(ErrorCodes.FATAL_ERROR);
+			throw new IllegalStateException("No entry types available");
+		}
 
 		this.config.get(ConfigKeys.BLACKLIST).read();
 	}

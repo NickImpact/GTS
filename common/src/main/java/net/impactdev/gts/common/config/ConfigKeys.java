@@ -187,6 +187,8 @@ public class ConfigKeys implements ConfigKeyHolder {
 	});
 	public static final ConfigKey<Boolean> SHOULD_SHOW_USER_PREFIX = booleanKey("should-show-user-prefix", true);
 
+	public static final ConfigKey<Boolean> ENABLE_ITEMS = booleanKey("allow-items", true);
+
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
 
