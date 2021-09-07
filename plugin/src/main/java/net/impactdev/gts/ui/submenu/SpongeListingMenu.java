@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.impactdev.gts.GTSSpongePlugin;
 
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.makeup.Display;
@@ -102,7 +103,8 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 						}
 
 						return !expired;
-				}
+				},
+				listing -> !(listing instanceof Delivery)
 		);
 
 		this.editor = editor;
