@@ -41,9 +41,10 @@ import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
+import net.impactdev.gts.api.player.NotificationSetting;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
-import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.storage.implementation.file.loaders.ConfigurateLoader;
@@ -57,6 +58,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +67,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Stream;
 
 public class ConfigurateStorage implements StorageImplementation {
 
@@ -171,17 +174,25 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public boolean hasMaxListings(UUID user) throws Exception {
-        return false;
+        return this.getListings().stream().filter(listing -> listing.getLister().equals(user)).count() >=
+                GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER);
     }
 
     @Override
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean purge() throws Exception {
-        return false;
+        Path root = this.getResourcePath();
+        try(Stream<Path> walker = Files.walk(root)) {
+            walker.sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+            return true;
+        }
     }
 
     @Override
     public boolean clean() throws Exception {
-        return false;
+        return true;
     }
 
     @Override
@@ -191,11 +202,33 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public Optional<PlayerSettings> getPlayerSettings(UUID user) throws Exception {
-        return Optional.empty();
+        Optional<ConfigurationNode> result = Optional.ofNullable(this.readFile(Group.USERS, user));
+        return result.map(node -> {
+            JObject json = new JObject();
+            this.fill(json, node, true);
+            return json.toJson();
+        }).map(json -> PlayerSettings.builder()
+                .set(NotificationSetting.Bid, json.get("bids").getAsBoolean())
+                .set(NotificationSetting.Publish, json.get("publish").getAsBoolean())
+                .set(NotificationSetting.Sold, json.get("sold").getAsBoolean())
+                .set(NotificationSetting.Outbid, json.get("outbid").getAsBoolean())
+                .build()
+        );
     }
 
     @Override
     public boolean applyPlayerSettings(UUID user, PlayerSettings updates) throws Exception {
+        JsonObject json = new JsonObject();
+        json.addProperty("bids", updates.getBidListenState());
+        json.addProperty("publish", updates.getPublishListenState());
+        json.addProperty("sold", updates.getSoldListenState());
+        json.addProperty("output", updates.getOutbidListenState());
+
+        ConfigurationNode node = SimpleConfigurationNode.root();
+        for(Map.Entry<String, JsonElement> entry : json.entrySet()) {
+            this.writePath(node, entry.getKey(), entry.getValue());
+        }
+        this.saveFile(Group.USERS, user, node);
         return false;
     }
 
@@ -245,30 +278,13 @@ public class ConfigurateStorage implements StorageImplementation {
         ReentrantLock lock = Objects.requireNonNull(this.ioLocks.get(target));
         lock.lock();
         try {
+            if(!target.toFile().exists()) {
+                return null;
+            }
+
             return this.loader.loader(target).load();
         } finally {
             lock.unlock();
-        }
-    }
-
-    private Listing from(ConfigurationNode node) {
-        JObject json = new JObject();
-        this.fill(json, node, true);
-        JsonObject result = json.toJson();
-
-        String type = result.get("type").getAsString();
-        if(type.equals("bin")) {
-            return GTSService.getInstance().getGTSComponentManager()
-                    .getListingResourceManager(BuyItNow.class)
-                    .get()
-                    .getDeserializer()
-                    .deserialize(result);
-        } else {
-            return GTSService.getInstance().getGTSComponentManager()
-                    .getListingResourceManager(Auction.class)
-                    .get()
-                    .getDeserializer()
-                    .deserialize(result);
         }
     }
 
@@ -296,6 +312,27 @@ public class ConfigurateStorage implements StorageImplementation {
         }
 
         Files.createDirectories(path);
+    }
+
+    private Listing from(ConfigurationNode node) {
+        JObject json = new JObject();
+        this.fill(json, node, true);
+        JsonObject result = json.toJson();
+
+        String type = result.get("type").getAsString();
+        if(type.equals("bin")) {
+            return GTSService.getInstance().getGTSComponentManager()
+                    .getListingResourceManager(BuyItNow.class)
+                    .get()
+                    .getDeserializer()
+                    .deserialize(result);
+        } else {
+            return GTSService.getInstance().getGTSComponentManager()
+                    .getListingResourceManager(Auction.class)
+                    .get()
+                    .getDeserializer()
+                    .deserialize(result);
+        }
     }
 
     private void fill(JObject target, ConfigurationNode working, boolean empty) {

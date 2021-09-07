@@ -58,6 +58,7 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	};
 
 	private final ItemStackSnapshot item;
+	private transient Display<ItemStack> display;
 
 	public SpongeItemEntry(ItemStackSnapshot item) {
 		this.item = item;
@@ -101,19 +102,23 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	@Override
 	public Display<ItemStack> getDisplay(UUID viewer, Listing listing) {
-		ItemStack.Builder designer = ItemStack.builder();
-		designer.fromSnapshot(this.getOrCreateElement());
+		if(this.display == null) {
+			ItemStack.Builder designer = ItemStack.builder();
+			designer.fromSnapshot(this.getOrCreateElement());
 
-		if(this.getOrCreateElement().get(Keys.DISPLAY_NAME).isPresent()) {
-			Text name = this.getOrCreateElement().get(Keys.DISPLAY_NAME).get();
-			if(name.getColor() == TextColors.NONE) {
-				designer.add(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, name));
+			if (this.getOrCreateElement().get(Keys.DISPLAY_NAME).isPresent()) {
+				Text name = this.getOrCreateElement().get(Keys.DISPLAY_NAME).get();
+				if (name.getColor() == TextColors.NONE) {
+					designer.add(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, name));
+				}
+			} else {
+				designer.add(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, this.getOrCreateElement().getTranslation().get()));
 			}
-		} else {
-			designer.add(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, this.getOrCreateElement().getTranslation().get()));
+
+			this.display = new SpongeDisplay(designer.build());
 		}
 
-		return new SpongeDisplay(designer.build());
+		return this.display;
 	}
 
 	@Override

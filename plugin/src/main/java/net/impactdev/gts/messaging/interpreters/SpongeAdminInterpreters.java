@@ -1,21 +1,26 @@
 package net.impactdev.gts.messaging.interpreters;
 
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
 import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.gts.sponge.pricing.provided.MonetaryEntry;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 public class SpongeAdminInterpreters implements Interpreter {
 
@@ -51,45 +56,52 @@ public class SpongeAdminInterpreters implements Interpreter {
 
                     if(response.wasSuccessful()) {
                         Listing listing = response.getDeletedListing().orElse(null);
-                        Sponge.getServer().getPlayer(listing.getLister())
-                                .ifPresent(source -> {
-                                    if(response.shouldGive()) {
-                                        if(listing.getEntry().give(source.getUniqueId())) {
-                                            source.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN)));
-                                        } else {
-                                            if(listing instanceof BuyItNow) {
-                                                Listing stash = BuyItNow.builder()
-                                                        .id(listing.getID())
-                                                        .lister(listing.getLister())
-                                                        .entry(listing.getEntry())
-                                                        .price(((BuyItNow) listing).getPrice())
-                                                        .expiration(LocalDateTime.now())
-                                                        .build();
-                                                GTSPlugin.getInstance().getStorage().publishListing(stash);
-                                            } else {
-                                                Auction auction = (Auction) listing;
-                                                Listing stash = Auction.builder()
-                                                        .id(listing.getID())
-                                                        .lister(listing.getLister())
-                                                        .entry(listing.getEntry())
-                                                        .expiration(LocalDateTime.now())
-                                                        .bids(auction.getBids())
-                                                        .increment(auction.getIncrement())
-                                                        .start(auction.getStartingPrice())
-                                                        .current(auction.getCurrentPrice())
-                                                        .published(auction.getPublishTime())
-                                                        .build();
-                                                GTSPlugin.getInstance().getStorage().publishListing(stash);
-                                            }
-                                            source.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN_STASH)));
-                                        }
-                                    } else {
-                                        source.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER)));
+                        Optional<Player> player = Sponge.getServer().getPlayer(listing.getLister());
+
+                        if(response.shouldGive()) {
+                            if(this.attemptReturn(listing)) {
+                                player.ifPresent(source -> source.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN))));
+                            } else {
+                                if(listing instanceof BuyItNow) {
+                                    Listing stash = BuyItNow.builder()
+                                            .id(listing.getID())
+                                            .lister(listing.getLister())
+                                            .entry(listing.getEntry())
+                                            .price(((BuyItNow) listing).getPrice())
+                                            .expiration(LocalDateTime.now())
+                                            .build();
+                                    GTSPlugin.getInstance().getStorage().publishListing(stash);
+                                } else {
+                                    Auction auction = (Auction) listing;
+                                    Delivery delivery = Delivery.builder()
+                                            .lister(response.getActor())
+                                            .recipient(auction.getLister())
+                                            .entry(auction.getEntry())
+                                            .build();
+                                    GTSPlugin.getInstance().getStorage().publishListing(delivery);
+
+                                    for(Map.Entry<UUID, Auction.Bid> bid : auction.getUniqueBiddersWithHighestBids().entrySet()) {
+                                        Delivery bidder = Delivery.builder()
+                                                .lister(response.getActor())
+                                                .recipient(bid.getKey())
+                                                .entry(new MonetaryEntry(bid.getValue().getAmount()))
+                                                .build();
+                                        GTSPlugin.getInstance().getStorage().publishListing(bidder);
                                     }
-                                });
+                                }
+                                player.ifPresent(source -> source.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN_STASH))));
+                            }
+                        } else {
+                            player.ifPresent(source -> source.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER))));
+                        }
                     }
                 }
         );
+    }
+
+    private boolean attemptReturn(Listing listing) {
+        UUID target = listing.getLister();
+        return listing.getEntry().give(target);
     }
 
 }

@@ -143,6 +143,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		GTSService.getInstance().addSearcher(new SpongeItemSearcher());
 		GTSService.getInstance().addSearcher(new SpongeUserSearcher());
 
+		this.extensionManager = new SimpleExtensionManager(this);
 
 		this.getPluginLogger().info("Setting up configuration...");
 		this.copyResource(Paths.get("gts.conf"), this.getConfigDir());
@@ -166,7 +167,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		}
 
 		this.getPluginLogger().info("Sending load event to available extensions...");
-		this.extensionManager = new SimpleExtensionManager(this);
 		this.extensionManager.loadExtensions(this.getBootstrap().getConfigDirectory().resolve("extensions"));
 
 		if(!this.config.get(ConfigKeys.ENABLE_ITEMS)

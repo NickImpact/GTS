@@ -1,5 +1,8 @@
 package net.impactdev.gts.placeholders;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.listings.makeup.Fees;
@@ -34,9 +37,11 @@ import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.entity.living.player.User;
 import org.spongepowered.api.item.enchantment.Enchantment;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.profile.GameProfile;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.permission.Subject;
 import org.spongepowered.api.service.user.UserStorageService;
@@ -51,6 +56,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -464,12 +470,17 @@ public class GTSSpongePlaceholderManager {
         return Optional.empty();
     }
 
+    private LoadingCache<UUID, User> userCache = Caffeine.newBuilder()
+            .expireAfterAccess(20, TimeUnit.SECONDS)
+            .build(id -> {
+                UserStorageService service = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
+                return service.get(id).orElse(null);
+            });
+
     private TextComponent calculateDisplayName(UUID id) {
-        UserStorageService service = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
-        return service.get(id)
+        return Optional.ofNullable(this.userCache.get(id))
                 .map(user -> {
-                    TextComponent.Builder component = Component.text()
-                            .resetStyle();
+                    TextComponent.Builder component = Component.text();
 
                     if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.SHOULD_SHOW_USER_PREFIX)) {
                         Optional<String> prefix = this.getOptionFromSubject(user, "prefix");

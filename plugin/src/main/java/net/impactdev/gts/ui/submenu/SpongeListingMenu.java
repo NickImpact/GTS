@@ -6,6 +6,7 @@ import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.impactdev.gts.GTSSpongePlugin;
+
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.makeup.Display;
@@ -35,6 +36,7 @@ import net.impactdev.gts.sponge.listings.SpongeListing;
 import net.impactdev.gts.sponge.ui.SpongeAsyncPage;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.gts.sponge.utils.Utilities;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
@@ -125,7 +127,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
 		this.applier(listing -> {
 			Display<ItemStack> display = listing.getEntry().getDisplay(viewer.getUniqueId(), listing);
-			ItemStack item = display.get();
+			ItemStack item = ItemStack.builder().from(display.get()).build();
 
 			Optional<List<Text>> lore = item.get(Keys.ITEM_LORE);
 			lore.ifPresent(texts -> texts.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR))));
@@ -515,10 +517,8 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private Task schedule() {
 		return Sponge.getScheduler().createTaskBuilder()
 				.execute(() -> {
-					try(final Timing dummy = tracker.startTiming()) {
-						if (Sponge.getServer().getTicksPerSecond() >= 18) {
-							this.apply();
-						}
+					if (Sponge.getServer().getTicksPerSecond() >= 18) {
+						this.apply();
 					}
 				})
 				.interval(1, TimeUnit.SECONDS)

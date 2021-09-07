@@ -37,6 +37,8 @@ public class CircularLinkedList<E> {
 		if(this.head == null) {
 			this.head = node;
 		} else {
+			// This is a used assignment that is flagged inappropriately by IntelliJ
+			//noinspection UnusedAssignment
 			this.tail.next = node;
 		}
 
@@ -45,7 +47,7 @@ public class CircularLinkedList<E> {
 	}
 
 	public Optional<E> getCurrent() {
-		return Optional.ofNullable(this.current.getValue());
+		return Optional.ofNullable(this.current).map(Node::getValue);
 	}
 
 	public Optional<E> next() {
