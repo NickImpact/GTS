@@ -30,4 +30,11 @@ CREATE TABLE `{prefix}stashes` (
     PRIMARY KEY (`uuid`)
 );
 
+CREATE TABLE `{prefix}deliveries` (
+    `id`                VARCHAR(36)     NOT NULL,
+    `target`            VARCHAR(36)     NOT NULL,
+    `delivery`          MEDIUMTEXT      NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
 ALTER TABLE `{prefix}auction_claims` ADD COLUMN IF NOT EXISTS `others` MEDIUMTEXT;

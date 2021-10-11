@@ -1,23 +1,55 @@
 package net.impactdev.gts.api.stashes;
 
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.util.TriState;
 
-public class StashedContent {
+import java.util.UUID;
 
-    private final Listing listing;
+public abstract class StashedContent<T> {
+
+    private final T content;
     private final TriState context;
 
-    public StashedContent(Listing listing, TriState context) {
-        this.listing = listing;
+    public StashedContent(T content, TriState context) {
+        this.content = content;
         this.context = context;
     }
 
-    public Listing getListing() {
-        return this.listing;
+    public abstract UUID getID();
+
+    public T getContent() {
+        return this.content;
     }
 
     public TriState getContext() {
         return this.context;
     }
+
+    public static class ListingContent extends StashedContent<Listing> {
+
+        public ListingContent(Listing content, TriState context) {
+            super(content, context);
+        }
+
+        @Override
+        public UUID getID() {
+            return this.getContent().getID();
+        }
+
+    }
+
+    public static class DeliverableContent extends StashedContent<Delivery> {
+
+        public DeliverableContent(Delivery content, TriState context) {
+            super(content, context);
+        }
+
+        @Override
+        public UUID getID() {
+            return this.getContent().getID();
+        }
+
+    }
+
 }

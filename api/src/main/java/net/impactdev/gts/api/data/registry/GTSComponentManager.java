@@ -2,6 +2,7 @@ package net.impactdev.gts.api.data.registry;
 
 import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.data.Storable;
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.entries.EntryManager;
@@ -20,6 +21,9 @@ public interface GTSComponentManager {
     <T extends Listing> Optional<ResourceManager<T>> getListingResourceManager(Class<T> type);
 
     Map<Class<? extends Listing>, ResourceManager<? extends Listing>> getAllListingResourceManagers();
+
+    // Deliveries
+    Storable.Deserializer<Delivery> getDeliveryDeserializer();
 
     // Entries
 

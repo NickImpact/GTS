@@ -1,12 +1,12 @@
 package net.impactdev.gts;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.ichorpowered.protocolcontrol.service.ProtocolService;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.gts.common.listings.GTSComponentManagerImpl;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.listings.legacy.SpongeLegacyItemStorable;
 import net.impactdev.gts.listings.searcher.SpongeItemSearcher;
@@ -30,6 +30,7 @@ import net.impactdev.gts.messaging.interpreters.SpongeAdminInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeAuctionInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeBINInterpreters;
 import net.impactdev.gts.messaging.interpreters.SpongeListingInterpreters;
+import net.impactdev.gts.sponge.deliveries.SpongeDelivery;
 import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.ui.SpongeMainMenu;
@@ -190,6 +191,9 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		}
 
 		this.config.get(ConfigKeys.BLACKLIST).read();
+
+		((GTSComponentManagerImpl) GTSService.getInstance().getGTSComponentManager())
+				.setDeliveryDeserializer(SpongeDelivery::deserialize);
 	}
 
 	public void init() {
@@ -358,16 +362,6 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(SpongeMainPageProvider.Creator.class, SpongeMainMenu.MainMenuCreator::new);
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(PlayerSettings.PlayerSettingsBuilder.class, PlayerSettingsImpl.PlayerSettingsImplBuilder::new);
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(ForceDeleteMessage.Response.ResponseBuilder.class, ForceDeleteMessageImpl.ForceDeleteResponse.ForcedDeleteResponseBuilder::new);
-	}
-
-	@Override
-	public ImmutableList<StorageType> getMultiServerCompatibleStorageOptions() {
-		return ImmutableList.copyOf(Lists.newArrayList(
-				StorageType.MARIADB,
-				StorageType.MYSQL,
-				StorageType.MONGODB,
-				StorageType.POSTGRESQL
-		));
 	}
 
 	@Override

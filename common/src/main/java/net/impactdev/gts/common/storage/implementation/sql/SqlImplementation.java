@@ -33,6 +33,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 import net.impactdev.gts.api.data.ResourceManager;
+import net.impactdev.gts.api.data.Storable;
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
@@ -104,6 +106,9 @@ public class SqlImplementation implements StorageImplementation {
 
 	private static final String APPLY_PLAYER_SETTINGS = "INSERT INTO `{prefix}player_settings` (uuid, pub_notif, sell_notif, bid_notif, outbid_notif) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE pub_notif=VALUES(pub_notif), sell_notif=VALUES(sell_notif), bid_notif=VALUES(bid_notif), outbid_notif=VALUES(outbid_notif)";
 	private static final String GET_PLAYER_SETTINGS = "SELECT pub_notif, sell_notif, bid_notif, outbid_notif FROM `{prefix}player_settings` WHERE uuid=?";
+
+	private static final String ADD_DELIVERY = "INSERT INTO `{prefix}deliveries` (id, target, delivery) VALUES (?, ?, ?)";
+	private static final String GET_DELIVERIES = "SELECT id, delivery FROM `{prefix}deliveries` WHERE target=?";
 
 	private final GTSPlugin plugin;
 
@@ -359,6 +364,11 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
+	public boolean sendDelivery(Delivery delivery) throws Exception {
+		return false;
+	}
+
+	@Override
 	public Stash getStash(UUID user) throws Exception {
 		Stash.StashBuilder builder = Stash.builder();
 
@@ -418,6 +428,24 @@ public class SqlImplementation implements StorageImplementation {
 				}
 			}
 		}
+
+		this.query(GET_DELIVERIES, (connection, ps) -> {
+			ps.setString(1, user.toString());
+			this.results(ps, results -> {
+				Storable.Deserializer<Delivery> deserializer = GTSService.getInstance().getGTSComponentManager().getDeliveryDeserializer();
+				while(results.next()) {
+					try {
+						JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("delivery"), JsonObject.class);
+						builder.append(deserializer.deserialize(json));
+					} catch (Exception e) {
+						ExceptionWriter.write(new JsonParseException("Failed to decode delivery with ID: " + results.getString("id"), e));
+					}
+				}
+				return null;
+			});
+
+			return null;
+		});
 
 		return builder.build();
 	}

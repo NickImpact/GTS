@@ -1,9 +1,13 @@
 package net.impactdev.gts.commands.executors.subs;
 
+import com.google.common.collect.Lists;
 import net.impactdev.gts.api.commands.GTSCommandExecutor;
+import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.storage.GTSStorage;
 import net.impactdev.gts.listings.SpongeItemEntry;
+import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
+import net.impactdev.gts.sponge.listings.SpongeListing;
 import net.impactdev.gts.util.GTSInfoGenerator;
 import net.impactdev.gts.api.commands.annotations.Alias;
 import net.impactdev.gts.api.commands.annotations.Permission;
@@ -17,20 +21,31 @@ import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.ui.admin.SpongeAdminMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.event.HoverEventSource;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
+import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.HoverAction;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Alias("admin")
@@ -52,7 +67,9 @@ public class AdminExecutor extends GTSCmdExecutor {
                 new Info(this.plugin),
                 new Ping(this.plugin),
                 new Clean(this.plugin),
-                new Test(this.plugin)
+                new ModRemoval(this.plugin),
+                new ModRemovalCallback(this.plugin),
+                new UserQuery(this.plugin)
         };
     }
 
@@ -165,11 +182,11 @@ public class AdminExecutor extends GTSCmdExecutor {
         }
     }
 
-    @Alias("test")
-    @Permission(GTSPermissions.ADMIN_PING)
-    public static class Test extends GTSCmdExecutor {
+    @Alias("itemcheck")
+    @Permission(GTSPermissions.ADMIN_ITEM_CHECK)
+    public static class ModRemoval extends GTSCmdExecutor {
 
-        public Test(GTSPlugin plugin) {
+        public ModRemoval(GTSPlugin plugin) {
             super(plugin);
         }
 
@@ -179,25 +196,138 @@ public class AdminExecutor extends GTSCmdExecutor {
         }
 
         @Override
-        public GTSCmdExecutor[] getSubcommands() {
-            return new GTSCmdExecutor[0];
+        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubcommands() {
+            return new GTSCommandExecutor[0];
         }
 
         @Override
         public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-            BuyItNow bin = BuyItNow.builder()
-                    .lister(Listing.SERVER_ID)
-                    .entry(new SpongeItemEntry(ItemStack.builder().itemType(ItemTypes.GRASS).add(Keys.DISPLAY_NAME, Text.of(TextColors.YELLOW, "GTS Test Item")).build().createSnapshot()))
-                    .expiration(LocalDateTime.now())
-                    .price(new MonetaryPrice(50))
-                    .purchased()
-                    .stashedForPurchaser()
-                    .purchaser(((Player) src).getUniqueId())
-                    .build();
 
-            Impactor.getInstance().getRegistry().get(ListingManager.class).list(Listing.SERVER_ID, bin);
+
+            return CommandResult.success();
+        }
+    }
+
+    @Alias("itemcheck-confirm")
+    @Permission(GTSPermissions.ADMIN_ITEM_CHECK)
+    public static class ModRemovalCallback extends GTSCmdExecutor {
+
+        public ModRemovalCallback(GTSPlugin plugin) {
+            super(plugin);
+        }
+
+        @Override
+        public CommandElement[] getArguments() {
+            return new CommandElement[0];
+        }
+
+        @Override
+        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubcommands() {
+            return new GTSCommandExecutor[0];
+        }
+
+        @Override
+        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+            return CommandResult.success();
+        }
+    }
+
+    @Alias("user-query")
+    @Permission(GTSPermissions.ADMIN_USER_QUERY)
+    public static class UserQuery extends GTSCmdExecutor {
+
+        private final Text PLAYER = Text.of("player");
+
+        public UserQuery(GTSPlugin plugin) {
+            super(plugin);
+        }
+
+        @Override
+        public CommandElement[] getArguments() {
+            return new CommandElement[] {
+                    GenericArguments.player(this.PLAYER)
+            };
+        }
+
+        @Override
+        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubcommands() {
+            return new GTSCommandExecutor[0];
+        }
+
+        @Override
+        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+            Player player = args.<Player>getOne(this.PLAYER).get();
+            GTSPlugin.getInstance().getStorage().fetchListings(Lists.newArrayList(
+                    listing -> listing.getLister().equals(player.getUniqueId())
+            )).thenAccept(listings -> {
+                MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+                PaginationList.Builder builder = PaginationList.builder()
+                        .title(service.parse("&e" + player.getName() + "'s Known Listings"))
+                        .linesPerPage(8);
+
+                List<Text> results = Lists.newArrayList();
+                int index = 1;
+                for(Listing listing : listings) {
+                    results.add(this.listing(listing, index++));
+                }
+                builder.contents(results);
+                builder.sendTo(src);
+            });
+
             return CommandResult.success();
         }
 
+        private Text listing(Listing listing, int index) {
+            MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+            Text result = service.parse("&7" + index + ": ");
+
+            if(listing instanceof BuyItNow) {
+                result = Text.of(result, service.parse("&bBIN &7(&6" + listing.getID() + "&7)"));
+
+                BuyItNow bin = (BuyItNow) listing;
+                boolean purchased = bin.isPurchased();
+                boolean stashed = bin.stashedForPurchaser() || bin.hasExpired();
+
+                Text PURCHASED = service.parse("&aPurchased");
+                Text STASHED = service.parse("&6Stashed");
+                Text LISTED = service.parse("&dAvailable for Purchase");
+
+                Text hover = Text.of(
+                        service.parse("&7Entry: "), Text.of(TextColors.YELLOW, Utilities.translateComponent(listing.getEntry().getName())),
+                        Text.NEW_LINE,
+                        service.parse("&7Price: &e"), Text.of(TextColors.YELLOW, Utilities.translateComponent(((BuyItNow) listing).getPrice().getText())),
+                        Text.NEW_LINE,
+                        service.parse("&7Status: "),
+                        purchased ? PURCHASED : stashed ? STASHED : LISTED
+                );
+                result = Text.builder()
+                        .onHover(TextActions.showText(hover))
+                        .append(result)
+                        .build();
+            } else {
+                result = Text.of(result, service.parse("&cAuction &7(&6" + listing.getID() + "&7)"));
+
+                Auction auction = (Auction) listing;
+                boolean stashed = auction.hasExpired() && auction.hasAnyBidsPlaced();
+
+                Text STASHED = service.parse("&6Stashed");
+                Text LISTED = service.parse("&dAvailable for Purchase");
+
+                Text hover = Text.of(
+                        service.parse("&7Entry: "), Text.of(TextColors.YELLOW, Utilities.translateComponent(listing.getEntry().getName())),
+                        Text.NEW_LINE,
+                        service.parse("&7Price: &e"), Text.of(TextColors.YELLOW, Utilities.translateComponent(new MonetaryPrice(auction.getCurrentPrice()).getText())),
+                        Text.NEW_LINE,
+                        service.parse("&7Status: "),
+                        stashed ? STASHED : LISTED
+                );
+                result = Text.builder()
+                        .onHover(TextActions.showText(hover))
+                        .append(result)
+                        .build();
+            }
+
+            return result;
+        }
     }
 }

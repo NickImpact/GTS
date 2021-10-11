@@ -55,8 +55,6 @@ public interface GTSPlugin extends ImpactorPlugin, Configurable, Depending, Tran
 
 	InternalMessagingService getMessagingService();
 
-	ImmutableList<StorageType> getMultiServerCompatibleStorageOptions();
-
 	String getPlayerDisplayName(UUID id);
 
 	default InputStream getResourceStream(String path) {

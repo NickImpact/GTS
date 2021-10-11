@@ -1,5 +1,6 @@
 package net.impactdev.gts.api.stashes;
 
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.impactor.api.Impactor;
@@ -42,7 +43,7 @@ public interface Stash {
 	 *
 	 * @return The list of items contained by this Stash
 	 */
-	List<StashedContent> getStashContents();
+	List<StashedContent<?>> getStashContents();
 
 	/**
 	 * Allows the player to claim a set of items from the stash. If any items remain in the stash
@@ -73,6 +74,8 @@ public interface Stash {
 		 * @return The builder as updated following this call
 		 */
 		StashBuilder append(Listing listing, TriState context);
+
+		StashBuilder append(Delivery delivery);
 
 	}
 

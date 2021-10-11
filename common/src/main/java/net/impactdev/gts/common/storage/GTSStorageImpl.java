@@ -28,6 +28,7 @@ package net.impactdev.gts.common.storage;
 import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
@@ -61,7 +62,6 @@ import java.util.stream.Stream;
 
 public class GTSStorageImpl implements GTSStorage {
 
-    private final GTSPlugin plugin;
     private final StorageImplementation implementation;
 
     private final LoadingCache<UUID, ReentrantLock> locks = Caffeine.newBuilder()
@@ -74,7 +74,6 @@ public class GTSStorageImpl implements GTSStorage {
             });
 
     public GTSStorageImpl(GTSPlugin plugin, StorageImplementation implementation) {
-        this.plugin = plugin;
         this.implementation = implementation;
     }
 
@@ -260,6 +259,11 @@ public class GTSStorageImpl implements GTSStorage {
 
             return results.collect(Collectors.toList());
         });
+    }
+
+    @Override
+    public CompletableFuture<Boolean> sendDelivery(Delivery delivery) {
+        return this.schedule(() -> this.implementation.sendDelivery(delivery));
     }
 
     @Override

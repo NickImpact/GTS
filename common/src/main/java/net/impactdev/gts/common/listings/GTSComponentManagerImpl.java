@@ -6,6 +6,7 @@ import com.google.gson.internal.LinkedHashTreeMap;
 import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.data.Storable;
 import net.impactdev.gts.api.data.registry.DeserializerRegistry;
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
@@ -29,6 +30,7 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
     private final Map<String, Storable.Deserializer<?>> legacy = Maps.newHashMap();
 
     private final DeserializerRegistry deserializer = new DeserializerRegistryImpl();
+    private Storable.Deserializer<Delivery> deliveryDeserializer;
 
     @Override
     public <T extends Listing> void registerListingResourceManager(Class<T> type, ResourceManager<T> deserializer) {
@@ -43,6 +45,15 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
     @Override
     public Map<Class<? extends Listing>, ResourceManager<? extends Listing>> getAllListingResourceManagers() {
         return this.listings;
+    }
+
+    @Override
+    public Storable.Deserializer<Delivery> getDeliveryDeserializer() {
+        return this.deliveryDeserializer;
+    }
+
+    public void setDeliveryDeserializer(Storable.Deserializer<Delivery> deserializer) {
+        this.deliveryDeserializer = deserializer;
     }
 
     @Override

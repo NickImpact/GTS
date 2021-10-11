@@ -25,6 +25,7 @@
 
 package net.impactdev.gts.common.storage.implementation;
 
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
@@ -97,6 +98,8 @@ public interface StorageImplementation {
     // ---------------------------------------------------------
     // New methods
     // ---------------------------------------------------------
+
+    boolean sendDelivery(Delivery delivery) throws Exception;
 
     Stash getStash(UUID user) throws Exception;
 

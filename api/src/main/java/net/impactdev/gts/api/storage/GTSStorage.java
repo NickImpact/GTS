@@ -1,5 +1,6 @@
 package net.impactdev.gts.api.storage;
 
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
@@ -48,6 +49,15 @@ public interface GTSStorage {
 	 * @return Every listing meeting the conditions specified by the passed in filters
 	 */
 	CompletableFuture<List<Listing>> fetchListings(Collection<Predicate<Listing>> filters);
+
+	/**
+	 * Sends the delivery out to its intended recipient, storing it within their stash for them
+	 * to claim when they wish to.
+	 *
+	 * @param delivery The delivery to send
+	 * @return A completable future, which has no distinct return value
+	 */
+	CompletableFuture<Boolean> sendDelivery(Delivery delivery);
 
 	/**
 	 * Retrieves the stash of the user who holds it. The stash of a user contains items purchased

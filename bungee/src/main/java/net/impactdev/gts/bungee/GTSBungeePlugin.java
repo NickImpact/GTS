@@ -142,15 +142,6 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 	}
 
 	@Override
-	public ImmutableList<StorageType> getMultiServerCompatibleStorageOptions() {
-		return ImmutableList.<StorageType>builder()
-				.add(StorageType.MYSQL, StorageType.MARIADB)
-				.add(StorageType.MONGODB)
-				.add(StorageType.POSTGRESQL)
-				.build();
-	}
-
-	@Override
 	public String getPlayerDisplayName(UUID id) {
 		return this.getBootstrap().getProxy().getPlayer(id).getName();
 	}

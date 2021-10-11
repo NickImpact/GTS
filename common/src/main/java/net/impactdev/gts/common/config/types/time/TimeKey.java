@@ -16,7 +16,7 @@ public class TimeKey extends BaseConfigKey<Time> {
 
     @Override
     public Time get(ConfigurationAdapter adapter) {
-        return new Time(adapter.getString(key, def));
+        return new Time(adapter.getString(this.key, this.def));
     }
 
 }

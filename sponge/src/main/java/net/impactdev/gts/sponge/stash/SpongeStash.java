@@ -1,6 +1,7 @@
 package net.impactdev.gts.sponge.stash;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.stashes.StashedContent;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
@@ -13,40 +14,50 @@ import java.util.UUID;
 
 public class SpongeStash implements Stash {
 
-    private final List<StashedContent> stash;
+    private final List<StashedContent<?>> stash;
 
     public SpongeStash(SpongeStashBuilder builder) {
         this.stash = builder.stash;
     }
 
     @Override
-    public List<StashedContent> getStashContents() {
+    public List<StashedContent<?>> getStashContents() {
         return this.stash;
     }
 
     @Override
     public boolean claim(UUID claimer, UUID listing) {
-        StashedContent data = this.stash.stream().filter(x -> x.getListing().getID().equals(listing)).findAny().orElseThrow(() -> new IllegalStateException("Stash claim attempt on missing Listing data"));
-        if(data.getContext() == TriState.TRUE) {
-            if(data.getListing() instanceof Auction) {
-                Auction auction = (Auction) data.getListing();
-                MonetaryPrice value = new MonetaryPrice(auction.getCurrentPrice());
-                value.reward(claimer);
+        StashedContent<?> content = this.stash.stream()
+                .filter(x -> x.getID().equals(listing))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("Stash claim attempt on missing data"));
+        if(content instanceof StashedContent.ListingContent) {
+            StashedContent.ListingContent data = (StashedContent.ListingContent) content;
+            if (data.getContext() == TriState.TRUE) {
+                if (data.getContent() instanceof Auction) {
+                    Auction auction = (Auction) data.getContent();
+                    MonetaryPrice value = new MonetaryPrice(auction.getCurrentPrice());
+                    value.reward(claimer);
 
-                return true;
+                    return true;
+                }
+            } else if (data.getContext() == TriState.FALSE) {
+                return data.getContent().getEntry().give(claimer);
+            } else {
+                if (data.getContent() instanceof Auction) {
+                    Auction auction = (Auction) data.getContent();
+                    Auction.Bid bid = auction.getCurrentBid(claimer).orElseThrow(() -> new IllegalStateException("Unable to locate bid for user where required"));
+
+                    MonetaryPrice value = new MonetaryPrice(bid.getAmount());
+                    value.reward(claimer);
+
+                    return true;
+                }
             }
-        } else if(data.getContext() == TriState.FALSE) {
-            return data.getListing().getEntry().give(claimer);
         } else {
-            if(data.getListing() instanceof Auction) {
-                Auction auction = (Auction) data.getListing();
-                Auction.Bid bid = auction.getCurrentBid(claimer).orElseThrow(() -> new IllegalStateException("Unable to locate bid for user where required"));
-
-                MonetaryPrice value = new MonetaryPrice(bid.getAmount());
-                value.reward(claimer);
-
-                return true;
-            }
+            StashedContent.DeliverableContent delivery = (StashedContent.DeliverableContent) content;
+            delivery.getContent().getContent().give(delivery.getContent().getRecipient());
+            return true;
         }
 
         return false;
@@ -54,11 +65,17 @@ public class SpongeStash implements Stash {
 
     public static class SpongeStashBuilder implements StashBuilder {
 
-        private final List<StashedContent> stash = Lists.newArrayList();
+        private final List<StashedContent<?>> stash = Lists.newArrayList();
 
         @Override
         public StashBuilder append(Listing listing, TriState context) {
-            this.stash.add(new StashedContent(listing, context));
+            this.stash.add(new StashedContent.ListingContent(listing, context));
+            return this;
+        }
+
+        @Override
+        public StashBuilder append(Delivery delivery) {
+            this.stash.add(new StashedContent.DeliverableContent(delivery, TriState.UNDEFINED));
             return this;
         }
 

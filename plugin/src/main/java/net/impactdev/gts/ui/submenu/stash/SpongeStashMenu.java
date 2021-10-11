@@ -8,6 +8,7 @@ import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.stashes.StashedContent;
 import net.impactdev.gts.api.util.TriState;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
@@ -54,10 +55,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static net.impactdev.gts.sponge.utils.Utilities.PARSER;
-import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
-
-public class SpongeStashMenu extends SpongeAsyncPage<StashedContent> implements Historical<SpongeMainMenu> {
+public class SpongeStashMenu extends SpongeAsyncPage<StashedContent<?>> implements Historical<SpongeMainMenu> {
 
     private static final ExecutorService CLAIMER = Executors.newFixedThreadPool(
             Runtime.getRuntime().availableProcessors(),
@@ -76,7 +74,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<StashedContent> implements 
         final Config lang = GTSPlugin.getInstance().getMsgConfig();
         final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
         this.applier(content -> {
-            SpongeListing listing = (SpongeListing) content.getListing();
+            SpongeListing listing = (SpongeListing) content.getContent();
 
             Display<ItemStack> display = listing.getEntry().getDisplay(viewer.getUniqueId(), listing);
             ItemStack item = display.get();
@@ -168,148 +166,160 @@ public class SpongeStashMenu extends SpongeAsyncPage<StashedContent> implements 
                 AtomicBoolean ready = new AtomicBoolean(true);
                 CountDownLatch finished = new CountDownLatch(this.getContents().size());
 
-                for(StashedContent entry : ImmutableList.copyOf(this.getContents())) {
-                    while(!ready.get()) {}
+                for(StashedContent<?> entry : ImmutableList.copyOf(this.getContents())) {
+                    while(!ready.get()) {
+                        try {
+                            //noinspection BusyWait
+                            Thread.sleep(50);
+                        } catch (InterruptedException e) {
+                            ExceptionWriter.write(e);
+                        }
+                    }
                     ready.set(false);
 
-                    Listing listing = entry.getListing();
-                    boolean lister = listing.getLister().equals(this.getViewer().getUniqueId());
+                    if(entry instanceof StashedContent.ListingContent) {
+                        Listing listing = ((StashedContent.ListingContent) entry).getContent();
+                        boolean lister = listing.getLister().equals(this.getViewer().getUniqueId());
 
-                    GTSPlugin.getInstance().getMessagingService().requestClaim(
-                            listing.getID(),
-                            this.getViewer().getUniqueId(),
-                            null,
-                            listing instanceof Auction
-                    ).thenAccept(response -> {
-                        // Handle message accordingly
-                        //
-                        // NOTE: We don't care about non-successful requests here, as they shouldn't affect the
-                        // user's stash and will therefore not end up counted.
-                        if (response.wasSuccessful()) {
-                            if(lister) {
-                                Impactor.getInstance().getScheduler().executeSync(() -> {
-                                    try {
-                                        if (response.isAuction()) {
-                                            ClaimMessage.Response.AuctionResponse actual = (ClaimMessage.Response.AuctionResponse) response;
-
-                                            Auction auction = (Auction) listing;
-                                            boolean hasBids = !auction.getBids().isEmpty();
-
-                                            // If an auction has bids, return the highest bid value.
-                                            // Otherwise, return the entry element
-                                            if (hasBids) {
-                                                if (new MonetaryPrice(auction.getHighBid().get().getSecond().getAmount()).reward(this.getViewer().getUniqueId())) {
-                                                    successful.incrementAndGet();
-                                                } else {
-                                                    // Re-append our data as the claim request will have been updated
-                                                    GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
-                                                            auction.getID(),
-                                                            actual.hasListerClaimed(),
-                                                            actual.hasWinnerClaimed(),
-                                                            actual.getAllOtherClaimers()
-                                                    );
-                                                }
-                                            } else {
-                                                // No bids, return the listing instead
-                                                if (listing.getEntry().give(this.getViewer().getUniqueId())) {
-                                                    successful.incrementAndGet();
-                                                } else {
-                                                    // Re-append data as our claim request will have deleted it
-                                                    GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
-                                                            auction.getID(),
-                                                            actual.hasListerClaimed(),
-                                                            actual.hasWinnerClaimed(),
-                                                            actual.getAllOtherClaimers()
-                                                    );
-                                                }
-                                            }
-                                        } else {
-                                            BuyItNow bin = (BuyItNow) listing;
-                                            if (bin.isPurchased()) {
-                                                if (bin.getPrice().reward(this.getViewer().getUniqueId())) {
-                                                    successful.incrementAndGet();
-                                                } else {
-                                                    // Re-append data as our claim request will have deleted it
-                                                    GTSPlugin.getInstance().getStorage().publishListing(BuyItNow.builder()
-                                                            .from(bin)
-                                                            .purchased()
-                                                            .expiration(LocalDateTime.now())
-                                                            .build()
-                                                    );
-                                                }
-                                            } else {
-                                                // Listing expired
-                                                if (listing.getEntry().give(this.getViewer().getUniqueId())) {
-                                                    successful.incrementAndGet();
-                                                } else {
-                                                    // Re-append data as our claim request will have deleted it
-                                                    GTSPlugin.getInstance().getStorage().publishListing(BuyItNow.builder()
-                                                            .from(bin)
-                                                            .expiration(LocalDateTime.now())
-                                                            .build()
-                                                    );
-                                                }
-                                            }
-                                        }
-                                    } finally {
-                                        ready.set(true);
-                                    }
-                                });
-                            } else {
-                                if(response.isAuction()) {
-                                    Auction auction = (Auction) listing;
-                                    ClaimMessage.Response.AuctionResponse actual = (ClaimMessage.Response.AuctionResponse) response;
-
+                        GTSPlugin.getInstance().getMessagingService().requestClaim(
+                                listing.getID(),
+                                this.getViewer().getUniqueId(),
+                                null,
+                                listing instanceof Auction
+                        ).thenAccept(response -> {
+                            // Handle message accordingly
+                            //
+                            // NOTE: We don't care about non-successful requests here, as they shouldn't affect the
+                            // user's stash and will therefore not end up counted.
+                            if (response.wasSuccessful()) {
+                                if (lister) {
                                     Impactor.getInstance().getScheduler().executeSync(() -> {
                                         try {
-                                            if(entry.getContext() == TriState.UNDEFINED) {
-                                                Auction.Bid bid = auction.getCurrentBid(this.getViewer().getUniqueId()).orElseThrow(() -> new IllegalStateException("Unable to locate bid for user where required"));
+                                            if (response.isAuction()) {
+                                                ClaimMessage.Response.AuctionResponse actual = (ClaimMessage.Response.AuctionResponse) response;
 
-                                                MonetaryPrice value = new MonetaryPrice(bid.getAmount());
-                                                value.reward(this.getViewer().getUniqueId());
+                                                Auction auction = (Auction) listing;
+                                                boolean hasBids = !auction.getBids().isEmpty();
 
-                                                successful.incrementAndGet();
-                                            } else if (listing.getEntry().give(this.getViewer().getUniqueId())) {
-                                                successful.incrementAndGet();
+                                                // If an auction has bids, return the highest bid value.
+                                                // Otherwise, return the entry element
+                                                if (hasBids) {
+                                                    if (new MonetaryPrice(auction.getHighBid().get().getSecond().getAmount()).reward(this.getViewer().getUniqueId())) {
+                                                        successful.incrementAndGet();
+                                                    } else {
+                                                        // Re-append our data as the claim request will have been updated
+                                                        GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
+                                                                auction.getID(),
+                                                                actual.hasListerClaimed(),
+                                                                actual.hasWinnerClaimed(),
+                                                                actual.getAllOtherClaimers()
+                                                        );
+                                                    }
+                                                } else {
+                                                    // No bids, return the listing instead
+                                                    if (listing.getEntry().give(this.getViewer().getUniqueId())) {
+                                                        successful.incrementAndGet();
+                                                    } else {
+                                                        // Re-append data as our claim request will have deleted it
+                                                        GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
+                                                                auction.getID(),
+                                                                actual.hasListerClaimed(),
+                                                                actual.hasWinnerClaimed(),
+                                                                actual.getAllOtherClaimers()
+                                                        );
+                                                    }
+                                                }
                                             } else {
-                                                // Re-append data as our claim request will have deleted it
-                                                GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
-                                                        auction.getID(),
-                                                        actual.hasListerClaimed(),
-                                                        actual.hasWinnerClaimed(),
-                                                        actual.getAllOtherClaimers()
-                                                );
+                                                BuyItNow bin = (BuyItNow) listing;
+                                                if (bin.isPurchased()) {
+                                                    if (bin.getPrice().reward(this.getViewer().getUniqueId())) {
+                                                        successful.incrementAndGet();
+                                                    } else {
+                                                        // Re-append data as our claim request will have deleted it
+                                                        GTSPlugin.getInstance().getStorage().publishListing(BuyItNow.builder()
+                                                                .from(bin)
+                                                                .purchased()
+                                                                .expiration(LocalDateTime.now())
+                                                                .build()
+                                                        );
+                                                    }
+                                                } else {
+                                                    // Listing expired
+                                                    if (listing.getEntry().give(this.getViewer().getUniqueId())) {
+                                                        successful.incrementAndGet();
+                                                    } else {
+                                                        // Re-append data as our claim request will have deleted it
+                                                        GTSPlugin.getInstance().getStorage().publishListing(BuyItNow.builder()
+                                                                .from(bin)
+                                                                .expiration(LocalDateTime.now())
+                                                                .build()
+                                                        );
+                                                    }
+                                                }
                                             }
                                         } finally {
                                             ready.set(true);
                                         }
                                     });
                                 } else {
-                                    // Special case: The user directly purchased the listing, but rewarding failed
-                                    // at time of purchase.
+                                    if (response.isAuction()) {
+                                        Auction auction = (Auction) listing;
+                                        ClaimMessage.Response.AuctionResponse actual = (ClaimMessage.Response.AuctionResponse) response;
 
-                                    BuyItNow bin = (BuyItNow) listing;
-                                    if(bin.stashedForPurchaser()) {
                                         Impactor.getInstance().getScheduler().executeSync(() -> {
                                             try {
-                                                if(listing.getEntry().give(this.getViewer().getUniqueId())) {
-                                                    successful.getAndIncrement();
+                                                if (entry.getContext() == TriState.UNDEFINED) {
+                                                    Auction.Bid bid = auction.getCurrentBid(this.getViewer().getUniqueId()).orElseThrow(() -> new IllegalStateException("Unable to locate bid for user where required"));
+
+                                                    MonetaryPrice value = new MonetaryPrice(bid.getAmount());
+                                                    value.reward(this.getViewer().getUniqueId());
+
+                                                    successful.incrementAndGet();
+                                                } else if (listing.getEntry().give(this.getViewer().getUniqueId())) {
+                                                    successful.incrementAndGet();
                                                 } else {
                                                     // Re-append data as our claim request will have deleted it
-                                                    GTSPlugin.getInstance().getStorage().publishListing(BuyItNow.builder()
-                                                            .from(bin)
-                                                            .build()
+                                                    GTSPlugin.getInstance().getStorage().appendOldClaimStatus(
+                                                            auction.getID(),
+                                                            actual.hasListerClaimed(),
+                                                            actual.hasWinnerClaimed(),
+                                                            actual.getAllOtherClaimers()
                                                     );
                                                 }
                                             } finally {
                                                 ready.set(true);
                                             }
                                         });
+                                    } else {
+                                        // Special case: The user directly purchased the listing, but rewarding failed
+                                        // at time of purchase.
+
+                                        BuyItNow bin = (BuyItNow) listing;
+                                        if (bin.stashedForPurchaser()) {
+                                            Impactor.getInstance().getScheduler().executeSync(() -> {
+                                                try {
+                                                    if (listing.getEntry().give(this.getViewer().getUniqueId())) {
+                                                        successful.getAndIncrement();
+                                                    } else {
+                                                        // Re-append data as our claim request will have deleted it
+                                                        GTSPlugin.getInstance().getStorage().publishListing(BuyItNow.builder()
+                                                                .from(bin)
+                                                                .build()
+                                                        );
+                                                    }
+                                                } finally {
+                                                    ready.set(true);
+                                                }
+                                            });
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }).get(2, TimeUnit.SECONDS);
+                        }).get(2, TimeUnit.SECONDS);
+                    } else {
+                        StashedContent.DeliverableContent delivery = (StashedContent.DeliverableContent) entry;
+                        delivery.getContent().getContent().give(this.getViewer().getUniqueId());
+                    }
                     finished.countDown();
                 }
 
@@ -372,7 +382,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<StashedContent> implements 
     }
 
     @Override
-    protected Consumer<List<StashedContent>> applyWhenReady() {
+    protected Consumer<List<StashedContent<?>>> applyWhenReady() {
         return stash -> {};
     }
 

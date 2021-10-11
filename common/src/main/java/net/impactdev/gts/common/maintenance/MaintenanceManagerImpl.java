@@ -1,6 +1,6 @@
 package net.impactdev.gts.common.maintenance;
 
-import net.impactdev.gts.api.events.MaintenanceModeUpdateEvent;
+import net.impactdev.gts.api.events.maintenance.MaintenanceModeUpdateEvent;
 import net.impactdev.gts.api.maintenance.MaintenanceManager;
 import net.impactdev.gts.api.maintenance.MaintenanceMode;
 import net.impactdev.impactor.api.event.annotations.Subscribe;

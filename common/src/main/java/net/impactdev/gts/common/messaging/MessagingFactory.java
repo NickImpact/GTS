@@ -7,11 +7,22 @@ import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.messaging.redis.RedisMessenger;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.impactor.api.storage.StorageType;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public abstract class MessagingFactory<P extends GTSPlugin> {
 
 	private final P plugin;
+	private static final Set<StorageType> multiServerCompatible = new LinkedHashSet<>();
+	static {
+		multiServerCompatible.add(StorageType.MYSQL);
+		multiServerCompatible.add(StorageType.MARIADB);
+		multiServerCompatible.add(StorageType.POSTGRESQL);
+		multiServerCompatible.add(StorageType.MONGODB);
+	}
 
 	public MessagingFactory(P plugin) {
 		this.plugin = plugin;
@@ -36,7 +47,7 @@ public abstract class MessagingFactory<P extends GTSPlugin> {
 		if(!fallback && this.plugin.getConfiguration().get(ConfigKeys.USE_MULTI_SERVER)) {
 			this.plugin.getPluginLogger().info("Loading messaging service... [" + messageType.toUpperCase() + "]");
 
-			if(!this.plugin.getMultiServerCompatibleStorageOptions().contains(this.plugin.getConfiguration().get(ConfigKeys.STORAGE_METHOD))) {
+			if(!multiServerCompatible.contains(this.plugin.getConfiguration().get(ConfigKeys.STORAGE_METHOD))) {
 				new PrettyPrinter(80)
 						.add("Invalid Storage Type/Messaging Service Combination").center()
 						.hr('-')
@@ -51,7 +62,8 @@ public abstract class MessagingFactory<P extends GTSPlugin> {
 						.add("  - PostgreSQL")
 						.hr('-')
 						.add("Alternatively, you can switch your server back to Single Server Mode.")
-						.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.WARNING);
+						.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.ERROR);
+				throw new IllegalStateException("Invalid messaging/storage configuration");
 			}
 		} else {
 			this.plugin.getPluginLogger().info("Loading messaging service... [Single Server Mode]");

@@ -27,3 +27,10 @@ CREATE TABLE `{prefix}stashes` (
     `data`              TEXT            NOT NULL,
     PRIMARY KEY (`uuid`)
 ) DEFAULT CHARSET = utf8;
+
+CREATE TABLE `{prefix}deliveries` (
+    `id`                VARCHAR(36)     NOT NULL,
+    `target`            VARCHAR(36)     NOT NULL,
+    `delivery`          MEDIUMTEXT      NOT NULL,
+    PRIMARY KEY (`id`)
+) DEFAULT CHARSET = utf8;

@@ -143,13 +143,6 @@ public class GTSVelocityPlugin extends AbstractVelocityPlugin implements GTSPlug
     }
 
     @Override
-    public ImmutableList<StorageType> getMultiServerCompatibleStorageOptions() {
-        return ImmutableList.<StorageType>builder()
-                .add(StorageType.MYSQL, StorageType.MARIADB)
-                .build();
-    }
-
-    @Override
     public String getPlayerDisplayName(UUID id) {
         return this.getBootstrap().getProxy().getPlayer(id).map(Player::getUsername).orElse("Unknown");
     }

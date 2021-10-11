@@ -74,19 +74,19 @@ public class SpongeAdminInterpreters implements Interpreter {
                                 } else {
                                     Auction auction = (Auction) listing;
                                     Delivery delivery = Delivery.builder()
-                                            .lister(response.getActor())
+                                            .source(response.getActor())
                                             .recipient(auction.getLister())
-                                            .entry(auction.getEntry())
+                                            .content(auction.getEntry())
                                             .build();
-                                    GTSPlugin.getInstance().getStorage().publishListing(delivery);
+                                    GTSPlugin.getInstance().getStorage().sendDelivery(delivery);
 
                                     for(Map.Entry<UUID, Auction.Bid> bid : auction.getUniqueBiddersWithHighestBids().entrySet()) {
                                         Delivery bidder = Delivery.builder()
-                                                .lister(response.getActor())
+                                                .source(response.getActor())
                                                 .recipient(bid.getKey())
-                                                .entry(new MonetaryEntry(bid.getValue().getAmount()))
+                                                .content(new MonetaryEntry(bid.getValue().getAmount()))
                                                 .build();
-                                        GTSPlugin.getInstance().getStorage().publishListing(bidder);
+                                        GTSPlugin.getInstance().getStorage().sendDelivery(bidder);
                                     }
                                 }
                                 player.ifPresent(source -> source.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN_STASH))));
