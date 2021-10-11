@@ -1,4 +1,4 @@
-package net.impactdev.gts.api.events;
+package net.impactdev.gts.api.events.maintenance;
 
 import net.impactdev.gts.api.maintenance.MaintenanceMode;
 import net.impactdev.impactor.api.event.annotations.Param;
