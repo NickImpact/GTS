@@ -48,6 +48,7 @@ import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
+import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.NotificationSetting;
@@ -56,6 +57,7 @@ import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
+import net.impactdev.gts.common.messaging.messages.deliveries.ClaimDeliveryImpl;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
@@ -642,6 +644,38 @@ public class ConfigurateStorage implements StorageImplementation {
                     .error(ErrorCodes.LISTING_MISSING)
                     .build();
         }
+    }
+
+    @Override
+    public ClaimDelivery.Response claimDelivery(ClaimDelivery.Request request) throws Exception {
+        UUID target = request.getActor();
+        Path path = this.fileGroups.get(Group.USERS).resolve(target.toString().substring(0, 2)).resolve("delivery_" + request.getDeliveryID() + this.extension);
+        File file = path.toFile();
+
+        if(file.exists()) {
+            this.saveFile(path, null);
+            boolean successful = file.exists();
+
+            ClaimDeliveryImpl.ClaimDeliveryResponseImpl.DeliveryClaimResponseBuilder builder = ClaimDeliveryImpl.ClaimDeliveryResponseImpl.builder()
+                    .request(request.getID())
+                    .delivery(request.getDeliveryID())
+                    .actor(request.getActor());
+
+            if(successful) {
+                builder.successful();
+            } else {
+                builder.error(ErrorCodes.FATAL_ERROR);
+            }
+
+            return builder.build();
+        }
+
+        return ClaimDeliveryImpl.ClaimDeliveryResponseImpl.builder()
+                .request(request.getID())
+                .delivery(request.getDeliveryID())
+                .actor(request.getActor())
+                .error(ErrorCodes.DELIVERY_MISSING)
+                .build();
     }
 
     private ConfigurationNode readFile(Group group, UUID uuid) throws IOException {

@@ -9,6 +9,7 @@ import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
 import net.impactdev.impactor.api.json.factory.JObject;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 public class SpongeDelivery implements Delivery {
@@ -43,13 +44,13 @@ public class SpongeDelivery implements Delivery {
     }
 
     @Override
-    public Entry<?, ?> getContent() {
+    public SpongeEntry<?> getContent() {
         return this.content;
     }
 
     @Override
-    public LocalDateTime getExpiration() {
-        return this.expiration;
+    public Optional<LocalDateTime> getExpiration() {
+        return Optional.ofNullable(this.expiration);
     }
 
     @Override
@@ -71,7 +72,9 @@ public class SpongeDelivery implements Delivery {
                 .add("source", this.source.toString())
                 .add("recipient", this.recipient.toString())
                 .add("content", this.content.serialize())
-                .add("expiration", this.expiration.toString()));
+                .consume(o -> {
+                    this.getExpiration().ifPresent(e -> o.add("expiration", e.toString()));
+                }));
 
         return result;
     }

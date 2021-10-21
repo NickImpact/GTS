@@ -101,7 +101,7 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	}
 
 	@Override
-	public Display<ItemStack> getDisplay(UUID viewer, Listing listing) {
+	public Display<ItemStack> getDisplay(UUID viewer) {
 		if(this.display == null) {
 			ItemStack.Builder designer = ItemStack.builder();
 			designer.fromSnapshot(this.getOrCreateElement());

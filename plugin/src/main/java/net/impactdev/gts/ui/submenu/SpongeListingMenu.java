@@ -103,8 +103,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 						}
 
 						return !expired;
-				},
-				listing -> !(listing instanceof Delivery)
+				}
 		);
 
 		this.editor = editor;
@@ -128,7 +127,7 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		final Config lang = GTSPlugin.getInstance().getMsgConfig();
 		final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
 		this.applier(listing -> {
-			Display<ItemStack> display = listing.getEntry().getDisplay(viewer.getUniqueId(), listing);
+			Display<ItemStack> display = listing.getEntry().getDisplay(viewer.getUniqueId());
 			ItemStack item = ItemStack.builder().from(display.get()).build();
 
 			Optional<List<Text>> lore = item.get(Keys.ITEM_LORE);

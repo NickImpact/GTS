@@ -56,7 +56,7 @@ public interface Listing extends Storable {
 	 * @return The display parameters of this listing
 	 */
 	default Display<?> getDisplay(UUID viewer) {
-		return this.getEntry().getDisplay(viewer, this);
+		return this.getEntry().getDisplay(viewer);
 	}
 
 	/**

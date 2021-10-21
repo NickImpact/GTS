@@ -6,6 +6,7 @@ import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.utilities.Builder;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -52,9 +53,9 @@ public interface Delivery extends Storable {
      * Marks the date this delivery can expire. If the delivery is not claimed by its expiration date,
      * it will no longer be claimable by the recipient.
      *
-     * @return The date and time of expiration for the delivery
+     * @return The date and time of expiration for the delivery, or empty to represent no expiration
      */
-    LocalDateTime getExpiration();
+    Optional<LocalDateTime> getExpiration();
 
     /**
      * Sends the delivery out to the recipient, informing them if they are online. Otherwise,

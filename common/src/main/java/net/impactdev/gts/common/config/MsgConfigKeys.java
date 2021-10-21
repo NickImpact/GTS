@@ -651,6 +651,12 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	public static final ConfigKey<String> SAFE_MODE_FEEDBACK = stringKey("general.feedback.safe-mode", "{{gts:error}} &cThe plugin is currently in safe mode! All functionality is disabled! Reason: &7(&c{{gts:error_code}}&7)");
 
+	public static final ConfigKey<List<String>> DELIVERY_INFO = listKey("deliveries.info", Lists.newArrayList(
+			"&7Delivered by: &e{{gts:delivery_source}}"
+	));
+
+	public static final ConfigKey<String> DELIVERY_EXPIRATION_INFO = stringKey("deliveries.expire-tag", "&7Expires in: &e{{gts:time}}");
+
 	private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
 

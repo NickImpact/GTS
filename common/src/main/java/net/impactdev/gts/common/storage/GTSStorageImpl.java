@@ -31,6 +31,7 @@ import com.github.benmanes.caffeine.cache.LoadingCache;
 import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
+import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.impactor.api.Impactor;
@@ -225,6 +226,20 @@ public class GTSStorageImpl implements GTSStorage {
             try {
                 lock.lock();
                 return this.implementation.processPurchase(request);
+            } finally {
+                lock.unlock();
+            }
+        });
+    }
+
+    @Override
+    public CompletableFuture<ClaimDelivery.Response> claimDelivery(ClaimDelivery.Request request) {
+        return this.schedule(() -> {
+            ReentrantLock lock = this.locks.get(request.getDeliveryID());
+
+            try {
+                lock.lock();
+                return this.implementation.claimDelivery(request);
             } finally {
                 lock.unlock();
             }

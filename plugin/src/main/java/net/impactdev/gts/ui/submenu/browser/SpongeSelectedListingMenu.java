@@ -113,7 +113,7 @@ public class SpongeSelectedListingMenu {
 
     private void update() {
         SpongeIcon icon = new SpongeIcon(this.listing.getEntry()
-                .getDisplay(this.viewer.getUniqueId(), this.listing)
+                .getDisplay(this.viewer.getUniqueId())
                 .get()
         );
         this.display.setSlot(13, icon);
@@ -135,7 +135,7 @@ public class SpongeSelectedListingMenu {
 
         final Config lang = GTSPlugin.getInstance().getMsgConfig();
         final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        Display<ItemStack> display = this.listing.getEntry().getDisplay(this.viewer.getUniqueId(), this.listing);
+        Display<ItemStack> display = this.listing.getEntry().getDisplay(this.viewer.getUniqueId());
         ItemStack item = display.get();
 
         Optional<List<Text>> lore = item.get(Keys.ITEM_LORE);
@@ -169,7 +169,7 @@ public class SpongeSelectedListingMenu {
         item.offer(Keys.ITEM_LORE, result);
 
         SpongeIcon icon = new SpongeIcon(this.listing.getEntry()
-                .getDisplay(this.viewer.getUniqueId(), this.listing)
+                .getDisplay(this.viewer.getUniqueId())
                 .get()
         );
         builder.slot(icon, 13);

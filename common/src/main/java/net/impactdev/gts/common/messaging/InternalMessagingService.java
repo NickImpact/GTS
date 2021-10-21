@@ -30,6 +30,7 @@ import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
+import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
@@ -213,5 +214,7 @@ public interface InternalMessagingService {
     CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive);
 
     CompletableFuture<ForceDeleteMessage.Response> requestForcedDeletion(UUID listing, UUID actor, boolean give);
+
+    CompletableFuture<ClaimDelivery.Response> requestDeliveryClaim(UUID delivery, UUID actor);
 
 }

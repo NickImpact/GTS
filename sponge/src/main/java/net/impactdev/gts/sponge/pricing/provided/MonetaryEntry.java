@@ -55,7 +55,7 @@ public class MonetaryEntry extends SpongeEntry<BigDecimal> {
     }
 
     @Override
-    public Display<ItemStack> getDisplay(UUID viewer, Listing listing) {
+    public Display<ItemStack> getDisplay(UUID viewer) {
         return () -> ItemStack.builder()
                 .itemType(ItemTypes.GOLD_INGOT)
                 .add(Keys.DISPLAY_NAME, Text.of(this.getName()))

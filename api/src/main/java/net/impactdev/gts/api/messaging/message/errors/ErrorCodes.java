@@ -23,6 +23,9 @@ public class ErrorCodes {
     public static final ErrorCode OUTBID = create("OUTBID", "Another user has already placed a larger bid");
     public static final ErrorCode BIDS_PLACED = create("BIDS_PRESENT", "At least one bid has already been placed on your auction");
 
+    // Deliveries
+    public static final ErrorCode DELIVERY_MISSING = create("DELIVERY_MISSING", "Unable to locate the target delivery");
+
     // Fatal
     public static final ErrorCode FATAL_ERROR = create("FATAL", "A fatal error occurred...");
     public static final ErrorCode UNKNOWN = create("UNKNOWN", "Literally no idea what happened");

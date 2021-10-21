@@ -5,6 +5,7 @@ import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
+import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.PlayerSettings;
@@ -118,6 +119,8 @@ public interface GTSStorage {
 	CompletableFuture<BuyItNowMessage.Remove.Response> processListingRemoveRequest(BuyItNowMessage.Remove.Request request);
 
 	CompletableFuture<BuyItNowMessage.Purchase.Response> processPurchase(BuyItNowMessage.Purchase.Request request);
+
+	CompletableFuture<ClaimDelivery.Response> claimDelivery(ClaimDelivery.Request request);
 
 	//------------------------------------------------------------------------------------------------------------------
 	//

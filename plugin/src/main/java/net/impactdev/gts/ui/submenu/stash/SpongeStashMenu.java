@@ -4,12 +4,15 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.stashes.StashedContent;
 import net.impactdev.gts.api.util.TriState;
+import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
+import net.impactdev.gts.sponge.deliveries.SpongeDelivery;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
 import net.impactdev.impactor.api.Impactor;
@@ -46,6 +49,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -74,46 +78,75 @@ public class SpongeStashMenu extends SpongeAsyncPage<StashedContent<?>> implemen
         final Config lang = GTSPlugin.getInstance().getMsgConfig();
         final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
         this.applier(content -> {
-            SpongeListing listing = (SpongeListing) content.getContent();
+            if(content instanceof StashedContent.ListingContent) {
+                SpongeListing listing = (SpongeListing) content.getContent();
 
-            Display<ItemStack> display = listing.getEntry().getDisplay(viewer.getUniqueId(), listing);
-            ItemStack item = display.get();
+                Display<ItemStack> display = listing.getEntry().getDisplay(viewer.getUniqueId());
+                ItemStack item = display.get();
 
-            Optional<List<Text>> lore = item.get(Keys.ITEM_LORE);
-            lore.ifPresent(texts -> texts.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR))));
+                Optional<List<Text>> lore = item.get(Keys.ITEM_LORE);
+                lore.ifPresent(texts -> texts.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR))));
 
-            Supplier<List<Text>> append = () -> {
-                List<Text> result = Lists.newArrayList();
-                if(listing instanceof Auction) {
+                List<Text> fill = Lists.newArrayList();
+                if (listing instanceof Auction) {
                     Auction auction = (Auction) listing;
                     List<String> input;
-                    if(auction.getBids().size() > 1) {
+                    if (auction.getBids().size() > 1) {
                         input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_BIDS);
-                    } else if(auction.getBids().size() == 1) {
+                    } else if (auction.getBids().size() == 1) {
                         input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_SINGLE_BID);
                     } else {
                         input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_NO_BIDS);
                     }
                     List<Supplier<Object>> sources = Lists.newArrayList(() -> auction);
-                    result.addAll(service.parse(input, sources));
-                } else if(listing instanceof BuyItNow) {
+                    fill.addAll(service.parse(input, sources));
+                } else if (listing instanceof BuyItNow) {
                     BuyItNow bin = (BuyItNow) listing;
 
                     List<String> input = lang.get(MsgConfigKeys.UI_BIN_DETAILS);
                     List<Supplier<Object>> sources = Lists.newArrayList(() -> bin);
-                    result.addAll(service.parse(input, sources));
+                    fill.addAll(service.parse(input, sources));
                 }
-                return result;
-            };
-            List<Text> result = lore.orElse(Lists.newArrayList());
-            result.addAll(append.get());
-            item.offer(Keys.ITEM_LORE, result);
 
-            SpongeIcon icon = new SpongeIcon(item);
-            icon.addListener(clickable -> {
-                new SpongeSelectedListingMenu(this.getViewer(), listing, () -> new SpongeStashMenu(this.getViewer()), true, false).open();
-            });
-            return icon;
+                List<Text> result = lore.orElse(Lists.newArrayList());
+                result.addAll(fill);
+                item.offer(Keys.ITEM_LORE, result);
+
+                SpongeIcon icon = new SpongeIcon(item);
+                icon.addListener(clickable -> {
+                    new SpongeSelectedListingMenu(this.getViewer(), listing, () -> new SpongeStashMenu(this.getViewer()), true, false).open();
+                });
+                return icon;
+            } else {
+                SpongeDelivery delivery = (SpongeDelivery) content.getContent();
+                Display<ItemStack> display = delivery.getContent().getDisplay(viewer.getUniqueId());
+                ItemStack item = display.get();
+
+                Optional<List<Text>> lore = item.get(Keys.ITEM_LORE);
+                lore.ifPresent(texts -> texts.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR))));
+
+                List<Text> fill = Lists.newArrayList();
+                List<String> buffer = Lists.newArrayList();
+                buffer.addAll(lang.get(MsgConfigKeys.DELIVERY_INFO));
+                if(delivery.getExpiration().isPresent()) {
+                    buffer.add(lang.get(MsgConfigKeys.DELIVERY_EXPIRATION_INFO));
+                }
+
+                List<Supplier<Object>> sources = Lists.newArrayList(
+                        () -> delivery,
+                        () -> delivery.getContent().getName()
+                );
+                fill.addAll(service.parse(buffer, sources));
+                item.offer(Keys.ITEM_LORE, fill);
+
+                SpongeIcon icon = new SpongeIcon(item);
+                icon.addListener(clickable -> {
+                    this.claimDelivery(delivery, () -> {});
+                    this.getViewer().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED), sources));
+                    this.getView().close(this.getViewer());
+                });
+                return icon;
+            }
         });
     }
 
@@ -318,7 +351,7 @@ public class SpongeStashMenu extends SpongeAsyncPage<StashedContent<?>> implemen
                         }).get(2, TimeUnit.SECONDS);
                     } else {
                         StashedContent.DeliverableContent delivery = (StashedContent.DeliverableContent) entry;
-                        delivery.getContent().getContent().give(this.getViewer().getUniqueId());
+                        this.claimDelivery((SpongeDelivery) delivery.getContent(), () -> ready.set(true)).join();
                     }
                     finished.countDown();
                 }
@@ -389,5 +422,21 @@ public class SpongeStashMenu extends SpongeAsyncPage<StashedContent<?>> implemen
     @Override
     public Optional<Supplier<SpongeMainMenu>> getParent() {
         return Optional.of(() -> new SpongeMainMenu(this.getViewer()));
+    }
+
+    private CompletableFuture<Void> claimDelivery(SpongeDelivery delivery, Runnable callback) {
+        return CompletableFutureManager.makeFuture(() -> {
+            GTSPlugin.getInstance().getMessagingService().requestDeliveryClaim(
+                    delivery.getID(),
+                    this.getViewer().getUniqueId()
+            ).thenAccept(response -> {
+                if(response.wasSuccessful()) {
+                    Impactor.getInstance().getScheduler().executeSync(() -> {
+                        delivery.getContent().give(this.getViewer().getUniqueId());
+                        callback.run();
+                    });
+                }
+            });
+        });
     }
 }

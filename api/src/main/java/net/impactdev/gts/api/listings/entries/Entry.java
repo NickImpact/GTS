@@ -1,6 +1,7 @@
 package net.impactdev.gts.api.listings.entries;
 
 import net.impactdev.gts.api.data.Storable;
+import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.kyori.adventure.text.TextComponent;
@@ -47,15 +48,12 @@ public interface Entry<T, I> extends Storable {
 	TextComponent getDescription();
 
 	/**
-	 * Represents how this entry should be displayed to a user querying this listing.
+	 * Represents how this entry should be displayed to a user querying this entry.
 	 *
 	 * @param viewer The ID of the user viewing the display
-	 * @param listing This listing so any and all data can be processed that belongs here rather than the entry
-	 * element
 	 * @return The overall display of the listing.
 	 */
-	Display<I> getDisplay(UUID viewer, Listing listing);
-
+	Display<I> getDisplay(UUID viewer);
 	/**
 	 * Attempts to give the listing to the recipient. If the recipient doesn't currently meet the requirements to
 	 * receive this listing, such as having a full inventory, this listing will be cached such that they can receive it

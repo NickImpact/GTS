@@ -37,6 +37,7 @@ import net.impactdev.gts.api.data.Storable;
 import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
+import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.NotificationSetting;
 import net.impactdev.gts.api.player.PlayerSettings;
@@ -45,6 +46,7 @@ import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.common.messaging.messages.deliveries.ClaimDeliveryImpl;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
@@ -109,6 +111,8 @@ public class SqlImplementation implements StorageImplementation {
 
 	private static final String ADD_DELIVERY = "INSERT INTO `{prefix}deliveries` (id, target, delivery) VALUES (?, ?, ?)";
 	private static final String GET_DELIVERIES = "SELECT id, delivery FROM `{prefix}deliveries` WHERE target=?";
+	private static final String GET_DELIVERY = "SELECT delivery FROM `{prefix}deliveries` WHERE id=?";
+	private static final String DELETE_DELIVERY = "DELETE FROM `{prefix}deliveries` WHERE id=?";
 
 	private final GTSPlugin plugin;
 
@@ -876,6 +880,34 @@ public class SqlImplementation implements StorageImplementation {
 					.error(ErrorCodes.LISTING_MISSING)
 					.build();
 		}
+	}
+
+	@Override
+	public ClaimDelivery.Response claimDelivery(ClaimDelivery.Request request) throws Exception {
+		return this.query(GET_DELIVERY, (connection, ps) -> {
+			ps.setString(1, request.getDeliveryID().toString());
+			return this.results(ps, results -> {
+				ClaimDeliveryImpl.ClaimDeliveryResponseImpl.DeliveryClaimResponseBuilder builder = ClaimDeliveryImpl.ClaimDeliveryResponseImpl.builder();
+				builder.request(request.getID());
+				builder.delivery(request.getDeliveryID());
+				builder.actor(request.getActor());
+				if(results.next()) {
+					boolean delete = this.query(DELETE_DELIVERY, (c, p) -> {
+						p.setString(1, request.getDeliveryID().toString());
+						return p.executeUpdate() != 0;
+					});
+					if(delete) {
+						builder.successful();
+					} else {
+						builder.error(ErrorCodes.FATAL_ERROR);
+					}
+				} else {
+					builder.error(ErrorCodes.DELIVERY_MISSING);
+				}
+
+				return builder.build();
+			});
+		});
 	}
 
 	private boolean tableExists(String table) throws SQLException {

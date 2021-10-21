@@ -49,7 +49,7 @@ public class TestEntry implements Entry<TestEntry.TestData, Void> {
     }
 
     @Override
-    public Display<Void> getDisplay(UUID viewer, Listing listing) {
+    public Display<Void> getDisplay(UUID viewer) {
         return null;
     }
 

@@ -88,6 +88,13 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 			source.ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST))));
 
+			try {
+				listing.serialize();
+			} catch (Exception e) {
+				source.ifPresent(player -> player.sendMessage(parser.parse("{{gts:error}} There's an issue with your listing, so we cancelled the list attempt!")));
+				ExceptionWriter.write(e);
+			}
+
 			// Check if the user attempting to list a listing has already hit the max amount allowed for a player
 			boolean hasMax = this.hasMaxListings(lister).get(2, TimeUnit.SECONDS);
 			if(hasMax) {

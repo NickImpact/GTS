@@ -31,6 +31,7 @@ import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
+import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.PlayerSettings;
@@ -142,4 +143,6 @@ public interface StorageImplementation {
     BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception;
 
     ForceDeleteMessage.Response processForcedDeletion(ForceDeleteMessage.Request request) throws Exception;
+
+    ClaimDelivery.Response claimDelivery(ClaimDelivery.Request request) throws Exception;
 }

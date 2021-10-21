@@ -44,7 +44,7 @@ public class JsonStoredEntry implements Entry<JsonObject, Void> {
 	}
 
 	@Override
-	public Display<Void> getDisplay(UUID viewer, Listing listing) {
+	public Display<Void> getDisplay(UUID viewer) {
 		throw new UnsupportedOperationException();
 	}
 
