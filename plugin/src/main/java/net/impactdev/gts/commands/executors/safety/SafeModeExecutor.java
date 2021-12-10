@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.commands.annotations.Alias;
 import net.impactdev.gts.api.commands.annotations.Permission;
-import net.impactdev.gts.sponge.commands.GTSCmdExecutor;
+import net.impactdev.gts.sponge.commands.SpongeGTSCmdExecutor;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
@@ -20,7 +20,7 @@ import org.spongepowered.api.text.Text;
 
 @Alias("gts")
 @Permission(GTSPermissions.DEFAULT)
-public class SafeModeExecutor extends GTSCmdExecutor {
+public class SafeModeExecutor extends SpongeGTSCmdExecutor {
 
     public SafeModeExecutor(GTSPlugin plugin) {
         super(plugin);
@@ -32,8 +32,8 @@ public class SafeModeExecutor extends GTSCmdExecutor {
     }
 
     @Override
-    public GTSCmdExecutor[] getSubcommands() {
-        return new GTSCmdExecutor[0];
+    public SpongeGTSCmdExecutor[] getSubCommands() {
+        return new SpongeGTSCmdExecutor[0];
     }
 
     @Override

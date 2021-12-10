@@ -160,7 +160,7 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public Map<String, String> getMeta() {
-
+        // TODO - File statistics
         return StorageImplementation.super.getMeta();
     }
 
@@ -238,7 +238,7 @@ public class ConfigurateStorage implements StorageImplementation {
         }
 
         UUID target = delivery.getRecipient();
-        Path path = this.fileGroups.get(Group.USERS).resolve(target.toString().substring(0, 2)).resolve("delivery_" + delivery.getID() + this.extension);
+        Path path = this.fileGroups.get(Group.USERS).resolve(target.toString().substring(0, 2)).resolve(target.toString()).resolve("delivery_" + delivery.getID() + this.extension);
         this.saveFile(path, file);
         return true;
     }
@@ -297,8 +297,9 @@ public class ConfigurateStorage implements StorageImplementation {
             }
         }
 
-        File additional = this.fileGroups.get(Group.USERS).resolve(user.toString().substring(0, 2)).toFile();
+        File additional = this.fileGroups.get(Group.USERS).resolve(user.toString().substring(0, 2)).resolve(user.toString()).toFile();
         Storable.Deserializer<Delivery> deserializer = GTSService.getInstance().getGTSComponentManager().getDeliveryDeserializer();
+        this.createDirectoriesIfNotExists(additional.toPath());
         for(File file : additional.listFiles((d, n) -> n.startsWith("delivery_"))) {
             ConfigurationNode node = this.readFile(file.toPath());
 
@@ -649,7 +650,7 @@ public class ConfigurateStorage implements StorageImplementation {
     @Override
     public ClaimDelivery.Response claimDelivery(ClaimDelivery.Request request) throws Exception {
         UUID target = request.getActor();
-        Path path = this.fileGroups.get(Group.USERS).resolve(target.toString().substring(0, 2)).resolve("delivery_" + request.getDeliveryID() + this.extension);
+        Path path = this.fileGroups.get(Group.USERS).resolve(target.toString().substring(0, 2)).resolve(target.toString()).resolve("delivery_" + request.getDeliveryID() + this.extension);
         File file = path.toFile();
 
         if(file.exists()) {
@@ -679,8 +680,11 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     private ConfigurationNode readFile(Group group, UUID uuid) throws IOException {
-        Path target = this.fileGroups.get(group).resolve(uuid.toString().substring(0, 2)).resolve(uuid + this.extension);
-        return this.readFile(target);
+        Path target = this.fileGroups.get(group).resolve(uuid.toString().substring(0, 2));
+        if(group == Group.USERS) {
+            target = target.resolve(uuid.toString());
+        }
+        return this.readFile(target.resolve(uuid + this.extension));
     }
 
     private ConfigurationNode readFile(Path target) throws IOException  {
@@ -698,8 +702,11 @@ public class ConfigurateStorage implements StorageImplementation {
     }
 
     private void saveFile(Group group, UUID name, ConfigurationNode node) throws IOException {
-        Path target = this.fileGroups.get(group).resolve(name.toString().substring(0, 2)).resolve(name + this.extension);
-        this.saveFile(target, node);
+        Path target = this.fileGroups.get(group).resolve(name.toString().substring(0, 2));
+        if(group == Group.USERS) {
+            target = target.resolve(name.toString());
+        }
+        this.saveFile(target.resolve(name + this.extension), node);
     }
 
     private void saveFile(Path target, ConfigurationNode node) throws IOException {

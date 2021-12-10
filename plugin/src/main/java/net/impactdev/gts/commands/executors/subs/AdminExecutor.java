@@ -3,17 +3,13 @@ package net.impactdev.gts.commands.executors.subs;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.commands.GTSCommandExecutor;
 import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.storage.GTSStorage;
-import net.impactdev.gts.listings.SpongeItemEntry;
-import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
-import net.impactdev.gts.sponge.listings.SpongeListing;
 import net.impactdev.gts.util.GTSInfoGenerator;
 import net.impactdev.gts.api.commands.annotations.Alias;
 import net.impactdev.gts.api.commands.annotations.Permission;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.sponge.commands.GTSCmdExecutor;
+import net.impactdev.gts.sponge.commands.SpongeGTSCmdExecutor;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
 import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
@@ -21,12 +17,6 @@ import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.ui.admin.SpongeAdminMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.event.HoverEventSource;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -34,26 +24,20 @@ import org.spongepowered.api.command.args.CommandContext;
 import org.spongepowered.api.command.args.CommandElement;
 import org.spongepowered.api.command.args.GenericArguments;
 import org.spongepowered.api.command.spec.CommandSpec;
-import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.HoverAction;
 import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Alias("admin")
 @Permission(GTSPermissions.ADMIN_BASE)
-public class AdminExecutor extends GTSCmdExecutor {
+public class AdminExecutor extends SpongeGTSCmdExecutor {
 
-    public AdminExecutor(GTSPlugin plugin) {
-        super(plugin);
+    public AdminExecutor() {
+        super(GTSPlugin.getInstance());
     }
 
     @Override
@@ -62,8 +46,8 @@ public class AdminExecutor extends GTSCmdExecutor {
     }
 
     @Override
-    public GTSCmdExecutor[] getSubcommands() {
-        return new GTSCmdExecutor[] {
+    public SpongeGTSCmdExecutor[] getSubCommands() {
+        return new SpongeGTSCmdExecutor[] {
                 new Info(this.plugin),
                 new Ping(this.plugin),
                 new Clean(this.plugin),
@@ -85,7 +69,7 @@ public class AdminExecutor extends GTSCmdExecutor {
 
     @Alias("info")
     @Permission(GTSPermissions.ADMIN_INFO)
-    public static class Info extends GTSCmdExecutor {
+    public static class Info extends SpongeGTSCmdExecutor {
 
         public Info(GTSPlugin plugin) {
             super(plugin);
@@ -97,8 +81,8 @@ public class AdminExecutor extends GTSCmdExecutor {
         }
 
         @Override
-        public GTSCmdExecutor[] getSubcommands() {
-            return new GTSCmdExecutor[0];
+        public SpongeGTSCmdExecutor[] getSubCommands() {
+            return new SpongeGTSCmdExecutor[0];
         }
 
         @Override
@@ -115,7 +99,7 @@ public class AdminExecutor extends GTSCmdExecutor {
 
     @Alias("ping")
     @Permission(GTSPermissions.ADMIN_PING)
-    public static class Ping extends GTSCmdExecutor {
+    public static class Ping extends SpongeGTSCmdExecutor {
 
         public Ping(GTSPlugin plugin) {
             super(plugin);
@@ -127,8 +111,8 @@ public class AdminExecutor extends GTSCmdExecutor {
         }
 
         @Override
-        public GTSCmdExecutor[] getSubcommands() {
-            return new GTSCmdExecutor[0];
+        public SpongeGTSCmdExecutor[] getSubCommands() {
+            return new SpongeGTSCmdExecutor[0];
         }
 
         @Override
@@ -150,7 +134,7 @@ public class AdminExecutor extends GTSCmdExecutor {
 
     @Alias("clean")
     @Permission(GTSPermissions.ADMIN_BASE)
-    public static class Clean extends GTSCmdExecutor {
+    public static class Clean extends SpongeGTSCmdExecutor {
 
         public Clean(GTSPlugin plugin) {
             super(plugin);
@@ -162,7 +146,7 @@ public class AdminExecutor extends GTSCmdExecutor {
         }
 
         @Override
-        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubcommands() {
+        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
             return new GTSCommandExecutor[0];
         }
 
@@ -184,7 +168,7 @@ public class AdminExecutor extends GTSCmdExecutor {
 
     @Alias("itemcheck")
     @Permission(GTSPermissions.ADMIN_ITEM_CHECK)
-    public static class ModRemoval extends GTSCmdExecutor {
+    public static class ModRemoval extends SpongeGTSCmdExecutor {
 
         public ModRemoval(GTSPlugin plugin) {
             super(plugin);
@@ -196,7 +180,7 @@ public class AdminExecutor extends GTSCmdExecutor {
         }
 
         @Override
-        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubcommands() {
+        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
             return new GTSCommandExecutor[0];
         }
 
@@ -210,7 +194,7 @@ public class AdminExecutor extends GTSCmdExecutor {
 
     @Alias("itemcheck-confirm")
     @Permission(GTSPermissions.ADMIN_ITEM_CHECK)
-    public static class ModRemovalCallback extends GTSCmdExecutor {
+    public static class ModRemovalCallback extends SpongeGTSCmdExecutor {
 
         public ModRemovalCallback(GTSPlugin plugin) {
             super(plugin);
@@ -222,7 +206,7 @@ public class AdminExecutor extends GTSCmdExecutor {
         }
 
         @Override
-        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubcommands() {
+        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
             return new GTSCommandExecutor[0];
         }
 
@@ -234,7 +218,7 @@ public class AdminExecutor extends GTSCmdExecutor {
 
     @Alias("user-query")
     @Permission(GTSPermissions.ADMIN_USER_QUERY)
-    public static class UserQuery extends GTSCmdExecutor {
+    public static class UserQuery extends SpongeGTSCmdExecutor {
 
         private final Text PLAYER = Text.of("player");
 
@@ -250,7 +234,7 @@ public class AdminExecutor extends GTSCmdExecutor {
         }
 
         @Override
-        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubcommands() {
+        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
             return new GTSCommandExecutor[0];
         }
 

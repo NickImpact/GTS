@@ -30,20 +30,20 @@ dependencies {
 
     shadow 'net.impactdev.impactor:sponge:3.1.2'
     shadow 'org.spongepowered:spongeapi:7.3.0'
-    shadow 'net.kyori:adventure-api:4.3.0'
-    shadow 'net.kyori:adventure-text-serializer-legacy:4.3.0'
+    shadow 'net.kyori:adventure-api:4.9.3'
+    shadow 'net.kyori:adventure-text-serializer-legacy:4.9.3'
     shadow 'com.ichorpowered:protocolcontrol:0.0.3'
 
     testCompile project(':api')
     testCompile project(':common')
     testCompile 'net.impactdev.impactor:api:3.1.2'
     testCompile 'net.impactdev.impactor:sponge:3.1.2'
-    testCompile 'ninja.leaping.configurate:configurate-core:3.3'
-    testCompile 'ninja.leaping.configurate:configurate-gson:3.3'
-    testCompile 'ninja.leaping.configurate:configurate-yaml:3.3'
-    testCompile 'ninja.leaping.configurate:configurate-hocon:3.3'
+    testCompile 'ninja.leaping.configurate:configurate-core:3.7.1'
+    testCompile 'ninja.leaping.configurate:configurate-gson:3.7.1'
+    testCompile 'ninja.leaping.configurate:configurate-yaml:3.7.1'
+    testCompile 'ninja.leaping.configurate:configurate-hocon:3.7.1'
     testCompile 'com.github.ben-manes.caffeine:caffeine:2.8.2'
-    testCompile 'net.kyori:adventure-api:4.3.0'
+    testCompile 'net.kyori:adventure-api:4.9.3'
 }
 
 shadowJar {

@@ -656,8 +656,11 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	));
 
 	public static final ConfigKey<String> DELIVERY_EXPIRATION_INFO = stringKey("deliveries.expire-tag", "&7Expires in: &e{{gts:time}}");
+    public static final ConfigKey<List<String>> INVALID_COMMAND_USAGE = listKey("commands.invalid-usage", Lists.newArrayList(
 
-	private static final Map<String, ConfigKey<?>> KEYS;
+    ));
+
+    private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;
 
 	static {

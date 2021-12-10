@@ -16,7 +16,7 @@ public interface GTSCommandExecutor<E, S> {
 
     E[] getArguments();
 
-    GTSCommandExecutor<E, S>[] getSubcommands();
+    GTSCommandExecutor<E, S>[] getSubCommands();
 
     S build();
 

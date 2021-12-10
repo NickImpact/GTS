@@ -50,6 +50,7 @@ import java.util.concurrent.atomic.AtomicReference;
 		version = "@version@",
 		description = "@description@",
 		dependencies = {
+				@Dependency(id = "spongeapi", version = "[7.3.0,)"),
 				@Dependency(id = "impactor", version = "[3.0.0,)"),
 				@Dependency(id = "protocolcontrol", version = "[0.0.2,)")
 		})

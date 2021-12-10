@@ -16,12 +16,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class GTSCmdExecutor implements CommandExecutor, GTSCommandExecutor<CommandElement, CommandSpec> {
+public abstract class SpongeGTSCmdExecutor implements CommandExecutor, GTSCommandExecutor<CommandElement, CommandSpec> {
 
     protected final GTSPlugin plugin;
     private final String permission;
 
-    public GTSCmdExecutor(GTSPlugin plugin) {
+    public SpongeGTSCmdExecutor(GTSPlugin plugin) {
         this.plugin = plugin;
         if(!this.hasNeededAnnotations()) {
             plugin.getPluginLogger().error("Attempted to create executor with missing information: " + this.getClass().getSimpleName());
@@ -48,7 +48,7 @@ public abstract class GTSCmdExecutor implements CommandExecutor, GTSCommandExecu
     }
 
     public CommandSpec build() {
-        GTSCommandExecutor<CommandElement, CommandSpec>[] subcommands = this.getSubcommands();
+        GTSCommandExecutor<CommandElement, CommandSpec>[] subcommands = this.getSubCommands();
         Map<List<String>, CommandSpec> children = new HashMap<>();
         if(subcommands != null) {
             for(GTSCommandExecutor<CommandElement, CommandSpec> child : subcommands) {

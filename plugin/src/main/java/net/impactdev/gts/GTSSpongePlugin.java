@@ -119,13 +119,7 @@ public class GTSSpongePlugin extends AbstractSpongePlugin implements GTSPlugin {
 		Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
 		ApiRegistrationUtil.register(new GTSAPIProvider());
 
-		String sponge = Sponge.getGame().getPlatform().getContainer(Platform.Component.API).getVersion().orElse("");
-		if(!sponge.startsWith("7.3")) {
-			throw new IllegalStateException("Invalid Sponge version");
-		}
-
 		this.displayBanner();
-
 		this.getPluginLogger().info("Initializing API Components...");
 		Sponge.getServiceManager().setProvider(this.bootstrap, GTSService.class, GTSService.getInstance());
 		Impactor.getInstance().getRegistry().register(Blacklist.class, new BlacklistImpl());

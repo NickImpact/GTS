@@ -33,7 +33,11 @@ public class GTSAPIProvider implements GTSService {
 
 	@Override
 	public ImmutableList<Extension> getAllExtensions() {
-		return ImmutableList.copyOf(GTSPlugin.getInstance().getExtensionManager().getLoadedExtensions());
+		if(GTSPlugin.getInstance().getExtensionManager() != null) {
+			return ImmutableList.copyOf(GTSPlugin.getInstance().getExtensionManager().getLoadedExtensions());
+		}
+
+		return ImmutableList.of();
 	}
 
 	@Override

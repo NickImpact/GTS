@@ -47,19 +47,16 @@ public class JoinListener {
     }
 
     @Listener
-    public void onPlayerLogin(ClientConnectionEvent.Login event) {
+    public void onPlayerLogin(ClientConnectionEvent.Login event, @First Player player) {
         Sponge.getScheduler().createTaskBuilder().execute(() -> {
             final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-            final Optional<Player> player = Sponge.getServer().getPlayer(event.getTargetUser().getUniqueId());
-            player.ifPresent(p -> {
-                GTSPlugin.getInstance().getStorage().getStash(p.getUniqueId()).thenAccept(
-                        stash -> {
-                            if (!stash.isEmpty()) {
-                                p.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STASH_COLLECT_JOIN_MESSAGE)));
-                                p.playSound(SoundTypes.BLOCK_CHEST_OPEN, p.getPosition(), 1);
-                            }
-                        });
-            });
+            GTSPlugin.getInstance().getStorage().getStash(player.getUniqueId()).thenAccept(
+                    stash -> {
+                        if (!stash.isEmpty()) {
+                            player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STASH_COLLECT_JOIN_MESSAGE)));
+                            player.playSound(SoundTypes.BLOCK_CHEST_OPEN, player.getPosition(), 1);
+                        }
+                    });
         }).delay(4, TimeUnit.SECONDS).submit(GTSPlugin.getInstance().getBootstrap());
     }
 
