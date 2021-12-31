@@ -54,6 +54,7 @@ import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.NotificationSetting;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
@@ -789,7 +790,7 @@ public class ConfigurateStorage implements StorageImplementation {
         if(working.hasMapChildren()) {
             JObject child = new JObject();
             for(Map.Entry<Object, ? extends ConfigurationNode> entry : working.getChildrenMap().entrySet()) {
-                this.fill(child, entry.getValue(), true);
+                this.fill(child, entry.getValue(), false);
             }
             array.add(child);
         } else if(working.hasListChildren()) {
@@ -817,6 +818,10 @@ public class ConfigurateStorage implements StorageImplementation {
             ConfigurationNode child = SimpleConfigurationNode.root();
             for(Map.Entry<String, JsonElement> path : object.entrySet()) {
                 this.writePath(child, path.getKey(), path.getValue());
+            }
+
+            if(child.getValue() == null) {
+                child.setValue(Maps.newHashMap());
             }
 
             parent.getNode(key).setValue(child);

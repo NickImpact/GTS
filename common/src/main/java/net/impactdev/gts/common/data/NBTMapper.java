@@ -30,7 +30,7 @@ import java.util.function.Function;
 public class NBTMapper {
 
     public JObject from(NBTTagCompound nbt) {
-        return this.from(nbt, false);
+        return this.from(nbt, true);
     }
 
     public JObject from(NBTTagCompound nbt, boolean print) {
