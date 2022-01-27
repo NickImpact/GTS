@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.gts.listings.data.ChosenItemEntry;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
@@ -34,7 +35,7 @@ import java.util.function.Supplier;
 
 import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
-public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> implements Historical<SpongeMainMenu> {
+public class SpongeItemUI extends AbstractSpongeEntryUI<ChosenItemEntry> implements Historical<SpongeMainMenu> {
 
     public SpongeItemUI(Player viewer) {
         super(viewer);
@@ -59,7 +60,7 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
 
                                     final int s = slot.getValue() - 45;
 
-                                    this.chosen = new Chosen(clicked, s);
+                                    this.chosen = new ChosenItemEntry(clicked, this.getTargetSlotIndex(slot.getValue() - 45));
                                     this.getDisplay().setSlot(13, this.createChosenIcon());
                                     this.getDisplay().setSlot(44, this.generateConfirmIcon());
                                     this.style(true);
@@ -86,6 +87,11 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
     }
 
     @Override
+    protected int getChosenSlot() {
+        return 13;
+    }
+
+    @Override
     protected int getPriceSlot() {
         return 38;
     }
@@ -101,12 +107,17 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
     }
 
     @Override
-    protected double getMinimumMonetaryPrice(Chosen chosen) {
-        return 0;
+    protected int getConfirmSlot() {
+        return 44;
     }
 
     @Override
-    public Optional<Chosen> getChosenOption() {
+    protected double getMinimumMonetaryPrice(ChosenItemEntry chosen) {
+        return 1;
+    }
+
+    @Override
+    public Optional<ChosenItemEntry> getChosenOption() {
         return Optional.ofNullable(this.chosen);
     }
 
@@ -139,7 +150,7 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
         SpongeIcon price = this.createPriceIcon();
         slb.slot(price, 38);
 
-        slb.slot(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED).get() ? this.createBINIcon() : this.createAuctionIcon(), 40);
+        slb.slot(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED) ? this.createBINIcon() : this.createAuctionIcon(), 40);
 
         SpongeIcon time = this.createTimeIcon();
         slb.slot(time, 42);
@@ -166,29 +177,14 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<SpongeItemUI.Chosen> imp
             this.chosen = null;
         });
         return icon;
-    } 
+    }
 
-    protected static class Chosen implements EntrySelection<SpongeItemEntry> {
-        private final ItemStackSnapshot selection;
-        private final int slot;
-
-        public Chosen(ItemStackSnapshot selection, int slot) {
-            this.selection = selection;
-            this.slot = slot;
+    private int getTargetSlotIndex(int input) {
+        if(input >= 27) {
+            return input - 27;
         }
 
-        public ItemStackSnapshot getSelection() {
-            return this.selection;
-        }
-
-        public int getSlot() {
-            return this.slot;
-        }
-
-        @Override
-        public SpongeItemEntry createFromSelection() {
-            return new SpongeItemEntry(this.selection);
-        }
+        return input + 9;
     }
 
 }

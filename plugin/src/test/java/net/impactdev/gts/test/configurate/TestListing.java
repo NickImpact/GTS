@@ -65,7 +65,7 @@ public class TestListing implements Listing, BuyItNow {
                 .orElseThrow(() -> new RuntimeException("No Entry Manager found for key: " + element.get("key").getAsString()));
 
         JsonObject price = json.getAsJsonObject("price");
-        Storable.Deserializer<Price<?, ?, ?>> deserializer = GTSService.getInstance().getGTSComponentManager()
+        Storable.Deserializer<? extends Price<?, ?, ?>> deserializer = GTSService.getInstance().getGTSComponentManager()
                 .getPriceManager(price.get("key").getAsString())
                 .map(ResourceManager::getDeserializer)
                 .orElseThrow(() -> new RuntimeException("JSON Data for price is missing mapping key"));

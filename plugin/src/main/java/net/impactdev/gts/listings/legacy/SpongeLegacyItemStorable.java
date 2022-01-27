@@ -46,7 +46,8 @@ public class SpongeLegacyItemStorable implements Storable, Storable.Deserializer
             return new SpongeItemEntry(ItemStack.builder()
                     .fromContainer(NBTTranslator.getInstance().translateFrom(nbt))
                     .build()
-                    .createSnapshot()
+                    .createSnapshot(),
+                    null
             );
         } catch (IOException e) {
             throw new RuntimeException("Failed to deserialize a legacy item entry", e);

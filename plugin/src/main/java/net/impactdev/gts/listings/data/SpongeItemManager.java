@@ -1,6 +1,9 @@
 package net.impactdev.gts.listings.data;
 
+import net.impactdev.gts.api.commands.CommandGenerator;
 import net.impactdev.gts.api.data.translators.DataTranslator;
+import net.impactdev.gts.api.listings.entries.Entry;
+import net.impactdev.gts.api.listings.ui.EntrySelection;
 import net.impactdev.gts.listings.SpongeItemEntry;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.data.Storable;
@@ -51,7 +54,7 @@ public class SpongeItemManager implements EntryManager<SpongeItemEntry, Player> 
                                 .fromContainer(DataViewJsonManager.readDataViewFromJSON(json.getAsJsonObject("item")))
                                 .build()
                                 .createSnapshot();
-                        return new SpongeItemEntry(snapshot);
+                        return new SpongeItemEntry(snapshot, null);
                     });
         };
     }
@@ -85,11 +88,11 @@ public class SpongeItemManager implements EntryManager<SpongeItemEntry, Player> 
                     .fromContainer(NBTTranslator.getInstance().translateFrom(nbt))
                     .build()
                     .createSnapshot();
-            return new SpongeItemEntry(snapshot);
+            return new SpongeItemEntry(snapshot, null);
         });
 
         registry.registerDeserializer(SpongeItemEntry.class, 2, json -> {
-            NBTTagCompound nbt = new NBTMapper().read(json.getAsJsonObject("item"));
+            NBTTagCompound nbt = NBTMapper.read(json.getAsJsonObject("item"));
 
             GTSService service = GTSService.getInstance();
             Collection<DataTranslator<NBTTagCompound>> translators = service.getDataTranslatorManager().get(NBTTagCompound.class);
@@ -103,8 +106,13 @@ public class SpongeItemManager implements EntryManager<SpongeItemEntry, Player> 
                     .fromContainer(NBTTranslator.getInstance().translateFrom(nbt))
                     .build()
                     .createSnapshot();
-            return new SpongeItemEntry(snapshot);
+            return new SpongeItemEntry(snapshot, null);
         });
+    }
+
+    @Override
+    public CommandGenerator.EntryGenerator<? extends EntrySelection<? extends Entry<?, ?>>> getEntryCommandCreator() {
+        return new SpongeItemSellExecutor();
     }
 
 }

@@ -7,9 +7,11 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.utilities.PrettyPrinter;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.auctions.Auction;
@@ -151,7 +153,6 @@ public class SpongeAuction extends SpongeListing implements Auction {
 				.add("pricing", pricing)
 		);
 		json.add("type", "auction");
-
 		return json;
 	}
 
@@ -172,22 +173,24 @@ public class SpongeAuction extends SpongeListing implements Auction {
 		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));
 
 		JsonObject bids = object.getAsJsonObject("auction").getAsJsonObject("bids");
-		Multimap<UUID, Bid> mapping = ArrayListMultimap.create();
-		for(Map.Entry<String, JsonElement> entry : bids.entrySet()) {
-			if(entry.getValue().isJsonArray()) {
-				entry.getValue().getAsJsonArray().forEach(e -> {
-					JsonObject data = e.getAsJsonObject();
-					Bid bid = Bid.builder()
-							.amount(data.get("amount").getAsDouble())
-							.timestamp(LocalDateTime.parse(data.get("timestamp").getAsString()))
-							.build();
+		if(bids != null) {
+			Multimap<UUID, Bid> mapping = ArrayListMultimap.create();
+			for (Map.Entry<String, JsonElement> entry : bids.entrySet()) {
+				if (entry.getValue().isJsonArray()) {
+					entry.getValue().getAsJsonArray().forEach(e -> {
+						JsonObject data = e.getAsJsonObject();
+						Bid bid = Bid.builder()
+								.amount(data.get("amount").getAsDouble())
+								.timestamp(LocalDateTime.parse(data.get("timestamp").getAsString()))
+								.build();
 
-					mapping.put(UUID.fromString(entry.getKey()), bid);
-				});
+						mapping.put(UUID.fromString(entry.getKey()), bid);
+					});
+				}
 			}
+			builder.bids(mapping);
 		}
 
-		builder.bids(mapping);
 		return builder.build();
 	}
 

@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.common.config.types.time.TimeKey;
-import net.impactdev.gts.common.config.wrappers.AtLeastOne;
 import net.impactdev.gts.common.config.wrappers.LazyBlacklist;
 import net.impactdev.gts.common.discord.DiscordOption;
 import net.impactdev.impactor.api.Impactor;
@@ -156,6 +155,15 @@ public class ConfigKeys implements ConfigKeyHolder {
 		return (float) in;
 	});
 
+	public static final ConfigKey<Float> AUCTIONS_MIN_INCREMENT_RATE = customKey(adapter -> {
+		double in = adapter.getDouble("auctions.increments.min", 0.01);
+		return (float) in;
+	});
+	public static final ConfigKey<Float> AUCTIONS_MAX_INCREMENT_RATE = customKey(adapter -> {
+		double in = adapter.getDouble("auctions.increments.max", 0.1);
+		return (float) in;
+	});
+
 	// Item Based Configuration Options
 	public static final ConfigKey<Boolean> ITEMS_ALLOW_ANVIL_NAMES = booleanKey("allow-anvil-names", true);
 
@@ -169,7 +177,7 @@ public class ConfigKeys implements ConfigKeyHolder {
 
 	public static final ConfigKey<Boolean> AUCTIONS_ALLOW_CANCEL_WITH_BIDS = booleanKey("auctions.allow-cancel-with-bids", false);
 	public static final ConfigKey<Boolean> AUCTIONS_ENABLED = booleanKey("auctions.enabled", true);
-	public static final ConfigKey<AtLeastOne> BINS_ENABLED = customKey(c -> new AtLeastOne(AUCTIONS_ENABLED, c.getBoolean("buyitnow.enabled", true)));
+	public static final ConfigKey<Boolean> BINS_ENABLED = booleanKey("buyitnow.enabled", true);
 	public static final ConfigKey<Boolean> AUCTIONS_SNIPING_BIDS_ENABLED = booleanKey("auctions.bid-sniping.enabled", false);
 	public static final ConfigKey<Time> AUCTIONS_MINIMUM_SNIPING_TIME = customKey(adapter -> {
 		try {

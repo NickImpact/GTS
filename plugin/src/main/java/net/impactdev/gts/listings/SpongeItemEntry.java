@@ -1,10 +1,15 @@
 package net.impactdev.gts.listings;
 
 import com.google.common.collect.Lists;
+import com.google.gson.JsonObject;
+import net.impactdev.gts.api.GTSService;
+import net.impactdev.gts.api.data.translators.DataTranslatorManager;
+import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.data.NBTMapper;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.gts.listings.data.DataContainerAdapter;
 import net.impactdev.gts.sponge.data.NBTTranslator;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
@@ -20,17 +25,18 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecraft.nbt.NBTTagCompound;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataContainer;
+import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.inventory.Inventory;
-import org.spongepowered.api.item.inventory.InventoryTransformation;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackSnapshot;
-import org.spongepowered.api.item.inventory.Slot;
+import org.spongepowered.api.item.inventory.*;
 import org.spongepowered.api.item.inventory.entity.Hotbar;
 import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
+import org.spongepowered.api.item.inventory.property.AbstractInventoryProperty;
+import org.spongepowered.api.item.inventory.property.SlotIndex;
+import org.spongepowered.api.item.inventory.property.SlotPos;
 import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
 import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
 import org.spongepowered.api.item.inventory.type.GridInventory;
@@ -51,17 +57,24 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	private static final Function<ItemStackSnapshot, JObject> writer = snapshot -> {
 		try {
 			DataContainer container = snapshot.toContainer();
-			return new NBTMapper().from(NBTTranslator.getInstance().translateData(container));
+			return NBTMapper.from(NBTTranslator.getInstance().translateData(container));
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to write JSON data for item snapshot", e);
 		}
 	};
 
+	/** The actual item represented by the entry */
 	private final ItemStackSnapshot item;
+
+	/** Represents the slot the item should be polled from. This is ONLY for the initial take operation */
+	@Nullable private transient final Integer slot;
+
+	/** Represents how the items is displayed to the client */
 	private transient Display<ItemStack> display;
 
-	public SpongeItemEntry(ItemStackSnapshot item) {
+	public SpongeItemEntry(ItemStackSnapshot item, @Nullable Integer slot) {
 		this.item = item;
+		this.slot = slot;
 	}
 
 	@Override
@@ -147,9 +160,13 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 		Optional<Player> player = Sponge.getServer().getPlayer(depositor);
 		player.ifPresent(pl -> {
 			ItemStack rep = this.item.createStack();
-			Slot slot = pl.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class))
-					.query(QueryOperationTypes.ITEM_STACK_EXACT.of(rep))
-					.first();
+			Inventory parent = pl.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class))
+					.transform(InventoryTransformation.of(
+							QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
+							QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class)
+					));
+
+			Slot slot = this.query(parent);
 			if(slot.peek().isPresent()) {
 				if(!GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.ITEMS_ALLOW_ANVIL_NAMES)) {
 					NBTTagCompound nbt = NBTTranslator.getInstance().translate(slot.peek().get().toContainer());
@@ -161,7 +178,7 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 					}
 				}
 
-				slot.poll();
+				slot.poll(rep.getQuantity());
 				result.set(true);
 			}
 		});
@@ -196,4 +213,18 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 				.add("item", writer.apply(this.item));
 	}
 
+	private Slot query(Inventory inventory) {
+		Iterable<Slot> slots = inventory.slots();
+		for(Slot slot : slots) {
+			boolean valid = slot.getProperty(SlotIndex.class, "slotindex")
+					.map(AbstractInventoryProperty::getValue)
+					.filter(value -> value.equals(this.slot))
+					.isPresent();
+			if(valid) {
+				return slot;
+			}
+		}
+
+		return null;
+	}
 }

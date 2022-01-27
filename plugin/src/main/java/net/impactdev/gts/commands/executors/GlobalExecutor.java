@@ -3,6 +3,8 @@ package net.impactdev.gts.commands.executors;
 import net.impactdev.gts.api.commands.annotations.Alias;
 import net.impactdev.gts.api.commands.annotations.Permission;
 import net.impactdev.gts.commands.executors.subs.AdminExecutor;
+import net.impactdev.gts.commands.executors.subs.AuctionCommand;
+import net.impactdev.gts.commands.executors.subs.SellCommand;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
 import net.impactdev.gts.sponge.commands.SpongeGTSCmdExecutor;
@@ -31,8 +33,8 @@ public class GlobalExecutor extends SpongeGTSCmdExecutor {
     @Override
     public SpongeGTSCmdExecutor[] getSubCommands() {
         return new SpongeGTSCmdExecutor[] {
-                //new SellCommand(),
-                //new AuctionCommand(),
+                new SellCommand(),
+                new AuctionCommand(),
                 new AdminExecutor()
         };
     }

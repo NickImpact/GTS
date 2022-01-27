@@ -92,7 +92,7 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));
 
 		JsonObject price = json.getAsJsonObject("price");
-		Storable.Deserializer<Price<?, ?, ?>> deserializer = GTSService.getInstance().getGTSComponentManager()
+		Storable.Deserializer<? extends Price<?, ?, ?>> deserializer = GTSService.getInstance().getGTSComponentManager()
 				.getPriceManager(price.get("key").getAsString())
 				.map(ResourceManager::getDeserializer)
 				.orElseThrow(() -> new RuntimeException("JSON Data for price is missing mapping key"));

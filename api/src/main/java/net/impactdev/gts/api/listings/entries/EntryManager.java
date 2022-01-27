@@ -1,12 +1,20 @@
 package net.impactdev.gts.api.listings.entries;
 
+import net.impactdev.gts.api.commands.CommandGenerator;
 import net.impactdev.gts.api.data.ResourceManager;
+import net.impactdev.gts.api.listings.ui.EntrySelection;
 import net.impactdev.gts.api.listings.ui.EntryUI;
 
 import java.util.function.Supplier;
 
 public interface EntryManager<T, P> extends ResourceManager<T> {
 
+    /**
+     * For use in configuration, determines how the blacklist should represent blacklisted options
+     * for this entry typing.
+     *
+     * @return The type of class this entry validates against
+     */
     Class<?> getBlacklistType();
 
     /**
@@ -19,7 +27,19 @@ public interface EntryManager<T, P> extends ResourceManager<T> {
     Supplier<EntryUI<?, ?, ?>> getSellingUI(P player);
 
     /**
-     *
+     * Supplies a set of deserializer options for the given entry type. This is where you can allow for multiple
+     * versions of deserialization based on the data being read through JSON.
      */
     void supplyDeserializers();
+
+    /**
+     * Represents the executor that will handle processing of creating an entry from a command context.
+     * This will be queried and attached as a child to the sell command at time of construction for the sell command.
+     * To ensure readiness, this should be available before enable/initialization.
+     *
+     * @return The executor for the entry type when combined with /gts sell
+     * @since 6.1.8
+     */
+    CommandGenerator.EntryGenerator<? extends EntrySelection<? extends Entry<?, ?>>> getEntryCommandCreator();
+
 }

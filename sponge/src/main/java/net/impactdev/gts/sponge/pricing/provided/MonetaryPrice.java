@@ -3,6 +3,7 @@ package net.impactdev.gts.sponge.pricing.provided;
 import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.commands.CommandGenerator;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.pricing.SpongePrice;
@@ -35,6 +36,7 @@ import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
@@ -182,6 +184,11 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 		}
 
 		@Override
+		public CommandGenerator.PriceGenerator<? extends Price<?, ?, ?>> getPriceCommandCreator() {
+			return new MonetaryPriceCommandCreator();
+		}
+
+		@Override
 		public String getName() {
 			return "Monetary";
 		}
@@ -194,6 +201,20 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 		@Override
 		public Deserializer<MonetaryPrice> getDeserializer() {
 			return MonetaryPrice::deserialize;
+		}
+	}
+
+	public static class MonetaryPriceCommandCreator implements CommandGenerator.PriceGenerator<MonetaryPrice> {
+
+		@Override
+		public String[] getAliases() {
+			return new String[0];
+		}
+
+		@Override
+		public MonetaryPrice create(UUID source, Queue<String> args, Context context) throws Exception {
+			double value = this.require(args, Double::parseDouble);
+			return new MonetaryPrice(value);
 		}
 	}
 

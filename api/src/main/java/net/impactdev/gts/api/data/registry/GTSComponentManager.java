@@ -37,7 +37,7 @@ public interface GTSComponentManager {
 
     <T extends Price<?, ?, ?>> void registerPriceManager(Class<T> type, PriceManager<T, ?> resource);
 
-    <T extends Price<?, ?, ?>> Optional<PriceManager<T, ?>> getPriceManager(String key);
+    <T extends Price<?, ?, ?>> Optional<PriceManager<? extends T, ?>> getPriceManager(String key);
 
     Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>, ?>> getAllPriceManagers();
 

@@ -94,7 +94,7 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
     }
 
     @Override
-    public <T extends Price<?, ?, ?>> Optional<PriceManager<T, ?>> getPriceManager(String key) {
+    public <T extends Price<?, ?, ?>> Optional<PriceManager<? extends T, ?>> getPriceManager(String key) {
         return this.prices.keySet().stream()
                 .filter(marker -> {
                     for (String id : marker.value()) {

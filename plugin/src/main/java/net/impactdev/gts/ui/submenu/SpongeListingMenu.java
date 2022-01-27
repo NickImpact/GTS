@@ -8,6 +8,7 @@ import com.google.common.collect.Maps;
 import net.impactdev.gts.GTSSpongePlugin;
 
 import net.impactdev.gts.api.deliveries.Delivery;
+import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.makeup.Display;
@@ -43,6 +44,7 @@ import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.event.item.inventory.ClickInventoryEvent;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -82,12 +84,12 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 
 	private @Nullable Searching searchQuery;
 
-	/** True = Auction, false = Quick Purchase */
-	private boolean mode;
+	/** True = Auction, False = Quick Purchase, Undefined = All */
+	private TriState mode = TriState.UNDEFINED;
 	private CircularLinkedList<Sorter> sorter;
 
 	/** If the menu was opened in editor mode */
-	private boolean editor;
+	private final boolean editor;
 
 	@SafeVarargs
 	public SpongeListingMenu(Player viewer, boolean editor, Predicate<SpongeListing>... conditions) {
@@ -107,14 +109,8 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		);
 
 		this.editor = editor;
-		this.mode = !GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED).get();
-		if(this.mode) {
-			this.conditions.add(AUCTIONS_ONLY);
-			this.sorter = Sorter.AUCTION_ONLY.copy();
-		} else {
-			this.conditions.add(QUICK_PURCHASE_ONLY);
-			this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
-		}
+
+		this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
 		this.conditions.addAll(Arrays.asList(conditions));
 		this.setSorter(this.sorter.copy().next().get().getComparator());
 
@@ -277,8 +273,10 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 						Text.of(TextColors.GRAY, "You are currently viewing"),
 						Text.of(TextColors.AQUA, "Quick Purchase", TextColors.GRAY, " listings only!"),
 						Text.EMPTY,
-						Text.of(TextColors.YELLOW, "Click this to change your view"),
-						Text.of(TextColors.YELLOW, "of listings to Auctions!")
+						Text.of(TextColors.YELLOW, "Click to adjust your filter settings:"),
+						Text.EMPTY,
+						Text.of(TextColors.YELLOW, "Left Click: Non-Filtered"),
+						Text.of(TextColors.YELLOW, "Right Click: Auctions")
 				))
 				.build();
 		SpongeIcon qIcon = new SpongeIcon(quick);
@@ -290,11 +288,28 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 						Text.of(TextColors.GRAY, "You are currently viewing"),
 						Text.of(TextColors.AQUA, "Auction", TextColors.GRAY, " listings only!"),
 						Text.EMPTY,
-						Text.of(TextColors.YELLOW, "Click this to change your view"),
-						Text.of(TextColors.YELLOW, "to Quick Purchase Listings!")
+						Text.of(TextColors.YELLOW, "Click to adjust your filter settings:"),
+						Text.EMPTY,
+						Text.of(TextColors.YELLOW, "Left Click: BIN"),
+						Text.of(TextColors.YELLOW, "Right Click: Non-Filtered")
 				))
 				.build();
 		SpongeIcon aIcon = new SpongeIcon(auctions);
+
+		SpongeIcon noFilter = new SpongeIcon(ItemStack.builder()
+				.itemType(ItemTypes.ENDER_CHEST)
+				.add(Keys.DISPLAY_NAME, PARSER.parse("&aNon-Filtered View"))
+				.add(Keys.ITEM_LORE, PARSER.parse(Lists.newArrayList(
+						"&7You are currently viewing",
+						"&7all listings. If you wish to",
+						"&7filter your view, &eclick &7via",
+						"&7the following guide:",
+						"",
+						"&eLeft Click: BIN",
+						"&eRight Click: Auctions"
+				)))
+				.build()
+		);
 
 		ItemStack searcher = ItemStack.builder()
 				.itemType(ItemTypes.SIGN)
@@ -340,27 +355,41 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		layout.slot(sorter, 51);
 
 		qIcon.addListener(clickable -> {
-			if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_ENABLED)) {
-				this.conditions.removeIf(c -> c instanceof QuickPurchaseOnly);
-				this.conditions.add(AUCTIONS_ONLY);
+			if(clickable.getEvent() instanceof ClickInventoryEvent.Secondary) {
+				if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_ENABLED)) {
+					this.conditions.removeIf(c -> c instanceof QuickPurchaseOnly);
+					this.conditions.add(AUCTIONS_ONLY);
 
-				this.mode = true;
-				this.sorter = Sorter.AUCTION_ONLY.copy();
+					this.mode = TriState.TRUE;
+					this.sorter = Sorter.AUCTION_ONLY.copy();
+					this.sorter.reset();
+					this.setSorter(this.sorter.getCurrent().get().getComparator());
+					sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), Lists.newArrayList(this::getViewer)));
+					this.getView().setSlot(51, sorter);
+
+					this.getView().setSlot(50, aIcon);
+					this.apply();
+				}
+			} else {
+				this.conditions.removeIf(c -> c instanceof QuickPurchaseOnly || c instanceof AuctionsOnly);
+
+				this.mode = TriState.UNDEFINED;
+				this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
 				this.sorter.reset();
 				this.setSorter(this.sorter.getCurrent().get().getComparator());
 				sorter.getDisplay().offer(Keys.ITEM_LORE, PARSER.parse(this.craftSorterLore(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT)), Lists.newArrayList(this::getViewer)));
 				this.getView().setSlot(51, sorter);
 
-				this.getView().setSlot(50, aIcon);
+				this.getView().setSlot(50, noFilter);
 				this.apply();
 			}
 		});
 		aIcon.addListener(clickable -> {
-			if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED).get()) {
+			if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED)) {
 				this.conditions.add(QUICK_PURCHASE_ONLY);
 				this.conditions.removeIf(c -> c instanceof AuctionsOnly);
 
-				this.mode = false;
+				this.mode = TriState.FALSE;
 				this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
 				this.sorter.reset();
 				this.setSorter(this.sorter.getCurrent().get().getComparator());
@@ -372,7 +401,10 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 			}
 		});
 
-		layout.slot(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED).get() ? qIcon : aIcon, 50);
+
+		//noFilter.addListener();
+
+		layout.slot(noFilter, 50);
 
 		SpongeIcon back = new SpongeIcon(ItemStack.builder()
 				.itemType(ItemTypes.BARRIER)
@@ -510,8 +542,8 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 		private static final CircularLinkedList<Sorter> QUICK_PURCHASE_ONLY = CircularLinkedList.of(QP_ENDING_SOON, QP_MOST_RECENT);
 		private static final CircularLinkedList<Sorter> AUCTION_ONLY = CircularLinkedList.of(A_HIGHEST_BID, A_LOWEST_BID, A_ENDING_SOON, A_MOST_BIDS);
 
-		public static CircularLinkedList<Sorter> getSortOptions(boolean mode) {
-			return mode ? AUCTION_ONLY : QUICK_PURCHASE_ONLY;
+		public static CircularLinkedList<Sorter> getSortOptions(TriState mode) {
+			return mode.asBoolean() ? AUCTION_ONLY : QUICK_PURCHASE_ONLY;
 		}
 	}
 

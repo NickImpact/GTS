@@ -656,9 +656,29 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 	));
 
 	public static final ConfigKey<String> DELIVERY_EXPIRATION_INFO = stringKey("deliveries.expire-tag", "&7Expires in: &e{{gts:time}}");
-    public static final ConfigKey<List<String>> INVALID_COMMAND_USAGE = listKey("commands.invalid-usage", Lists.newArrayList(
+	public static final ConfigKey<String> PLAYER_REQUIRED_COMMAND = stringKey("commands.requirements.must-be-player", "&7Only a player can use this command!");
 
-    ));
+	public static final ConfigKey<String> SELL_COMMAND_HEADER = stringKey("commands.sell.header", "&3GTS Sell Help Window");
+	public static final ConfigKey<List<String>> SELL_COMMAND_USAGE = listKey("commands.sell.usage", Lists.newArrayList(
+			"&fCommand Structure:",
+			"&3/gts sell &7--time=(time) &d(entry type) (entry specs) &c(price type) &d(price specs)",
+			"",
+			"&fAll components are optional past &3/gts sell&f.",
+			"&fIf you only supply a type, the UI for that type will open.",
+			"&fOtherwise, you can specify all the details on the command line",
+			"&fin order to list your listing without UI interaction."
+	));
+
+	public static final ConfigKey<String> AUCTION_COMMAND_HEADER = stringKey("commands.auction.header", "&3GTS Auction Help Window");
+	public static final ConfigKey<List<String>> AUCTION_COMMAND_USAGE = listKey("commands.auction.usage", Lists.newArrayList(
+			"&fCommand Structure:",
+			"&3/gts auction &7--time=(time) &e(starting price) (increment %) &d(entry type) (entry specs)",
+			"",
+			"&fThe only allowed price is a currency based value.",
+			"&fTo specify the increment, you can specify it in the following formats:",
+			"&fx% or x, where X is a number. The &c--time&f section is optional.",
+			"&fAdditionally, you must at least specify a entry typing for this command."
+	));
 
     private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

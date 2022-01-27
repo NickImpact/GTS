@@ -23,15 +23,36 @@ repositories {
     }
 }
 
+sponge {
+    plugin {
+        id = 'gts'
+
+        meta {
+            name = "GTS"
+            url = 'https://github.com/NickImpact/GTS'
+        }
+    }
+
+
+}
+
 dependencies {
     compile project(':api')
     compile project(':common')
     compile project(':sponge')
 
-    shadow 'net.impactdev.impactor:sponge:3.1.2'
+    // Sponge
     shadow 'org.spongepowered:spongeapi:7.3.0'
+    annotationProcessor 'org.spongepowered:spongeapi:7.3.0'
+
+    // Impactor
+    shadow 'net.impactdev.impactor:sponge:3.1.2'
+
+    // Kyori Adventure
     shadow 'net.kyori:adventure-api:4.9.3'
     shadow 'net.kyori:adventure-text-serializer-legacy:4.9.3'
+
+    // Protocol Control
     shadow 'com.ichorpowered:protocolcontrol:0.0.3'
 
     testCompile project(':api')

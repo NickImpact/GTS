@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E, SpongeIcon> {
+public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends AbstractEntryUI<Player, E, SpongeIcon> {
 
     private final SpongeUI display;
 
@@ -70,9 +70,11 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
 
     protected abstract EntrySelection<? extends SpongeEntry<?>> getSelection();
 
+    protected abstract int getChosenSlot();
     protected abstract int getPriceSlot();
     protected abstract int getSelectionTypeSlot();
     protected abstract int getTimeSlot();
+    protected abstract int getConfirmSlot();
 
     protected abstract double getMinimumMonetaryPrice(E chosen);
 
@@ -82,6 +84,32 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
 
     @Override
     public void open(Player user) {
+        this.display.open(user);
+    }
+
+    public void open(Player user, boolean auction) {
+        if(auction) {
+            this.auction = true;
+            this.getDisplay().setSlot(this.getPriceSlot(), this.createPriceIcon());
+            this.getDisplay().setSlot(this.getSelectionTypeSlot(), this.createAuctionIcon());
+        }
+        this.display.open(user);
+    }
+
+    public void open(Player user, E entry, boolean auction, long duration) {
+        this.setChosen(entry);
+        if(duration != -1) {
+            this.duration = new Time(duration);
+        }
+        this.getDisplay().setSlot(this.getChosenSlot(), this.createChosenIcon());
+        this.getDisplay().setSlot(this.getTimeSlot(), this.createTimeIcon());
+        this.style(true);
+        this.getDisplay().setSlot(this.getConfirmSlot(), this.generateConfirmIcon());
+        if(auction) {
+            this.auction = true;
+            this.getDisplay().setSlot(this.getPriceSlot(), this.createPriceIcon());
+            this.getDisplay().setSlot(this.getSelectionTypeSlot(), this.createAuctionIcon());
+        }
         this.display.open(user);
     }
 
@@ -153,7 +181,7 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
                 .build();
         SpongeIcon icon = new SpongeIcon(bin);
         icon.addListener(clickable -> {
-            if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED).get()) {
+            if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.BINS_ENABLED)) {
                 this.auction = false;
                 this.display.setSlot(this.getPriceSlot(), this.createPriceIcon());
                 this.display.setSlot(this.getSelectionTypeSlot(), this.createBINIcon());
@@ -174,13 +202,11 @@ public abstract class AbstractSpongeEntryUI<E> extends AbstractEntryUI<Player, E
                 .build();
         SpongeIcon confirm = new SpongeIcon(rep);
         confirm.addListener(clickable -> {
-            if(clickable.getEvent() instanceof ClickInventoryEvent.Drop)
-            {
+            if(clickable.getEvent() instanceof ClickInventoryEvent.Drop) {
                 return;
             }
 
             SpongeEntry<?> entry = this.getSelection().createFromSelection();
-
             SpongeListing listing;
             if(this.auction) {
                 Preconditions.checkArgument((this.price instanceof MonetaryPrice), "Auctions must have monetary prices");

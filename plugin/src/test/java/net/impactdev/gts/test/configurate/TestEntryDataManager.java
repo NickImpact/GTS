@@ -1,8 +1,11 @@
 package net.impactdev.gts.test.configurate;
 
 import com.google.gson.GsonBuilder;
+import net.impactdev.gts.api.commands.CommandGenerator;
 import net.impactdev.gts.api.data.Storable;
+import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.entries.EntryManager;
+import net.impactdev.gts.api.listings.ui.EntrySelection;
 import net.impactdev.gts.api.listings.ui.EntryUI;
 
 import java.util.function.Supplier;
@@ -36,4 +39,10 @@ public class TestEntryDataManager implements EntryManager<TestEntry, Void> {
 
     @Override
     public void supplyDeserializers() {}
+
+    @Override
+    public CommandGenerator.EntryGenerator<? extends EntrySelection<? extends Entry<?, ?>>> getEntryCommandCreator() {
+        return null;
+    }
+
 }
