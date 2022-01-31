@@ -118,7 +118,7 @@ public class ReleaseNotesTask extends DefaultTask {
             StringJoiner joiner = new StringJoiner("\n");
             while(matcher.find()) {
                 String commit = matcher.group("commit");
-                commit = "[" + commit.substring(0, 7) + "](https://github.com/NickImpact/GTS/commit/" + commit + ")";
+                commit = "[" + commit + "](https://github.com/NickImpact/GTS/commit/" + commit + ")";
 
                 joiner.add(commit + " " + matcher.group("message") + "  ");
             }
