@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 
     dependencies {
@@ -14,7 +14,7 @@ plugins {
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
     maven {
         name = "Impact-Dev"
         url = "https://maven.impactdev.net/repository/development/"

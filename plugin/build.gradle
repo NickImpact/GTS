@@ -8,10 +8,6 @@ repositories {
         name 'Sponge Releases'
         url 'https://repo.spongepowered.org/repository/maven-releases'
     }
-    maven {
-        name 'Sponge Legacy'
-        url 'https://repo.spongepowered.org/repository/sponge-legacy'
-    }
     maven { url = "https://hub.spigotmc.org/nexus/content/groups/public/" }
     maven {
         name = "Github Packages - Protocol Control"
@@ -36,8 +32,6 @@ sponge {
             url = 'https://github.com/NickImpact/GTS'
         }
     }
-
-
 }
 
 dependencies {

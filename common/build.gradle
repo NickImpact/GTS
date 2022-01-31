@@ -3,7 +3,7 @@ buildscript {
         jcenter()
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://files.minecraftforge.net/maven"
         }
     }
     dependencies {
@@ -24,13 +24,6 @@ minecraft {
     // Use non-default mappings at your own risk. they may not always work.
     // Simply re-run your setup task after changing the mappings to update your workspace.
     mappings channel: "stable", version: "39-1.12"
-}
-
-repositories {
-    maven {
-        name 'sponge-repo'
-        url 'https://repo-new.spongepowered.org/maven'
-    }
 }
 
 dependencies {

@@ -8,16 +8,17 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.concurrent.TimeUnit
 
 buildscript {
     repositories {
         mavenCentral()
         maven {
-            url "http://repository.jboss.org/nexus/content/groups/public/"
+            url "https://repository.jboss.org/nexus/content/groups/public/"
         }
         maven {
             name = "forge"
-            url = "http://files.minecraftforge.net/maven"
+            url = "https://files.minecraftforge.net/maven"
         }
     }
     dependencies {
@@ -29,8 +30,6 @@ buildscript {
 
 plugins {
     id 'java'
-    id 'maven'
-    id 'idea'
     id 'com.github.johnrengelman.shadow' version '5.2.0'
     id 'net.kyori.blossom' version '1.1.0'
 }
@@ -46,12 +45,6 @@ compileJava {
 }
 
 allprojects {
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xlint:deprecation"
-        }
-    }
-
     task gitHash {
         def process = 'git rev-parse HEAD'.execute()
         process.waitFor()
@@ -77,9 +70,13 @@ allprojects {
                 ext.tag = ext.result
             }
 
-            def read = 'git log '.concat(ext.tag).concat('..HEAD --oneline --no-abbrev-commit').execute()
-            read.waitFor()
-            ext.sinceLastRelease = read.exitValue() ? 'Unknown' : read.text.trim()
+            def read = 'git log '.concat(ext.tag).concat('..HEAD --oneline').execute()
+            boolean result = read.waitFor(5, TimeUnit.SECONDS)
+            if(!result) {
+                ext.sinceLastRelease = 'Timed Out'
+            } else {
+                ext.sinceLastRelease = read.exitValue() ? 'Unknown' : read.text.trim()
+            }
         } else {
             def process = 'git log $(git describe --tags --abbrev=0)..HEAD'.execute()
             process.waitFor()
@@ -168,33 +165,33 @@ subprojects {
 
 }
 
-task genChangelog(type: ReleaseNotesTask) {
-    dependsOn(gitHash)
-    dependsOn(gitMessage)
-    version = project.version
-    hash = gitHash.ext.commit
-    sponge = project.ext.sponge
-    message = gitMessage.ext.message
-    sinceLastRelease = gitSinceLastRelease.ext.sinceLastRelease
-    level = ReleaseLevel.get(version)
-}
-
-task writeChangelogToFile {
-    dependsOn(genChangelog)
-    doLast {
-        java.nio.file.Path path = project.projectDir.toPath().resolve("$buildDir").resolve("allJars").resolve("${project.version}.md")
-        if(!Files.exists(path)) {
-            Files.createDirectories(path.getParent())
-            Files.createFile(path)
-        }
-
-        Files.write(path, genChangelog.result.getBytes(StandardCharsets.UTF_8))
-    }
-}
+//task genChangelog(type: ReleaseNotesTask) {
+//    dependsOn(gitHash)
+//    dependsOn(gitMessage)
+//    version = project.version
+//    hash = gitHash.ext.commit
+//    sponge = project.ext.sponge
+//    message = gitMessage.ext.message
+//    sinceLastRelease = gitSinceLastRelease.ext.sinceLastRelease
+//    level = ReleaseLevel.get(version)
+//}
+//
+//task writeChangelogToFile {
+//    dependsOn(genChangelog)
+//    doLast {
+//        java.nio.file.Path path = project.projectDir.toPath().resolve("$buildDir").resolve("allJars").resolve("${project.version}.md")
+//        if(!Files.exists(path)) {
+//            Files.createDirectories(path.getParent())
+//            Files.createFile(path)
+//        }
+//
+//        Files.write(path, genChangelog.result.getBytes(StandardCharsets.UTF_8))
+//    }
+//}
 
 task copyJars(type: Copy) {
     dependsOn subprojects.build
-    dependsOn writeChangelogToFile
+    //dependsOn writeChangelogToFile
     from subprojects.collect { it.tasks.withType(Jar) }
     into "$buildDir/allJars"
     exclude '*-all.jar'
@@ -213,11 +210,11 @@ task copyJars(type: Copy) {
 }
 
 task publishToOre(type: UploadToOre) {
-    dependsOn(genChangelog)
+    //dependsOn(genChangelog)
     dependsOn(copyJars)
 
-    notes = { genChangelog.result } as Provider<String>
-    level = genChangelog.level
+    //notes = "x"//{ genChangelog.result } as Provider<String>
+    level = ReleaseLevel.SNAPSHOT//genChangelog.level
     file = new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-${project.version}.jar").toString())
     pluginID = "gts"
     apiKey = project.properties['ore_api_key']?.toString() ?: System.getenv("ORE_API_KEY")

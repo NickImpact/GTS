@@ -4,8 +4,8 @@ plugins {
 repositories {
     mavenCentral()
     maven {
-        name 'sponge-repo'
-        url 'https://repo.spongepowered.org/repository/sponge-legacy'
+        name 'Sponge Releases'
+        url 'https://repo.spongepowered.org/repository/maven-releases'
     }
 }
 
@@ -16,7 +16,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:1.12.2-14.23.5.2855"
 
     shadow 'net.impactdev.impactor:sponge:3.1.2'
-    shadow 'org.spongepowered:spongeapi:7.3.0'
+    shadow 'org.spongepowered:spongeapi:7.4.0'
     shadow 'net.kyori:adventure-api:4.9.3'
     shadow 'net.kyori:adventure-text-serializer-gson:4.9.3'
     shadow 'net.kyori:adventure-text-serializer-legacy:4.9.3'
