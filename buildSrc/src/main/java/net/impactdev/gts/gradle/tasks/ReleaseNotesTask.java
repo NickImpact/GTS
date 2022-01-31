@@ -25,7 +25,6 @@ public class ReleaseNotesTask extends DefaultTask {
     public String hash;
     public String sponge;
     public String message;
-    public String sinceLastRelease;
     public ReleaseLevel level;
 
     public String getVersion() {
@@ -50,10 +49,6 @@ public class ReleaseNotesTask extends DefaultTask {
 
     public ReleaseLevel getLevel() {
         return this.level;
-    }
-
-    public String getSinceLastRelease() {
-        return this.sinceLastRelease;
     }
 
     @TaskAction
@@ -112,19 +107,6 @@ public class ReleaseNotesTask extends DefaultTask {
             Optional<String> result = task.getChangesForVersion();
             return result.orElse("No release notes available for this version...");
         }),
-        SINCE_LAST_RELEASE("since-last-release", task -> {
-            Pattern pattern = Pattern.compile("(?<commit>[0-9a-z]+)( [(].+[)])? (?<message>.+)");
-            Matcher matcher = pattern.matcher(task.getSinceLastRelease());
-            StringJoiner joiner = new StringJoiner("\n");
-            while(matcher.find()) {
-                String commit = matcher.group("commit");
-                commit = "[" + commit + "](https://github.com/NickImpact/GTS/commit/" + commit + ")";
-
-                joiner.add(commit + " " + matcher.group("message") + "  ");
-            }
-
-            return joiner.toString();
-        })
         ;
 
         private final String key;

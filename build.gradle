@@ -57,33 +57,6 @@ allprojects {
         ext.message = process.exitValue() ? 'Unknown' : process.text.trim()
     }
 
-    task gitSinceLastRelease {
-        if(Os.isFamily(Os.FAMILY_WINDOWS)) {
-            def set = 'git describe --tags'.execute()
-            set.waitFor()
-
-            ext.result = set.text.trim()
-
-            if(ext.result.contains('-')) {
-                ext.tag = ext.result.substring(0, ext.result.indexOf('-'))
-            } else {
-                ext.tag = ext.result
-            }
-
-            def read = 'git log '.concat(ext.tag).concat('..HEAD --oneline').execute()
-            boolean result = read.waitFor(5, TimeUnit.SECONDS)
-            if(!result) {
-                ext.sinceLastRelease = 'Timed Out'
-            } else {
-                ext.sinceLastRelease = read.exitValue() ? 'Unknown' : read.text.trim()
-            }
-        } else {
-            def process = 'git log $(git describe --tags --abbrev=0)..HEAD'.execute()
-            process.waitFor()
-            ext.sinceLastRelease = process.exitValue() ? 'Unknown' : process.text.trim()
-        }
-    }
-
     ext {
         sponge = "7.3.0"
 
@@ -165,29 +138,28 @@ subprojects {
 
 }
 
-//task genChangelog(type: ReleaseNotesTask) {
-//    dependsOn(gitHash)
-//    dependsOn(gitMessage)
-//    version = project.version
-//    hash = gitHash.ext.commit
-//    sponge = project.ext.sponge
-//    message = gitMessage.ext.message
-//    sinceLastRelease = gitSinceLastRelease.ext.sinceLastRelease
-//    level = ReleaseLevel.get(version)
-//}
-//
-//task writeChangelogToFile {
-//    dependsOn(genChangelog)
-//    doLast {
-//        java.nio.file.Path path = project.projectDir.toPath().resolve("$buildDir").resolve("allJars").resolve("${project.version}.md")
-//        if(!Files.exists(path)) {
-//            Files.createDirectories(path.getParent())
-//            Files.createFile(path)
-//        }
-//
-//        Files.write(path, genChangelog.result.getBytes(StandardCharsets.UTF_8))
-//    }
-//}
+task genChangelog(type: ReleaseNotesTask) {
+    dependsOn(gitHash)
+    dependsOn(gitMessage)
+    version = project.version
+    hash = gitHash.ext.commit
+    sponge = project.ext.sponge
+    message = gitMessage.ext.message
+    level = ReleaseLevel.get(version)
+}
+
+task writeChangelogToFile {
+    dependsOn(genChangelog)
+    doLast {
+        java.nio.file.Path path = project.projectDir.toPath().resolve("$buildDir").resolve("allJars").resolve("${project.version}.md")
+        if(!Files.exists(path)) {
+            Files.createDirectories(path.getParent())
+            Files.createFile(path)
+        }
+
+        Files.write(path, genChangelog.result.getBytes(StandardCharsets.UTF_8))
+    }
+}
 
 task copyJars(type: Copy) {
     dependsOn subprojects.build
