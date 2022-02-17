@@ -23,6 +23,10 @@ public class PercentageElement extends CommandElement {
     @Nullable
     @Override
     protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
+        if(args.peek().isEmpty()) {
+            return null;
+        }
+
         try {
             Double.parseDouble(args.peek().replace("%", ""));
         } catch (Exception e) {

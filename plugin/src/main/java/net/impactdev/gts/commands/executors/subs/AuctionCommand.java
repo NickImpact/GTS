@@ -66,7 +66,13 @@ public class AuctionCommand extends SpongeGTSCmdExecutor {
                         .valueFlag(new TimeElement(this.TIME), "-time")
                         .setAnchorFlags(true)
                         .buildWith(GenericArguments.seq(
-                            new PositiveBoundedElement<>(this.STARTING, Double::parseDouble),
+                            new PositiveBoundedElement<>(this.STARTING, input -> {
+                                try {
+                                    return Double.parseDouble(input);
+                                } catch (Exception e) {
+                                    return null;
+                                }
+                            }),
                             new PercentageElement(this.INCREMENT),
                             new EntryManagerElement(this.ENTRY),
                             GenericArguments.optional(GenericArguments.remainingJoinedStrings(this.ARGUMENTS))

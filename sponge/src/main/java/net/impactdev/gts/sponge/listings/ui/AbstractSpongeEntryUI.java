@@ -8,6 +8,7 @@ import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.sponge.listings.ui.creator.SpongePriceTypeSelectionMenu;
 import net.impactdev.gts.sponge.listings.ui.creator.TimeSelectMenu;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.gui.signs.SignQuery;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.Time;
@@ -50,18 +51,31 @@ public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends
 
     private final SpongeUI display;
 
-    private boolean auction = false;
+    private boolean auction;
     private Time duration = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME_LOW);
 
     protected SpongePrice<?, ?> price = new MonetaryPrice(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTINGS_MIN_PRICE));
 
     public AbstractSpongeEntryUI(Player viewer) {
         super(viewer);
+
+        this.auction = this.getTargetMode();
         this.display = SpongeUI.builder()
                 .title(this.getTitle())
                 .dimension(this.getDimensions())
                 .build()
                 .define(this.getDesign());
+    }
+
+    private boolean getTargetMode() {
+        Config config = GTSPlugin.getInstance().getConfiguration();
+        if(config.get(ConfigKeys.BINS_ENABLED)) {
+            return false;
+        } else if(config.get(ConfigKeys.AUCTIONS_ENABLED)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     protected abstract Text getTitle();

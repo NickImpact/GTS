@@ -74,12 +74,6 @@ public class SpongeListingMenu extends SpongeAsyncPage<SpongeListing> {
 	private static final AuctionsOnly AUCTIONS_ONLY = new AuctionsOnly();
 
 	private static final MessageService<Text> PARSER = Utilities.PARSER;
-
-	private static final Timing tracker = Timings.of(
-			GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer(),
-			"Listing Menu Updates"
-	);
-
 	private Task runner;
 
 	private @Nullable Searching searchQuery;

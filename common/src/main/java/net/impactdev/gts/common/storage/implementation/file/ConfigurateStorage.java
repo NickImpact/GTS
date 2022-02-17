@@ -244,6 +244,7 @@ public class ConfigurateStorage implements StorageImplementation {
         return true;
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     @Override
     public Stash getStash(UUID user) throws Exception {
         Stash.StashBuilder builder = Stash.builder();
@@ -255,19 +256,25 @@ public class ConfigurateStorage implements StorageImplementation {
                     Auction auction = (Auction) listing;
                     if(auction.getLister().equals(user) || auction.getHighBid().map(bid -> bid.getFirst().equals(user)).orElse(false)) {
                         boolean state = auction.getLister().equals(user);
-                        Optional.ofNullable(this.readFile(Group.CLAIMS, auction.getID()))
-                                .ifPresent(node -> {
-                                    SimilarPair<Boolean> claimed = new SimilarPair<>(
-                                            node.getNode("lister").getBoolean(),
-                                            node.getNode("winner").getBoolean()
-                                    );
+                        ConfigurationNode file = this.readFile(Group.CLAIMS, auction.getID());
+                        if(file != null) {
+                            SimilarPair<Boolean> claimed = new SimilarPair<>(
+                                    file.getNode("lister").getBoolean(),
+                                    file.getNode("winner").getBoolean()
+                            );
 
-                                    if(state && !claimed.getFirst()) {
-                                        builder.append(auction, TriState.FALSE);
-                                    } else if(!state && !claimed.getSecond()) {
-                                        builder.append(auction, TriState.TRUE);
-                                    }
-                                });
+                            if(state && !claimed.getFirst()) {
+                                builder.append(auction, TriState.FALSE);
+                            } else if(!state && !claimed.getSecond()) {
+                                builder.append(auction, TriState.TRUE);
+                            }
+                        } else {
+                            if(state) {
+                                builder.append(auction, TriState.FALSE);
+                            } else {
+                                builder.append(auction, TriState.TRUE);
+                            }
+                        }
                     } else if(auction.getBids().containsKey(user)) {
                         Optional.ofNullable(this.readFile(Group.CLAIMS, auction.getID()))
                                 .ifPresent(node -> {
