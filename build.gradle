@@ -158,6 +158,8 @@ task writeChangelogToFile {
         Files.write(path, genChangelog.result.getBytes(StandardCharsets.UTF_8))
         if(!Files.exists(path)) {
             throw new GradleException("File not written correctly: " + path)
+        } else {
+            System.out.println("File written to path: " + path)
         }
     }
 }
