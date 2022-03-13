@@ -12,16 +12,19 @@ import java.util.UUID;
 public class SkullCreator {
 
 	public static ItemStack fromBase64(String base) {
+		return fromProfile(GameProfile.of(UUID.randomUUID())
+				.addProperty("textures", ProfileProperty.of(
+						"globe",
+						"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUv"
+								+ base
+				)));
+	}
+
+	public static ItemStack fromProfile(GameProfile profile) {
 		return ItemStack.builder()
 				.itemType(ItemTypes.SKULL)
 				.add(Keys.SKULL_TYPE, SkullTypes.PLAYER)
-				.add(Keys.REPRESENTED_PLAYER, GameProfile.of(UUID.randomUUID())
-						.addProperty("textures", ProfileProperty.of(
-								"globe",
-								"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUv"
-								+ base
-						))
-				)
+				.add(Keys.REPRESENTED_PLAYER, profile)
 				.build();
 	}
 

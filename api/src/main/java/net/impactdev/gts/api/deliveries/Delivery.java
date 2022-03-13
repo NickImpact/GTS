@@ -59,7 +59,7 @@ public interface Delivery extends Storable {
 
     /**
      * Sends the delivery out to the recipient, informing them if they are online. Otherwise,
-     * this will be saved directly to their relative storage.
+     * this will be saved directly to their relative stash.
      */
     void deliver();
 

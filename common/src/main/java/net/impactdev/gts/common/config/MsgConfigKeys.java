@@ -515,6 +515,7 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 
 	public static final ConfigKey<String> UI_ADMIN_MAIN_MANAGER = stringKey("ui.admin.main.icons.manager", "&aGTS Listing Manager");
 	public static final ConfigKey<String> UI_ADMIN_MAIN_PRICE_MGMT = stringKey("ui.admin.main.icons.price-management", "&aPricing Management");
+	public static final ConfigKey<String> UI_ADMIN_MAIN_DELIVERIES = stringKey("ui.admin.main.icons.deliveries", "&aDelivery Management");;
 	public static final ConfigKey<String> UI_ADMIN_MAIN_DISABLER = stringKey("ui.admin.main.icons.disabler", "&cMaintenance Mode");
 	public static final ConfigKey<String> UI_ADMIN_MAIN_INFO_TITLE = stringKey("ui.admin.main.icons.info.title", "&eGTS Admin Mode");
 	public static final ConfigKey<List<String>> UI_ADMIN_MAIN_INFO_LORE = listKey("ui.admin.main.icons.info.lore", Lists.newArrayList(
@@ -679,6 +680,8 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&fx% or x, where X is a number. The &c--time&f section is optional.",
 			"&fAdditionally, you must at least specify a entry typing for this command."
 	));
+    public static final ConfigKey<String> ADMIN_TIMEOUT = stringKey("commands.admin.timeout", "{{gts:error}} Timed out waiting for a response...");
+    public static final ConfigKey<String> ADMIN_USERNAME_QUERY = stringKey("commands.admin.username-query", "{{gts:prefix}} Please supply a valid username to target...");
 
     private static final Map<String, ConfigKey<?>> KEYS;
 	private static final int SIZE;

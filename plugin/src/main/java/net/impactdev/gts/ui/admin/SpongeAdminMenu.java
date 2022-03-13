@@ -2,6 +2,7 @@ package net.impactdev.gts.ui.admin;
 
 import com.google.common.collect.Lists;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
+import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.sponge.ui.SpongeIcon;
 import net.impactdev.impactor.sponge.ui.SpongeLayout;
@@ -74,13 +75,14 @@ public class SpongeAdminMenu {
             new SpongeListingMenu(clickable.getPlayer(), true).open();
         });
 
-        SpongeIcon pricing = new SpongeIcon(ItemStack.builder()
-                .itemType(ItemTypes.GOLD_INGOT)
-                .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ADMIN_MAIN_PRICE_MGMT)))
+        SpongeIcon deliver = new SpongeIcon(ItemStack.builder()
+                .itemType(ItemTypes.CHEST_MINECART)
+                .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ADMIN_MAIN_DELIVERIES)))
                 .build()
         );
-        pricing.addListener(clickable -> {
-
+        deliver.addListener(clickable -> {
+            //new SpongeAdminDeliveryMenu(clickable.getPlayer()).open();
+            clickable.getPlayer().sendMessage(service.parse("{{gts:error}} Delivery creation coming soon"));
         });
 
         SpongeIcon disabler = new SpongeIcon(ItemStack.builder()
@@ -96,7 +98,7 @@ public class SpongeAdminMenu {
         builder.slots(lightBlue, 3, 4, 5, 12, 14, 21, 22, 23);
 
         builder.slot(manager, 38);
-        builder.slot(pricing, 40);
+        builder.slot(deliver, 40);
         builder.slot(disabler, 42);
 
         return builder.build();

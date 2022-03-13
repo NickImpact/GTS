@@ -38,6 +38,8 @@ public class SpongeListingEditorMenu {
     private Listing focus;
     private Supplier<SpongeAsyncPage<?>> parent;
 
+    private final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+
     public SpongeListingEditorMenu(Player viewer, Listing focus, Supplier<SpongeAsyncPage<?>> parent) {
         this.viewer = viewer;
         this.focus = focus;
@@ -70,8 +72,8 @@ public class SpongeListingEditorMenu {
         builder.slots(SpongeIcon.BORDER, 19, 20, 24, 25);
         builder.row(SpongeIcon.BORDER, 3);
 
-        builder.slot(this.deleteAndReturn(), 36);
-        builder.slot(this.delete(), 38);
+        builder.slot(this.delete(), 36);
+        builder.slot(this.deleteAndReturn(), 38);
         builder.slot(this.copy(), 40);
         builder.slot(this.edit(), 42);
         builder.slot(this.end(), 44);
@@ -80,10 +82,8 @@ public class SpongeListingEditorMenu {
     }
 
     private SpongeIcon delete() {
-        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-
         ItemStack display = ItemStack.builder()
-                .itemType(ItemTypes.CHEST_MINECART)
+                .itemType(ItemTypes.HOPPER_MINECART)
                 .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_TITLE)))
                 .add(Keys.ITEM_LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_LORE)))
                 .build();
@@ -107,10 +107,8 @@ public class SpongeListingEditorMenu {
     }
 
     private SpongeIcon deleteAndReturn() {
-        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-
         ItemStack display = ItemStack.builder()
-                .itemType(ItemTypes.HOPPER_MINECART)
+                .itemType(ItemTypes.CHEST_MINECART)
                 .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_RETURN_TITLE)))
                 .add(Keys.ITEM_LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_RETURN_LORE)))
                 .build();
@@ -134,17 +132,14 @@ public class SpongeListingEditorMenu {
     }
 
     private SpongeIcon copy() {
-        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
         return SpongeIcon.BORDER;
     }
 
     private SpongeIcon edit() {
-        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
         return SpongeIcon.BORDER;
     }
 
     private SpongeIcon end() {
-        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
         return SpongeIcon.BORDER;
     }
 }

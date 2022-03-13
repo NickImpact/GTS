@@ -51,8 +51,6 @@ public class AdminExecutor extends SpongeGTSCmdExecutor {
                 new Info(this.plugin),
                 new Ping(this.plugin),
                 new Clean(this.plugin),
-                new ModRemoval(this.plugin),
-                new ModRemovalCallback(this.plugin),
                 new UserQuery(this.plugin)
         };
     }
@@ -162,56 +160,6 @@ public class AdminExecutor extends SpongeGTSCmdExecutor {
                 src.sendMessage(service.parse("{{gts:error}} Legacy data no longer exists..."));
             }
 
-            return CommandResult.success();
-        }
-    }
-
-    @Alias("itemcheck")
-    @Permission(GTSPermissions.ADMIN_ITEM_CHECK)
-    public static class ModRemoval extends SpongeGTSCmdExecutor {
-
-        public ModRemoval(GTSPlugin plugin) {
-            super(plugin);
-        }
-
-        @Override
-        public CommandElement[] getArguments() {
-            return new CommandElement[0];
-        }
-
-        @Override
-        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
-            return new GTSCommandExecutor[0];
-        }
-
-        @Override
-        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-
-
-            return CommandResult.success();
-        }
-    }
-
-    @Alias("itemcheck-confirm")
-    @Permission(GTSPermissions.ADMIN_ITEM_CHECK)
-    public static class ModRemovalCallback extends SpongeGTSCmdExecutor {
-
-        public ModRemovalCallback(GTSPlugin plugin) {
-            super(plugin);
-        }
-
-        @Override
-        public CommandElement[] getArguments() {
-            return new CommandElement[0];
-        }
-
-        @Override
-        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
-            return new GTSCommandExecutor[0];
-        }
-
-        @Override
-        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
             return CommandResult.success();
         }
     }

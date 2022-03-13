@@ -4,12 +4,10 @@ package net.impactdev.gts.gradle.tasks;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.gradle.enums.ReleaseLevel;
-import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.gradle.api.DefaultTask;
@@ -31,8 +29,6 @@ import java.util.stream.Collectors;
 public class UploadToOre extends DefaultTask {
 
     private static final Function<String, String> LINK_BUILDER = in -> "https://ore.spongepowered.org/api/" + in;
-
-    private String multipartBoundary = "somegibberishusedasaboundary";
 
     public String apiKey;
     public boolean force;
@@ -78,15 +74,16 @@ public class UploadToOre extends DefaultTask {
                     String json = gson.toJson(new FileUploadData(this.notes.get()));
 
                     HttpPost post = new HttpPost(upload);
+                    String multipartBoundary = "somegibberishusedasaboundary";
                     post.setEntity(MultipartEntityBuilder.create()
                             .addTextBody("plugin-info", json, ContentType.APPLICATION_JSON)
                             .addBinaryBody("plugin-file", this.file)
-                            .setBoundary(this.multipartBoundary)
+                            .setBoundary(multipartBoundary)
                             .build()
                     );
                     post.addHeader("Authorization", "OreApi session=" + key);
                     post.addHeader("Content-Type", ContentType.MULTIPART_FORM_DATA
-                            .withParameters(new BasicNameValuePair("boundary", this.multipartBoundary))
+                            .withParameters(new BasicNameValuePair("boundary", multipartBoundary))
                             .toString()
                     );
                     post.addHeader("Accept", ContentType.APPLICATION_JSON.getMimeType());
