@@ -38,6 +38,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           pwd
+          find . -name ${{ steps.get_version.outputs.version }}.md
           ls -l
           cd build
           ls -l
