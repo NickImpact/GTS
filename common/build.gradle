@@ -37,7 +37,7 @@ dependencies {
     shadow 'ninja.leaping.configurate:configurate-yaml:3.3'
     shadow 'ninja.leaping.configurate:configurate-gson:3.3'
     shadow 'redis.clients:jedis:2.10.2'
-    shadow 'net.kyori:adventure-api:4.3.0'
+    shadow 'net.kyori:adventure-api:4.10.1'
     shadow('io.github.classgraph:classgraph:4.8.90')
 }
 
