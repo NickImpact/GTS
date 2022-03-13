@@ -146,27 +146,8 @@ task genChangelog(type: ReleaseNotesTask) {
     level = ReleaseLevel.get(version)
 }
 
-task writeChangelogToFile {
-    dependsOn(genChangelog)
-    doLast {
-        java.nio.file.Path path = project.projectDir.toPath().resolve("$buildDir").resolve("allJars").resolve("${project.version}.md")
-        if(!Files.exists(path)) {
-            Files.createDirectories(path.getParent())
-            Files.createFile(path)
-        }
-
-        Files.write(path, genChangelog.result.getBytes(StandardCharsets.UTF_8))
-        if(!Files.exists(path)) {
-            throw new GradleException("File not written correctly: " + path)
-        } else {
-            System.out.println("File written to path: " + path)
-        }
-    }
-}
-
 task copyJars(type: Copy) {
     dependsOn subprojects.build
-    dependsOn writeChangelogToFile
     from subprojects.collect { it.tasks.withType(Jar) }
     into "$buildDir/allJars"
     exclude '*-all.jar'
@@ -182,6 +163,26 @@ task copyJars(type: Copy) {
     exclude 'bungee*.jar'
     exclude 'pixelmon*.jar'
     exclude 'velocity*.jar'
+}
+
+task writeChangelogToFile {
+    dependsOn(genChangelog)
+    dependsOn(copyJars)
+    doLast {
+        java.nio.file.Path path = project.projectDir.toPath().resolve("$buildDir").resolve("allJars").resolve("${project.version}.md")
+        if(!Files.exists(path)) {
+            Files.createDirectories(path.getParent())
+            Files.createFile(path)
+        }
+
+        Files.write(path, genChangelog.result.getBytes(StandardCharsets.UTF_8))
+        if(!Files.exists(path)) {
+            throw new GradleException("File not written correctly: " + path)
+        } else {
+            System.out.println("File written to path: " + path)
+            // File written to path: /home/runner/work/GTS/GTS/build/allJars/6.1.8.md
+        }
+    }
 }
 
 task publishToOre(type: UploadToOre) {
@@ -334,4 +335,4 @@ publishing {
 }
 
 build.dependsOn shadowJar
-build.dependsOn copyJars
+build.dependsOn writeChangelogToFile
