@@ -38,7 +38,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}
           pwd
-          find . -name ${{ steps.get_version.outputs.version }}.md
+          find . -name 6.1.8.md
           ls -l
           cd build
           ls -l
