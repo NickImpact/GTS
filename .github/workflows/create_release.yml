@@ -1,8 +1,8 @@
 on:
   push:
     # Act only when we receive a commit with a tag leading with a 6 or higher
-#    tags:
-#      - '[6-9]*'
+    tags:
+      - '[6-9]*'
 
 name: Create Github Release
 
@@ -34,83 +34,73 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew build
-      - name: Check File Tree
-        run: |
-          cd ${{ github.workspace }}
-          pwd
-          find . -name 6.1.8.md
-          ls -l
-          cd build
-          ls -l
-          cd allJars
-          ls -l
-#      - name: Create Release
-#        id: create_release
-#        uses: actions/create-release@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          tag_name: ${{ steps.get_version.outputs.version }}
-#          release_name: Release ${{ steps.get_version.outputs.version }}
-#          body_path: ${{ github.workspace }}/build/allJars/${{ steps.get_version.outputs.version }}.md
-#          draft: false
-#          prerelease: false
-#      - name: Upload Sponge Jar to Github
-#        uses: actions/upload-release-asset@v1
-#        env:
-#         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#         upload_url: ${{ steps.create_release.outputs.upload_url }}
-#         asset_path: ${{ github.workspace }}/build/allJars/GTS-Sponge-${{ steps.get_version.outputs.version }}.jar
-#         asset_name: GTS-Sponge-${{ steps.get_version.outputs.version }}.jar
-#         asset_content_type: application/java-archive
-#      - name: Upload Bungee Jar
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: ${{ github.workspace }}/build/allJars/GTS-Bungee-${{ steps.get_version.outputs.version }}.jar
-#          asset_name: GTS-Bungee-${{ steps.get_version.outputs.version }}.jar
-#          asset_content_type: application/java-archive
-#      - name: Upload Velocity Jar
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: ${{ github.workspace }}/build/allJars/GTS-Velocity-${{ steps.get_version.outputs.version }}.jar
-#          asset_name: GTS-Velocity-${{ steps.get_version.outputs.version }}.jar
-#          asset_content_type: application/java-archive
-#      - name: Upload Reforged Extension Jar
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: ${{ github.workspace }}/build/allJars/GTS-Extension-Reforged-${{ steps.get_version.outputs.version }}.jar
-#          asset_name: GTS-Extension-Reforged-${{ steps.get_version.outputs.version }}.jar
-#          asset_content_type: application/java-archive
-#      - name: Upload Generations Extension Jar
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ steps.create_release.outputs.upload_url }}
-#          asset_path: ${{ github.workspace }}/build/allJars/GTS-Extension-Generations-${{ steps.get_version.outputs.version }}.jar
-#          asset_name: GTS-Extension-Generations-${{ steps.get_version.outputs.version }}.jar
-#          asset_content_type: application/java-archive
-#      - name: Upload Sponge Jar to Ore
-#        run: ./gradlew publishToOre
-#        env:
-#          ORE_API_KEY: ${{ secrets.ORE_API_KEY }}
-#      - name: Upload All to Discord
-#        run: ./gradlew publishToDiscord
-#        env:
-#          DISCORD_WEBHOOK_MEMBER_ROLE: ${{ secrets.DISCORD_WEBHOOK_MEMBER_ROLE }}
-#          DISCORD_WEBHOOK_ID_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_ID_PLUGIN }}
-#          DISCORD_WEBHOOK_TOKEN_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_TOKEN_PLUGIN }}
-#          DISCORD_WEBHOOK_ID_REFORGED: ${{ secrets.DISCORD_WEBHOOK_ID_REFORGED }}
-#          DISCORD_WEBHOOK_TOKEN_REFORGED: ${{ secrets.DISCORD_WEBHOOK_TOKEN_REFORGED }}
-#          DISCORD_WEBHOOK_ID_GENERATIONS: ${{ secrets.DISCORD_WEBHOOK_ID_GENERATIONS }}
-#          DISCORD_WEBHOOK_TOKEN_GENERATIONS: ${{ secrets.DISCORD_WEBHOOK_TOKEN_GENERATIONS }}
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.get_version.outputs.version }}
+          release_name: Release ${{ steps.get_version.outputs.version }}
+          body_path: ${{ github.workspace }}/build/allJars/${{ steps.get_version.outputs.version }}.md
+          draft: false
+          prerelease: false
+      - name: Upload Sponge Jar to Github
+        uses: actions/upload-release-asset@v1
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+         upload_url: ${{ steps.create_release.outputs.upload_url }}
+         asset_path: ${{ github.workspace }}/build/allJars/GTS-Sponge-${{ steps.get_version.outputs.version }}.jar
+         asset_name: GTS-Sponge-${{ steps.get_version.outputs.version }}.jar
+         asset_content_type: application/java-archive
+      - name: Upload Bungee Jar
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/build/allJars/GTS-Bungee-${{ steps.get_version.outputs.version }}.jar
+          asset_name: GTS-Bungee-${{ steps.get_version.outputs.version }}.jar
+          asset_content_type: application/java-archive
+      - name: Upload Velocity Jar
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/build/allJars/GTS-Velocity-${{ steps.get_version.outputs.version }}.jar
+          asset_name: GTS-Velocity-${{ steps.get_version.outputs.version }}.jar
+          asset_content_type: application/java-archive
+      - name: Upload Reforged Extension Jar
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/build/allJars/GTS-Extension-Reforged-${{ steps.get_version.outputs.version }}.jar
+          asset_name: GTS-Extension-Reforged-${{ steps.get_version.outputs.version }}.jar
+          asset_content_type: application/java-archive
+      - name: Upload Generations Extension Jar
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ github.workspace }}/build/allJars/GTS-Extension-Generations-${{ steps.get_version.outputs.version }}.jar
+          asset_name: GTS-Extension-Generations-${{ steps.get_version.outputs.version }}.jar
+          asset_content_type: application/java-archive
+      - name: Upload Sponge Jar to Ore
+        run: ./gradlew publishToOre
+        env:
+          ORE_API_KEY: ${{ secrets.ORE_API_KEY }}
+      - name: Upload All to Discord
+        run: ./gradlew publishToDiscord
+        env:
+          DISCORD_WEBHOOK_MEMBER_ROLE: ${{ secrets.DISCORD_WEBHOOK_MEMBER_ROLE }}
+          DISCORD_WEBHOOK_ID_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_ID_PLUGIN }}
+          DISCORD_WEBHOOK_TOKEN_PLUGIN: ${{ secrets.DISCORD_WEBHOOK_TOKEN_PLUGIN }}
+          DISCORD_WEBHOOK_ID_REFORGED: ${{ secrets.DISCORD_WEBHOOK_ID_REFORGED }}
+          DISCORD_WEBHOOK_TOKEN_REFORGED: ${{ secrets.DISCORD_WEBHOOK_TOKEN_REFORGED }}
+          DISCORD_WEBHOOK_ID_GENERATIONS: ${{ secrets.DISCORD_WEBHOOK_ID_GENERATIONS }}
+          DISCORD_WEBHOOK_TOKEN_GENERATIONS: ${{ secrets.DISCORD_WEBHOOK_TOKEN_GENERATIONS }}
