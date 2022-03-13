@@ -150,7 +150,6 @@ task writeChangelogToFile {
     dependsOn(genChangelog)
     doLast {
         java.nio.file.Path path = project.projectDir.toPath().resolve("$buildDir").resolve("allJars").resolve("${project.version}.md")
-        System.out.println(path)
         if(!Files.exists(path)) {
             Files.createDirectories(path.getParent())
             Files.createFile(path)
