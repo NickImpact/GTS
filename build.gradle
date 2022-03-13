@@ -161,7 +161,7 @@ task writeChangelogToFile {
 
 task copyJars(type: Copy) {
     dependsOn subprojects.build
-    //dependsOn writeChangelogToFile
+    dependsOn writeChangelogToFile
     from subprojects.collect { it.tasks.withType(Jar) }
     into "$buildDir/allJars"
     exclude '*-all.jar'
@@ -180,11 +180,11 @@ task copyJars(type: Copy) {
 }
 
 task publishToOre(type: UploadToOre) {
-    //dependsOn(genChangelog)
+    dependsOn(genChangelog)
     dependsOn(copyJars)
 
-    //notes = "x"//{ genChangelog.result } as Provider<String>
-    level = ReleaseLevel.SNAPSHOT//genChangelog.level
+    notes = { genChangelog.result } as Provider<String>
+    level = genChangelog.level
     file = new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-${project.version}.jar").toString())
     pluginID = "gts"
     apiKey = project.properties['ore_api_key']?.toString() ?: System.getenv("ORE_API_KEY")
