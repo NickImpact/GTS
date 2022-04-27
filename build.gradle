@@ -34,7 +34,7 @@ plugins {
 
 allprojects {
     group = 'net.impactdev.gts'
-    version = "6.1.8"
+    version = "6.1.9-SNAPSHOT"
 }
 
 sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
@@ -324,13 +324,13 @@ publishing {
             version project.version
         }
 
-        generations(MavenPublication) {
-            def project = project(':pixelmon:generations')
-            from project.components.java
-            groupId project.group
-            artifactId "generations-sponge"
-            version project.version
-        }
+//        generations(MavenPublication) {
+//            def project = project(':pixelmon:generations')
+//            from project.components.java
+//            groupId project.group
+//            artifactId "generations-sponge"
+//            version project.version
+//        }
     }
 }
 
