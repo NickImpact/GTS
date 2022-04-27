@@ -1,7 +1,7 @@
 package net.impactdev.gts.common.plugin.bootstrap;
 
-import net.impactdev.impactor.api.dependencies.classloader.PluginClassLoader;
-import net.impactdev.impactor.api.logging.Logger;
+import net.impactdev.impactor.api.logging.PluginLogger;
+import net.impactdev.impactor.launcher.LauncherBootstrap;
 
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -13,22 +13,22 @@ import java.util.Optional;
  * <p>Instances of this interface are responsible for loading the GTS plugin on their respective platforms,
  * and provide the plugin with its essential information for it to perform as intended.</p>
  */
-public interface GTSBootstrap {
+public interface GTSBootstrap extends LauncherBootstrap {
 
-	Logger getPluginLogger();
+	PluginLogger logger();
 
-	Path getDataDirectory();
+	Path configDirectory();
 
-	Path getConfigDirectory();
-
-	InputStream getResourceStream(String path);
+	Path dataDirectory();
 
 	/**
-	 * Gets a {@link PluginClassLoader} for this instance
+	 * Attempts to locate a resource within the internal jar, and if it exists, creates an
+	 * InputStream for said resource.
 	 *
-	 * @return a classloader
+	 * @param path The path to the resource
+	 * @return An optionally filled InputStream if the file was found and loaded, empty otherwise.
 	 */
-	PluginClassLoader getPluginClassLoader();
+	Optional<InputStream> resource(Path path);
 
 	/**
 	 * States whether or not GTS encountered an error during startup that prevented the plugin from initializing
@@ -37,11 +37,6 @@ public interface GTSBootstrap {
 	 *
 	 * @return Any error that occurred during startup, or empty if no error was encountered
 	 */
-	Optional<Throwable> getLaunchError();
-
-	/**
-	 * Disables the plugin entirely.
-	 */
-	void disable();
+	Optional<Throwable> launchError();
 
 }

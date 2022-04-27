@@ -26,7 +26,7 @@
 package net.impactdev.gts.api.messaging.message;
 
 import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;

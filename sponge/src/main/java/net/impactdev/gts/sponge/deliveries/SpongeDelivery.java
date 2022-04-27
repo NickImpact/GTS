@@ -134,11 +134,6 @@ public class SpongeDelivery implements Delivery {
         }
 
         @Override
-        public DeliveryBuilder from(Delivery delivery) {
-            return this;
-        }
-
-        @Override
         public Delivery build() {
             return new SpongeDelivery(this);
         }

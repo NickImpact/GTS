@@ -1,7 +1,7 @@
 package net.impactdev.gts.api.listings.makeup;
 
 import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.impactor.api.utilities.Builder;
+import net.impactdev.impactor.api.builders.Builder;
 import net.impactdev.impactor.api.utilities.Time;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 
@@ -31,7 +31,7 @@ public class Fees {
         return new FeeBuilder();
     }
 
-    public static class FeeBuilder implements Builder<Fees, FeeBuilder> {
+    public static class FeeBuilder implements Builder<Fees> {
 
         private Tuple<Price<?, ?, ?>, Boolean> price;
         private Tuple<Time, Double> time;
@@ -46,12 +46,12 @@ public class Fees {
             return this;
         }
 
-        @Override
-        public FeeBuilder from(Fees fees) {
-            this.price = fees.price;
-            this.time = fees.time;
-            return this;
-        }
+//        @Override
+//        public FeeBuilder from(Fees fees) {
+//            this.price = fees.price;
+//            this.time = fees.time;
+//            return this;
+//        }
 
         @Override
         public Fees build() {

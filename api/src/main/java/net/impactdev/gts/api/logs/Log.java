@@ -2,7 +2,7 @@ package net.impactdev.gts.api.logs;
 
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.utilities.Builder;
+import net.impactdev.impactor.api.builders.Builder;
 
 import java.util.UUID;
 
@@ -16,7 +16,7 @@ public interface Log {
 		return Impactor.getInstance().getRegistry().createBuilder(LogBuilder.class);
 	}
 
-	interface LogBuilder extends Builder<Log, LogBuilder> {
+	interface LogBuilder extends Builder<Log> {
 
 		/**
 		 * Sets the focus point of this log

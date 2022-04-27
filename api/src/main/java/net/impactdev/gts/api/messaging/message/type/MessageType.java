@@ -1,13 +1,11 @@
 package net.impactdev.gts.api.messaging.message.type;
 
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.util.PrettyPrinter;
-import net.impactdev.impactor.api.utilities.Builder;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 public interface MessageType {
 

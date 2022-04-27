@@ -1,7 +1,3 @@
-plugins {
-    id 'org.spongepowered.plugin' version '0.9.0'
-}
-
 repositories {
     mavenCentral()
     maven {
@@ -23,28 +19,17 @@ repositories {
     }
 }
 
-sponge {
-    plugin {
-        id = 'gts'
-
-        meta {
-            name = "GTS"
-            url = 'https://github.com/NickImpact/GTS'
-        }
-    }
-}
-
 dependencies {
-    compile project(':api')
-    compile project(':common')
-    compile project(':sponge')
-
-    // Sponge
-    shadow 'org.spongepowered:spongeapi:7.4.0'
-    annotationProcessor 'org.spongepowered:spongeapi:7.4.0'
+    api project(':api')
+    implementation project(':common')
+    implementation project(':sponge')
+    implementation project(':plugin:sponge-launcher')
 
     // Impactor
-    shadow 'net.impactdev.impactor:sponge:3.1.2'
+    implementation 'net.impactdev.impactor:launcher:4.0.0-SNAPSHOT'
+
+    // Sponge
+    shadow 'org.spongepowered:spongeapi:8.0.0'
 
     // Kyori Adventure
     shadow 'net.kyori:adventure-api:4.10.1'
@@ -52,31 +37,30 @@ dependencies {
     shadow 'net.kyori:adventure-text-serializer-gson:4.10.1'
 
     // Protocol Control
-    shadow 'com.ichorpowered:protocolcontrol:0.0.3'
+    //shadow 'com.ichorpowered:protocolcontrol:0.0.3'
 
-    testCompile project(':api')
-    testCompile project(':common')
-    testCompile 'net.impactdev.impactor:api:3.1.2'
-    testCompile 'net.impactdev.impactor:sponge:3.1.2'
-    testCompile 'ninja.leaping.configurate:configurate-core:3.7.1'
-    testCompile 'ninja.leaping.configurate:configurate-gson:3.7.1'
-    testCompile 'ninja.leaping.configurate:configurate-yaml:3.7.1'
-    testCompile 'ninja.leaping.configurate:configurate-hocon:3.7.1'
-    testCompile 'com.github.ben-manes.caffeine:caffeine:2.8.2'
-    testCompile 'net.kyori:adventure-api:4.9.3'
+    testImplementation project(':api')
+    testImplementation project(':common')
+    testImplementation 'net.impactdev.impactor:api:4.0.0-SNAPSHOT'
+    testImplementation 'org.spongepowered:configurate-core:4.1.2'
+    testImplementation 'org.spongepowered:configurate-gson:4.1.2'
+    testImplementation 'org.spongepowered:configurate-yaml:4.1.2'
+    testImplementation 'org.spongepowered:configurate-hocon:4.1.2'
+    testImplementation 'com.github.ben-manes.caffeine:caffeine:2.8.2'
+    testImplementation 'net.kyori:adventure-api:4.9.3'
 }
 
 shadowJar {
-    archiveName = "GTS-Sponge-${project.version}.jar"
+    archiveBaseName.set("gts-sponge")
+    archiveClassifier.set("")
+    archiveVersion.set("")
+    archiveExtension.set("jarinjar")
 
     dependencies {
-        include project(':api')
         include project(':common')
         include project(':sponge')
     }
 
-    relocate ('net.kyori.adventure', 'net.impactdev.impactor.relocations.adventure')
-    relocate ('net.kyori.examination', 'net.impactdev.impactor.relocations.examination')
     relocate ('com.github.benmanes.caffeine', 'net.impactdev.impactor.relocations.caffeine')
     relocate ('io.github.classgraph', 'net.impactdev.impactor.relocations.classgraph')
     relocate ('org.mariuszgromada.math.mxparser', 'net.impactdev.impactor.relocations.mxparser')
@@ -89,12 +73,10 @@ reobf {
 }
 
 blossom {
-    blossomSourceReplacementJava.output = file("$buildDir/sources/java")
     replaceToken '@version@', version
     replaceToken '@git_commit@', gitHash.commit
     replaceToken '@description@', 'A player controlled market system'
 }
 
-blossomSourceReplacementJava.dependsOn(gitHash)
 jar.dependsOn(gitHash)
 build.dependsOn reobfShadowJar

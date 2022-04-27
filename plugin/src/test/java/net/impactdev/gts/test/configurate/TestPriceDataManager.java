@@ -6,14 +6,14 @@ import net.impactdev.gts.api.data.Storable;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceManager;
 import net.impactdev.gts.api.listings.ui.EntryUI;
-import net.impactdev.gts.api.util.TriConsumer;
-import net.impactdev.impactor.api.gui.UI;
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
+import net.impactdev.impactor.api.ui.containers.ImpactorUI;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class TestPriceDataManager implements PriceManager<TestPrice, Void> {
+public class TestPriceDataManager implements PriceManager<TestPrice> {
 
     @Override
     public String getName() {
@@ -31,12 +31,12 @@ public class TestPriceDataManager implements PriceManager<TestPrice, Void> {
     }
 
     @Override
-    public TriConsumer<Void, EntryUI<?, ?, ?>, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>>> process() {
-        return (x, y, z) -> {};
+    public BiConsumer<EntryUI<?, ?, ?>, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>>> process() {
+        return (y, z) -> {};
     }
 
     @Override
-    public <U extends UI<?, ?, ?, ?>> Optional<PriceSelectorUI<U>> getSelector(Void viewer, Price<?, ?, ?> price, Consumer<Object> callback) {
+    public <U extends ImpactorUI> Optional<PriceSelectorUI<U>> getSelector(PlatformPlayer viewer, Price<?, ?, ?> price, Consumer<Object> callback) {
         return Optional.empty();
     }
 

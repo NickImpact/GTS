@@ -1,27 +1,33 @@
 package net.impactdev.gts.ui.admin.editor;
 
 import com.google.common.collect.Lists;
+import net.impactdev.gts.SpongeGTSPlugin;
 import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.ui.SpongeAsyncPage;
 import net.impactdev.gts.sponge.utils.Utilities;
+import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
+import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.placeholders.PlaceholderSources;
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
 import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.sponge.ui.SpongeIcon;
-import net.impactdev.impactor.sponge.ui.SpongeLayout;
-import net.impactdev.impactor.sponge.ui.SpongeUI;
+import net.impactdev.impactor.api.ui.containers.ImpactorUI;
+import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
+import net.impactdev.impactor.api.ui.containers.icons.Icon;
+import net.impactdev.impactor.api.ui.containers.layouts.Layout;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.data.type.DyeColors;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.property.InventoryDimension;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.api.scheduler.Task;
 
 import java.util.function.Supplier;
 
@@ -32,45 +38,44 @@ import java.util.function.Supplier;
  */
 public class SpongeListingEditorMenu {
 
-    private SpongeUI display;
-    private Player viewer;
+    private final ImpactorUI display;
+    private final PlatformPlayer viewer;
 
-    private Listing focus;
-    private Supplier<SpongeAsyncPage<?>> parent;
+    private final Listing focus;
+    private final Supplier<SpongeListingMenu> parent;
 
-    private final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+    private final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
-    public SpongeListingEditorMenu(Player viewer, Listing focus, Supplier<SpongeAsyncPage<?>> parent) {
-        this.viewer = viewer;
+    public SpongeListingEditorMenu(ServerPlayer viewer, Listing focus, Supplier<SpongeListingMenu> parent) {
+        this.viewer = PlatformPlayer.from(viewer);
         this.focus = focus;
         this.parent = parent;
 
-        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-
-        this.display = SpongeUI.builder()
-                .title(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_TITLE)))
-                .dimension(InventoryDimension.of(9, 6))
-                .build()
-                .define(this.layout());
+        this.display = ImpactorUI.builder()
+                .provider(Key.key("gts", "admin-listing-editor"))
+                .title(this.service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_TITLE)))
+                .layout(this.layout())
+                .build();
     }
 
     public void open() {
         this.display.open(this.viewer);
     }
 
-    private SpongeLayout layout() {
-        SpongeLayout.SpongeLayoutBuilder builder = SpongeLayout.builder();
-        SpongeIcon colored = new SpongeIcon(ItemStack.builder()
-                .itemType(ItemTypes.STAINED_GLASS_PANE)
-                .add(Keys.DYE_COLOR, DyeColors.LIGHT_BLUE)
-                .add(Keys.DISPLAY_NAME, Text.EMPTY)
-                .build()
-        );
+    private Layout layout() {
+        Layout.LayoutBuilder builder = Layout.builder();
+        Icon<ItemStack> colored = Icon.builder(ItemStack.class)
+                .display(new DisplayProvider.Constant<>(ItemStack.builder()
+                        .itemType(ItemTypes.LIGHT_BLUE_STAINED_GLASS_PANE)
+                        .add(Keys.CUSTOM_NAME, Component.empty())
+                        .build()
+                ))
+                .build();
 
-        builder.border();
+        builder.border(ProvidedIcons.BORDER);
         builder.slots(colored, 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
-        builder.slots(SpongeIcon.BORDER, 19, 20, 24, 25);
-        builder.row(SpongeIcon.BORDER, 3);
+        builder.slots(ProvidedIcons.BORDER, 19, 20, 24, 25);
+        builder.row(ProvidedIcons.BORDER, 3);
 
         builder.slot(this.delete(), 36);
         builder.slot(this.deleteAndReturn(), 38);
@@ -81,65 +86,91 @@ public class SpongeListingEditorMenu {
         return builder.build();
     }
 
-    private SpongeIcon delete() {
+    private ServerPlayer player() {
+        return Sponge.server().player(this.viewer.uuid()).orElseThrow(IllegalStateException::new);
+    }
+
+    private Icon<ItemStack> delete() {
         ItemStack display = ItemStack.builder()
                 .itemType(ItemTypes.HOPPER_MINECART)
-                .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_TITLE)))
-                .add(Keys.ITEM_LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_LORE)))
+                .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_TITLE)))
+                .add(Keys.LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_LORE)))
                 .build();
-        SpongeIcon icon = new SpongeIcon(display);
-        icon.addListener(clickable -> {
-            GTSPlugin.getInstance().getMessagingService()
-                    .requestForcedDeletion(this.focus.getID(), this.viewer.getUniqueId(), false)
-                    .thenAccept(response -> {
-                        if(response.wasSuccessful()) {
-                            this.viewer.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS)));
-                        } else {
-                            this.viewer.sendMessage(service.parse(
-                                    Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_FAILURE),
-                                    Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
-                            ));
-                        }
-                    });
-            Sponge.getScheduler().createTaskBuilder().execute(() -> this.display.close(this.viewer)).submit(GTSPlugin.getInstance().getBootstrap());
-        });
-        return icon;
+
+        return Icon.builder(ItemStack.class)
+                .display(new DisplayProvider.Constant<>(display))
+                .listener(context -> {
+                    GTSPlugin.instance().messagingService()
+                            .requestForcedDeletion(this.focus.getID(), this.viewer.uuid(), false)
+                            .thenAccept(response -> {
+                                if(response.wasSuccessful()) {
+                                    this.player().sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS)));
+                                } else {
+                                    PlaceholderSources sources = PlaceholderSources.builder()
+                                            .append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                            .build();
+                                    this.player().sendMessage(service.parse(
+                                            Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_FAILURE),
+                                            sources
+                                    ));
+                                }
+                            });
+                    Sponge.server().scheduler().submit(Task.builder()
+                            .execute(() -> this.display.close(this.viewer))
+                            .plugin(GTSPlugin.instance().as(SpongeGTSPlugin.class).container())
+                            .build()
+                    );
+
+                    return false;
+                })
+                .build();
     }
 
-    private SpongeIcon deleteAndReturn() {
+    private Icon<ItemStack> deleteAndReturn() {
         ItemStack display = ItemStack.builder()
                 .itemType(ItemTypes.CHEST_MINECART)
-                .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_RETURN_TITLE)))
-                .add(Keys.ITEM_LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_RETURN_LORE)))
+                .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_RETURN_TITLE)))
+                .add(Keys.LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_RETURN_LORE)))
                 .build();
-        SpongeIcon icon = new SpongeIcon(display);
-        icon.addListener(clickable -> {
-            GTSPlugin.getInstance().getMessagingService()
-                    .requestForcedDeletion(this.focus.getID(), this.viewer.getUniqueId(), true)
-                    .thenAccept(response -> {
-                        if(response.wasSuccessful()) {
-                            this.viewer.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS)));
-                        } else {
-                            this.viewer.sendMessage(service.parse(
-                                    Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_FAILURE),
-                                    Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
-                            ));
-                        }
-                    });
-            Sponge.getScheduler().createTaskBuilder().execute(() -> this.display.close(this.viewer)).submit(GTSPlugin.getInstance().getBootstrap());
-        });
-        return icon;
+
+        return Icon.builder(ItemStack.class)
+                .display(new DisplayProvider.Constant<>(display))
+                .listener(context -> {
+                    GTSPlugin.instance().messagingService()
+                            .requestForcedDeletion(this.focus.getID(), this.viewer.uuid(), true)
+                            .thenAccept(response -> {
+                                if(response.wasSuccessful()) {
+                                    this.player().sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS)));
+                                } else {
+                                    PlaceholderSources sources = PlaceholderSources.builder()
+                                            .append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                            .build();
+                                    this.player().sendMessage(service.parse(
+                                            Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_FAILURE),
+                                            sources
+                                    ));
+                                }
+                            });
+
+                    Sponge.server().scheduler().submit(Task.builder()
+                            .execute(() -> this.display.close(this.viewer))
+                            .plugin(GTSPlugin.instance().as(SpongeGTSPlugin.class).container())
+                            .build()
+                    );
+                    return false;
+                })
+                .build();
     }
 
-    private SpongeIcon copy() {
-        return SpongeIcon.BORDER;
+    private Icon<ItemStack> copy() {
+        return ProvidedIcons.BORDER;
     }
 
-    private SpongeIcon edit() {
-        return SpongeIcon.BORDER;
+    private Icon<ItemStack> edit() {
+        return ProvidedIcons.BORDER;
     }
 
-    private SpongeIcon end() {
-        return SpongeIcon.BORDER;
+    private Icon<ItemStack> end() {
+        return ProvidedIcons.BORDER;
     }
 }

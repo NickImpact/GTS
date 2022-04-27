@@ -35,11 +35,11 @@ public interface GTSComponentManager {
 
     // Prices
 
-    <T extends Price<?, ?, ?>> void registerPriceManager(Class<T> type, PriceManager<T, ?> resource);
+    <T extends Price<?, ?, ?>> void registerPriceManager(Class<T> type, PriceManager<T> resource);
 
-    <T extends Price<?, ?, ?>> Optional<PriceManager<? extends T, ?>> getPriceManager(String key);
+    <T extends Price<?, ?, ?>> Optional<PriceManager<? extends T>> getPriceManager(String key);
 
-    Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>, ?>> getAllPriceManagers();
+    Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>>> getAllPriceManagers();
 
     DeserializerRegistry getDeserializerRegistry();
 

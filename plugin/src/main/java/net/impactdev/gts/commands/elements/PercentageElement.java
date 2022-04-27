@@ -3,49 +3,42 @@ package net.impactdev.gts.commands.elements;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.configuration.Config;
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.ArgumentParseException;
-import org.spongepowered.api.command.args.CommandArgs;
-import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.args.CommandElement;
-import org.spongepowered.api.text.Text;
+import net.kyori.adventure.text.Component;
+import org.spongepowered.api.command.CommandCompletion;
+import org.spongepowered.api.command.exception.ArgumentParseException;
+import org.spongepowered.api.command.parameter.ArgumentReader;
+import org.spongepowered.api.command.parameter.CommandContext;
+import org.spongepowered.api.command.parameter.Parameter;
+import org.spongepowered.api.command.parameter.managed.ValueParameter;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-public class PercentageElement extends CommandElement {
+public class PercentageElement implements ValueParameter<Float> {
 
-    public PercentageElement(@Nullable Text key) {
-        super(key);
+    @Override
+    public List<CommandCompletion> complete(CommandContext context, String currentInput) {
+        return Collections.emptyList();
     }
 
-    @Nullable
     @Override
-    protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
-        if(args.peek().isEmpty()) {
-            return null;
-        }
-
+    public Optional<? extends Float> parseValue(Parameter.Key<? super Float> parameterKey, ArgumentReader.Mutable reader, CommandContext.Builder context) throws ArgumentParseException {
         try {
-            Double.parseDouble(args.peek().replace("%", ""));
-        } catch (Exception e) {
-            throw args.createError(Text.of("Value is not a valid percentage"));
+            Double.parseDouble(reader.peekString().replace("%", ""));
+        }
+        catch (Exception e) {
+            throw reader.createException(Component.text("Value is not a valid percentage"));
         }
 
-        Config config = GTSPlugin.getInstance().getConfiguration();
-        String argument = args.next().replace("%", "");
-        return Math.max(
+        Config config = GTSPlugin.instance().configuration().main();
+        String argument = reader.parseString().replace("%", "");
+        return Optional.of(Math.max(
                 config.get(ConfigKeys.AUCTIONS_MIN_INCREMENT_RATE) * 100,
                 Math.min(
                         Float.parseFloat(argument),
                         config.get(ConfigKeys.AUCTIONS_MAX_INCREMENT_RATE) * 100
-                )
+                ))
         );
-    }
-
-    @Override
-    public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
-        return Collections.emptyList();
     }
 }

@@ -3,45 +3,44 @@ package net.impactdev.gts.common.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.nbt.NBTTagByteArray;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagDouble;
-import net.minecraft.nbt.NBTTagFloat;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.nbt.NBTTagIntArray;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.nbt.NBTTagLong;
-import net.minecraft.nbt.NBTTagLongArray;
-import net.minecraft.nbt.NBTTagShort;
-import net.minecraft.nbt.NBTTagString;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
+import net.minecraft.nbt.ByteArrayNBT;
+import net.minecraft.nbt.ByteNBT;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.DoubleNBT;
+import net.minecraft.nbt.FloatNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.nbt.IntArrayNBT;
+import net.minecraft.nbt.IntNBT;
+import net.minecraft.nbt.ListNBT;
+import net.minecraft.nbt.LongArrayNBT;
+import net.minecraft.nbt.LongNBT;
+import net.minecraft.nbt.ShortNBT;
+import net.minecraft.nbt.StringNBT;
 import net.minecraftforge.common.util.Constants;
 
-import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class NBTMapper {
 
-    public static JObject from(NBTTagCompound nbt) {
+    public static JObject from(CompoundNBT nbt) {
         return from(nbt, true);
     }
 
-    public static JObject from(NBTTagCompound nbt, boolean print) {
+    public static JObject from(CompoundNBT nbt, boolean print) {
         JObject result = new JObject();
 
         PrettyPrinter test = new PrettyPrinter(80);
         test.add("NBT Mapping Track - Write").center();
         test.hr();
 
-        for(String key : nbt.getKeySet()) {
-            int id = nbt.getTagId(key);
+        for(String key : nbt.getAllKeys()) {
+            int id = nbt.get(key).getId();
             test.kv(key, id);
 
             switch (id) {
@@ -52,7 +51,7 @@ public class NBTMapper {
                     append(result, key, nbt.getShort(key));
                     break;
                 case Constants.NBT.TAG_INT:
-                    append(result, key, nbt.getInteger(key));
+                    append(result, key, nbt.getInt(key));
                     break;
                 case Constants.NBT.TAG_LONG:
                     append(result, key, nbt.getLong(key));
@@ -70,32 +69,30 @@ public class NBTMapper {
                     append(result, key, nbt.getString(key));
                     break;
                 case Constants.NBT.TAG_LIST:
-                    append(result, key, (NBTTagList) nbt.getTag(key));
+                    INBT x = nbt.get(key);
+                    if(nbt.getTagType(key) == 9) {
+                        ListNBT translated = (ListNBT) x;
+                        append(result, key, translated);
+                    }
                     break;
                 case Constants.NBT.TAG_COMPOUND:
-                    append(result, key, nbt.getCompoundTag(key));
+                    append(result, key, nbt.getCompound(key));
                     break;
                 case Constants.NBT.TAG_INT_ARRAY:
                     append(result, key, nbt.getIntArray(key));
                     break;
                 case Constants.NBT.TAG_LONG_ARRAY:
-                    try {
-                        Field data = NBTTagLongArray.class.getDeclaredField("data");
-                        data.setAccessible(true);
-                        append(result, key, (long[]) data.get(nbt.getTag(key)));
-                    } catch (Exception e) {
-                        throw new RuntimeException("Failed to read long array", e);
-                    }
+                    append(result, key, nbt.getLongArray(key));
                     break;
             }
         }
 
         if(print) {
-            test.add();
+            test.newline();
             test.add("Result:");
             test.add(result.toJson());
 
-            test.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+            test.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.DEBUG, "NBT Mapping");
         }
         return result;
     }
@@ -132,11 +129,11 @@ public class NBTMapper {
         getLowestParent(json, key).add(key, Mapper.STRING.getApplier().apply(value));
     }
 
-    private static void append(JObject json, String key, NBTTagList value) {
+    private static void append(JObject json, String key, ListNBT value) {
         getLowestParent(json, key).add(key, Mapper.LIST.getApplier().apply(value));
     }
 
-    private static void append(JObject json, String key, NBTTagCompound value) {
+    private static void append(JObject json, String key, CompoundNBT value) {
         getLowestParent(json, key).add(key, Mapper.COMPOUND.getApplier().apply(value));
     }
 
@@ -148,8 +145,8 @@ public class NBTMapper {
         getLowestParent(json, key).add(key, Mapper.INT_ARRAY.getApplier().apply(value));
     }
 
-    public static NBTTagCompound read(JsonObject json) {
-        NBTTagCompound nbt = new NBTTagCompound();
+    public static CompoundNBT read(JsonObject json) {
+        CompoundNBT nbt = new CompoundNBT();
         for(Map.Entry<String, JsonElement> entry : json.entrySet()) {
             String key = entry.getKey();
             JsonObject data = entry.getValue().getAsJsonObject();
@@ -158,28 +155,28 @@ public class NBTMapper {
             JsonElement value = data.get("value");
 
             if(type.equals("compound")) {
-                nbt.setTag(key, read(value.getAsJsonObject()));
+                nbt.put(key, read(value.getAsJsonObject()));
             } else if(type.equals("list")) {
-                nbt.setTag(key, read$list(value.getAsJsonArray()));
+                nbt.put(key, read$list(value.getAsJsonArray()));
             } else {
                 switch (type) {
                     case "byte":
-                        nbt.setByte(key, value.getAsByte());
+                        nbt.putByte(key, value.getAsByte());
                         break;
                     case "short":
-                        nbt.setShort(key, value.getAsShort());
+                        nbt.putShort(key, value.getAsShort());
                         break;
                     case "int":
-                        nbt.setInteger(key, value.getAsInt());
+                        nbt.putInt(key, value.getAsInt());
                         break;
                     case "long":
-                        nbt.setLong(key, value.getAsLong());
+                        nbt.putLong(key, value.getAsLong());
                         break;
                     case "float":
-                        nbt.setFloat(key, value.getAsFloat());
+                        nbt.putFloat(key, value.getAsFloat());
                         break;
                     case "double":
-                        nbt.setDouble(key, value.getAsDouble());
+                        nbt.putDouble(key, value.getAsDouble());
                         break;
                     case "byte[]":
                         JsonArray array = value.getAsJsonArray();
@@ -189,10 +186,10 @@ public class NBTMapper {
                         for(JsonElement element : array) {
                             values[index++] = element.getAsByte();
                         }
-                        nbt.setByteArray(key, values);
+                        nbt.putByteArray(key, values);
                         break;
                     case "string":
-                        nbt.setString(key, value.getAsString());
+                        nbt.putString(key, value.getAsString());
                         break;
                     case "int[]":
                         JsonArray array2 = value.getAsJsonArray();
@@ -202,7 +199,7 @@ public class NBTMapper {
                         for(JsonElement element : array2) {
                             values2[i2++] = element.getAsInt();
                         }
-                        nbt.setIntArray(key, values2);
+                        nbt.putIntArray(key, values2);
                         break;
                     case "long[]":
                         JsonArray array3 = value.getAsJsonArray();
@@ -212,7 +209,7 @@ public class NBTMapper {
                         for(JsonElement element : array3) {
                             values3[i3++] = element.getAsLong();
                         }
-                        nbt.setTag(key, new NBTTagLongArray(values3));
+                        nbt.putLongArray(key, values3);
                         break;
                 }
             }
@@ -221,8 +218,8 @@ public class NBTMapper {
         return nbt;
     }
 
-    private static NBTTagList read$list(JsonArray array) {
-        NBTTagList result = new NBTTagList();
+    private static ListNBT read$list(JsonArray array) {
+        ListNBT result = new ListNBT();
         for(JsonElement element : array) {
             JsonObject object = element.getAsJsonObject();
 
@@ -230,28 +227,28 @@ public class NBTMapper {
             JsonElement value = object.get("value");
 
             if(type.equals("compound")) {
-                result.appendTag(read(value.getAsJsonObject()));
+                result.add(read(value.getAsJsonObject()));
             } else if(type.equals("list")) {
-                result.appendTag(read$list(value.getAsJsonArray()));
+                result.add(read$list(value.getAsJsonArray()));
             } else {
                 switch (type) {
                     case "byte":
-                        result.appendTag(new NBTTagByte(value.getAsByte()));
+                        result.add(ByteNBT.valueOf(value.getAsByte()));
                         break;
                     case "short":
-                        result.appendTag(new NBTTagShort(value.getAsShort()));
+                        result.add(ShortNBT.valueOf(value.getAsShort()));
                         break;
                     case "int":
-                        result.appendTag(new NBTTagInt(value.getAsInt()));
+                        result.add(IntNBT.valueOf(value.getAsInt()));
                         break;
                     case "long":
-                        result.appendTag(new NBTTagLong(value.getAsLong()));
+                        result.add(LongNBT.valueOf(value.getAsLong()));
                         break;
                     case "float":
-                        result.appendTag(new NBTTagFloat(value.getAsFloat()));
+                        result.add(FloatNBT.valueOf(value.getAsFloat()));
                         break;
                     case "double":
-                        result.appendTag(new NBTTagDouble(value.getAsDouble()));
+                        result.add(DoubleNBT.valueOf(value.getAsDouble()));
                         break;
                     case "byte[]":
                         JsonArray a = value.getAsJsonArray();
@@ -261,10 +258,10 @@ public class NBTMapper {
                         for(JsonElement e : a) {
                             values[index++] = e.getAsByte();
                         }
-                        result.appendTag(new NBTTagByteArray(values));
+                        result.add(new ByteArrayNBT(values));
                         break;
                     case "string":
-                        result.appendTag(new NBTTagString(value.getAsString()));
+                        result.add(StringNBT.valueOf(value.getAsString()));
                         break;
                     case "int[]":
                         JsonArray array2 = value.getAsJsonArray();
@@ -274,7 +271,7 @@ public class NBTMapper {
                         for(JsonElement e : array2) {
                             values2[i2++] = e.getAsInt();
                         }
-                        result.appendTag(new NBTTagIntArray(values2));
+                        result.add(new IntArrayNBT(values2));
                         break;
                     case "long[]":
                         JsonArray array3 = value.getAsJsonArray();
@@ -284,7 +281,7 @@ public class NBTMapper {
                         for(JsonElement e : array3) {
                             values3[i3++] = e.getAsLong();
                         }
-                        result.appendTag(new NBTTagLongArray(values3));
+                        result.add(new LongArrayNBT(values3));
                         break;
                 }
             }
@@ -327,16 +324,16 @@ public class NBTMapper {
         LIST(value -> {
             JArray array = new JArray();
 
-            NBTTagList list = (NBTTagList) value;
-            byte listType = (byte) list.getTagType();
-            int count = list.tagCount();
+            ListNBT list = (ListNBT) value;
+            byte listType = list.getElementType();
+            int count = list.size();
             for (int i = 0; i < count; i++) {
-                array.add(fromTagBase(list.get(i), listType));
+                array.add(fromINBT(list.get(i), listType));
             }
 
             return new JObject().add("type", "list").add("value", array);
         }),
-        COMPOUND(value -> new JObject().add("type", "compound").add("value", NBTMapper.from((NBTTagCompound) value, false))),
+        COMPOUND(value -> new JObject().add("type", "compound").add("value", NBTMapper.from((CompoundNBT) value, false))),
         INT_ARRAY(value -> new JObject().add("type", "int[]").add("value", intArray((int[]) value))),
         LONG_ARRAY(value -> new JObject().add("type", "long[]").add("value", longArray((long[]) value)))
         ;
@@ -385,38 +382,32 @@ public class NBTMapper {
             return array;
         }
 
-        private static JObject fromTagBase(NBTBase base, byte type) {
+        private static JObject fromINBT(INBT base, byte type) {
             switch (type) {
                 case Constants.NBT.TAG_BYTE:
-                    return BYTE.applier.apply(((NBTTagByte) base).getByte());
+                    return BYTE.applier.apply(((ByteNBT) base).getAsByte());
                 case Constants.NBT.TAG_SHORT:
-                    return SHORT.applier.apply(((NBTTagShort) base).getShort());
+                    return SHORT.applier.apply(((ShortNBT) base).getAsShort());
                 case Constants.NBT.TAG_INT:
-                    return INTEGER.applier.apply(((NBTTagInt) base).getInt());
+                    return INTEGER.applier.apply(((IntNBT) base).getAsInt());
                 case Constants.NBT.TAG_LONG:
-                    return LONG.applier.apply(((NBTTagLong) base).getInt());
+                    return LONG.applier.apply(((LongNBT) base).getAsLong());
                 case Constants.NBT.TAG_FLOAT:
-                    return FLOAT.applier.apply(((NBTTagFloat) base).getFloat());
+                    return FLOAT.applier.apply(((FloatNBT) base).getAsFloat());
                 case Constants.NBT.TAG_DOUBLE:
-                    return DOUBLE.applier.apply(((NBTTagDouble) base).getDouble());
+                    return DOUBLE.applier.apply(((DoubleNBT) base).getAsDouble());
                 case Constants.NBT.TAG_BYTE_ARRAY:
-                    return BYTE_ARRAY.applier.apply(((NBTTagByteArray) base).getByteArray());
+                    return BYTE_ARRAY.applier.apply(((ByteArrayNBT) base).getAsByteArray());
                 case Constants.NBT.TAG_STRING:
-                    return STRING.applier.apply(((NBTTagString) base).getString());
+                    return STRING.applier.apply(base.getAsString());
                 case Constants.NBT.TAG_LIST:
                     return LIST.applier.apply(base);
                 case Constants.NBT.TAG_COMPOUND:
                     return COMPOUND.applier.apply(base);
                 case Constants.NBT.TAG_INT_ARRAY:
-                    return INT_ARRAY.applier.apply(((NBTTagIntArray) base).getIntArray());
+                    return INT_ARRAY.applier.apply(((IntArrayNBT) base).getAsIntArray());
                 case Constants.NBT.TAG_LONG_ARRAY:
-                    try {
-                        Field data = NBTTagLongArray.class.getDeclaredField("data");
-                        data.setAccessible(true);
-                        return LONG_ARRAY.applier.apply(data.get(base));
-                    } catch (Exception e) {
-                        throw new RuntimeException("Failed to read long array", e);
-                    }
+                    return LONG_ARRAY.applier.apply(((LongArrayNBT) base).getAsLongArray());
                 default :
                     return null;
             }

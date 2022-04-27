@@ -30,6 +30,9 @@ import net.impactdev.gts.common.storage.implementation.sql.SqlImplementation;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.dependencies.DependencyManager;
 import net.impactdev.impactor.api.storage.StorageType;
+import net.impactdev.impactor.api.storage.file.loaders.HoconLoader;
+import net.impactdev.impactor.api.storage.file.loaders.JsonLoader;
+import net.impactdev.impactor.api.storage.file.loaders.YamlLoader;
 import net.impactdev.impactor.api.storage.sql.file.H2ConnectionFactory;
 import net.impactdev.impactor.api.storage.sql.hikari.MariaDBConnectionFactory;
 import net.impactdev.impactor.api.storage.sql.hikari.MySQLConnectionFactory;
@@ -37,9 +40,6 @@ import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.storage.implementation.file.ConfigurateStorage;
-import net.impactdev.gts.common.storage.implementation.file.loaders.HoconLoader;
-import net.impactdev.gts.common.storage.implementation.file.loaders.JsonLoader;
-import net.impactdev.gts.common.storage.implementation.file.loaders.YamlLoader;
 
 import java.io.File;
 
@@ -53,12 +53,12 @@ public class StorageFactory {
 
     public GTSStorageImpl getInstance(StorageType defaultMethod) {
         GTSStorageImpl storage;
-        StorageType type = this.plugin.getConfiguration().get(ConfigKeys.STORAGE_METHOD);
+        StorageType type = this.plugin.configuration().main().get(ConfigKeys.STORAGE_METHOD);
         if(type == null) {
             type = defaultMethod;
         }
 
-        this.plugin.getPluginLogger().info("Loading storage provider... [" + type.getName() + "]");
+        this.plugin.logger().info("Loading storage provider... [" + type.getName() + "]");
         Impactor.getInstance().getRegistry().get(DependencyManager.class).loadStorageDependencies(Lists.newArrayList(type));
         storage = this.makeInstance(type);
         storage.init();
@@ -74,20 +74,20 @@ public class StorageFactory {
             case MARIADB:
                 return new SqlImplementation(
                         this.plugin,
-                        new MariaDBConnectionFactory(this.plugin.getConfiguration().get(ConfigKeys.STORAGE_CREDENTIALS)),
-                        this.plugin.getConfiguration().get(ConfigKeys.SQL_TABLE_PREFIX)
+                        new MariaDBConnectionFactory(this.plugin.configuration().main().get(ConfigKeys.STORAGE_CREDENTIALS)),
+                        this.plugin.configuration().main().get(ConfigKeys.SQL_TABLE_PREFIX)
                 );
             case MYSQL:
                 return new SqlImplementation(
                         this.plugin,
-                        new MySQLConnectionFactory(this.plugin.getConfiguration().get(ConfigKeys.STORAGE_CREDENTIALS)),
-                        this.plugin.getConfiguration().get(ConfigKeys.SQL_TABLE_PREFIX)
+                        new MySQLConnectionFactory(this.plugin.configuration().main().get(ConfigKeys.STORAGE_CREDENTIALS)),
+                        this.plugin.configuration().main().get(ConfigKeys.SQL_TABLE_PREFIX)
                 );
             case H2:
                 return new SqlImplementation(
                         this.plugin,
                         new H2ConnectionFactory(new File("gts").toPath().resolve("gts-h2")),
-                        this.plugin.getConfiguration().get(ConfigKeys.SQL_TABLE_PREFIX)
+                        this.plugin.configuration().main().get(ConfigKeys.SQL_TABLE_PREFIX)
                 );
             case YAML:
             default:

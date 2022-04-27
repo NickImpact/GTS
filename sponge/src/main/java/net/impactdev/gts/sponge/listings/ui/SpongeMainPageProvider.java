@@ -1,12 +1,12 @@
 package net.impactdev.gts.sponge.listings.ui;
 
 import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.utilities.Builder;
-import org.spongepowered.api.entity.living.player.Player;
+import net.impactdev.impactor.api.builders.Builder;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
 public interface SpongeMainPageProvider {
 
-    Player getViewer();
+    ServerPlayer getViewer();
 
     void open();
 
@@ -14,9 +14,9 @@ public interface SpongeMainPageProvider {
         return Impactor.getInstance().getRegistry().createBuilder(Creator.class);
     }
 
-    interface Creator extends Builder<SpongeMainPageProvider, Creator> {
+    interface Creator extends Builder<SpongeMainPageProvider> {
 
-        Creator viewer(Player player);
+        Creator viewer(ServerPlayer player);
 
     }
 

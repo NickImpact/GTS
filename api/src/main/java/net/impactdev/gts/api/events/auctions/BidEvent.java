@@ -1,22 +1,19 @@
 package net.impactdev.gts.api.events.auctions;
 
 import net.impactdev.impactor.api.event.ImpactorEvent;
-import net.impactdev.impactor.api.event.annotations.Param;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.impactor.api.event.type.Cancellable;
-import org.checkerframework.checker.nullness.qual.NonNull;
+import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
 
 import java.util.UUID;
 
+@GenerateFactoryMethod
 public interface BidEvent extends ImpactorEvent, Cancellable {
 
-    @Param(0)
-    @NonNull UUID getBidder();
+    UUID getBidder();
 
-    @Param(1)
-    @NonNull Listing getListing();
+    Listing getListing();
 
-    @Param(2)
     double getAmountBid();
 
 }

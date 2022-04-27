@@ -1,6 +1,5 @@
 package net.impactdev.gts.sponge.pricing.provided;
 
-import com.flowpowered.math.vector.Vector3d;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.commands.CommandGenerator;
@@ -10,8 +9,6 @@ import net.impactdev.gts.sponge.pricing.SpongePrice;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.gui.UI;
-import net.impactdev.impactor.api.gui.signs.SignQuery;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 import net.impactdev.gts.api.listings.makeup.Display;
@@ -19,20 +16,21 @@ import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.listings.prices.PriceManager;
 import net.impactdev.gts.api.listings.ui.EntryUI;
 import net.impactdev.gts.api.util.TriConsumer;
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
+import net.impactdev.impactor.api.ui.containers.ImpactorUI;
+import net.impactdev.impactor.api.ui.signs.SignQuery;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.spongepowered.api.data.key.Keys;
+import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.EventContext;
-import org.spongepowered.api.event.cause.EventContextKeys;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.transaction.ResultType;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.math.vector.Vector2i;
+import org.spongepowered.math.vector.Vector3d;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -59,7 +57,7 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 	@Override
 	public TextComponent getText() {
 		return Component.text()
-				.append(Component.text(economy.getDefaultCurrency().format(this.getPrice()).toPlain()))
+				.append(economy.defaultCurrency().format(this.getPrice()))
 				.build();
 	}
 
@@ -67,7 +65,7 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 	public Display<ItemStack> getDisplay() {
 		return () -> ItemStack.builder()
 				.itemType(ItemTypes.GOLD_INGOT)
-				.add(Keys.DISPLAY_NAME, Text.of(this.getText()))
+				.add(Keys.CUSTOM_NAME, this.getText())
 				.build();
 	}
 
@@ -78,30 +76,22 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 
 	@Override
 	public boolean canPay(UUID payer) {
-		return economy.getOrCreateAccount(payer).get().getBalance(economy.getDefaultCurrency()).compareTo(this.price) >= 0;
+		return economy.findOrCreateAccount(payer).get()
+				.balance(economy.defaultCurrency()).compareTo(this.price) >= 0;
 	}
 
 	@Override
 	public void pay(UUID payer, @Nullable Object source, @NonNull AtomicBoolean marker) {
-		economy.getOrCreateAccount(payer).get().withdraw(economy.getDefaultCurrency(), this.price, Cause.builder()
-				.append(payer)
-				.build(EventContext.builder()
-						.add(EventContextKeys.PLUGIN, Utilities.getPluginContainer())
-						.build()
-				));
+		economy.findOrCreateAccount(payer).get().withdraw(economy.defaultCurrency(), this.price);
 		marker.set(true);
 	}
 
 	@Override
 	public boolean reward(UUID recipient) {
-		return economy.getOrCreateAccount(recipient).get()
-				.deposit(economy.getDefaultCurrency(), this.price, Cause.builder()
-						.append(recipient)
-						.build(EventContext.builder()
-								.add(EventContextKeys.PLUGIN, Utilities.getPluginContainer())
-								.build()
-						))
-				.getResult().equals(ResultType.SUCCESS);
+		return economy.findOrCreateAccount(recipient).get()
+				.deposit(economy.defaultCurrency(), this.price)
+				.result()
+				.equals(ResultType.SUCCESS);
 	}
 
 	@Override
@@ -111,7 +101,7 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 
 	@Override
 	public long calculateFee(boolean listingType) {
-		Config config = GTSPlugin.getInstance().getConfiguration();
+		Config config = GTSPlugin.instance().configuration().main();
 		if(listingType) {
 			return Math.round(this.price.doubleValue() * config.get(ConfigKeys.FEES_STARTING_PRICE_RATE_BIN));
 		} else {
@@ -135,51 +125,51 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 		return new MonetaryPrice(json.get("value").getAsDouble());
 	}
 
-	public static class MonetaryPriceManager implements PriceManager<MonetaryPrice, Player> {
+	public static class MonetaryPriceManager implements PriceManager<MonetaryPrice> {
 
 		@Override
-		public TriConsumer<Player, EntryUI<?, ?, ?>, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>>> process() {
-			return (viewer, ui, callback) -> {
-				SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
-						.position(new Vector3d(0, 1, 0))
-						.text(Lists.newArrayList(
-								Text.of(""),
-								Text.of("----------------"),
-								Text.of("Enter a Price"),
-								Text.of("for this Listing")
-						))
-						.response(submission -> {
-							try {
-								double value = Double.parseDouble(submission.get(0));
-								if(value > 0) {
-									SpongePrice<BigDecimal, Void> price = new MonetaryPrice(value);
-
-									Impactor.getInstance().getScheduler().executeSync(() -> {
-										callback.accept(ui, price);
-									});
-									return true;
-								}
-
-								Impactor.getInstance().getScheduler().executeSync(() -> {
-									callback.accept(ui, null);
-								});
-								return false;
-							} catch (Exception e) {
-								Impactor.getInstance().getScheduler().executeSync(() -> {
-									callback.accept(ui, null);
-								});
-								return false;
-							}
-						})
-						.reopenOnFailure(false)
-						.build();
-				viewer.closeInventory();
-				query.sendTo(viewer);
+		public BiConsumer<EntryUI<?, ?, ?>, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>>> process() {
+			return (ui, callback) -> {
+//				SignQuery<Component, Player, Vector3d> query = SignQuery.<Component, Player, Vector3d>builder()
+//						.position(new Vector3d(0, 1, 0))
+//						.text(Lists.newArrayList(
+//								Component.empty(),
+//								Component.text("----------------"),
+//								Component.text("Enter a Price"),
+//								Component.text("for this Listing")
+//						))
+//						.response(submission -> {
+//							try {
+//								double value = Double.parseDouble(submission.get(0));
+//								if(value > 0) {
+//									SpongePrice<BigDecimal, Void> price = new MonetaryPrice(value);
+//
+//									Impactor.getInstance().getScheduler().executeSync(() -> {
+//										callback.accept(ui, price);
+//									});
+//									return true;
+//								}
+//
+//								Impactor.getInstance().getScheduler().executeSync(() -> {
+//									callback.accept(ui, null);
+//								});
+//								return false;
+//							} catch (Exception e) {
+//								Impactor.getInstance().getScheduler().executeSync(() -> {
+//									callback.accept(ui, null);
+//								});
+//								return false;
+//							}
+//						})
+//						.reopenOnFailure(false)
+//						.build();
+//				viewer.closeInventory();
+//				query.sendTo(viewer);
 			};
 		}
 
 		@Override
-		public <U extends UI<?, ?, ?, ?>> Optional<PriceSelectorUI<U>> getSelector(Player viewer, Price<?, ?, ?> price, Consumer<Object> callback) {
+		public <U extends ImpactorUI> Optional<PriceSelectorUI<U>> getSelector(PlatformPlayer viewer, Price<?, ?, ?> price, Consumer<Object> callback) {
 			return Optional.empty();
 		}
 

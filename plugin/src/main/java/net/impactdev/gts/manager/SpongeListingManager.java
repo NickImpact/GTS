@@ -2,10 +2,9 @@ package net.impactdev.gts.manager;
 
 import com.google.common.collect.Lists;
 import com.google.common.util.concurrent.AtomicDouble;
-import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.events.auctions.BidEvent;
-import net.impactdev.gts.api.events.buyitnow.PurchaseListingEvent;
+import net.impactdev.gts.api.event.factory.GTSEventFactory;
+import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.makeup.Fees;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.player.PlayerSettingsManager;
@@ -16,8 +15,8 @@ import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.configuration.ConfigKey;
+import net.impactdev.impactor.api.placeholders.PlaceholderSources;
 import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.gts.api.events.PublishListingEvent;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
 import net.impactdev.gts.api.listings.manager.ListingManager;
@@ -27,7 +26,6 @@ import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.discord.DiscordNotifier;
 import net.impactdev.gts.common.discord.DiscordOption;
-import net.impactdev.gts.common.discord.Message;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
@@ -36,20 +34,18 @@ import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
 import net.impactdev.gts.sponge.listings.SpongeListing;
 import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
 import net.impactdev.impactor.api.utilities.Time;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 import org.mariuszgromada.math.mxparser.Function;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.EventContext;
-import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.service.economy.EconomyService;
 import org.spongepowered.api.service.economy.account.UniqueAccount;
 import org.spongepowered.api.service.economy.transaction.ResultType;
 import org.spongepowered.api.service.economy.transaction.TransactionResult;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -63,12 +59,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class SpongeListingManager implements ListingManager<SpongeListing, SpongeAuction, SpongeBuyItNow> {
 
-	public static final DiscordNotifier notifier = new DiscordNotifier(GTSPlugin.getInstance());
+	public static final DiscordNotifier notifier = new DiscordNotifier(GTSPlugin.instance());
 
 	@Override
 	public String getServiceName() {
@@ -77,15 +72,15 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 	@Override
 	public CompletableFuture<Boolean> list(UUID lister, SpongeListing listing) {
-		final Optional<Player> source = Sponge.getServer().getPlayer(lister);
-		final Config main = GTSPlugin.getInstance().getConfiguration();
-		final Config lang = GTSPlugin.getInstance().getMsgConfig();
-		final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+		final Optional<ServerPlayer> source = Sponge.server().player(lister);
+		final Config main = GTSPlugin.instance().configuration().main();
+		final Config lang = GTSPlugin.instance().configuration().language();
+		final MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+		final EconomyService economy = Sponge.server().serviceProvider().economyService().orElseThrow(IllegalStateException::new);
 
 		return CompletableFutureManager.makeFuture(() -> {
-			List<Supplier<Object>> sources = Lists.newArrayList(() -> listing);
-			source.ifPresent(player -> sources.add(() -> player));
-
+			PlaceholderSources sources = PlaceholderSources.empty();
+			source.ifPresent(player -> sources.append(ServerPlayer.class, () -> player));
 			source.ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST))));
 
 			try {
@@ -98,13 +93,13 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 			// Check if the user attempting to list a listing has already hit the max amount allowed for a player
 			boolean hasMax = this.hasMaxListings(lister).get(2, TimeUnit.SECONDS);
 			if(hasMax) {
-				source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.MAX_LISTINGS), sources)));
+				source.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.MAX_LISTINGS), sources).forEach(player::sendMessage));
 				return false;
 			}
 
 			// Publish our event to indicate the user's desire to publish their listing
-			if(Impactor.getInstance().getEventBus().post(PublishListingEvent.class, lister, listing)) {
-				source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.LISTING_EVENT_CANCELLED), sources)));
+			if(Impactor.getInstance().getEventBus().post(GTSEventFactory.createPublishListingEvent(lister, listing))) {
+				source.ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.LISTING_EVENT_CANCELLED), sources)));
 				return false;
 			}
 
@@ -135,16 +130,20 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 					double actual = monetary.getPrice().doubleValue();
 					if(actual < min.get()) {
-						List<Supplier<Object>> minSources = Lists.newArrayList(sources);
-						minSources.add(min::get);
+						PlaceholderSources minSources = PlaceholderSources.builder()
+								.from(sources)
+								.append(Double.class, min::get)
+								.build();
 
-						source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.MIN_PRICE_ERROR), minSources)));
+						source.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.MIN_PRICE_ERROR), minSources).forEach(player::sendMessage));
 						return false;
 					} else if(actual > max.get()) {
-						List<Supplier<Object>> maxSources = Lists.newArrayList(sources);
-						maxSources.add(max::get);
+						PlaceholderSources maxSources = PlaceholderSources.builder()
+								.from(sources)
+								.append(Double.class, max::get)
+								.build();
 
-						source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.MAX_PRICE_ERROR), maxSources)));
+						source.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.MAX_PRICE_ERROR), maxSources).forEach(player::sendMessage));
 						return false;
 					}
 				}
@@ -163,7 +162,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				});
 
 				Time time = new Time(Duration.between(listing.getPublishTime(), listing.getExpiration()).getSeconds());
-				Function function = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.FEE_TIME_EQUATION);
+				Function function = GTSPlugin.instance().configuration().main().get(ConfigKeys.FEE_TIME_EQUATION);
 				SimilarPair<Argument> arguments = Utilities.calculateTimeFee(time);
 				Expression expression = new Expression("f(hours,minutes)", function, arguments.getFirst(), arguments.getSecond());
 				if(!Double.isNaN(expression.calculate())) {
@@ -180,23 +179,16 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 			source.ifPresent(player -> {
 				// Have user pay their fees if any are present
 				if(fees.get().doubleValue() > 0) {
-					sources.add(fees::get);
-					sources.add(feeBuilder::build);
+					sources.append(BigDecimal.class, fees::get);
+					sources.append(Fees.class, feeBuilder::build);
 					player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_FEES_COLLECTION), sources));
-					EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-					economy.getOrCreateAccount(lister).ifPresent(account -> {
-						if(account.getBalance(economy.getDefaultCurrency()).doubleValue() < fees.get().doubleValue()) {
-							player.sendMessages(parser.parse(lang.get(MsgConfigKeys.FEE_INVALID), sources));
+					economy.findOrCreateAccount(lister).ifPresent(account -> {
+						if(account.balance(economy.defaultCurrency()).doubleValue() < fees.get().doubleValue()) {
+							parser.parse(lang.get(MsgConfigKeys.FEE_INVALID), sources).forEach(player::sendMessage);
 							check.set(false);
 						}
 
-						account.withdraw(economy.getDefaultCurrency(), fees.get(), Cause.builder()
-								.append(player)
-								.build(EventContext.builder()
-										.add(EventContextKeys.PLUGIN, GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer())
-										.build()
-								)
-						);
+						account.withdraw(economy.defaultCurrency(), fees.get());
 					});
 				}
 
@@ -219,19 +211,12 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 					if (!result.get()) {
 						player.sendMessage(parser.parse(lang.get(MsgConfigKeys.UNABLE_TO_TAKE_LISTING)));
 						if(fees.get().doubleValue() > 0) {
-							EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-							economy.getOrCreateAccount(lister).ifPresent(account -> {
-								if (account.getBalance(economy.getDefaultCurrency()).doubleValue() < fees.get().doubleValue()) {
-									player.sendMessages(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_RETURN_FEES), sources));
+							economy.findOrCreateAccount(lister).ifPresent(account -> {
+								if (account.balance(economy.defaultCurrency()).doubleValue() < fees.get().doubleValue()) {
+									player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_RETURN_FEES), sources));
 								}
 
-								account.deposit(economy.getDefaultCurrency(), fees.get(), Cause.builder()
-										.append(player)
-										.build(EventContext.builder()
-												.add(EventContextKeys.PLUGIN, GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer())
-												.build()
-										)
-								);
+								account.deposit(economy.defaultCurrency(), fees.get());
 							});
 						}
 						check.set(false);
@@ -243,50 +228,51 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 				return false;
 			}
 
-			boolean result = GTSPlugin.getInstance().getStorage().publishListing(listing).exceptionally(throwable -> {
-				source.ifPresent(player -> player.sendMessage(Text.of(TextColors.RED, "Fatal Error Detected")));
+			boolean result = GTSPlugin.instance().storage().publishListing(listing).exceptionally(throwable -> {
+				source.ifPresent(player -> player.sendMessage(Component.text("Fatal Error Detected").color(NamedTextColor.RED)));
 				ExceptionWriter.write(throwable);
 				return false;
 			}).get(3, TimeUnit.SECONDS);
 
 			if(result) {
-				source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_TEMPLATE), sources)));
+				source.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.ADD_TEMPLATE), sources).forEach(player::sendMessage));
 
 				if(main.get(ConfigKeys.FEES_ENABLED)) {
-					sources.add(feeBuilder::build);
-					source.ifPresent(player -> player.sendMessages(parser.parse(lang.get(MsgConfigKeys.FEE_APPLICATION), sources)));
+					sources.appendIfAbsent(Fees.class, feeBuilder::build);
+					source.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.FEE_APPLICATION), sources).forEach(player::sendMessage));
 				}
 
 				PlayerSettingsManager manager = GTSService.getInstance().getPlayerSettingsManager();
-				for(Player player : Sponge.getServer().getOnlinePlayers()) {
-					if (source.isPresent() && !source.get().getUniqueId().equals(player.getUniqueId())) {
-						manager.retrieve(player.getUniqueId()).thenAccept(settings -> {
+				for(Player player : Sponge.server().onlinePlayers()) {
+					if (source.isPresent() && !source.get().uniqueId().equals(player.uniqueId())) {
+						manager.retrieve(player.uniqueId()).thenAccept(settings -> {
 							if(settings.getPublishListenState()) {
 								if(listing instanceof BuyItNow) {
-									player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_BIN), sources));
+									parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_BIN), sources).forEach(player::sendMessage);
 								} else {
-									player.sendMessages(parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_AUCTION), sources));
+									parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_AUCTION), sources).forEach(player::sendMessage);
 								}
 							}
 						});
 					}
 				}
 
-				GTSPlugin.getInstance().getMessagingService().sendPublishNotice(listing.getID(), lister, listing instanceof Auction);
+				GTSPlugin.instance().messagingService().sendPublishNotice(listing.getID(), lister, listing instanceof Auction);
 
 				if(listing instanceof BuyItNow) {
-					Message message = notifier.forgeMessage(
+					notifier.forgeAndSend(
 							DiscordOption.fetch(DiscordOption.Options.List_BIN),
 							MsgConfigKeys.DISCORD_PUBLISH_TEMPLATE,
-							listing
+							listing,
+							sources
 					);
-					notifier.sendMessage(message);
 				} else {
-					notifier.sendMessage(notifier.forgeMessage(
+					notifier.forgeAndSend(
 							DiscordOption.fetch(DiscordOption.Options.List_Auction),
 							MsgConfigKeys.DISCORD_PUBLISH_AUCTION_TEMPLATE,
-							listing
-					));
+							listing,
+							sources
+					);
 				}
 
 				return true;
@@ -298,18 +284,19 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 	@Override
 	public CompletableFuture<Boolean> bid(UUID bidder, SpongeAuction listing, double amount) {
-		final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+		final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
-		Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+		Sponge.server().player(bidder).ifPresent(player -> player.sendMessage(
 				service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_PROCESSING_BID))
 		));
 
 		return CompletableFutureManager.makeFuture(() -> {
-			EconomyService economy = Sponge.getServiceManager().provideUnchecked(EconomyService.class);
-			Optional<UniqueAccount> account = economy.getOrCreateAccount(bidder);
+			EconomyService economy = Sponge.server().serviceProvider().economyService().get();
+			Optional<UniqueAccount> account = economy.findOrCreateAccount(bidder);
 			if (!account.isPresent()) {
-				Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
-						Text.of(TextColors.RED, "Failed to locate your bank account, no funds have been taken...")
+				Sponge.server().player(bidder).ifPresent(player -> player.sendMessage(
+						Component.text("Failed to locate your bank account, no funds have been taken...")
+								.color(NamedTextColor.RED)
 				));
 				return false;
 			}
@@ -317,72 +304,59 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 			AtomicDouble actual = new AtomicDouble(amount);
 			listing.getCurrentBid(bidder).ifPresent(prior -> actual.set(actual.get() - prior.getAmount()));
 
-			if (account.get().getBalance(economy.getDefaultCurrency()).doubleValue() < actual.get()) {
-				Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID))));
+			if (account.get().balance(economy.defaultCurrency()).doubleValue() < actual.get()) {
+				Sponge.server().player(bidder).ifPresent(player -> player.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID))));
 				return false;
 			}
 
-			if (!Impactor.getInstance().getEventBus().post(BidEvent.class, bidder, listing, amount)) {
-				Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+			if (!Impactor.getInstance().getEventBus().post(GTSEventFactory.createBidEvent(bidder, listing, amount))) {
+				Sponge.server().player(bidder).ifPresent(player -> player.sendMessage(
 						service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_TO_ESCROW))
 				));
 
-				TransactionResult result = account.get().withdraw(
-						economy.getDefaultCurrency(),
-						BigDecimal.valueOf(actual.get()),
-						Cause.builder()
-								.append(bidder)
-								.build(EventContext.builder()
-									.add(EventContextKeys.PLUGIN, GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer())
-									.build()
-								)
-				);
-				if (result.getResult().equals(ResultType.ACCOUNT_NO_FUNDS)) {
-					Sponge.getServer().getPlayer(bidder).ifPresent(player -> player.sendMessage(
+				TransactionResult result = account.get().withdraw(economy.defaultCurrency(), BigDecimal.valueOf(actual.get()));
+				if (result.result().equals(ResultType.ACCOUNT_NO_FUNDS)) {
+					Sponge.server().player(bidder).ifPresent(player -> player.sendMessage(
 							service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID))
 					));
 					return false;
 				}
 
-				Message message = notifier.forgeMessage(
+				PlaceholderSources sources = PlaceholderSources.builder()
+						.append(Double.class, () -> amount)
+						.append(UUID.class, () -> bidder)
+						.build();
+				notifier.forgeAndSend(
 						DiscordOption.fetch(DiscordOption.Options.Bid),
 						MsgConfigKeys.DISCORD_BID_TEMPLATE,
-						listing, amount, bidder
+						listing,
+						sources
 				);
-				notifier.sendMessage(message);
 
-				return GTSPlugin.getInstance().getMessagingService().publishBid(listing.getID(), bidder, amount)
+				return GTSPlugin.instance().messagingService().publishBid(listing.getID(), bidder, amount)
 						.thenApply(response -> {
 							if(response.wasSuccessful()) {
 								Auction.BidContext context = new Auction.BidContext(bidder, new Auction.Bid(amount));
-								Sponge.getServer().getPlayer(bidder).ifPresent(player -> {
+								Sponge.server().player(bidder).ifPresent(player -> {
 									ConfigKey<String> key = response.wasSniped() ? MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_BID_PLACEDSNIPED : MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_BID_PLACED;
-									player.sendMessage(service.parse(
-											Utilities.readMessageConfigOption(key),
-											Lists.newArrayList(() -> context, () -> GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_SET_TIME))
-									));
+									sources.append(Auction.BidContext.class, () -> context);
+									sources.append(Time.class, () -> GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_SET_TIME));
+
+									player.sendMessage(service.parse(Utilities.readMessageConfigOption(key), sources));
 								});
 							} else {
+								sources.append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN));
 								// Return funds placed in escrow
-								Sponge.getServer().getPlayer(bidder).ifPresent(player -> {
+								Sponge.server().player(bidder).ifPresent(player -> {
 									player.sendMessage(service.parse(
 											Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-											Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+											sources
 									));
 									player.sendMessage(service.parse(
 											Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)
 									));
 
-									account.get().deposit(
-											economy.getDefaultCurrency(),
-											BigDecimal.valueOf(actual.get()),
-											Cause.builder()
-													.append(bidder)
-													.build(EventContext.builder()
-															.add(EventContextKeys.PLUGIN, GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer())
-															.build()
-													)
-									);
+									account.get().deposit(economy.defaultCurrency(), BigDecimal.valueOf(actual.get()));
 								});
 							}
 
@@ -390,11 +364,11 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 						})
 						.get(5, TimeUnit.SECONDS);
 			} else {
-				Sponge.getServer().getPlayer(bidder).ifPresent(player -> {
+				Sponge.server().player(bidder).ifPresent(player -> {
 					player.sendMessage(service.parse(
 							Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-							Lists.newArrayList(() -> ErrorCodes.THIRD_PARTY_CANCELLED)
-					));
+							PlaceholderSources.builder().append(ErrorCode.class, () -> ErrorCodes.THIRD_PARTY_CANCELLED).build())
+					);
 				});
 			}
 			return false;
@@ -404,22 +378,22 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 	@Override
 	public CompletableFuture<Boolean> purchase(UUID buyer, SpongeBuyItNow listing, Object source) {
-		final Config lang = GTSPlugin.getInstance().getMsgConfig();
-		final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+		final Config lang = GTSPlugin.instance().configuration().language();
+		final MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
 		return CompletableFutureManager.makeFuture(() -> {
-			Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST))));
+			Sponge.server().player(buyer).ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST))));
 			if (source == null || listing.getPrice().getSourceType().equals(source.getClass())) {
 				boolean canPay = CompletableFutureManager.makeFuture(() -> listing.getPrice().canPay(buyer), Impactor.getInstance().getScheduler().sync()).get(2, TimeUnit.SECONDS);
 
-				if (canPay && !Impactor.getInstance().getEventBus().post(PurchaseListingEvent.class, buyer, listing)) {
-					Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessage(
+				if (canPay && !Impactor.getInstance().getEventBus().post(GTSEventFactory.createPurchaseListingEvent(buyer, listing))) {
+					Sponge.server().player(buyer).ifPresent(player -> player.sendMessage(
 							parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_TO_ESCROW))
 					));
 
 					final AtomicBoolean marker = new AtomicBoolean(false);
 					listing.getPrice().pay(buyer, source, marker);
 
-					return GTSPlugin.getInstance().getMessagingService().requestBINPurchase(listing.getID(), buyer, source)
+					return GTSPlugin.instance().messagingService().requestBINPurchase(listing.getID(), buyer, source)
 							.thenApply(response -> {
 								if(response.wasSuccessful()) {
 									while(!marker.get()) {
@@ -431,11 +405,12 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 										}
 									}
 
-									Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessages(
-											parser.parse(lang.get(MsgConfigKeys.PURCHASE_PAY), Lists.newArrayList(
-													() -> listing
-											))
-									));
+									PlaceholderSources sources = PlaceholderSources.builder()
+											.append(Listing.class, () -> listing)
+											.build();
+
+									Sponge.server().player(buyer)
+											.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.PURCHASE_PAY), sources).forEach(player::sendMessage));
 
 									if(!listing.getEntry().give(buyer)) {
 										BuyItNow delegate = BuyItNow.builder()
@@ -447,40 +422,34 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 												.stashedForPurchaser()
 												.build();
 
-										GTSPlugin.getInstance().getStorage().publishListing(delegate);
-										Sponge.getServer().getPlayer(buyer).ifPresent(player -> player.sendMessages(
-												parser.parse(lang.get(MsgConfigKeys.PURCHASE_PAY_FAIL_TO_GIVE),
-														Lists.newArrayList(() -> listing)
-												)
-										));
+										GTSPlugin.instance().storage().publishListing(delegate);
+										Sponge.server().player(buyer)
+												.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.PURCHASE_PAY_FAIL_TO_GIVE), sources).forEach(player::sendMessage));
 									}
 
 									// We do the following such that we will ensure we populate any potential source
 									// the price may require
 									listing.markPurchased();
-									((GTSStorageImpl) GTSPlugin.getInstance().getStorage()).sendListingUpdate(listing)
+									((GTSStorageImpl) GTSPlugin.instance().storage()).sendListingUpdate(listing)
 											.exceptionally(e -> {
-												GTSPlugin.getInstance().getPluginLogger().error("Fatal error detected while updating listing with price, see error below:");
+												GTSPlugin.instance().logger().error("Fatal error detected while updating listing with price, see error below:");
 												ExceptionWriter.write(e);
 												return false;
 											});
 
-									Message message = notifier.forgeMessage(
+									notifier.forgeAndSend(
 											DiscordOption.fetch(DiscordOption.Options.Purchase),
 											MsgConfigKeys.DISCORD_PURCHASE_TEMPLATE,
-											listing, buyer
+											listing,
+											sources.append(UUID.class, () -> buyer)
 									);
-									notifier.sendMessage(message);
 								} else {
-									Sponge.getServer().getPlayer(buyer).ifPresent(player -> {
-										player.sendMessage(parser.parse(
-												Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-												Lists.newArrayList(() -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
-										));
-
-										player.sendMessage(parser.parse(
-												Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)
-										));
+									PlaceholderSources sources = PlaceholderSources.builder()
+											.append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+											.build();
+									Sponge.server().player(buyer).ifPresent(player -> {
+										player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED), sources));
+										player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)));
 
 										listing.getPrice().reward(buyer);
 									});
@@ -490,15 +459,13 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 							})
 							.exceptionally(throwable -> {
 								final ErrorCode error = throwable instanceof TimeoutException ? ErrorCodes.REQUEST_TIMED_OUT : ErrorCodes.FATAL_ERROR;
-								Sponge.getServer().getPlayer(buyer).ifPresent(player -> {
-									player.sendMessage(parser.parse(
-											Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-											Lists.newArrayList(() -> error)
-									));
+								Sponge.server().player(buyer).ifPresent(player -> {
+									PlaceholderSources sources = PlaceholderSources.builder()
+											.append(ErrorCode.class, () -> error)
+											.build();
 
-									player.sendMessage(parser.parse(
-											Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)
-									));
+									player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED), sources));
+									player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)));
 
 									listing.getPrice().reward(buyer);
 								});
@@ -522,17 +489,17 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 
 	@Override
 	public CompletableFuture<Boolean> hasMaxListings(UUID lister) {
-		if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER) <= 0) {
+		if(GTSPlugin.instance().configuration().main().get(ConfigKeys.MAX_LISTINGS_PER_USER) <= 0) {
 			return CompletableFuture.supplyAsync(() -> false);
 		}
-		return GTSPlugin.getInstance().getStorage().hasMaxListings(lister);
+		return GTSPlugin.instance().storage().hasMaxListings(lister);
 	}
 
 	@Override
 	public CompletableFuture<List<SpongeListing>> fetchListings() {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				return GTSPlugin.getInstance().getStorage().fetchListings().get()
+				return GTSPlugin.instance().storage().fetchListings().get()
 						.stream()
 						.map(listing -> (SpongeListing) listing)
 						.collect(Collectors.toList());

@@ -8,8 +8,8 @@ public class SpongeUserSearcher implements Searcher {
 
     @Override
     public boolean parse(Listing listing, String input) {
-        return Sponge.getServer().getPlayer(listing.getLister())
-                .map(user -> user.getName().toLowerCase().startsWith(input.toLowerCase()))
+        return Sponge.server().player(listing.getLister())
+                .map(user -> user.name().toLowerCase().startsWith(input.toLowerCase()))
                 .orElse(false);
     }
 

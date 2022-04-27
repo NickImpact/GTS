@@ -1,30 +1,27 @@
 package net.impactdev.gts.sponge.listings.ui.creator;
 
-import com.flowpowered.math.vector.Vector3d;
-import com.google.common.collect.Lists;
 import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.gui.signs.SignQuery;
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
 import net.impactdev.impactor.api.services.text.MessageService;
+import net.impactdev.impactor.api.ui.containers.ImpactorUI;
+import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
+import net.impactdev.impactor.api.ui.containers.icons.Icon;
+import net.impactdev.impactor.api.ui.containers.layouts.Layout;
 import net.impactdev.impactor.api.utilities.Time;
-import net.impactdev.impactor.sponge.ui.SpongeIcon;
-import net.impactdev.impactor.sponge.ui.SpongeLayout;
-import net.impactdev.impactor.sponge.ui.SpongeUI;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.config.types.time.TimeKey;
 import net.impactdev.gts.common.config.types.time.TimeLanguageOptions;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.utils.Utilities;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.type.DyeColor;
-import org.spongepowered.api.data.type.DyeColors;
+import net.kyori.adventure.text.Component;
+import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.property.InventoryDimension;
-import org.spongepowered.api.text.Text;
 
 import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
@@ -32,101 +29,114 @@ import java.util.function.BiConsumer;
 
 public class TimeSelectMenu {
 
-    private final SpongeIcon lowest = this.create(ConfigKeys.LISTING_TIME_LOWEST, DyeColors.RED);
-    private final SpongeIcon low = this.create(ConfigKeys.LISTING_TIME_LOW, DyeColors.ORANGE);
-    private final SpongeIcon mid = this.create(ConfigKeys.LISTING_TIME_MID, DyeColors.YELLOW);
-    private final SpongeIcon high = this.create(ConfigKeys.LISTING_TIME_HIGH, DyeColors.LIME);
-    private final SpongeIcon highest = this.create(ConfigKeys.LISTING_TIME_HIGHEST, DyeColors.LIGHT_BLUE);
+    private final Icon<ItemStack> lowest = this.create(ConfigKeys.LISTING_TIME_LOWEST, ItemTypes.RED_CONCRETE.get());
+    private final Icon<ItemStack> low = this.create(ConfigKeys.LISTING_TIME_LOW, ItemTypes.ORANGE_CONCRETE.get());
+    private final Icon<ItemStack> mid = this.create(ConfigKeys.LISTING_TIME_MID, ItemTypes.YELLOW_CONCRETE.get());
+    private final Icon<ItemStack> high = this.create(ConfigKeys.LISTING_TIME_HIGH, ItemTypes.LIME_CONCRETE.get());
+    private final Icon<ItemStack> highest = this.create(ConfigKeys.LISTING_TIME_HIGHEST, ItemTypes.LIGHT_BLUE_CONCRETE.get());
 
     private final Player viewer;
-    private final SpongeUI display;
+    private final ImpactorUI display;
 
     private final AbstractSpongeEntryUI<?> parent;
     private final BiConsumer<AbstractSpongeEntryUI<?>, Time> callback;
 
     public TimeSelectMenu(Player viewer, AbstractSpongeEntryUI<?> parent, BiConsumer<AbstractSpongeEntryUI<?>, Time> callback) {
-        MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
         this.viewer = viewer;
         this.parent = parent;
         this.callback = callback;
-        this.display = SpongeUI.builder()
+        this.display = ImpactorUI.builder()
                 .title(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_SELECT_TITLE)))
-                .dimension(InventoryDimension.of(9, 3))
-                .build()
-                .define(this.layout());
+                .layout(this.layout())
+                .build();
     }
 
     public void open() {
-        this.display.open(this.viewer);
+        this.display.open(PlatformPlayer.from(this.viewer));
     }
 
-    private SpongeLayout layout() {
-        SpongeLayout.SpongeLayoutBuilder builder = SpongeLayout.builder();
-        builder.dimension(9, 3).border().slot(SpongeIcon.BORDER, 15);
+    private Layout layout() {
+        Layout.LayoutBuilder builder = Layout.builder();
+        Icon<ItemStack> border = Icon.builder(ItemStack.class)
+                .display(new DisplayProvider.Constant<>(ItemStack.builder()
+                        .itemType(ItemTypes.BLACK_STAINED_GLASS_PANE)
+                        .add(Keys.CUSTOM_NAME, Component.empty())
+                        .build()
+                ))
+                .build();
+
+        builder.size(3).border(border).slot(border, 15);
         builder.slot(this.lowest, 10);
         builder.slot(this.low, 11);
         builder.slot(this.mid, 12);
         builder.slot(this.high, 13);
         builder.slot(this.highest, 14);
 
-        MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
         ItemStack custom = ItemStack.builder()
                 .itemType(ItemTypes.CLOCK)
-                .add(Keys.DISPLAY_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.CUSTOM_TIME_TITLE)))
-                .add(Keys.ITEM_LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.CUSTOM_TIME_LORE)))
+                .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.CUSTOM_TIME_TITLE)))
+                .add(Keys.LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.CUSTOM_TIME_LORE)))
                 .build();
-        SpongeIcon icon = new SpongeIcon(custom);
-        icon.addListener(clickable -> {
-            SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
-                    .position(new Vector3d(0, 1, 0))
-                    .text(Lists.newArrayList(
-                            Text.of(""),
-                            Text.of("----------------"),
-                            Text.of("Enter your time"),
-                            Text.of("Ex: 1d5h")
-                    ))
-                    .response(submission -> {
-                        try {
-                            Time time = new Time(submission.get(0));
 
-                            long min = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_MIN_TIME).getTime();
-                            long max = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_MAX_TIME).getTime();
-                            if(time.getTime() >= Math.max(0, min) && time.getTime() <= Math.max(0, max)) {
-                                Impactor.getInstance().getScheduler().executeSync(() -> this.callback.accept(this.parent, time));
-                                return true;
-                            }
+        Icon<ItemStack> icon = Icon.builder(ItemStack.class)
+                .display(new DisplayProvider.Constant<>(custom))
+                .listener(context -> {
+//                    SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
+//                            .position(new Vector3d(0, 1, 0))
+//                            .text(Lists.newArrayList(
+//                                    Text.of(""),
+//                                    Text.of("----------------"),
+//                                    Text.of("Enter your time"),
+//                                    Text.of("Ex: 1d5h")
+//                            ))
+//                            .response(submission -> {
+//                                try {
+//                                    Time time = new Time(submission.get(0));
+//
+//                                    long min = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_MIN_TIME).getTime();
+//                                    long max = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_MAX_TIME).getTime();
+//                                    if(time.getTime() >= Math.max(0, min) && time.getTime() <= Math.max(0, max)) {
+//                                        Impactor.getInstance().getScheduler().executeSync(() -> this.callback.accept(this.parent, time));
+//                                        return true;
+//                                    }
+//
+//                                    Impactor.getInstance().getScheduler().executeSync(() -> this.callback.accept(this.parent, null));
+//                                    return false;
+//                                } catch (Exception e) {
+//                                    return false;
+//                                }
+//                            })
+//                            .reopenOnFailure(false)
+//                            .build();
+//                    this.viewer.closeInventory();
+//                    query.sendTo(this.viewer);
 
-                            Impactor.getInstance().getScheduler().executeSync(() -> this.callback.accept(this.parent, null));
-                            return false;
-                        } catch (Exception e) {
-                            return false;
-                        }
-                    })
-                    .reopenOnFailure(false)
-                    .build();
-            this.viewer.closeInventory();
-            query.sendTo(this.viewer);
-        });
+                    return false;
+                })
+                .build();
+
         builder.slot(icon, 16);
-
         return builder.build();
     }
 
-    private SpongeIcon create(TimeKey key, DyeColor color) {
-        MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        Time time = GTSPlugin.getInstance().getConfiguration().get(key);
+    private Icon<ItemStack> create(TimeKey key, ItemType type) {
+        MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        Time time = GTSPlugin.instance().configuration().main().get(key);
 
         ItemStack item = ItemStack.builder()
-                .itemType(ItemTypes.CONCRETE)
+                .itemType(type)
                 .add(Keys.DISPLAY_NAME, service.parse("&a" + this.read(time)))
-                .add(Keys.DYE_COLOR, color)
                 .build();
-        SpongeIcon icon = new SpongeIcon(item);
-        icon.addListener(clickable -> {
-            this.callback.accept(this.parent, time);
-        });
 
-        return icon;
+        return Icon.builder(ItemStack.class)
+                .display(new DisplayProvider.Constant<>(item))
+                .listener(context -> {
+                    this.callback.accept(this.parent, time);
+                    return false;
+                })
+                .build();
     }
 
     private String read(Time time) {
@@ -162,9 +172,9 @@ public class TimeSelectMenu {
 
     private static String select(long input, ConfigKey<TimeLanguageOptions> key) {
         if(input == 1) {
-            return input + " " + GTSPlugin.getInstance().getMsgConfig().get(key).getSingular();
+            return input + " " + GTSPlugin.instance().configuration().language().get(key).getSingular();
         } else {
-            return input + " " + GTSPlugin.getInstance().getMsgConfig().get(key).getPlural();
+            return input + " " + GTSPlugin.instance().configuration().language().get(key).getPlural();
         }
     }
 

@@ -29,15 +29,16 @@ import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import net.impactdev.gts.api.commands.GTSCommandExecutor;
+import net.impactdev.gts.api.event.factory.GTSEventFactory;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.dependencies.Dependency;
 import net.impactdev.impactor.api.dependencies.DependencyManager;
 import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.events.extension.ExtensionLoadEvent;
 import net.impactdev.gts.api.extension.Extension;
 import net.impactdev.gts.api.extension.ExtensionManager;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+import net.impactdev.impactor.api.dependencies.classpath.ClassPathAppender;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.io.BufferedReader;
@@ -52,6 +53,7 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -85,10 +87,10 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
             return;
         }
 
-        this.plugin.getPluginLogger().info("Loading extension: " + extension.getMetadata().getName());
+        this.plugin.logger().info("Loading extension: " + extension.metadata().name());
         this.extensions.add(new LoadedExtension(extension, null));
-        extension.load(GTSService.getInstance(), GTSPlugin.getInstance().getConfigDir());
-        Impactor.getInstance().getEventBus().post(ExtensionLoadEvent.class, extension);
+        extension.load(GTSService.getInstance(), GTSPlugin.instance().configDirectory().orElseThrow(NoSuchElementException::new));
+        Impactor.getInstance().getEventBus().post(GTSEventFactory.createExtensionLoadEvent(extension));
     }
 
     public void loadExtensions(Path directory) {
@@ -121,15 +123,15 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
             e.printStackTrace();
         }
 
-        this.plugin.getPluginLogger().info("Initializing any additionally required dependencies...");
+        this.plugin.logger().info("Initializing any additionally required dependencies...");
         Impactor.getInstance().getRegistry().get(DependencyManager.class).loadDependencies(dependencies);
 
         for(Extension extension : this.getLoadedExtensions()) {
             try {
-                this.plugin.getPluginLogger().info("Loading extension: &a" + extension.getMetadata().getName());
-                extension.load(GTSService.getInstance(), GTSPlugin.getInstance().getConfigDir());
+                this.plugin.logger().info("Loading extension: &a" + extension.metadata().name());
+                extension.load(GTSService.getInstance(), GTSPlugin.instance().configDirectory().orElseThrow(NoSuchElementException::new));
             } catch (Exception e) {
-                this.plugin.getPluginLogger().error("Failed to load extension '" + extension.getMetadata().getName() + "', check error below...");
+                this.plugin.logger().error("Failed to load extension '" + extension.metadata().name() + "', check error below...");
                 ExceptionWriter.write(e);
             }
         }
@@ -156,7 +158,7 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
                     throw new IllegalStateException("Unable to read extension.json for extension at path " + path);
                 }
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
-                    JsonElement parsed = new JsonParser().parse(reader);
+                    JsonElement parsed = JsonParser.parseReader(reader);
                     if(parsed.getAsJsonObject().has("main")) {
                         className = parsed.getAsJsonObject().get("main").getAsString();
                     }
@@ -168,7 +170,7 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
             throw new IllegalArgumentException("Failed to locate main class from extension.json for path: " + path);
         }
 
-        this.plugin.getBootstrap().getPluginClassLoader().addJarToClasspath(path);
+        Impactor.getInstance().getRegistry().get(ClassPathAppender.class).addJarToClasspath(path);
 
         Class<? extends Extension> extensionClass;
         try {
@@ -188,7 +190,7 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
         }
 
         this.extensions.add(new LoadedExtension(extension, path));
-        Impactor.getInstance().getEventBus().post(ExtensionLoadEvent.class, extension);
+        Impactor.getInstance().getEventBus().post(GTSEventFactory.createExtensionLoadEvent(extension));
 
         return extension;
     }
@@ -197,7 +199,7 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
     public void enableExtensions() {
         for(Extension extension : this.getLoadedExtensions()) {
             extension.enable(GTSService.getInstance());
-            for(GTSCommandExecutor<?, ?> executor : extension.getExecutors()) {
+            for(GTSCommandExecutor<?, ?, ?> executor : extension.getExecutors()) {
                 executor.register();
             }
         }

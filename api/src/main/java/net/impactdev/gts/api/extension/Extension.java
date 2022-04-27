@@ -31,7 +31,6 @@ import net.impactdev.gts.api.environment.Environment;
 import net.impactdev.impactor.api.dependencies.Dependency;
 import net.impactdev.impactor.api.plugin.ImpactorPlugin;
 import net.impactdev.impactor.api.plugin.components.Configurable;
-import net.impactdev.impactor.api.plugin.components.Translatable;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -44,7 +43,7 @@ import java.util.Set;
  *
  * An extension must contain a resource titled "extension.json",
  */
-public interface Extension extends ImpactorPlugin, Configurable, Translatable {
+public interface Extension extends ImpactorPlugin, Configurable {
 
     /**
      * Loads the extension. Fired during server startup
@@ -79,7 +78,7 @@ public interface Extension extends ImpactorPlugin, Configurable, Translatable {
      *
      * @return A set of executors for the extension, if any
      */
-    Set<GTSCommandExecutor<?, ?>> getExecutors();
+    Set<GTSCommandExecutor<?, ?, ?>> getExecutors();
 
     /**
      * Supplies a set of extended information regarding the environment that this extension might make use of

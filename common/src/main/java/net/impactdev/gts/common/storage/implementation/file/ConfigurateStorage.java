@@ -32,11 +32,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.TreeMultimap;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import io.leangen.geantyref.TypeToken;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.data.Storable;
 import net.impactdev.gts.api.deliveries.Delivery;
@@ -54,8 +54,6 @@ import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.NotificationSetting;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
-import net.impactdev.gts.api.util.PrettyPrinter;
-import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.messaging.messages.deliveries.ClaimDeliveryImpl;
@@ -66,12 +64,14 @@ import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BI
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
-import net.impactdev.gts.common.storage.implementation.file.loaders.ConfigurateLoader;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
-import ninja.leaping.configurate.ConfigurationNode;
-import ninja.leaping.configurate.SimpleConfigurationNode;
-import ninja.leaping.configurate.objectmapping.ObjectMappingException;
+import net.impactdev.impactor.api.storage.file.loaders.ConfigurateLoader;
+import net.kyori.adventure.util.TriState;
+import org.spongepowered.configurate.BasicConfigurationNode;
+import org.spongepowered.configurate.ConfigurationNode;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.File;
 import java.io.IOException;
@@ -167,7 +167,7 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public boolean addListing(Listing listing) throws Exception {
-        ConfigurationNode file = SimpleConfigurationNode.root();
+        ConfigurationNode file = BasicConfigurationNode.root();
 
         for(Map.Entry<String, JsonElement> entry : listing.serialize().toJson().entrySet()) {
             this.writePath(file, entry.getKey(), entry.getValue());
@@ -210,7 +210,7 @@ public class ConfigurateStorage implements StorageImplementation {
     @Override
     public boolean hasMaxListings(UUID user) throws Exception {
         return this.getListings().stream().filter(listing -> listing.getLister().equals(user)).count() >=
-                GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER);
+                GTSPlugin.instance().configuration().main().get(ConfigKeys.MAX_LISTINGS_PER_USER);
     }
 
     @Override
@@ -232,7 +232,7 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public boolean sendDelivery(Delivery delivery) throws Exception {
-        ConfigurationNode file = SimpleConfigurationNode.root();
+        ConfigurationNode file = BasicConfigurationNode.root();
 
         for(Map.Entry<String, JsonElement> entry : delivery.serialize().toJson().entrySet()) {
             this.writePath(file, entry.getKey(), entry.getValue());
@@ -259,8 +259,8 @@ public class ConfigurateStorage implements StorageImplementation {
                         ConfigurationNode file = this.readFile(Group.CLAIMS, auction.getID());
                         if(file != null) {
                             SimilarPair<Boolean> claimed = new SimilarPair<>(
-                                    file.getNode("lister").getBoolean(),
-                                    file.getNode("winner").getBoolean()
+                                    file.node("lister").getBoolean(),
+                                    file.node("winner").getBoolean()
                             );
 
                             if(state && !claimed.getFirst()) {
@@ -279,15 +279,15 @@ public class ConfigurateStorage implements StorageImplementation {
                         Optional.ofNullable(this.readFile(Group.CLAIMS, auction.getID()))
                                 .ifPresent(node -> {
                                     try {
-                                        node.getNode("others")
-                                                .getList(TypeToken.of(UUID.class))
+                                        node.node("others")
+                                                .getList(TypeToken.get(UUID.class))
                                                 .stream()
                                                 .filter(claimer -> claimer.equals(user))
                                                 .findAny()
                                                 .ifPresent(x -> {
-                                                    builder.append(auction, TriState.UNDEFINED);
+                                                    builder.append(auction, TriState.NOT_SET);
                                                 });
-                                    } catch (ObjectMappingException e) {
+                                    } catch (SerializationException e) {
                                         throw new RuntimeException(e);
                                     }
                                 });
@@ -324,9 +324,13 @@ public class ConfigurateStorage implements StorageImplementation {
     public Optional<PlayerSettings> getPlayerSettings(UUID user) throws Exception {
         Optional<ConfigurationNode> result = Optional.ofNullable(this.readFile(Group.USERS, user));
         return result.map(node -> {
-            JObject json = new JObject();
-            this.fill(json, node, true);
-            return json.toJson();
+            try {
+                JObject json = new JObject();
+                this.fill(json, node, true);
+                return json.toJson();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }).map(json -> PlayerSettings.builder()
                 .set(NotificationSetting.Bid, json.get("bids").getAsBoolean())
                 .set(NotificationSetting.Publish, json.get("publish").getAsBoolean())
@@ -344,7 +348,7 @@ public class ConfigurateStorage implements StorageImplementation {
         json.addProperty("sold", updates.getSoldListenState());
         json.addProperty("output", updates.getOutbidListenState());
 
-        ConfigurationNode node = SimpleConfigurationNode.root();
+        ConfigurationNode node = BasicConfigurationNode.root();
         for(Map.Entry<String, JsonElement> entry : json.entrySet()) {
             this.writePath(node, entry.getKey(), entry.getValue());
         }
@@ -374,7 +378,7 @@ public class ConfigurateStorage implements StorageImplementation {
                     }
 
                     return new BINPurchaseMessage.Response(
-                            GTSPlugin.getInstance().getMessagingService().generatePingID(),
+                            GTSPlugin.instance().messagingService().generatePingID(),
                             request.getID(),
                             request.getListingID(),
                             request.getActor(),
@@ -401,15 +405,15 @@ public class ConfigurateStorage implements StorageImplementation {
 
                     Auction auction = (Auction) listing;
                     UUID seller = auction.getLister();
-                    TriState successful = auction.bid(request.getActor(), request.getAmountBid()) ? TriState.TRUE : TriState.UNDEFINED;
+                    TriState successful = auction.bid(request.getActor(), request.getAmountBid()) ? TriState.TRUE : TriState.NOT_SET;
                     TreeMultimap<UUID, Auction.Bid> bids = auction.getBids();
 
                     boolean sniped = false;
-                    boolean protect = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_SNIPING_BIDS_ENABLED);
-                    long snipingTime = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_MINIMUM_SNIPING_TIME).getTime();
+                    boolean protect = GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_SNIPING_BIDS_ENABLED);
+                    long snipingTime = GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_MINIMUM_SNIPING_TIME).getTime();
                     long timeDifference = ChronoUnit.SECONDS.between(LocalDateTime.now(), auction.getExpiration());
                     if(protect && snipingTime >= timeDifference) {
-                        auction.setExpiration(LocalDateTime.now().plusSeconds(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.AUCTIONS_SET_TIME).getTime()));
+                        auction.setExpiration(LocalDateTime.now().plusSeconds(GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_SET_TIME).getTime()));
                         sniped = true;
                     }
 
@@ -422,16 +426,16 @@ public class ConfigurateStorage implements StorageImplementation {
                     }
 
                     return new AuctionBidMessage.Response(
-                            GTSPlugin.getInstance().getMessagingService().generatePingID(),
+                            GTSPlugin.instance().messagingService().generatePingID(),
                             request.getID(),
                             request.getAuctionID(),
                             request.getActor(),
                             request.getAmountBid(),
-                            successful.asBoolean(),
+                            successful.toBooleanOrElse(false),
                             sniped,
                             seller,
                             bids,
-                            successful == TriState.UNDEFINED ? ErrorCodes.OUTBID : successful == TriState.FALSE ?
+                            successful == TriState.NOT_SET ? ErrorCodes.OUTBID : successful == TriState.FALSE ?
                                     ErrorCodes.FATAL_ERROR : null
                     );
                 })
@@ -441,7 +445,7 @@ public class ConfigurateStorage implements StorageImplementation {
     @Override
     public ClaimMessage.Response processClaimRequest(ClaimMessage.Request request) throws Exception {
         Optional<Listing> listing = this.getListing(request.getListingID());
-        UUID code = GTSPlugin.getInstance().getMessagingService().generatePingID();
+        UUID code = GTSPlugin.instance().messagingService().generatePingID();
         if(!listing.isPresent()) {
             return ClaimMessageImpl.ClaimResponseImpl.builder()
                     .id(code)
@@ -478,9 +482,9 @@ public class ConfigurateStorage implements StorageImplementation {
 
                 ConfigurationNode status = this.readFile(Group.CLAIMS, auction.getID());
                 if(status != null) {
-                    boolean lister = status.getNode("lister").getBoolean();
-                    boolean winner = status.getNode("winner").getBoolean();
-                    List<UUID> others = status.getNode("others").getList(TypeToken.of(UUID.class));
+                    boolean lister = status.node("lister").getBoolean();
+                    boolean winner = status.node("winner").getBoolean();
+                    List<UUID> others = status.node("others").getList(TypeToken.get(UUID.class));
 
                     if(claimer) {
                         if(owner) {
@@ -500,24 +504,24 @@ public class ConfigurateStorage implements StorageImplementation {
                         this.deleteListing(auction.getID());
                         this.saveFile(Group.CLAIMS, auction.getID(), null);
                     } else {
-                        status.getNode("lister").setValue(lister);
-                        status.getNode("winner").setValue(winner);
-                        status.getNode("others").setValue(new TypeToken<List<UUID>>() {}, others);
+                        status.node("lister").set(lister);
+                        status.node("winner").set(winner);
+                        status.node("others").set(new TypeToken<List<UUID>>() {}, others);
                         this.saveFile(Group.CLAIMS, auction.getID(), status);
                     }
                 } else {
-                    status = SimpleConfigurationNode.root();
+                    status = BasicConfigurationNode.root();
                     List<UUID> others = Lists.newArrayList();
                     if(!claimer) {
                         others.add(request.getActor());
                     }
 
-                    status.getNode("lister").setValue(owner && claimer);
-                    status.getNode("winner").setValue(!owner && claimer);
-                    status.getNode("others").setValue(new TypeToken<List<UUID>>() {}, others);
+                    status.node("lister").set(owner);
+                    status.node("winner").set(!owner && claimer);
+                    status.node("others").set(new TypeToken<List<UUID>>() {}, others);
                 }
 
-                ImmutableList<UUID> o = ImmutableList.copyOf(status.getNode("others").getValue(new TypeToken<List<UUID>>(){}));
+                ImmutableList<UUID> o = ImmutableList.copyOf(status.node("others").get(new TypeToken<List<UUID>>(){}));
                 Map<UUID, Boolean> claimed = Maps.newHashMap();
                 auction.getBids().keySet().stream()
                         .filter(bidder -> !auction.getHighBid().get().getFirst().equals(bidder))
@@ -533,8 +537,8 @@ public class ConfigurateStorage implements StorageImplementation {
                         .receiver(request.getReceiver().orElse(null))
                         .successful()
                         .auction()
-                        .lister(status.getNode("lister").getBoolean())
-                        .winner(status.getNode("winner").getBoolean())
+                        .lister(status.node("lister").getBoolean())
+                        .winner(status.node("winner").getBoolean())
                         .others(claimed)
                         .successful()
                         .build();
@@ -557,10 +561,10 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) throws Exception {
-        ConfigurationNode node = SimpleConfigurationNode.root();
-        node.getNode("lister").setValue(lister);
-        node.getNode("winner").setValue(winner);
-        node.getNode("others").setValue(new TypeToken<List<UUID>>() {}, others);
+        ConfigurationNode node = BasicConfigurationNode.root();
+        node.node("lister").set(lister);
+        node.node("winner").set(winner);
+        node.node("others").set(new TypeToken<List<UUID>>() {}, others);
         this.saveFile(Group.CLAIMS, auction, node);
         return true;
     }
@@ -574,7 +578,7 @@ public class ConfigurateStorage implements StorageImplementation {
             List<UUID> bidders = Lists.newArrayList();
             boolean result = false;
             ErrorCode error = null;
-            if(this.plugin.getConfiguration().get(ConfigKeys.AUCTIONS_ALLOW_CANCEL_WITH_BIDS)) {
+            if(this.plugin.configuration().main().get(ConfigKeys.AUCTIONS_ALLOW_CANCEL_WITH_BIDS)) {
                 auction.getBids().keySet().stream().distinct().forEach(bidders::add);
 
                 result = this.deleteListing(auction.getID());
@@ -588,7 +592,7 @@ public class ConfigurateStorage implements StorageImplementation {
             }
 
             return new AuctionCancelMessage.Response(
-                    GTSPlugin.getInstance().getMessagingService().generatePingID(),
+                    GTSPlugin.instance().messagingService().generatePingID(),
                     request.getID(),
                     auction,
                     request.getAuctionID(),
@@ -605,7 +609,7 @@ public class ConfigurateStorage implements StorageImplementation {
     @Override
     public BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception {
         BiFunction<Boolean, ErrorCode, BINRemoveMessage.Response> processor = (success, error) -> new BINRemoveMessage.Response(
-                GTSPlugin.getInstance().getMessagingService().generatePingID(),
+                GTSPlugin.instance().messagingService().generatePingID(),
                 request.getID(),
                 request.getListingID(),
                 request.getActor(),
@@ -741,7 +745,7 @@ public class ConfigurateStorage implements StorageImplementation {
         Files.createDirectories(path);
     }
 
-    private Listing from(ConfigurationNode node) {
+    private Listing from(ConfigurationNode node) throws Exception {
         JObject json = new JObject();
         this.fill(json, node, true);
         JsonObject result = json.toJson();
@@ -762,24 +766,24 @@ public class ConfigurateStorage implements StorageImplementation {
         }
     }
 
-    private void fill(JObject target, ConfigurationNode working, boolean empty) {
-        if(working.hasListChildren()) {
+    private void fill(JObject target, ConfigurationNode working, boolean empty) throws Exception {
+        if(!working.childrenList().isEmpty()) {
             JArray array = new JArray();
-            for(ConfigurationNode child : working.getChildrenList()) {
+            for(ConfigurationNode child : working.childrenList()) {
                 this.fillArray(array, child);
             }
-            target.add(working.getKey().toString(), array);
-        } else if(working.hasMapChildren()) {
+            target.add(working.key().toString(), array);
+        } else if(!working.childrenMap().isEmpty()) {
             JObject child = new JObject();
-            for(Map.Entry<Object, ? extends ConfigurationNode> entry : working.getChildrenMap().entrySet()) {
+            for(Map.Entry<Object, ? extends ConfigurationNode> entry : working.childrenMap().entrySet()) {
                 this.fill(empty ? target : child, entry.getValue(), false);
             }
             if(!empty) {
-                target.add(working.getKey().toString(), child);
+                target.add(working.key().toString(), child);
             }
         } else {
-            String key = working.getKey().toString();
-            Class<?> typing = working.getValue().getClass();
+            String key = working.key().toString();
+            Class<?> typing = working.get(Object.class).getClass();
             if(typing.equals(String.class)) {
                 target.add(key, working.getString());
             } else if(Number.class.isAssignableFrom(typing)) {
@@ -793,21 +797,21 @@ public class ConfigurateStorage implements StorageImplementation {
         }
     }
 
-    private void fillArray(JArray array, ConfigurationNode working) {
-        if(working.hasMapChildren()) {
+    private void fillArray(JArray array, ConfigurationNode working) throws Exception {
+        if(!working.childrenMap().isEmpty()) {
             JObject child = new JObject();
-            for(Map.Entry<Object, ? extends ConfigurationNode> entry : working.getChildrenMap().entrySet()) {
+            for(Map.Entry<Object, ? extends ConfigurationNode> entry : working.childrenMap().entrySet()) {
                 this.fill(child, entry.getValue(), false);
             }
             array.add(child);
-        } else if(working.hasListChildren()) {
+        } else if(!working.childrenList().isEmpty()) {
             JArray aChild = new JArray();
-            for(ConfigurationNode child : working.getChildrenList()) {
+            for(ConfigurationNode child : working.childrenList()) {
                 this.fillArray(array, child);
             }
             array.add(aChild);
         } else {
-            Class<?> typing = working.getValue().getClass();
+            Class<?> typing = working.get(Object.class).getClass();
             if(typing.equals(String.class)) {
                 array.add(working.getString());
             } else if(Number.class.isAssignableFrom(typing)) {
@@ -819,29 +823,29 @@ public class ConfigurateStorage implements StorageImplementation {
         }
     }
 
-    private void writePath(ConfigurationNode parent, String key, JsonElement value) {
+    private void writePath(ConfigurationNode parent, String key, JsonElement value) throws Exception {
         if(value.isJsonObject()) {
             JsonObject object = value.getAsJsonObject();
-            ConfigurationNode child = SimpleConfigurationNode.root();
+            ConfigurationNode child = BasicConfigurationNode.root();
             for(Map.Entry<String, JsonElement> path : object.entrySet()) {
                 this.writePath(child, path.getKey(), path.getValue());
             }
 
-            if(child.getValue() == null) {
-                child.setValue(Maps.newHashMap());
+            if(child.virtual()) {
+                child.set(Maps.newHashMap());
             }
 
-            parent.getNode(key).setValue(child);
+            parent.node(key).set(child);
         } else {
             if(value.isJsonPrimitive()) {
                 JsonPrimitive primitive = value.getAsJsonPrimitive();
                 if(primitive.isNumber()) {
                     Number number = primitive.getAsNumber();
-                    parent.getNode(key).setValue(number);
+                    parent.node(key).set(number);
                 } else if(primitive.isBoolean()) {
-                    parent.getNode(key).setValue(primitive.getAsBoolean());
+                    parent.node(key).set(primitive.getAsBoolean());
                 } else {
-                    parent.getNode(key).setValue(primitive.getAsString());
+                    parent.node(key).set(primitive.getAsString());
                 }
             } else if(value.isJsonArray()) {
                 this.writeArrayToPath(parent, key, value.getAsJsonArray());
@@ -849,18 +853,18 @@ public class ConfigurateStorage implements StorageImplementation {
         }
     }
 
-    private void writeArrayToPath(ConfigurationNode parent, String key, JsonArray array) {
+    private void writeArrayToPath(ConfigurationNode parent, String key, JsonArray array) throws Exception {
         List<Object> output = Lists.newArrayList();
         for(JsonElement element : array) {
             if(element.isJsonObject()) {
-                ConfigurationNode target = SimpleConfigurationNode.root();
+                ConfigurationNode target = BasicConfigurationNode.root();
                 JsonObject json = element.getAsJsonObject();
                 for(Map.Entry<String, JsonElement> child : json.entrySet()) {
                     this.writePath(target, child.getKey(), child.getValue());
                 }
                 output.add(target);
             } else if(element.isJsonArray()) {
-                ConfigurationNode target = SimpleConfigurationNode.root();
+                ConfigurationNode target = BasicConfigurationNode.root();
                 this.writeArrayToPath(target, key, element.getAsJsonArray());
                 output.add(target);
             } else {
@@ -877,6 +881,8 @@ public class ConfigurateStorage implements StorageImplementation {
                 }
             }
         }
-        parent.getNode(key).setValue(output);
+
+        // TODO - Fix this triggering an error for new configuration nodes
+        //parent.node(key).set(output);
     }
 }

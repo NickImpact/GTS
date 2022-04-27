@@ -8,14 +8,14 @@ import com.google.gson.JsonObject;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.common.messaging.messages.AbstractMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.Builder;
+import net.impactdev.impactor.api.builders.Builder;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -104,7 +104,7 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
             // Divert to storage system to respond, there it should response with either the base
             // response type, or one specifically meant for auctions
 
-            return GTSPlugin.getInstance().getStorage().processClaimRequest(this);
+            return GTSPlugin.instance().storage().processClaimRequest(this);
         }
 
         @Override
@@ -241,7 +241,7 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
         public void print(PrettyPrinter printer) {
             super.print(printer);
 
-            printer.add().kv("Request ID", this.request);
+            printer.newline().kv("Request ID", this.request);
         }
 
         @Override
@@ -302,7 +302,7 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
             @Override
             public void print(PrettyPrinter printer) {
                 super.print(printer);
-                printer.add();
+                printer.newline();
                 printer.add("Lister Claimed: " + this.lister);
                 printer.add("Winner Claimed: " + this.winner);
                 printer.add("Others:");
@@ -366,7 +366,6 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
                     return this;
                 }
 
-                @Override
                 public AuctionClaimResponseBuilder from(ClaimMessage.Response response) {
                     this.id = response.getID();
                     this.listing = response.getListingID();
@@ -392,7 +391,7 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
             return new ClaimResponseBuilder();
         }
 
-        public static class ClaimResponseBuilder implements Builder<ClaimMessage.Response, ClaimResponseBuilder> {
+        public static class ClaimResponseBuilder implements Builder<ClaimMessage.Response> {
 
             protected UUID id;
             protected UUID listing;
@@ -440,11 +439,6 @@ public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimM
             public ClaimResponseBuilder error(ErrorCode error) {
                 this.error = error;
                 return this;
-            }
-
-            @Override
-            public ClaimResponseBuilder from(ClaimMessage.Response response) {
-                return null;
             }
 
             @Override

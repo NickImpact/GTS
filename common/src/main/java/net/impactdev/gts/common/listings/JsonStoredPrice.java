@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class JsonStoredPrice implements Price<JsonObject, Void, Void> {
 
-    private JsonObject data;
+    private final JsonObject data;
 
     public JsonStoredPrice(JsonObject data) {
         this.data = data;

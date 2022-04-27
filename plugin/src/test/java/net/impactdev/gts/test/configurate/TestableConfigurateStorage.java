@@ -2,7 +2,7 @@ package net.impactdev.gts.test.configurate;
 
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.file.ConfigurateStorage;
-import net.impactdev.gts.common.storage.implementation.file.loaders.ConfigurateLoader;
+import net.impactdev.impactor.api.storage.file.loaders.ConfigurateLoader;
 
 import java.io.File;
 import java.nio.file.Files;

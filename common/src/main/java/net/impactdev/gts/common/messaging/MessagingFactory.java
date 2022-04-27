@@ -6,8 +6,8 @@ import net.impactdev.gts.api.messaging.MessengerProvider;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.messaging.redis.RedisMessenger;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.impactor.api.storage.StorageType;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.LinkedHashSet;
@@ -33,21 +33,21 @@ public abstract class MessagingFactory<P extends GTSPlugin> {
 	}
 
 	public final InternalMessagingService getInstance() {
-		String messageType = this.plugin.getConfiguration().get(ConfigKeys.MESSAGE_SERVICE);
+		String messageType = this.plugin.configuration().main().get(ConfigKeys.MESSAGE_SERVICE);
 
 		boolean fallback = false;
 		if(messageType.equalsIgnoreCase("none")) {
-			if(this.plugin.getConfiguration().get(ConfigKeys.USE_MULTI_SERVER)) {
-				this.plugin.getPluginLogger().warn("Multi Server Mode requires a messaging service other than none!");
-				this.plugin.getPluginLogger().warn("Defaulting to Single Server Mode...");
+			if(this.plugin.configuration().main().get(ConfigKeys.USE_MULTI_SERVER)) {
+				this.plugin.logger().warn("Multi Server Mode requires a messaging service other than none!");
+				this.plugin.logger().warn("Defaulting to Single Server Mode...");
 			}
 			fallback = true;
 		}
 
-		if(!fallback && this.plugin.getConfiguration().get(ConfigKeys.USE_MULTI_SERVER)) {
-			this.plugin.getPluginLogger().info("Loading messaging service... [" + messageType.toUpperCase() + "]");
+		if(!fallback && this.plugin.configuration().main().get(ConfigKeys.USE_MULTI_SERVER)) {
+			this.plugin.logger().info("Loading messaging service... [" + messageType.toUpperCase() + "]");
 
-			if(!multiServerCompatible.contains(this.plugin.getConfiguration().get(ConfigKeys.STORAGE_METHOD))) {
+			if(!multiServerCompatible.contains(this.plugin.configuration().main().get(ConfigKeys.STORAGE_METHOD))) {
 				new PrettyPrinter(80)
 						.add("Invalid Storage Type/Messaging Service Combination").center()
 						.hr('-')
@@ -62,11 +62,11 @@ public abstract class MessagingFactory<P extends GTSPlugin> {
 						.add("  - PostgreSQL")
 						.hr('-')
 						.add("Alternatively, you can switch your server back to Single Server Mode.")
-						.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.ERROR);
+						.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.ERROR);
 				throw new IllegalStateException("Invalid messaging/storage configuration");
 			}
 		} else {
-			this.plugin.getPluginLogger().info("Loading messaging service... [Single Server Mode]");
+			this.plugin.logger().info("Loading messaging service... [Single Server Mode]");
 		}
 
 		InternalMessagingService service = this.getServiceFor(messageType);
@@ -74,8 +74,8 @@ public abstract class MessagingFactory<P extends GTSPlugin> {
 			return service;
 		}
 
-		this.plugin.getPluginLogger().error("Messaging service '" + messageType + "' not recognised");
-		this.plugin.getPluginLogger().error("The messaging service will be disabled");
+		this.plugin.logger().error("Messaging service '" + messageType + "' not recognised");
+		this.plugin.logger().error("The messaging service will be disabled");
 		return null;
 	}
 
@@ -91,7 +91,7 @@ public abstract class MessagingFactory<P extends GTSPlugin> {
 		@Override
 		public @NonNull Messenger obtain(@NonNull IncomingMessageConsumer incomingMessageConsumer) {
 			RedisMessenger redis = new RedisMessenger(incomingMessageConsumer);
-			redis.init(MessagingFactory.this.getPlugin().getConfiguration().get(ConfigKeys.REDIS_ADDRESS), MessagingFactory.this.getPlugin().getConfiguration().get(ConfigKeys.REDIS_PASSWORD));
+			redis.init(MessagingFactory.this.getPlugin().configuration().main().get(ConfigKeys.REDIS_ADDRESS), MessagingFactory.this.getPlugin().configuration().main().get(ConfigKeys.REDIS_PASSWORD));
 			return redis;
 		}
 

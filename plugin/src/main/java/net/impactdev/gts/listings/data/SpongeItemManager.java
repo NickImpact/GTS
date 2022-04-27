@@ -14,9 +14,10 @@ import net.impactdev.gts.common.data.NBTMapper;
 import net.impactdev.gts.listings.ui.SpongeItemUI;
 import net.impactdev.gts.sponge.data.NBTTranslator;
 import net.impactdev.gts.util.DataViewJsonManager;
-import net.minecraft.nbt.NBTTagCompound;
-import org.spongepowered.api.data.DataView;
+import net.minecraft.nbt.CompoundNBT;
+import org.spongepowered.api.data.persistence.DataView;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
@@ -25,7 +26,7 @@ import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-public class SpongeItemManager implements EntryManager<SpongeItemEntry, Player> {
+public class SpongeItemManager implements EntryManager<SpongeItemEntry, ServerPlayer> {
 
     @Override
     public String getName() {
@@ -65,7 +66,7 @@ public class SpongeItemManager implements EntryManager<SpongeItemEntry, Player> 
     }
 
     @Override
-    public Supplier<EntryUI<?, ?, ?>> getSellingUI(Player player) {
+    public Supplier<EntryUI<?, ?, ?>> getSellingUI(ServerPlayer player) {
         return () -> new SpongeItemUI(player);
     }
 
@@ -74,12 +75,12 @@ public class SpongeItemManager implements EntryManager<SpongeItemEntry, Player> 
         DeserializerRegistry registry = GTSService.getInstance().getGTSComponentManager().getDeserializerRegistry();
         registry.registerDeserializer(SpongeItemEntry.class, 1, json -> {
             DataView view = DataViewJsonManager.readDataViewFromJSON(json.getAsJsonObject("item"));
-            NBTTagCompound nbt = NBTTranslator.getInstance().translateData(view);
+            CompoundNBT nbt = NBTTranslator.getInstance().translateData(view);
 
             GTSService service = GTSService.getInstance();
-            Collection<DataTranslator<NBTTagCompound>> translators = service.getDataTranslatorManager().get(NBTTagCompound.class);
+            Collection<DataTranslator<CompoundNBT>> translators = service.getDataTranslatorManager().get(CompoundNBT.class);
             if(!translators.isEmpty()) {
-                AtomicReference<NBTTagCompound> reference = new AtomicReference<>(nbt);
+                AtomicReference<CompoundNBT> reference = new AtomicReference<>(nbt);
                 translators.forEach(translator -> translator.translate(reference.get()).ifPresent(reference::set));
                 nbt = reference.get();
             }
@@ -92,12 +93,12 @@ public class SpongeItemManager implements EntryManager<SpongeItemEntry, Player> 
         });
 
         registry.registerDeserializer(SpongeItemEntry.class, 2, json -> {
-            NBTTagCompound nbt = NBTMapper.read(json.getAsJsonObject("item"));
+            CompoundNBT nbt = NBTMapper.read(json.getAsJsonObject("item"));
 
             GTSService service = GTSService.getInstance();
-            Collection<DataTranslator<NBTTagCompound>> translators = service.getDataTranslatorManager().get(NBTTagCompound.class);
+            Collection<DataTranslator<CompoundNBT>> translators = service.getDataTranslatorManager().get(CompoundNBT.class);
             if(!translators.isEmpty()) {
-                AtomicReference<NBTTagCompound> reference = new AtomicReference<>(nbt);
+                AtomicReference<CompoundNBT> reference = new AtomicReference<>(nbt);
                 translators.forEach(translator -> translator.translate(reference.get()).ifPresent(reference::set));
                 nbt = reference.get();
             }

@@ -7,11 +7,9 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.PrettyPrinter;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.auctions.Auction;
@@ -23,12 +21,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.NavigableSet;
 import java.util.Optional;
-import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
 public class SpongeAuction extends SpongeListing implements Auction {

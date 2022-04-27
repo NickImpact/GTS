@@ -1,46 +1,51 @@
 package net.impactdev.gts.messaging.types;
 
 import com.google.common.collect.Iterables;
-import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.message.OutgoingMessage;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.spongepowered.api.Platform;
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.network.ChannelBinding;
-import org.spongepowered.api.network.ChannelBuf;
-import org.spongepowered.api.network.RawDataListener;
-import org.spongepowered.api.network.RemoteConnection;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+import org.spongepowered.api.network.EngineConnectionSide;
+import org.spongepowered.api.network.ServerSideConnection;
+import org.spongepowered.api.network.channel.ChannelBuf;
+import org.spongepowered.api.network.channel.raw.RawDataChannel;
+import org.spongepowered.api.network.channel.raw.play.RawPlayDataHandler;
 
 import java.util.Collection;
 
 /**
  * An implementation of {@link Messenger} using the plugin messaging channels.
  */
-public class PluginMessageMessenger implements Messenger, RawDataListener {
-	private static final String CHANNEL = "gts:update";
+public class PluginMessageMessenger implements Messenger, RawPlayDataHandler<ServerSideConnection> {
 
-	private final GTSSpongePlugin plugin;
+	private static final ResourceKey CHANNEL = ResourceKey.builder()
+			.namespace("gts")
+			.value("update")
+			.build();
+
+	private final GTSPlugin plugin;
 	private final IncomingMessageConsumer consumer;
 
-	private ChannelBinding.RawDataChannel channel = null;
+	private RawDataChannel channel = null;
 
-	public PluginMessageMessenger(GTSSpongePlugin plugin, IncomingMessageConsumer consumer) {
+	public PluginMessageMessenger(GTSPlugin plugin, IncomingMessageConsumer consumer) {
 		this.plugin = plugin;
 		this.consumer = consumer;
 	}
 
 	public void init() {
-		this.channel = Sponge.getChannelRegistrar().createRawChannel(this.plugin.getBootstrap(), CHANNEL);
-		this.channel.addListener(Platform.Type.SERVER, this);
+		this.channel = Sponge.channelManager().ofType(CHANNEL, RawDataChannel.class);
+		this.channel.play().addHandler(EngineConnectionSide.SERVER, this);
 	}
 
 	@Override
 	public void close() {
 		if (this.channel != null) {
-			Sponge.getChannelRegistrar().unbindChannel(this.channel);
+			this.channel.play().removeHandler(this);
 		}
 	}
 
@@ -55,17 +60,17 @@ public class PluginMessageMessenger implements Messenger, RawDataListener {
 			return;
 		}
 
-		Collection<Player> players = Sponge.getServer().getOnlinePlayers();
-		Player p = Iterables.getFirst(players, null);
+		Collection<ServerPlayer> players = Sponge.server().onlinePlayers();
+		ServerPlayer p = Iterables.getFirst(players, null);
 		if (p == null) {
 			return;
 		}
 
-		this.channel.sendTo(p, buf -> buf.writeUTF(outgoingMessage.asEncodedString()));
+		this.channel.play().sendTo(p, buf -> buf.writeUTF(outgoingMessage.asEncodedString()));
 	}
 
 	@Override
-	public void handlePayload(@NonNull ChannelBuf buf, @NonNull RemoteConnection connection, Platform.@NonNull Type type) {
+	public void handlePayload(@NonNull ChannelBuf buf, ServerSideConnection connection) {
 		String msg = buf.readUTF();
 		this.consumer.consumeIncomingMessageAsString(msg);
 	}

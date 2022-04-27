@@ -4,13 +4,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.impactdev.gts.api.GTSService;
+import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.common.config.types.time.TimeKey;
 import net.impactdev.gts.common.config.wrappers.LazyBlacklist;
 import net.impactdev.gts.common.discord.DiscordOption;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.configuration.ConfigKeyHolder;
-import net.impactdev.impactor.api.configuration.keys.BaseConfigKey;
+import net.impactdev.impactor.api.configuration.loader.KeyProvider;
 import net.impactdev.impactor.api.storage.StorageCredentials;
 import net.impactdev.impactor.api.storage.StorageType;
 import net.impactdev.impactor.api.utilities.Time;
@@ -18,9 +18,6 @@ import net.impactdev.gts.api.blacklist.Blacklist;
 import org.mariuszgromada.math.mxparser.Function;
 
 import java.awt.Color;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -34,7 +31,8 @@ import static net.impactdev.impactor.api.configuration.ConfigKeyTypes.*;
  * <p>The values here have since been redone, in favor of a new level of organization alongside new options.</p>
  * @since 6.0.0
  */
-public class ConfigKeys implements ConfigKeyHolder {
+@KeyProvider
+public final class ConfigKeys {
 
 	// Essential Settings
 	public static final ConfigKey<Boolean> USE_MULTI_SERVER = booleanKey("multi-server", false);
@@ -197,48 +195,22 @@ public class ConfigKeys implements ConfigKeyHolder {
 
 	public static final ConfigKey<Boolean> ENABLE_ITEMS = booleanKey("allow-items", true);
 
-	private static final Map<String, ConfigKey<?>> KEYS;
-	private static final int SIZE;
-
-	static {
-		Map<String, ConfigKey<?>> keys = new LinkedHashMap<>();
-		Field[] values = ConfigKeys.class.getFields();
-		int i = 0;
-
-		for (Field f : values) {
-			// ignore non-static fields
-			if (!Modifier.isStatic(f.getModifiers())) {
-				continue;
-			}
-
-			// ignore fields that aren't configkeys
-			if (!ConfigKey.class.isAssignableFrom(f.getType())) {
-				continue;
-			}
-
-			try {
-				// get the key instance
-				BaseConfigKey<?> key = (BaseConfigKey<?>) f.get(null);
-				// set the ordinal value of the key.
-				key.ordinal = i++;
-				// add the key to the return map
-				keys.put(f.getName(), key);
-			} catch (Exception e) {
-				throw new RuntimeException("Exception processing field: " + f, e);
+	/**
+	 * Configuration keys for additional currency allowances. Each option should permit a new price option
+	 * using the server's economy service.
+	 */
+	public static final ConfigKey<List<String>> ADDITIONAL_CURRENCIES = listKey("currencies.additionally-allowed", Lists.newArrayList());
+	public static final ConfigKey<TriState> USE_DEFAULT_CURRENCY = customKey(adapter -> {
+		boolean value = adapter.getBoolean("currencies.use-default", true);
+		if(value) {
+			return TriState.TRUE;
+		} else {
+			if(ADDITIONAL_CURRENCIES.context().parent().get(ADDITIONAL_CURRENCIES).isEmpty()) {
+				return TriState.UNDEFINED;
+			} else {
+				return TriState.FALSE;
 			}
 		}
+	});
 
-		KEYS = ImmutableMap.copyOf(keys);
-		SIZE = i;
-	}
-
-	@Override
-	public Map<String, ConfigKey<?>> getKeys() {
-		return KEYS;
-	}
-
-	@Override
-	public int getSize() {
-		return SIZE;
-	}
 }

@@ -3,7 +3,6 @@ package net.impactdev.gts.messaging.processor;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
 import net.impactdev.gts.api.messaging.message.Message;
 import net.impactdev.gts.api.messaging.message.MessageConsumer;
@@ -24,17 +23,15 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 
-import static net.impactdev.gts.common.messaging.GTSMessagingService.NORMAL;
-
 public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 
-	private final GTSSpongePlugin plugin;
+	private final GTSPlugin plugin;
 	private final Set<UUID> receivedMessages;
 
 	private final Map<Class<?>, MessageConsumer<?>> consumers = Maps.newHashMap();
 	private final Map<UUID, Consumer<?>> requests = Maps.newHashMap();
 
-	public SpongeIncomingMessageConsumer(GTSSpongePlugin plugin) {
+	public SpongeIncomingMessageConsumer(GTSPlugin plugin) {
 		this.plugin = plugin;
 		this.receivedMessages = Collections.synchronizedSet(new HashSet<>());
 	}
@@ -64,7 +61,7 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 		Objects.requireNonNull(message, "message");
 
 		if (!this.receivedMessages.add(message.getID())) {
-			if(this.plugin.getConfiguration().get(ConfigKeys.USE_MULTI_SERVER)) {
+			if(this.plugin.configuration().main().get(ConfigKeys.USE_MULTI_SERVER)) {
 				return false;
 			}
 		}
@@ -101,9 +98,9 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 		@Nullable JsonElement content = decodedObject.get("content");
 
 		// decode message
-		Message decoded = GTSPlugin.getInstance().getMessagingService().getDecoder(type).apply(content, id);
+		Message decoded = GTSPlugin.instance().messagingService().getDecoder(type).apply(content, id);
 		if(decoded == null) {
-			GTSPlugin.getInstance().getPluginLogger().info("No decoder found for incoming message");
+			GTSPlugin.instance().logger().info("No decoder found for incoming message");
 			return false;
 		}
 
@@ -127,7 +124,7 @@ public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
 		if (message instanceof UpdateMessage) {
 			UpdateMessage msg = (UpdateMessage) message;
 
-			GTSPlugin.getInstance().getPluginLogger().info("Received message with ID: " + message.getID());
+			GTSPlugin.instance().logger().info("Received message with ID: " + message.getID());
 			Optional.ofNullable(this.getInternalConsumer(msg.getClass()))
 					.orElseThrow(() -> new IllegalStateException("No consumer available for " + msg.getClass().getName()))
 					.consume(message);

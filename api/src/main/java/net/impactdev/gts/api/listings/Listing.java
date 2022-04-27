@@ -5,7 +5,7 @@ import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.utilities.Builder;
+import net.impactdev.impactor.api.builders.Builder;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -91,12 +91,11 @@ public interface Listing extends Storable {
 		return LocalDateTime.now().isAfter(this.getExpiration());
 	}
 
-	@SuppressWarnings("unchecked")
 	static ListingBuilder<?, ?> builder() {
 		return Impactor.getInstance().getRegistry().createBuilder(ListingBuilder.class);
 	}
 
-	interface ListingBuilder<L extends Listing, B extends ListingBuilder<?, ?>> extends Builder<L, B> {
+	interface ListingBuilder<L extends Listing, B extends ListingBuilder<?, ?>> extends Builder<L> {
 
 		/**
 		 * Represents the ID of a listing. If not specified, this will be auto-generated at the time of constructing.

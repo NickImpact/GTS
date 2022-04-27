@@ -1,6 +1,5 @@
 package net.impactdev.gts.messaging.interpreters;
 
-import com.google.common.collect.Lists;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
@@ -12,9 +11,12 @@ import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BIN
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.placeholders.PlaceholderSources;
 import net.impactdev.impactor.api.services.text.MessageService;
+import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.text.Text;
+
+import java.util.UUID;
 
 public class SpongeBINInterpreters implements Interpreter {
 
@@ -26,30 +28,30 @@ public class SpongeBINInterpreters implements Interpreter {
 
     @Override
     public void getDecoders(GTSPlugin plugin) {
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 BINRemoveMessage.Request.TYPE, BINRemoveMessage.Request::decode
         );
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 BINRemoveMessage.Response.TYPE, BINRemoveMessage.Response::decode
         );
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 BINPurchaseMessage.Request.TYPE, BINPurchaseMessage.Request::decode
         );
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 BINPurchaseMessage.Response.TYPE, BINPurchaseMessage.Response::decode
         );
     }
 
     @Override
     public void getInterpreters(GTSPlugin plugin) {
-        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        final IncomingMessageConsumer consumer = plugin.getMessagingService().getMessenger().getMessageConsumer();
+        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        final IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
 
         consumer.registerInternalConsumer(
                 BINRemoveMessage.Request.class, request -> {
-                    GTSPlugin.getInstance().getStorage()
+                    GTSPlugin.instance().storage()
                             .processListingRemoveRequest(request)
-                            .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
+                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
         consumer.registerInternalConsumer(
@@ -61,9 +63,9 @@ public class SpongeBINInterpreters implements Interpreter {
         // Purchase Requests/Responses
         consumer.registerInternalConsumer(
                 BINPurchaseMessage.Request.class, request -> {
-                    GTSPlugin.getInstance().getStorage()
+                    GTSPlugin.instance().storage()
                             .processPurchase(request)
-                            .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
+                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
         consumer.registerInternalConsumer(
@@ -71,16 +73,21 @@ public class SpongeBINInterpreters implements Interpreter {
                     consumer.processRequest(response.getRequestID(), response);
 
                     if(response.wasSuccessful()) {
-                        GTSPlugin.getInstance().getStorage().getListing(response.getListingID()).thenAccept(listing -> {
+                        GTSPlugin.instance().storage().getListing(response.getListingID()).thenAccept(listing -> {
                             listing.ifPresent(info -> {
-                                Sponge.getServer().getPlayer(response.getSeller()).ifPresent(player -> {
+                                Sponge.server().player(response.getSeller()).ifPresent(player -> {
                                     PlayerSettingsManager manager = GTSService.getInstance().getPlayerSettingsManager();
                                     manager.retrieve(response.getSeller()).thenAccept(settings -> {
                                         if(settings.getSoldListenState()) {
-                                            player.sendMessages(service.parse(
+                                            PlaceholderSources sources = PlaceholderSources.builder()
+                                                    .append(Listing.class, () -> info)
+                                                    .append(UUID.class, response::getActor)
+                                                    .build();
+
+                                            service.parse(
                                                     Utilities.readMessageConfigOption(MsgConfigKeys.PURCHASE_RECEIVE),
-                                                    Lists.newArrayList(() -> info, response::getActor)
-                                            ));
+                                                    sources
+                                            ).forEach(player::sendMessage);
                                         }
                                     });
                                 });

@@ -5,12 +5,12 @@ import com.google.gson.JsonObject;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
-import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.common.messaging.messages.AbstractMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -48,7 +48,7 @@ public abstract class PingPongMessage extends AbstractMessage implements PingMes
         @Override
         public CompletableFuture<PingMessage.Pong> respond() {
             return CompletableFutureManager.makeFuture(() -> new PingPongMessage.Pong(
-                    GTSPlugin.getInstance().getMessagingService().generatePingID(),
+                    GTSPlugin.instance().messagingService().generatePingID(),
                     this.getID(),
                     true,
                     null

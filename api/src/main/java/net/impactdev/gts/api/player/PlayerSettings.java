@@ -2,7 +2,7 @@ package net.impactdev.gts.api.player;
 
 import net.impactdev.gts.api.data.Storable;
 import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.utilities.Builder;
+import net.impactdev.impactor.api.builders.Builder;
 
 import java.util.Map;
 
@@ -47,7 +47,7 @@ public interface PlayerSettings extends Storable {
         return Impactor.getInstance().getRegistry().createBuilder(PlayerSettingsBuilder.class);
     }
 
-    interface PlayerSettingsBuilder extends Builder<PlayerSettings, PlayerSettingsBuilder> {
+    interface PlayerSettingsBuilder extends Builder<PlayerSettings> {
 
         /**
          * Applies the setting to the player's settings. All settings are considered on by default.
@@ -57,6 +57,8 @@ public interface PlayerSettings extends Storable {
          * @return The builder after being modified by this request
          */
         PlayerSettingsBuilder set(NotificationSetting setting, boolean mode);
+
+        PlayerSettingsBuilder from(PlayerSettings parent);
 
     }
 }

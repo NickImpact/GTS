@@ -1,14 +1,14 @@
 package net.impactdev.gts.util;
 
 import com.google.gson.JsonObject;
-import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
-import org.spongepowered.api.data.DataQuery;
-import org.spongepowered.api.data.DataSerializable;
-import org.spongepowered.api.data.DataView;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import org.spongepowered.api.data.persistence.DataFormats;
+import org.spongepowered.api.data.persistence.DataQuery;
+import org.spongepowered.api.data.persistence.DataSerializable;
+import org.spongepowered.api.data.persistence.DataView;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
@@ -29,7 +29,7 @@ public class DataViewJsonManager {
     }
 
     private static void writeDataViewToJSON(JObject writer, DataView container, PrettyPrinter printer, int indent) {
-        for(Map.Entry<DataQuery, Object> entry : container.getValues(false).entrySet()) {
+        for(Map.Entry<DataQuery, Object> entry : container.values(false).entrySet()) {
             DataQuery query = entry.getKey();
             Object value = entry.getValue();
 
@@ -39,7 +39,7 @@ public class DataViewJsonManager {
 
     public static DataView readDataViewFromJSON(JsonObject input) {
         try {
-            return DataFormats.JSON.read(input.toString());
+            return DataFormats.JSON.get().read(input.toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -48,7 +48,7 @@ public class DataViewJsonManager {
     private static void writeDataViewToJSON(JArray writer, DataView container, PrettyPrinter printer, int indent) {
         JObject result = new JObject();
 
-        for(Map.Entry<DataQuery, Object> entry : container.getValues(false).entrySet()) {
+        for(Map.Entry<DataQuery, Object> entry : container.values(false).entrySet()) {
             DataQuery query = entry.getKey();
             Object value = entry.getValue();
 
@@ -87,7 +87,7 @@ public class DataViewJsonManager {
 
             printer.add(exception);
 
-            printer.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
+            printer.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.DEBUG);
             throw exception;
         }
     }

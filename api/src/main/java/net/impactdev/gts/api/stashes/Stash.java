@@ -2,9 +2,9 @@ package net.impactdev.gts.api.stashes;
 
 import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.util.TriState;
 import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.utilities.Builder;
+import net.impactdev.impactor.api.builders.Builder;
+import net.kyori.adventure.util.TriState;
 
 import java.util.List;
 import java.util.UUID;
@@ -60,7 +60,7 @@ public interface Stash {
 		return Impactor.getInstance().getRegistry().createBuilder(StashBuilder.class);
 	}
 
-	interface StashBuilder extends Builder<Stash, StashBuilder> {
+	interface StashBuilder extends Builder<Stash> {
 
 		/**
 		 * Appends a listing to the stash with the specified context. Context means are as such:

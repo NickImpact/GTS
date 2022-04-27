@@ -15,23 +15,23 @@ public class SpongeDeliveryInterpreters implements Interpreter {
 
     @Override
     public void getDecoders(GTSPlugin plugin) {
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 ClaimDeliveryImpl.ClaimDeliveryRequestImpl.TYPE, ClaimDeliveryImpl.ClaimDeliveryRequestImpl::decode
         );
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 ClaimDeliveryImpl.ClaimDeliveryResponseImpl.TYPE, ClaimDeliveryImpl.ClaimDeliveryResponseImpl::decode
         );
     }
 
     @Override
     public void getInterpreters(GTSPlugin plugin) {
-        final IncomingMessageConsumer consumer = plugin.getMessagingService().getMessenger().getMessageConsumer();
+        final IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
 
         consumer.registerInternalConsumer(
                 ClaimDeliveryImpl.ClaimDeliveryRequestImpl.class, request -> {
-                    GTSPlugin.getInstance().getStorage()
+                    GTSPlugin.instance().storage()
                             .claimDelivery(request)
-                            .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
+                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
         consumer.registerInternalConsumer(

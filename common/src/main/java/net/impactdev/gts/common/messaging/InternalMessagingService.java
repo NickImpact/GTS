@@ -83,23 +83,6 @@ public interface InternalMessagingService {
     UUID generatePingID();
 
     /**
-     * Forces a completable future to timeout its actions after the specified amount of time. This is best used
-     * with {@link CompletableFuture#acceptEither(CompletionStage, Consumer) acceptEither},
-     * {@link CompletableFuture#applyToEither(CompletionStage, Function) applyToEither}, or any of their respective
-     * async companions.
-     *
-     * @param timeout The amount of time that it should take before we forcibly raise a timeout exception
-     * @param unit The time unit to measure our timeout value by
-     * @param <W> The intended return type of the completable future (for compatibility with both run and supply)
-     * @return A completable future who's sole purpose is to timeout after X amount of time
-     */
-    default <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
-        return CompletableFutureManager.makeFutureDelayed(() -> {
-                throw new MessagingException(ErrorCodes.REQUEST_TIMED_OUT, new TimeoutException());
-            }, timeout, unit);
-    }
-
-    /**
      * More of a utility method, this method processes a request by placing it in the receiver queue for the hooked
      * incoming message receiver. It'll hold the active thread until a response has been received. Once received,
      * it is to return that value.
@@ -113,8 +96,8 @@ public interface InternalMessagingService {
         AtomicReference<W> reference = new AtomicReference<>(null);
         long start = System.nanoTime();
 
-        GTSPlugin.getInstance().getMessagingService().getMessenger().getMessageConsumer().registerRequest(request.getID(), reference::set);
-        GTSPlugin.getInstance().getMessagingService().getMessenger().sendOutgoingMessage(request);
+        GTSPlugin.instance().messagingService().getMessenger().getMessageConsumer().registerRequest(request.getID(), reference::set);
+        GTSPlugin.instance().messagingService().getMessenger().sendOutgoingMessage(request);
         while(reference.get() == null) {
             try {
                 //noinspection BusyWait

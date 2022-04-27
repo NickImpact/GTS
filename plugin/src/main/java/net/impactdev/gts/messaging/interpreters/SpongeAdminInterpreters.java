@@ -13,9 +13,9 @@ import net.impactdev.gts.sponge.pricing.provided.MonetaryEntry;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
+import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -32,22 +32,22 @@ public class SpongeAdminInterpreters implements Interpreter {
 
     @Override
     public void getDecoders(GTSPlugin plugin) {
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 ForceDeleteMessageImpl.ForceDeleteRequest.TYPE, ForceDeleteMessageImpl.ForceDeleteRequest::decode
         );
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 ForceDeleteMessageImpl.ForceDeleteResponse.TYPE, ForceDeleteMessageImpl.ForceDeleteResponse::decode
         );
     }
 
     @Override
     public void getInterpreters(GTSPlugin plugin) {
-        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        final IncomingMessageConsumer consumer = plugin.getMessagingService().getMessenger().getMessageConsumer();
+        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        final IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
 
         consumer.registerInternalConsumer(
                 ForceDeleteMessageImpl.ForceDeleteRequest.class, request -> {
-                    request.respond().thenAccept(response -> GTSPlugin.getInstance().getMessagingService().getMessenger().sendOutgoingMessage(response));
+                    request.respond().thenAccept(response -> GTSPlugin.instance().messagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
         consumer.registerInternalConsumer(
@@ -56,7 +56,7 @@ public class SpongeAdminInterpreters implements Interpreter {
 
                     if(response.wasSuccessful()) {
                         Listing listing = response.getDeletedListing().orElse(null);
-                        Optional<Player> player = Sponge.getServer().getPlayer(listing.getLister());
+                        Optional<ServerPlayer> player = Sponge.server().player(listing.getLister());
 
                         if(response.shouldGive()) {
                             if(this.attemptReturn(listing)) {
@@ -70,7 +70,7 @@ public class SpongeAdminInterpreters implements Interpreter {
                                             .price(((BuyItNow) listing).getPrice())
                                             .expiration(LocalDateTime.now())
                                             .build();
-                                    GTSPlugin.getInstance().getStorage().publishListing(stash);
+                                    GTSPlugin.instance().storage().publishListing(stash);
                                 } else {
                                     Auction auction = (Auction) listing;
                                     Delivery delivery = Delivery.builder()
@@ -78,7 +78,7 @@ public class SpongeAdminInterpreters implements Interpreter {
                                             .recipient(auction.getLister())
                                             .content(auction.getEntry())
                                             .build();
-                                    GTSPlugin.getInstance().getStorage().sendDelivery(delivery);
+                                    GTSPlugin.instance().storage().sendDelivery(delivery);
 
                                     for(Map.Entry<UUID, Auction.Bid> bid : auction.getUniqueBiddersWithHighestBids().entrySet()) {
                                         Delivery bidder = Delivery.builder()
@@ -86,7 +86,7 @@ public class SpongeAdminInterpreters implements Interpreter {
                                                 .recipient(bid.getKey())
                                                 .content(new MonetaryEntry(bid.getValue().getAmount()))
                                                 .build();
-                                        GTSPlugin.getInstance().getStorage().sendDelivery(bidder);
+                                        GTSPlugin.instance().storage().sendDelivery(bidder);
                                     }
                                 }
                                 player.ifPresent(source -> source.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN_STASH))));

@@ -3,10 +3,10 @@ package net.impactdev.gts.test;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
+import net.impactdev.gts.common.api.ApiRegistrationUtil;
 import net.impactdev.gts.common.api.GTSAPIProvider;
 import net.impactdev.gts.common.data.ResourceManagerImpl;
 import net.impactdev.gts.common.storage.implementation.file.ConfigurateStorage;
-import net.impactdev.gts.common.storage.implementation.file.loaders.JsonLoader;
 
 import net.impactdev.gts.test.configurate.TestEntry;
 import net.impactdev.gts.test.configurate.TestEntryDataManager;
@@ -14,8 +14,7 @@ import net.impactdev.gts.test.configurate.TestListing;
 import net.impactdev.gts.test.configurate.TestPrice;
 import net.impactdev.gts.test.configurate.TestPriceDataManager;
 import net.impactdev.gts.test.configurate.TestableConfigurateStorage;
-import net.impactdev.impactor.common.api.ApiRegistrationUtil;
-import net.impactdev.impactor.sponge.api.SpongeImpactorAPIProvider;
+import net.impactdev.impactor.api.storage.file.loaders.JsonLoader;
 import org.junit.Test;
 
 import java.util.UUID;
@@ -26,7 +25,7 @@ public class JsonConfigurateTest {
 
     @Test
     public void run() throws Exception {
-        ApiRegistrationUtil.register(new SpongeImpactorAPIProvider(null));
+        ApiRegistrationUtil.register(new GTSAPIProvider());
         net.impactdev.gts.common.api.ApiRegistrationUtil.register(new GTSAPIProvider());
 
         GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(BuyItNow.class, new ResourceManagerImpl<>("BIN", "minecraft:emerald", TestListing::deserialize));

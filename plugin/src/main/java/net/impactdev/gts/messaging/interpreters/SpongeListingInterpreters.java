@@ -1,6 +1,5 @@
 package net.impactdev.gts.messaging.interpreters;
 
-import com.google.common.collect.Lists;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
@@ -12,10 +11,14 @@ import net.impactdev.gts.common.messaging.messages.listings.PublishListingMessag
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.placeholders.PlaceholderSources;
 import net.impactdev.impactor.api.services.text.MessageService;
+import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+
+import java.util.UUID;
 
 public class SpongeListingInterpreters implements Interpreter {
 
@@ -27,25 +30,25 @@ public class SpongeListingInterpreters implements Interpreter {
 
     @Override
     public void getDecoders(GTSPlugin plugin) {
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 ClaimMessageImpl.ClaimRequestImpl.TYPE, ClaimMessageImpl.ClaimRequestImpl::decode
         );
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 ClaimMessageImpl.ClaimResponseImpl.TYPE, ClaimMessageImpl.ClaimResponseImpl::decode
         );
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 PublishListingMessageImpl.TYPE, PublishListingMessageImpl::decode
         );
     }
 
     @Override
     public void getInterpreters(GTSPlugin plugin) {
-        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        IncomingMessageConsumer consumer = plugin.getMessagingService().getMessenger().getMessageConsumer();
+        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
 
         consumer.registerInternalConsumer(
                 ClaimMessageImpl.ClaimRequestImpl.class, request -> {
-                    request.respond().thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
+                    request.respond().thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
         consumer.registerInternalConsumer(
@@ -61,25 +64,30 @@ public class SpongeListingInterpreters implements Interpreter {
 
         consumer.registerInternalConsumer(
                 PublishListingMessageImpl.class, message -> {
-                    if(!GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.USE_MULTI_SERVER)) {
+                    if(!GTSPlugin.instance().configuration().main().get(ConfigKeys.USE_MULTI_SERVER)) {
                         return;
                     }
 
-                    GTSPlugin.getInstance().getStorage().getListing(message.getListingID()).thenAccept(listing -> {
+                    GTSPlugin.instance().storage().getListing(message.getListingID()).thenAccept(listing -> {
                         if(listing.isPresent()) {
                             Listing working = listing.get();
-                            for(Player player : Sponge.getServer().getOnlinePlayers()) {
-                                if(!player.getUniqueId().equals(message.getActor())) {
+                            for(ServerPlayer player : Sponge.server().onlinePlayers()) {
+                                if(!player.uniqueId().equals(message.getActor())) {
+                                    PlaceholderSources sources = PlaceholderSources.builder()
+                                            .append(Listing.class, () -> working)
+                                            .append(UUID.class, working::getLister)
+                                            .build();
+
                                     if(working instanceof Auction) {
-                                        player.sendMessages(service.parse(
+                                        service.parse(
                                                 Utilities.readMessageConfigOption(MsgConfigKeys.ADD_BROADCAST_AUCTION),
-                                                Lists.newArrayList(() -> working, working::getLister)
-                                        ));
+                                                sources
+                                        ).forEach(player::sendMessage);
                                     } else {
-                                        player.sendMessages(service.parse(
+                                        service.parse(
                                                 Utilities.readMessageConfigOption(MsgConfigKeys.ADD_BROADCAST_BIN),
-                                                Lists.newArrayList(() -> working, working::getLister)
-                                        ));
+                                                sources
+                                        ).forEach(player::sendMessage);
                                     }
                                 }
                             }

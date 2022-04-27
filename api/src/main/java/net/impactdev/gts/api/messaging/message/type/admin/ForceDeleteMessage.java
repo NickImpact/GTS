@@ -5,7 +5,7 @@ import net.impactdev.gts.api.messaging.message.OutgoingMessage;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.type.MessageType;
 import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.utilities.Builder;
+import net.impactdev.impactor.api.builders.Builder;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Optional;
@@ -59,7 +59,7 @@ public interface ForceDeleteMessage extends OutgoingMessage {
             return Impactor.getInstance().getRegistry().createBuilder(ResponseBuilder.class);
         }
 
-        interface ResponseBuilder extends Builder<ForceDeleteMessage.Response, ResponseBuilder> {
+        interface ResponseBuilder extends Builder<ForceDeleteMessage.Response> {
 
             ResponseBuilder request(UUID request);
 
