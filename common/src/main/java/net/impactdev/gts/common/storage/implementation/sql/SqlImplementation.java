@@ -250,29 +250,33 @@ public class SqlImplementation implements StorageImplementation {
 			ps.setString(1, id.toString());
 			return Optional.ofNullable(this.results(ps, results -> {
 				if(results.next()) {
-					JsonObject json = GTSPlugin.getInstance().getGson().fromJson(results.getString("listing"), JsonObject.class);
-					if(!json.has("type")) {
-						throw new JsonParseException("Invalid Listing: Missing type");
-					}
-
-					String type = json.get("type").getAsString();
-					if(type.equals("bin")) {
-						return GTSService.getInstance().getGTSComponentManager()
-								.getListingResourceManager(BuyItNow.class)
-								.get()
-								.getDeserializer()
-								.deserialize(json);
-					} else {
-						return GTSService.getInstance().getGTSComponentManager()
-								.getListingResourceManager(Auction.class)
-								.get()
-								.getDeserializer()
-								.deserialize(json);
-					}
+					return this.translateFrom(results.getString("listing"));
 				}
 				return null;
 			}));
 		});
+	}
+
+	private Listing translateFrom(String data) throws Exception {
+		JsonObject json = GTSPlugin.getInstance().getGson().fromJson(data, JsonObject.class);
+		if(!json.has("type")) {
+			throw new JsonParseException("Invalid Listing: Missing type");
+		}
+
+		String type = json.get("type").getAsString();
+		if(type.equals("bin")) {
+			return GTSService.getInstance().getGTSComponentManager()
+					.getListingResourceManager(BuyItNow.class)
+					.get()
+					.getDeserializer()
+					.deserialize(json);
+		} else {
+			return GTSService.getInstance().getGTSComponentManager()
+					.getListingResourceManager(Auction.class)
+					.get()
+					.getDeserializer()
+					.deserialize(json);
+		}
 	}
 
 	@Override
@@ -328,20 +332,27 @@ public class SqlImplementation implements StorageImplementation {
 				AtomicInteger possesses = new AtomicInteger();
 
 				while(results.next()) {
-					try(PreparedStatement query = connection.prepareStatement(this.processor.apply(GET_AUCTION_CLAIM_STATUS))) {
-						query.setString(1, results.getString("id"));
+					Listing listing = this.translateFrom(results.getString("listing"));
+					if(listing instanceof BuyItNow) {
+						if(!((BuyItNow) listing).stashedForPurchaser()) {
+							possesses.getAndIncrement();
+						}
+					} else {
+						try(PreparedStatement query = connection.prepareStatement(this.processor.apply(GET_AUCTION_CLAIM_STATUS))) {
+							query.setString(1, results.getString("id"));
 
-						this.results(query, r -> {
-							if(r.next()) {
-								if(!r.getBoolean("lister")) {
+							this.results(query, r -> {
+								if(r.next()) {
+									if(!r.getBoolean("lister")) {
+										possesses.getAndIncrement();
+									}
+								} else {
 									possesses.getAndIncrement();
 								}
-							} else {
-								possesses.getAndIncrement();
-							}
 
-							return null;
-						});
+								return null;
+							});
+						}
 					}
 				}
 
