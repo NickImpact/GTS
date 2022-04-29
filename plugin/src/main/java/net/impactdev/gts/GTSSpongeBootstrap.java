@@ -51,7 +51,7 @@ import java.util.concurrent.atomic.AtomicReference;
 		description = "@description@",
 		dependencies = {
 				@Dependency(id = "spongeapi", version = "[7.4.0,)"),
-				@Dependency(id = "impactor", version = "[3.0.0,)"),
+				@Dependency(id = "impactor", version = "[3.1.2,)"),
 				@Dependency(id = "protocolcontrol", version = "[0.0.2,)")
 		})
 public class GTSSpongeBootstrap implements GTSBootstrap {
