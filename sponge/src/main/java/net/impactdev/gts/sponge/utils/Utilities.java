@@ -23,20 +23,8 @@ import java.util.stream.Collectors;
 
 public class Utilities {
 
-	private static PluginContainer container;
-
 	@SuppressWarnings("unchecked")
 	public static final MessageService PARSER = Impactor.getInstance().getRegistry().get(MessageService.class);
-
-	public static PluginContainer getPluginContainer() {
-		return container;
-	}
-
-	public static void setContainer(PluginContainer container) {
-		if(container.metadata().id().equals("gts")) {
-			Utilities.container = container;
-		}
-	}
 
 	public static <T> T readMessageConfigOption(ConfigKey<T> key) {
 		return GTSPlugin.instance().configuration().language().get(key);
@@ -49,7 +37,6 @@ public class Utilities {
 	public static List<Component> parseList(ConfigKey<List<String>> key, PlaceholderSources sources) {
 		return GTSPlugin.instance().configuration().language().get(key).stream().map(x -> PARSER.parse(x, sources)).collect(Collectors.toList());
 	}
-
 
 	public static TextComponent translateTime(Time time) {
 		long weeks = TimeUnit.SECONDS.toDays(time.getTime()) / 7;

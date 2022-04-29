@@ -83,7 +83,7 @@ public class SpongeGTSBootstrap implements LauncherBootstrap, GTSBootstrap {
 
     @Override
     public Optional<InputStream> resource(Path path) {
-        return Optional.ofNullable(this.getClass().getResourceAsStream(path.toString().replace("\\", "/")));
+        return Optional.ofNullable(this.getClass().getClassLoader().getResourceAsStream(path.toString()));
     }
 
     @Override

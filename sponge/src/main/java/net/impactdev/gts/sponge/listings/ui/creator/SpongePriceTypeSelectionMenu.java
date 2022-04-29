@@ -108,7 +108,7 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
     }
 
     private Icon<ItemStack> createIcon(String type, PriceManager<? extends Price<?, ?, ?>> resource) {
-        ItemType item = Sponge.server().registry(RegistryTypes.ITEM_TYPE)
+        ItemType item = Sponge.game().registry(RegistryTypes.ITEM_TYPE)
                 .findEntry(ResourceKey.resolve(resource.getItemID()))
                 .map(RegistryEntry::value)
                 .orElse(ItemTypes.BARRIER.get());

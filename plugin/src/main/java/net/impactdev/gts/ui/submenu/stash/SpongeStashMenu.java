@@ -12,7 +12,6 @@ import net.impactdev.gts.api.ui.GTSMenu;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.gts.sponge.deliveries.SpongeDelivery;
-import net.impactdev.gts.sponge.utils.SpongeMenuOpener;
 import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
@@ -64,7 +63,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu, SpongeMenuOpener {
+public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
 
     private static final ExecutorService CLAIMER = Executors.newFixedThreadPool(
             Runtime.getRuntime().availableProcessors(),
@@ -116,7 +115,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu, Spo
     }
 
     public void open() {
-        this.open(this.pagination::open);
+        this.pagination.open();
     }
 
     private ServerPlayer player() {

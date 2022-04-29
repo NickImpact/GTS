@@ -7,7 +7,6 @@ import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.utils.SpongeMenuOpener;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
 import net.impactdev.gts.ui.SpongeMainMenu;
@@ -37,7 +36,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class PlayerSettingsMenu implements SpongeMenuOpener {
+public class PlayerSettingsMenu {
 
     private final ImpactorUI display;
 
@@ -73,7 +72,7 @@ public class PlayerSettingsMenu implements SpongeMenuOpener {
     }
 
     public void open(ServerPlayer viewer) {
-        this.open(() -> this.display.open(PlatformPlayer.from(viewer)));
+        this.display.open(PlatformPlayer.from(viewer));
     }
 
     private Layout layout(ServerPlayer viewer) {

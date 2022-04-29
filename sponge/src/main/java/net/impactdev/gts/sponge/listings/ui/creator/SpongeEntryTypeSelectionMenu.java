@@ -8,7 +8,6 @@ import net.impactdev.gts.api.ui.GTSMenu;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
 import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
-import net.impactdev.gts.sponge.utils.SpongeMenuOpener;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
 import net.impactdev.impactor.api.Impactor;
@@ -39,7 +38,7 @@ import java.util.Queue;
 
 import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
-public class SpongeEntryTypeSelectionMenu implements GTSMenu, SpongeMenuOpener {
+public class SpongeEntryTypeSelectionMenu implements GTSMenu {
 
     private final ServerPlayer viewer;
     private final ImpactorUI display;
@@ -67,7 +66,7 @@ public class SpongeEntryTypeSelectionMenu implements GTSMenu, SpongeMenuOpener {
     }
 
     public void open() {
-        this.open(() -> this.display.open(PlatformPlayer.from(this.viewer)));
+        this.display.open(PlatformPlayer.from(this.viewer));
     }
 
     private Layout design(int size) {
@@ -93,7 +92,7 @@ public class SpongeEntryTypeSelectionMenu implements GTSMenu, SpongeMenuOpener {
     }
 
     private Icon<ItemStack> createIcon(String type, EntryManager<? extends Entry<?, ?>, ?> resource) {
-        ItemType item = Sponge.server().registry(RegistryTypes.ITEM_TYPE)
+        ItemType item = Sponge.game().registry(RegistryTypes.ITEM_TYPE)
                 .findEntry(ResourceKey.resolve(resource.getItemID()))
                 .map(RegistryEntry::value)
                 .orElse(ItemTypes.BARRIER.get());

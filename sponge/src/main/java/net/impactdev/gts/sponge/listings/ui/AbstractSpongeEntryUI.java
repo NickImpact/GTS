@@ -294,7 +294,7 @@ public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends
 
         ItemStack duration = ItemStack.builder()
                 .itemType(ItemTypes.CLOCK)
-                .add(Keys.DISPLAY_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_DISPLAY_TITLE), sources))
+                .add(Keys.CUSTOM_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_DISPLAY_TITLE), sources))
                 .add(Keys.LORE, result)
                 .build();
 
@@ -335,7 +335,7 @@ public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends
         if(this.auction) {
             ItemStack rep = ItemStack.builder()
                     .itemType(ItemTypes.GOLD_NUGGET)
-                    .add(Keys.DISPLAY_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_TITLE), sources))
+                    .add(Keys.CUSTOM_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_TITLE), sources))
                     .add(Keys.LORE, result)
                     .build();
 
@@ -380,7 +380,7 @@ public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends
         } else {
             ItemStack selector = ItemStack.builder()
                     .from(SkullCreator.fromBase64("Mzk2Y2UxM2ZmNjE1NWZkZjMyMzVkOGQyMjE3NGM1ZGU0YmY1NTEyZjFhZGVkYTFhZmEzZmMyODE4MGYzZjcifX19"))
-                    .add(Keys.DISPLAY_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_TITLE), sources))
+                    .add(Keys.CUSTOM_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_TITLE), sources))
                     .add(Keys.LORE, result)
                     .build();
 

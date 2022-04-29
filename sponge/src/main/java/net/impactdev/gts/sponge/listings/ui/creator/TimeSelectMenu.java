@@ -127,7 +127,7 @@ public class TimeSelectMenu {
 
         ItemStack item = ItemStack.builder()
                 .itemType(type)
-                .add(Keys.DISPLAY_NAME, service.parse("&a" + this.read(time)))
+                .add(Keys.CUSTOM_NAME, service.parse("&a" + this.read(time)))
                 .build();
 
         return Icon.builder(ItemStack.class)

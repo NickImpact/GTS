@@ -11,7 +11,6 @@ import net.impactdev.gts.api.events.placeholders.PlaceholderReadyEvent;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
 import net.impactdev.gts.sponge.listings.ui.creator.SpongeEntryTypeSelectionMenu;
-import net.impactdev.gts.sponge.utils.SpongeMenuOpener;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.event.EventSubscription;
 import net.impactdev.impactor.api.placeholders.PlaceholderSources;
@@ -38,7 +37,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletionException;
 
-public class SpongeMainMenu implements GTSMenu, SpongeMenuOpener, SpongeMainPageProvider {
+public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 
 	private static final MessageService PARSER = Utilities.PARSER;
 
@@ -58,7 +57,7 @@ public class SpongeMainMenu implements GTSMenu, SpongeMenuOpener, SpongeMainPage
 	}
 
 	public void open() {
-		this.open(() -> this.view.open(PlatformPlayer.from(this.viewer)));
+		this.view.open(PlatformPlayer.from(this.viewer));
 	}
 
 	private ImpactorUI construct() {

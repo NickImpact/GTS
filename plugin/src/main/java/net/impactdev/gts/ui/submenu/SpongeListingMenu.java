@@ -13,7 +13,6 @@ import net.impactdev.gts.api.listings.manager.ListingManager;
 import net.impactdev.gts.api.searching.Searcher;
 import net.impactdev.gts.ui.admin.editor.SpongeListingEditorMenu;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
-import net.impactdev.gts.sponge.utils.SpongeMenuOpener;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.placeholders.PlaceholderSources;
@@ -68,7 +67,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class SpongeListingMenu implements GTSMenu, SpongeMenuOpener {
+public class SpongeListingMenu implements GTSMenu {
 
 	private static final QuickPurchaseOnly QUICK_PURCHASE_ONLY = new QuickPurchaseOnly();
 	private static final AuctionsOnly AUCTIONS_ONLY = new AuctionsOnly();
@@ -169,7 +168,7 @@ public class SpongeListingMenu implements GTSMenu, SpongeMenuOpener {
 
 	public void open() {
 		this.runner = Sponge.server().scheduler().submit(this.schedule())::cancel;
-		this.open(this.pagination::open);
+		this.pagination.open();
 	}
 
 	protected Layout design(ServerPlayer viewer) {

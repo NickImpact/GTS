@@ -1,6 +1,6 @@
 package net.impactdev.gts.listings.ui;
 
-import com.google.common.collect.Lists;
+import net.impactdev.gts.api.blacklist.Blacklist;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.listings.data.ChosenItemEntry;
@@ -9,7 +9,6 @@ import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.placeholders.PlaceholderSources;
 import net.impactdev.impactor.api.platform.players.PlatformPlayer;
 import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.gts.api.blacklist.Blacklist;
 import net.impactdev.gts.api.listings.ui.EntrySelection;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.ui.Historical;
@@ -21,7 +20,9 @@ import net.impactdev.impactor.api.ui.containers.ImpactorUI;
 import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
 import net.impactdev.impactor.api.ui.containers.icons.Icon;
 import net.impactdev.impactor.api.ui.containers.layouts.Layout;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.effect.sound.SoundTypes;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
@@ -29,12 +30,12 @@ import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.item.inventory.Slot;
+import org.spongepowered.api.registry.RegistryTypes;
 import org.spongepowered.math.vector.Vector2i;
 
 import java.util.Optional;
 import java.util.function.Supplier;
-
-import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
 public class SpongeItemUI extends AbstractSpongeEntryUI<ChosenItemEntry> implements Historical<SpongeMainMenu> {
 
@@ -45,32 +46,34 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<ChosenItemEntry> impleme
     @Override
     protected ImpactorUI.UIBuilder modifyDisplayBuilder(ImpactorUI.UIBuilder builder) {
         return builder.onClick(context -> {
-            int slot = context.require(Integer.class);
-            System.out.println(slot);
+            final int index = context.require(Integer.class);
+            if(index >= 45) {
+                Slot slot = context.require(Slot.class);
+                if(!slot.contains(ItemStack.empty())) {
+                    ItemStackSnapshot snapshot = slot.peek().createSnapshot();
+                    if(this.chosen != null) {
+                        this.viewer.sendMessage(Component.text("You've already selected an item...").color(NamedTextColor.RED));
+                        return false;
+                    }
 
+                    MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+                    Blacklist blacklist = Impactor.getInstance().getRegistry().get(Blacklist.class);
+                    if(blacklist.isBlacklisted(ItemType.class, snapshot.type().key(RegistryTypes.ITEM_TYPE))) {
+                        this.viewer.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_BLACKLISTED)));
+                        this.viewer.playSound(
+                                Sound.sound(SoundTypes.BLOCK_ANVIL_LAND.get(), Sound.Source.MASTER, 1, 1),
+                                this.viewer.position()
+                        );
+                        return false;
+                    }
 
-//            if(!transaction.getOriginal().getType().equals(ItemTypes.AIR)) {
-//                ItemStackSnapshot clicked = transaction.getOriginal();
-//                if(this.chosen != null) {
-//                    this.viewer.sendMessage(Text.of(TextColors.RED, "You've already selected an item..."));
-//                    return;
-//                }
-//
-//                MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-//                Blacklist blacklist = Impactor.getInstance().getRegistry().get(Blacklist.class);
-//                if(blacklist.isBlacklisted(ItemType.class, clicked.getType().getName())) {
-//                    this.viewer.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_BLACKLISTED)));
-//                    this.viewer.playSound(SoundTypes.BLOCK_ANVIL_LAND, this.viewer.getPosition(), 1, 1);
-//                    return;
-//                }
-//
-//                final int s = slot.getValue() - 45;
-//
-//                this.chosen = new ChosenItemEntry(clicked, this.getTargetSlotIndex(slot.getValue() - 45));
-//                this.getDisplay().setSlot(13, this.createChosenIcon());
-//                this.getDisplay().setSlot(44, this.generateConfirmIcon());
-//                this.style(true);
-//            }
+                    this.chosen = new ChosenItemEntry(snapshot, this.getTargetSlotIndex(index - 45));
+                    this.getDisplay().set(this.createChosenIcon(), 13);
+                    this.getDisplay().set(this.generateConfirmIcon(), 44);
+                    this.style(true);
+                }
+            }
+
             return false;
         });
     }
@@ -156,6 +159,7 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<ChosenItemEntry> impleme
                 })
                 .build();
 
+        slb.slot(back, 36);
         slb.slot(this.createPriceIcon(), 38);
         slb.slot(GTSPlugin.instance().configuration().main().get(ConfigKeys.BINS_ENABLED) ? this.createBINIcon() : this.createAuctionIcon(), 40);
         slb.slot(this.createTimeIcon(), 42);

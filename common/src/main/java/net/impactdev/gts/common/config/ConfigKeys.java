@@ -15,6 +15,7 @@ import net.impactdev.impactor.api.storage.StorageCredentials;
 import net.impactdev.impactor.api.storage.StorageType;
 import net.impactdev.impactor.api.utilities.Time;
 import net.impactdev.gts.api.blacklist.Blacklist;
+import net.kyori.adventure.key.Key;
 import org.mariuszgromada.math.mxparser.Function;
 
 import java.awt.Color;
@@ -112,7 +113,7 @@ public final class ConfigKeys {
 			GTSService.getInstance().getGTSComponentManager().getEntryManager(classification).ifPresent(type -> {
 				Class<?> register = type.getBlacklistType();
 				for(String entry : adapter.getStringList("blacklist." + classification, Lists.newArrayList())) {
-					blacklist.append(register, entry);
+					blacklist.append(register, Key.key(entry));
 				}
 			});
 		}
