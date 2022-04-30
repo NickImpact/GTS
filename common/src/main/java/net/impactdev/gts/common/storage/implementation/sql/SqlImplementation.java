@@ -96,7 +96,7 @@ public class SqlImplementation implements StorageImplementation {
 	private static final String UPDATE_LISTING = "UPDATE `{prefix}listings` SET listing=? WHERE id=?";
 	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM `{prefix}listings`";
 	private static final String GET_SPECIFIC_LISTING = "SELECT * FROM `{prefix}listings` WHERE id=?";
-	private static final String GET_ALL_USER_LISTINGS = "SELECT id FROM `{prefix}listings` WHERE lister=?";
+	private static final String GET_ALL_USER_LISTINGS = "SELECT id, listing FROM `{prefix}listings` WHERE lister=?";
  	private static final String DELETE_LISTING = "DELETE FROM `{prefix}listings` WHERE id=?";
 
 	private static final String ADD_AUCTION_CLAIM_STATUS = "INSERT INTO `{prefix}auction_claims` (auction, lister, winner, others) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE lister=VALUES(lister), winner=VALUES(winner), others=VALUES(others)";
