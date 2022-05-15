@@ -208,7 +208,9 @@ public class GTSInfoGenerator {
         final List<String> output = Lists.newArrayList();
         Gson writer = new GsonBuilder().setPrettyPrinting().create();
         manager.fetchListings().thenAccept(listings -> {
-            output.add("Stored Listings: " + listings.size());
+            long expired = listings.stream().filter(Listing::hasExpired).count();
+
+            output.add("Found " + listings.size() + " listings, of which, " + expired + " have expired");
             output.add("Buy It Now: " + listings.stream().filter(x -> x instanceof BuyItNow).count());
             output.add("Auction: " + listings.stream().filter(x -> x instanceof Auction).count());
 

@@ -4,6 +4,8 @@ import com.google.common.collect.Lists;
 import net.impactdev.gts.api.commands.GTSCommandExecutor;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.storage.GTSStorage;
+import net.impactdev.gts.commands.elements.StorageTypeElement;
+import net.impactdev.gts.common.storage.translators.StorageTranslator;
 import net.impactdev.gts.util.GTSInfoGenerator;
 import net.impactdev.gts.api.commands.annotations.Alias;
 import net.impactdev.gts.api.commands.annotations.Permission;
@@ -17,6 +19,7 @@ import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.ui.admin.SpongeAdminMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
+import net.impactdev.impactor.api.storage.StorageType;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -128,6 +131,39 @@ public class AdminExecutor extends SpongeGTSCmdExecutor {
             return CommandResult.success();
         }
 
+    }
+
+    @Alias("switch-storage")
+    @Permission(GTSPermissions.ADMIN_PING)
+    public static class TranslateStorage extends SpongeGTSCmdExecutor {
+
+        public static final Text TO = Text.of("TO");
+
+        public TranslateStorage(GTSPlugin plugin) {
+            super(plugin);
+        }
+
+        @Override
+        public CommandElement[] getArguments() {
+            return new CommandElement[] {
+                    new StorageTypeElement(TO)
+            };
+        }
+
+        @Override
+        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
+            return new GTSCommandExecutor[0];
+        }
+
+        @Override
+        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+            StorageTranslator translator = new StorageTranslator(args.requireOne(TO));
+            src.sendMessage(Text.of(TextColors.GRAY, "Processing storage conversion, please wait..."));
+            translator.run().thenAccept(result -> {
+                src.sendMessage(Text.of(TextColors.GRAY, "Conversion complete!"));
+            });
+            return CommandResult.success();
+        }
     }
 
     @Alias("clean")
