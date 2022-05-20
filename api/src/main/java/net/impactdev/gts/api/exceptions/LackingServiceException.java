@@ -2,7 +2,7 @@ package net.impactdev.gts.api.exceptions;
 
 public class LackingServiceException extends RuntimeException {
 
-    private Class<?> lacking;
+    private final Class<?> lacking;
 
     public LackingServiceException(Class<?> service) {
         super(service.getCanonicalName());

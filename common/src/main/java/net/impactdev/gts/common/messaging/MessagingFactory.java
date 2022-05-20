@@ -1,8 +1,8 @@
 package net.impactdev.gts.common.messaging;
 
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.MessengerProvider;
+import net.impactdev.gts.api.communication.IncomingMessageConsumer;
+import net.impactdev.gts.api.communication.Messenger;
+import net.impactdev.gts.api.communication.MessengerProvider;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.messaging.redis.RedisMessenger;
 import net.impactdev.gts.common.plugin.GTSPlugin;

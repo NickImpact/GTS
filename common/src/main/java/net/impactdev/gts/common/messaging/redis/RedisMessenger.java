@@ -1,9 +1,9 @@
 package net.impactdev.gts.common.messaging.redis;
 
 import net.impactdev.impactor.api.Impactor;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
+import net.impactdev.gts.api.communication.IncomingMessageConsumer;
+import net.impactdev.gts.api.communication.Messenger;
+import net.impactdev.gts.api.communication.message.OutgoingMessage;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;

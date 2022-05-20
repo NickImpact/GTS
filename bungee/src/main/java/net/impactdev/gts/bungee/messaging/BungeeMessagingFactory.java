@@ -1,8 +1,8 @@
 package net.impactdev.gts.bungee.messaging;
 
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.MessengerProvider;
+import net.impactdev.gts.api.communication.IncomingMessageConsumer;
+import net.impactdev.gts.api.communication.Messenger;
+import net.impactdev.gts.api.communication.MessengerProvider;
 import net.impactdev.gts.bungee.GTSBungeePlugin;
 import net.impactdev.gts.bungee.messaging.processor.BungeeIncomingMessageConsumer;
 import net.impactdev.gts.bungee.messaging.types.PluginMessageMessenger;

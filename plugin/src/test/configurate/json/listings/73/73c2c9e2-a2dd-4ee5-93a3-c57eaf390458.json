@@ -1,0 +1,29 @@
+{
+  "id": "73c2c9e2-a2dd-4ee5-93a3-c57eaf390458",
+  "lister": "1c98d9a0-2d62-46f3-81a7-ad8abf63f9b0",
+  "version": 1,
+  "timings": {
+    "published": "2022-05-16T21:27:38.074",
+    "expiration": "2022-05-16T21:27:38.079"
+  },
+  "entry": {
+    "key": "test",
+    "content": {
+      "id": "2a4da600-1276-4af6-ae84-f4fec0b61760",
+      "version": 1,
+      "name": "I'm a set of test data",
+      "child": {
+        "testing": 123,
+        "123": "testing"
+      }
+    }
+  },
+  "price": {
+    "key": "test",
+    "content": {
+      "version": 1,
+      "price": "123"
+    }
+  },
+  "type": "bin"
+}

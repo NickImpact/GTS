@@ -6,7 +6,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.leangen.geantyref.TypeToken;
 import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.makeup.Display;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
+import net.impactdev.gts.api.communication.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.stashes.StashedContent;
 import net.impactdev.gts.api.ui.GTSMenu;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;

@@ -1,8 +1,8 @@
 package net.impactdev.gts.bungee.messaging.interpreters;
 
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.PublishListingMessage;
+import net.impactdev.gts.api.communication.IncomingMessageConsumer;
+import net.impactdev.gts.api.communication.message.type.listings.ClaimMessage;
+import net.impactdev.gts.api.communication.message.type.listings.PublishListingMessage;
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.gts.common.messaging.messages.listings.PublishListingMessageImpl;

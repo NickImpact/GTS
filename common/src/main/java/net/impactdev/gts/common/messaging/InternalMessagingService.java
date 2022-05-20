@@ -26,21 +26,21 @@
 package net.impactdev.gts.common.messaging;
 
 import com.google.gson.JsonElement;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
-import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
+import net.impactdev.gts.api.communication.message.errors.ErrorCodes;
+import net.impactdev.gts.api.communication.message.exceptions.MessagingException;
+import net.impactdev.gts.api.communication.message.type.MessageType;
+import net.impactdev.gts.api.communication.message.type.admin.ForceDeleteMessage;
+import net.impactdev.gts.api.communication.message.type.deliveries.ClaimDelivery;
+import net.impactdev.gts.api.communication.message.type.listings.ClaimMessage;
+import net.impactdev.gts.api.communication.message.type.utility.PingMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.MessengerProvider;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
+import net.impactdev.gts.api.communication.Messenger;
+import net.impactdev.gts.api.communication.MessengerProvider;
+import net.impactdev.gts.api.communication.message.OutgoingMessage;
+import net.impactdev.gts.api.communication.message.type.auctions.AuctionMessage;
+import net.impactdev.gts.api.communication.message.type.listings.BuyItNowMessage;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.UUID;

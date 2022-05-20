@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.commands.annotations.Alias;
 import net.impactdev.gts.api.commands.annotations.Permission;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.communication.message.errors.ErrorCode;
 import net.impactdev.gts.sponge.commands.SpongeGTSCmdExecutor;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;

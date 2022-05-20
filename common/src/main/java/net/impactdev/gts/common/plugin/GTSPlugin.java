@@ -7,7 +7,7 @@ import net.impactdev.gts.common.messaging.InternalMessagingService;
 import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.plugin.ImpactorPlugin;
-import net.impactdev.gts.api.extension.ExtensionManager;
+import net.impactdev.gts.api.extensions.ExtensionManager;
 import net.impactdev.gts.api.storage.GTSStorage;
 
 import java.io.InputStream;

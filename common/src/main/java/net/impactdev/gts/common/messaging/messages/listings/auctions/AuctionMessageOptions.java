@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
-import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
+import net.impactdev.gts.api.communication.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.messaging.messages.AbstractMessage;
 import org.checkerframework.checker.nullness.qual.NonNull;

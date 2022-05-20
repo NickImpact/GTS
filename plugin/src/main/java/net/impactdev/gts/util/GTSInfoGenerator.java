@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.messaging.types.PluginMessageMessenger;
 import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.extension.Extension;
+import net.impactdev.gts.api.extensions.Extension;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;

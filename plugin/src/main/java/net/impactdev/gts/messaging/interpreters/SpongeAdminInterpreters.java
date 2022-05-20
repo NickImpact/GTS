@@ -4,7 +4,7 @@ import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
+import net.impactdev.gts.api.communication.IncomingMessageConsumer;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
 import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;

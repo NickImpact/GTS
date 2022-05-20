@@ -8,7 +8,7 @@ import com.google.common.collect.Lists;
 import io.leangen.geantyref.TypeToken;
 import net.impactdev.gts.api.listings.makeup.Fees;
 import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+import net.impactdev.gts.api.communication.message.errors.ErrorCode;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.utils.EconomicFormatter;

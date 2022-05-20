@@ -1,9 +1,9 @@
 package net.impactdev.gts.messaging.types;
 
 import com.google.common.collect.Iterables;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
+import net.impactdev.gts.api.communication.IncomingMessageConsumer;
+import net.impactdev.gts.api.communication.Messenger;
+import net.impactdev.gts.api.communication.message.OutgoingMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.api.ResourceKey;

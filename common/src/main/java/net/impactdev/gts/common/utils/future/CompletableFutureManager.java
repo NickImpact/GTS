@@ -1,8 +1,8 @@
 package net.impactdev.gts.common.utils.future;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
+import net.impactdev.gts.api.communication.message.errors.ErrorCodes;
+import net.impactdev.gts.api.communication.message.exceptions.MessagingException;
 import net.impactdev.gts.api.util.ThrowingRunnable;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 

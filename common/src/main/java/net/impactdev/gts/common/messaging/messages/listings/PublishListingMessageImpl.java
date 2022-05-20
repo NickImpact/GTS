@@ -2,7 +2,7 @@ package net.impactdev.gts.common.messaging.messages.listings;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.impactdev.gts.api.messaging.message.type.listings.PublishListingMessage;
+import net.impactdev.gts.api.communication.message.type.listings.PublishListingMessage;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.common.messaging.messages.AbstractMessage;
 import net.impactdev.impactor.api.json.factory.JObject;

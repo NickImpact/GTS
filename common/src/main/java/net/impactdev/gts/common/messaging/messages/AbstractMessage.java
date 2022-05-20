@@ -1,7 +1,7 @@
 package net.impactdev.gts.common.messaging.messages;
 
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.UpdateMessage;
+import net.impactdev.gts.api.communication.message.OutgoingMessage;
+import net.impactdev.gts.api.communication.message.type.UpdateMessage;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.UUID;

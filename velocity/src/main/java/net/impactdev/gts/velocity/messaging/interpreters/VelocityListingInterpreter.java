@@ -1,6 +1,6 @@
 package net.impactdev.gts.velocity.messaging.interpreters;
 
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
+import net.impactdev.gts.api.communication.IncomingMessageConsumer;
 import net.impactdev.gts.common.messaging.interpreters.Interpreter;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.gts.common.messaging.messages.listings.PublishListingMessageImpl;
