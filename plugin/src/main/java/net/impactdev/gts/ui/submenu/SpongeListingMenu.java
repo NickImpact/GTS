@@ -2,10 +2,14 @@ package net.impactdev.gts.ui.submenu;
 
 import com.google.common.collect.Lists;
 
+import com.google.common.collect.Sets;
 import io.leangen.geantyref.TypeToken;
+import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 import net.impactdev.gts.api.listings.entries.EntryManager;
 import net.impactdev.gts.SpongeGTSPlugin;
+import net.impactdev.gts.api.storage.GTSStorage;
 import net.impactdev.gts.api.ui.GTSMenu;
+import net.impactdev.gts.listeners.ChatProcessor;
 import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.makeup.Display;
@@ -14,11 +18,14 @@ import net.impactdev.gts.api.searching.Searcher;
 import net.impactdev.gts.ui.admin.editor.SpongeListingEditorMenu;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.builders.Builder;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.placeholders.PlaceholderSources;
 import net.impactdev.impactor.api.platform.players.PlatformPlayer;
 import net.impactdev.impactor.api.scheduler.SchedulerTask;
 import net.impactdev.impactor.api.services.text.MessageService;
+import net.impactdev.impactor.api.ui.containers.detail.RefreshDetail;
+import net.impactdev.impactor.api.ui.containers.detail.RefreshTypes;
 import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
 import net.impactdev.impactor.api.ui.containers.icons.Icon;
 import net.impactdev.impactor.api.ui.containers.layouts.Layout;
@@ -47,18 +54,22 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.util.TriState;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.menu.ClickType;
 import org.spongepowered.api.item.inventory.menu.ClickTypes;
+import org.spongepowered.api.registry.RegistryTypes;
 import org.spongepowered.api.scheduler.Task;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
@@ -77,7 +88,8 @@ public class SpongeListingMenu implements GTSMenu {
 	private final SectionedPagination pagination;
 	private SchedulerTask runner;
 
-	private @Nullable Searching searchQuery;
+	private final Set<Predicate<Listing>> conditions;
+	private final @Nullable Searching searchQuery;
 
 	/** True = Auction, False = Quick Purchase, Not Set = All */
 	private TriState mode = TriState.NOT_SET;
@@ -86,11 +98,20 @@ public class SpongeListingMenu implements GTSMenu {
 	/** If the menu was opened in editor mode */
 	private final boolean editor;
 
-	@SafeVarargs
-	public SpongeListingMenu(ServerPlayer viewer, boolean editor, Predicate<Listing>... conditions) {
+	public SpongeListingMenu(ServerPlayer viewer, boolean editor) {
+		this(viewer, editor, Sets.newHashSet(), null);
+	}
+
+	public SpongeListingMenu(ServerPlayer viewer, boolean editor, Set<Predicate<Listing>> conditions, @Nullable Searching searcher) {
+		this.conditions = conditions;
 		Predicate<Listing> filter = listing -> true;
 		for(Predicate<Listing> condition : conditions) {
 			filter = filter.and(condition);
+		}
+
+		this.searchQuery = searcher;
+		if(this.searchQuery != null) {
+			filter = filter.and(this.searchQuery);
 		}
 
 		this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
@@ -132,7 +153,7 @@ public class SpongeListingMenu implements GTSMenu {
 				.complete()
 				.section()
 				.synchronous(new TypeToken<EntryManager<?, ?>>() {})
-				.contents(Lists.newArrayList()) // TODO - Entry Type Filtering
+				.contents(this.typings())
 				.dimensions(1, 3)
 				.offset(0, 1)
 				.style(TriState.FALSE)
@@ -227,6 +248,38 @@ public class SpongeListingMenu implements GTSMenu {
 					.collect(Collectors.toList())
 			)
 			.thenApply(list -> list.stream().map(listing -> this.translate(listing, viewer)).collect(Collectors.toList()));
+	}
+
+	private List<Icon.Binding<?, EntryManager<?, ?>>> typings() {
+		List<Icon.Binding<?, EntryManager<?, ?>>> results = Lists.newArrayList();
+		GTSService.getInstance().getGTSComponentManager()
+				.getAllEntryManagers()
+				.values()
+				.forEach(manager -> {
+					ItemType display = Sponge.game().registry(RegistryTypes.ITEM_TYPE)
+							.findValue(ResourceKey.resolve(manager.getItemID()))
+							.orElse(ItemTypes.BARRIER.get());
+
+					results.add(Icon.builder(ItemStack.class)
+							.display(new DisplayProvider.Constant<>(
+									ItemStack.builder()
+											.itemType(display)
+											.add(Keys.CUSTOM_NAME, Component.text(manager.getName()).color(NamedTextColor.YELLOW))
+											.add(Keys.LORE, Lists.newArrayList())
+											.build()
+							))
+							.listener(context -> {
+								this.pagination.at(9)
+										.map(section -> (Section.Generic<EntryManager<?, ?>>) section)
+										.get()
+										.filter(new Manager(manager));
+
+								return false;
+							})
+							.build(() -> manager));
+				});
+
+		return results;
 	}
 
 	private Icon.Binding<ItemStack, Listing> translate(Listing listing, ServerPlayer viewer) {
@@ -405,45 +458,28 @@ public class SpongeListingMenu implements GTSMenu {
 			return false;
 		});
 
-//		ItemStack searcher = ItemStack.builder()
-//				.itemType(ItemTypes.SIGN)
-//				.add(Keys.DISPLAY_NAME, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_TITLE), Lists.newArrayList(this::getViewer)))
-//				.add(Keys.ITEM_LORE, PARSER.parse(
-//						this.searchQuery != null ? Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_LORE_QUERIED) :
-//								Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_LORE_NO_QUERY),
-//						Lists.newArrayList(this::getViewer, () -> this.searchQuery)
-//				))
-//				.build();
-//		SpongeIcon sIcon = new SpongeIcon(searcher);
-//		sIcon.addListener(clickable -> {
-//			SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
-//					.position(new Vector3d(0, 1, 0))
-//					.text(Lists.newArrayList(
-//							Text.EMPTY,
-//							Text.of("----------------"),
-//							Text.of("Enter your search"),
-//							Text.of("query above")
-//					))
-//					.response(submission -> {
-//						final String asking = submission.get(0);
-//						Impactor.getInstance().getScheduler().executeSync(() -> {
-//							if (!asking.isEmpty()) {
-//								this.conditions.removeIf(p -> p instanceof Searching);
-//								this.conditions.add(new Searching(asking));
-//							} else {
-//								this.conditions.removeIf(p -> p instanceof Searching);
-//							}
-//							new SpongeListingMenu(this.getViewer(), this.editor, this.conditions.toArray(new Predicate[]{})).open();
-//						});
-//
-//						return true;
-//					})
-//					.build();
-//
-//			this.getView().close(this.getViewer());
-//			query.sendTo(this.getViewer());
-//		});
-//		layout.slot(sIcon, 49);
+		Icon<ItemStack> searcher = Icon.builder(ItemStack.class)
+				.display(new DisplayProvider.Constant<>(ItemStack.builder()
+						.itemType(ItemTypes.OAK_SIGN)
+						.add(Keys.CUSTOM_NAME, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_TITLE)))
+						.add(Keys.LORE, PARSER.parse(
+								this.searchQuery != null ? Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_LORE_QUERIED) :
+										Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_LORE_NO_QUERY),
+								PlaceholderSources.builder().append(Searching.class, () -> this.searchQuery).build()
+						))
+						.build()
+				))
+				.listener(context -> {
+					ServerPlayer source = context.require(ServerPlayer.class);
+					ChatProcessor.register(source.uniqueId(), input -> {
+							Searching query = new Searching(input);
+							new SpongeListingMenu(source, this.editor, this.conditions, query).open();
+					});
+
+					return false;
+				})
+				.build();
+		layout.slot(searcher, 50);
 
 		Icon<ItemStack> sorter = this.drawSorter();
 		layout.slot(sorter, 51);
@@ -474,7 +510,7 @@ public class SpongeListingMenu implements GTSMenu {
 		Icon<ItemStack> icon = Icon.builder(ItemStack.class)
 				.display(() -> ItemStack.builder()
 						.itemType(ItemTypes.HOPPER)
-						.add(Keys.DISPLAY_NAME, PARSER.parse(options.getTitle()))
+						.add(Keys.CUSTOM_NAME, PARSER.parse(options.getTitle()))
 						.add(Keys.LORE, PARSER.parse(this.craftSorterLore(options)))
 						.build())
 				.build();
@@ -560,6 +596,20 @@ public class SpongeListingMenu implements GTSMenu {
 		}
 	}
 
+	public static class Manager implements Predicate<EntryManager<?, ?>> {
+
+		private final EntryManager<?, ?> manager;
+
+		public Manager(EntryManager<?, ?> manager) {
+			this.manager = manager;
+		}
+
+		@Override
+		public boolean test(EntryManager<?, ?> other) {
+			return this.manager.type().equals(other.type());
+		}
+	}
+
 	private enum Sorter {
 		QP_MOST_RECENT(SortConfigurationOptions::getQpMostRecent, Comparator.comparing(Listing::getPublishTime).reversed()),
 		QP_ENDING_SOON(SortConfigurationOptions::getQpEndingSoon, Comparator.comparing(Listing::getExpiration)),
@@ -594,14 +644,31 @@ public class SpongeListingMenu implements GTSMenu {
 	}
 
 	private Task schedule() {
+		RefreshDetail detail = RefreshDetail.create(RefreshTypes.SECTION);
+		detail.context().put(Section.class, this.pagination.at(3).orElseThrow(IllegalStateException::new));
+
 		return Task.builder()
 				.execute(() -> {
 					if (Sponge.server().ticksPerSecond() >= 18) {
-						this.pagination.at(3).ifPresent(section -> section.pages().nextOrThrow().refresh());
+						this.pagination.refresh(detail);
 					}
 				})
 				.interval(1, TimeUnit.SECONDS)
 				.plugin(GTSPlugin.instance().as(SpongeGTSPlugin.class).container())
 				.build();
+	}
+
+	public static final class SpongeListingMenuBuilder implements Builder<SpongeListingMenu> {
+
+		private PlatformPlayer viewer;
+		private boolean admin;
+		private Searching search;
+
+		private Set<Predicate<Listing>> filters;
+
+		@Override
+		public SpongeListingMenu build() {
+			return null;
+		}
 	}
 }

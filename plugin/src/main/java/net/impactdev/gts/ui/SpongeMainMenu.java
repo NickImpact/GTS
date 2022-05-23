@@ -1,6 +1,7 @@
 package net.impactdev.gts.ui;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.api.ui.GTSMenu;
 import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
@@ -131,7 +132,7 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 						.build()
 				))
 				.listener(context -> {
-					new SpongeListingMenu(this.viewer, false, listing -> listing.getLister().equals(this.viewer.uniqueId())).open();
+					new SpongeListingMenu(this.viewer, false, Sets.newHashSet(listing -> listing.getLister().equals(this.viewer.uniqueId())), null).open();
 					return false;
 				})
 				.build();
@@ -149,14 +150,15 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 					new SpongeListingMenu(
 							this.viewer,
 							false,
-							listing -> {
+							Sets.newHashSet(listing -> {
 								if(listing instanceof Auction) {
 									Auction auction = (Auction) listing;
 									return auction.getBids().containsKey(this.viewer.uniqueId());
 								}
 
 								return false;
-							}
+							}),
+							null
 					).open();
 
 					return false;
@@ -187,14 +189,15 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 									new SpongeListingMenu(
 											this.viewer,
 											false,
-											listing -> {
+											Sets.newHashSet(listing -> {
 												if(listing instanceof Auction) {
 													Auction auction = (Auction) listing;
 													return auction.getBids().containsKey(this.viewer.uniqueId());
 												}
 
 												return false;
-											}
+											}),
+											null
 									).open();
 
 									return false;

@@ -29,10 +29,9 @@ dependencies {
     implementation 'net.impactdev.impactor:launcher:4.0.0-SNAPSHOT'
 
     // Sponge
-    shadow 'org.spongepowered:spongeapi:8.0.0'
+    shadow 'org.spongepowered:spongeapi:8.1.0'
 
     // Kyori Adventure
-    shadow 'net.kyori:adventure-api:4.10.1'
     shadow 'net.kyori:adventure-text-serializer-legacy:4.10.1'
     shadow 'net.kyori:adventure-text-serializer-gson:4.10.1'
 
@@ -47,7 +46,7 @@ dependencies {
     testImplementation 'org.spongepowered:configurate-yaml:4.1.2'
     testImplementation 'org.spongepowered:configurate-hocon:4.1.2'
     testImplementation 'com.github.ben-manes.caffeine:caffeine:2.8.2'
-    testImplementation 'net.kyori:adventure-api:4.9.3'
+    testImplementation 'net.kyori:adventure-api:4.10.1'
 }
 
 shadowJar {

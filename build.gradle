@@ -109,7 +109,7 @@ subprojects {
         shadow "net.impactdev.impactor:api:4.0.0-SNAPSHOT"
 
         shadow 'net.kyori:adventure-api:4.10.1'
-        shadow 'net.kyori:adventure-text-minimessage:4.10.1'
+        //shadow 'net.kyori:adventure-text-minimessage:4.10.1'
 
         shadow 'io.leangen.geantyref:geantyref:1.3.11'
         shadow 'com.google.guava:guava:27.1-jre'

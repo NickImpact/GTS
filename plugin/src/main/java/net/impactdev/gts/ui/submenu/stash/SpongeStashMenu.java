@@ -143,6 +143,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                         List<StashedContent<?>> contents = this.pagination.pages().getFramesNonCircular()
                                 .stream()
                                 .flatMap(page -> page.icons().values().stream())
+                                .filter(icon -> icon instanceof Icon.Binding)
                                 .map(icon -> ((Icon.Binding<ItemStack, StashedContent<?>>) icon).binding())
                                 .collect(Collectors.toList());
 
@@ -321,6 +322,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                         this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STASH_COLLECT_ALL_RESULTS), sources));
                     }, CLAIMER);
 
+                    this.pagination.close();
                     return false;
                 })
                 .build();
@@ -395,10 +397,6 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                                 result.addAll(fill);
                                                 item.offer(Keys.LORE, result);
 
-                                                processor.set(context -> {
-                                                    new SpongeSelectedListingMenu(this.player(), listing, () -> new SpongeStashMenu(this.player()), true, false).open();
-                                                    return false;
-                                                });
                                                 return item;
                                             } else {
                                                 SpongeDelivery delivery = (SpongeDelivery) content.getContent();
@@ -422,11 +420,36 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                                 fill.addAll(service.parse(buffer, sources));
                                                 item.offer(Keys.LORE, fill);
 
-
                                                 return item;
                                             }
                                         })
-                                        .listener(processor.get())
+                                        .listener(context -> {
+                                            if(content instanceof StashedContent.ListingContent) {
+                                                SpongeListing listing = (SpongeListing) content.getContent();
+                                                new SpongeSelectedListingMenu(
+                                                        this.player(),
+                                                        listing,
+                                                        () -> new SpongeStashMenu(this.player()),
+                                                        true,
+                                                        false)
+                                                    .open();
+                                            } else {
+                                                SpongeDelivery delivery = (SpongeDelivery) content.getContent();
+
+                                                this.claimDelivery(delivery, () -> {});
+                                                Sponge.server().player(this.viewer).ifPresent(p -> p.sendMessage(
+                                                        Utilities.PARSER.parse(
+                                                                Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
+                                                                PlaceholderSources.builder()
+                                                                        .append(Delivery.class, () -> delivery)
+                                                                        .append(Component.class, () -> delivery.getContent().getName())
+                                                                        .build()
+                                                        )
+                                                ));
+                                                this.pagination.close();
+                                            }
+                                            return false;
+                                        })
                                         .build(() -> content);
                         results.add(icon);
                     }

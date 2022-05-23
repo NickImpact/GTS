@@ -1,5 +1,6 @@
 package net.impactdev.gts.api.listings.entries;
 
+import io.leangen.geantyref.TypeToken;
 import net.impactdev.gts.api.commands.CommandGenerator;
 import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.listings.ui.EntrySelection;
@@ -8,6 +9,10 @@ import net.impactdev.gts.api.listings.ui.EntryUI;
 import java.util.function.Supplier;
 
 public interface EntryManager<T, P> extends ResourceManager<T> {
+
+    default TypeToken<T> type() {
+        return new TypeToken<T>() {};
+    }
 
     /**
      * For use in configuration, determines how the blacklist should represent blacklisted options

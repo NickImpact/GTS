@@ -119,7 +119,7 @@ public class SpongeSelectedListingMenu {
     }
 
     public void open() {
-        this.display.open(PlatformPlayer.from(this.viewer));
+        this.display.open(this.viewer);
     }
 
     private void update() {
@@ -141,14 +141,14 @@ public class SpongeSelectedListingMenu {
         builder.border(ProvidedIcons.BORDER);
         builder.slots(colored, 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
         builder.slots(ProvidedIcons.BORDER, 19, 20, 24, 25, 40);
-        builder.row(ProvidedIcons.BORDER, 3);
+        builder.row(ProvidedIcons.BORDER, 4);
 
         Icon<ItemStack> icon = Icon.builder(ItemStack.class)
                 .display(() -> {
                     final Config lang = GTSPlugin.instance().configuration().language();
                     final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
                     Display<ItemStack> display = ((SpongeListing)this.listing).getEntry().getDisplay(this.viewer.uuid());
-                    ItemStack item = display.get();
+                    ItemStack item = ItemStack.builder().from(display.get()).build();
 
                     Optional<List<Component>> lore = item.get(Keys.LORE);
                     lore.ifPresent(texts -> texts.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR))));
