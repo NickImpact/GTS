@@ -5,6 +5,8 @@ bin
 .metadata
 .classpath
 .project
+.gradle/*
+buildSrc/.gradle/*
 
 # idea
 out

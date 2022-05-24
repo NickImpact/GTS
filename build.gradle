@@ -79,7 +79,7 @@ subprojects {
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(8)
+            languageVersion = JavaLanguageVersion.of(16)
         }
 
         withSourcesJar()
@@ -117,7 +117,7 @@ subprojects {
         shadow 'com.github.ben-manes.caffeine:caffeine:2.8.2'
         shadow group: 'org.mariuszgromada.math', name: 'MathParser.org-mXparser', version: '4.4.2'
 
-        testImplementation group: 'junit', name: 'junit', version: '4.12'
+        testImplementation group: 'junit', name: 'junit', version: '4.13.1'
         testImplementation 'com.google.guava:guava:27.1-jre'
         testImplementation group: 'org.mariuszgromada.math', name: 'MathParser.org-mXparser', version: '4.4.2'
     }

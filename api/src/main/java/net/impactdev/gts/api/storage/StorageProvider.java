@@ -8,7 +8,7 @@ import net.impactdev.gts.api.communication.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.communication.message.type.deliveries.ClaimDelivery;
 import net.impactdev.gts.api.communication.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.communication.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.players.PlayerSettings;
+import net.impactdev.gts.api.players.PlayerPreferences;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -68,9 +68,9 @@ public interface StorageProvider {
 	 */
 	CompletableFuture<Stash> stash(UUID user);
 
-	CompletableFuture<Optional<PlayerSettings>> settings(UUID uuid);
+	CompletableFuture<Optional<PlayerPreferences>> settings(UUID uuid);
 
-	CompletableFuture<Boolean> applySettings(UUID uuid, PlayerSettings settings);
+	CompletableFuture<Boolean> applySettings(UUID uuid, PlayerPreferences settings);
 
 	CompletableFuture<Boolean> hasMaxListings(UUID user);
 

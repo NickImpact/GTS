@@ -12,4 +12,5 @@ include (
         //'pixelmon:reforged',
         //'pixelmon:generations'
 )
+include 'gts'
 

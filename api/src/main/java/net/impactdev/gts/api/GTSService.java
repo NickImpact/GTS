@@ -5,7 +5,7 @@ import net.impactdev.gts.api.extensions.Extension;
 
 public interface GTSService {
 
-	static GTSService getInstance() {
+	static GTSService instance() {
 		return GTSServiceProvider.get();
 	}
 
@@ -14,6 +14,6 @@ public interface GTSService {
 	 *
 	 * @return An immutable list of all loaded extensions hooked to GTS
 	 */
-	ImmutableList<Extension> getAllExtensions();
+	ImmutableList<Extension> extensions();
 
 }
