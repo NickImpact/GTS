@@ -41,8 +41,8 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	private static final Function<ItemStackSnapshot, JObject> writer = snapshot -> {
 		try {
-			DataContainer container = snapshot.toContainer();
-			return NBTMapper.from(NBTTranslator.getInstance().translateData(container));
+			CompoundNBT nbt = ((net.minecraft.item.ItemStack) (Object) snapshot.createStack()).serializeNBT();
+			return NBTMapper.from(nbt);
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to write JSON data for item snapshot", e);
 		}
@@ -178,7 +178,7 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	@Override
 	public int getVersion() {
-		return 2;
+		return 3;
 	}
 
 	@Override

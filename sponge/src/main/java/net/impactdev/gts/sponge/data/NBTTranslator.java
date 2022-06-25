@@ -300,7 +300,6 @@ public final class NBTTranslator implements DataTranslator<CompoundNBT> {
         return NBTTranslator.getViewFromCompound(node);
     }
 
-
     @Override
     public TypeToken<CompoundNBT> token() {
         return TOKEN;

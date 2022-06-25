@@ -25,9 +25,11 @@
 
 package net.impactdev.gts.common.storage.implementation.sql;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.TreeMultimap;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -41,9 +43,11 @@ import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.NotificationSetting;
 import net.impactdev.gts.api.player.PlayerSettings;
+import net.impactdev.gts.api.storage.PurgeType;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
+import net.impactdev.gts.common.exceptions.DataContentException;
 import net.impactdev.gts.common.messaging.messages.deliveries.ClaimDeliveryImpl;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
@@ -52,7 +56,7 @@ import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BI
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.storage.sql.ConnectionFactory;
+import net.impactdev.impactor.api.storage.connection.sql.SqlConnection;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
@@ -114,10 +118,10 @@ public class SqlImplementation implements StorageImplementation {
 
 	private final GTSPlugin plugin;
 
-	private final ConnectionFactory connectionFactory;
+	private final SqlConnection connectionFactory;
 	private final Function<String, String> processor;
 
-	public SqlImplementation(GTSPlugin plugin, ConnectionFactory connectionFactory, String tablePrefix) {
+	public SqlImplementation(GTSPlugin plugin, SqlConnection connectionFactory, String tablePrefix) {
 		this.plugin = plugin;
 		this.connectionFactory = connectionFactory;
 		this.processor = connectionFactory.getStatementProcessor().compose(s -> s.replace("{prefix}", tablePrefix).replace("{database}", GTSPlugin.instance().configuration().main().get(ConfigKeys.STORAGE_CREDENTIALS).getDatabase()));
@@ -130,10 +134,10 @@ public class SqlImplementation implements StorageImplementation {
 
 	@Override
 	public String getName() {
-		return this.connectionFactory.getImplementationName();
+		return this.connectionFactory.name();
 	}
 
-	public ConnectionFactory getConnectionFactory() {
+	public SqlConnection getConnectionFactory() {
 		return this.connectionFactory;
 	}
 
@@ -145,14 +149,14 @@ public class SqlImplementation implements StorageImplementation {
 	public void init() throws Exception {
 		this.connectionFactory.init();
 
-		String schemaFileName = "assets/gts/schema/" + this.connectionFactory.getImplementationName().toLowerCase() + ".sql";
+		String schemaFileName = "assets/gts/schema/" + this.connectionFactory.name().toLowerCase() + ".sql";
 		try (InputStream is = this.plugin.resource(schemaFileName)) {
 			if (is == null) {
-				throw new Exception("Couldn't locate schema file for " + this.connectionFactory.getImplementationName());
+				throw new Exception("Couldn't locate schema file for " + this.connectionFactory.name());
 			}
 
 			try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-				try (Connection connection = this.connectionFactory.getConnection()) {
+				try (Connection connection = this.connectionFactory.connection()) {
 					try (Statement s = connection.createStatement()) {
 						StringBuilder sb = new StringBuilder();
 						String line;
@@ -204,7 +208,7 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	private <T> T query(String key, SQLPrepared<T> action) throws Exception {
-		try(Connection connection = this.connectionFactory.getConnection()) {
+		try(Connection connection = this.connectionFactory.connection()) {
 			try(PreparedStatement ps = connection.prepareStatement(this.processor.apply(key))) {
 				return action.prepare(connection, ps);
 			}
@@ -262,18 +266,22 @@ public class SqlImplementation implements StorageImplementation {
 		}
 
 		String type = json.get("type").getAsString();
-		if(type.equals("bin")) {
-			return GTSService.getInstance().getGTSComponentManager()
-					.getListingResourceManager(BuyItNow.class)
-					.get()
-					.getDeserializer()
-					.deserialize(json);
-		} else {
-			return GTSService.getInstance().getGTSComponentManager()
-					.getListingResourceManager(Auction.class)
-					.get()
-					.getDeserializer()
-					.deserialize(json);
+		try {
+			if (type.equals("bin")) {
+				return GTSService.getInstance().getGTSComponentManager()
+						.getListingResourceManager(BuyItNow.class)
+						.get()
+						.getDeserializer()
+						.deserialize(json);
+			} else {
+				return GTSService.getInstance().getGTSComponentManager()
+						.getListingResourceManager(Auction.class)
+						.get()
+						.getDeserializer()
+						.deserialize(json);
+			}
+		} catch (DataContentException e) {
+			return null;
 		}
 	}
 
@@ -286,20 +294,22 @@ public class SqlImplementation implements StorageImplementation {
 			int failed = 0;
 			while(results.next()) {
 				try {
-					JsonObject json = GTSPlugin.instance().gson().fromJson(results.getString("listing"), JsonObject.class);
-					if(!json.has("type")) {
+					JsonObject json = GTSPlugin.instance().gson().fromJson(results.getString("listing"),
+							JsonObject.class);
+					if (!json.has("type")) {
 						throw new JsonParseException("Invalid Listing: Missing type");
 					}
 
 					String type = json.get("type").getAsString();
-					if(type.equals("bin")) {
+					if (type.equals("bin")) {
 						BuyItNow bin = GTSService.getInstance().getGTSComponentManager()
 								.getListingResourceManager(BuyItNow.class)
 								.get()
 								.getDeserializer()
 								.deserialize(json);
 						entries.add(bin);
-					} else {
+					}
+					else {
 						Auction auction = GTSService.getInstance().getGTSComponentManager()
 								.getListingResourceManager(Auction.class)
 								.get()
@@ -307,6 +317,7 @@ public class SqlImplementation implements StorageImplementation {
 								.deserialize(json);
 						entries.add(auction);
 					}
+				} catch (DataContentException ignored) {
 				} catch (Exception e) {
 					this.plugin.logger().error("Unable to read listing with ID: " + results.getString("id"));
 					ExceptionWriter.write(e);
@@ -360,14 +371,34 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	@Override
-	public boolean purge() throws Exception {
+	public boolean purge(PurgeType type) throws Exception {
+		final String TRUNCATE = "TRUNCATE TABLE ";
+		try (Connection connection = this.connectionFactory.connection()) {
+			Multimap<PurgeType, String> tables = ArrayListMultimap.create();
+			tables.putAll(PurgeType.ALL, Lists.newArrayList(
+					"{prefix}listings",
+					"{prefix}stash",
+					"{prefix}auction_claims",
+					"{prefix}deliveries"
+			));
+
+			switch (type) {
+				case ALL:
+					for(String table : tables.get(PurgeType.ALL)) {
+						try (PreparedStatement ps = connection.prepareStatement(TRUNCATE + table)) {
+							ps.executeUpdate();
+						}
+					}
+			}
+		}
+
 		return false;
 	}
 
 	@Override
 	public boolean clean() throws Exception {
 		if(this.tableExists(this.processor.apply("{prefix}listings_v3"))) {
-			try (Connection connection = this.connectionFactory.getConnection()) {
+			try (Connection connection = this.connectionFactory.connection()) {
 				Statement statement = connection.createStatement();
 				statement.executeUpdate(this.processor.apply("DROP TABLE {prefix}listings_v3"));
 			}
@@ -923,7 +954,7 @@ public class SqlImplementation implements StorageImplementation {
 	}
 
 	private boolean tableExists(String table) throws SQLException {
-		try (Connection connection = this.connectionFactory.getConnection()) {
+		try (Connection connection = this.connectionFactory.connection()) {
 			try (ResultSet rs = connection.getMetaData().getTables(null, null, "%", null)) {
 				while (rs.next()) {
 					if (rs.getString(3).equalsIgnoreCase(table)) {
@@ -1025,7 +1056,7 @@ public class SqlImplementation implements StorageImplementation {
 			);
 
 			if(successful.get() == parsed.get()) {
-				try (Connection connection = this.connectionFactory.getConnection()) {
+				try (Connection connection = this.connectionFactory.connection()) {
 					Statement statement = connection.createStatement();
 					statement.executeUpdate(this.processor.apply("DROP TABLE {prefix}listings_v3"));
 				}

@@ -27,11 +27,11 @@ public interface GTSComponentManager {
 
     // Entries
 
-    <T extends Entry<?, ?>> void registerEntryManager(Class<T> type, EntryManager<T, ?> manager);
+    <T extends Entry<?, ?>> void registerEntryManager(Class<T> type, EntryManager<T> manager);
 
-    <T extends Entry<?, ?>> Optional<EntryManager<T, ?>> getEntryManager(String key);
+    <T extends Entry<?, ?>> Optional<EntryManager<T>> getEntryManager(String key);
 
-    Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>, ?>> getAllEntryManagers();
+    Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>>> getAllEntryManagers();
 
     // Prices
 

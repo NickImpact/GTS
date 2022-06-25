@@ -3,6 +3,7 @@ package net.impactdev.gts.bungee;
 import net.impactdev.impactor.api.dependencies.classloader.PluginClassLoader;
 import net.impactdev.impactor.api.logging.Logger;
 import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
+import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.InputStream;

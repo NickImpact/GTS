@@ -46,7 +46,7 @@ public class PlayerSettingsMenu {
     /** Ensures loading of settings was valid, set via {@link #queue(ServerPlayer)} */
     private final AtomicBoolean valid = new AtomicBoolean(false);
 
-    public PlayerSettingsMenu(ServerPlayer viewer) {
+    public PlayerSettingsMenu(PlatformPlayer viewer) {
         final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
         AtomicBoolean ran = new AtomicBoolean(false);
 
@@ -57,7 +57,7 @@ public class PlayerSettingsMenu {
                     if(!ran.get()) {
                         ran.set(true);
                         if (!this.original.matches(this.working)) {
-                            GTSService.getInstance().getPlayerSettingsManager().cache(viewer.uniqueId(), this.working);
+                            GTSService.getInstance().getPlayerSettingsManager().cache(viewer.uuid(), this.working);
                         }
                     }
                     return true;
@@ -71,11 +71,11 @@ public class PlayerSettingsMenu {
         this.queue(viewer);
     }
 
-    public void open(ServerPlayer viewer) {
-        this.display.open(PlatformPlayer.from(viewer));
+    public void open(PlatformPlayer viewer) {
+        this.display.open(viewer);
     }
 
-    private Layout layout(ServerPlayer viewer) {
+    private Layout layout(PlatformPlayer viewer) {
         final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
         Layout.LayoutBuilder layout = Layout.builder()
@@ -109,9 +109,9 @@ public class PlayerSettingsMenu {
     /**
      * Load user settings asynchronously and apply to the UI when ready
      */
-    private void queue(ServerPlayer viewer) {
+    private void queue(PlatformPlayer viewer) {
         GTSService.getInstance().getPlayerSettingsManager()
-                .retrieve(viewer.uniqueId())
+                .retrieve(viewer.uuid())
                 .applyToEither(this.timeoutAfter(5, TimeUnit.SECONDS), settings -> settings)
                 .thenAccept(settings -> {
                     this.original = settings;

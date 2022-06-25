@@ -54,6 +54,7 @@ import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.NotificationSetting;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
+import net.impactdev.gts.api.storage.PurgeType;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.messaging.messages.deliveries.ClaimDeliveryImpl;
@@ -64,10 +65,9 @@ import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BI
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.storage.file.loaders.ConfigurateLoader;
+import net.impactdev.impactor.api.storage.connection.configurate.ConfigurateLoader;
 import net.kyori.adventure.util.TriState;
 import org.spongepowered.configurate.BasicConfigurationNode;
 import org.spongepowered.configurate.ConfigurationNode;
@@ -95,11 +95,9 @@ import java.util.stream.Stream;
 public class ConfigurateStorage implements StorageImplementation {
 
     private final GTSPlugin plugin;
-    private final String implementationName;
 
     // The loader responsible for I/O
     private final ConfigurateLoader loader;
-    private String extension;
     private String dataDirName;
     private Map<Group, Path> fileGroups;
 
@@ -112,11 +110,9 @@ public class ConfigurateStorage implements StorageImplementation {
 
     private final LoadingCache<Path, ReentrantLock> ioLocks;
 
-    public ConfigurateStorage(GTSPlugin plugin, String implementationName, ConfigurateLoader loader, String extension, String dataDirName) {
+    public ConfigurateStorage(GTSPlugin plugin, ConfigurateLoader loader, String dataDirName) {
         this.plugin = plugin;
-        this.implementationName = implementationName;
         this.loader = loader;
-        this.extension = extension;
         this.dataDirName = dataDirName;
 
         this.ioLocks = Caffeine.newBuilder()
@@ -131,7 +127,7 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public String getName() {
-        return this.implementationName;
+        return this.loader.name();
     }
 
     @Override
@@ -199,7 +195,7 @@ public class ConfigurateStorage implements StorageImplementation {
         }
 
         for(File category : categories) {
-            for(File data : category.listFiles(((dir, name) -> name.endsWith(this.extension)))) {
+            for(File data : category.listFiles(((dir, name) -> name.endsWith(this.loader.extension())))) {
                 output.add(this.from(this.readFile(Group.LISTINGS, UUID.fromString(data.getName().split("[.]")[0]))));
             }
         }
@@ -215,14 +211,38 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    public boolean purge() throws Exception {
-        Path root = this.getResourcePath();
-        try(Stream<Path> walker = Files.walk(root)) {
-            walker.sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
+    public boolean purge(PurgeType type) throws Exception {
+        switch (type) {
+            case ALL:
+                this.delete(this.fileGroups.get(Group.LISTINGS));
+                this.delete(this.fileGroups.get(Group.CLAIMS));
+                this.delete(this.fileGroups.get(Group.DELIVERY));
+                return this.delete(this.fileGroups.get(Group.USERS));
+            case LISTINGS:
+                this.delete(this.fileGroups.get(Group.LISTINGS));
+                this.delete(this.fileGroups.get(Group.CLAIMS));
+                this.delete(this.fileGroups.get(Group.DELIVERY));
+                return true;
+            case SETTINGS:
+                return this.delete(this.fileGroups.get(Group.USERS));
+        }
+
+        return true;
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private boolean delete(Path path) throws Exception {
+        if(Files.exists(path)) {
+            try (Stream<Path> walker = Files.walk(path)) {
+                walker.sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+
+            }
             return true;
         }
+
+        return false;
     }
 
     @Override
@@ -239,7 +259,7 @@ public class ConfigurateStorage implements StorageImplementation {
         }
 
         UUID target = delivery.getRecipient();
-        Path path = this.fileGroups.get(Group.USERS).resolve(target.toString().substring(0, 2)).resolve(target.toString()).resolve("delivery_" + delivery.getID() + this.extension);
+        Path path = this.fileGroups.get(Group.USERS).resolve(target.toString().substring(0, 2)).resolve(target.toString()).resolve("delivery_" + delivery.getID() + this.loader.extension());
         this.saveFile(path, file);
         return true;
     }
@@ -662,7 +682,7 @@ public class ConfigurateStorage implements StorageImplementation {
     @Override
     public ClaimDelivery.Response claimDelivery(ClaimDelivery.Request request) throws Exception {
         UUID target = request.getActor();
-        Path path = this.fileGroups.get(Group.USERS).resolve(target.toString().substring(0, 2)).resolve(target.toString()).resolve("delivery_" + request.getDeliveryID() + this.extension);
+        Path path = this.fileGroups.get(Group.USERS).resolve(target.toString().substring(0, 2)).resolve(target.toString()).resolve("delivery_" + request.getDeliveryID() + this.loader.extension());
         File file = path.toFile();
 
         if(file.exists()) {
@@ -696,7 +716,7 @@ public class ConfigurateStorage implements StorageImplementation {
         if(group == Group.USERS) {
             target = target.resolve(uuid.toString());
         }
-        return this.readFile(target.resolve(uuid + this.extension));
+        return this.readFile(target.resolve(uuid + this.loader.extension()));
     }
 
     private ConfigurationNode readFile(Path target) throws IOException  {
@@ -718,7 +738,7 @@ public class ConfigurateStorage implements StorageImplementation {
         if(group == Group.USERS) {
             target = target.resolve(name.toString());
         }
-        this.saveFile(target.resolve(name + this.extension), node);
+        this.saveFile(target.resolve(name + this.loader.extension()), node);
     }
 
     private void saveFile(Path target, ConfigurationNode node) throws IOException {

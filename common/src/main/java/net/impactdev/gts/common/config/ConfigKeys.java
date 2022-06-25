@@ -52,8 +52,9 @@ public final class ConfigKeys {
 		int minIdle = adapter.getInteger("data.pool-settings.minimum-idle", maxPoolSize);
 		int maxLifetime = adapter.getInteger("data.pool-settings.maximum-lifetime", 1800000);
 		int connectionTimeout = adapter.getInteger("data.pool-settings.connection-timeout", 5000);
+		int keepAliveTime = adapter.getInteger("data.pool-settings.keep-alive", 0);
 		Map<String, String> props = ImmutableMap.copyOf(adapter.getStringMap("data.pool-settings.properties", ImmutableMap.of()));
-		return new StorageCredentials(address, database, username, password, maxPoolSize, minIdle, maxLifetime, connectionTimeout, props);
+		return new StorageCredentials(address, database, username, password, maxPoolSize, minIdle, maxLifetime, keepAliveTime, connectionTimeout, props);
 	}));
 	public static final ConfigKey<String> SQL_TABLE_PREFIX = enduringKey(stringKey("table-prefix", "gts_"));
 
@@ -113,7 +114,7 @@ public final class ConfigKeys {
 			GTSService.getInstance().getGTSComponentManager().getEntryManager(classification).ifPresent(type -> {
 				Class<?> register = type.getBlacklistType();
 				for(String entry : adapter.getStringList("blacklist." + classification, Lists.newArrayList())) {
-					blacklist.append(register, Key.key(entry));
+					blacklist.append(register, entry);
 				}
 			});
 		}

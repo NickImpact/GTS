@@ -162,7 +162,7 @@ public class SpongeAuction extends SpongeListing implements Auction {
 				.increment(object.getAsJsonObject("auction").getAsJsonObject("pricing").get("increment").getAsFloat());
 
 		JsonObject element = object.getAsJsonObject("entry");
-		EntryManager<?, ?> entryManager = GTSService.getInstance().getGTSComponentManager()
+		EntryManager<?> entryManager = GTSService.getInstance().getGTSComponentManager()
 				.getEntryManager(element.get("key").getAsString())
 				.orElseThrow(() -> new RuntimeException("JSON Data for entry is missing mapping key"));
 		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));

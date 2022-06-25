@@ -16,9 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class EntryManagerElement implements ValueParameter<EntryManager<?, ?>> {
+public class EntryManagerElement implements ValueParameter<EntryManager<?>> {
 
-    private final Map<String, EntryManager<?, ?>> entries = Maps.newHashMap();
+    private final Map<String, EntryManager<?>> entries = Maps.newHashMap();
 
     public EntryManagerElement() {
         GTSService.getInstance().getGTSComponentManager().getAllEntryManagers().values().forEach(em -> {
@@ -35,9 +35,9 @@ public class EntryManagerElement implements ValueParameter<EntryManager<?, ?>> {
     }
 
     @Override
-    public Optional<? extends EntryManager<?, ?>> parseValue(Parameter.Key<? super EntryManager<?, ?>> parameterKey, ArgumentReader.Mutable reader, CommandContext.Builder context) throws ArgumentParseException {
+    public Optional<? extends EntryManager<?>> parseValue(Parameter.Key<? super EntryManager<?>> parameterKey, ArgumentReader.Mutable reader, CommandContext.Builder context) throws ArgumentParseException {
         String key = reader.parseString();
-        EntryManager<?, ?> match = this.entries.get(key);
+        EntryManager<?> match = this.entries.get(key);
         if(match == null) {
             throw new ArgumentParseException(Component.text("No matching element"), key, key.length() - 1);
         }

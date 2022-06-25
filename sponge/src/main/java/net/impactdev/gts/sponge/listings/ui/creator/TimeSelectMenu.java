@@ -35,13 +35,13 @@ public class TimeSelectMenu {
     private final Icon<ItemStack> high = this.create(ConfigKeys.LISTING_TIME_HIGH, ItemTypes.LIME_CONCRETE.get());
     private final Icon<ItemStack> highest = this.create(ConfigKeys.LISTING_TIME_HIGHEST, ItemTypes.LIGHT_BLUE_CONCRETE.get());
 
-    private final Player viewer;
+    private final PlatformPlayer viewer;
     private final ImpactorUI display;
 
     private final AbstractSpongeEntryUI<?> parent;
     private final BiConsumer<AbstractSpongeEntryUI<?>, Time> callback;
 
-    public TimeSelectMenu(Player viewer, AbstractSpongeEntryUI<?> parent, BiConsumer<AbstractSpongeEntryUI<?>, Time> callback) {
+    public TimeSelectMenu(PlatformPlayer viewer, AbstractSpongeEntryUI<?> parent, BiConsumer<AbstractSpongeEntryUI<?>, Time> callback) {
         MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
         this.viewer = viewer;
         this.parent = parent;
@@ -53,7 +53,7 @@ public class TimeSelectMenu {
     }
 
     public void open() {
-        this.display.open(PlatformPlayer.from(this.viewer));
+        this.display.open(this.viewer);
     }
 
     private Layout layout() {

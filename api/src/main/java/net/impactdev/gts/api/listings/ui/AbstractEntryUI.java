@@ -1,14 +1,16 @@
 package net.impactdev.gts.api.listings.ui;
 
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
+
 import java.util.Optional;
 
 @SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
-public abstract class AbstractEntryUI<P, E, I> implements EntryUI<P, E, I> {
+public abstract class AbstractEntryUI<E> implements EntryUI<E> {
 
-    protected final P viewer;
+    protected final PlatformPlayer viewer;
     protected E chosen;
 
-    public AbstractEntryUI(P viewer) {
+    public AbstractEntryUI(PlatformPlayer viewer) {
         this.viewer = viewer;
     }
 

@@ -465,6 +465,10 @@ public class GTSSpongePlaceholderManager {
     private CompletableFuture<Component> calculateDisplayName(UUID id) {
         return Sponge.server().userManager().loadOrCreate(id)
                 .thenApply(user -> {
+                    if(user == null || user.name() == null) {
+                        return Component.text("Unknown User");
+                    }
+
                     TextComponent.Builder component = Component.text();
 
                     if(GTSPlugin.instance().configuration().main().get(ConfigKeys.SHOULD_SHOW_USER_PREFIX)) {

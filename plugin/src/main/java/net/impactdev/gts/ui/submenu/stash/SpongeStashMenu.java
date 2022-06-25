@@ -76,17 +76,17 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
     private static final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
     private final Pagination.Generic<StashedContent<?>> pagination;
-    private final UUID viewer;
+    private final PlatformPlayer viewer;
 
-    public SpongeStashMenu(ServerPlayer viewer) {
-        this.viewer = viewer.uniqueId();
+    public SpongeStashMenu(PlatformPlayer viewer) {
+        this.viewer = viewer;
 
         this.pagination = Pagination.builder()
                 .provider(Key.key("gts", "stash"))
                 .title(service.parse(GTSPlugin.instance().configuration().language().get(MsgConfigKeys.UI_MENU_STASH_TITLE)))
                 .layout(this.design())
                 .readonly(true)
-                .viewer(PlatformPlayer.from(viewer))
+                .viewer(this.viewer)
                 .style(TriState.TRUE)
                 .zone(Vector2i.from(7, 2), Vector2i.ONE)
                 .updater(PageUpdater.builder()
@@ -119,7 +119,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
     }
 
     private ServerPlayer player() {
-        return Sponge.server().player(this.viewer).orElseThrow(() -> new IllegalStateException("Viewer player could not be found"));
+        return Sponge.server().player(this.viewer.uuid()).orElseThrow(() -> new IllegalStateException("Viewer player could not be found"));
     }
 
     protected Layout design() {
@@ -168,7 +168,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
 
                                 GTSPlugin.instance().messagingService().requestClaim(
                                         listing.getID(),
-                                        this.viewer,
+                                        this.viewer.uuid(),
                                         null,
                                         listing instanceof Auction
                                 ).thenAccept(response -> {
@@ -189,7 +189,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                                         // If an auction has bids, return the highest bid value.
                                                         // Otherwise, return the entry element
                                                         if (hasBids) {
-                                                            if (new MonetaryPrice(auction.getHighBid().get().getSecond().getAmount()).reward(this.viewer)) {
+                                                            if (new MonetaryPrice(auction.getHighBid().get().getSecond().getAmount()).reward(this.viewer.uuid())) {
                                                                 successful.incrementAndGet();
                                                             } else {
                                                                 // Re-append our data as the claim request will have been updated
@@ -202,7 +202,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                                             }
                                                         } else {
                                                             // No bids, return the listing instead
-                                                            if (listing.getEntry().give(this.viewer)) {
+                                                            if (listing.getEntry().give(this.viewer.uuid())) {
                                                                 successful.incrementAndGet();
                                                             } else {
                                                                 // Re-append data as our claim request will have deleted it
@@ -217,7 +217,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                                     } else {
                                                         BuyItNow bin = (BuyItNow) listing;
                                                         if (bin.isPurchased()) {
-                                                            if (bin.getPrice().reward(this.viewer)) {
+                                                            if (bin.getPrice().reward(this.viewer.uuid())) {
                                                                 successful.incrementAndGet();
                                                             } else {
                                                                 // Re-append data as our claim request will have deleted it
@@ -230,7 +230,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                                             }
                                                         } else {
                                                             // Listing expired
-                                                            if (listing.getEntry().give(this.viewer)) {
+                                                            if (listing.getEntry().give(this.viewer.uuid())) {
                                                                 successful.incrementAndGet();
                                                             } else {
                                                                 // Re-append data as our claim request will have deleted it
@@ -254,13 +254,13 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                                 Impactor.getInstance().getScheduler().executeSync(() -> {
                                                     try {
                                                         if (entry.getContext() == TriState.NOT_SET) {
-                                                            Auction.Bid bid = auction.getCurrentBid(this.viewer).orElseThrow(() -> new IllegalStateException("Unable to locate bid for user where required"));
+                                                            Auction.Bid bid = auction.getCurrentBid(this.viewer.uuid()).orElseThrow(() -> new IllegalStateException("Unable to locate bid for user where required"));
 
                                                             MonetaryPrice value = new MonetaryPrice(bid.getAmount());
-                                                            value.reward(this.viewer);
+                                                            value.reward(this.viewer.uuid());
 
                                                             successful.incrementAndGet();
-                                                        } else if (listing.getEntry().give(this.viewer)) {
+                                                        } else if (listing.getEntry().give(this.viewer.uuid())) {
                                                             successful.incrementAndGet();
                                                         } else {
                                                             // Re-append data as our claim request will have deleted it
@@ -283,7 +283,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                                 if (bin.stashedForPurchaser()) {
                                                     Impactor.getInstance().getScheduler().executeSync(() -> {
                                                         try {
-                                                            if (listing.getEntry().give(this.viewer)) {
+                                                            if (listing.getEntry().give(this.viewer.uuid())) {
                                                                 successful.getAndIncrement();
                                                             } else {
                                                                 // Re-append data as our claim request will have deleted it
@@ -337,7 +337,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
         Icon<ItemStack> back = Icon.builder(ItemStack.class)
                 .display(new DisplayProvider.Constant<>(b))
                 .listener(context -> {
-                    SpongeMainMenu menu = new SpongeMainMenu(this.player());
+                    SpongeMainMenu menu = new SpongeMainMenu(this.viewer);
                     menu.open();
                     return false;
                 })
@@ -347,8 +347,8 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
         return slb.build();
     }
 
-    private CompletableFuture<List<Icon.Binding<?, StashedContent<?>>>> fetchAndTranslate(ServerPlayer viewer) {
-        return GTSPlugin.instance().storage().getStash(viewer.uniqueId())
+    private CompletableFuture<List<Icon.Binding<?, StashedContent<?>>>> fetchAndTranslate(PlatformPlayer viewer) {
+        return GTSPlugin.instance().storage().getStash(viewer.uuid())
                 .thenApply(Stash::getStashContents)
                 .thenApply(contents -> {
                     Config lang = GTSPlugin.instance().configuration().language();
@@ -360,7 +360,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                             if(content instanceof StashedContent.ListingContent) {
                                                 SpongeListing listing = (SpongeListing) content.getContent();
 
-                                                Display<ItemStack> display = listing.getEntry().getDisplay(this.viewer);
+                                                Display<ItemStack> display = listing.getEntry().getDisplay(this.viewer.uuid());
                                                 ItemStack item = display.get();
 
                                                 Optional<List<Component>> lore = item.get(Keys.LORE);
@@ -400,7 +400,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                                 return item;
                                             } else {
                                                 SpongeDelivery delivery = (SpongeDelivery) content.getContent();
-                                                Display<ItemStack> display = delivery.getContent().getDisplay(this.viewer);
+                                                Display<ItemStack> display = delivery.getContent().getDisplay(this.viewer.uuid());
                                                 ItemStack item = display.get();
 
                                                 Optional<List<Component>> lore = item.get(Keys.LORE);
@@ -427,9 +427,9 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                             if(content instanceof StashedContent.ListingContent) {
                                                 SpongeListing listing = (SpongeListing) content.getContent();
                                                 new SpongeSelectedListingMenu(
-                                                        this.player(),
+                                                        this.viewer,
                                                         listing,
-                                                        () -> new SpongeStashMenu(this.player()),
+                                                        () -> new SpongeStashMenu(this.viewer),
                                                         true,
                                                         false)
                                                     .open();
@@ -437,7 +437,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                                 SpongeDelivery delivery = (SpongeDelivery) content.getContent();
 
                                                 this.claimDelivery(delivery, () -> {});
-                                                Sponge.server().player(this.viewer).ifPresent(p -> p.sendMessage(
+                                                this.player().sendMessage(
                                                         Utilities.PARSER.parse(
                                                                 Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
                                                                 PlaceholderSources.builder()
@@ -445,7 +445,7 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
                                                                         .append(Component.class, () -> delivery.getContent().getName())
                                                                         .build()
                                                         )
-                                                ));
+                                                );
                                                 this.pagination.close();
                                             }
                                             return false;
@@ -460,18 +460,18 @@ public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
 
     @Override
     public Optional<Supplier<SpongeMainMenu>> getParent() {
-        return Optional.of(() -> new SpongeMainMenu(this.player()));
+        return Optional.of(() -> new SpongeMainMenu(this.viewer));
     }
 
     private CompletableFuture<Void> claimDelivery(SpongeDelivery delivery, Runnable callback) {
         return CompletableFutureManager.makeFuture(() -> {
             GTSPlugin.instance().messagingService().requestDeliveryClaim(
                     delivery.getID(),
-                    this.viewer
+                    this.viewer.uuid()
             ).thenAccept(response -> {
                 if(response.wasSuccessful()) {
                     Impactor.getInstance().getScheduler().executeSync(() -> {
-                        delivery.getContent().give(this.viewer);
+                        delivery.getContent().give(this.viewer.uuid());
                         callback.run();
                     });
                 }

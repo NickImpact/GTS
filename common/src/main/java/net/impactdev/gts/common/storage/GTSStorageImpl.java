@@ -25,15 +25,14 @@
 
 package net.impactdev.gts.common.storage;
 
-import com.github.benmanes.caffeine.cache.CacheLoader;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
 import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
+import net.impactdev.gts.api.storage.PurgeType;
+import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
@@ -43,11 +42,12 @@ import net.impactdev.gts.api.stashes.Stash;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.api.storage.GTSStorage;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import net.impactdev.impactor.api.configuration.Config;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -67,12 +67,7 @@ public class GTSStorageImpl implements GTSStorage {
 
     private final LoadingCache<UUID, ReentrantLock> locks = Caffeine.newBuilder()
             .expireAfterAccess(5, TimeUnit.MINUTES)
-            .build(new CacheLoader<UUID, ReentrantLock>() {
-                @Override
-                public @Nullable ReentrantLock load(@NonNull UUID key) throws Exception {
-                    return new ReentrantLock();
-                }
-            });
+            .build(key -> new ReentrantLock());
 
     public GTSStorageImpl(GTSPlugin plugin, StorageImplementation implementation) {
         this.implementation = implementation;
@@ -124,8 +119,8 @@ public class GTSStorageImpl implements GTSStorage {
     }
 
     @Override
-    public CompletableFuture<Boolean> purge() {
-        return this.schedule(this.implementation::purge);
+    public CompletableFuture<Boolean> purge(PurgeType type) {
+        return this.schedule(() -> this.implementation.purge(type));
     }
 
     @Override

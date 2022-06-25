@@ -28,6 +28,7 @@ import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.Time;
 import net.kyori.adventure.text.Component;
@@ -62,7 +63,7 @@ import java.util.stream.Collectors;
 @Permission(GTSPermissions.DEFAULT)
 public class SellCommand extends PlayerRequiredExecutor {
 
-    private final Parameter.Value<EntryManager<?, ?>> ENTRY = Parameter.builder(new TypeToken<EntryManager<?, ?>>() {})
+    private final Parameter.Value<EntryManager<?>> ENTRY = Parameter.builder(new TypeToken<EntryManager<?>>() {})
             .key("entry")
             .usage(key -> "A valid entry type")
             .addParser(new EntryManagerElement())
@@ -114,17 +115,16 @@ public class SellCommand extends PlayerRequiredExecutor {
         Config lang = GTSPlugin.instance().configuration().language();
 
         if(!this.checkForArguments(context)) {
-            new SpongeEntryTypeSelectionMenu(source).open();
+            new SpongeEntryTypeSelectionMenu(PlatformPlayer.from(source)).open();
             return CommandResult.success();
         }
 
         long duration = context.one(this.TIME).orElse(main.get(ConfigKeys.LISTING_TIME_MID)).getTime();
 
-        EntryManager<?, ?> manager = context.requireOne(this.ENTRY);
+        EntryManager<?> manager = context.requireOne(this.ENTRY);
         if(!context.hasAny(this.ARGUMENTS)) {
-            ((AbstractSpongeEntryUI<EntrySelection<? extends SpongeEntry<?>>>)((EntryManager<? extends Entry<?, ?>, Player>) manager).getSellingUI(source)
-                    .get())
-                    .open(source);
+            PlatformPlayer target = PlatformPlayer.from(source);
+            manager.getSellingUI(target).get().open(target);
             return CommandResult.success();
         }
 
@@ -182,10 +182,9 @@ public class SellCommand extends PlayerRequiredExecutor {
                             );
                 }
             } else {
-                ((AbstractSpongeEntryUI<EntrySelection<? extends Entry<?, ?>>>)((EntryManager<?, Player>) manager)
-                        .getSellingUI(source)
-                        .get())
-                        .open(source, entry, false, ctx.time());
+                PlatformPlayer target = PlatformPlayer.from(source);
+                ((AbstractSpongeEntryUI<EntrySelection<? extends Entry<?, ?>>>)manager.getSellingUI(target).get())
+                        .open(target, entry, false, ctx.time());
             }
         } catch (Throwable e) {
             throw new CommandException(Component.text("Failure during execution: ").append(Component.text(e.getMessage())), e);

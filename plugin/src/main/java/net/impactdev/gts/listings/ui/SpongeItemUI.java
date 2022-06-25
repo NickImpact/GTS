@@ -8,6 +8,7 @@ import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.placeholders.PlaceholderSources;
 import net.impactdev.impactor.api.platform.players.PlatformPlayer;
+import net.impactdev.impactor.api.platform.players.PlatformPlayerManager;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.gts.api.listings.ui.EntrySelection;
 import net.impactdev.gts.common.config.MsgConfigKeys;
@@ -39,7 +40,7 @@ import java.util.function.Supplier;
 
 public class SpongeItemUI extends AbstractSpongeEntryUI<ChosenItemEntry> implements Historical<SpongeMainMenu> {
 
-    public SpongeItemUI(ServerPlayer viewer) {
+    public SpongeItemUI(PlatformPlayer viewer) {
         super(viewer);
     }
 
@@ -58,12 +59,9 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<ChosenItemEntry> impleme
 
                     MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
                     Blacklist blacklist = Impactor.getInstance().getRegistry().get(Blacklist.class);
-                    if(blacklist.isBlacklisted(ItemType.class, snapshot.type().key(RegistryTypes.ITEM_TYPE))) {
+                    if(blacklist.isBlacklisted(ItemType.class, snapshot.type().key(RegistryTypes.ITEM_TYPE).formatted())) {
                         this.viewer.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_BLACKLISTED)));
-                        this.viewer.playSound(
-                                Sound.sound(SoundTypes.BLOCK_ANVIL_LAND.get(), Sound.Source.MASTER, 1, 1),
-                                this.viewer.position()
-                        );
+                        this.viewer.playSound(Sound.sound(SoundTypes.BLOCK_ANVIL_LAND.get(), Sound.Source.MASTER, 1, 1));
                         return false;
                     }
 
@@ -129,8 +127,8 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<ChosenItemEntry> impleme
     }
 
     @Override
-    public void open(ServerPlayer user) {
-        this.getDisplay().open(PlatformPlayer.from(user));
+    public void open(PlatformPlayer user) {
+        this.getDisplay().open(user);
     }
 
     @Override
@@ -145,7 +143,7 @@ public class SpongeItemUI extends AbstractSpongeEntryUI<ChosenItemEntry> impleme
         slb.slot(this.createNoneChosenIcon(), 13);
 
         PlaceholderSources sources = PlaceholderSources.builder()
-                .append(ServerPlayer.class, () -> this.viewer)
+                .append(PlatformPlayer.class, () -> this.viewer)
                 .build();
         Icon<ItemStack> back = Icon.builder(ItemStack.class)
                 .display(new DisplayProvider.Constant<>(ItemStack.builder()

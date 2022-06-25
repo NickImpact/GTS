@@ -26,6 +26,7 @@ import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.Time;
 import net.kyori.adventure.text.Component;
@@ -59,7 +60,7 @@ public class AuctionCommand extends PlayerRequiredExecutor {
             .addParser(new PercentageElement())
             .optional()
             .build();
-    private final Parameter.Value<EntryManager<?, ?>> ENTRY = Parameter.builder(new TypeToken<EntryManager<?, ?>>() {})
+    private final Parameter.Value<EntryManager<?>> ENTRY = Parameter.builder(new TypeToken<EntryManager<?>>() {})
             .key("entry")
             .usage(key -> "A valid entry type")
             .addParser(new EntryManagerElement())
@@ -117,12 +118,11 @@ public class AuctionCommand extends PlayerRequiredExecutor {
         float increment = context.requireOne(this.INCREMENT);
         long duration = context.one(this.TIME).orElse(main.get(ConfigKeys.LISTING_TIME_MID)).getTime();
 
-        EntryManager<?, ?> manager = context.requireOne(this.ENTRY);
+        EntryManager<?> manager = context.requireOne(this.ENTRY);
 
         if(!context.hasAny(this.ARGUMENTS)) {
-            ((AbstractSpongeEntryUI<EntrySelection<? extends SpongeEntry<?>>>)((EntryManager<? extends Entry<?, ?>, Player>) manager).getSellingUI(source)
-                    .get())
-                    .open(source, true);
+            PlatformPlayer platform = PlatformPlayer.from(source);
+            ((AbstractSpongeEntryUI<?>) manager.getSellingUI(platform).get()).open(platform, true);
             return CommandResult.success();
         }
 

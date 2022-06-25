@@ -3,6 +3,7 @@ package net.impactdev.gts.common.data;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
@@ -29,6 +30,10 @@ import java.util.function.Function;
 public class NBTMapper {
 
     public static JObject from(CompoundNBT nbt) {
+        JsonParser parser = new JsonParser();
+        JsonObject json = parser.parse(nbt.toString()).getAsJsonObject();
+        String result = GTSPlugin.instance().gson().toJson(json);
+
         return from(nbt, true);
     }
 

@@ -13,7 +13,7 @@ public interface ResourceManager<T> {
     String getItemID();
 
     /**
-     *
+     * Fetches the deserializer responsible for deserializing the resource into its desired typing.
      *
      * @return
      */

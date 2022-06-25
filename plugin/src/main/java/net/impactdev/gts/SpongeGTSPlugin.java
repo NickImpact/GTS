@@ -7,6 +7,7 @@ import com.google.gson.GsonBuilder;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.blacklist.Blacklist;
 import net.impactdev.gts.api.environment.Environment;
+import net.impactdev.gts.api.event.factory.GTSEventFactory;
 import net.impactdev.gts.api.exceptions.LackingServiceException;
 import net.impactdev.gts.api.extension.Extension;
 import net.impactdev.gts.api.extension.ExtensionManager;
@@ -35,7 +36,7 @@ import net.impactdev.gts.common.player.PlayerSettingsImpl;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.StorageFactory;
 import net.impactdev.gts.common.utils.EconomicFormatter;
-import net.impactdev.gts.common.utils.Version;
+import net.impactdev.gts.api.util.Version;
 import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.listeners.AnvilRenameListener;
 import net.impactdev.gts.listeners.JoinListener;
@@ -65,14 +66,12 @@ import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.dependencies.Dependency;
 import net.impactdev.impactor.api.dependencies.DependencyManager;
-import net.impactdev.impactor.api.dependencies.ProvidedDependencies;
 import net.impactdev.impactor.api.dependencies.relocation.Relocation;
 import net.impactdev.impactor.api.logging.PluginLogger;
 import net.impactdev.impactor.api.plugin.PluginMetadata;
 import net.impactdev.impactor.api.storage.StorageType;
 import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import org.spongepowered.api.Platform;
-import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.Command;
@@ -399,6 +398,8 @@ public class SpongeGTSPlugin implements GTSPlugin {
                 new GTSSpongePlaceholderManager().getAllParsers().forEach(metadata -> {
                     placeholderParserRegistryStep.register(metadata.getKey(), metadata.getParser());
                 });
+
+                Impactor.getInstance().getEventBus().post(GTSEventFactory.createPlaceholderRegistryEvent(placeholderParserRegistryStep));
             } catch (Exception e) {
                 ExceptionWriter.write(e);
             }

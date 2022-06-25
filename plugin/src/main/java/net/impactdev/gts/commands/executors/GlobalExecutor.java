@@ -13,6 +13,7 @@ import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
 import net.impactdev.gts.sponge.commands.SpongeGTSCmdExecutor;
 import net.impactdev.gts.ui.SpongeMainMenu;
 import net.impactdev.impactor.api.configuration.Config;
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.exception.CommandException;
 import org.spongepowered.api.command.parameter.CommandContext;
@@ -62,7 +63,7 @@ public class GlobalExecutor extends PlayerRequiredExecutor {
 
     @Override
     public CommandResult process(ServerPlayer source, CommandContext context) throws CommandException {
-        new SpongeMainMenu(source).open();
+        new SpongeMainMenu(PlatformPlayer.from(source)).open();
         return CommandResult.success();
     }
 }

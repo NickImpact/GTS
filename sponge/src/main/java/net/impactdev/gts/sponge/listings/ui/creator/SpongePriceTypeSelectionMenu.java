@@ -48,14 +48,14 @@ import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
 public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEntryUI<?>> {
 
-    private final ServerPlayer viewer;
+    private final PlatformPlayer viewer;
 
     private final ImpactorUI display;
 
     private final AbstractSpongeEntryUI<?> parent;
-    private final BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>> callback;
+    private final BiConsumer<EntryUI<?>, Price<?, ?, ?>> callback;
 
-    public SpongePriceTypeSelectionMenu(ServerPlayer player, AbstractSpongeEntryUI<?> parent, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>> callback) {
+    public SpongePriceTypeSelectionMenu(PlatformPlayer player, AbstractSpongeEntryUI<?> parent, BiConsumer<EntryUI<?>, Price<?, ?, ?>> callback) {
         this.parent = parent;
         this.callback = callback;
 
@@ -81,7 +81,7 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
     }
 
     public void open() {
-        this.display.open(PlatformPlayer.from(this.viewer));
+        this.display.open(this.viewer);
     }
 
     private Layout design(int size) {
@@ -121,8 +121,8 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
         return Icon.builder(ItemStack.class)
                 .display(new DisplayProvider.Constant<>(rep))
                 .listener(context -> {
-                    this.display.close(PlatformPlayer.from(this.viewer));
-                    resource.process().accept(this.parent, this.callback);
+                    this.display.close(this.viewer);
+                    resource.process(this.viewer, this.parent, this.callback);
                     return false;
                 })
                 .build();
@@ -140,7 +140,7 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
         FOUR(10, 12, 14, 16),
         FIVE(11, 12, 13, 14, 15),;
 
-        private int[] slots;
+        private final int[] slots;
 
         Mappings(int... slots) {
             this.slots = slots;

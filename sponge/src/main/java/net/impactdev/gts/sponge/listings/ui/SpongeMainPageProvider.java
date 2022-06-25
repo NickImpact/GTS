@@ -2,11 +2,12 @@ package net.impactdev.gts.sponge.listings.ui;
 
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.builders.Builder;
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 
 public interface SpongeMainPageProvider {
 
-    ServerPlayer getViewer();
+    PlatformPlayer getViewer();
 
     void open();
 
@@ -16,7 +17,7 @@ public interface SpongeMainPageProvider {
 
     interface Creator extends Builder<SpongeMainPageProvider> {
 
-        Creator viewer(ServerPlayer player);
+        Creator viewer(PlatformPlayer viewer);
 
     }
 

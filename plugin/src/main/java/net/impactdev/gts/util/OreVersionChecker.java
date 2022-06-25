@@ -2,7 +2,7 @@ package net.impactdev.gts.util;
 
 import com.google.gson.JsonObject;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.Version;
+import net.impactdev.gts.api.util.Version;
 import net.impactdev.impactor.api.Impactor;
 
 import javax.net.ssl.HttpsURLConnection;

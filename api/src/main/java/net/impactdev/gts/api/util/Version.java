@@ -1,7 +1,9 @@
-package net.impactdev.gts.common.utils;
+package net.impactdev.gts.api.util;
 
+import com.google.common.base.Preconditions;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +22,11 @@ public class Version implements Comparable<Version> {
     private final boolean snapshot;
     private final boolean valid;
 
-    public Version(String input) {
+    public static Version of(@Nonnull @org.intellij.lang.annotations.Pattern("(?<major>[0-9]+).(?<minor>[0-9]+).(?<patch>[0-9]+)(?<snapshot>-SNAPSHOT)?") String input) {
+        return new Version(input);
+    }
+
+    public Version(@Nonnull String input) {
         this.source = input;
 
         Matcher matcher = VERSION_PATTERN.matcher(input);
@@ -138,7 +144,24 @@ public class Version implements Comparable<Version> {
         return result;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Version) {
+            return this.compareTo((Version) obj) == 0;
+        }
+
+        return false;
+    }
+
     private String asString(short x) {
         return "" + x;
     }
+
+    public static class Minecraft {
+
+        public static final Version v1_12_2 = Version.of("1.12.2");
+        public static final Version v1_16_5 = Version.of("1.16.5");
+
+    }
+
 }

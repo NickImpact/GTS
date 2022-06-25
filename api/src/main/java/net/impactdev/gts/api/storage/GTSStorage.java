@@ -75,7 +75,7 @@ public interface GTSStorage {
 
 	CompletableFuture<Boolean> hasMaxListings(UUID user);
 
-	CompletableFuture<Boolean> purge();
+	CompletableFuture<Boolean> purge(PurgeType type);
 
 	/**
 	 * Purges remaining data from the legacy database if it persists.

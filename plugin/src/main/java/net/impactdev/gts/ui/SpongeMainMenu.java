@@ -31,6 +31,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+import org.spongepowered.api.event.server.query.QueryServerEvent;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 
@@ -43,27 +44,27 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 	private static final MessageService PARSER = Utilities.PARSER;
 
 	private final ImpactorUI view;
-	private final ServerPlayer viewer;
+	private final PlatformPlayer viewer;
 
 	private EventSubscription<PlaceholderReadyEvent> subscription;
 
-	public SpongeMainMenu(ServerPlayer viewer) {
+	public SpongeMainMenu(PlatformPlayer viewer) {
 		this.viewer = viewer;
 		this.view = this.construct();
 	}
 
 	@Override
-	public ServerPlayer getViewer() {
+	public PlatformPlayer getViewer() {
 		return this.viewer;
 	}
 
 	public void open() {
-		this.view.open(PlatformPlayer.from(this.viewer));
+		this.view.open(this.viewer);
 	}
 
 	private ImpactorUI construct() {
 		PlaceholderSources sources = PlaceholderSources.builder()
-				.append(ServerPlayer.class, () -> this.viewer)
+				.append(PlatformPlayer.class, () -> this.viewer)
 				.build();
 
 		return ImpactorUI.builder()
@@ -88,7 +89,7 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 		builder.border(ProvidedIcons.BORDER);
 
 		PlaceholderSources sources = PlaceholderSources.builder()
-				.append(ServerPlayer.class, () -> this.viewer)
+				.append(PlatformPlayer.class, () -> this.viewer)
 				.build();
 
 		TitleLorePair browse = Utilities.readMessageConfigOption(MsgConfigKeys.UI_MAIN_BROWSER);
@@ -132,7 +133,7 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 						.build()
 				))
 				.listener(context -> {
-					new SpongeListingMenu(this.viewer, false, Sets.newHashSet(listing -> listing.getLister().equals(this.viewer.uniqueId())), null).open();
+					new SpongeListingMenu(this.viewer, false, Sets.newHashSet(listing -> listing.getLister().equals(this.viewer.uuid())), null).open();
 					return false;
 				})
 				.build();
@@ -143,7 +144,7 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 				.display(new DisplayProvider.Constant<>(ItemStack.builder()
 						.itemType(ItemTypes.KNOWLEDGE_BOOK)
 						.add(Keys.CUSTOM_NAME, PARSER.parse(cBids.getTitle(), sources))
-						.add(Keys.LORE, PARSER.parse(cBids.getLore(), sources.append(UUID.class, this.viewer::uniqueId)))
+						.add(Keys.LORE, PARSER.parse(cBids.getLore(), sources.append(UUID.class, this.viewer::uuid)))
 						.build()
 				))
 				.listener(context -> {
@@ -153,7 +154,7 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 							Sets.newHashSet(listing -> {
 								if(listing instanceof Auction) {
 									Auction auction = (Auction) listing;
-									return auction.getBids().containsKey(this.viewer.uniqueId());
+									return auction.getBids().containsKey(this.viewer.uuid());
 								}
 
 								return false;
@@ -166,7 +167,7 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 				.build();
 		this.subscription = Impactor.getInstance().getEventBus().subscribe(GTSPlugin.instance().metadata(), PlaceholderReadyEvent.class, event -> {
 			if(event.getPlaceholderID().equals("gts:active_bids")) {
-				if(event.getSource().equals(this.getViewer().uniqueId())) {
+				if(event.getSource().equals(this.getViewer().uuid())) {
 					int amount = (int) event.getValue();
 					TitleLorePair proper = Utilities.readMessageConfigOption(
 							amount == 1 ? MsgConfigKeys.UI_MAIN_CURRENT_BIDS_SINGLE :
@@ -192,7 +193,7 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 											Sets.newHashSet(listing -> {
 												if(listing instanceof Auction) {
 													Auction auction = (Auction) listing;
-													return auction.getBids().containsKey(this.viewer.uniqueId());
+													return auction.getBids().containsKey(this.viewer.uuid());
 												}
 
 												return false;
@@ -230,7 +231,7 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 
 	private void createStashIcon(Layout.LayoutBuilder slb) {
 		PlaceholderSources sources = PlaceholderSources.builder()
-				.append(ServerPlayer.class, () -> this.viewer)
+				.append(PlatformPlayer.class, () -> this.viewer)
 				.build();
 
 		TitleLorePair stashRef = Utilities.readMessageConfigOption(MsgConfigKeys.UI_MAIN_STASH);
@@ -256,7 +257,7 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 		lore.add("");
 		lore.add(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MAIN_STASH_CLICK_NOTIF));
 
-		GTSPlugin.instance().storage().getStash(this.viewer.uniqueId()).thenAccept(
+		GTSPlugin.instance().storage().getStash(this.viewer.uuid()).thenAccept(
 				stash -> {
 					if(!stash.isEmpty()) {
 						List<String> updated = Lists.newArrayList();
@@ -268,7 +269,7 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 
 						Impactor.getInstance().getScheduler().executeSync(() -> {
 							PlaceholderSources sources = PlaceholderSources.builder()
-									.append(ServerPlayer.class, () -> this.viewer)
+									.append(PlatformPlayer.class, () -> this.viewer)
 									.append(Stash.class, () -> stash)
 									.build();
 
@@ -283,17 +284,17 @@ public class SpongeMainMenu implements GTSMenu, SpongeMainPageProvider {
 		});
 
 		icon.display().provide().offer(Keys.LORE, PARSER.parse(lore, PlaceholderSources.builder()
-				.append(ServerPlayer.class, () -> this.viewer)
+				.append(PlatformPlayer.class, () -> this.viewer)
 				.build())
 		);
 	}
 
 	public static class MainMenuCreator implements Creator {
 
-		private ServerPlayer viewer;
+		private PlatformPlayer viewer;
 
 		@Override
-		public Creator viewer(ServerPlayer player) {
+		public Creator viewer(PlatformPlayer player) {
 			this.viewer = player;
 			return this;
 		}

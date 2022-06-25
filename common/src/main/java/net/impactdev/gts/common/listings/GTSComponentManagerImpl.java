@@ -24,7 +24,7 @@ import java.util.Optional;
 public class GTSComponentManagerImpl implements GTSComponentManager {
 
     private final Map<Class<? extends Listing>, ResourceManager<? extends Listing>> listings = Maps.newHashMap();
-    private final Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>, ?>> managers = new LinkedHashMap<>();
+    private final Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>>> managers = new LinkedHashMap<>();
     private final Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>>> prices = Maps.newHashMap();
 
     private final Map<String, Storable.Deserializer<?>> legacy = Maps.newHashMap();
@@ -57,7 +57,7 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
     }
 
     @Override
-    public <T extends Entry<?, ?>> void registerEntryManager(Class<T> type, EntryManager<T, ?> manager) {
+    public <T extends Entry<?, ?>> void registerEntryManager(Class<T> type, EntryManager<T> manager) {
         Preconditions.checkArgument(type.isAnnotationPresent(GTSKeyMarker.class), "An Entry type must be annotated with GTSKeyMarker");
 
         this.managers.put(type.getAnnotation(GTSKeyMarker.class), manager);
@@ -65,7 +65,7 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
     }
 
     @Override
-    public <T extends Entry<?, ?>> Optional<EntryManager<T, ?>> getEntryManager(String key) {
+    public <T extends Entry<?, ?>> Optional<EntryManager<T>> getEntryManager(String key) {
         return this.managers.keySet().stream()
                 .filter(marker -> {
                     for (String id : marker.value()) {
@@ -78,11 +78,11 @@ public class GTSComponentManagerImpl implements GTSComponentManager {
                 })
                 .map(this.managers::get)
                 .findAny()
-                .map(x -> (EntryManager<T, ?>) x);
+                .map(x -> (EntryManager<T>) x);
     }
 
     @Override
-    public Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>, ?>> getAllEntryManagers() {
+    public Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>>> getAllEntryManagers() {
         return this.managers;
     }
 

@@ -8,6 +8,7 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.pricing.SpongePrice;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.chat.ChatProcessor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
@@ -128,48 +129,27 @@ public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
 	public static class MonetaryPriceManager implements PriceManager<MonetaryPrice> {
 
 		@Override
-		public BiConsumer<EntryUI<?, ?, ?>, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>>> process() {
-			return (ui, callback) -> {
-//				SignQuery<Component, Player, Vector3d> query = SignQuery.<Component, Player, Vector3d>builder()
-//						.position(new Vector3d(0, 1, 0))
-//						.text(Lists.newArrayList(
-//								Component.empty(),
-//								Component.text("----------------"),
-//								Component.text("Enter a Price"),
-//								Component.text("for this Listing")
-//						))
-//						.response(submission -> {
-//							try {
-//								double value = Double.parseDouble(submission.get(0));
-//								if(value > 0) {
-//									SpongePrice<BigDecimal, Void> price = new MonetaryPrice(value);
-//
-//									Impactor.getInstance().getScheduler().executeSync(() -> {
-//										callback.accept(ui, price);
-//									});
-//									return true;
-//								}
-//
-//								Impactor.getInstance().getScheduler().executeSync(() -> {
-//									callback.accept(ui, null);
-//								});
-//								return false;
-//							} catch (Exception e) {
-//								Impactor.getInstance().getScheduler().executeSync(() -> {
-//									callback.accept(ui, null);
-//								});
-//								return false;
-//							}
-//						})
-//						.reopenOnFailure(false)
-//						.build();
-//				viewer.closeInventory();
-//				query.sendTo(viewer);
-			};
+		public void process(PlatformPlayer target, EntryUI<?> source, BiConsumer<EntryUI<?>, Price<?, ?, ?>> callback) {
+			Impactor.getInstance().getRegistry().get(ChatProcessor.class).register(target.uuid(), input -> {
+				try {
+					double value = Double.parseDouble(input);
+					if(value > 0) {
+						SpongePrice<BigDecimal, Void> price = new MonetaryPrice(value);
+						Impactor.getInstance().getScheduler().executeSync(() -> {
+							callback.accept(source, price);
+						});
+					}
+				} catch (Exception ignored) {}
+
+				Impactor.getInstance().getScheduler().executeSync(() -> {
+					callback.accept(source, null);
+				});
+			});
+			source.open(target);
 		}
 
 		@Override
-		public <U extends ImpactorUI> Optional<PriceSelectorUI<U>> getSelector(PlatformPlayer viewer, Price<?, ?, ?> price, Consumer<Object> callback) {
+		public Optional<PriceSelectorUI> getSelector(PlatformPlayer viewer, Price<?, ?, ?> price, Consumer<Object> callback) {
 			return Optional.empty();
 		}
 

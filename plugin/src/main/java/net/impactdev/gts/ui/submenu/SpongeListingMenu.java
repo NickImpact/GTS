@@ -4,12 +4,9 @@ import com.google.common.collect.Lists;
 
 import com.google.common.collect.Sets;
 import io.leangen.geantyref.TypeToken;
-import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 import net.impactdev.gts.api.listings.entries.EntryManager;
 import net.impactdev.gts.SpongeGTSPlugin;
-import net.impactdev.gts.api.storage.GTSStorage;
 import net.impactdev.gts.api.ui.GTSMenu;
-import net.impactdev.gts.listeners.ChatProcessor;
 import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.makeup.Display;
@@ -19,6 +16,7 @@ import net.impactdev.gts.ui.admin.editor.SpongeListingEditorMenu;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.builders.Builder;
+import net.impactdev.impactor.api.chat.ChatProcessor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.placeholders.PlaceholderSources;
 import net.impactdev.impactor.api.platform.players.PlatformPlayer;
@@ -98,11 +96,11 @@ public class SpongeListingMenu implements GTSMenu {
 	/** If the menu was opened in editor mode */
 	private final boolean editor;
 
-	public SpongeListingMenu(ServerPlayer viewer, boolean editor) {
+	public SpongeListingMenu(PlatformPlayer viewer, boolean editor) {
 		this(viewer, editor, Sets.newHashSet(), null);
 	}
 
-	public SpongeListingMenu(ServerPlayer viewer, boolean editor, Set<Predicate<Listing>> conditions, @Nullable Searching searcher) {
+	public SpongeListingMenu(PlatformPlayer viewer, boolean editor, Set<Predicate<Listing>> conditions, @Nullable Searching searcher) {
 		this.conditions = conditions;
 		Predicate<Listing> filter = listing -> true;
 		for(Predicate<Listing> condition : conditions) {
@@ -117,7 +115,7 @@ public class SpongeListingMenu implements GTSMenu {
 		this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
 		this.pagination = SectionedPagination.builder()
 				.provider(Key.key("gts", "listings"))
-				.viewer(PlatformPlayer.from(viewer))
+				.viewer(viewer)
 				.title(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_LISTINGS_TITLE)))
 				.readonly(true)
 				.layout(this.design(viewer))
@@ -152,7 +150,7 @@ public class SpongeListingMenu implements GTSMenu {
 				.timeout(5, TimeUnit.SECONDS, this.timeout())
 				.complete()
 				.section()
-				.synchronous(new TypeToken<EntryManager<?, ?>>() {})
+				.synchronous(new TypeToken<EntryManager<?>>() {})
 				.contents(this.typings())
 				.dimensions(1, 3)
 				.offset(0, 1)
@@ -192,7 +190,7 @@ public class SpongeListingMenu implements GTSMenu {
 		this.pagination.open();
 	}
 
-	protected Layout design(ServerPlayer viewer) {
+	protected Layout design(PlatformPlayer viewer) {
 		Layout.LayoutBuilder builder = Layout.builder();
 		builder.row(ProvidedIcons.BORDER, 5)
 				.column(ProvidedIcons.BORDER, 2)
@@ -228,7 +226,7 @@ public class SpongeListingMenu implements GTSMenu {
 				.build();
 	}
 
-	private CompletableFuture<List<Icon.Binding<?, Listing>>> fetchAndTranslate(ServerPlayer viewer) {
+	private CompletableFuture<List<Icon.Binding<?, Listing>>> fetchAndTranslate(PlatformPlayer viewer) {
 		CompletableFuture<List<Listing>> future = Impactor.getInstance().getRegistry()
 				.get(ListingManager.class)
 				.fetchListings();
@@ -250,8 +248,8 @@ public class SpongeListingMenu implements GTSMenu {
 			.thenApply(list -> list.stream().map(listing -> this.translate(listing, viewer)).collect(Collectors.toList()));
 	}
 
-	private List<Icon.Binding<?, EntryManager<?, ?>>> typings() {
-		List<Icon.Binding<?, EntryManager<?, ?>>> results = Lists.newArrayList();
+	private List<Icon.Binding<?, EntryManager<?>>> typings() {
+		List<Icon.Binding<?, EntryManager<?>>> results = Lists.newArrayList();
 		GTSService.getInstance().getGTSComponentManager()
 				.getAllEntryManagers()
 				.values()
@@ -270,7 +268,7 @@ public class SpongeListingMenu implements GTSMenu {
 							))
 							.listener(context -> {
 								this.pagination.at(9)
-										.map(section -> (Section.Generic<EntryManager<?, ?>>) section)
+										.map(section -> (Section.Generic<EntryManager<?>>) section)
 										.get()
 										.filter(new Manager(manager));
 
@@ -282,14 +280,14 @@ public class SpongeListingMenu implements GTSMenu {
 		return results;
 	}
 
-	private Icon.Binding<ItemStack, Listing> translate(Listing listing, ServerPlayer viewer) {
+	private Icon.Binding<ItemStack, Listing> translate(Listing listing, PlatformPlayer viewer) {
 		return Icon.builder(ItemStack.class)
 				.display(() -> {
 					final Config lang = GTSPlugin.instance().configuration().language();
 					final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
 					SpongeListing sponge = (SpongeListing) listing;
 
-					Display<ItemStack> display = sponge.getEntry().getDisplay(viewer.uniqueId());
+					Display<ItemStack> display = sponge.getEntry().getDisplay(viewer.uuid());
 					ItemStack item = ItemStack.builder().from(display.get()).build();
 
 					Optional<List<Component>> lore = item.get(Keys.LORE);
@@ -341,7 +339,7 @@ public class SpongeListingMenu implements GTSMenu {
 				.build(() -> listing);
 	}
 
-	private void createBottomPanel(ServerPlayer viewer, Layout.LayoutBuilder layout) {
+	private void createBottomPanel(PlatformPlayer viewer, Layout.LayoutBuilder layout) {
 		Config lang = GTSPlugin.instance().configuration().language();
 		Style style = Style.style().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE).build();
 
@@ -471,10 +469,12 @@ public class SpongeListingMenu implements GTSMenu {
 				))
 				.listener(context -> {
 					ServerPlayer source = context.require(ServerPlayer.class);
-					ChatProcessor.register(source.uniqueId(), input -> {
-							Searching query = new Searching(input);
-							new SpongeListingMenu(source, this.editor, this.conditions, query).open();
-					});
+					Impactor.getInstance().getRegistry()
+							.get(ChatProcessor.class)
+							.register(source.uniqueId(), input -> {
+								Searching query = new Searching(input);
+								new SpongeListingMenu(PlatformPlayer.from(source), this.editor, this.conditions, query).open();
+							});
 
 					return false;
 				})
@@ -596,16 +596,16 @@ public class SpongeListingMenu implements GTSMenu {
 		}
 	}
 
-	public static class Manager implements Predicate<EntryManager<?, ?>> {
+	public static class Manager implements Predicate<EntryManager<?>> {
 
-		private final EntryManager<?, ?> manager;
+		private final EntryManager<?> manager;
 
-		public Manager(EntryManager<?, ?> manager) {
+		public Manager(EntryManager<?> manager) {
 			this.manager = manager;
 		}
 
 		@Override
-		public boolean test(EntryManager<?, ?> other) {
+		public boolean test(EntryManager<?> other) {
 			return this.manager.type().equals(other.type());
 		}
 	}

@@ -46,8 +46,8 @@ public class SpongeListingEditorMenu {
 
     private final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
-    public SpongeListingEditorMenu(ServerPlayer viewer, Listing focus, Supplier<SpongeListingMenu> parent) {
-        this.viewer = PlatformPlayer.from(viewer);
+    public SpongeListingEditorMenu(PlatformPlayer viewer, Listing focus, Supplier<SpongeListingMenu> parent) {
+        this.viewer = viewer;
         this.focus = focus;
         this.parent = parent;
 

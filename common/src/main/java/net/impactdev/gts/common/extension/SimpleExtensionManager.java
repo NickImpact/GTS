@@ -158,7 +158,7 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
                     throw new IllegalStateException("Unable to read extension.json for extension at path " + path);
                 }
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
-                    JsonElement parsed = JsonParser.parseReader(reader);
+                    JsonElement parsed = new JsonParser().parse(reader);
                     if(parsed.getAsJsonObject().has("main")) {
                         className = parsed.getAsJsonObject().get("main").getAsString();
                     }

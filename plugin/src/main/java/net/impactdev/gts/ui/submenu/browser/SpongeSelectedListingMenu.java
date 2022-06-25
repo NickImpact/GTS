@@ -80,13 +80,13 @@ public class SpongeSelectedListingMenu {
     private final Supplier<GTSMenu> parent;
     private final boolean claim;
 
-    public SpongeSelectedListingMenu(ServerPlayer viewer, Listing listing, Supplier<GTSMenu> parent, boolean claim, boolean update) {
-        this.viewer = PlatformPlayer.from(viewer);
+    public SpongeSelectedListingMenu(PlatformPlayer viewer, Listing listing, Supplier<GTSMenu> parent, boolean claim, boolean update) {
+        this.viewer = viewer;
         this.listing = listing;
         this.parent = parent;
         this.claim = claim;
 
-        boolean isLister = viewer.uniqueId().equals(listing.getLister());
+        boolean isLister = viewer.uuid().equals(listing.getLister());
 
         Optional<ScheduledTask> task = Optional.of(update)
                 .filter(t -> t)
@@ -332,7 +332,7 @@ public class SpongeSelectedListingMenu {
                                 BuyItNow bin = (BuyItNow) this.listing;
 
                                 Price<?, ?, ?> price = bin.getPrice();
-                                Optional<PriceManager.PriceSelectorUI<ImpactorUI>> selector = GTSService.getInstance().getGTSComponentManager()
+                                Optional<PriceManager.PriceSelectorUI> selector = GTSService.getInstance().getGTSComponentManager()
                                         .getPriceManager(price.getClass().getAnnotation(GTSKeyMarker.class).value()[0])
                                         .map(ui -> (PriceManager<?>) ui)
                                         .orElseThrow(() -> new IllegalStateException("Unable to find price manager for " + price.getClass().getAnnotation(GTSKeyMarker.class).value()[0]))

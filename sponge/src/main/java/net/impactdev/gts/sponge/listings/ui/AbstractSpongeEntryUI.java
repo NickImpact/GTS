@@ -50,7 +50,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends AbstractEntryUI<ServerPlayer, E, Icon<ItemStack>> {
+public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends AbstractEntryUI<E> {
 
     private final ImpactorUI display;
 
@@ -59,7 +59,7 @@ public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends
 
     protected SpongePrice<?, ?> price = new MonetaryPrice(GTSPlugin.instance().configuration().main().get(ConfigKeys.LISTINGS_MIN_PRICE));
 
-    public AbstractSpongeEntryUI(ServerPlayer viewer) {
+    public AbstractSpongeEntryUI(PlatformPlayer viewer) {
         super(viewer);
 
         this.auction = this.getTargetMode();
@@ -98,20 +98,20 @@ public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends
     }
 
     @Override
-    public void open(ServerPlayer user) {
-        this.display.open(PlatformPlayer.from(user));
+    public void open(PlatformPlayer user) {
+        this.display.open(user);
     }
 
-    public void open(ServerPlayer user, boolean auction) {
+    public void open(PlatformPlayer user, boolean auction) {
         if(auction) {
             this.auction = true;
             this.getDisplay().set(this.createPriceIcon(), this.getPriceSlot());
             this.getDisplay().set(this.createAuctionIcon(), this.getSelectionTypeSlot());
         }
-        this.display.open(PlatformPlayer.from(user));
+        this.display.open(user);
     }
 
-    public void open(ServerPlayer user, E entry, boolean auction, long duration) {
+    public void open(PlatformPlayer user, E entry, boolean auction, long duration) {
         this.setChosen(entry);
         if(duration != -1) {
             this.duration = new Time(duration);
@@ -125,7 +125,7 @@ public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends
             this.getDisplay().set(this.createPriceIcon(), this.getPriceSlot());
             this.getDisplay().set(this.createAuctionIcon(), this.getSelectionTypeSlot());
         }
-        this.display.open(PlatformPlayer.from(user));
+        this.display.open(user);
     }
 
     protected SpongePrice<?, ?> getPrice() {
@@ -234,7 +234,7 @@ public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends
                     if(this.auction) {
                         Preconditions.checkArgument((this.price instanceof MonetaryPrice), "Auctions must have monetary prices");
                         listing = (SpongeAuction) Auction.builder()
-                                .lister(this.viewer.uniqueId())
+                                .lister(this.viewer.uuid())
                                 .entry(entry)
                                 .start(((MonetaryPrice) this.price).getPrice().doubleValue())
                                 .increment(GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_INCREMENT_RATE))
@@ -242,16 +242,16 @@ public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends
                                 .build();
                     } else {
                         listing = (SpongeBuyItNow) BuyItNow.builder()
-                                .lister(this.viewer.uniqueId())
+                                .lister(this.viewer.uuid())
                                 .entry(entry)
                                 .price(this.getPrice())
                                 .expiration(LocalDateTime.now().plusSeconds(this.duration.getTime()))
                                 .build();
                     }
 
-                    this.display.close(PlatformPlayer.from(this.viewer));
+                    this.display.close(this.viewer);
                     ListingManager<SpongeListing, SpongeAuction, SpongeBuyItNow> manager = Impactor.getInstance().getRegistry().get(ListingManager.class);
-                    manager.list(this.viewer.uniqueId(), listing).exceptionally(error -> {
+                    manager.list(this.viewer.uuid(), listing).exceptionally(error -> {
                         ExceptionWriter.write(error);
                         return false;
                     });

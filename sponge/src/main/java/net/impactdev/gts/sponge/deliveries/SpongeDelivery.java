@@ -82,7 +82,7 @@ public class SpongeDelivery implements Delivery {
     public static SpongeDelivery deserialize(JsonObject json) {
         JsonObject focus = json.getAsJsonObject("data");
         JsonObject element = focus.getAsJsonObject("entry");
-        EntryManager<?, ?> em = GTSService.getInstance().getGTSComponentManager()
+        EntryManager<?> em = GTSService.getInstance().getGTSComponentManager()
                 .getEntryManager(element.get("key").getAsString())
                 .orElseThrow(() -> new RuntimeException("No Entry Manager found for key: " + element.get("key").getAsString()));
 

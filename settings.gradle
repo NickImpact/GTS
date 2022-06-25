@@ -7,9 +7,9 @@ include (
         //'velocity',
         'sponge',
         'plugin',
-        'plugin:sponge-launcher'
-        //'pixelmon',
-        //'pixelmon:reforged',
+        'plugin:sponge-launcher',
+        'pixelmon',
+        'pixelmon:reforged',
         //'pixelmon:generations'
 )
 

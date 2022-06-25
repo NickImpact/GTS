@@ -27,6 +27,7 @@ dependencies {
 
     // Impactor
     implementation 'net.impactdev.impactor:launcher:4.0.0-SNAPSHOT'
+    //implementation fileTree(dir: 'libs', include: '*.jar')
 
     // Sponge
     shadow 'org.spongepowered:spongeapi:8.1.0'

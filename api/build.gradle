@@ -9,6 +9,7 @@ dependencies {
     // Event Generation
     annotationProcessor('org.spongepowered:event-impl-gen:8.0.0-SNAPSHOT')
     compileOnlyApi('org.spongepowered:event-impl-gen-annotations:8.0.0-SNAPSHOT')
+    compileOnlyApi('org.jetbrains:annotations:23.0.0')
 
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }

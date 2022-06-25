@@ -6,6 +6,7 @@ import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.entries.EntryManager;
 import net.impactdev.gts.api.ui.GTSMenu;
 import net.impactdev.gts.common.config.MsgConfigKeys;
+import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
 import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
 import net.impactdev.gts.sponge.utils.Utilities;
@@ -17,9 +18,16 @@ import net.impactdev.impactor.api.ui.containers.ImpactorUI;
 import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
 import net.impactdev.impactor.api.ui.containers.icons.Icon;
 import net.impactdev.impactor.api.ui.containers.layouts.Layout;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
+import net.minecraftforge.registries.IForgeRegistry;
 import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.Keys;
@@ -40,18 +48,18 @@ import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
 public class SpongeEntryTypeSelectionMenu implements GTSMenu {
 
-    private final ServerPlayer viewer;
+    private final PlatformPlayer viewer;
     private final ImpactorUI display;
 
-    public SpongeEntryTypeSelectionMenu(ServerPlayer player) {
-        Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>, ?>> managers = GTSService.getInstance().getGTSComponentManager().getAllEntryManagers();
+    public SpongeEntryTypeSelectionMenu(PlatformPlayer player) {
+        Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>>> managers = GTSService.getInstance().getGTSComponentManager().getAllEntryManagers();
         final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
         Mappings mappings = Mappings.get(managers.size()).orElseThrow(() -> new IllegalStateException("Awaiting further functionality"));
         Layout.LayoutBuilder builder = Layout.builder()
                 .from(this.design(managers.size()));
         Queue<Integer> slots = mappings.createQueue();
-        for(Map.Entry<GTSKeyMarker, EntryManager<? extends Entry<?, ?>, ?>> entry : managers.entrySet()) {
+        for(Map.Entry<GTSKeyMarker, EntryManager<? extends Entry<?, ?>>> entry : managers.entrySet()) {
             Icon<ItemStack> icon = this.createIcon(entry.getValue().getName(), entry.getValue());
             builder.slot(icon, slots.poll());
         }
@@ -66,7 +74,7 @@ public class SpongeEntryTypeSelectionMenu implements GTSMenu {
     }
 
     public void open() {
-        this.display.open(PlatformPlayer.from(this.viewer));
+        this.display.open(this.viewer);
     }
 
     private Layout design(int size) {
@@ -91,7 +99,7 @@ public class SpongeEntryTypeSelectionMenu implements GTSMenu {
         return builder.build();
     }
 
-    private Icon<ItemStack> createIcon(String type, EntryManager<? extends Entry<?, ?>, ?> resource) {
+    private Icon<ItemStack> createIcon(String type, EntryManager<? extends Entry<?, ?>> resource) {
         ItemType item = Sponge.game().registry(RegistryTypes.ITEM_TYPE)
                 .findEntry(ResourceKey.resolve(resource.getItemID()))
                 .map(RegistryEntry::value)
@@ -105,8 +113,8 @@ public class SpongeEntryTypeSelectionMenu implements GTSMenu {
         return Icon.builder(ItemStack.class)
                 .display(new DisplayProvider.Constant<>(rep))
                 .listener(context -> {
-                    this.display.close(PlatformPlayer.from(this.viewer));
-                    ((AbstractSpongeEntryUI<?>)(((EntryManager<? extends Entry<?, ?>, Player>) resource).getSellingUI(this.viewer)).get()).open(this.viewer);
+                    this.display.close(this.viewer);
+                    resource.getSellingUI(this.viewer).get().open(this.viewer);
                     return false;
                 })
                 .build();

@@ -80,7 +80,7 @@ public class SpongeAdminMenu {
                         .build()
                 ))
                 .listener(context -> {
-                    new SpongeListingMenu(context.require(ServerPlayer.class), true).open();
+                    new SpongeListingMenu(PlatformPlayer.from(context.require(ServerPlayer.class)), true).open();
                     return false;
                 })
                 .build();

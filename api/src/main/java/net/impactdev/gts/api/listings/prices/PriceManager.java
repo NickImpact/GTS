@@ -12,9 +12,9 @@ import java.util.function.Consumer;
 
 public interface PriceManager<T> extends ResourceManager<T> {
 
-    BiConsumer<EntryUI<?, ?, ?>, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>>> process();
+    void process(PlatformPlayer target, EntryUI<?> source, BiConsumer<EntryUI<?>, Price<?, ?, ?>> callback);
 
-    <U extends ImpactorUI> Optional<PriceSelectorUI<U>> getSelector(PlatformPlayer viewer, Price<?, ?, ?> price, Consumer<Object> callback);
+    Optional<PriceSelectorUI> getSelector(PlatformPlayer viewer, Price<?, ?, ?> price, Consumer<Object> callback);
 
     /**
      * Represents the executor that will handle processing of creating an entry from a command context.
@@ -26,9 +26,9 @@ public interface PriceManager<T> extends ResourceManager<T> {
      */
     CommandGenerator.PriceGenerator<? extends Price<?, ?, ?>> getPriceCommandCreator();
 
-    interface PriceSelectorUI<U extends ImpactorUI> {
+    interface PriceSelectorUI {
 
-        U getDisplay();
+        ImpactorUI getDisplay();
 
         Consumer<Object> getCallback();
 

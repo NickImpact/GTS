@@ -30,18 +30,14 @@ import net.impactdev.gts.common.storage.implementation.sql.SqlImplementation;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.dependencies.DependencyManager;
 import net.impactdev.impactor.api.storage.StorageType;
-import net.impactdev.impactor.api.storage.file.loaders.HoconLoader;
-import net.impactdev.impactor.api.storage.file.loaders.JsonLoader;
-import net.impactdev.impactor.api.storage.file.loaders.YamlLoader;
-import net.impactdev.impactor.api.storage.sql.file.H2ConnectionFactory;
-import net.impactdev.impactor.api.storage.sql.hikari.MariaDBConnectionFactory;
-import net.impactdev.impactor.api.storage.sql.hikari.MySQLConnectionFactory;
+import net.impactdev.impactor.api.storage.connection.configurate.ConfigurateLoaders;
+import net.impactdev.impactor.api.storage.connection.sql.SQLConnections;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
 import net.impactdev.gts.common.storage.implementation.file.ConfigurateStorage;
 
-import java.io.File;
+import java.nio.file.Paths;
 
 public class StorageFactory {
 
@@ -74,44 +70,38 @@ public class StorageFactory {
             case MARIADB:
                 return new SqlImplementation(
                         this.plugin,
-                        new MariaDBConnectionFactory(this.plugin.configuration().main().get(ConfigKeys.STORAGE_CREDENTIALS)),
+                        SQLConnections.mariaDB(this.plugin.configuration().main().get(ConfigKeys.STORAGE_CREDENTIALS)),
                         this.plugin.configuration().main().get(ConfigKeys.SQL_TABLE_PREFIX)
                 );
             case MYSQL:
                 return new SqlImplementation(
                         this.plugin,
-                        new MySQLConnectionFactory(this.plugin.configuration().main().get(ConfigKeys.STORAGE_CREDENTIALS)),
+                        SQLConnections.mysql(this.plugin.configuration().main().get(ConfigKeys.STORAGE_CREDENTIALS)),
                         this.plugin.configuration().main().get(ConfigKeys.SQL_TABLE_PREFIX)
                 );
             case H2:
                 return new SqlImplementation(
                         this.plugin,
-                        new H2ConnectionFactory(new File("gts").toPath().resolve("gts-h2")),
+                        SQLConnections.h2(Paths.get("gts").resolve("gts-h2")),
                         this.plugin.configuration().main().get(ConfigKeys.SQL_TABLE_PREFIX)
                 );
             case YAML:
             default:
                 return new ConfigurateStorage(
                         this.plugin,
-                        "YAML",
-                        new YamlLoader(),
-                        ".yml",
+                        ConfigurateLoaders.yaml(),
                         "yaml"
                 );
             case JSON:
                 return new ConfigurateStorage(
                         this.plugin,
-                        "JSON",
-                        new JsonLoader(),
-                        ".json",
+                        ConfigurateLoaders.json(),
                         "json"
                 );
             case HOCON:
                 return new ConfigurateStorage(
                         this.plugin,
-                        "HOCON",
-                        new HoconLoader(),
-                        ".hocon",
+                        ConfigurateLoaders.hocon(),
                         "hocon"
                 );
         }
