@@ -66,6 +66,7 @@ import org.spongepowered.api.scheduler.Task;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -103,6 +104,7 @@ public class SpongeListingMenu implements GTSMenu {
 	public SpongeListingMenu(PlatformPlayer viewer, boolean editor, Set<Predicate<Listing>> conditions, @Nullable Searching searcher) {
 		this.conditions = conditions;
 		Predicate<Listing> filter = listing -> true;
+		filter = filter.and(listing -> listing.getEntry() != null).and(Objects::nonNull);
 		for(Predicate<Listing> condition : conditions) {
 			filter = filter.and(condition);
 		}
@@ -233,15 +235,17 @@ public class SpongeListingMenu implements GTSMenu {
 
 		return future.thenApply(list -> list.stream()
 					.filter(listing -> {
-						boolean expired = listing.hasExpired();
-						if(!expired) {
-							if (listing instanceof BuyItNow) {
-								return !((BuyItNow) listing).isPurchased();
-							}
-						}
-
-						return !expired;
+//						boolean expired = listing.hasExpired();
+//						if(!expired) {
+//							if (listing instanceof BuyItNow) {
+//								return !((BuyItNow) listing).isPurchased();
+//							}
+//						}
+//
+//						return !expired;
+						return true;
 					})
+					.filter(listing -> listing.getEntry() != null)
 					.sorted(this.sorter.getCurrent().get().comparator)
 					.collect(Collectors.toList())
 			)
