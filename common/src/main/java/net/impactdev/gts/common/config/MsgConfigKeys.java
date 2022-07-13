@@ -603,6 +603,10 @@ public class MsgConfigKeys {
 			"&7Click me to toggle the state",
 			"&7of this setting!"
 	));
+	public static final ConfigKey<List<String>> UI_LISTING_TYPE_FILTER = listKey("ui.listings.type-filter", Lists.newArrayList(
+			"&7Click to filter the shown listings",
+			"&7to this type only!"
+	));
 
 	// Generic Messages
 	public static final ConfigKey<String> GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST = stringKey("general.feedback.begin-feedback-request", "&7Processing your request...");

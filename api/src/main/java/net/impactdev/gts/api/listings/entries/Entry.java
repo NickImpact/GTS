@@ -2,11 +2,10 @@ package net.impactdev.gts.api.listings.entries;
 
 import io.leangen.geantyref.TypeToken;
 import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.kyori.adventure.text.TextComponent;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -25,7 +24,11 @@ import java.util.UUID;
  */
 public interface Entry<T, I> extends Storable {
 
-	default TypeToken<T> type() {
+	default TypeToken<Entry<T, I>> type() {
+		return new TypeToken<Entry<T, I>>() {};
+	}
+
+	default TypeToken<T> element() {
 		return new TypeToken<T>() {};
 	}
 

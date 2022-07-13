@@ -15,7 +15,6 @@ import net.impactdev.gts.api.searching.Searcher;
 import net.impactdev.gts.ui.admin.editor.SpongeListingEditorMenu;
 import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
 import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.builders.Builder;
 import net.impactdev.impactor.api.chat.ChatProcessor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.placeholders.PlaceholderSources;
@@ -66,7 +65,6 @@ import org.spongepowered.api.scheduler.Task;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -87,8 +85,7 @@ public class SpongeListingMenu implements GTSMenu {
 	private final SectionedPagination pagination;
 	private SchedulerTask runner;
 
-	private final Set<Predicate<Listing>> conditions;
-	private final @Nullable Searching searchQuery;
+	private final ConditionManager filters = new ConditionManager();
 
 	/** True = Auction, False = Quick Purchase, Not Set = All */
 	private TriState mode = TriState.NOT_SET;
@@ -102,17 +99,8 @@ public class SpongeListingMenu implements GTSMenu {
 	}
 
 	public SpongeListingMenu(PlatformPlayer viewer, boolean editor, Set<Predicate<Listing>> conditions, @Nullable Searching searcher) {
-		this.conditions = conditions;
-		Predicate<Listing> filter = listing -> true;
-		filter = filter.and(listing -> listing.getEntry() != null).and(Objects::nonNull);
-		for(Predicate<Listing> condition : conditions) {
-			filter = filter.and(condition);
-		}
-
-		this.searchQuery = searcher;
-		if(this.searchQuery != null) {
-			filter = filter.and(this.searchQuery);
-		}
+		this.filters.others.addAll(conditions);
+		this.filters.search = searcher;
 
 		this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
 		this.pagination = SectionedPagination.builder()
@@ -124,7 +112,7 @@ public class SpongeListingMenu implements GTSMenu {
 				.section()
 				.asynchronous(Listing.class)
 				.accumulator(this.fetchAndTranslate(viewer))
-				.filter(filter)
+				.filter(this.filters)
 				.dimensions(7, 4)
 				.offset(2, 0)
 				.updater(PageUpdater.builder()
@@ -178,17 +166,17 @@ public class SpongeListingMenu implements GTSMenu {
 						.build()
 				)
 				.complete()
-				.onClose(context -> {
-					this.runner.cancel();
-					return true;
-				})
+//				.onClose(context -> {
+//					this.runner.cancel();
+//					return true;
+//				})
 				.build();
 
 		this.editor = editor;
 	}
 
 	public void open() {
-		this.runner = Sponge.server().scheduler().submit(this.schedule())::cancel;
+//		this.runner = Sponge.server().scheduler().submit(this.schedule())::cancel;
 		this.pagination.open();
 	}
 
@@ -234,7 +222,7 @@ public class SpongeListingMenu implements GTSMenu {
 				.fetchListings();
 
 		return future.thenApply(list -> list.stream()
-					.filter(listing -> {
+//					.filter(listing -> {
 //						boolean expired = listing.hasExpired();
 //						if(!expired) {
 //							if (listing instanceof BuyItNow) {
@@ -243,8 +231,7 @@ public class SpongeListingMenu implements GTSMenu {
 //						}
 //
 //						return !expired;
-						return true;
-					})
+//					})
 					.filter(listing -> listing.getEntry() != null)
 					.sorted(this.sorter.getCurrent().get().comparator)
 					.collect(Collectors.toList())
@@ -267,14 +254,19 @@ public class SpongeListingMenu implements GTSMenu {
 									ItemStack.builder()
 											.itemType(display)
 											.add(Keys.CUSTOM_NAME, Component.text(manager.getName()).color(NamedTextColor.YELLOW))
-											.add(Keys.LORE, Lists.newArrayList())
+
+											.add(Keys.LORE, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_TYPE_FILTER))
+													.stream()
+													.map(ComponentManipulator::noItalics)
+													.collect(Collectors.toList())
+											)
 											.build()
 							))
 							.listener(context -> {
-								this.pagination.at(9)
-										.map(section -> (Section.Generic<EntryManager<?>>) section)
+								this.pagination.at(4)
+										.map(section -> (Section.Generic<Listing>) section)
 										.get()
-										.filter(new Manager(manager));
+										.filter(this.filters.entryType(new Manager(manager)));
 
 								return false;
 							})
@@ -405,13 +397,21 @@ public class SpongeListingMenu implements GTSMenu {
 
 					ClickType<?> type = context.require(ClickType.class);
 					if(type.equals(ClickTypes.CLICK_LEFT.get())) {
-						this.mode = TriState.TRUE;
-						this.pagination.set(bin, 52);
-
-						section.filter(QUICK_PURCHASE_ONLY);
-					} else if(type.equals(ClickTypes.CLICK_RIGHT.get())) {
+						this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
+						this.sorter.reset();
 						this.mode = TriState.FALSE;
+
+						this.pagination.set(bin, 52);
+						this.pagination.set(this.drawSorter(false), 51);
+						section.filter(this.filters.listingType(QUICK_PURCHASE_ONLY));
+					} else if(type.equals(ClickTypes.CLICK_RIGHT.get())) {
+						this.sorter = Sorter.AUCTION_ONLY.copy();
+						this.sorter.reset();
+						this.mode = TriState.TRUE;
+
 						this.pagination.set(auction, 52);
+						this.pagination.set(this.drawSorter(false), 51);
+						section.filter(this.filters.listingType(AUCTIONS_ONLY));
 					}
 
 					return false;
@@ -426,15 +426,21 @@ public class SpongeListingMenu implements GTSMenu {
 
 			ClickType<?> type = context.require(ClickType.class);
 			if(type.equals(ClickTypes.CLICK_LEFT.get())) {
+				this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
+				this.sorter.reset();
 				this.mode = TriState.NOT_SET;
 				this.pagination.set(all, 52);
+				this.pagination.set(this.drawSorter(false), 51);
 
 				section.filter(null);
 			} else if(type.equals(ClickTypes.CLICK_RIGHT.get())) {
-				this.mode = TriState.FALSE;
+				this.sorter = Sorter.AUCTION_ONLY.copy();
+				this.sorter.reset();
+				this.mode = TriState.TRUE;
 				this.pagination.set(auction, 52);
+				this.pagination.set(this.drawSorter(false), 51);
 
-				section.filter(AUCTIONS_ONLY);
+				section.filter(this.filters.listingType(AUCTIONS_ONLY));
 			}
 
 			return false;
@@ -445,16 +451,20 @@ public class SpongeListingMenu implements GTSMenu {
 					.orElseThrow(IllegalStateException::new);
 
 			ClickType<?> type = context.require(ClickType.class);
+			this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
+			this.sorter.reset();
 			if(type.equals(ClickTypes.CLICK_LEFT.get())) {
-				this.mode = TriState.TRUE;
+				this.mode = TriState.FALSE;
 				this.pagination.set(bin, 52);
+				this.pagination.set(this.drawSorter(false), 51);
 
-				section.filter(QUICK_PURCHASE_ONLY);
+				section.filter(this.filters.listingType(QUICK_PURCHASE_ONLY));
 			} else if(type.equals(ClickTypes.CLICK_RIGHT.get())) {
 				this.mode = TriState.NOT_SET;
 				this.pagination.set(all, 52);
+				this.pagination.set(this.drawSorter(false), 51);
 
-				section.filter(null);
+				section.filter(this.filters.listingType(null));
 			}
 
 			return false;
@@ -465,9 +475,9 @@ public class SpongeListingMenu implements GTSMenu {
 						.itemType(ItemTypes.OAK_SIGN)
 						.add(Keys.CUSTOM_NAME, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_TITLE)))
 						.add(Keys.LORE, PARSER.parse(
-								this.searchQuery != null ? Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_LORE_QUERIED) :
+								this.filters.search != null ? Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_LORE_QUERIED) :
 										Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_LORE_NO_QUERY),
-								PlaceholderSources.builder().append(Searching.class, () -> this.searchQuery).build()
+								PlaceholderSources.builder().append(Searching.class, () -> this.filters.search).build()
 						))
 						.build()
 				))
@@ -477,7 +487,7 @@ public class SpongeListingMenu implements GTSMenu {
 							.get(ChatProcessor.class)
 							.register(source.uniqueId(), input -> {
 								Searching query = new Searching(input);
-								new SpongeListingMenu(PlatformPlayer.from(source), this.editor, this.conditions, query).open();
+								new SpongeListingMenu(PlatformPlayer.from(source), this.editor, this.filters.others, query).open();
 							});
 
 					return false;
@@ -485,7 +495,7 @@ public class SpongeListingMenu implements GTSMenu {
 				.build();
 		layout.slot(searcher, 50);
 
-		Icon<ItemStack> sorter = this.drawSorter();
+		Icon<ItemStack> sorter = this.drawSorter(true);
 		layout.slot(sorter, 51);
 
 		ItemStack b = ItemStack.builder()
@@ -496,7 +506,7 @@ public class SpongeListingMenu implements GTSMenu {
 		Icon<ItemStack> back = Icon.builder(ItemStack.class)
 				.display(new DisplayProvider.Constant<>(b))
 				.listener(context -> {
-					this.runner.cancel();
+					//this.runner.cancel();
 					// We need to cancel a running query for listings if it's still running
 
 					SpongeMainMenu menu = new SpongeMainMenu(viewer);
@@ -507,10 +517,13 @@ public class SpongeListingMenu implements GTSMenu {
 		layout.slot(back, 45);
 	}
 
-	private Icon<ItemStack> drawSorter() {
+	private Icon<ItemStack> drawSorter(boolean init) {
 		SortConfigurationOptions options = GTSPlugin.instance().configuration().language().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT);
 
-		this.sorter.next();
+		if(init) {
+			this.sorter.next();
+		}
+
 		Icon<ItemStack> icon = Icon.builder(ItemStack.class)
 				.display(() -> ItemStack.builder()
 						.itemType(ItemTypes.HOPPER)
@@ -600,7 +613,7 @@ public class SpongeListingMenu implements GTSMenu {
 		}
 	}
 
-	public static class Manager implements Predicate<EntryManager<?>> {
+	public static class Manager implements Predicate<Listing> {
 
 		private final EntryManager<?> manager;
 
@@ -609,8 +622,8 @@ public class SpongeListingMenu implements GTSMenu {
 		}
 
 		@Override
-		public boolean test(EntryManager<?> other) {
-			return this.manager.type().equals(other.type());
+		public boolean test(Listing listing) {
+			return this.manager.type().equals(listing.getEntry().type());
 		}
 	}
 
@@ -662,17 +675,39 @@ public class SpongeListingMenu implements GTSMenu {
 				.build();
 	}
 
-	public static final class SpongeListingMenuBuilder implements Builder<SpongeListingMenu> {
+	private static final class ConditionManager implements Predicate<Listing> {
 
-		private PlatformPlayer viewer;
-		private boolean admin;
-		private Searching search;
-
-		private Set<Predicate<Listing>> filters;
+		private Set<Predicate<Listing>> others = Sets.newHashSet();
+		private Predicate<Listing> listingType = listing -> true;
+		private Predicate<Listing> entryType = listing -> true;
+		private Searching search = null;
 
 		@Override
-		public SpongeListingMenu build() {
-			return null;
+		public boolean test(Listing listing) {
+			return this.listingType.and(this.entryType)
+					.and(this.flatten(this.others))
+					.and(this.search == null ? x -> true : this.search)
+					.test(listing);
+		}
+
+		public Predicate<Listing> listingType(@Nullable Predicate<Listing> predicate) {
+			this.listingType = Optional.ofNullable(predicate).orElse(listing -> true);
+			return this;
+		}
+
+		public Predicate<Listing> entryType(@Nullable Predicate<Listing> predicate) {
+			this.entryType = Optional.ofNullable(predicate).orElse(listing -> true);
+			return this;
+		}
+
+		private Predicate<Listing> flatten(Set<Predicate<Listing>> set) {
+			Predicate<Listing> result = listing -> true;
+			for(Predicate<Listing> x : set) {
+				result = result.and(x);
+			}
+
+			return result;
 		}
 	}
+
 }

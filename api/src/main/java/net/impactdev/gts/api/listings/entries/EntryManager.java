@@ -1,6 +1,5 @@
 package net.impactdev.gts.api.listings.entries;
 
-import com.google.common.collect.ImmutableMap;
 import io.leangen.geantyref.TypeToken;
 import net.impactdev.gts.api.commands.CommandGenerator;
 import net.impactdev.gts.api.data.ResourceManager;

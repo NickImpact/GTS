@@ -88,19 +88,19 @@ public class SpongeSelectedListingMenu {
 
         boolean isLister = viewer.uuid().equals(listing.getLister());
 
-        Optional<ScheduledTask> task = Optional.of(update)
-                .filter(t -> t)
-                .map(ignore -> Task.builder()
-                        .execute(() -> {
-                            if(Sponge.server().ticksPerSecond() >= 18) {
-                                this.update();
-                            }
-                        })
-                        .interval(1, TimeUnit.SECONDS)
-                        .plugin(GTSPlugin.instance().as(SpongeGTSPlugin.class).container())
-                        .build()
-                )
-                .map(t -> Sponge.server().scheduler().submit(t));
+//        Optional<ScheduledTask> task = Optional.of(update)
+//                .filter(t -> t)
+//                .map(ignore -> Task.builder()
+//                        .execute(() -> {
+//                            if(Sponge.server().ticksPerSecond() >= 18) {
+//                                this.update();
+//                            }
+//                        })
+//                        .interval(1, TimeUnit.SECONDS)
+//                        .plugin(GTSPlugin.instance().as(SpongeGTSPlugin.class).container())
+//                        .build()
+//                )
+//                .map(t -> Sponge.server().scheduler().submit(t));
 
         this.display = ImpactorUI.builder()
                 .provider(Key.key("gts", "selected-listing"))
@@ -111,10 +111,10 @@ public class SpongeSelectedListingMenu {
                                         MsgConfigKeys.UI_MENU_LISTING_SELECTED_OTHER_AUCTION
                 )))
                 .layout(this.design())
-                .onClose(context -> {
-                    task.ifPresent(ScheduledTask::cancel);
-                    return true;
-                })
+//                .onClose(context -> {
+//                    task.ifPresent(ScheduledTask::cancel);
+//                    return true;
+//                })
                 .build();
     }
 

@@ -318,3 +318,8 @@ publishing {
 
 build.dependsOn shadowJar
 build.dependsOn writeChangelogToFile
+
+gradle.buildFinished {
+    Date now = new Date()
+    println "\nBuild Completed: $now"
+}

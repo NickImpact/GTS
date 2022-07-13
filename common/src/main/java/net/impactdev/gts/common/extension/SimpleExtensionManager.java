@@ -128,7 +128,7 @@ public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
 
         for(Extension extension : this.getLoadedExtensions()) {
             try {
-                this.plugin.logger().info("Loading extension: &a" + extension.metadata().name());
+                this.plugin.logger().info("Loading extension: " + extension.metadata().name());
                 extension.load(GTSService.getInstance(), GTSPlugin.instance().configDirectory().orElseThrow(NoSuchElementException::new));
             } catch (Exception e) {
                 this.plugin.logger().error("Failed to load extension '" + extension.metadata().name() + "', check error below...");
