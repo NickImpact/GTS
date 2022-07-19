@@ -142,6 +142,39 @@ public class AdminExecutor extends PlayerRequiredExecutor {
 
     }
 
+//    @Alias("switch-storage")
+//    @Permission(GTSPermissions.ADMIN_PING)
+//    public static class TranslateStorage extends SpongeGTSCmdExecutor {
+//
+//        public static final Text TO = Text.of("TO");
+//
+//        public TranslateStorage(GTSPlugin plugin) {
+//            super(plugin);
+//        }
+//
+//        @Override
+//        public CommandElement[] getArguments() {
+//            return new CommandElement[] {
+//                    new StorageTypeElement(TO)
+//            };
+//        }
+//
+//        @Override
+//        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
+//            return new GTSCommandExecutor[0];
+//        }
+//
+//        @Override
+//        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+//            StorageTranslator translator = new StorageTranslator(args.requireOne(TO));
+//            src.sendMessage(Text.of(TextColors.GRAY, "Processing storage conversion, please wait..."));
+//            translator.run().thenAccept(result -> {
+//                src.sendMessage(Text.of(TextColors.GRAY, "Conversion complete!"));
+//            });
+//            return CommandResult.success();
+//        }
+//    }
+
     @Alias("clean")
     @Permission(GTSPermissions.ADMIN_BASE)
     public static class Clean extends SpongeGTSCmdExecutor {

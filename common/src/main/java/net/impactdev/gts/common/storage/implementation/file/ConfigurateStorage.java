@@ -65,6 +65,7 @@ import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BI
 import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.implementation.StorageImplementation;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.storage.connection.configurate.ConfigurateLoader;
@@ -205,8 +206,25 @@ public class ConfigurateStorage implements StorageImplementation {
 
     @Override
     public boolean hasMaxListings(UUID user) throws Exception {
-        return this.getListings().stream().filter(listing -> listing.getLister().equals(user)).count() >=
-                GTSPlugin.instance().configuration().main().get(ConfigKeys.MAX_LISTINGS_PER_USER);
+        return this.getListings().stream()
+                .filter(listing -> listing.getLister().equals(user))
+                .filter(listing -> {
+                    if(listing instanceof BuyItNow) {
+                        return !((BuyItNow) listing).stashedForPurchaser();
+                    } else {
+                        try {
+                            ConfigurationNode file = this.readFile(Group.CLAIMS, listing.getID());
+                            if (file != null) {
+                                return !file.node("lister").getBoolean();
+                            }
+                        } catch (Exception e) {
+                            ExceptionWriter.write(e);
+                        }
+                    }
+
+                    return true;
+                })
+                .count() >= GTSPlugin.instance().configuration().main().get(ConfigKeys.MAX_LISTINGS_PER_USER);
     }
 
     @Override
