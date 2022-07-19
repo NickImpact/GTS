@@ -24,9 +24,7 @@ import java.util.UUID;
  */
 public interface Entry<T, I> extends Storable {
 
-	default TypeToken<Entry<T, I>> type() {
-		return new TypeToken<Entry<T, I>>() {};
-	}
+	Class<? extends Entry<T, I>> type();
 
 	default TypeToken<T> element() {
 		return new TypeToken<T>() {};

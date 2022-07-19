@@ -2,6 +2,7 @@ package net.impactdev.gts.sponge.pricing.provided;
 
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
+import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
 import net.impactdev.gts.sponge.utils.Utilities;
@@ -30,6 +31,11 @@ public class MonetaryEntry extends SpongeEntry<BigDecimal> {
 
     public static void setEconomy(EconomyService economy) {
         MonetaryEntry.economy = economy;
+    }
+
+    @Override
+    public Class<? extends Entry<BigDecimal, ItemStack>> type() {
+        return MonetaryEntry.class;
     }
 
     @Override

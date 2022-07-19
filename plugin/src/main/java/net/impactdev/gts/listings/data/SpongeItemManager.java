@@ -58,6 +58,11 @@ public class SpongeItemManager implements EntryManager<SpongeItemEntry> {
     }
 
     @Override
+    public Class<SpongeItemEntry> supported() {
+        return SpongeItemEntry.class;
+    }
+
+    @Override
     public Class<?> getBlacklistType() {
         return ItemType.class;
     }

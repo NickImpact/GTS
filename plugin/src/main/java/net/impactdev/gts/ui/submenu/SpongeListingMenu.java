@@ -65,6 +65,7 @@ import org.spongepowered.api.scheduler.Task;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -222,16 +223,16 @@ public class SpongeListingMenu implements GTSMenu {
 				.fetchListings();
 
 		return future.thenApply(list -> list.stream()
-//					.filter(listing -> {
-//						boolean expired = listing.hasExpired();
-//						if(!expired) {
-//							if (listing instanceof BuyItNow) {
-//								return !((BuyItNow) listing).isPurchased();
-//							}
-//						}
-//
-//						return !expired;
-//					})
+					.filter(listing -> {
+						boolean expired = listing.hasExpired();
+						if(!expired) {
+							if (listing instanceof BuyItNow) {
+								return !((BuyItNow) listing).isPurchased();
+							}
+						}
+
+						return !expired;
+					})
 					.filter(listing -> listing.getEntry() != null)
 					.sorted(this.sorter.getCurrent().get().comparator)
 					.collect(Collectors.toList())
@@ -263,10 +264,15 @@ public class SpongeListingMenu implements GTSMenu {
 											.build()
 							))
 							.listener(context -> {
+								Manager filter = new Manager(manager);
+								Predicate<Listing> result =
+										(this.filters.entryType instanceof Manager && this.filters.entryType.equals(filter))
+												? null : this.filters.entryType(filter);
+
 								this.pagination.at(4)
 										.map(section -> (Section.Generic<Listing>) section)
 										.get()
-										.filter(this.filters.entryType(new Manager(manager)));
+										.filter(result);
 
 								return false;
 							})
@@ -623,7 +629,20 @@ public class SpongeListingMenu implements GTSMenu {
 
 		@Override
 		public boolean test(Listing listing) {
-			return this.manager.type().equals(listing.getEntry().type());
+			return this.manager.supported().equals(listing.getEntry().type());
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+			Manager manager1 = (Manager) o;
+			return this.manager.supported().equals(manager1.manager.supported());
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(manager.supported());
 		}
 	}
 
@@ -677,7 +696,7 @@ public class SpongeListingMenu implements GTSMenu {
 
 	private static final class ConditionManager implements Predicate<Listing> {
 
-		private Set<Predicate<Listing>> others = Sets.newHashSet();
+		private final Set<Predicate<Listing>> others = Sets.newHashSet();
 		private Predicate<Listing> listingType = listing -> true;
 		private Predicate<Listing> entryType = listing -> true;
 		private Searching search = null;

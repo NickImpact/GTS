@@ -1,5 +1,6 @@
 package net.impactdev.gts.listings;
 
+import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.data.NBTMapper;
@@ -60,6 +61,11 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	public SpongeItemEntry(ItemStackSnapshot item, @Nullable Integer slot) {
 		this.item = item;
 		this.slot = slot;
+	}
+
+	@Override
+	public Class<? extends Entry<ItemStackSnapshot, ItemStack>> type() {
+		return SpongeItemEntry.class;
 	}
 
 	@Override

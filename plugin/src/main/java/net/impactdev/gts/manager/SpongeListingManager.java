@@ -79,7 +79,7 @@ public class SpongeListingManager implements ListingManager<SpongeListing, Spong
 		final EconomyService economy = Sponge.server().serviceProvider().economyService().orElseThrow(IllegalStateException::new);
 
 		return CompletableFutureManager.makeFuture(() -> {
-			PlaceholderSources sources = PlaceholderSources.empty();
+			PlaceholderSources sources = PlaceholderSources.builder().append(Listing.class, () -> listing).build();
 			source.ifPresent(player -> sources.append(ServerPlayer.class, () -> player));
 			source.ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST))));
 
