@@ -36,6 +36,10 @@ plugins {
 allprojects {
     group = 'net.impactdev.gts'
     version = "6.2.0"
+
+    ext {
+        sponge = "8.1.0"
+    }
 }
 
 allprojects {

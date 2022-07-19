@@ -20,7 +20,7 @@ dependencies {
 shadowJar {
     archiveBaseName.set("GTS-Sponge")
     archiveClassifier.set("")
-    archiveVersion.set("${project.sponge}-${project.plugin}")
+    archiveVersion.set("${project.sponge}-${project.version}")
 
     dependencies {
         include project(":api")
@@ -36,7 +36,7 @@ shadowJar {
 processResources {
     duplicatesStrategy = DuplicatesStrategy.WARN
     from(sourceSets.main.resources.srcDirs) {
-        expand 'version': project.plugin
+        expand 'version': project.version
     }
 }
 
