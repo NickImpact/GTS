@@ -185,7 +185,7 @@ public class SpongeListingMenu implements GTSMenu {
 		Layout.LayoutBuilder builder = Layout.builder();
 		builder.row(ProvidedIcons.BORDER, 5)
 				.column(ProvidedIcons.BORDER, 2)
-				.slots(ProvidedIcons.BORDER, 0, 36, 49);
+				.slots(ProvidedIcons.BORDER, 0, 36, 49, 53);
 
 		this.createBottomPanel(viewer, builder);
 		return builder.build();

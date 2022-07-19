@@ -27,6 +27,7 @@ public class ReleaseNotesTask extends DefaultTask {
     @Input public String version;
     @Input public String hash;
     @Input public String message;
+    @Input public String sponge;
     @Input public ReleaseLevel level;
 
     public String getVersion() {
@@ -43,6 +44,10 @@ public class ReleaseNotesTask extends DefaultTask {
 
     public String getMessage() {
         return this.message;
+    }
+
+    public String getSponge() {
+        return this.sponge;
     }
 
     public ReleaseLevel getLevel() {
@@ -104,6 +109,7 @@ public class ReleaseNotesTask extends DefaultTask {
         HASH("commit-hash", ReleaseNotesTask::getHash),
         SHORT_HASH("commit-hash-short", ReleaseNotesTask::getShortHash),
         MESSAGE("commit-message", ReleaseNotesTask::getMessage),
+        SPONGE("sponge", ReleaseNotesTask::getSponge),
         CHANGES("changes", task -> {
             Optional<String> result = task.getChangesForVersion();
             return result.orElse("No release notes available for this version...");
