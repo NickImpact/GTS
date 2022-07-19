@@ -9,7 +9,7 @@ repositories {
 
 dependencies {
     implementation project(":api")
-    implementation 'net.impactdev.impactor:launcher:4.0.0-SNAPSHOT'
+    implementation 'net.impactdev.impactor:launcher:4.0.0'
 
     compileOnly 'org.spongepowered:spongeapi:8.1.0'
     annotationProcessor('org.spongepowered:spongeapi:8.0.0') {

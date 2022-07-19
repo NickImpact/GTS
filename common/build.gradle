@@ -1,6 +1,6 @@
 dependencies {
     api project(':api')
-    compileOnly "net.impactdev.impactor:launcher:4.0.0-SNAPSHOT"
+    compileOnly "net.impactdev.impactor:launcher:4.0.0"
 
     shadow 'org.spongepowered:configurate-core:4.1.2'
     shadow 'org.spongepowered:configurate-gson:4.1.2'

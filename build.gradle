@@ -106,7 +106,7 @@ subprojects {
     dependencies {
         minecraft 'net.minecraftforge:forge:1.16.5-36.2.20'
 
-        shadow "net.impactdev.impactor:api:4.0.0-SNAPSHOT"
+        shadow "net.impactdev.impactor:api:4.0.0"
 
         shadow 'net.kyori:adventure-api:4.10.1'
         //shadow 'net.kyori:adventure-text-minimessage:4.10.1'
