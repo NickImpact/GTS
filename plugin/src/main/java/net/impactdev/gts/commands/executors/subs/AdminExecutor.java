@@ -4,8 +4,7 @@ import com.google.common.collect.Lists;
 import net.impactdev.gts.api.commands.GTSCommandExecutor;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.storage.GTSStorage;
-import net.impactdev.gts.commands.elements.StorageTypeElement;
-import net.impactdev.gts.common.storage.translators.StorageTranslator;
+import net.impactdev.gts.commands.executors.utility.PlayerRequiredExecutor;
 import net.impactdev.gts.util.GTSInfoGenerator;
 import net.impactdev.gts.api.commands.annotations.Alias;
 import net.impactdev.gts.api.commands.annotations.Permission;
@@ -19,37 +18,41 @@ import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.gts.ui.admin.SpongeAdminMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.storage.StorageType;
-import org.spongepowered.api.command.CommandException;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.args.CommandElement;
-import org.spongepowered.api.command.args.GenericArguments;
-import org.spongepowered.api.command.spec.CommandSpec;
+import org.spongepowered.api.command.exception.CommandException;
+import org.spongepowered.api.command.parameter.CommandContext;
+import org.spongepowered.api.command.parameter.Parameter;
+import org.spongepowered.api.command.parameter.managed.Flag;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.service.pagination.PaginationList;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.action.TextActions;
-import org.spongepowered.api.text.format.TextColors;
 
 import java.util.List;
 
+
 @Alias("admin")
 @Permission(GTSPermissions.ADMIN_BASE)
-public class AdminExecutor extends SpongeGTSCmdExecutor {
+public class AdminExecutor extends PlayerRequiredExecutor {
 
     public AdminExecutor() {
-        super(GTSPlugin.getInstance());
+        super(GTSPlugin.instance());
     }
 
     @Override
-    public CommandElement[] getArguments() {
-        return new CommandElement[0];
+    public Parameter[] arguments() {
+        return new Parameter[0];
     }
 
     @Override
-    public SpongeGTSCmdExecutor[] getSubCommands() {
+    public Flag[] flags() {
+        return new Flag[0];
+    }
+
+    @Override
+    public SpongeGTSCmdExecutor[] children() {
         return new SpongeGTSCmdExecutor[] {
                 new Info(this.plugin),
                 new Ping(this.plugin),
@@ -59,13 +62,9 @@ public class AdminExecutor extends SpongeGTSCmdExecutor {
     }
 
     @Override
-    public CommandResult execute(CommandSource source, CommandContext arguments) throws CommandException {
-        if(source instanceof Player) {
-            new SpongeAdminMenu((Player) source).open();
-            return CommandResult.success();
-        }
-
-        throw new CommandException(Text.of("Only players can use the base command!"));
+    protected CommandResult process(ServerPlayer source, CommandContext context) throws CommandException {
+        new SpongeAdminMenu(source).open();
+        return CommandResult.success();
     }
 
     @Alias("info")
@@ -77,21 +76,26 @@ public class AdminExecutor extends SpongeGTSCmdExecutor {
         }
 
         @Override
-        public CommandElement[] getArguments() {
-            return new CommandElement[0];
+        public Parameter[] arguments() {
+            return new Parameter[0];
         }
 
         @Override
-        public SpongeGTSCmdExecutor[] getSubCommands() {
+        public Flag[] flags() {
+            return new Flag[0];
+        }
+
+        @Override
+        public SpongeGTSCmdExecutor[] children() {
             return new SpongeGTSCmdExecutor[0];
         }
 
         @Override
-        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-            MessageService<Text> service = Utilities.PARSER;
+        public CommandResult execute(CommandContext context) throws CommandException {
+            MessageService service = Utilities.PARSER;
 
-            new GTSInfoGenerator(src).create(src).thenAccept(x -> {
-                src.sendMessage(service.parse("{{gts:prefix}} Report saved to: &a" + x));
+            new GTSInfoGenerator().create(context.cause().audience()).thenAccept(x -> {
+                context.cause().audience().sendMessage(service.parse("{{gts:prefix}} Report saved to: &a" + x));
             });
             return CommandResult.success();
         }
@@ -107,23 +111,28 @@ public class AdminExecutor extends SpongeGTSCmdExecutor {
         }
 
         @Override
-        public CommandElement[] getArguments() {
-            return new CommandElement[0];
+        public Parameter[] arguments() {
+            return new Parameter[0];
         }
 
         @Override
-        public SpongeGTSCmdExecutor[] getSubCommands() {
+        public Flag[] flags() {
+            return new Flag[0];
+        }
+
+        @Override
+        public SpongeGTSCmdExecutor[] children() {
             return new SpongeGTSCmdExecutor[0];
         }
 
         @Override
-        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-            MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-            GTSPlugin.getInstance().getMessagingService()
+        public CommandResult execute(CommandContext context) throws CommandException {
+            MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+            GTSPlugin.instance().messagingService()
                     .sendPing()
                     .thenAccept(pong -> {
                         if(pong.wasSuccessful()) {
-                            src.sendMessage(service.parse(
+                            context.cause().audience().sendMessage(service.parse(
                                     "&eGTS &7\u00bb Ping request &asuccessful&7, took &b" + pong.getResponseTime() + " ms&7!"
                             ));
                         }
@@ -133,38 +142,38 @@ public class AdminExecutor extends SpongeGTSCmdExecutor {
 
     }
 
-    @Alias("switch-storage")
-    @Permission(GTSPermissions.ADMIN_PING)
-    public static class TranslateStorage extends SpongeGTSCmdExecutor {
-
-        public static final Text TO = Text.of("TO");
-
-        public TranslateStorage(GTSPlugin plugin) {
-            super(plugin);
-        }
-
-        @Override
-        public CommandElement[] getArguments() {
-            return new CommandElement[] {
-                    new StorageTypeElement(TO)
-            };
-        }
-
-        @Override
-        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
-            return new GTSCommandExecutor[0];
-        }
-
-        @Override
-        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-            StorageTranslator translator = new StorageTranslator(args.requireOne(TO));
-            src.sendMessage(Text.of(TextColors.GRAY, "Processing storage conversion, please wait..."));
-            translator.run().thenAccept(result -> {
-                src.sendMessage(Text.of(TextColors.GRAY, "Conversion complete!"));
-            });
-            return CommandResult.success();
-        }
-    }
+//    @Alias("switch-storage")
+//    @Permission(GTSPermissions.ADMIN_PING)
+//    public static class TranslateStorage extends SpongeGTSCmdExecutor {
+//
+//        public static final Text TO = Text.of("TO");
+//
+//        public TranslateStorage(GTSPlugin plugin) {
+//            super(plugin);
+//        }
+//
+//        @Override
+//        public CommandElement[] getArguments() {
+//            return new CommandElement[] {
+//                    new StorageTypeElement(TO)
+//            };
+//        }
+//
+//        @Override
+//        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
+//            return new GTSCommandExecutor[0];
+//        }
+//
+//        @Override
+//        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
+//            StorageTranslator translator = new StorageTranslator(args.requireOne(TO));
+//            src.sendMessage(Text.of(TextColors.GRAY, "Processing storage conversion, please wait..."));
+//            translator.run().thenAccept(result -> {
+//                src.sendMessage(Text.of(TextColors.GRAY, "Conversion complete!"));
+//            });
+//            return CommandResult.success();
+//        }
+//    }
 
     @Alias("clean")
     @Permission(GTSPermissions.ADMIN_BASE)
@@ -175,25 +184,31 @@ public class AdminExecutor extends SpongeGTSCmdExecutor {
         }
 
         @Override
-        public CommandElement[] getArguments() {
-            return new CommandElement[0];
+        public Parameter[] arguments() {
+            return new Parameter[0];
         }
 
         @Override
-        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
-            return new GTSCommandExecutor[0];
+        public Flag[] flags() {
+            return new Flag[0];
         }
 
         @Override
-        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-            MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        public SpongeGTSCmdExecutor[] children() {
+            return new SpongeGTSCmdExecutor[0];
+        }
 
-            src.sendMessage(service.parse("{{gts:prefix}} Erasing legacy table if it exists..."));
-            GTSStorage storage = GTSPlugin.getInstance().getStorage();
+        @Override
+        public CommandResult execute(CommandContext context) throws CommandException {
+            MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+
+            Audience audience = context.cause().audience();
+            audience.sendMessage(service.parse("{{gts:prefix}} Erasing legacy table if it exists..."));
+            GTSStorage storage = GTSPlugin.instance().storage();
             if(storage.clean().join()) {
-                src.sendMessage(service.parse("{{gts:prefix}} Legacy data successfully erased!"));
+                audience.sendMessage(service.parse("{{gts:prefix}} Legacy data successfully erased!"));
             } else {
-                src.sendMessage(service.parse("{{gts:error}} Legacy data no longer exists..."));
+                audience.sendMessage(service.parse("{{gts:error}} Legacy data no longer exists..."));
             }
 
             return CommandResult.success();
@@ -204,95 +219,98 @@ public class AdminExecutor extends SpongeGTSCmdExecutor {
     @Permission(GTSPermissions.ADMIN_USER_QUERY)
     public static class UserQuery extends SpongeGTSCmdExecutor {
 
-        private final Text PLAYER = Text.of("player");
+        private final Parameter.Value<ServerPlayer> PLAYER = Parameter.player()
+                .key("player")
+                .usage(key -> "Any currently logged in player")
+                .build();
 
         public UserQuery(GTSPlugin plugin) {
             super(plugin);
         }
 
         @Override
-        public CommandElement[] getArguments() {
-            return new CommandElement[] {
-                    GenericArguments.player(this.PLAYER)
+        public Parameter[] arguments() {
+            return new Parameter[] {
+                    PLAYER
             };
         }
 
         @Override
-        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
-            return new GTSCommandExecutor[0];
+        public Flag[] flags() {
+            return new Flag[0];
         }
 
         @Override
-        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-            Player player = args.<Player>getOne(this.PLAYER).get();
-            GTSPlugin.getInstance().getStorage().fetchListings(Lists.newArrayList(
-                    listing -> listing.getLister().equals(player.getUniqueId())
+        public SpongeGTSCmdExecutor[] children() {
+            return new SpongeGTSCmdExecutor[0];
+        }
+
+        @Override
+        public CommandResult execute(CommandContext context) throws CommandException {
+            ServerPlayer player = context.requireOne(PLAYER);
+            GTSPlugin.instance().storage().fetchListings(Lists.newArrayList(
+                    listing -> listing.getLister().equals(player.uniqueId())
             )).thenAccept(listings -> {
-                MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+                MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
                 PaginationList.Builder builder = PaginationList.builder()
-                        .title(service.parse("&e" + player.getName() + "'s Known Listings"))
+                        .title(service.parse("&e" + player.name() + "'s Known Listings"))
                         .linesPerPage(8);
 
-                List<Text> results = Lists.newArrayList();
+                List<Component> results = Lists.newArrayList();
                 int index = 1;
                 for(Listing listing : listings) {
                     results.add(this.listing(listing, index++));
                 }
                 builder.contents(results);
-                builder.sendTo(src);
+                builder.sendTo(context.cause().audience());
             });
 
             return CommandResult.success();
         }
 
-        private Text listing(Listing listing, int index) {
-            MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
-            Text result = service.parse("&7" + index + ": ");
+        private Component listing(Listing listing, int index) {
+            MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+            Component result = service.parse("&7" + index + ": ");
 
             if(listing instanceof BuyItNow) {
-                result = Text.of(result, service.parse("&bBIN &7(&6" + listing.getID() + "&7)"));
+                result = result.append(service.parse("&bBIN &7(&6" + listing.getID() + "&7)"));
 
                 BuyItNow bin = (BuyItNow) listing;
                 boolean purchased = bin.isPurchased();
                 boolean stashed = bin.stashedForPurchaser() || bin.hasExpired();
 
-                Text PURCHASED = service.parse("&aPurchased");
-                Text STASHED = service.parse("&6Stashed");
-                Text LISTED = service.parse("&dAvailable for Purchase");
+                Component PURCHASED = service.parse("&aPurchased");
+                Component STASHED = service.parse("&6Stashed");
+                Component LISTED = service.parse("&dAvailable for Purchase");
 
-                Text hover = Text.of(
-                        service.parse("&7Entry: "), Text.of(TextColors.YELLOW, Utilities.translateComponent(listing.getEntry().getName())),
-                        Text.NEW_LINE,
-                        service.parse("&7Price: &e"), Text.of(TextColors.YELLOW, Utilities.translateComponent(((BuyItNow) listing).getPrice().getText())),
-                        Text.NEW_LINE,
-                        service.parse("&7Status: "),
-                        purchased ? PURCHASED : stashed ? STASHED : LISTED
-                );
-                result = Text.builder()
-                        .onHover(TextActions.showText(hover))
-                        .append(result)
-                        .build();
+                Component hover =
+                        service.parse("&7Entry: ").append(listing.getEntry().getName())
+                                .append(Component.newline())
+                                .append(service.parse("&7Price: &e")).append(((BuyItNow) listing).getPrice().getText())
+                                .append(Component.newline())
+                                .append(service.parse("&7Status: "))
+                                .append(purchased ? PURCHASED : stashed ? STASHED : LISTED);
+
+                result = result.hoverEvent(HoverEvent.showText(hover));
+
             } else {
-                result = Text.of(result, service.parse("&cAuction &7(&6" + listing.getID() + "&7)"));
+                result = result.append(service.parse("&cAuction &7(&6" + listing.getID() + "&7)"));
 
                 Auction auction = (Auction) listing;
                 boolean stashed = auction.hasExpired() && auction.hasAnyBidsPlaced();
 
-                Text STASHED = service.parse("&6Stashed");
-                Text LISTED = service.parse("&dAvailable for Purchase");
+                Component STASHED = service.parse("&6Stashed");
+                Component LISTED = service.parse("&dAvailable for Purchase");
 
-                Text hover = Text.of(
-                        service.parse("&7Entry: "), Text.of(TextColors.YELLOW, Utilities.translateComponent(listing.getEntry().getName())),
-                        Text.NEW_LINE,
-                        service.parse("&7Price: &e"), Text.of(TextColors.YELLOW, Utilities.translateComponent(new MonetaryPrice(auction.getCurrentPrice()).getText())),
-                        Text.NEW_LINE,
-                        service.parse("&7Status: "),
-                        stashed ? STASHED : LISTED
-                );
-                result = Text.builder()
-                        .onHover(TextActions.showText(hover))
-                        .append(result)
-                        .build();
+                Component hover =
+                        service.parse("&7Entry: ").append(listing.getEntry().getName())
+                                .append(Component.newline())
+                                .append(service.parse("&7Price: &e")).append(new MonetaryPrice(auction.getCurrentPrice()).getText())
+                                .append(Component.newline())
+                                .append(service.parse("&7Status: "))
+                                .append(stashed ? STASHED : LISTED);
+
+                result = result.hoverEvent(HoverEvent.showText(hover));
             }
 
             return result;

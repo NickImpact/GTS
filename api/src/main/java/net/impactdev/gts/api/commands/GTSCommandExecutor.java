@@ -3,20 +3,25 @@ package net.impactdev.gts.api.commands;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.commands.annotations.Alias;
 import net.impactdev.gts.api.commands.annotations.Permission;
+import net.impactdev.impactor.api.Impactor;
 
 import java.util.List;
 
-public interface GTSCommandExecutor<E, S> {
+public interface GTSCommandExecutor<E, F, S> {
 
-    void register();
+    default S register() {
+        return this.build();
+    }
 
-    default List<String> getAliases() {
+    default List<String> aliases() {
         return Lists.newArrayList(this.getClass().getAnnotation(Alias.class).value());
     }
 
-    E[] getArguments();
+    E[] arguments();
 
-    GTSCommandExecutor<E, S>[] getSubCommands();
+    F[] flags();
+
+    GTSCommandExecutor<E, F, S>[] children();
 
     S build();
 

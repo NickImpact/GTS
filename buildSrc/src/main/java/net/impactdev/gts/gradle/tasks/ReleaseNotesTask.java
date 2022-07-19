@@ -4,6 +4,8 @@ package net.impactdev.gts.gradle.tasks;
 import net.impactdev.gts.gradle.enums.ReleaseLevel;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.GradleException;
+import org.gradle.api.tasks.Input;
+import org.gradle.api.tasks.Internal;
 import org.gradle.api.tasks.TaskAction;
 
 import java.io.BufferedReader;
@@ -19,13 +21,14 @@ import java.util.regex.Pattern;
 
 public class ReleaseNotesTask extends DefaultTask {
 
+    @Internal
     public String result = "No templated release notes available";
 
-    public String version;
-    public String hash;
-    public String sponge;
-    public String message;
-    public ReleaseLevel level;
+    @Input public String version;
+    @Input public String hash;
+    @Input public String message;
+    @Input public String sponge;
+    @Input public ReleaseLevel level;
 
     public String getVersion() {
         return this.version;
@@ -39,16 +42,20 @@ public class ReleaseNotesTask extends DefaultTask {
         return this.hash.substring(0, 7);
     }
 
-    public String getSpongeVersion() {
-        return this.sponge;
-    }
-
     public String getMessage() {
         return this.message;
     }
 
+    public String getSponge() {
+        return this.sponge;
+    }
+
     public ReleaseLevel getLevel() {
         return this.level;
+    }
+
+    public String getResult() {
+        return this.result;
     }
 
     @TaskAction
@@ -102,7 +109,7 @@ public class ReleaseNotesTask extends DefaultTask {
         HASH("commit-hash", ReleaseNotesTask::getHash),
         SHORT_HASH("commit-hash-short", ReleaseNotesTask::getShortHash),
         MESSAGE("commit-message", ReleaseNotesTask::getMessage),
-        SPONGE("sponge", ReleaseNotesTask::getSpongeVersion),
+        SPONGE("sponge", ReleaseNotesTask::getSponge),
         CHANGES("changes", task -> {
             Optional<String> result = task.getChangesForVersion();
             return result.orElse("No release notes available for this version...");

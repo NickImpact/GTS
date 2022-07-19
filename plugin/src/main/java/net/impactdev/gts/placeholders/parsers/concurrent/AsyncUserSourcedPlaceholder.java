@@ -3,17 +3,17 @@ package net.impactdev.gts.placeholders.parsers.concurrent;
 import com.github.benmanes.caffeine.cache.AsyncCacheLoader;
 import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import net.impactdev.gts.api.event.factory.GTSEventFactory;
 import net.impactdev.gts.placeholders.parsers.SourceSpecificPlaceholderParser;
 import net.impactdev.gts.api.events.placeholders.PlaceholderReadyEvent;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.placeholder.PlaceholderContext;
-import org.spongepowered.api.text.placeholder.PlaceholderParser;
-import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.api.placeholder.PlaceholderContext;
+import org.spongepowered.api.placeholder.PlaceholderParser;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -30,7 +30,7 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
     private final T def;
 
     private AsyncUserSourcedPlaceholder(Builder<T> builder) {
-        super(builder.type, builder.id, builder.name, builder.parser);
+        super(builder.type, builder.id, builder.parser);
 
         this.def = builder.def;
         this.cache = Caffeine.newBuilder()
@@ -40,37 +40,37 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
     }
 
     @Override
-    public Text parse(PlaceholderContext context) {
-        UUID user = context.getAssociatedObject()
+    public Component parse(PlaceholderContext context) {
+        UUID user = context.associatedObject()
                 .filter(source -> UUID.class.isAssignableFrom(source.getClass()) || Player.class.isAssignableFrom(source.getClass()))
                 .map(source -> {
                     if(Player.class.isAssignableFrom(source.getClass())) {
-                        return ((Player) source).getUniqueId();
+                        return ((Player) source).uniqueId();
                     } else {
                         return (UUID) source;
                     }
                 })
                 .orElse(null);
 
-        AtomicReference<Optional<Text>> fallback = new AtomicReference<>(Optional.empty());
-        Optional<String> arguments = context.getArgumentString();
+        AtomicReference<Optional<Component>> fallback = new AtomicReference<>(Optional.empty());
+        Optional<String> arguments = context.argumentString();
         if(arguments.isPresent()) {
             String[] args = arguments.get().split(";");
             for(String arg : args) {
                 String[] focus = arg.split("=");
                 if(focus.length > 1) {
                     if(focus[0].equalsIgnoreCase("fallback")) {
-                        fallback.set(Optional.of(TextSerializers.FORMATTING_CODE.deserialize(focus[1])));
+                        fallback.set(Optional.of(LegacyComponentSerializer.legacyAmpersand().deserialize(focus[1])));
                     }
                 }
             }
         }
 
-        TextComponent out = context.getAssociatedObject()
+        Component out = context.associatedObject()
                 .filter(source -> UUID.class.isAssignableFrom(source.getClass()) || Player.class.isAssignableFrom(source.getClass()))
                 .map(source -> {
                     if(Player.class.isAssignableFrom(source.getClass())) {
-                        return ((Player) source).getUniqueId();
+                        return ((Player) source).uniqueId();
                     } else {
                         return (UUID) source;
                     }
@@ -84,7 +84,7 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
                     if(result == null) {
                         this.cache.get(source).thenAccept(value -> {
                             this.last.put(source, value);
-                            Impactor.getInstance().getEventBus().post(PlaceholderReadyEvent.class, source, this.getId(), value);
+                            Impactor.getInstance().getEventBus().post(GTSEventFactory.createPlaceholderReadyEvent(this.key(), source, value));
                         });
                     }
                     return result;
@@ -96,17 +96,17 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
             if(user != null && fallback.get().isPresent()) {
                 Boolean result = this.initialized.get(user);
                 if(result != null && result) {
-                    return Utilities.translateComponent(this.getParser().apply(this.last.get(user)));
+                    return this.getParser().apply(this.last.get(user));
                 } else {
                     this.initialized.put(user, true);
                     return fallback.get().get();
                 }
             } else {
-                return Utilities.translateComponent(this.getParser().apply(this.def));
+                return this.getParser().apply(this.def);
             }
         }
 
-        return Utilities.translateComponent(out);
+        return out;
     }
 
     public static <T> Builder<T> builder() {
@@ -118,7 +118,7 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
         private Class<T> type;
         private String id;
         private String name;
-        private Function<T, TextComponent> parser;
+        private Function<T, Component> parser;
 
         private AsyncCacheLoader<UUID, T> loader;
         private T def;
@@ -143,7 +143,7 @@ public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderPar
             return this;
         }
 
-        public Builder<T> parser(Function<T, TextComponent> parser) {
+        public Builder<T> parser(Function<T, Component> parser) {
             this.parser = parser;
             return this;
         }

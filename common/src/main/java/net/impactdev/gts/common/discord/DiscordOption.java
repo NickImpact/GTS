@@ -5,6 +5,7 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 
 import java.awt.*;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class DiscordOption {
 
@@ -31,7 +32,10 @@ public class DiscordOption {
 	}
 
 	public static DiscordOption fetch(Options option) {
-		return GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.DISCORD_LINKS).get(option);
+		return GTSPlugin.instance().config()
+				.orElseThrow(NoSuchElementException::new)
+				.get(ConfigKeys.DISCORD_LINKS)
+				.get(option);
 	}
 
 	public enum Options {

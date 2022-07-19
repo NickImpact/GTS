@@ -3,61 +3,39 @@ package net.impactdev.gts.sponge.utils;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.ConfigKey;
+import net.impactdev.impactor.api.placeholders.PlaceholderSources;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.Time;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.config.types.time.TimeLanguageOptions;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mariuszgromada.math.mxparser.Argument;
-import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.serializer.TextSerializers;
+import org.spongepowered.plugin.PluginContainer;
 
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class Utilities {
 
-	private static PluginContainer container;
-
 	@SuppressWarnings("unchecked")
-	public static final MessageService<Text> PARSER = Impactor.getInstance().getRegistry().get(MessageService.class);
-
-	public static PluginContainer getPluginContainer() {
-		return container;
-	}
-
-	public static void setContainer(PluginContainer container) {
-		if(container.getId().equals("gts")) {
-			Utilities.container = container;
-		}
-	}
+	public static final MessageService PARSER = Impactor.getInstance().getRegistry().get(MessageService.class);
 
 	public static <T> T readMessageConfigOption(ConfigKey<T> key) {
-		return GTSPlugin.getInstance().getMsgConfig().get(key);
+		return GTSPlugin.instance().configuration().language().get(key);
 	}
 
-	public static Text parse(ConfigKey<String> key, List<Supplier<Object>> sources) {
-		return PARSER.parse(GTSPlugin.getInstance().getMsgConfig().get(key), sources);
+	public static Component parse(ConfigKey<String> key, PlaceholderSources sources) {
+		return PARSER.parse(GTSPlugin.instance().configuration().language().get(key), sources);
 	}
 
-	public static List<Text> parseList(ConfigKey<List<String>> key, List<Supplier<Object>> sources) {
-		return GTSPlugin.getInstance().getMsgConfig().get(key).stream().map(x -> PARSER.parse(x, sources)).collect(Collectors.toList());
-	}
-
-	public static TextComponent toComponent(Text text) {
-		return (TextComponent) GsonComponentSerializer.gson().deserialize(TextSerializers.JSON.serialize(text));
-	}
-
-	public static Text translateComponent(TextComponent component) {
-		return TextSerializers.JSON.deserialize(GsonComponentSerializer.gson().serialize(component));
+	public static List<Component> parseList(ConfigKey<List<String>> key, PlaceholderSources sources) {
+		return GTSPlugin.instance().configuration().language().get(key).stream().map(x -> PARSER.parse(x, sources)).collect(Collectors.toList());
 	}
 
 	public static TextComponent translateTime(Time time) {

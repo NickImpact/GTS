@@ -6,11 +6,11 @@ import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.common.messaging.messages.AbstractMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -104,7 +104,7 @@ public abstract class BINRemoveMessage extends AbstractMessage implements BuyItN
 
         @Override
         public CompletableFuture<Remove.Response> respond() {
-            return GTSPlugin.getInstance().getStorage().processListingRemoveRequest(this);
+            return GTSPlugin.instance().storage().processListingRemoveRequest(this);
         }
 
         @Override

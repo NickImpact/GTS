@@ -1,11 +1,11 @@
 package net.impactdev.gts.api.events;
 
 import net.impactdev.impactor.api.event.ImpactorEvent;
-import net.impactdev.impactor.api.event.annotations.Param;
 import net.impactdev.impactor.api.event.type.Cancellable;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
 
 import java.util.UUID;
 
@@ -14,12 +14,11 @@ import java.util.UUID;
  *
  * @author NickImpact
  */
+@GenerateFactoryMethod
 public interface PublishListingEvent extends ImpactorEvent, Cancellable {
 
-	@Param(0)
 	@NonNull UUID getLister();
 
-	@Param(1)
 	@NonNull
 	Listing getListing();
 

@@ -1,5 +1,7 @@
 package net.impactdev.gts.common.discord.internal;
 
+import net.impactdev.impactor.api.placeholders.PlaceholderSources;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -23,8 +25,8 @@ public class DiscordSourceSpecificPlaceholderParser<T> implements DiscordPlaceho
     }
 
     @Override
-    public String parse(List<Supplier<Object>> sources) {
-        return sources.stream()
+    public String parse(PlaceholderSources sources) {
+        return sources.suppliers().stream()
                 .map(Supplier::get)
                 .filter(x -> this.sourceType.isAssignableFrom(x.getClass()))
                 .map(this.sourceType::cast)

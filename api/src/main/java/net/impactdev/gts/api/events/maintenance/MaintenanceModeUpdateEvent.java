@@ -1,16 +1,14 @@
 package net.impactdev.gts.api.events.maintenance;
 
 import net.impactdev.gts.api.maintenance.MaintenanceMode;
-import net.impactdev.impactor.api.event.annotations.Param;
+import net.impactdev.impactor.api.event.ImpactorEvent;
+import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
 
-import java.util.UUID;
+@GenerateFactoryMethod
+public interface MaintenanceModeUpdateEvent extends ImpactorEvent {
 
-public interface MaintenanceModeUpdateEvent {
-
-    @Param(0)
     MaintenanceMode getMode();
 
-    @Param(1)
     boolean getNewState();
 
 }

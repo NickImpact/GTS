@@ -2,21 +2,17 @@ package net.impactdev.gts.sponge.pricing.provided;
 
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
-import net.impactdev.gts.api.listings.Listing;
+import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.event.cause.Cause;
-import org.spongepowered.api.event.cause.EventContext;
-import org.spongepowered.api.event.cause.EventContextKeys;
+import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.service.economy.EconomyService;
-import org.spongepowered.api.text.Text;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -38,6 +34,11 @@ public class MonetaryEntry extends SpongeEntry<BigDecimal> {
     }
 
     @Override
+    public Class<? extends Entry<BigDecimal, ItemStack>> type() {
+        return MonetaryEntry.class;
+    }
+
+    @Override
     public BigDecimal getOrCreateElement() {
         return this.amount;
     }
@@ -45,7 +46,7 @@ public class MonetaryEntry extends SpongeEntry<BigDecimal> {
     @Override
     public TextComponent getName() {
         return Component.text()
-                .append(Component.text(economy.getDefaultCurrency().format(this.getOrCreateElement()).toPlain()))
+                .append(economy.defaultCurrency().format(this.getOrCreateElement()))
                 .build();
     }
 
@@ -58,18 +59,13 @@ public class MonetaryEntry extends SpongeEntry<BigDecimal> {
     public Display<ItemStack> getDisplay(UUID viewer) {
         return () -> ItemStack.builder()
                 .itemType(ItemTypes.GOLD_INGOT)
-                .add(Keys.DISPLAY_NAME, Text.of(this.getName()))
+                .add(Keys.CUSTOM_NAME, this.getName())
                 .build();
     }
 
     @Override
     public boolean give(UUID receiver) {
-        economy.getOrCreateAccount(receiver).get().deposit(economy.getDefaultCurrency(), this.amount, Cause.builder()
-                .append(receiver)
-                .build(EventContext.builder()
-                        .add(EventContextKeys.PLUGIN, Utilities.getPluginContainer())
-                        .build()
-                ));
+        economy.findOrCreateAccount(receiver).get().deposit(economy.defaultCurrency(), this.amount);
         return true;
     }
 

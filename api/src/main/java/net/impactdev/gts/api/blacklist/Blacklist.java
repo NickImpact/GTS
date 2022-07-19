@@ -1,6 +1,7 @@
 package net.impactdev.gts.api.blacklist;
 
 import com.google.common.collect.Multimap;
+import net.kyori.adventure.key.Key;
 
 public interface Blacklist {
 

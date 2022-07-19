@@ -1,24 +1,28 @@
 package net.impactdev.gts.placeholders;
 
-import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.AsyncCacheLoader;
+import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import io.leangen.geantyref.TypeToken;
 import net.impactdev.gts.api.listings.makeup.Fees;
 import net.impactdev.gts.api.listings.prices.Price;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.utils.EconomicFormatter;
+import net.impactdev.gts.common.utils.future.CompletableFutureManager;
+import net.impactdev.gts.placeholders.parsers.IdentifiableParser;
 import net.impactdev.gts.placeholders.parsers.concurrent.AsyncUserSourcedPlaceholder;
+import net.impactdev.gts.SpongeGTSPlugin;
 import net.impactdev.gts.ui.submenu.SpongeListingMenu;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.configuration.ConfigKey;
+import net.impactdev.impactor.api.placeholders.PlaceholderSources;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.impactdev.impactor.api.utilities.Time;
-import net.impactdev.gts.GTSSpongePlugin;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
@@ -28,26 +32,24 @@ import net.impactdev.gts.placeholders.parsers.SourceSpecificPlaceholderParser;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.item.enchantment.Enchantment;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
-import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.profile.GameProfile;
-import org.spongepowered.api.service.economy.EconomyService;
+import org.spongepowered.api.placeholder.PlaceholderContext;
+import org.spongepowered.api.placeholder.PlaceholderParser;
 import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.api.service.user.UserStorageService;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.placeholder.PlaceholderContext;
-import org.spongepowered.api.text.placeholder.PlaceholderParser;
+import org.spongepowered.plugin.PluginContainer;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -56,106 +58,112 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class GTSSpongePlaceholderManager {
 
-    private final List<PlaceholderParser> parsers = Lists.newArrayList();
+    private final List<PlaceholderMetadata> parsers = Lists.newArrayList();
+    private final ResourceKey.Builder key = ResourceKey.builder()
+            .namespace("gts");
 
     public GTSSpongePlaceholderManager() {
         this.populate();
     }
 
-    public void register(PlaceholderParser parser) {
+    public void register(PlaceholderMetadata parser) {
         this.parsers.add(parser);
     }
 
-    public ImmutableList<PlaceholderParser> getAllParsers() {
+    private void register(IdentifiableParser parser) {
+        this.parsers.add(PlaceholderMetadata.of(
+                this.key.value(parser.key()).build(),
+                parser
+        ));
+    }
+
+    public ImmutableList<PlaceholderMetadata> getAllParsers() {
         return ImmutableList.copyOf(this.parsers);
     }
 
     public void populate() {
-        Config msgConf = GTSPlugin.getInstance().getMsgConfig();
-        MessageService<Text> processor = Impactor.getInstance().getRegistry().get(MessageService.class);
-        PluginContainer container = GTSPlugin.getInstance().as(GTSSpongePlugin.class).getPluginContainer();
+        Config msgConf = GTSPlugin.instance().configuration().language();
+        MessageService processor = Impactor.getInstance().getRegistry().get(MessageService.class);
+        PluginContainer container = GTSPlugin.instance().as(SpongeGTSPlugin.class).container();
 
-        this.register(this.create("prefix", "GTS Prefix", container, context -> processor.parse(msgConf.get(MsgConfigKeys.PREFIX))));
-        this.register(this.create("error", "GTS Error Prefix", container, context -> processor.parse(msgConf.get(MsgConfigKeys.ERROR_PREFIX))));
+        this.register(this.create("prefix", context -> processor.parse(msgConf.get(MsgConfigKeys.PREFIX))));
+        this.register(this.create("error", context -> processor.parse(msgConf.get(MsgConfigKeys.ERROR_PREFIX))));
         this.register(new SourceSpecificPlaceholderParser.Decorative<>(
                 Listing.class,
                 "seller",
-                "GTS - Listing Seller",
-                listing -> this.calculateDisplayName(listing.getLister())
+                listing -> this.userCache.get(listing.getLister()).getNow(Component.text("Pooling..."))
         ));
         this.register(new SourceSpecificPlaceholderParser.Decorative<>(
                 UUID.class,
                 "purchaser",
-                "GTS - Listing Purchaser",
-                this::calculateDisplayName
+                id -> this.userCache.get(id).getNow(Component.text("Pooling..."))
         ));
 
         // Listing Related Placeholders
         this.register(new SourceSpecificPlaceholderParser<>(
                 Listing.class,
                 "listing_id",
-                "GTS - Listing ID",
                 listing -> Component.text(listing.getID().toString())
         ));
         this.register(new SourceSpecificPlaceholderParser.Decorative<>(
                 Listing.class,
                 "listing_name",
-                "GTS - Listing Name",
                 listing -> listing.getEntry().getName()
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Listing.class,
                 "listing_details",
-                "GTS - Listing Details",
                 listing -> listing.getEntry().getDescription()
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Listing.class,
                 "listing_status",
-                "GTS - Listing Time Remaining",
                 listing -> {
-                    final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+                    final MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
 
                     if(listing instanceof BuyItNow && ((BuyItNow) listing).isPurchased()) {
-                        return Utilities.toComponent(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STATUS_PURCHASED)));
+                        return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STATUS_PURCHASED));
                     }
 
                     LocalDateTime expiration = listing.getExpiration();
                     LocalDateTime now = LocalDateTime.now();
                     Time time = new Time(Duration.between(now, expiration).getSeconds());
                     if(time.getTime() <= 0) {
-                        return Utilities.toComponent(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STATUS_TIME_EXPIRED)));
+                        return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STATUS_TIME_EXPIRED));
                     }
-                    return Utilities.toComponent(parser.parse(
+
+                    PlaceholderSources sources = PlaceholderSources.builder()
+                            .append(Time.class, () -> time)
+                            .build();
+                    return parser.parse(
                             Utilities.readMessageConfigOption(MsgConfigKeys.TIME_REMAINING_TRANSLATION),
-                            Lists.newArrayList(() -> time)
-                    ));
+                            sources
+                    );
                 }
         ));
 
         this.register(new SourceSpecificPlaceholderParser<>(
                 Price.class,
                 "price_selection",
-                "GTS - Price Selection for creating Listing",
                 Price::getText
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Tuple.class,
                 "price_fee",
-                "GTS - Price Selection Fee",
                 wrapper -> {
                     if(wrapper.getFirst() instanceof Price && wrapper.getSecond() instanceof Boolean) {
                         Price<?, ?, ?> price = (Price<?, ?, ?>) wrapper.getFirst();
                         boolean listingType = (Boolean) wrapper.getSecond();
 
-                        return Component.text(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(price.calculateFee(listingType)));
+                        return Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(price.calculateFee(listingType));
                     }
 
                     return Component.empty();
@@ -164,10 +172,9 @@ public class GTSSpongePlaceholderManager {
         this.register(new SourceSpecificPlaceholderParser<>(
                 Boolean.class,
                 "price_fee_rate",
-                "GTS - Price Selection Fee Rate",
                 state -> {
                     ConfigKey<Float> key = state ? ConfigKeys.FEES_STARTING_PRICE_RATE_BIN : ConfigKeys.FEES_STARTING_PRICE_RATE_AUCTION;
-                    float rate = GTSPlugin.getInstance().getConfiguration().get(key);
+                    float rate = GTSPlugin.instance().configuration().main().get(key);
                     DecimalFormat df = new DecimalFormat("#0.##");
 
                     return Component.text(df.format(rate * 100) + "%");
@@ -177,46 +184,41 @@ public class GTSSpongePlaceholderManager {
         this.register(new SourceSpecificPlaceholderParser<>(
                 Time.class,
                 "time",
-                "GTS - Amount of time representing how long a listing will be listed for",
                 Utilities::translateTime
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Time.class,
                 "time_short",
-                "GTS - A short version of the output of {{gts:time}}",
                 time -> Component.text(time.asPatternized())
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Time.class,
                 "time_fee",
-                "GTS - Calculated fee for chosen time",
                 time -> {
-                    org.mariuszgromada.math.mxparser.Function function = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.FEE_TIME_EQUATION);
+                    org.mariuszgromada.math.mxparser.Function function = GTSPlugin.instance().configuration().main().get(ConfigKeys.FEE_TIME_EQUATION);
                     SimilarPair<Argument> arguments = Utilities.calculateTimeFee(time);
                     Expression expression = new Expression("f(hours,minutes)", function, arguments.getFirst(), arguments.getSecond());
-                    return Component.text(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(expression.calculate()));
+                    return Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(expression.calculate());
                 }
         ));
 
         this.register(new SourceSpecificPlaceholderParser<>(
                 Fees.class,
                 "fees",
-                "GTS - Fee Wrapper",
                 fees -> {
-                    TextComponent result = Component.text(
-                            Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(fees.getTotal())
-                    );
+                    Component result = Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(fees.getTotal());
 
-                    final MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+                    final MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
 
-                    List<Supplier<Object>> sources = Lists.newArrayList();
-                    sources.add(fees::getPrice);
-                    sources.add(() -> fees.getTime().getFirst());
+                    PlaceholderSources sources = PlaceholderSources.builder()
+                            .append(new TypeToken<Tuple<Price<?, ?, ?>, Boolean>>() {}, fees::getPrice)
+                            .append(Time.class, () -> fees.getTime().getFirst())
+                            .build();
 
                     TextComponent hover = Component.text()
-                            .append(Utilities.toComponent(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.FEE_PRICE_FORMAT), sources)))
+                            .append(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.FEE_PRICE_FORMAT), sources))
                             .append(Component.newline())
-                            .append(Utilities.toComponent(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.FEE_TIME_FORMAT), sources)))
+                            .append(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.FEE_TIME_FORMAT), sources))
                             .build();
                     return result.hoverEvent(HoverEvent.showText(hover));
                 }
@@ -225,21 +227,18 @@ public class GTSSpongePlaceholderManager {
         this.register(new SourceSpecificPlaceholderParser<>(
                 Double.class,
                 "min_price",
-                "GTS - Minimum Price Descriptor",
-                value -> Component.text(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value))
-        ));
+                value -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value))
+        );
         this.register(new SourceSpecificPlaceholderParser<>(
                 Double.class,
                 "max_price",
-                "GTS - Maximum Price Descriptor",
-                value -> Component.text(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value))
-        ));
+                value -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value))
+        );
 
         // Buy It Now
         this.register(new SourceSpecificPlaceholderParser<>(
                 BuyItNow.class,
                 "bin_price",
-                "GTS - Buy It Now Price",
                 bin -> bin.getPrice().getText()
         ));
 
@@ -247,35 +246,42 @@ public class GTSSpongePlaceholderManager {
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.class,
                 "auction_bids",
-                "GTS - Current Bid Count on an Auction",
                 auction -> Component.text(auction.getBids().size())
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.class,
                 "auction_start_price",
-                "GTS - Starting Price of an Auction",
-                auction -> Component.text(Sponge.getServiceManager().provideUnchecked(EconomyService.class).getDefaultCurrency().format(BigDecimal.valueOf(auction.getStartingPrice())).toPlain())
+                auction -> Sponge.server().serviceProvider()
+                        .economyService()
+                        .orElseThrow(IllegalStateException::new)
+                        .defaultCurrency()
+                        .format(BigDecimal.valueOf(auction.getStartingPrice()))
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.class,
                 "auction_current_price",
-                "GTS - Current Price of an Auction",
-                auction -> Component.text(Sponge.getServiceManager().provideUnchecked(EconomyService.class).getDefaultCurrency().format(BigDecimal.valueOf(auction.getCurrentPrice())).toPlain())
+                auction -> Sponge.server().serviceProvider()
+                        .economyService()
+                        .orElseThrow(IllegalStateException::new)
+                        .defaultCurrency()
+                        .format(BigDecimal.valueOf(auction.getCurrentPrice()))
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.class,
                 "auction_high_bid",
-                "GTS - High Bid of an Auction",
-                auction -> Component.text(Sponge.getServiceManager().provideUnchecked(EconomyService.class).getDefaultCurrency()
-                        .format(BigDecimal.valueOf(auction.getHighBid().map(Tuple::getSecond).map(Auction.Bid::getAmount).orElseThrow(() -> new IllegalStateException("Unable to locate bid amount")))).toPlain())
+                auction -> Sponge.server().serviceProvider()
+                        .economyService()
+                        .orElseThrow(IllegalStateException::new)
+                        .defaultCurrency()
+                        .format(BigDecimal.valueOf(auction.getHighBid().map(Tuple::getSecond).map(Auction.Bid::getAmount).orElseThrow(() -> new IllegalStateException("Unable to locate bid amount"))))
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.class,
                 "auction_high_bidder",
-                "GTS - High Bidder of an Auction",
                 auction -> {
                     if(auction.getHighBid().isPresent()) {
-                        return this.calculateDisplayName(auction.getHighBid().get().getFirst());
+                        return this.userCache.get(auction.getLister())
+                                .getNow(Component.text("Pooling..."));
                     }
 
                     return Component.empty();
@@ -284,43 +290,37 @@ public class GTSSpongePlaceholderManager {
         this.register(new SourceSpecificPlaceholderParser<>(
                 UUID.class,
                 "auction_bidder",
-                "GTS - Bidder on an Auction",
-                this::calculateDisplayName
+                id -> this.userCache.get(id).getNow(Component.text("Pooling..."))
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.class,
                 "auction_next_required_bid",
-                "GTS - An auction's next required bid",
-                auction -> Component.text(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(auction.getNextBidRequirement()))
+                auction -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(auction.getNextBidRequirement())
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Double.class,
                 "auction_previous_user_bid",
-                "GTS - The previous highest bid by a user on an auction, if any",
-                value -> Component.text(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value))
+                value -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value)
         ));
 
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.BidContext.class,
                 "auction_bid_amount",
-                "GTS - Amount placed on a Bid",
-                bid -> Component.text(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(bid.getBid().getAmount()))
+                bid -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(bid.getBid().getAmount())
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.BidContext.class,
                 "auction_bid_actor",
-                "GTS - Actor who placed a Bid",
-                bid -> this.calculateDisplayName(bid.getBidder())
+                bid -> this.userCache.get(bid.getBidder()).getNow(Component.text("Pooling..."))
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 Auction.BidContext.class,
                 "auction_bid_since_placed",
-                "GTS - How long it has been since a bid was placed",
                 bid -> {
                     Duration duration = Duration.between(bid.getBid().getTimestamp(), LocalDateTime.now());
                     Time time = new Time(duration.getSeconds());
                     if(time.getTime() < 60) {
-                        return Component.text(GTSPlugin.getInstance().getMsgConfig().get(MsgConfigKeys.TIME_MOMENTS_TRANSLATION));
+                        return Component.text(GTSPlugin.instance().configuration().language().get(MsgConfigKeys.TIME_MOMENTS_TRANSLATION));
                     }
 
                     return Utilities.translateTimeHighest(time);
@@ -329,42 +329,35 @@ public class GTSSpongePlaceholderManager {
         this.register(new SourceSpecificPlaceholderParser<>(
                 Double.class,
                 "auction_outbid_amount",
-                "GTS - Amount a bid was outbid by",
-                difference -> Component.text(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(difference))
+                difference -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(difference)
         ));
 
         this.register(new SourceSpecificPlaceholderParser<>(
                 Integer.class,
                 "stash_returned",
-                "GTS - Stash Contents Returned Successfully",
                 Component::text
         ));
 
         this.register(new SourceSpecificPlaceholderParser<>(
                 SpongeListingMenu.Searching.class,
                 "search_query",
-                "GTS - A search query applied by a user",
                 query -> Component.text(query.getQuery())
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 ErrorCode.class,
                 "error_code",
-                "GTS - An error code indicating why a request failed",
                 error -> Component.text(error.getKey())
                         .hoverEvent(HoverEvent.showText(Component.text(error.getDescription())))
         ));
         this.register(this.create(
                 "max_listings",
-                "GTS - Max Listings Configuration Response",
-                container,
-                context -> Text.of(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.MAX_LISTINGS_PER_USER))
+                context -> Component.text(GTSPlugin.instance().configuration().main().get(ConfigKeys.MAX_LISTINGS_PER_USER))
         ));
         this.register(AsyncUserSourcedPlaceholder.builder()
                 .type(Integer.class)
                 .id("active_bids")
-                .name("GTS - Active Bids (Async)")
                 .parser(Component::text)
-                .loader((uuid, executor) -> GTSPlugin.getInstance().getStorage()
+                .loader((uuid, executor) -> GTSPlugin.instance().storage()
                         .fetchListings(Lists.newArrayList(
                                 listing -> listing instanceof Auction,
                                 listing -> !listing.hasExpired()
@@ -387,7 +380,6 @@ public class GTSSpongePlaceholderManager {
         this.register(new SourceSpecificPlaceholderParser<>(
                 TextComponent.class,
                 "claim_item",
-                "GTS - The item a user is claiming",
                 result -> result
         ));
 
@@ -395,33 +387,31 @@ public class GTSSpongePlaceholderManager {
         this.register(new SourceSpecificPlaceholderParser<>(
                 ItemStackSnapshot.class,
                 "item_lore",
-                "GTS - An Item's Lore",
                 snapshot -> {
-                    Text result = Text.EMPTY;
-                    List<Text> lines = snapshot.get(Keys.ITEM_LORE).orElse(Lists.newArrayList());
+                    TextComponent.Builder result = Component.text();
+                    List<Component> lines = snapshot.get(Keys.LORE).orElse(Lists.newArrayList());
 
                     if(lines.size() > 0) {
                         for (int i = 0; i < lines.size() - 1; i++) {
-                            result = Text.of(result, lines.get(i), Text.NEW_LINE);
+                            result.append(lines.get(i)).append(Component.newline());
                         }
 
-                        result = Text.of(result, lines.get(lines.size() - 1));
+                        result.append(lines.get(lines.size() - 1));
                     }
 
-                    return Utilities.toComponent(result);
+                    return result.build();
                 }
         ));
         this.register(new SourceSpecificPlaceholderParser<>(
                 ItemStackSnapshot.class,
                 "item_enchantments",
-                "GTS - An Item's Enchantments",
                 snapshot -> {
-                    Text result = Text.EMPTY;
-                    List<Text> lines = snapshot.get(Keys.ITEM_ENCHANTMENTS)
+                    TextComponent.Builder result = Component.text();
+                    List<ComponentLike> lines = snapshot.get(Keys.APPLIED_ENCHANTMENTS)
                             .map(enchantments -> {
-                                List<Text> data = Lists.newArrayList();
+                                List<ComponentLike> data = Lists.newArrayList();
                                 for(Enchantment enchantment : enchantments) {
-                                    data.add(Text.of(enchantment.getType().getTranslation().get()));
+                                    data.add(enchantment.type());
                                 }
 
                                 return data;
@@ -430,38 +420,31 @@ public class GTSSpongePlaceholderManager {
 
                     if(lines.size() > 0) {
                         for (int i = 0; i < lines.size() - 1; i++) {
-                            result = Text.of(result, lines.get(i), Text.NEW_LINE);
+                            result.append(lines.get(i)).append(Component.newline());
                         }
 
-                        result = Text.of(result, lines.get(lines.size() - 1));
+                        result.append(lines.get(lines.size() - 1));
                     }
 
-                    return Utilities.toComponent(result);
+                    return result.build();
                 }
         ));
     }
 
-    private PlaceholderParser create(String id, String name, PluginContainer plugin, Function<PlaceholderContext, Text> parser) {
-        return PlaceholderParser.builder()
-                .id(id)
-                .name(name)
-                .plugin(plugin)
-                .parser(parser)
-                .build();
+    private PlaceholderMetadata create(String key, Function<PlaceholderContext, Component> parser) {
+        return PlaceholderMetadata.of(
+                this.key.value(key).build(),
+                PlaceholderParser.builder()
+                        .parser(parser)
+                        .build()
+        );
     }
 
     private Optional<String> getOptionFromSubject(Subject subject, String... options) {
         for (String option : options) {
             String o = option.toLowerCase();
 
-            // Option for context.
-            Optional<String> os = subject.getOption(subject.getActiveContexts(), o);
-            if (os.isPresent()) {
-                return os.map(r -> r.isEmpty() ? null : r);
-            }
-
-            // General option
-            os = subject.getOption(o);
+            Optional<String> os = subject.option(o);
             if (os.isPresent()) {
                 return os.map(r -> r.isEmpty() ? null : r);
             }
@@ -470,19 +453,25 @@ public class GTSSpongePlaceholderManager {
         return Optional.empty();
     }
 
-    private LoadingCache<UUID, User> userCache = Caffeine.newBuilder()
-            .expireAfterAccess(20, TimeUnit.SECONDS)
-            .build(id -> {
-                UserStorageService service = Sponge.getServiceManager().provideUnchecked(UserStorageService.class);
-                return service.get(id).orElse(null);
+    private AsyncLoadingCache<UUID, Component> userCache = Caffeine.newBuilder()
+            .expireAfterAccess(5, TimeUnit.MINUTES)
+            .buildAsync(new AsyncCacheLoader<UUID, Component>() {
+                @Override
+                public @NonNull CompletableFuture<Component> asyncLoad(@NonNull UUID key, @NonNull Executor executor) {
+                    return calculateDisplayName(key);
+                }
             });
 
-    private TextComponent calculateDisplayName(UUID id) {
-        return Optional.ofNullable(this.userCache.get(id))
-                .map(user -> {
+    private CompletableFuture<Component> calculateDisplayName(UUID id) {
+        return Sponge.server().userManager().loadOrCreate(id)
+                .thenApply(user -> {
+                    if(user == null || user.name() == null) {
+                        return Component.text("Unknown User");
+                    }
+
                     TextComponent.Builder component = Component.text();
 
-                    if(GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.SHOULD_SHOW_USER_PREFIX)) {
+                    if(GTSPlugin.instance().configuration().main().get(ConfigKeys.SHOULD_SHOW_USER_PREFIX)) {
                         Optional<String> prefix = this.getOptionFromSubject(user, "prefix");
                         prefix.ifPresent(pre -> component.append(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix.get())));
                     }
@@ -490,7 +479,7 @@ public class GTSSpongePlaceholderManager {
                     Optional<String> color = this.getOptionFromSubject(user, "color");
                     NamedTextColor translated = color.map(NamedTextColor.NAMES::value).orElse(null);
 
-                    Component name = Component.text(user.getName());
+                    Component name = Component.text(user.name());
                     if(translated != null) {
                         name = name.color(translated);
                     } else {
@@ -499,8 +488,10 @@ public class GTSSpongePlaceholderManager {
                     }
 
                     return component.append(Component.space()).append(name).build();
-                })
-                .orElse(Component.text("Unknown"));
+                }).applyToEither(
+                        CompletableFutureManager.timeoutAfter(5, TimeUnit.SECONDS),
+                        Component::compact
+                );
     }
 
     private Style getDeepestStyle(Component component) {

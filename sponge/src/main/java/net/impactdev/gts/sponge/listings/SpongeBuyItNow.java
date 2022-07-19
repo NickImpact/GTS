@@ -2,6 +2,7 @@ package net.impactdev.gts.sponge.listings;
 
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.common.exceptions.DataContentException;
 import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
 import net.impactdev.gts.sponge.pricing.SpongePrice;
 import net.impactdev.impactor.api.json.factory.JObject;
@@ -86,10 +87,16 @@ public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
 				.expiration(LocalDateTime.parse(json.getAsJsonObject("timings").get("expiration").getAsString()));
 
 		JsonObject element = json.getAsJsonObject("entry");
-		EntryManager<?, ?> entryManager = GTSService.getInstance().getGTSComponentManager()
-				.getEntryManager(element.get("key").getAsString())
-				.orElseThrow(() -> new RuntimeException("No Entry Manager found for key: " + element.get("key").getAsString()));
-		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));
+		try {
+			EntryManager<?> entryManager = GTSService.getInstance().getGTSComponentManager()
+					.getEntryManager(element.get("key").getAsString())
+					.orElseThrow(() -> new RuntimeException("No Entry Manager found for key: " + element.get("key")
+							.getAsString()));
+			builder.entry((SpongeEntry<?>) entryManager.getDeserializer()
+					.deserialize(element.getAsJsonObject("content")));
+		} catch (DataContentException e) {
+
+		}
 
 		JsonObject price = json.getAsJsonObject("price");
 		Storable.Deserializer<? extends Price<?, ?, ?>> deserializer = GTSService.getInstance().getGTSComponentManager()

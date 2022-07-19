@@ -37,6 +37,8 @@ public interface ExtensionManager {
 
     @NonNull Extension loadExtension(Path path) throws IOException;
 
+    void loadExtensions(Path path) throws Exception;
+
     void enableExtensions();
 
     @NonNull Collection<Extension> getLoadedExtensions();

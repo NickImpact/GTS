@@ -6,7 +6,7 @@ import net.impactdev.gts.api.data.Storable;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.Builder;
+import net.impactdev.impactor.api.builders.Builder;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
 import net.impactdev.gts.api.listings.Listing;
 
@@ -14,10 +14,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * An auction represents a listing which, instead of being directly purchasable, will be able to fluctuate its price
@@ -140,7 +138,7 @@ public interface Auction extends Listing {
 		return Impactor.getInstance().getRegistry().createBuilder(AuctionBuilder.class);
 	}
 
-    interface AuctionBuilder extends Builder<Auction, AuctionBuilder> {
+    interface AuctionBuilder extends Builder<Auction> {
 
 		AuctionBuilder id(UUID id);
 
@@ -159,6 +157,8 @@ public interface Auction extends Listing {
 		AuctionBuilder current(double current);
 
 		AuctionBuilder bids(Multimap<UUID, Bid> bids);
+
+		AuctionBuilder from(Auction parent);
 
 	}
 
@@ -206,7 +206,7 @@ public interface Auction extends Listing {
 			return Double.compare(this.amount, other.amount);
 		}
 
-		public static class BidBuilder implements Builder<Bid, BidBuilder> {
+		public static class BidBuilder implements Builder<Bid> {
 
 			private double amount;
 			private LocalDateTime timestamp = LocalDateTime.now();
@@ -221,12 +221,12 @@ public interface Auction extends Listing {
 				return this;
 			}
 
-			@Override
-			public BidBuilder from(Bid bid) {
-				this.amount = bid.getAmount();
-				this.timestamp = bid.getTimestamp();
-				return this;
-			}
+//			@Override
+//			public BidBuilder from(Bid bid) {
+//				this.amount = bid.getAmount();
+//				this.timestamp = bid.getTimestamp();
+//				return this;
+//			}
 
 			@Override
 			public Bid build() {
@@ -237,8 +237,8 @@ public interface Auction extends Listing {
 
 	class BidContext {
 
-		private UUID bidder;
-		private Bid bid;
+		private final UUID bidder;
+		private final Bid bid;
 
 		public BidContext(UUID bidder, Bid bid) {
 			this.bidder = bidder;

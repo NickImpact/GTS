@@ -1,24 +1,27 @@
 package net.impactdev.gts.api.listings.ui;
 
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
+import net.impactdev.impactor.api.ui.containers.icons.Icon;
+
 import java.util.Optional;
 
-public interface EntryUI<P, E, I> {
+public interface EntryUI<E> {
 
 	Optional<E> getChosenOption();
 
-	void open(P user);
+	void open(PlatformPlayer user);
 
-	I generateWaitingIcon(boolean auction);
+	Icon<?> generateWaitingIcon(boolean auction);
 
-	I generateConfirmIcon();
+	Icon<?> generateConfirmIcon();
 
-	I createNoneChosenIcon();
+	Icon<?> createNoneChosenIcon();
 
-	I createChosenIcon();
+	Icon<?> createChosenIcon();
 
-	I createPriceIcon();
+	Icon<?> createPriceIcon();
 
-	I createTimeIcon();
+	Icon<?> createTimeIcon();
 
 	void style(boolean selected);
 

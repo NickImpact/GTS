@@ -4,10 +4,14 @@ import net.impactdev.gts.api.commands.CommandGenerator;
 import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.listings.ui.EntrySelection;
 import net.impactdev.gts.api.listings.ui.EntryUI;
+import net.impactdev.gts.api.util.Version;
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
 
 import java.util.function.Supplier;
 
-public interface EntryManager<T, P> extends ResourceManager<T> {
+public interface EntryManager<T> extends ResourceManager<T> {
+
+    Class<T> supported();
 
     /**
      * For use in configuration, determines how the blacklist should represent blacklisted options
@@ -24,7 +28,7 @@ public interface EntryManager<T, P> extends ResourceManager<T> {
      *
      * @return The UI responsible for creating a new listing based on the type managed by this Entry Manager
      */
-    Supplier<EntryUI<?, ?, ?>> getSellingUI(P player);
+    Supplier<EntryUI<?>> getSellingUI(PlatformPlayer player);
 
     /**
      * Supplies a set of deserializer options for the given entry type. This is where you can allow for multiple
@@ -41,5 +45,14 @@ public interface EntryManager<T, P> extends ResourceManager<T> {
      * @since 6.1.8
      */
     CommandGenerator.EntryGenerator<? extends EntrySelection<? extends Entry<?, ?>>> getEntryCommandCreator();
+
+    /**
+     * Checks to see if the incoming data is supported on the current game platform.
+     *
+     * @param game
+     * @param content
+     * @return
+     */
+    boolean supports(Version game, int content);
 
 }

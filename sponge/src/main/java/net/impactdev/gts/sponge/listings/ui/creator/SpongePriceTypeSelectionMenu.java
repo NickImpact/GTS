@@ -1,31 +1,35 @@
 package net.impactdev.gts.sponge.listings.ui.creator;
 
-import com.google.common.collect.Lists;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
 import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
 import net.impactdev.gts.sponge.utils.Utilities;
+import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
 import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
 import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.sponge.ui.SpongeIcon;
-import net.impactdev.impactor.sponge.ui.SpongeLayout;
-import net.impactdev.impactor.sponge.ui.SpongePage;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.prices.Price;
 
 import net.impactdev.gts.api.listings.prices.PriceManager;
 import net.impactdev.gts.api.listings.ui.EntryUI;
 import net.impactdev.gts.common.ui.Historical;
+import net.impactdev.impactor.api.ui.containers.ImpactorUI;
+import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
+import net.impactdev.impactor.api.ui.containers.icons.Icon;
+import net.impactdev.impactor.api.ui.containers.layouts.Layout;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.spongepowered.api.ResourceKey;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.data.Keys;
 import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.property.InventoryDimension;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
+import org.spongepowered.api.registry.RegistryEntry;
+import org.spongepowered.api.registry.RegistryTypes;
 
 import java.util.LinkedList;
 import java.util.Map;
@@ -38,85 +42,84 @@ import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
 
 public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEntryUI<?>> {
 
-    private final Player viewer;
+    private final PlatformPlayer viewer;
 
-    private final SpongePage<Map.Entry<String, PriceManager<? extends Price<?, ?, ?>, ?>>> display;
+    private final ImpactorUI display;
 
     private final AbstractSpongeEntryUI<?> parent;
-    private final BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>> callback;
+    private final BiConsumer<EntryUI<?>, Price<?, ?, ?>> callback;
 
-    public SpongePriceTypeSelectionMenu(Player player, AbstractSpongeEntryUI<?> parent, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>> callback) {
-        this.viewer = player;
-
-        Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>, ?>> resources = GTSService.getInstance().getGTSComponentManager().getAllPriceManagers();
+    public SpongePriceTypeSelectionMenu(PlatformPlayer player, AbstractSpongeEntryUI<?> parent, BiConsumer<EntryUI<?>, Price<?, ?, ?>> callback) {
         this.parent = parent;
         this.callback = callback;
 
-        final MessageService<Text> service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>>> resources = GTSService.getInstance().getGTSComponentManager().getAllPriceManagers();
+        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
 
-        SpongePage.SpongePageBuilder builder = SpongePage.builder()
-                .viewer(player)
+        Mappings mappings = Mappings.get(resources.size()).orElseThrow(() -> new IllegalStateException("Awaiting further functionality"));
+        Layout.LayoutBuilder builder = Layout.builder()
+                .from(this.design(resources.size()));
+        Queue<Integer> slots = mappings.createQueue();
+        for(Map.Entry<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>>> entry : resources.entrySet()) {
+            Icon<ItemStack> icon = this.createIcon(entry.getValue().getName(), entry.getValue());
+            builder.slot(icon, slots.poll());
+        }
+
+        this.display = ImpactorUI.builder()
+                .provider(Key.key("gts", "price-selection"))
                 .title(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_PRICE_SELECT_TITLE)))
-                .view(this.design(resources.size()))
-                .contentZone(InventoryDimension.of(7, resources.size() > 7 ? 2 : 1))
-                .offsets(1);
+                .layout(builder.build())
+                .build();
 
-        if(resources.size() > 7) {
-            builder.lastPage(ItemTypes.ARROW, 37).nextPage(ItemTypes.ARROW, 43);
-        }
-
-        this.display = builder.build();
-
-        this.display.applier(resource -> {
-            return null;
-        });
-
-        Optional<Mappings> overrides = Mappings.get(resources.size());
-        if(overrides.isPresent()) {
-            Mappings mappings = overrides.get();
-            Queue<Integer> slots = mappings.createQueue();
-            for(Map.Entry<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>, ?>> entry : resources.entrySet()) {
-                SpongeIcon icon = this.createIcon(entry.getValue().getName(), entry.getValue());
-                this.display.getView().setSlot(slots.poll(), icon);
-            }
-        }
+        this.viewer = player;
     }
 
     public void open() {
-        this.display.open();
+        this.display.open(this.viewer);
     }
 
-    private SpongeLayout design(int size) {
-        SpongeLayout.SpongeLayoutBuilder builder = SpongeLayout.builder();
-        builder.dimension(9, size > 7 ? 5 : 4);
-        builder.columns(SpongeIcon.BORDER, 0, 8).rows(SpongeIcon.BORDER, 0, size > 7 ? 3 : 2);
+    private Layout design(int size) {
+        Layout.LayoutBuilder builder = Layout.builder();
+        builder.size(size > 7 ? 5 : 4);
+        builder.columns(ProvidedIcons.BORDER, 1, 9).rows(ProvidedIcons.BORDER, 1, size > 7 ? 4 : 3);
 
-        SpongeIcon back = new SpongeIcon(ItemStack.builder()
-                .itemType(ItemTypes.BARRIER)
-                .add(Keys.DISPLAY_NAME, Utilities.PARSER.parse(readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK), Lists.newArrayList(() -> this.viewer)))
-                .build()
-        );
-        back.addListener(clickable -> {
-            SpongeMainPageProvider provider = SpongeMainPageProvider.creator().viewer(this.viewer).build();
-            provider.open();
-        });
+        Icon<ItemStack> back = Icon.builder(ItemStack.class)
+                .display(new DisplayProvider.Constant<>(ItemStack.builder()
+                        .itemType(ItemTypes.BARRIER)
+                        .add(Keys.CUSTOM_NAME, Utilities.PARSER.parse(readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK)))
+                        .build()
+                ))
+                .listener(context -> {
+                    SpongeMainPageProvider provider = SpongeMainPageProvider.creator().viewer(this.viewer).build();
+                    provider.open();
+                    return false;
+                })
+                .build();
+
         builder.slot(back, size > 7 ? 40 : 31);
 
         return builder.build();
     }
 
-    private SpongeIcon createIcon(String type, PriceManager<? extends Price<?, ?, ?>, ?> resource) {
-        ItemType item = Sponge.getRegistry().getType(ItemType.class, resource.getItemID()).orElse(ItemTypes.BARRIER);
+    private Icon<ItemStack> createIcon(String type, PriceManager<? extends Price<?, ?, ?>> resource) {
+        ItemType item = Sponge.game().registry(RegistryTypes.ITEM_TYPE)
+                .findEntry(ResourceKey.resolve(resource.getItemID()))
+                .map(RegistryEntry::value)
+                .orElse(ItemTypes.BARRIER.get());
+
         ItemStack rep = ItemStack.builder()
                 .itemType(item)
-                .add(Keys.DISPLAY_NAME, Text.of(TextColors.GREEN, type))
+                .add(Keys.CUSTOM_NAME, Component.text(type).color(NamedTextColor.GREEN))
                 .build();
-        SpongeIcon icon = new SpongeIcon(rep);
-        icon.addListener(clickable -> {
-            this.display.close();
-            ((PriceManager<? extends Price<?, ?, ?>, Player>) resource).process().accept(clickable.getPlayer(), this.parent, this.callback);
-        });
-        return icon;
+
+        return Icon.builder(ItemStack.class)
+                .display(new DisplayProvider.Constant<>(rep))
+                .listener(context -> {
+                    this.display.close(this.viewer);
+                    resource.process(this.viewer, this.parent, this.callback);
+                    return false;
+                })
+                .build();
     }
 
     @Override
@@ -131,7 +134,7 @@ public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEn
         FOUR(10, 12, 14, 16),
         FIVE(11, 12, 13, 14, 15),;
 
-        private int[] slots;
+        private final int[] slots;
 
         Mappings(int... slots) {
             this.slots = slots;

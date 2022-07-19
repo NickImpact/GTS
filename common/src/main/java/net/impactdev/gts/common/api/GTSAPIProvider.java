@@ -2,7 +2,6 @@ package net.impactdev.gts.common.api;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.data.registry.GTSComponentManager;
 import net.impactdev.gts.api.data.translators.DataTranslatorManager;
@@ -17,9 +16,6 @@ import net.impactdev.gts.common.player.PlayerSettingsManagerImpl;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
 
 public class GTSAPIProvider implements GTSService {
 
@@ -33,8 +29,8 @@ public class GTSAPIProvider implements GTSService {
 
 	@Override
 	public ImmutableList<Extension> getAllExtensions() {
-		if(GTSPlugin.getInstance().getExtensionManager() != null) {
-			return ImmutableList.copyOf(GTSPlugin.getInstance().getExtensionManager().getLoadedExtensions());
+		if(GTSPlugin.instance().extensionManager() != null) {
+			return ImmutableList.copyOf(GTSPlugin.instance().extensionManager().getLoadedExtensions());
 		}
 
 		return ImmutableList.of();

@@ -1,12 +1,7 @@
 package net.impactdev.gts.common.utils.exceptions;
 
-import net.impactdev.gts.api.util.PrettyPrinter;
-import net.impactdev.impactor.api.logging.Logger;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 
 public class ExceptionWriter {
 
@@ -26,10 +21,10 @@ public class ExceptionWriter {
         printer.add("GTS Encountered an Exception!").center();
         printer.hr('*');
         printer.add("Version Information:")
-                .add(GTSPlugin.getInstance().getEnvironment())
+                .add(GTSPlugin.instance().environment())
                 .hr('-');
         printer.add(exception);
-        printer.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.ERROR);
+        printer.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.ERROR);
     }
 
 }

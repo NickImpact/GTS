@@ -17,11 +17,11 @@ import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.services.text.MessageService;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
 import org.spongepowered.api.Platform;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.api.text.Text;
+import org.spongepowered.plugin.PluginContainer;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -43,14 +43,14 @@ public class GTSInfoGenerator {
     private List<String> processor = Lists.newArrayList();
     private int max = -1;
 
-    public GTSInfoGenerator(CommandSource issuer) {
+    public GTSInfoGenerator() {
         if(path == null) {
-            path = GTSPlugin.getInstance().getBootstrap().getDataDirectory();
+            path = GTSPlugin.instance().bootstrap().dataDirectory();
         }
     }
 
-    public CompletableFuture<String> create(CommandSource issuer) {
-        MessageService<Text> service = Utilities.PARSER;
+    public CompletableFuture<String> create(Audience audience) {
+        MessageService service = Utilities.PARSER;
 
         return CompletableFuture.supplyAsync(() -> {
             try {
@@ -74,7 +74,7 @@ public class GTSInfoGenerator {
             }
         }, Impactor.getInstance().getScheduler().async())
                 .exceptionally(e -> {
-                    issuer.sendMessage(service.parse("{{gts:error}} An error occurred during processing, please check console for more info"));
+                    audience.sendMessage(service.parse("{{gts:error}} An error occurred during processing, please check console for more info"));
                     ExceptionWriter.write(e);
                     return null;
                 });
@@ -148,25 +148,25 @@ public class GTSInfoGenerator {
     }
 
     private List<String> environment() {
-        Platform platform = Sponge.getPlatform();
-        PluginContainer game = platform.getContainer(Platform.Component.GAME);
-        PluginContainer api = platform.getContainer(Platform.Component.API);
-        PluginContainer impl = platform.getContainer(Platform.Component.IMPLEMENTATION);
+        Platform platform = Sponge.platform();
+        PluginContainer game = platform.container(Platform.Component.GAME);
+        PluginContainer api = platform.container(Platform.Component.API);
+        PluginContainer impl = platform.container(Platform.Component.IMPLEMENTATION);
 
         String pattern = "%s: %s %s";
 
         return Lists.newArrayList(
-                String.format(pattern, "Minecraft Version", game.getName(), game.getVersion().orElse("Unknown")),
-                String.format(pattern, "Sponge API Version", api.getName(), api.getVersion().orElse("Unknown")),
-                String.format(pattern, "Sponge Version", impl.getName(), impl.getVersion().orElse("Unknown")),
-                String.format(pattern, "GTS Version", GTSPlugin.getInstance().getMetadata().getVersion(), "(Git: @git_commit@)")
+                String.format(pattern, "Minecraft Version", game.metadata().name(), game.metadata().version()),
+                String.format(pattern, "Sponge API Version", api.metadata().name(), api.metadata().version()),
+                String.format(pattern, "Sponge Version", impl.metadata().name(), impl.metadata().version()),
+                String.format(pattern, "GTS Version", GTSPlugin.instance().metadata().version(), "(Git: @git_commit@)")
         );
     }
 
     private List<String> extensions() {
         List<String> results = Lists.newArrayList();
         for(Extension extension : GTSService.getInstance().getAllExtensions()) {
-            results.add(String.format("%s: %s", extension.getMetadata().getName(), extension.getMetadata().getVersion()));
+            results.add(String.format("%s: %s", extension.metadata().name(), extension.metadata().version()));
         }
 
         return results;
@@ -174,12 +174,12 @@ public class GTSInfoGenerator {
 
     private List<String> connections() {
         List<String> results = Lists.newArrayList();
-        results.add("Messaging Service: " + GTSPlugin.getInstance().getMessagingService().getName());
+        results.add("Messaging Service: " + GTSPlugin.instance().messagingService().getName());
 
-        boolean not = !(GTSPlugin.getInstance().getMessagingService().getMessenger() instanceof PluginMessageMessenger);
-        if(not || Sponge.getServer().getOnlinePlayers().size() > 0) {
+        boolean not = !(GTSPlugin.instance().messagingService().getMessenger() instanceof PluginMessageMessenger);
+        if(not || Sponge.server().onlinePlayers().size() > 0) {
             try {
-                GTSPlugin.getInstance().getMessagingService().sendPing()
+                GTSPlugin.instance().messagingService().sendPing()
                         .thenAccept(pong -> results.add("  - Response Time: " + pong.getResponseTime() + " ms"))
                         .get(5, TimeUnit.SECONDS);
             } catch (Exception e) {
@@ -189,10 +189,10 @@ public class GTSInfoGenerator {
             results.add("  - No players online, unable to send ping request");
         }
 
-        results.add("Storage Type: " + GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.STORAGE_METHOD));
+        results.add("Storage Type: " + GTSPlugin.instance().configuration().main().get(ConfigKeys.STORAGE_METHOD));
 
         try {
-            GTSPlugin.getInstance().getStorage()
+            GTSPlugin.instance().storage()
                     .getMeta()
                     .get(5, TimeUnit.SECONDS)
                     .forEach((key, value) -> {

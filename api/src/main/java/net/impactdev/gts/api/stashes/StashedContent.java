@@ -2,7 +2,7 @@ package net.impactdev.gts.api.stashes;
 
 import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.util.TriState;
+import net.kyori.adventure.util.TriState;
 
 import java.util.UUID;
 

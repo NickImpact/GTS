@@ -6,11 +6,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
@@ -19,6 +17,7 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.impactor.api.json.factory.JArray;
 import net.impactdev.impactor.api.json.factory.JObject;
 import net.impactdev.impactor.api.utilities.mappings.Tuple;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -77,7 +76,7 @@ public abstract class AuctionCancelMessage extends AuctionMessageOptions impleme
 
         @Override
         public CompletableFuture<Cancel.Response> respond() {
-            return GTSPlugin.getInstance().getStorage().processAuctionCancelRequest(this);
+            return GTSPlugin.instance().storage().processAuctionCancelRequest(this);
         }
 
         @Override

@@ -27,19 +27,19 @@ public interface GTSComponentManager {
 
     // Entries
 
-    <T extends Entry<?, ?>> void registerEntryManager(Class<T> type, EntryManager<T, ?> manager);
+    <T extends Entry<?, ?>> void registerEntryManager(Class<T> type, EntryManager<T> manager);
 
-    <T extends Entry<?, ?>> Optional<EntryManager<T, ?>> getEntryManager(String key);
+    <T extends Entry<?, ?>> Optional<EntryManager<T>> getEntryManager(String key);
 
-    Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>, ?>> getAllEntryManagers();
+    Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>>> getAllEntryManagers();
 
     // Prices
 
-    <T extends Price<?, ?, ?>> void registerPriceManager(Class<T> type, PriceManager<T, ?> resource);
+    <T extends Price<?, ?, ?>> void registerPriceManager(Class<T> type, PriceManager<T> resource);
 
-    <T extends Price<?, ?, ?>> Optional<PriceManager<? extends T, ?>> getPriceManager(String key);
+    <T extends Price<?, ?, ?>> Optional<PriceManager<? extends T>> getPriceManager(String key);
 
-    Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>, ?>> getAllPriceManagers();
+    Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>>> getAllPriceManagers();
 
     DeserializerRegistry getDeserializerRegistry();
 

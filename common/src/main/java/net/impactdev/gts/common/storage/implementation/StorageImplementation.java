@@ -36,6 +36,7 @@ import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.player.PlayerSettings;
 import net.impactdev.gts.api.stashes.Stash;
+import net.impactdev.gts.api.storage.PurgeType;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 
 import java.sql.Connection;
@@ -91,7 +92,7 @@ public interface StorageImplementation {
 
     boolean hasMaxListings(UUID user) throws Exception;
 
-    boolean purge() throws Exception;
+    boolean purge(PurgeType type) throws Exception;
 
     @Deprecated
     boolean clean() throws Exception;

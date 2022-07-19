@@ -1,11 +1,11 @@
 package net.impactdev.gts.api.listings.entries;
 
+import io.leangen.geantyref.TypeToken;
 import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.kyori.adventure.text.TextComponent;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,6 +23,12 @@ import java.util.UUID;
  * @param <T> The actual object that is meant to be represented by this entry
  */
 public interface Entry<T, I> extends Storable {
+
+	Class<? extends Entry<T, I>> type();
+
+	default TypeToken<T> element() {
+		return new TypeToken<T>() {};
+	}
 
 	/**
 	 * This represents the output element of this entry. As a entry will typically be transient, if not serializable

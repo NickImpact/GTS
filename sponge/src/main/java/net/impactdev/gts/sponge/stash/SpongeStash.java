@@ -3,11 +3,11 @@ package net.impactdev.gts.sponge.stash;
 import com.google.common.collect.Lists;
 import net.impactdev.gts.api.deliveries.Delivery;
 import net.impactdev.gts.api.stashes.StashedContent;
-import net.impactdev.gts.api.util.TriState;
 import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.stashes.Stash;
+import net.kyori.adventure.util.TriState;
 
 import java.util.List;
 import java.util.UUID;
@@ -75,15 +75,15 @@ public class SpongeStash implements Stash {
 
         @Override
         public StashBuilder append(Delivery delivery) {
-            this.stash.add(new StashedContent.DeliverableContent(delivery, TriState.UNDEFINED));
+            this.stash.add(new StashedContent.DeliverableContent(delivery, TriState.NOT_SET));
             return this;
         }
 
-        @Override
-        public StashBuilder from(Stash stash) {
-            this.stash.addAll(stash.getStashContents());
-            return this;
-        }
+//        @Override
+//        public StashBuilder from(Stash stash) {
+//            this.stash.addAll(stash.getStashContents());
+//            return this;
+//        }
 
         @Override
         public Stash build() {

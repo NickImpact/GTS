@@ -13,9 +13,7 @@ public class PlayerSettingsImpl implements PlayerSettings {
     private final Map<NotificationSetting, Boolean> states = Maps.newHashMap();
 
     private PlayerSettingsImpl(PlayerSettingsImplBuilder builder) {
-        for(Map.Entry<NotificationSetting, Boolean> setting : builder.settings.entrySet()) {
-            this.states.put(setting.getKey(), setting.getValue());
-        }
+        this.states.putAll(builder.settings);
     }
 
     @Override

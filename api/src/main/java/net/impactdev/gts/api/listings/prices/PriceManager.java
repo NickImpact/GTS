@@ -3,18 +3,18 @@ package net.impactdev.gts.api.listings.prices;
 import net.impactdev.gts.api.commands.CommandGenerator;
 import net.impactdev.gts.api.data.ResourceManager;
 import net.impactdev.gts.api.listings.ui.EntryUI;
-import net.impactdev.gts.api.util.TriConsumer;
-import net.impactdev.impactor.api.gui.UI;
+import net.impactdev.impactor.api.platform.players.PlatformPlayer;
+import net.impactdev.impactor.api.ui.containers.ImpactorUI;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public interface PriceManager<T, P> extends ResourceManager<T> {
+public interface PriceManager<T> extends ResourceManager<T> {
 
-    TriConsumer<P, EntryUI<?, ?, ?>, BiConsumer<EntryUI<?, ?, ?>, Price<?, ?, ?>>> process();
+    void process(PlatformPlayer target, EntryUI<?> source, BiConsumer<EntryUI<?>, Price<?, ?, ?>> callback);
 
-    <U extends UI<?, ?, ?, ?>> Optional<PriceSelectorUI<U>> getSelector(P viewer, Price<?, ?, ?> price, Consumer<Object> callback);
+    Optional<PriceSelectorUI> getSelector(PlatformPlayer viewer, Price<?, ?, ?> price, Consumer<Object> callback);
 
     /**
      * Represents the executor that will handle processing of creating an entry from a command context.
@@ -26,9 +26,9 @@ public interface PriceManager<T, P> extends ResourceManager<T> {
      */
     CommandGenerator.PriceGenerator<? extends Price<?, ?, ?>> getPriceCommandCreator();
 
-    interface PriceSelectorUI<U extends UI<?, ?, ?, ?>> {
+    interface PriceSelectorUI {
 
-        U getDisplay();
+        ImpactorUI getDisplay();
 
         Consumer<Object> getCallback();
 

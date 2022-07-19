@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class DataTranslatorManagerImpl implements DataTranslatorManager {
 
-    private Multimap<Class<?>, DataTranslator<?>> translators = ArrayListMultimap.create();
+    private final Multimap<Class<?>, DataTranslator<?>> translators = ArrayListMultimap.create();
 
     @Override
     public <T> Collection<DataTranslator<T>> get(Class<T> type) {

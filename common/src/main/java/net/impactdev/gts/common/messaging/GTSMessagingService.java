@@ -25,12 +25,16 @@
 
 package net.impactdev.gts.common.messaging;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.TreeMultimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.impactdev.gts.api.event.factory.GTSEventFactory;
 import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
@@ -40,7 +44,7 @@ import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
 import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
 import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
 import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
-import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.gts.api.util.TriConsumer;
 import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
 import net.impactdev.gts.common.messaging.messages.deliveries.ClaimDeliveryImpl;
 import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
@@ -54,7 +58,6 @@ import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
 import net.impactdev.gts.common.utils.future.CompletableFutureManager;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.gts.api.events.PingEvent;
 import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
 import net.impactdev.gts.api.messaging.Messenger;
 import net.impactdev.gts.api.messaging.MessengerProvider;
@@ -62,17 +65,24 @@ import net.impactdev.gts.api.messaging.message.OutgoingMessage;
 import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
 import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class GTSMessagingService implements InternalMessagingService {
 
@@ -132,430 +142,161 @@ public class GTSMessagingService implements InternalMessagingService {
 
     @Override
     public CompletableFuture<PingMessage.Pong> sendPing() {
-        PrettyPrinter debugger = new PrettyPrinter(53).add("Ping/Pong Status").center().hr();
-        final AtomicReference<PingMessage.Ping> reference = new AtomicReference<>();
-        final AtomicLong start = new AtomicLong();
-
-        return CompletableFutureManager.makeFuture(() -> {
-            start.set(System.nanoTime());
-            PingMessage.Ping ping = new PingPongMessage.Ping(this.generatePingID());
-            reference.set(ping);
-
-            Impactor.getInstance().getEventBus().postAsync(PingEvent.class, reference.get().getID(), Instant.now());
-
-            PingMessage.Pong response = this.await(ping);
-            this.populate(debugger, reference.get(), response);
-
-            return response;
-        }).applyToEither(
-            this.timeoutAfter(5, TimeUnit.SECONDS),
-            pong -> {
-                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-                return pong;
-            }
-        ).exceptionally(completion -> {
-            Throwable e = completion.getCause();
-
-            ErrorCode error;
-            if(e instanceof MessagingException) {
-                error = ((MessagingException) e).getError();
-            } else {
-                error = ErrorCodes.FATAL_ERROR;
-                ExceptionWriter.write(e);
-            }
-
-            PingMessage.Ping request = reference.get();
-            PingMessage.Pong response = new PingPongMessage.Pong(UUID.randomUUID(), request.getID(), false, error);
-
-            long end = System.nanoTime();
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(
-                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
-                            (end - start.get()) / 1_000_000_000
-            ));
-
-            this.populate(debugger, request, response);
-            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-
-            return response;
-        });
+        PingMessage.Ping ping = new PingPongMessage.Ping(this.generatePingID());
+        return new MessageProcessor<PingMessage.Pong, PingMessage.Ping>(
+                "Ping Request",
+                ping,
+                () -> this.await(ping),
+                error -> new PingPongMessage.Pong(
+                        UUID.randomUUID(),
+                        ping.getID(),
+                        false,
+                        error
+                )
+        ).process();
     }
 
     @Override
     public CompletableFuture<Void> sendPublishNotice(UUID listing, UUID actor, boolean auction) {
         return CompletableFutureManager.makeFuture(() -> {
             PublishListingMessageImpl message = new PublishListingMessageImpl(this.generatePingID(), listing, actor, auction);
-            GTSPlugin.getInstance().getMessagingService().getMessenger().sendOutgoingMessage(message);
+            GTSPlugin.instance().messagingService().getMessenger().sendOutgoingMessage(message);
         });
     }
 
     @Override
     public CompletableFuture<AuctionMessage.Bid.Response> publishBid(UUID listing, UUID actor, double bid) {
-        PrettyPrinter debugger = new PrettyPrinter(80).add("Bid Publishing Request").center().hr();
-        final AtomicReference<AuctionMessage.Bid.Request> reference = new AtomicReference<>();
-        final AtomicLong start = new AtomicLong();
-
-        return CompletableFutureManager.makeFuture(() -> {
-            start.set(System.nanoTime());
-            AuctionMessage.Bid.Request request = new AuctionBidMessage.Request(this.generatePingID(), listing, actor, bid);
-            reference.set(request);
-
-            AuctionMessage.Bid.Response response = this.await(request);
-            this.populate(debugger, request, response);
-
-            return response;
-        }).applyToEither(
-            this.timeoutAfter(5, TimeUnit.SECONDS),
-            response -> {
-                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-                return response;
-            }
-        ).exceptionally(completion -> {
-            Throwable e = completion.getCause();
-
-            ErrorCode error;
-            if(e instanceof MessagingException) {
-                error = ((MessagingException) e).getError();
-            } else {
-                error = ErrorCodes.FATAL_ERROR;
-                ExceptionWriter.write(e);
-            }
-
-            AuctionMessage.Bid.Request request = reference.get();
-            AuctionMessage.Bid.Response response = new AuctionBidMessage.Response(
-                    UUID.randomUUID(),
-                    request.getID(),
-                    listing,
-                    actor,
-                    bid,
-                    false,
-                    false,
-                    Listing.SERVER_ID,
-                    TreeMultimap.create(),
-                    error
-            );
-
-            long end = System.nanoTime();
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(
-                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
-                            (end - start.get()) / 1_000_000_000
-            ));
-            this.populate(debugger, request, response);
-            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-
-            return response;
-        });
+        AuctionMessage.Bid.Request request = new AuctionBidMessage.Request(this.generatePingID(), listing, actor, bid);
+        return new MessageProcessor<AuctionMessage.Bid.Response, AuctionMessage.Bid.Request>(
+                "Bid Publishing Request",
+                request,
+                () -> this.await(request),
+                error -> new AuctionBidMessage.Response(
+                        UUID.randomUUID(),
+                        request.getID(),
+                        request.getAuctionID(),
+                        request.getActor(),
+                        request.getAmountBid(),
+                        false,
+                        false,
+                        Listing.SERVER_ID,
+                        TreeMultimap.create(),
+                        error
+                )
+        ).process();
     }
 
     @Override
     public CompletableFuture<AuctionMessage.Cancel.Response> requestAuctionCancellation(UUID listing, UUID actor) {
-        PrettyPrinter debugger = new PrettyPrinter(53).add("Auction Cancellation Request").center().hr();
-        final AtomicReference<AuctionMessage.Cancel.Request> reference = new AtomicReference<>();
-        final AtomicLong start = new AtomicLong();
-
-        return CompletableFutureManager.makeFuture(() -> {
-            start.set(System.nanoTime());
-            AuctionMessage.Cancel.Request request = new AuctionCancelMessage.Request(this.generatePingID(), listing, actor);
-            reference.set(request);
-
-            AuctionMessage.Cancel.Response response = this.await(request);
-            this.populate(debugger, request, response);
-
-            return response;
-        }).applyToEither(
-            this.timeoutAfter(5, TimeUnit.SECONDS),
-            response -> {
-                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-                return response;
-            }
-        ).exceptionally(completion -> {
-            Throwable e = completion.getCause();
-
-            ErrorCode error;
-            if(e instanceof MessagingException) {
-                error = ((MessagingException) e).getError();
-            } else {
-                error = ErrorCodes.FATAL_ERROR;
-                ExceptionWriter.write(e);
-            }
-
-            AuctionMessage.Cancel.Request request = reference.get();
-            AuctionMessage.Cancel.Response response = null;
-
-            long end = System.nanoTime();
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(
-                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
-                            (end - start.get()) / 1_000_000_000
-            ));
-
-            this.populate(debugger, request, response);
-            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-
-            return response;
-        });
+        AuctionMessage.Cancel.Request request = new AuctionCancelMessage.Request(this.generatePingID(), listing, actor);
+        return new MessageProcessor<AuctionMessage.Cancel.Response, AuctionMessage.Cancel.Request>(
+                "Auction Cancellation Request",
+                request,
+                () -> this.await(request),
+                error -> new AuctionCancelMessage.Response(
+                        UUID.randomUUID(),
+                        request.getID(),
+                        null,
+                        request.getAuctionID(),
+                        request.getActor(),
+                        ImmutableList.of(),
+                        false,
+                        error
+                )
+        ).process();
     }
 
     @Override
     public CompletableFuture<ClaimMessage.Response> requestClaim(UUID listing, UUID actor, @Nullable UUID receiver, boolean auction) {
-        PrettyPrinter debugger = new PrettyPrinter(53).add("Claim Request").center().hr();
-        final AtomicReference<ClaimMessage.Request> reference = new AtomicReference<>();
-        final AtomicLong start = new AtomicLong();
-
-        return CompletableFutureManager.makeFuture(() -> {
-            start.set(System.nanoTime());
-            ClaimMessageImpl.ClaimRequestImpl request = new ClaimMessageImpl.ClaimRequestImpl(this.generatePingID(), listing, actor, receiver, auction);
-            reference.set(request);
-
-            ClaimMessage.Response response = this.await(request);
-            this.populate(debugger, request, response);
-
-            return response;
-        }).applyToEither(
-            this.timeoutAfter(5, TimeUnit.SECONDS),
-            response -> {
-                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-                return response;
-            }
-        ).exceptionally(completion -> {
-            Throwable e = completion.getCause();
-
-            ErrorCode error;
-            if(e instanceof MessagingException) {
-                error = ((MessagingException) e).getError();
-            } else {
-                error = ErrorCodes.FATAL_ERROR;
-                ExceptionWriter.write(e);
-            }
-
-            ClaimMessage.Request request = reference.get();
-            ClaimMessage.Response response = ClaimMessageImpl.ClaimResponseImpl.builder()
-                    .id(UUID.randomUUID())
-                    .request(request.getID())
-                    .listing(request.getListingID())
-                    .actor(request.getActor())
-                    .receiver(request.getReceiver().orElse(null))
-                    .error(error)
-                    .build();
-
-            long end = System.nanoTime();
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(
-                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
-                            (end - start.get()) / 1_000_000_000
-            ));
-
-            this.populate(debugger, request, response);
-            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-
-            return response;
-        });
-
+        ClaimMessageImpl.ClaimRequestImpl request = new ClaimMessageImpl.ClaimRequestImpl(this.generatePingID(), listing, actor, receiver, auction);
+        return new MessageProcessor<ClaimMessage.Response, ClaimMessage.Request>(
+                "Claim Request",
+                request,
+                () -> this.await(request),
+                error -> ClaimMessageImpl.ClaimResponseImpl.builder()
+                        .id(UUID.randomUUID())
+                        .request(request.getID())
+                        .listing(request.getListingID())
+                        .actor(request.getActor())
+                        .receiver(request.getReceiver().orElse(null))
+                        .error(error)
+                        .build()
+        ).process();
     }
 
     @Override
     public CompletableFuture<BuyItNowMessage.Purchase.Response> requestBINPurchase(UUID listing, UUID actor, Object source) {
-        PrettyPrinter debugger = new PrettyPrinter(53).add("BIN Purchase Request").center().hr();
-        final AtomicReference<BuyItNowMessage.Purchase.Request> reference = new AtomicReference<>();
-        final AtomicLong start = new AtomicLong();
-
-        return CompletableFutureManager.makeFuture(() -> {
-            start.set(System.nanoTime());
-            BuyItNowMessage.Purchase.Request request = new BINPurchaseMessage.Request(this.generatePingID(), listing, actor);
-            reference.set(request);
-
-            BuyItNowMessage.Purchase.Response response = this.await(request);
-            this.populate(debugger, request, response);
-
-            return response;
-        }).applyToEither(
-            this.timeoutAfter(5, TimeUnit.SECONDS),
-            response -> {
-                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-                return response;
-            }
-        ).exceptionally(completion -> {
-            Throwable e = completion.getCause();
-
-            ErrorCode error;
-            if(e instanceof MessagingException) {
-                error = ((MessagingException) e).getError();
-            } else {
-                error = ErrorCodes.FATAL_ERROR;
-                ExceptionWriter.write(e);
-            }
-
-            BuyItNowMessage.Purchase.Request request = reference.get();
-            BuyItNowMessage.Purchase.Response response = new BINPurchaseMessage.Response(
-                    UUID.randomUUID(), request.getID(), listing, actor, Listing.SERVER_ID, false, error
-            );
-
-            long end = System.nanoTime();
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(
-                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
-                            (end - start.get()) / 1_000_000_000
-            ));
-
-            this.populate(debugger, request, response);
-            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-
-            return response;
-        });
+        BuyItNowMessage.Purchase.Request request = new BINPurchaseMessage.Request(this.generatePingID(), listing, actor);
+        return new MessageProcessor<BuyItNowMessage.Purchase.Response, BuyItNowMessage.Purchase.Request>(
+                "BIN Purchase Request",
+                request,
+                () -> this.await(request),
+                error -> new BINPurchaseMessage.Response(
+                        UUID.randomUUID(),
+                        request.getID(),
+                        listing, actor,
+                        Listing.SERVER_ID,
+                        false,
+                        error
+                )
+        ).process();
     }
 
     @Override
     public CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive) {
-        PrettyPrinter debugger = new PrettyPrinter(53).add("Buy It Now Removal Request").center().hr();
-        final AtomicReference<BuyItNowMessage.Remove.Request> reference = new AtomicReference<>();
-        final AtomicLong start = new AtomicLong();
+        BuyItNowMessage.Remove.Request request = new BINRemoveMessage.Request(this.generatePingID(), listing, actor, receiver, shouldReceive);
 
-        return CompletableFutureManager.makeFuture(() -> {
-            start.set(System.nanoTime());
-            BuyItNowMessage.Remove.Request request = new BINRemoveMessage.Request(this.generatePingID(), listing, actor, receiver, shouldReceive);
-            reference.set(request);
-
-            BuyItNowMessage.Remove.Response response = this.await(request);
-            this.populate(debugger, request, response);
-
-            return response;
-        }).applyToEither(
-            this.timeoutAfter(5, TimeUnit.SECONDS),
-            response -> {
-                debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-                return response;
-            }
-        ).exceptionally(completion -> {
-            Throwable e = completion.getCause();
-
-            ErrorCode error;
-            if(e instanceof MessagingException) {
-                error = ((MessagingException) e).getError();
-            } else {
-                error = ErrorCodes.FATAL_ERROR;
-                ExceptionWriter.write(e);
-            }
-
-            BuyItNowMessage.Remove.Request request = reference.get();
-            BuyItNowMessage.Remove.Response response = new BINRemoveMessage.Response(
-                    UUID.randomUUID(), request.getID(), listing, actor, receiver, shouldReceive, false, error
-            );
-
-            long end = System.nanoTime();
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(
-                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
-                            (end - start.get()) / 1_000_000_000
-            ));
-
-            this.populate(debugger, request, response);
-            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-
-            return response;
-        });
+        return new MessageProcessor<BuyItNowMessage.Remove.Response, BuyItNowMessage.Remove.Request>(
+                "BIN Removal Request",
+                request,
+                () -> this.await(request),
+                error -> new BINRemoveMessage.Response(
+                        UUID.randomUUID(),
+                        request.getID(),
+                        listing,
+                        actor,
+                        receiver,
+                        shouldReceive,
+                        false,
+                        error
+                )
+        ).process();
     }
 
     @Override
     public CompletableFuture<ForceDeleteMessage.Response> requestForcedDeletion(UUID listing, UUID actor, boolean give) {
-        PrettyPrinter debugger = new PrettyPrinter(53).add("Admin - Forced Deletion").center().hr();
-        final AtomicReference<ForceDeleteMessage.Request> reference = new AtomicReference<>();
-        final AtomicLong start = new AtomicLong();
+        ForceDeleteMessage.Request request = new ForceDeleteMessageImpl.ForceDeleteRequest(this.generatePingID(), listing, actor, give);
 
-        return CompletableFutureManager.makeFuture(() -> {
-            start.set(System.nanoTime());
-            ForceDeleteMessage.Request request = new ForceDeleteMessageImpl.ForceDeleteRequest(this.generatePingID(), listing, actor, give);
-            reference.set(request);
-
-            ForceDeleteMessage.Response response = this.await(request);
-            this.populate(debugger, request, response);
-
-            return response;
-        }).applyToEither(
-                this.timeoutAfter(5, TimeUnit.SECONDS),
-                response -> {
-                    debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-                    return response;
-                }
-        ).exceptionally(completion -> {
-            Throwable e = completion.getCause();
-
-            ErrorCode error;
-            if(e instanceof MessagingException) {
-                error = ((MessagingException) e).getError();
-            } else {
-                error = ErrorCodes.FATAL_ERROR;
-                ExceptionWriter.write(e);
-            }
-
-            ForceDeleteMessage.Request request = reference.get();
-            ForceDeleteMessage.Response response = ForceDeleteMessage.Response.builder()
+        return new MessageProcessor<ForceDeleteMessage.Response, ForceDeleteMessage.Request>(
+                "Admin - Forced Deletion",
+                request,
+                () -> this.await(request),
+                error -> ForceDeleteMessage.Response.builder()
                     .request(request.getID())
                     .listing(request.getListingID())
                     .actor(request.getActor())
                     .data(null)
                     .successful(false)
                     .error(error)
-                    .build();
-
-            long end = System.nanoTime();
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(
-                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
-                            (end - start.get()) / 1_000_000_000
-            ));
-
-            this.populate(debugger, request, response);
-            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-
-            return response;
-        });
+                    .build()
+        ).process();
     }
 
     @Override
     public CompletableFuture<ClaimDelivery.Response> requestDeliveryClaim(UUID delivery, UUID actor) {
-        PrettyPrinter debugger = new PrettyPrinter(53).add("Delivery - Claim Request").center().hr();
-        final AtomicReference<ClaimDelivery.Request> reference = new AtomicReference<>();
-        final AtomicLong start = new AtomicLong();
+        ClaimDelivery.Request request = new ClaimDeliveryImpl.ClaimDeliveryRequestImpl(this.generatePingID(), delivery, actor);
 
-        return CompletableFutureManager.makeFuture(() -> {
-            start.set(System.nanoTime());
-            ClaimDelivery.Request request = new ClaimDeliveryImpl.ClaimDeliveryRequestImpl(this.generatePingID(), delivery, actor);
-            reference.set(request);
-
-            ClaimDelivery.Response response = this.await(request);
-            this.populate(debugger, request, response);
-
-            return response;
-        }).applyToEither(
-                this.timeoutAfter(5, TimeUnit.SECONDS),
-                response -> {
-                    debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-                    return response;
-                }
-        ).exceptionally(completion -> {
-            Throwable e = completion.getCause();
-
-            ErrorCode error;
-            if(e instanceof MessagingException) {
-                error = ((MessagingException) e).getError();
-            } else {
-                error = ErrorCodes.FATAL_ERROR;
-                ExceptionWriter.write(e);
-            }
-
-            ClaimDelivery.Request request = reference.get();
-            ClaimDelivery.Response response = ClaimDeliveryImpl.ClaimDeliveryResponseImpl.builder()
-                    .request(request.getID())
-                    .delivery(request.getDeliveryID())
-                    .actor(request.getActor())
-                    .error(error)
-                    .build();
-
-            long end = System.nanoTime();
-            response.setResponseTime(TimeUnit.SECONDS.toMillis(
-                    error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
-                            (end - start.get()) / 1_000_000_000
-            ));
-
-            this.populate(debugger, request, response);
-            debugger.log(GTSPlugin.getInstance().getPluginLogger(), PrettyPrinter.Level.DEBUG);
-
-            return response;
-        });
+        return new MessageProcessor<ClaimDelivery.Response, ClaimDelivery.Request>(
+                "Delivery - Claim Request",
+                request,
+                () -> this.await(request),
+                error -> ClaimDeliveryImpl.ClaimDeliveryResponseImpl.builder()
+                        .request(request.getID())
+                        .delivery(request.getDeliveryID())
+                        .actor(request.getActor())
+                        .error(error)
+                        .build()
+        ).process();
     }
 
     public static String encodeMessageAsString(String type, UUID id, @Nullable JsonElement content) {
@@ -572,20 +313,79 @@ public class GTSMessagingService implements InternalMessagingService {
         return NORMAL.toJson(json);
     }
 
-    private void populate(PrettyPrinter printer, MessageType.Request<?> request, MessageType.Response response) {
-        printer.add()
-                .add("Request Information:")
-                .hr('-')
-                .add(request)
-                .add()
-                .hr('=')
-                .add()
-                .add("Response Information:")
-                .hr('-')
-                .add(response)
-                .add()
-                .consume(response::finalizeReport)
-                .add();
-    }
+    private static class MessageProcessor<T extends MessageType.Response, E extends MessageType.Request<T>> {
 
+        private final String name;
+
+        private final E request;
+        private final Supplier<T> supplier;
+        private final Function<ErrorCode, T> error;
+
+        MessageProcessor(String name, E request, Supplier<T> supplier, Function<ErrorCode, T> error) {
+            this.name = name;
+            this.request = request;
+            this.supplier = supplier;
+            this.error = error;
+        }
+
+        CompletableFuture<T> process() {
+            PrettyPrinter debugger = new PrettyPrinter(53).add(this.name).center().hr();
+            final AtomicLong start = new AtomicLong();
+
+            return CompletableFutureManager.makeFuture(() -> {
+                start.set(System.nanoTime());
+
+                T response = this.supplier.get();
+                this.populate(debugger, request, response);
+
+                return response;
+            }).applyToEither(
+                    CompletableFutureManager.timeoutAfter(5, TimeUnit.SECONDS),
+                    response -> {
+                        debugger.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.DEBUG);
+                        return response;
+                    }
+            ).exceptionally(completion -> {
+                Throwable e = completion.getCause();
+
+                ErrorCode error;
+                if(e instanceof MessagingException) {
+                    error = ((MessagingException) e).getError();
+                } else {
+                    error = ErrorCodes.FATAL_ERROR;
+                    ExceptionWriter.write(e);
+                }
+
+                T response = this.error.apply(error);
+
+                long end = System.nanoTime();
+                response.setResponseTime(TimeUnit.SECONDS.toMillis(
+                        error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
+                                (end - start.get()) / 1_000_000_000
+                ));
+
+                this.populate(debugger, request, response);
+                debugger.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.DEBUG);
+
+                return response;
+            });
+        }
+
+        private void populate(PrettyPrinter printer, MessageType.Request<?> request, MessageType.Response response) {
+            printer.newline()
+                    .add("Request Information:")
+                    .hr('-')
+                    .add(request)
+                    .newline()
+                    .hr('=')
+                    .newline()
+                    .add("Response Information:")
+                    .hr('-')
+                    .add(response)
+                    .newline()
+                    .consume(response::finalizeReport)
+                    .newline();
+        }
+
+    }
 }

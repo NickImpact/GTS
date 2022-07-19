@@ -86,6 +86,8 @@ public interface BuyItNow extends Listing {
 		 */
 		BuyItNowBuilder stashedForPurchaser();
 
+		BuyItNowBuilder from(BuyItNow parent);
+
 	}
 
 }

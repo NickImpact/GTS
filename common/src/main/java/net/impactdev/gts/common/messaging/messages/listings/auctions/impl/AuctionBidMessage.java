@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
 import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.utils.EconomicFormatter;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.json.factory.JArray;
@@ -19,6 +18,7 @@ import net.impactdev.gts.api.util.groupings.SimilarPair;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.common.messaging.messages.listings.auctions.AuctionMessageOptions;
 import net.impactdev.gts.common.plugin.GTSPlugin;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import org.checkerframework.checker.index.qual.Positive;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -107,7 +107,7 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 
 		@Override
 		public CompletableFuture<Bid.Response> respond() {
-			return GTSPlugin.getInstance().getStorage().processBid(this);
+			return GTSPlugin.instance().storage().processBid(this);
 		}
 
 		@Override
@@ -314,13 +314,13 @@ public abstract class AuctionBidMessage extends AuctionMessageOptions implements
 					.kv("Auction ID", this.getAuctionID())
 					.kv("Actor", this.getActor())
 					.kv("Amount Bid", Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(this.bid))
-					.add()
+					.newline()
 					.kv("Seller", this.getSeller());
 
 			if(this.getAllOtherBids().size() > 0) {
 				int index = 0;
 				int amount = this.getAllOtherBids().size();
-				printer.add()
+				printer.newline()
 						.hr('-')
 						.add("All Bids").center()
 						.table("UUID", "Bid");

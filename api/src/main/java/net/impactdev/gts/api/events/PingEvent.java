@@ -1,17 +1,16 @@
 package net.impactdev.gts.api.events;
 
 import net.impactdev.impactor.api.event.ImpactorEvent;
-import net.impactdev.impactor.api.event.annotations.Param;
+import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@GenerateFactoryMethod
 public interface PingEvent extends ImpactorEvent {
 
-    @Param(0)
     UUID getPingID();
 
-    @Param(1)
     Instant getTimeSent();
 
 }

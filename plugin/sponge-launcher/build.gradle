@@ -1,0 +1,45 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+
+repositories {
+    maven { url 'https://repo.spongepowered.org/repository/maven-public/' }
+}
+
+dependencies {
+    implementation project(":api")
+    implementation 'net.impactdev.impactor:launcher:4.0.0'
+
+    compileOnly 'org.spongepowered:spongeapi:8.1.0'
+    annotationProcessor('org.spongepowered:spongeapi:8.0.0') {
+        exclude module: 'com.google.guava'
+    }
+}
+
+shadowJar {
+    archiveBaseName.set("GTS-Sponge")
+    archiveClassifier.set("")
+    archiveVersion.set("${project.sponge}-${project.version}")
+
+    dependencies {
+        include project(":api")
+        //include project(":plugin")
+        //include 'net.impactdev.impactor:launcher:.*'
+    }
+
+    from {
+        project(':plugin').tasks.shadowJar.archiveFile
+    }
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.WARN
+    from(sourceSets.main.resources.srcDirs) {
+        expand 'version': project.version
+    }
+}
+
+artifacts {
+    archives shadowJar
+}

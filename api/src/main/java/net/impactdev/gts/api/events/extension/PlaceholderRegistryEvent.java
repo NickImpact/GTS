@@ -1,11 +1,11 @@
 package net.impactdev.gts.api.events.extension;
 
 import net.impactdev.impactor.api.event.ImpactorEvent;
-import net.impactdev.impactor.api.event.annotations.Param;
+import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
 
-public interface PlaceholderRegistryEvent<T> extends ImpactorEvent.Generic<T> {
+@GenerateFactoryMethod
+public interface PlaceholderRegistryEvent extends ImpactorEvent {
 
-    @Param(0)
-    T getManager();
+    Object getPopulator();
 
 }

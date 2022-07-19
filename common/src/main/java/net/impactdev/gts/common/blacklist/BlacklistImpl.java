@@ -3,6 +3,7 @@ package net.impactdev.gts.common.blacklist;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.impactdev.gts.api.blacklist.Blacklist;
+import net.kyori.adventure.key.Key;
 
 public class BlacklistImpl implements Blacklist {
 

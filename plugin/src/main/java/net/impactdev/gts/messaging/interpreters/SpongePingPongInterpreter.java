@@ -13,18 +13,18 @@ public class SpongePingPongInterpreter implements Interpreter {
 
 	@Override
 	public void getDecoders(GTSPlugin plugin) {
-		plugin.getMessagingService().registerDecoder(PingPongMessage.Ping.TYPE, PingPongMessage.Ping::decode);
-		plugin.getMessagingService().registerDecoder(PingPongMessage.Pong.TYPE, PingPongMessage.Pong::decode);
+		plugin.messagingService().registerDecoder(PingPongMessage.Ping.TYPE, PingPongMessage.Ping::decode);
+		plugin.messagingService().registerDecoder(PingPongMessage.Pong.TYPE, PingPongMessage.Pong::decode);
 	}
 
 	@Override
 	public void getInterpreters(GTSPlugin plugin) {
-		plugin.getMessagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
+		plugin.messagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
 				PingPongMessage.Ping.class, ping -> {
 					try {
 						ping.respond()
 								.thenAccept(pong -> {
-									GTSPlugin.getInstance().getMessagingService().getMessenger().sendOutgoingMessage(pong);
+									GTSPlugin.instance().messagingService().getMessenger().sendOutgoingMessage(pong);
 								})
 								.exceptionally(error -> {
 									error.printStackTrace();
@@ -36,9 +36,9 @@ public class SpongePingPongInterpreter implements Interpreter {
 				}
 		);
 
-		plugin.getMessagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
+		plugin.messagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
 				PingPongMessage.Pong.class, pong -> {
-					GTSPlugin.getInstance().getMessagingService().getMessenger()
+					GTSPlugin.instance().messagingService().getMessenger()
 							.getMessageConsumer()
 							.processRequest(pong.getRequestID(), pong);
 				}

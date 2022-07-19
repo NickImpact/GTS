@@ -1,9 +1,9 @@
 package net.impactdev.gts.api.events.buyitnow;
 
 import net.impactdev.impactor.api.event.ImpactorEvent;
-import net.impactdev.impactor.api.event.annotations.Param;
 import net.impactdev.impactor.api.event.type.Cancellable;
 import net.impactdev.gts.api.listings.Listing;
+import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
 
 import java.util.UUID;
 
@@ -14,12 +14,11 @@ import java.util.UUID;
  *
  * @author NickImpact
  */
+@GenerateFactoryMethod
 public interface PurchaseListingEvent extends ImpactorEvent, Cancellable {
 
-    @Param(0)
     UUID getBuyer();
 
-    @Param(1)
     Listing getListing();
 
 

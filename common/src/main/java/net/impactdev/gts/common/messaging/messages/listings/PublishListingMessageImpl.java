@@ -3,10 +3,10 @@ package net.impactdev.gts.common.messaging.messages.listings;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.messaging.message.type.listings.PublishListingMessage;
-import net.impactdev.gts.api.util.PrettyPrinter;
 import net.impactdev.gts.common.messaging.GTSMessagingService;
 import net.impactdev.gts.common.messaging.messages.AbstractMessage;
 import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 

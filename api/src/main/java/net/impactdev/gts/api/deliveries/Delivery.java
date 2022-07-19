@@ -3,7 +3,7 @@ package net.impactdev.gts.api.deliveries;
 import net.impactdev.gts.api.data.Storable;
 import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.utilities.Builder;
+import net.impactdev.impactor.api.builders.Builder;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -67,7 +67,7 @@ public interface Delivery extends Storable {
         return Impactor.getInstance().getRegistry().createBuilder(DeliveryBuilder.class);
     }
 
-    interface DeliveryBuilder extends Builder<Delivery, DeliveryBuilder> {
+    interface DeliveryBuilder extends Builder<Delivery> {
 
         DeliveryBuilder id(UUID id);
 

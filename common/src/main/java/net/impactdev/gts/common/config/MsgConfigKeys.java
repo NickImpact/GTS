@@ -3,11 +3,11 @@ package net.impactdev.gts.common.config;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.configuration.ConfigKeyHolder;
 import net.impactdev.impactor.api.configuration.keys.BaseConfigKey;
 import net.impactdev.gts.common.config.types.time.TimeLanguageOptions;
 import net.impactdev.gts.common.config.wrappers.SortConfigurationOptions;
 import net.impactdev.gts.common.config.wrappers.TitleLorePair;
+import net.impactdev.impactor.api.configuration.loader.KeyProvider;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -17,7 +17,8 @@ import java.util.Map;
 
 import static net.impactdev.impactor.api.configuration.ConfigKeyTypes.*;
 
-public class MsgConfigKeys implements ConfigKeyHolder {
+@KeyProvider
+public class MsgConfigKeys {
 
 	// Plugin chat prefix (replacement option for {{gts_prefix}}
 	public static final ConfigKey<String> PREFIX = stringKey("general.gts-prefix", "&eGTS &7\u00bb");
@@ -602,6 +603,10 @@ public class MsgConfigKeys implements ConfigKeyHolder {
 			"&7Click me to toggle the state",
 			"&7of this setting!"
 	));
+	public static final ConfigKey<List<String>> UI_LISTING_TYPE_FILTER = listKey("ui.listings.type-filter", Lists.newArrayList(
+			"&7Click to filter the shown listings",
+			"&7to this type only!"
+	));
 
 	// Generic Messages
 	public static final ConfigKey<String> GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST = stringKey("general.feedback.begin-feedback-request", "&7Processing your request...");
@@ -683,48 +688,4 @@ public class MsgConfigKeys implements ConfigKeyHolder {
     public static final ConfigKey<String> ADMIN_TIMEOUT = stringKey("commands.admin.timeout", "{{gts:error}} Timed out waiting for a response...");
     public static final ConfigKey<String> ADMIN_USERNAME_QUERY = stringKey("commands.admin.username-query", "{{gts:prefix}} Please supply a valid username to target...");
 
-    private static final Map<String, ConfigKey<?>> KEYS;
-	private static final int SIZE;
-
-	static {
-		Map<String, ConfigKey<?>> keys = new LinkedHashMap<>();
-		Field[] values = MsgConfigKeys.class.getFields();
-		int i = 0;
-
-		for (Field f : values) {
-			// ignore non-static fields
-			if (!Modifier.isStatic(f.getModifiers())) {
-				continue;
-			}
-
-			// ignore fields that aren't configkeys
-			if (!ConfigKey.class.equals(f.getType())) {
-				continue;
-			}
-
-			try {
-				// get the key instance
-				BaseConfigKey<?> key = (BaseConfigKey<?>) f.get(null);
-				// set the ordinal value of the key.
-				key.ordinal = i++;
-				// add the key to the return map
-				keys.put(f.getName(), key);
-			} catch (Exception e) {
-				throw new RuntimeException("Exception processing field: " + f, e);
-			}
-		}
-
-		KEYS = ImmutableMap.copyOf(keys);
-		SIZE = i;
-	}
-
-	@Override
-	public Map<String, ConfigKey<?>> getKeys() {
-		return KEYS;
-	}
-
-	@Override
-	public int getSize() {
-		return SIZE;
-	}
 }

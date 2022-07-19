@@ -33,7 +33,7 @@ public class SellingContext implements CommandGenerator.Context {
 
     @Override
     public long time() {
-        return this.time != Long.MIN_VALUE ? this.time : GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_TIME_MID).getTime();
+        return this.time != Long.MIN_VALUE ? this.time : GTSPlugin.instance().configuration().main().get(ConfigKeys.LISTING_TIME_MID).getTime();
     }
 
     @Override

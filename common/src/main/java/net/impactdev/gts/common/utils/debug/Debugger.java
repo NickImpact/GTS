@@ -1,6 +1,7 @@
 package net.impactdev.gts.common.utils.debug;
 
-import net.impactdev.gts.api.util.PrettyPrinter;
+
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 
 /**
  * This is simply a utility class meant to setup a PrettyPrinter instance initialized with a

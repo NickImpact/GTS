@@ -1,7 +1,7 @@
 package net.impactdev.gts.api.environment;
 
 import com.google.common.collect.Maps;
-import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 
 import java.util.Map;
 

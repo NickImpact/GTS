@@ -29,6 +29,11 @@ public class JsonStoredEntry implements Entry<JsonObject, Void> {
 	}
 
 	@Override
+	public Class<? extends Entry<JsonObject, Void>> type() {
+		return JsonStoredEntry.class;
+	}
+
+	@Override
 	public JsonObject getOrCreateElement() {
 		return this.data;
 	}

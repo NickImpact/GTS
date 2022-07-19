@@ -1,28 +1,26 @@
 package net.impactdev.gts.commands.elements;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.listings.entries.EntryManager;
-import org.jetbrains.annotations.Nullable;
-import org.spongepowered.api.command.CommandSource;
-import org.spongepowered.api.command.args.ArgumentParseException;
-import org.spongepowered.api.command.args.CommandArgs;
-import org.spongepowered.api.command.args.CommandContext;
-import org.spongepowered.api.command.args.CommandElement;
-import org.spongepowered.api.text.Text;
+import net.kyori.adventure.text.Component;
+import org.spongepowered.api.command.CommandCompletion;
+import org.spongepowered.api.command.exception.ArgumentParseException;
+import org.spongepowered.api.command.parameter.ArgumentReader;
+import org.spongepowered.api.command.parameter.CommandContext;
+import org.spongepowered.api.command.parameter.Parameter;
+import org.spongepowered.api.command.parameter.managed.ValueParameter;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-public class EntryManagerElement extends CommandElement {
+public class EntryManagerElement implements ValueParameter<EntryManager<?>> {
 
-    private final Map<String, EntryManager<?, ?>> entries = Maps.newHashMap();
+    private final Map<String, EntryManager<?>> entries = Maps.newHashMap();
 
-    public EntryManagerElement(@Nullable Text key) {
-        super(key);
+    public EntryManagerElement() {
         GTSService.getInstance().getGTSComponentManager().getAllEntryManagers().values().forEach(em -> {
             for(String alias : em.getEntryCommandCreator().getAliases()) {
                 this.entries.put(alias.toLowerCase(), em);
@@ -30,20 +28,20 @@ public class EntryManagerElement extends CommandElement {
         });
     }
 
-    @Nullable
     @Override
-    protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
-        String key = args.next();
-        EntryManager<?, ?> match = this.entries.get(key);
-        if(match == null) {
-            throw new ArgumentParseException(Text.of("No matching element"), key, key.length() - 1);
-        }
-
-        return match;
+    public List<CommandCompletion> complete(CommandContext context, String currentInput) {
+        //return ImmutableList.copyOf(this.entries.keySet());
+        return Collections.emptyList();
     }
 
     @Override
-    public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
-        return ImmutableList.copyOf(this.entries.keySet());
+    public Optional<? extends EntryManager<?>> parseValue(Parameter.Key<? super EntryManager<?>> parameterKey, ArgumentReader.Mutable reader, CommandContext.Builder context) throws ArgumentParseException {
+        String key = reader.parseString();
+        EntryManager<?> match = this.entries.get(key);
+        if(match == null) {
+            throw new ArgumentParseException(Component.text("No matching element"), key, key.length() - 1);
+        }
+
+        return Optional.of(match);
     }
 }

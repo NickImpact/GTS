@@ -1,48 +1,34 @@
 package net.impactdev.gts.listings;
 
-import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.data.translators.DataTranslatorManager;
-import net.impactdev.gts.api.util.PrettyPrinter;
+import net.impactdev.gts.api.listings.entries.Entry;
 import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.data.NBTMapper;
 import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.listings.data.DataContainerAdapter;
 import net.impactdev.gts.sponge.data.NBTTranslator;
 import net.impactdev.gts.sponge.utils.Utilities;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.gts.api.listings.Listing;
 import net.impactdev.gts.api.data.registry.GTSKeyMarker;
 import net.impactdev.gts.api.listings.makeup.Display;
 import net.impactdev.gts.sponge.listings.makeup.SpongeDisplay;
 import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
+import net.impactdev.impactor.api.placeholders.PlaceholderSources;
 import net.impactdev.impactor.api.services.text.MessageService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.DataContainer;
-import org.spongepowered.api.data.DataQuery;
-import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.data.Keys;
+import org.spongepowered.api.data.persistence.DataContainer;
+import org.spongepowered.api.entity.living.player.server.ServerPlayer;
 import org.spongepowered.api.item.inventory.*;
-import org.spongepowered.api.item.inventory.entity.Hotbar;
-import org.spongepowered.api.item.inventory.entity.MainPlayerInventory;
-import org.spongepowered.api.item.inventory.property.AbstractInventoryProperty;
-import org.spongepowered.api.item.inventory.property.SlotIndex;
-import org.spongepowered.api.item.inventory.property.SlotPos;
-import org.spongepowered.api.item.inventory.query.QueryOperationTypes;
+import org.spongepowered.api.item.inventory.entity.PrimaryPlayerInventory;
 import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
-import org.spongepowered.api.item.inventory.type.GridInventory;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-import org.spongepowered.api.text.serializer.TextSerializers;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,8 +42,8 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	private static final Function<ItemStackSnapshot, JObject> writer = snapshot -> {
 		try {
-			DataContainer container = snapshot.toContainer();
-			return NBTMapper.from(NBTTranslator.getInstance().translateData(container));
+			CompoundNBT nbt = ((net.minecraft.item.ItemStack) (Object) snapshot.createStack()).serializeNBT();
+			return NBTMapper.from(nbt);
 		} catch (Exception e) {
 			throw new RuntimeException("Failed to write JSON data for item snapshot", e);
 		}
@@ -78,6 +64,11 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	}
 
 	@Override
+	public Class<? extends Entry<ItemStackSnapshot, ItemStack>> type() {
+		return SpongeItemEntry.class;
+	}
+
+	@Override
 	public ItemStackSnapshot getOrCreateElement() {
 		return this.item;
 	}
@@ -86,18 +77,11 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	public TextComponent getName() {
 		TextComponent.Builder builder = Component.text();
 		TextComponent.Builder actual = Component.text();
-		builder.append(LegacyComponentSerializer.legacyAmpersand().deserialize(
-				this.getOrCreateElement().get(Keys.DISPLAY_NAME)
-						.map(TextSerializers.LEGACY_FORMATTING_CODE::serialize)
-						.orElse(this.getOrCreateElement().getTranslation().get())
-		));
+		builder.append(this.getOrCreateElement().get(Keys.CUSTOM_NAME)
+				.orElse(this.getOrCreateElement().type().asComponent()));
 
 		if(this.item.get(Keys.DISPLAY_NAME).isPresent()) {
-			builder.hoverEvent(HoverEvent.showText(
-					Component.text()
-							.append(Component.text(this.getOrCreateElement().getTranslation().get()))
-							.build()
-			));
+			builder.hoverEvent(HoverEvent.showText(this.getOrCreateElement().type().asComponent()));
 		}
 
 		return actual.append(builder.build()).build();
@@ -106,8 +90,8 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	@Override
 	public TextComponent getDescription() {
 		TextComponent.Builder builder = Component.text();
-		if(this.item.getQuantity() > 1) {
-			builder.append(Component.text(this.item.getQuantity() + "x "));
+		if(this.item.quantity() > 1) {
+			builder.append(Component.text(this.item.quantity() + "x "));
 		}
 
 		return builder.append(this.getName()).build();
@@ -119,13 +103,13 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 			ItemStack.Builder designer = ItemStack.builder();
 			designer.fromSnapshot(this.getOrCreateElement());
 
-			if (this.getOrCreateElement().get(Keys.DISPLAY_NAME).isPresent()) {
-				Text name = this.getOrCreateElement().get(Keys.DISPLAY_NAME).get();
-				if (name.getColor() == TextColors.NONE) {
-					designer.add(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, name));
+			if (this.getOrCreateElement().get(Keys.CUSTOM_NAME).isPresent()) {
+				Component name = this.getOrCreateElement().get(Keys.CUSTOM_NAME).get();
+				if (name.color() == null) {
+					designer.add(Keys.CUSTOM_NAME, name.color(NamedTextColor.DARK_AQUA));
 				}
 			} else {
-				designer.add(Keys.DISPLAY_NAME, Text.of(TextColors.DARK_AQUA, this.getOrCreateElement().getTranslation().get()));
+				designer.add(Keys.CUSTOM_NAME, this.getOrCreateElement().type().asComponent().color(NamedTextColor.DARK_AQUA));
 			}
 
 			this.display = new SpongeDisplay(designer.build());
@@ -136,17 +120,15 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	@Override
 	public boolean give(UUID receiver) {
-		Optional<Player> player = Sponge.getServer().getPlayer(receiver);
+		Optional<ServerPlayer> player = Sponge.server().player(receiver);
 		if(player.isPresent()) {
-			MainPlayerInventory inventory = player.get().getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class));
-			Inventory target = inventory.transform(InventoryTransformation.of(
-					QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
-					QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class))
-			);
+			PrimaryPlayerInventory inventory = player.get().inventory().primary();
 
-			if(target.canFit(this.getOrCreateElement().createStack())) {
-				return target.offer(this.getOrCreateElement().createStack())
-						.getType()
+			Inventory transformed = inventory.hotbar().union(inventory.storage());
+
+			if(transformed.canFit(this.getOrCreateElement().createStack())) {
+				return transformed.offer(this.getOrCreateElement().createStack())
+						.type()
 						.equals(InventoryTransactionResult.Type.SUCCESS);
 			}
 		}
@@ -157,28 +139,24 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	@Override
 	public boolean take(UUID depositor) {
 		AtomicBoolean result = new AtomicBoolean(false);
-		Optional<Player> player = Sponge.getServer().getPlayer(depositor);
+		Optional<ServerPlayer> player = Sponge.server().player(depositor);
 		player.ifPresent(pl -> {
 			ItemStack rep = this.item.createStack();
-			Inventory parent = pl.getInventory().query(QueryOperationTypes.INVENTORY_TYPE.of(MainPlayerInventory.class))
-					.transform(InventoryTransformation.of(
-							QueryOperationTypes.INVENTORY_TYPE.of(Hotbar.class),
-							QueryOperationTypes.INVENTORY_TYPE.of(GridInventory.class)
-					));
+			PrimaryPlayerInventory parent = pl.inventory().primary();
+			Inventory transform = parent.hotbar().union(parent.storage());
 
-			Slot slot = this.query(parent);
-			if(slot.peek().isPresent()) {
-				if(!GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.ITEMS_ALLOW_ANVIL_NAMES)) {
-					NBTTagCompound nbt = NBTTranslator.getInstance().translate(slot.peek().get().toContainer());
-					GTSPlugin.getInstance().getPluginLogger().info(nbt.toString());
-					if (nbt.hasKey("UnsafeData")) {
-						if (nbt.getCompoundTag("UnsafeData").hasKey("GTS-Anvil")) {
+			Slot slot = this.query(transform);
+			if(slot.peek() != ItemStack.empty()) {
+				if(!GTSPlugin.instance().configuration().main().get(ConfigKeys.ITEMS_ALLOW_ANVIL_NAMES)) {
+					CompoundNBT nbt = NBTTranslator.getInstance().translate(slot.peek().toContainer());
+					if (nbt.contains("UnsafeData")) {
+						if (nbt.getCompound("UnsafeData").contains("GTS-Anvil")) {
 							return;
 						}
 					}
 				}
 
-				slot.poll(rep.getQuantity());
+				slot.poll(rep.quantity());
 				result.set(true);
 			}
 		});
@@ -193,17 +171,20 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 
 	@Override
 	public List<String> getDetails() {
-		MessageService<Text> parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+		MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
 
-		return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ITEM_DISCORD_DETAILS), Lists.newArrayList(this::getOrCreateElement))
-				.stream()
-				.map(Text::toPlain)
+		return parser.parse(
+				Utilities.readMessageConfigOption(MsgConfigKeys.ITEM_DISCORD_DETAILS),
+				PlaceholderSources.builder().append(ItemStackSnapshot.class, this::getOrCreateElement).build()
+		).stream()
+				.map(LegacyComponentSerializer.legacyAmpersand()::serialize)
+				.map(out -> out.replace("&", ""))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public int getVersion() {
-		return 2;
+		return 3;
 	}
 
 	@Override
@@ -216,8 +197,7 @@ public class SpongeItemEntry extends SpongeEntry<ItemStackSnapshot> {
 	private Slot query(Inventory inventory) {
 		Iterable<Slot> slots = inventory.slots();
 		for(Slot slot : slots) {
-			boolean valid = slot.getProperty(SlotIndex.class, "slotindex")
-					.map(AbstractInventoryProperty::getValue)
+			boolean valid = slot.get(Keys.SLOT_INDEX)
 					.filter(value -> value.equals(this.slot))
 					.isPresent();
 			if(valid) {
