@@ -81,15 +81,15 @@ jobs:
           asset_path: ${{ github.workspace }}/build/allJars/GTS-Extension-Reforged-${{ steps.get_version.outputs.version }}.jar
           asset_name: GTS-Extension-Reforged-${{ steps.get_version.outputs.version }}.jar
           asset_content_type: application/java-archive
-      - name: Upload Generations Extension Jar
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/build/allJars/GTS-Extension-Generations-${{ steps.get_version.outputs.version }}.jar
-          asset_name: GTS-Extension-Generations-${{ steps.get_version.outputs.version }}.jar
-          asset_content_type: application/java-archive
+#      - name: Upload Generations Extension Jar
+#        uses: actions/upload-release-asset@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          upload_url: ${{ steps.create_release.outputs.upload_url }}
+#          asset_path: ${{ github.workspace }}/build/allJars/GTS-Extension-Generations-${{ steps.get_version.outputs.version }}.jar
+#          asset_name: GTS-Extension-Generations-${{ steps.get_version.outputs.version }}.jar
+#          asset_content_type: application/java-archive
       - name: Upload Sponge Jar to Ore
         run: ./gradlew publishToOre
         env:

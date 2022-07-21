@@ -236,7 +236,7 @@ task sendToDiscordGenerationsExtension(type: PostToDiscord) {
 task publishToDiscord {
     dependsOn(sendToDiscordPlugins)
     dependsOn(sendToDiscordReforgedExtension)
-    dependsOn(sendToDiscordGenerationsExtension)
+    //dependsOn(sendToDiscordGenerationsExtension)
 }
 
 apply plugin: 'maven-publish'
