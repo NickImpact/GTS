@@ -8,9 +8,10 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
 import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
-import net.impactdev.impactor.api.dependencies.classloader.PluginClassLoader;
-import net.impactdev.impactor.api.logging.Logger;
-import net.impactdev.impactor.velocity.logging.VelocityLogger;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+import net.impactdev.impactor.api.logging.PluginLogger;
+import net.impactdev.impactor.api.logging.Slf4jLogger;
+import org.slf4j.Logger;
 
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -22,24 +23,24 @@ public class GTSVelocityBootstrap implements GTSBootstrap {
     private final GTSVelocityPlugin plugin;
 
     private final ProxyServer proxy;
-    private final Logger logger;
+    private final PluginLogger logger;
     private final Path configDir;
 
     @Inject
-    public GTSVelocityBootstrap(ProxyServer server, @DataDirectory Path configDir) {
+    public GTSVelocityBootstrap(ProxyServer server, Logger delegate, @DataDirectory Path configDir) {
         this.plugin = new GTSVelocityPlugin(this);
         this.proxy = server;
-        this.logger = new VelocityLogger(this.plugin);
+        this.logger = new Slf4jLogger(delegate);
         this.configDir = configDir;
     }
 
     @Subscribe
     public void onProxyInit(ProxyInitializeEvent event) {
         try {
-            this.plugin.init();
+            this.plugin.construct();
         } catch (Exception e) {
             //exception = e;
-            e.printStackTrace();
+            ExceptionWriter.write(e);
         }
     }
 
@@ -48,37 +49,33 @@ public class GTSVelocityBootstrap implements GTSBootstrap {
     }
 
     @Override
-    public Logger getPluginLogger() {
+    public PluginLogger logger() {
         return this.logger;
     }
 
     @Override
-    public Path getDataDirectory() {
+    public Path configDirectory() {
         return this.configDir;
     }
 
     @Override
-    public Path getConfigDirectory() {
+    public Path dataDirectory() {
         return this.configDir;
     }
 
     @Override
-    public InputStream getResourceStream(String path) {
-        return null;
+    public Optional<InputStream> resource(Path path) {
+        return Optional.ofNullable(this.getClass().getClassLoader().getResourceAsStream(path.toString().replace("\\", "/")));
     }
 
     @Override
-    public PluginClassLoader getPluginClassLoader() {
-        return null;
-    }
-
-    @Override
-    public Optional<Throwable> getLaunchError() {
+    public Optional<Throwable> launchError() {
         return Optional.empty();
     }
 
     @Override
-    public void disable() {
+    public void construct() {}
 
-    }
+    @Override
+    public void shutdown() {}
 }

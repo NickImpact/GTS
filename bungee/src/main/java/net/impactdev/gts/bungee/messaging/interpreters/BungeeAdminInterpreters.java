@@ -16,20 +16,20 @@ public class BungeeAdminInterpreters implements Interpreter {
 
     @Override
     public void getDecoders(GTSPlugin plugin) {
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 ForceDeleteMessageImpl.ForceDeleteRequest.TYPE, ForceDeleteMessageImpl.ForceDeleteRequest::decode
         );
     }
 
     @Override
     public void getInterpreters(GTSPlugin plugin) {
-        final IncomingMessageConsumer consumer = plugin.getMessagingService().getMessenger().getMessageConsumer();
+        final IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
 
         consumer.registerInternalConsumer(
                 ForceDeleteMessageImpl.ForceDeleteRequest.class, request -> {
                     request.respond().thenAccept(response -> {
-                        GTSPlugin.getInstance().getMessagingService().getMessenger().sendOutgoingMessage(response);
-                        GTSPlugin.getInstance().getPluginLogger().info("Response sent");
+                        GTSPlugin.instance().messagingService().getMessenger().sendOutgoingMessage(response);
+                        GTSPlugin.instance().logger().info("Response sent");
                     })
                     .exceptionally(e -> {
                         ExceptionWriter.write(e);

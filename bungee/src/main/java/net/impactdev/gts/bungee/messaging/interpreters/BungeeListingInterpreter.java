@@ -18,25 +18,25 @@ public class BungeeListingInterpreter implements Interpreter {
 
     @Override
     public void getDecoders(GTSPlugin plugin) {
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 PublishListingMessageImpl.TYPE, PublishListingMessageImpl::decode
         );
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 ClaimMessageImpl.ClaimRequestImpl.TYPE, ClaimMessageImpl.ClaimRequestImpl::decode
         );
     }
 
     @Override
     public void getInterpreters(GTSPlugin plugin) {
-        IncomingMessageConsumer consumer = plugin.getMessagingService().getMessenger().getMessageConsumer();
+        IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
 
         consumer.registerInternalConsumer(
-                PublishListingMessageImpl.class, message -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(message)
+                PublishListingMessageImpl.class, message -> plugin.messagingService().getMessenger().sendOutgoingMessage(message)
         );
         consumer.registerInternalConsumer(
                 ClaimMessageImpl.ClaimRequestImpl.class, request -> {
                     request.respond()
-                            .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
+                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
     }

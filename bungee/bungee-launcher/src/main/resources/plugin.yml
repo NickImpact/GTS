@@ -2,5 +2,5 @@ name: GTS
 version: ${pluginVersion}
 description: A global market
 author: NickImpact
-main: net.impactdev.gts.bungee.GTSBungeeBootstrap
+main: net.impactdev.gts.launcher.BungeeLauncher
 softDepends: ["RedisBungee", "Impactor"]

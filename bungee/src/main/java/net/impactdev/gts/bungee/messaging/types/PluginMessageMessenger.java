@@ -27,20 +27,20 @@ public class PluginMessageMessenger implements Messenger, Listener {
 	}
 
 	public void init() {
-		ProxyServer proxy = this.plugin.getBootstrap().getProxy();
-		proxy.getPluginManager().registerListener(this.plugin.getBootstrap(), this);
+		ProxyServer proxy = this.plugin.bootstrap().proxy().getProxy();
+		proxy.getPluginManager().registerListener(this.plugin.bootstrap().proxy(), this);
 		proxy.registerChannel(CHANNEL);
 	}
 
 	@Override
 	public void close() {
-		ProxyServer proxy = this.plugin.getBootstrap().getProxy();
+		ProxyServer proxy = this.plugin.bootstrap().proxy().getProxy();
 		proxy.unregisterChannel(CHANNEL);
 		proxy.getPluginManager().unregisterListener(this);
 	}
 
 	private void dispatch(byte[] message) {
-		this.plugin.getBootstrap().getProxy().getServers().values().forEach(server -> server.sendData(CHANNEL, message, false));
+		this.plugin.bootstrap().proxy().getProxy().getServers().values().forEach(server -> server.sendData(CHANNEL, message, false));
 	}
 
 	@Override

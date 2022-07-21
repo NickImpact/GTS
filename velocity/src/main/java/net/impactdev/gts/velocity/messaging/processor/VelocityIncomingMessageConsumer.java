@@ -88,7 +88,7 @@ public class VelocityIncomingMessageConsumer implements IncomingMessageConsumer 
 
         try {
             // decode message
-            Message decoded = GTSPlugin.getInstance().getMessagingService().getDecoder(type).apply(content, id);
+            Message decoded = GTSPlugin.instance().messagingService().getDecoder(type).apply(content, id);
             if (decoded == null) {
                 return false;
             }
@@ -97,7 +97,7 @@ public class VelocityIncomingMessageConsumer implements IncomingMessageConsumer 
             this.processIncomingMessage(decoded);
             return true;
         } catch (Exception e) {
-            GTSPlugin.getInstance().getPluginLogger().error("Failed to read message of type: " + type);
+            GTSPlugin.instance().logger().error("Failed to read message of type: " + type);
             ExceptionWriter.write(e);
             return false;
         }
@@ -117,7 +117,7 @@ public class VelocityIncomingMessageConsumer implements IncomingMessageConsumer 
     private void processIncomingMessage(Message message) {
         if (message instanceof UpdateMessage) {
             UpdateMessage msg = (UpdateMessage) message;
-            this.plugin.getPluginLogger().info("[Messaging] Received message with id: " + msg.getID());
+            this.plugin.logger().info("[Messaging] Received message with id: " + msg.getID());
             this.getInternalConsumer(msg.getClass()).consume(message);
         } else {
             throw new IllegalArgumentException("Unknown message type: " + message.getClass().getName());

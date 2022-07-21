@@ -28,6 +28,7 @@ import net.impactdev.gts.common.config.ConfigKeys;
 import net.impactdev.gts.common.config.ConfigProvider;
 import net.impactdev.gts.common.config.MsgConfigKeys;
 import net.impactdev.gts.common.data.ResourceManagerImpl;
+import net.impactdev.gts.common.dependencies.GTSDependencies;
 import net.impactdev.gts.common.extension.SimpleExtensionManager;
 import net.impactdev.gts.common.listings.GTSComponentManagerImpl;
 import net.impactdev.gts.common.messaging.InternalMessagingService;
@@ -352,14 +353,7 @@ public class SpongeGTSPlugin implements GTSPlugin {
                         .checksum("KV9YN5gQj6b507VJApJpPF5PkCon0DZqAi0T7Ln0lag=")
                         .relocation(Relocation.of("com{}github{}benmanes{}caffeine", "caffeine"))
                         .build(),
-                Dependency.builder()
-                        .name("MxParser Math Library")
-                        .group("org.mariuszgromada.math")
-                        .artifact("MathParser.org-mXparser")
-                        .version("4.4.2")
-                        .checksum("z+nZN08mJQ8UniReVzNorIApq3QhAUws6ZtNrtWR8dA=")
-                        .relocation(Relocation.of("org{}mariuszgromada{}math{}mxparser", "mxparser"))
-                        .build()
+                GTSDependencies.MXPARSER
         );
     }
 

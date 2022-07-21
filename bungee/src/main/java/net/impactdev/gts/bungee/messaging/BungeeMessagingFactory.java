@@ -29,8 +29,8 @@ public class BungeeMessagingFactory extends MessagingFactory<GTSBungeePlugin> {
 				e.printStackTrace();
 			}
 		} else if(messageType.equalsIgnoreCase("redisbungee")) {
-			if(this.getPlugin().getBootstrap().getProxy().getPluginManager().getPlugin("RedisBungee") == null) {
-				this.getPlugin().getPluginLogger().warn("RedisBungee plugin is not present");
+			if(this.getPlugin().bootstrap().proxy().getProxy().getPluginManager().getPlugin("RedisBungee") == null) {
+				this.getPlugin().logger().warn("RedisBungee plugin is not present");
 			} else {
 				try {
 					return new GTSMessagingService(this.getPlugin(), new RedisBungeeMessengerProvider(), new BungeeIncomingMessageConsumer(this.getPlugin()));
@@ -41,14 +41,14 @@ public class BungeeMessagingFactory extends MessagingFactory<GTSBungeePlugin> {
 		}
 
 		if(messageType.equalsIgnoreCase("redis")) {
-			if(this.getPlugin().getConfiguration().get(ConfigKeys.REDIS_ENABLED)) {
+			if(this.getPlugin().configuration().main().get(ConfigKeys.REDIS_ENABLED)) {
 				try {
 					return new GTSMessagingService(this.getPlugin(), new RedisMessengerProvider(), new BungeeIncomingMessageConsumer(this.getPlugin()));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			} else {
-				this.getPlugin().getPluginLogger().warn("Messaging Service was set to redis, but redis is not enabled!");
+				this.getPlugin().logger().warn("Messaging Service was set to redis, but redis is not enabled!");
 			}
 		}
 

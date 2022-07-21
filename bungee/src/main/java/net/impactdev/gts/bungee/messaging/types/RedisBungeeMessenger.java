@@ -28,7 +28,7 @@ public class RedisBungeeMessenger implements Messenger, Listener {
 		this.redisBungee = RedisBungee.getApi();
 		this.redisBungee.registerPubSubChannels(CHANNEL);
 
-		this.plugin.getBootstrap().getProxy().getPluginManager().registerListener(this.plugin.getBootstrap(), this);
+		this.plugin.bootstrap().proxy().getProxy().getPluginManager().registerListener(this.plugin.bootstrap().proxy(), this);
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class RedisBungeeMessenger implements Messenger, Listener {
 		this.redisBungee.unregisterPubSubChannels(CHANNEL);
 		this.redisBungee = null;
 
-		this.plugin.getBootstrap().getProxy().getPluginManager().unregisterListener(this);
+		this.plugin.bootstrap().proxy().getProxy().getPluginManager().unregisterListener(this);
 	}
 
 	@Override

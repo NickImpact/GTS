@@ -13,17 +13,17 @@ public class VelocityPingPongInterpreter implements Interpreter {
 
     @Override
     public void getDecoders(GTSPlugin plugin) {
-        plugin.getMessagingService().registerDecoder(PingPongMessage.Ping.TYPE, PingPongMessage.Ping::decode);
+        plugin.messagingService().registerDecoder(PingPongMessage.Ping.TYPE, PingPongMessage.Ping::decode);
     }
 
     @Override
     public void getInterpreters(GTSPlugin plugin) {
-        plugin.getMessagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
+        plugin.messagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
                 PingPongMessage.Ping.class, ping -> {
                     try {
                         ping.respond()
                                 .thenAccept(pong -> {
-                                    GTSPlugin.getInstance().getMessagingService().getMessenger().sendOutgoingMessage(pong);
+                                    GTSPlugin.instance().messagingService().getMessenger().sendOutgoingMessage(pong);
                                 })
                                 .exceptionally(error -> {
                                     error.printStackTrace();

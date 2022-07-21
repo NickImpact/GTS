@@ -16,29 +16,29 @@ public class BungeeAuctionInterpreter implements Interpreter {
 
     @Override
     public void getDecoders(GTSPlugin plugin) {
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 AuctionBidMessage.Request.TYPE, AuctionBidMessage.Request::decode
         );
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 AuctionCancelMessage.Request.TYPE, AuctionCancelMessage.Request::decode
         );
     }
 
     @Override
     public void getInterpreters(GTSPlugin plugin) {
-        IncomingMessageConsumer consumer = plugin.getMessagingService().getMessenger().getMessageConsumer();
+        IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
 
         consumer.registerInternalConsumer(
                 AuctionBidMessage.Request.class, request -> {
                     request.respond()
-                            .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
+                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
 
         consumer.registerInternalConsumer(
                 AuctionCancelMessage.Request.class, request -> {
                     request.respond()
-                            .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
+                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
     }

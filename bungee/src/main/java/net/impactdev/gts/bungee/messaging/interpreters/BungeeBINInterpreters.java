@@ -15,28 +15,28 @@ public class BungeeBINInterpreters implements Interpreter {
 
     @Override
     public void getDecoders(GTSPlugin plugin) {
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 BINRemoveMessage.Request.TYPE, BINRemoveMessage.Request::decode
         );
-        plugin.getMessagingService().registerDecoder(
+        plugin.messagingService().registerDecoder(
                 BINPurchaseMessage.Request.TYPE, BINPurchaseMessage.Request::decode
         );
     }
 
     @Override
     public void getInterpreters(GTSPlugin plugin) {
-        plugin.getMessagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
+        plugin.messagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
                 BINRemoveMessage.Request.class, request -> {
-                    GTSPlugin.getInstance().getStorage()
+                    GTSPlugin.instance().storage()
                             .processListingRemoveRequest(request)
-                            .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
+                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
-        plugin.getMessagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
+        plugin.messagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
                 BINPurchaseMessage.Request.class, request -> {
-                    GTSPlugin.getInstance().getStorage()
+                    GTSPlugin.instance().storage()
                             .processPurchase(request)
-                            .thenAccept(response -> plugin.getMessagingService().getMessenger().sendOutgoingMessage(response));
+                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
                 }
         );
     }

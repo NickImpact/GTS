@@ -1,68 +1,74 @@
 package net.impactdev.gts.bungee;
 
-import net.impactdev.impactor.api.dependencies.classloader.PluginClassLoader;
-import net.impactdev.impactor.api.logging.Logger;
 import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
-import net.md_5.bungee.api.connection.Server;
+import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+import net.impactdev.impactor.api.logging.JavaLogger;
+import net.impactdev.impactor.api.logging.PluginLogger;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
 
-public class GTSBungeeBootstrap extends Plugin implements GTSBootstrap {
+public class GTSBungeeBootstrap implements GTSBootstrap {
 
     private final GTSBungeePlugin plugin;
 
+    private final Plugin proxy;
+    private final PluginLogger logger;
+    private final Path configDir;
+    private final Path dataDir;
+
     private Throwable exception;
 
-    public GTSBungeeBootstrap() {
+    public GTSBungeeBootstrap(final Plugin plugin) {
         this.plugin = new GTSBungeePlugin(this);
+        this.proxy = plugin;
+        this.logger = new JavaLogger(this.plugin, plugin.getLogger());
+        this.configDir = plugin.getDataFolder().toPath();
+        this.dataDir = plugin.getDataFolder().toPath();
     }
 
     @Override
-    public void onEnable() {
+    public void construct() {
         try {
-            this.plugin.enable();
+            this.plugin.construct();
         } catch (Exception e) {
+            ExceptionWriter.write(e);
             this.exception = e;
-            e.printStackTrace();
         }
     }
 
     @Override
-    public Logger getPluginLogger() {
-        return this.plugin.getPluginLogger();
+    public void shutdown() {}
+
+    public Plugin proxy() {
+        return this.proxy;
     }
 
     @Override
-    public Path getDataDirectory() {
-        return this.getDataFolder().toPath();
+    public PluginLogger logger() {
+        return this.logger;
     }
 
     @Override
-    public Path getConfigDirectory() {
-        return this.getDataFolder().toPath();
+    public Path configDirectory() {
+        return this.configDir;
     }
 
     @Override
-    public InputStream getResourceStream(String path) {
-        return null;
+    public Path dataDirectory() {
+        return this.dataDir;
     }
 
     @Override
-    public PluginClassLoader getPluginClassLoader() {
-        return null;
+    public Optional<InputStream> resource(Path path) {
+        return Optional.ofNullable(this.getClass().getClassLoader().getResourceAsStream(path.toString().replace("\\", "/")));
     }
 
     @Override
-    public Optional<Throwable> getLaunchError() {
-        return Optional.empty();
-    }
-
-    @Override
-    public void disable() {
-
+    public Optional<Throwable> launchError() {
+        return Optional.ofNullable(this.exception);
     }
 
 }

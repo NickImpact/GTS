@@ -1,7 +1,7 @@
 package net.impactdev.gts.bungee;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.impactdev.gts.api.GTSService;
@@ -15,17 +15,18 @@ import net.impactdev.gts.bungee.messaging.interpreters.BungeeAuctionInterpreter;
 import net.impactdev.gts.bungee.messaging.interpreters.BungeeListingInterpreter;
 import net.impactdev.gts.common.api.ApiRegistrationUtil;
 import net.impactdev.gts.common.api.GTSAPIProvider;
+import net.impactdev.gts.common.config.ConfigProvider;
 import net.impactdev.gts.common.data.ResourceManagerImpl;
+import net.impactdev.gts.common.dependencies.GTSDependencies;
 import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
 import net.impactdev.gts.api.environment.Environment;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.dependencies.Dependency;
+import net.impactdev.impactor.api.dependencies.ProvidedDependencies;
+import net.impactdev.impactor.api.logging.PluginLogger;
 import net.impactdev.impactor.api.plugin.PluginMetadata;
 import net.impactdev.impactor.api.storage.StorageType;
-import net.impactdev.impactor.bungee.configuration.BungeeConfig;
-import net.impactdev.impactor.bungee.configuration.BungeeConfigAdapter;
-import net.impactdev.impactor.bungee.plugin.AbstractBungeePlugin;
 import net.impactdev.gts.api.blacklist.Blacklist;
 import net.impactdev.gts.api.extension.ExtensionManager;
 import net.impactdev.gts.api.storage.GTSStorage;
@@ -39,21 +40,21 @@ import net.impactdev.gts.common.messaging.MessagingFactory;
 import net.impactdev.gts.common.plugin.GTSPlugin;
 import net.impactdev.gts.common.storage.StorageFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
-public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
+public class GTSBungeePlugin implements GTSPlugin {
 
 	private final GTSBungeeBootstrap bootstrap;
 
-	private Config config;
+	private ConfigProvider provider;
 
 	private GTSStorage storage;
 	private InternalMessagingService messagingService;
@@ -61,17 +62,84 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 	private Environment environment;
 
 	public GTSBungeePlugin(GTSBungeeBootstrap bootstrap) {
-		super(PluginMetadata.builder()
+		this.bootstrap = bootstrap;
+		this.register();
+	}
+
+	@Override
+	public <T extends GTSPlugin> T as(Class<T> type) {
+		if(!type.isAssignableFrom(this.getClass())) {
+			throw new RuntimeException("Invalid plugin typing");
+		}
+		return (T) this;
+	}
+
+	@Override
+	public GTSBungeeBootstrap bootstrap() {
+		return this.bootstrap;
+	}
+
+	@Override
+	public ConfigProvider configuration() {
+		return this.provider;
+	}
+
+	@Override
+	public Environment environment() {
+		Environment environment = Optional.ofNullable(this.environment)
+				.orElseGet(() -> (this.environment = new Environment()));
+		environment.append(this.bootstrap.proxy().getProxy().getName(), this.bootstrap.proxy().getProxy().getVersion());
+		environment.append("Impactor", this.bootstrap.proxy().getProxy().getPluginManager().getPlugin("Impactor").getDescription().getVersion());
+		environment.append("GTS", this.metadata().version());
+
+		return environment;
+	}
+
+	@Override
+	public Gson gson() {
+		return new GsonBuilder().create();
+	}
+
+	@Override
+	public GTSStorage storage() {
+		return this.storage;
+	}
+
+	@Override
+	public ExtensionManager extensionManager() {
+		return null;
+	}
+
+	@Override
+	public InternalMessagingService messagingService() {
+		return this.messagingService;
+	}
+
+	@Override
+	public CompletableFuture<String> playerDisplayName(UUID id) {
+		return CompletableFuture.completedFuture(this.bootstrap().proxy().getProxy().getPlayer(id).getName());
+	}
+
+	public MessagingFactory<?> getMessagingFactory() {
+		return new BungeeMessagingFactory(this);
+	}
+
+	@Override
+	public PluginMetadata metadata() {
+		return PluginMetadata.builder()
 				.id("gts")
 				.name("GTS")
 				.version("@version@")
-				.description("@gts_description@")
-				.build(), bootstrap.getLogger()
-		);
-		this.bootstrap = bootstrap;
+				.build();
 	}
 
-	public void enable() {
+	@Override
+	public PluginLogger logger() {
+		return this.bootstrap.logger();
+	}
+
+	@Override
+	public void construct() throws Exception {
 		ApiRegistrationUtil.register(new GTSAPIProvider());
 
 		Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
@@ -83,8 +151,14 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(BuyItNow.BuyItNowBuilder.class, BungeeBIN.BungeeBINBuilder::new);
 		Impactor.getInstance().getRegistry().registerBuilderSupplier(ForceDeleteMessage.Response.ResponseBuilder.class, ForceDeleteMessageImpl.ForceDeleteResponse.ForcedDeleteResponseBuilder::new);
 
-		this.copyResource(Paths.get("gts.conf"), this.getConfigDir());
-		this.config = new BungeeConfig(new BungeeConfigAdapter(this, new File(this.getConfigDir().toFile(), "gts.conf")), new ConfigKeys());
+		Path configDirectory = this.bootstrap.configDirectory();
+		this.copyResource(Paths.get("gts.conf"), configDirectory);
+		Config config = Config.builder()
+				.path(configDirectory.resolve("gts.conf"))
+				.provider(ConfigKeys.class)
+				.build();
+
+		this.provider = new ConfigProvider(config, null);
 		this.storage = new StorageFactory(this).getInstance(StorageType.MARIADB);
 
 		this.messagingService = this.getMessagingFactory().getInstance();
@@ -98,92 +172,27 @@ public class GTSBungeePlugin extends AbstractBungeePlugin implements GTSPlugin {
 	}
 
 	@Override
-	public <T extends GTSPlugin> T as(Class<T> type) {
-		if(!type.isAssignableFrom(this.getClass())) {
-			throw new RuntimeException("Invalid plugin typing");
-		}
-		return (T) this;
-	}
+	public void shutdown() throws Exception {}
 
 	@Override
-	public GTSBungeeBootstrap getBootstrap() {
-		return this.bootstrap;
-	}
-
-	@Override
-	public Environment getEnvironment() {
-		Environment environment = Optional.ofNullable(this.environment)
-				.orElseGet(() -> (this.environment = new Environment()));
-		environment.append(this.bootstrap.getProxy().getName(), this.bootstrap.getProxy().getVersion());
-		environment.append("Impactor", this.bootstrap.getProxy().getPluginManager().getPlugin("impactor").getDescription().getVersion());
-		environment.append("GTS", this.getMetadata().getVersion());
-
-		return environment;
-	}
-
-	@Override
-	public Gson getGson() {
-		return new GsonBuilder().create();
-	}
-
-	@Override
-	public GTSStorage getStorage() {
-		return this.storage;
-	}
-
-	@Override
-	public ExtensionManager getExtensionManager() {
-		return null;
-	}
-
-	@Override
-	public InternalMessagingService getMessagingService() {
-		return this.messagingService;
-	}
-
-	@Override
-	public String getPlayerDisplayName(UUID id) {
-		return this.getBootstrap().getProxy().getPlayer(id).getName();
-	}
-
-	@Override
-	public Path getConfigDir() {
-		return this.bootstrap.getConfigDirectory();
-	}
-
-	@Override
-	public Config getConfiguration() {
-		return this.config;
-	}
-
-	@Override
-	public List<StorageType> getStorageRequirements() {
-		return Lists.newArrayList(StorageType.MARIADB);
-	}
-
-	@Override
-	public Config getMsgConfig() {
-		return null;
-	}
-
-	public MessagingFactory<?> getMessagingFactory() {
-		return new BungeeMessagingFactory(this);
-	}
-
-	@Override
-	public List<Dependency> getAllDependencies() {
-		return Lists.newArrayList(
-				Dependency.KYORI_TEXT,
-				Dependency.KYORI_TEXT_SERIALIZER_LEGACY,
-				Dependency.KYORI_TEXT_SERIALIZER_GSON,
-				Dependency.CAFFEINE,
-				Dependency.MXPARSER
+	public Set<Dependency> dependencies() {
+		return Sets.newHashSet(
+				ProvidedDependencies.ADVENTURE,
+				ProvidedDependencies.ADVENTURE_LEGACY_SERIALIZER,
+				ProvidedDependencies.ADVENTURE_GSON_SERIALIZER,
+				ProvidedDependencies.CAFFEINE,
+				ProvidedDependencies.CONFIGURATE_CORE,
+				ProvidedDependencies.CONFIGURATE_HOCON,
+				ProvidedDependencies.CONFIGURATE_GSON,
+				ProvidedDependencies.CONFIGURATE_YAML,
+				ProvidedDependencies.TYPESAFE_CONFIG,
+				GTSDependencies.MXPARSER
 		);
 	}
 
 	private void copyResource(Path path, Path destination) {
 		if(!Files.exists(destination.resolve(path))) {
-			try (InputStream resource = this.getResourceStream(path.toString().replace("\\", "/"))) {
+			try (InputStream resource = this.resource(path.toString().replace("\\", "/"))) {
 				Files.createDirectories(destination.resolve(path).getParent());
 				Files.copy(resource, destination.resolve(path));
 			} catch (IOException e) {

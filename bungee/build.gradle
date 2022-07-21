@@ -7,7 +7,8 @@ repositories {
 dependencies {
     api project(':api')
     implementation project(':common')
-    shadow 'net.impactdev.impactor:bungee:3.1.2'
+    implementation 'net.impactdev.impactor:launcher:4.0.0'
+
     shadow 'net.md-5:bungeecord-api:1.16-R0.4'
     shadow 'com.imaginarycode.minecraft:RedisBungee:0.4'
     shadow 'net.kyori:adventure-api:4.10.1'
@@ -15,7 +16,10 @@ dependencies {
 }
 
 shadowJar {
-    archiveName = "GTS-Bungee-${project.version}.jar"
+    archiveBaseName.set("gts-bungee")
+    archiveClassifier.set("")
+    archiveVersion.set("")
+    archiveExtension.set("jarinjar")
 
     dependencies {
         include project(':api')
@@ -26,11 +30,5 @@ shadowJar {
     relocate ('net.kyori.adventure', 'net.impactdev.impactor.relocations.adventure')
     relocate ('net.kyori.examination', 'net.impactdev.impactor.relocations.examination')
     relocate ('org.mariuszgromada.math.mxparser', 'net.impactdev.impactor.relocations.mxparser')
-}
-
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        expand 'pluginVersion': project.version
-        include 'plugin.yml'
-    }
+    relocate ('org.spongepowered.configurate', 'net.impactdev.impactor.relocations.configurate')
 }

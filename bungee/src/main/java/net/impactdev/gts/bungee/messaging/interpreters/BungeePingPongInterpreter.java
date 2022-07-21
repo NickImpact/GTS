@@ -6,16 +6,16 @@ import net.impactdev.gts.common.plugin.GTSPlugin;
 public class BungeePingPongInterpreter {
 
 	public static void registerDecoders(GTSPlugin plugin) {
-		plugin.getMessagingService().registerDecoder(PingPongMessage.Ping.TYPE, PingPongMessage.Ping::decode);
+		plugin.messagingService().registerDecoder(PingPongMessage.Ping.TYPE, PingPongMessage.Ping::decode);
 	}
 
 	public static void registerInterpreters(GTSPlugin plugin) {
-		plugin.getMessagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
+		plugin.messagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
 				PingPongMessage.Ping.class, ping -> {
 					try {
 						ping.respond()
 								.thenAccept(pong -> {
-									GTSPlugin.getInstance().getMessagingService().getMessenger().sendOutgoingMessage(pong);
+									GTSPlugin.instance().messagingService().getMessenger().sendOutgoingMessage(pong);
 								})
 								.exceptionally(error -> {
 									error.printStackTrace();

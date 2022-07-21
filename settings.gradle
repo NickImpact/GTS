@@ -3,8 +3,8 @@ rootProject.name = 'GTS'
 include (
         'api',
         'common',
-        //'bungee',
-        //'velocity',
+        'bungee',
+        'velocity',
         'sponge',
         'plugin',
         'plugin:sponge-launcher',
@@ -12,4 +12,6 @@ include (
         'pixelmon:reforged',
         //'pixelmon:generations'
 )
+include 'bungee:bungee-launcher'
+findProject(':bungee:bungee-launcher')?.name = 'bungee-launcher'
 
