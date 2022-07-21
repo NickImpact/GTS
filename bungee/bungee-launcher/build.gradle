@@ -1,0 +1,40 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+repositories {
+    maven { url 'https://repo.spongepowered.org/repository/maven-public/' }
+}
+
+dependencies {
+    implementation project(":api")
+    implementation 'net.impactdev.impactor:launcher:4.0.0'
+
+    shadow 'net.md-5:bungeecord-api:1.16-R0.4'
+}
+
+shadowJar {
+    archiveBaseName.set("GTS-Bungee")
+    archiveClassifier.set("")
+    archiveVersion.set("${project.version}")
+
+    dependencies {
+        include project(":api")
+    }
+
+    from {
+        project(':bungee').tasks.shadowJar.archiveFile
+    }
+}
+
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.WARN
+    from(sourceSets.main.resources.srcDirs) {
+        expand 'pluginVersion': project.version
+        include 'plugin.yml'
+    }
+}
+
+artifacts {
+    archives shadowJar
+}
