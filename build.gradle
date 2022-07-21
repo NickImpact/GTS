@@ -178,7 +178,7 @@ task publishToOre(type: UploadToOre) {
 
     notes = { genChangelog.result } as Provider<String>
     level = genChangelog.level
-    file = new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-${project.version}.jar").toString())
+    file = new File(this.getProjectDir(), Paths.get("build", "allJars", "GTS-Sponge-${project.sponge}-${project.version}.jar").toString())
     pluginID = "gts"
     apiKey = project.properties['ore_api_key']?.toString() ?: System.getenv("ORE_API_KEY")
 }
