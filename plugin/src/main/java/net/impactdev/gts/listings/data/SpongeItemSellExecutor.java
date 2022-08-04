@@ -1,92 +1,92 @@
-package net.impactdev.gts.listings.data;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbb;
 
-import net.impactdev.gts.api.commands.CommandGenerator;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.data.persistence.DataQuery;
-import org.spongepowered.api.data.type.HandTypes;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.item.inventory.Inventory;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.Slot;
-import org.spongepowered.api.item.inventory.entity.Hotbar;
-import org.spongepowered.api.item.inventory.entity.PrimaryPlayerInventory;
-import org.spongepowered.api.item.inventory.type.GridInventory;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.bbbbbb.BbbbbbbBbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.bbbb.BbbbBbbbbbbbb;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
+bbbbbb bbbb.bbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbb;
 
-public class SpongeItemSellExecutor implements CommandGenerator.EntryGenerator<ChosenItemEntry> {
+bbbbbb bbbbb BbbbbbBbbbBbbbBbbbbbbb bbbbbbbbbb BbbbbbbBbbbbbbbb.BbbbbBbbbbbbbb<BbbbbbBbbbBbbbb> {
 
-    @Override
-    public String[] getAliases() {
-        return new String[] {
-                "item",
-                "items"
+    @Bbbbbbbb
+    bbbbbb Bbbbbb[] bbbBbbbbbb() {
+        bbbbbb bbb Bbbbbb[] {
+                "bbbb",
+                "bbbbb"
         };
     }
 
-    @Override
-    public ChosenItemEntry create(UUID source, Queue<String> args, Context context) throws Exception {
-        Optional<Integer> slot = this.next(args, Integer::parseInt).map(x -> Math.max(0, Math.min(x - 1, 35)));
-        Optional<Integer> amount = this.next(args, Integer::parseInt);
-        ServerPlayer player = Sponge.server().player(source).get();
+    @Bbbbbbbb
+    bbbbbb BbbbbbBbbbBbbbb bbbbbb(BBBB bbbbbb, Bbbbb<Bbbbbb> bbbb, Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        Bbbbbbbb<Bbbbbbb> bbbb = bbbb.bbbb(bbbb, Bbbbbbb::bbbbbBbb).bbb(b -> Bbbb.bbb(0, Bbbb.bbb(b - 1, 35)));
+        Bbbbbbbb<Bbbbbbb> bbbbbb = bbbb.bbbb(bbbb, Bbbbbbb::bbbbbBbb);
+        BbbbbbBbbbbb bbbbbb = Bbbbbb.bbbbbb().bbbbbb(bbbbbb).bbb();
 
-        if(slot.isPresent()) {
-            PrimaryPlayerInventory parent = player.inventory().primary();
-            Inventory transform = parent.hotbar().union(parent.storage());
+        bb(bbbb.bbBbbbbbb()) {
+            BbbbbbbBbbbbbBbbbbbbbb bbbbbb = bbbbbb.bbbbbbbbb().bbbbbbb();
+            Bbbbbbbbb bbbbbbbbb = bbbbbb.bbbbbb().bbbbb(bbbbbb.bbbbbbb());
 
-            Iterable<Slot> slots = transform.slots();
-            for (Slot s : slots) {
-                if (s.get(Keys.SLOT_INDEX).map(i -> Objects.equals(i, slot.get())).orElse(false)) {
-                    AtomicBoolean isAmount = new AtomicBoolean();
-                    Optional<ItemStack> result = Optional.of(s.peek())
-                            .filter(item -> !item.isEmpty())
-                            .map(ItemStack::quantity)
-                            .flatMap(quantity -> {
-                                if(amount.filter(value -> value <= quantity).isPresent()) {
-                                    return amount;
+            Bbbbbbbb<Bbbb> bbbbb = bbbbbbbbb.bbbbb();
+            bbb (Bbbb b : bbbbb) {
+                bb (b.bbb(Bbbb.BBBB_BBBBB).bbb(b -> Bbbbbbb.bbbbbb(b, bbbb.bbb())).bbBbbb(bbbbb)) {
+                    BbbbbbBbbbbbb bbBbbbbb = bbb BbbbbbBbbbbbb();
+                    Bbbbbbbb<BbbbBbbbb> bbbbbb = Bbbbbbbb.bb(b.bbbb())
+                            .bbbbbb(bbbb -> !bbbb.bbBbbbb())
+                            .bbb(BbbbBbbbb::bbbbbbbb)
+                            .bbbbBbb(bbbbbbbb -> {
+                                bb(bbbbbb.bbbbbb(bbbbb -> bbbbb <= bbbbbbbb).bbBbbbbbb()) {
+                                    bbbbbb bbbbbb;
                                 }
 
-                                isAmount.set(true);
-                                return Optional.empty();
+                                bbBbbbbb.bbb(bbbb);
+                                bbbbbb Bbbbbbbb.bbbbb();
                             })
-                            .flatMap(value -> Optional.of(ItemStack.builder()
-                                    .from(s.peek())
-                                    .quantity(value)
-                                    .build()
+                            .bbbbBbb(bbbbb -> Bbbbbbbb.bb(BbbbBbbbb.bbbbbbb()
+                                    .bbbb(b.bbbb())
+                                    .bbbbbbbb(bbbbb)
+                                    .bbbbb()
                             ));
 
-                    return result.map(stack -> new ChosenItemEntry(stack.createSnapshot(), slot.get()))
-                            .orElseThrow(() -> {
-                                if(isAmount.get()) {
-                                    return new IllegalStateException("Stack does not carry that amount of items!");
+                    bbbbbb bbbbbb.bbb(bbbbb -> bbb BbbbbbBbbbBbbbb(bbbbb.bbbbbbBbbbbbbb(), bbbb.bbb()))
+                            .bbBbbbBbbbb(() -> {
+                                bb(bbBbbbbb.bbb()) {
+                                    bbbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbb bbbb bbb bbbbb bbbb bbbbbb bb bbbbb!");
                                 }
 
-                                return new IllegalStateException("Unable to locate an item at the target slot!");
+                                bbbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bb bbbb bb bbb bbbbbb bbbb!");
                             });
                 }
             }
 
-            throw new IllegalStateException("Unable to locate an item at the target slot!");
-        } else {
-            int index = player.toContainer().get(DataQuery.of("UnsafeData", "SelectedItemSlot"))
-                    .map(value -> (int) value)
-                    .orElse(-1);
+            bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bb bbbb bb bbb bbbbbb bbbb!");
+        } bbbb {
+            bbb bbbbb = bbbbbb.bbBbbbbbbbb().bbb(BbbbBbbbb.bb("BbbbbbBbbb", "BbbbbbbbBbbbBbbb"))
+                    .bbb(bbbbb -> (bbb) bbbbb)
+                    .bbBbbb(-1);
 
-            if(index == -1) {
-                throw new IllegalStateException("Failed to locate current hand position");
+            bb(bbbbb == -1) {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb bbbb bbbbbbbb");
             }
 
-            ItemStack hand = player.itemInHand(HandTypes.MAIN_HAND);
-            return Optional.of(hand)
-                    .filter(item -> !item.isEmpty())
-                    .map(item -> new ChosenItemEntry(item.createSnapshot(), index))
-                    .orElseThrow(() -> new IllegalStateException("No item in your hand"));
+            BbbbBbbbb bbbb = bbbbbb.bbbbBbBbbb(BbbbBbbbb.BBBB_BBBB);
+            bbbbbb Bbbbbbbb.bb(bbbb)
+                    .bbbbbb(bbbb -> !bbbb.bbBbbbb())
+                    .bbb(bbbb -> bbb BbbbbbBbbbBbbbb(bbbb.bbbbbbBbbbbbbb(), bbbbb))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bb bbbb bb bbbb bbbb"));
         }
     }
 }

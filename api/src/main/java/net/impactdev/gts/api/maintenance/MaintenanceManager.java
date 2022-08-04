@@ -1,33 +1,33 @@
-package net.impactdev.gts.api.maintenance;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb;
 
 /**
  *
  */
-public interface MaintenanceManager {
+bbbbbb bbbbbbbbb BbbbbbbbbbbBbbbbbb {
 
     /**
-     * Fetches the current state on a mode for GTS.
+     * Bbbbbbb bbb bbbbbbb bbbbb bb b bbbb bbb BBB.
      *
-     * @param mode The mode we are requesting the state of
-     * @return The marked status for this mode, with false indicating the mode is active
+     * @bbbbb bbbb Bbb bbbb bb bbb bbbbbbbbbb bbb bbbbb bb
+     * @bbbbbb Bbb bbbbbb bbbbbb bbb bbbb bbbb, bbbb bbbbb bbbbbbbbbb bbb bbbb bb bbbbbb
      */
-    boolean getState(MaintenanceMode mode);
+    bbbbbbb bbbBbbbb(BbbbbbbbbbbBbbb bbbb);
 
     /**
-     * Sets the state of the specified maintenance mode to the desired setting.
+     * Bbbb bbb bbbbb bb bbb bbbbbbbbb bbbbbbbbbbb bbbb bb bbb bbbbbbb bbbbbbb.
      *
-     * @param mode The mode to update
-     * @param state The state to set the mode to
+     * @bbbbb bbbb Bbb bbbb bb bbbbbb
+     * @bbbbb bbbbb Bbb bbbbb bb bbb bbb bbbb bb
      */
-    void setState(MaintenanceMode mode, boolean state);
+    bbbb bbbBbbbb(BbbbbbbbbbbBbbb bbbb, bbbbbbb bbbbb);
 
     /**
-     * Toggles the status state of the specified maintenance mode.
+     * Bbbbbbb bbb bbbbbb bbbbb bb bbb bbbbbbbbb bbbbbbbbbbb bbbb.
      *
-     * @param mode The mode we are toggling
+     * @bbbbb bbbb Bbb bbbb bb bbb bbbbbbbb
      */
-    default void toggleState(MaintenanceMode mode) {
-        this.setState(mode, !this.getState(mode));
+    bbbbbbb bbbb bbbbbbBbbbb(BbbbbbbbbbbBbbb bbbb) {
+        bbbb.bbbBbbbb(bbbb, !bbbb.bbbBbbbb(bbbb));
     }
 
 }

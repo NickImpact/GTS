@@ -1,162 +1,162 @@
-package net.impactdev.gts.velocity.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb;
 
-import com.google.common.base.Preconditions;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.common.listings.JsonStoredEntry;
-import net.impactdev.gts.common.listings.JsonStoredPrice;
-import net.impactdev.impactor.api.json.factory.JObject;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.Bbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbBbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbBbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
-public class VelocityBIN extends VelocityListing implements BuyItNow {
+bbbbbb bbbbb BbbbbbbbBBB bbbbbbb BbbbbbbbBbbbbbb bbbbbbbbbb BbbBbBbb {
 
-    private final JsonStoredPrice price;
-    private boolean purchased;
-    private final UUID purchaser;
-    private final boolean stashed;
+    bbbbbbb bbbbb BbbbBbbbbbBbbbb bbbbb;
+    bbbbbbb bbbbbbb bbbbbbbbb;
+    bbbbbbb bbbbb BBBB bbbbbbbbb;
+    bbbbbbb bbbbb bbbbbbb bbbbbbb;
 
-    public VelocityBIN(VelocityBINBuilder builder) {
-        super(builder.id, builder.lister, builder.entry, builder.expiration);
-        this.price = builder.price;
-        this.purchased = builder.purchased;
-        this.stashed = builder.stashed;
-        this.purchaser = builder.purchaser;
+    bbbbbb BbbbbbbbBBB(BbbbbbbbBBBBbbbbbb bbbbbbb) {
+        bbbbb(bbbbbbb.bb, bbbbbbb.bbbbbb, bbbbbbb.bbbbb, bbbbbbb.bbbbbbbbbb);
+        bbbb.bbbbb = bbbbbbb.bbbbb;
+        bbbb.bbbbbbbbb = bbbbbbb.bbbbbbbbb;
+        bbbb.bbbbbbb = bbbbbbb.bbbbbbb;
+        bbbb.bbbbbbbbb = bbbbbbb.bbbbbbbbb;
     }
 
-    @Override
-    public Price<?, ?, ?> getPrice() {
-        return this.price;
+    @Bbbbbbbb
+    bbbbbb Bbbbb<?, ?, ?> bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public UUID purchaser() {
-        return this.purchaser;
+    @Bbbbbbbb
+    bbbbbb BBBB bbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb;
     }
 
-    @Override
-    public boolean stashedForPurchaser() {
-        return this.stashed;
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbbbbBbbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    @Override
-    public boolean isPurchased() {
-        return this.purchased;
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb;
     }
 
-    @Override
-    public void markPurchased() {
-        this.purchased = true;
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbBbbbbbbbb() {
+        bbbb.bbbbbbbbb = bbbb;
     }
 
-    @Override
-    public JObject serialize() {
-        JObject json = super.serialize();
-        json.add("price", this.price.getPrice());
-        json.add("type", "bin");
+    @Bbbbbbbb
+    bbbbbb BBbbbbb bbbbbbbbb() {
+        BBbbbbb bbbb = bbbbb.bbbbbbbbb();
+        bbbb.bbb("bbbbb", bbbb.bbbbb.bbbBbbbb());
+        bbbb.bbb("bbbb", "bbb");
 
-        return json;
+        bbbbbb bbbb;
     }
 
-    public static VelocityBIN deserialize(JsonObject json) {
-        VelocityBINBuilder builder = (VelocityBINBuilder) BuyItNow.builder()
-                .id(UUID.fromString(json.get("id").getAsString()))
-                .lister(UUID.fromString(json.get("lister").getAsString()))
-                .expiration(LocalDateTime.parse(json.getAsJsonObject("timings").get("expiration").getAsString()));
+    bbbbbb bbbbbb BbbbbbbbBBB bbbbbbbbbbb(BbbbBbbbbb bbbb) {
+        BbbbbbbbBBBBbbbbbb bbbbbbb = (BbbbbbbbBBBBbbbbbb) BbbBbBbb.bbbbbbb()
+                .bb(BBBB.bbbbBbbbbb(bbbb.bbb("bb").bbbBbBbbbbb()))
+                .bbbbbb(BBBB.bbbbBbbbbb(bbbb.bbb("bbbbbb").bbbBbBbbbbb()))
+                .bbbbbbbbbb(BbbbbBbbbBbbb.bbbbb(bbbb.bbbBbBbbbBbbbbb("bbbbbbb").bbb("bbbbbbbbbb").bbbBbBbbbbb()));
 
-        JsonObject element = json.getAsJsonObject("entry");
-        builder.entry(new JsonStoredEntry(element));
+        BbbbBbbbbb bbbbbbb = bbbb.bbbBbBbbbBbbbbb("bbbbb");
+        bbbbbbb.bbbbb(bbb BbbbBbbbbbBbbbb(bbbbbbb));
 
-        JsonObject price = json.getAsJsonObject("price");
-        builder.price(new JsonStoredPrice(price));
-        if(price.has("purchased") && price.get("purchased").getAsBoolean()) {
-            builder.purchased();
+        BbbbBbbbbb bbbbb = bbbb.bbbBbBbbbBbbbbb("bbbbb");
+        bbbbbbb.bbbbb(bbb BbbbBbbbbbBbbbb(bbbbb));
+        bb(bbbbb.bbb("bbbbbbbbb") && bbbbb.bbb("bbbbbbbbb").bbbBbBbbbbbb()) {
+            bbbbbbb.bbbbbbbbb();
         }
-        if(json.get("stashed").getAsBoolean()) {
-            builder.stashedForPurchaser();
-            builder.purchaser(UUID.fromString(json.get("purchaser").getAsString()));
+        bb(bbbb.bbb("bbbbbbb").bbbBbBbbbbbb()) {
+            bbbbbbb.bbbbbbbBbbBbbbbbbbb();
+            bbbbbbb.bbbbbbbbb(BBBB.bbbbBbbbbb(bbbb.bbb("bbbbbbbbb").bbbBbBbbbbb()));
         }
 
-        return builder.build();
+        bbbbbb bbbbbbb.bbbbb();
     }
 
-    public static class VelocityBINBuilder implements BuyItNowBuilder {
+    bbbbbb bbbbbb bbbbb BbbbbbbbBBBBbbbbbb bbbbbbbbbb BbbBbBbbBbbbbbb {
 
-        private UUID id = UUID.randomUUID();
-        private UUID lister;
-        private JsonStoredEntry entry;
-        private JsonStoredPrice price;
-        private boolean purchased;
-        private LocalDateTime expiration;
+        bbbbbbb BBBB bb = BBBB.bbbbbbBBBB();
+        bbbbbbb BBBB bbbbbb;
+        bbbbbbb BbbbBbbbbbBbbbb bbbbb;
+        bbbbbbb BbbbBbbbbbBbbbb bbbbb;
+        bbbbbbb bbbbbbb bbbbbbbbb;
+        bbbbbbb BbbbbBbbbBbbb bbbbbbbbbb;
 
-        private UUID purchaser;
-        private boolean stashed;
+        bbbbbbb BBBB bbbbbbbbb;
+        bbbbbbb bbbbbbb bbbbbbb;
 
-        @Override
-        public BuyItNowBuilder id(UUID id) {
-            this.id = id;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbBbBbbBbbbbbb bb(BBBB bb) {
+            bbbb.bb = bb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public BuyItNowBuilder lister(UUID lister) {
-            this.lister = lister;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbBbBbbBbbbbbb bbbbbb(BBBB bbbbbb) {
+            bbbb.bbbbbb = bbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public BuyItNowBuilder entry(Entry<?, ?> entry) {
-            Preconditions.checkArgument(entry instanceof JsonStoredEntry, "Mixing of incompatible platform types");
-            this.entry = (JsonStoredEntry) entry;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbBbBbbBbbbbbb bbbbb(Bbbbb<?, ?> bbbbb) {
+            Bbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbbb bbbbbbbbbb BbbbBbbbbbBbbbb, "Bbbbbb bb bbbbbbbbbbbb bbbbbbbb bbbbb");
+            bbbb.bbbbb = (BbbbBbbbbbBbbbb) bbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public BuyItNowBuilder price(Price<?, ?, ?> price) {
-            Preconditions.checkArgument(price instanceof JsonStoredPrice, "Mixing of incompatible platform types");
-            this.price = (JsonStoredPrice) price;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbBbBbbBbbbbbb bbbbb(Bbbbb<?, ?, ?> bbbbb) {
+            Bbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbbb bbbbbbbbbb BbbbBbbbbbBbbbb, "Bbbbbb bb bbbbbbbbbbbb bbbbbbbb bbbbb");
+            bbbb.bbbbb = (BbbbBbbbbbBbbbb) bbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public BuyItNowBuilder purchased() {
-            this.purchased = true;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbBbBbbBbbbbbb bbbbbbbbb() {
+            bbbb.bbbbbbbbb = bbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public BuyItNowBuilder purchaser(UUID purchaser) {
-            this.purchaser = purchaser;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbBbBbbBbbbbbb bbbbbbbbb(BBBB bbbbbbbbb) {
+            bbbb.bbbbbbbbb = bbbbbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public BuyItNowBuilder stashedForPurchaser() {
-            this.stashed = true;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbBbBbbBbbbbbb bbbbbbbBbbBbbbbbbbb() {
+            bbbb.bbbbbbb = bbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public BuyItNowBuilder expiration(LocalDateTime expiration) {
-            this.expiration = expiration;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbBbBbbBbbbbbb bbbbbbbbbb(BbbbbBbbbBbbb bbbbbbbbbb) {
+            bbbb.bbbbbbbbbb = bbbbbbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public BuyItNowBuilder from(BuyItNow input) {
-            return this.id(input.getID())
-                    .lister(input.getLister())
-                    .entry(input.getEntry())
-                    .price(input.getPrice())
-                    .expiration(input.getExpiration());
+        @Bbbbbbbb
+        bbbbbb BbbBbBbbBbbbbbb bbbb(BbbBbBbb bbbbb) {
+            bbbbbb bbbb.bb(bbbbb.bbbBB())
+                    .bbbbbb(bbbbb.bbbBbbbbb())
+                    .bbbbb(bbbbb.bbbBbbbb())
+                    .bbbbb(bbbbb.bbbBbbbb())
+                    .bbbbbbbbbb(bbbbb.bbbBbbbbbbbbb());
         }
 
-        @Override
-        public VelocityBIN build() {
-            return new VelocityBIN(this);
+        @Bbbbbbbb
+        bbbbbb BbbbbbbbBBB bbbbb() {
+            bbbbbb bbb BbbbbbbbBBB(bbbb);
         }
     }
 }

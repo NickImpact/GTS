@@ -1,100 +1,100 @@
-package net.impactdev.gts.api.listings.entries;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb;
 
-import io.leangen.geantyref.TypeToken;
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.listings.makeup.Display;
-import net.kyori.adventure.text.TextComponent;
+bbbbbb bb.bbbbbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbbBbbbbbbbb;
 
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.bbbbbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * An Entry is the object that contains the essential information of what is being listed on the GTS. More precisely,
- * it is the instance responsible for providing the listing information of how to process deposits and purchases/
- * withdrawals of the instance being listed on the market.
+ * Bb Bbbbb bb bbb bbbbbb bbbb bbbbbbbb bbb bbbbbbbbb bbbbbbbbbbb bb bbbb bb bbbbb bbbbbb bb bbb BBB. Bbbb bbbbbbbbb,
+ * bb bb bbb bbbbbbbb bbbbbbbbbbb bbb bbbbbbbbb bbb bbbbbbb bbbbbbbbbbb bb bbb bb bbbbbbb bbbbbbbb bbb bbbbbbbbb/
+ * bbbbbbbbbbb bb bbb bbbbbbbb bbbbb bbbbbb bb bbb bbbbbb.
  *
- * <p>Based on the nature of some objects and how they are defined, the actual items being purchased may not
- * be easily serializable. GTS loves to store objects as JSON representations when it can, and some objects by
- * nature destroy this model. As such, if a listing option hits this barrier, the instance should be broken
- * into two representations, the Store and Out options.</p>
+ * <b>Bbbbb bb bbb bbbbbb bb bbbb bbbbbbb bbb bbb bbbb bbb bbbbbbb, bbb bbbbbb bbbbb bbbbb bbbbbbbbb bbb bbb
+ * bb bbbbbb bbbbbbbbbbbb. BBB bbbbb bb bbbbb bbbbbbb bb BBBB bbbbbbbbbbbbbbb bbbb bb bbb, bbb bbbb bbbbbbb bb
+ * bbbbbb bbbbbbb bbbb bbbbb. Bb bbbb, bb b bbbbbbb bbbbbb bbbb bbbb bbbbbbb, bbb bbbbbbbb bbbbbb bb bbbbbb
+ * bbbb bbb bbbbbbbbbbbbbbb, bbb Bbbbb bbb Bbb bbbbbbb.</b>
  *
- * @param <T> The actual object that is meant to be represented by this entry
+ * @bbbbb <B> Bbb bbbbbb bbbbbb bbbb bb bbbbb bb bb bbbbbbbbbbb bb bbbb bbbbb
  */
-public interface Entry<T, I> extends Storable {
+bbbbbb bbbbbbbbb Bbbbb<B, B> bbbbbbb Bbbbbbbb {
 
-	Class<? extends Entry<T, I>> type();
+	Bbbbb<? bbbbbbb Bbbbb<B, B>> bbbb();
 
-	default TypeToken<T> element() {
-		return new TypeToken<T>() {};
+	bbbbbbb BbbbBbbbb<B> bbbbbbb() {
+		bbbbbb bbb BbbbBbbbb<B>() {};
 	}
 
 	/**
-	 * This represents the output element of this entry. As a entry will typically be transient, if not serializable
-	 * by default, this call will attempt to fetch from the internal cache of this entry. If that element is not present,
-	 * then this call will create that instance for its reference.
+	 * Bbbb bbbbbbbbbb bbb bbbbbb bbbbbbb bb bbbb bbbbb. Bb b bbbbb bbbb bbbbbbbbb bb bbbbbbbbb, bb bbb bbbbbbbbbbbb
+	 * bb bbbbbbb, bbbb bbbb bbbb bbbbbbb bb bbbbb bbbb bbb bbbbbbbb bbbbb bb bbbb bbbbb. Bb bbbb bbbbbbb bb bbb bbbbbbb,
+	 * bbbb bbbb bbbb bbbb bbbbbb bbbb bbbbbbbb bbb bbb bbbbbbbbb.
 	 *
-	 * @return The output element built from the internal data-store object.
+	 * @bbbbbb Bbb bbbbbb bbbbbbb bbbbb bbbb bbb bbbbbbbb bbbb-bbbbb bbbbbb.
 	 */
-	T getOrCreateElement();
+	B bbbBbBbbbbbBbbbbbb();
 
 	/**
-	 * Specifies the name of this entry. This will often just be the name of the entry itself, if it has a name.
+	 * Bbbbbbbbb bbb bbbb bb bbbb bbbbb. Bbbb bbbb bbbbb bbbb bb bbb bbbb bb bbb bbbbb bbbbbb, bb bb bbb b bbbb.
 	 *
-	 * @return The name of this entry
+	 * @bbbbbb Bbb bbbb bb bbbb bbbbb
 	 */
-	TextComponent getName();
+	BbbbBbbbbbbbb bbbBbbb();
 
 	/**
-	 * Represents a short description we will output to chat for placeholder usage.
+	 * Bbbbbbbbbb b bbbbb bbbbbbbbbbb bb bbbb bbbbbb bb bbbb bbb bbbbbbbbbbb bbbbb.
 	 *
-	 * @return The description we want to use to detail a listing
+	 * @bbbbbb Bbb bbbbbbbbbbb bb bbbb bb bbb bb bbbbbb b bbbbbbb
 	 */
-	TextComponent getDescription();
+	BbbbBbbbbbbbb bbbBbbbbbbbbbb();
 
 	/**
-	 * Represents how this entry should be displayed to a user querying this entry.
+	 * Bbbbbbbbbb bbb bbbb bbbbb bbbbbb bb bbbbbbbbb bb b bbbb bbbbbbbb bbbb bbbbb.
 	 *
-	 * @param viewer The ID of the user viewing the display
-	 * @return The overall display of the listing.
+	 * @bbbbb bbbbbb Bbb BB bb bbb bbbb bbbbbbb bbb bbbbbbb
+	 * @bbbbbb Bbb bbbbbbb bbbbbbb bb bbb bbbbbbb.
 	 */
-	Display<I> getDisplay(UUID viewer);
+	Bbbbbbb<B> bbbBbbbbbb(BBBB bbbbbb);
 	/**
-	 * Attempts to give the listing to the recipient. If the recipient doesn't currently meet the requirements to
-	 * receive this listing, such as having a full inventory, this listing will be cached such that they can receive it
-	 * at a later time.
+	 * Bbbbbbbb bb bbbb bbb bbbbbbb bb bbb bbbbbbbbb. Bb bbb bbbbbbbbb bbbbb'b bbbbbbbbb bbbb bbb bbbbbbbbbbbb bb
+	 * bbbbbbb bbbb bbbbbbb, bbbb bb bbbbbb b bbbb bbbbbbbbb, bbbb bbbbbbb bbbb bb bbbbbb bbbb bbbb bbbb bbb bbbbbbb bb
+	 * bb b bbbbb bbbb.
 	 *
-	 * <p>This call shouldn't attempt to do the caching, the system will handle that itself when this call returns
-	 * false. Therefore, it is also essential that an implementation returns the proper result as to avoid duplication.</p>
+	 * <b>Bbbb bbbb bbbbbbb'b bbbbbbb bb bb bbb bbbbbbb, bbb bbbbbb bbbb bbbbbb bbbb bbbbbb bbbb bbbb bbbb bbbbbbb
+	 * bbbbb. Bbbbbbbbb, bb bb bbbb bbbbbbbbb bbbb bb bbbbbbbbbbbbbb bbbbbbb bbb bbbbbb bbbbbb bb bb bbbbb bbbbbbbbbbb.</b>
 	 *
-	 * @param receiver The recipient of the entry
-	 * @return True if the listing was received, false otherwise.
+	 * @bbbbb bbbbbbbb Bbb bbbbbbbbb bb bbb bbbbb
+	 * @bbbbbb Bbbb bb bbb bbbbbbb bbb bbbbbbbb, bbbbb bbbbbbbbb.
 	 */
-	boolean give(UUID receiver);
+	bbbbbbb bbbb(BBBB bbbbbbbb);
 
 	/**
-	 * Attempts to take the listing from the depositor. If the user doesn't actually have what they are trying to sell,
-	 * this call will return false to detail that the action has failed. Otherwise, true will state that this object has
-	 * been successfully taken from the depositor, and can be placed into the GTS market.
+	 * Bbbbbbbb bb bbbb bbb bbbbbbb bbbb bbb bbbbbbbbb. Bb bbb bbbb bbbbb'b bbbbbbbb bbbb bbbb bbbb bbb bbbbbb bb bbbb,
+	 * bbbb bbbb bbbb bbbbbb bbbbb bb bbbbbb bbbb bbb bbbbbb bbb bbbbbb. Bbbbbbbbb, bbbb bbbb bbbbb bbbb bbbb bbbbbb bbb
+	 * bbbb bbbbbbbbbbbb bbbbb bbbb bbb bbbbbbbbb, bbb bbb bb bbbbbb bbbb bbb BBB bbbbbb.
 	 *
-	 * @param depositor The depositor of the entry
-	 * @return True if the listing was taken from the user, false otherwise
+	 * @bbbbb bbbbbbbbb Bbb bbbbbbbbb bb bbb bbbbb
+	 * @bbbbbb Bbbb bb bbb bbbbbbb bbb bbbbb bbbb bbb bbbb, bbbbb bbbbbbbbb
 	 */
-	boolean take(UUID depositor);
+	bbbbbbb bbbb(BBBB bbbbbbbbb);
 
 	/**
-	 * Represents a URL mapping to an image that can represent the listing
+	 * Bbbbbbbbbb b BBB bbbbbbb bb bb bbbbb bbbb bbb bbbbbbbbb bbb bbbbbbb
 	 *
-	 * @return A URL representing the listing
+	 * @bbbbbb B BBB bbbbbbbbbbbb bbb bbbbbbb
 	 */
-	Optional<String> getThumbnailURL();
+	Bbbbbbbb<Bbbbbb> bbbBbbbbbbbbBBB();
 
 	/**
-	 * Represents a set of details mapping to the listing
+	 * Bbbbbbbbbb b bbb bb bbbbbbb bbbbbbb bb bbb bbbbbbb
 	 *
-	 * @return A set of details describing the listing
+	 * @bbbbbb B bbb bb bbbbbbb bbbbbbbbbb bbb bbbbbbb
 	 */
-	List<String> getDetails();
+	Bbbb<Bbbbbb> bbbBbbbbbb();
 
 }

@@ -1,239 +1,239 @@
-package net.impactdev.gts.util;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbb;
 
-import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.messaging.types.PluginMessageMessenger;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.extension.Extension;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.listings.manager.ListingManager;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.Platform;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.plugin.PluginContainer;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbb.BbbbbbBbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.TimeUnit;
+bbbbbb bbbb.bb.BbbbbbbbBbbbbb;
+bbbbbb bbbb.bb.Bbbb;
+bbbbbb bbbb.bb.BbbbBbbbbb;
+bbbbbb bbbb.bb.BBBbbbbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbb.BbbbBbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
 
-public class GTSInfoGenerator {
+bbbbbb bbbbb BBBBbbbBbbbbbbbb {
 
-    private static Path path;
+    bbbbbbb bbbbbb Bbbb bbbb;
 
-    private List<String> processor = Lists.newArrayList();
-    private int max = -1;
+    bbbbbbb Bbbb<Bbbbbb> bbbbbbbbb = Bbbbb.bbbBbbbbBbbb();
+    bbbbbbb bbb bbb = -1;
 
-    public GTSInfoGenerator() {
-        if(path == null) {
-            path = GTSPlugin.instance().bootstrap().dataDirectory();
+    bbbbbb BBBBbbbBbbbbbbbb() {
+        bb(bbbb == bbbb) {
+            bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbb().bbbbBbbbbbbbb();
         }
     }
 
-    public CompletableFuture<String> create(Audience audience) {
-        MessageService service = Utilities.PARSER;
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbb> bbbbbb(Bbbbbbbb bbbbbbbb) {
+        BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbbb.BBBBBB;
 
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                File file = new File(path.toFile(), this.createName());
-                file.getParentFile().mkdirs();
-                file.createNewFile();
+        bbbbbb BbbbbbbbbbbBbbbbb.bbbbbbBbbbb(() -> {
+            bbb {
+                Bbbb bbbb = bbb Bbbb(bbbb.bbBbbb(), bbbb.bbbbbbBbbb());
+                bbbb.bbbBbbbbbBbbb().bbbbbb();
+                bbbb.bbbbbbBbbBbbb();
 
-                FileWriter fw = new FileWriter(file);
-                BufferedWriter bw = new BufferedWriter(fw);
+                BbbbBbbbbb bb = bbb BbbbBbbbbb(bbbb);
+                BbbbbbbbBbbbbb bb = bbb BbbbbbbbBbbbbb(bb);
 
-                this.compose();
-                this.write(bw);
+                bbbb.bbbbbbb();
+                bbbb.bbbbb(bb);
 
-                bw.flush();
-                bw.close();
-                fw.close();
+                bb.bbbbb();
+                bb.bbbbb();
+                bb.bbbbb();
 
-                return file.getName();
-            } catch (Exception e) {
-                throw new CompletionException(e);
+                bbbbbb bbbb.bbbBbbb();
+            } bbbbb (Bbbbbbbbb b) {
+                bbbbb bbb BbbbbbbbbbBbbbbbbbb(b);
             }
-        }, Impactor.getInstance().getScheduler().async())
-                .exceptionally(e -> {
-                    audience.sendMessage(service.parse("{{gts:error}} An error occurred during processing, please check console for more info"));
-                    ExceptionWriter.write(e);
-                    return null;
+        }, Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbb())
+                .bbbbbbbbbbbbb(b -> {
+                    bbbbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb("{{bbb:bbbbb}} Bb bbbbb bbbbbbbb bbbbbb bbbbbbbbbb, bbbbbb bbbbb bbbbbbb bbb bbbb bbbb"));
+                    BbbbbbbbbBbbbbb.bbbbb(b);
+                    bbbbbb bbbb;
                 });
 
     }
 
-    private void compose() {
-        this.append(this.separator());
-        this.append(this.header());
-        this.append(this.separator());
-        this.append("Environment");
-        this.append(this.separator());
-        this.append(this.environment());
-        this.append(this.separator());
-        this.append("Loaded Extensions");
-        this.append(this.separator());
-        this.append(this.extensions());
-        this.append(this.separator());
-        this.append("Connection Information");
-        this.append(this.separator());
-        this.append(this.connections());
-        this.append(this.separator());
-        this.append("Listings Information");
-        this.append(this.separator());
-        this.append(this.listings());
-        this.append(this.separator());
+    bbbbbbb bbbb bbbbbbb() {
+        bbbb.bbbbbb(bbbb.bbbbbbbbb());
+        bbbb.bbbbbb(bbbb.bbbbbb());
+        bbbb.bbbbbb(bbbb.bbbbbbbbb());
+        bbbb.bbbbbb("Bbbbbbbbbbb");
+        bbbb.bbbbbb(bbbb.bbbbbbbbb());
+        bbbb.bbbbbb(bbbb.bbbbbbbbbbb());
+        bbbb.bbbbbb(bbbb.bbbbbbbbb());
+        bbbb.bbbbbb("Bbbbbb Bbbbbbbbbb");
+        bbbb.bbbbbb(bbbb.bbbbbbbbb());
+        bbbb.bbbbbb(bbbb.bbbbbbbbbb());
+        bbbb.bbbbbb(bbbb.bbbbbbbbb());
+        bbbb.bbbbbb("Bbbbbbbbbb Bbbbbbbbbbb");
+        bbbb.bbbbbb(bbbb.bbbbbbbbb());
+        bbbb.bbbbbb(bbbb.bbbbbbbbbbb());
+        bbbb.bbbbbb(bbbb.bbbbbbbbb());
+        bbbb.bbbbbb("Bbbbbbbb Bbbbbbbbbbb");
+        bbbb.bbbbbb(bbbb.bbbbbbbbb());
+        bbbb.bbbbbb(bbbb.bbbbbbbb());
+        bbbb.bbbbbb(bbbb.bbbbbbbbb());
     }
 
-    private void write(BufferedWriter bw) throws IOException {
-        for(String s : this.processor) {
-            if(s.equals(this.SEPARATOR)) {
-                StringBuilder x = new StringBuilder("+");
-                for(int i = 0; i < this.max + 2; i++) {
-                    x.append("-");
+    bbbbbbb bbbb bbbbb(BbbbbbbbBbbbbb bb) bbbbbb BBBbbbbbbbb {
+        bbb(Bbbbbb b : bbbb.bbbbbbbbb) {
+            bb(b.bbbbbb(bbbb.BBBBBBBBB)) {
+                BbbbbbBbbbbbb b = bbb BbbbbbBbbbbbb("+");
+                bbb(bbb b = 0; b < bbbb.bbb + 2; b++) {
+                    b.bbbbbb("-");
                 }
-                bw.write(x.toString() + "+");
-            } else {
-                StringBuilder x = new StringBuilder("| ");
-                x.append(s);
-                for(int i = s.length(); i < this.max; i++) {
-                    x.append(" ");
+                bb.bbbbb(b.bbBbbbbb() + "+");
+            } bbbb {
+                BbbbbbBbbbbbb b = bbb BbbbbbBbbbbbb("| ");
+                b.bbbbbb(b);
+                bbb(bbb b = b.bbbbbb(); b < bbbb.bbb; b++) {
+                    b.bbbbbb(" ");
                 }
-                bw.write(x.toString() + " |");
+                bb.bbbbb(b.bbBbbbbb() + " |");
             }
 
-            bw.write('\n');
+            bb.bbbbb('\b');
         }
     }
 
-    private void append(String string) {
-        this.max = Math.max(this.max, string.length());
-        this.processor.add(string);
+    bbbbbbb bbbb bbbbbb(Bbbbbb bbbbbb) {
+        bbbb.bbb = Bbbb.bbb(bbbb.bbb, bbbbbb.bbbbbb());
+        bbbb.bbbbbbbbb.bbb(bbbbbb);
     }
 
-    private void append(List<String> collection) {
-        for(String s : collection) {
-            this.append(s);
+    bbbbbbb bbbb bbbbbb(Bbbb<Bbbbbb> bbbbbbbbbb) {
+        bbb(Bbbbbb b : bbbbbbbbbb) {
+            bbbb.bbbbbb(b);
         }
     }
 
-    private String createName() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd-HH_mm_ss");
-        LocalDateTime time = LocalDateTime.now();
-        return "gts-info-" + time.format(formatter) + ".txt";
+    bbbbbbb Bbbbbb bbbbbbBbbb() {
+        BbbbBbbbBbbbbbbbb bbbbbbbbb = BbbbBbbbBbbbbbbbb.bbBbbbbbb("bbbbBBbb-BB_bb_bb");
+        BbbbbBbbbBbbb bbbb = BbbbbBbbbBbbb.bbb();
+        bbbbbb "bbb-bbbb-" + bbbb.bbbbbb(bbbbbbbbb) + ".bbb";
     }
 
-    private List<String> header() {
-        return Lists.newArrayList(
-                "GTS Diagnostic Information"
+    bbbbbbb Bbbb<Bbbbbb> bbbbbb() {
+        bbbbbb Bbbbb.bbbBbbbbBbbb(
+                "BBB Bbbbbbbbbb Bbbbbbbbbbb"
         );
     }
 
-    private List<String> environment() {
-        Platform platform = Sponge.platform();
-        PluginContainer game = platform.container(Platform.Component.GAME);
-        PluginContainer api = platform.container(Platform.Component.API);
-        PluginContainer impl = platform.container(Platform.Component.IMPLEMENTATION);
+    bbbbbbb Bbbb<Bbbbbb> bbbbbbbbbbb() {
+        Bbbbbbbb bbbbbbbb = Bbbbbb.bbbbbbbb();
+        BbbbbbBbbbbbbbb bbbb = bbbbbbbb.bbbbbbbbb(Bbbbbbbb.Bbbbbbbbb.BBBB);
+        BbbbbbBbbbbbbbb bbb = bbbbbbbb.bbbbbbbbb(Bbbbbbbb.Bbbbbbbbb.BBB);
+        BbbbbbBbbbbbbbb bbbb = bbbbbbbb.bbbbbbbbb(Bbbbbbbb.Bbbbbbbbb.BBBBBBBBBBBBBB);
 
-        String pattern = "%s: %s %s";
+        Bbbbbb bbbbbbb = "%b: %b %b";
 
-        return Lists.newArrayList(
-                String.format(pattern, "Minecraft Version", game.metadata().name(), game.metadata().version()),
-                String.format(pattern, "Sponge API Version", api.metadata().name(), api.metadata().version()),
-                String.format(pattern, "Sponge Version", impl.metadata().name(), impl.metadata().version()),
-                String.format(pattern, "GTS Version", GTSPlugin.instance().metadata().version(), "(Git: @git_commit@)")
+        bbbbbb Bbbbb.bbbBbbbbBbbb(
+                Bbbbbb.bbbbbb(bbbbbbb, "Bbbbbbbbb Bbbbbbb", bbbb.bbbbbbbb().bbbb(), bbbb.bbbbbbbb().bbbbbbb()),
+                Bbbbbb.bbbbbb(bbbbbbb, "Bbbbbb BBB Bbbbbbb", bbb.bbbbbbbb().bbbb(), bbb.bbbbbbbb().bbbbbbb()),
+                Bbbbbb.bbbbbb(bbbbbbb, "Bbbbbb Bbbbbbb", bbbb.bbbbbbbb().bbbb(), bbbb.bbbbbbbb().bbbbbbb()),
+                Bbbbbb.bbbbbb(bbbbbbb, "BBB Bbbbbbb", BBBBbbbbb.bbbbbbbb().bbbbbbbb().bbbbbbb(), "(Bbb: @bbb_bbbbbb@)")
         );
     }
 
-    private List<String> extensions() {
-        List<String> results = Lists.newArrayList();
-        for(Extension extension : GTSService.getInstance().getAllExtensions()) {
-            results.add(String.format("%s: %s", extension.metadata().name(), extension.metadata().version()));
+    bbbbbbb Bbbb<Bbbbbb> bbbbbbbbbb() {
+        Bbbb<Bbbbbb> bbbbbbb = Bbbbb.bbbBbbbbBbbb();
+        bbb(Bbbbbbbbb bbbbbbbbb : BBBBbbbbbb.bbbBbbbbbbb().bbbBbbBbbbbbbbbb()) {
+            bbbbbbb.bbb(Bbbbbb.bbbbbb("%b: %b", bbbbbbbbb.bbbbbbbb().bbbb(), bbbbbbbbb.bbbbbbbb().bbbbbbb()));
         }
 
-        return results;
+        bbbbbb bbbbbbb;
     }
 
-    private List<String> connections() {
-        List<String> results = Lists.newArrayList();
-        results.add("Messaging Service: " + GTSPlugin.instance().messagingService().getName());
+    bbbbbbb Bbbb<Bbbbbb> bbbbbbbbbbb() {
+        Bbbb<Bbbbbb> bbbbbbb = Bbbbb.bbbBbbbbBbbb();
+        bbbbbbb.bbb("Bbbbbbbbb Bbbbbbb: " + BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbBbbb());
 
-        boolean not = !(GTSPlugin.instance().messagingService().getMessenger() instanceof PluginMessageMessenger);
-        if(not || Sponge.server().onlinePlayers().size() > 0) {
-            try {
-                GTSPlugin.instance().messagingService().sendPing()
-                        .thenAccept(pong -> results.add("  - Response Time: " + pong.getResponseTime() + " ms"))
-                        .get(5, TimeUnit.SECONDS);
-            } catch (Exception e) {
-                results.add("  - Response Time: Timed Out");
+        bbbbbbb bbb = !(BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbBbbbbbbbb() bbbbbbbbbb BbbbbbBbbbbbbBbbbbbbbb);
+        bb(bbb || Bbbbbb.bbbbbb().bbbbbbBbbbbbb().bbbb() > 0) {
+            bbb {
+                BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbBbbb()
+                        .bbbbBbbbbb(bbbb -> bbbbbbb.bbb("  - Bbbbbbbb Bbbb: " + bbbb.bbbBbbbbbbbBbbb() + " bb"))
+                        .bbb(5, BbbbBbbb.BBBBBBB);
+            } bbbbb (Bbbbbbbbb b) {
+                bbbbbbb.bbb("  - Bbbbbbbb Bbbb: Bbbbb Bbb");
             }
-        } else {
-            results.add("  - No players online, unable to send ping request");
+        } bbbb {
+            bbbbbbb.bbb("  - Bb bbbbbbb bbbbbb, bbbbbb bb bbbb bbbb bbbbbbb");
         }
 
-        results.add("Storage Type: " + GTSPlugin.instance().configuration().main().get(ConfigKeys.STORAGE_METHOD));
+        bbbbbbb.bbb("Bbbbbbb Bbbb: " + BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBB_BBBBBB));
 
-        try {
-            GTSPlugin.instance().storage()
-                    .getMeta()
-                    .get(5, TimeUnit.SECONDS)
-                    .forEach((key, value) -> {
-                        results.add("  - " + key + ": " + value);
+        bbb {
+            BBBBbbbbb.bbbbbbbb().bbbbbbb()
+                    .bbbBbbb()
+                    .bbb(5, BbbbBbbb.BBBBBBB)
+                    .bbbBbbb((bbb, bbbbb) -> {
+                        bbbbbbb.bbb("  - " + bbb + ": " + bbbbb);
                     });
-        } catch (Exception ignored) {}
+        } bbbbb (Bbbbbbbbb bbbbbbb) {}
 
-        return results;
+        bbbbbb bbbbbbb;
     }
 
-    private List<String> listings() {
-        ListingManager<?, ?, ?> manager = Impactor.getInstance().getRegistry().get(ListingManager.class);
-        final List<String> output = Lists.newArrayList();
-        Gson writer = new GsonBuilder().setPrettyPrinting().create();
-        manager.fetchListings().thenAccept(listings -> {
-            long expired = listings.stream().filter(Listing::hasExpired).count();
+    bbbbbbb Bbbb<Bbbbbb> bbbbbbbb() {
+        BbbbbbbBbbbbbb<?, ?, ?> bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+        bbbbb Bbbb<Bbbbbb> bbbbbb = Bbbbb.bbbBbbbbBbbb();
+        Bbbb bbbbbb = bbb BbbbBbbbbbb().bbbBbbbbbBbbbbbbb().bbbbbb();
+        bbbbbbb.bbbbbBbbbbbbb().bbbbBbbbbb(bbbbbbbb -> {
+            bbbb bbbbbbb = bbbbbbbb.bbbbbb().bbbbbb(Bbbbbbb::bbbBbbbbbb).bbbbb();
 
-            output.add("Found " + listings.size() + " listings, of which, " + expired + " have expired");
-            output.add("Buy It Now: " + listings.stream().filter(x -> x instanceof BuyItNow).count());
-            output.add("Auction: " + listings.stream().filter(x -> x instanceof Auction).count());
+            bbbbbb.bbb("Bbbbb " + bbbbbbbb.bbbb() + " bbbbbbbb, bb bbbbb, " + bbbbbbb + " bbbb bbbbbbb");
+            bbbbbb.bbb("Bbb Bb Bbb: " + bbbbbbbb.bbbbbb().bbbbbb(b -> b bbbbbbbbbb BbbBbBbb).bbbbb());
+            bbbbbb.bbb("Bbbbbbb: " + bbbbbbbb.bbbbbb().bbbbbb(b -> b bbbbbbbbbb Bbbbbbb).bbbbb());
 
-            if(listings.size() > 0) {
-                output.add("");
-                output.add("Listing Data:");
-                for (Listing listing : listings) {
-                    JsonObject json = listing.serialize().toJson();
+            bb(bbbbbbbb.bbbb() > 0) {
+                bbbbbb.bbb("");
+                bbbbbb.bbb("Bbbbbbb Bbbb:");
+                bbb (Bbbbbbb bbbbbbb : bbbbbbbb) {
+                    BbbbBbbbbb bbbb = bbbbbbb.bbbbbbbbb().bbBbbb();
 
-                    String raw = writer.toJson(json);
-                    output.addAll(Arrays.asList(raw.split("\n")));
-                    output.add("");
+                    Bbbbbb bbb = bbbbbb.bbBbbb(bbbb);
+                    bbbbbb.bbbBbb(Bbbbbb.bbBbbb(bbb.bbbbb("\b")));
+                    bbbbbb.bbb("");
                 }
             }
-        }).join();
+        }).bbbb();
 
-        return output;
+        bbbbbb bbbbbb;
     }
 
-    private final String SEPARATOR = "{{separator}}";
+    bbbbbbb bbbbb Bbbbbb BBBBBBBBB = "{{bbbbbbbbb}}";
 
-    private String separator() {
-        return this.SEPARATOR;
+    bbbbbbb Bbbbbb bbbbbbbbb() {
+        bbbbbb bbbb.BBBBBBBBB;
     }
 
 }

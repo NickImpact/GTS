@@ -1,13 +1,13 @@
-package net.impactdev.gts.api.messaging.message.type.utility;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbb;
 
-import net.impactdev.gts.api.maintenance.MaintenanceMode;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.UpdateMessage;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbBbbbbbb;
 
-public interface MaintenanceUpdateMessage extends UpdateMessage, OutgoingMessage {
+bbbbbb bbbbbbbbb BbbbbbbbbbbBbbbbbBbbbbbb bbbbbbb BbbbbbBbbbbbb, BbbbbbbbBbbbbbb {
 
-    MaintenanceMode getMode();
+    BbbbbbbbbbbBbbb bbbBbbb();
 
-    boolean getState();
+    bbbbbbb bbbBbbbb();
 
 }

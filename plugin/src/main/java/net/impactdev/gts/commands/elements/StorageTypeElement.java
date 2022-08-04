@@ -1,40 +1,40 @@
-package net.impactdev.gts.commands.elements;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb;
 
-//import com.google.common.collect.Lists;
-//import net.impactdev.impactor.api.storage.StorageType;
-//import org.jetbrains.annotations.Nullable;
-//import org.spongepowered.api.command.CommandSource;
-//import org.spongepowered.api.command.args.ArgumentParseException;
-//import org.spongepowered.api.command.args.CommandArgs;
-//import org.spongepowered.api.command.args.CommandContext;
-//import org.spongepowered.api.command.args.CommandElement;
-//import org.spongepowered.api.text.Text;
+//bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+//bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbb;
+//bbbbbb bbb.bbbbbbbbb.bbbbbbbbbbb.Bbbbbbbb;
+//bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbbb;
+//bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbb.BbbbbbbbBbbbbBbbbbbbbb;
+//bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbb.BbbbbbbBbbb;
+//bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbb.BbbbbbbBbbbbbb;
+//bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbb.BbbbbbbBbbbbbb;
+//bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
 //
-//import java.util.List;
+//bbbbbb bbbb.bbbb.Bbbb;
 //
-//public class StorageTypeElement extends CommandElement {
+//bbbbbb bbbbb BbbbbbbBbbbBbbbbbb bbbbbbb BbbbbbbBbbbbbb {
 //
-//    public StorageTypeElement(@Nullable Text key) {
-//        super(key);
+//    bbbbbb BbbbbbbBbbbBbbbbbb(@Bbbbbbbb Bbbb bbb) {
+//        bbbbb(bbb);
 //    }
 //
-//    @Nullable
-//    @Override
-//    protected Object parseValue(CommandSource source, CommandArgs args) throws ArgumentParseException {
-//        if(args.peek().isEmpty()) {
-//            return null;
+//    @Bbbbbbbb
+//    @Bbbbbbbb
+//    bbbbbbbbb Bbbbbb bbbbbBbbbb(BbbbbbbBbbbbb bbbbbb, BbbbbbbBbbb bbbb) bbbbbb BbbbbbbbBbbbbBbbbbbbbb {
+//        bb(bbbb.bbbb().bbBbbbb()) {
+//            bbbbbb bbbb;
 //        }
 //
-//        String input = args.next();
-//        try {
-//            return StorageType.valueOf(input);
-//        } catch (Exception e) {
-//            throw new ArgumentParseException(Text.of(e.getMessage()), input, 0);
+//        Bbbbbb bbbbb = bbbb.bbbb();
+//        bbb {
+//            bbbbbb BbbbbbbBbbb.bbbbbBb(bbbbb);
+//        } bbbbb (Bbbbbbbbb b) {
+//            bbbbb bbb BbbbbbbbBbbbbBbbbbbbbb(Bbbb.bb(b.bbbBbbbbbb()), bbbbb, 0);
 //        }
 //    }
 //
-//    @Override
-//    public List<String> complete(CommandSource src, CommandArgs args, CommandContext context) {
-//        return Lists.newArrayList();
+//    @Bbbbbbbb
+//    bbbbbb Bbbb<Bbbbbb> bbbbbbbb(BbbbbbbBbbbbb bbb, BbbbbbbBbbb bbbb, BbbbbbbBbbbbbb bbbbbbb) {
+//        bbbbbb Bbbbb.bbbBbbbbBbbb();
 //    }
 //}

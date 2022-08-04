@@ -1,123 +1,123 @@
-package net.impactdev.gts.ui.admin;
+bbbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbb;
 
-import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
-import net.impactdev.gts.ui.submenu.SpongeListingMenu;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbbbb.BbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.BbbbbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbb.Bbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbb;
 
-public class SpongeAdminMenu {
+bbbbbb bbbbb BbbbbbBbbbbBbbb {
 
-    private final static Layout LAYOUT = generate();
+    bbbbbbb bbbbb bbbbbb Bbbbbb BBBBBB = bbbbbbbb();
 
-    private final PlatformPlayer viewer;
-    private final ImpactorUI view;
+    bbbbbbb bbbbb BbbbbbbbBbbbbb bbbbbb;
+    bbbbbbb bbbbb BbbbbbbbBB bbbb;
 
-    public SpongeAdminMenu(ServerPlayer viewer) {
-        this.viewer = PlatformPlayer.from(viewer);
-        this.view = ImpactorUI.builder()
-                .provider(Key.key("gts", "admin"))
-                .title(Utilities.parse(MsgConfigKeys.UI_ADMIN_MAIN_TITLE, PlaceholderSources.empty()))
-                .layout(LAYOUT)
-                .build();
+    bbbbbb BbbbbbBbbbbBbbb(BbbbbbBbbbbb bbbbbb) {
+        bbbb.bbbbbb = BbbbbbbbBbbbbb.bbbb(bbbbbb);
+        bbbb.bbbb = BbbbbbbbBB.bbbbbbb()
+                .bbbbbbbb(Bbb.bbb("bbb", "bbbbb"))
+                .bbbbb(Bbbbbbbbb.bbbbb(BbbBbbbbbBbbb.BB_BBBBB_BBBB_BBBBB, BbbbbbbbbbbBbbbbbb.bbbbb()))
+                .bbbbbb(BBBBBB)
+                .bbbbb();
     }
 
-    public void open() {
-        this.view.open(this.viewer);
+    bbbbbb bbbb bbbb() {
+        bbbb.bbbb.bbbb(bbbb.bbbbbb);
     }
 
-    private static Layout generate() {
-        MessageService service = Utilities.PARSER;
+    bbbbbbb bbbbbb Bbbbbb bbbbbbbb() {
+        BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbbb.BBBBBB;
 
-        Layout.LayoutBuilder builder = Layout.builder()
-                .size(6)
-                .border(ProvidedIcons.BORDER)
-                .slots(ProvidedIcons.BORDER, 19, 20, 24, 25, 28, 29, 30, 31, 32, 33, 34);
+        Bbbbbb.BbbbbbBbbbbbb bbbbbbb = Bbbbbb.bbbbbbb()
+                .bbbb(6)
+                .bbbbbb(BbbbbbbbBbbbb.BBBBBB)
+                .bbbbb(BbbbbbbbBbbbb.BBBBBB, 19, 20, 24, 25, 28, 29, 30, 31, 32, 33, 34);
 
-        final Icon<ItemStack> darkBlue = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                    .itemType(ItemTypes.BLUE_STAINED_GLASS_PANE)
-                    .add(Keys.CUSTOM_NAME, Component.empty())
-                    .build()
+        bbbbb Bbbb<BbbbBbbbb> bbbbBbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                    .bbbbBbbb(BbbbBbbbb.BBBB_BBBBBBB_BBBBB_BBBB)
+                    .bbb(Bbbb.BBBBBB_BBBB, Bbbbbbbbb.bbbbb())
+                    .bbbbb()
                 ))
-                .build();
+                .bbbbb();
 
-        final Icon<ItemStack> lightBlue = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.LIGHT_BLUE_STAINED_GLASS_PANE)
-                        .add(Keys.CUSTOM_NAME, Component.empty())
-                        .build()
+        bbbbb Bbbb<BbbbBbbbb> bbbbbBbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                        .bbbbBbbb(BbbbBbbbb.BBBBB_BBBB_BBBBBBB_BBBBB_BBBB)
+                        .bbb(Bbbb.BBBBBB_BBBB, Bbbbbbbbb.bbbbb())
+                        .bbbbb()
                 ))
-                .build();
+                .bbbbb();
 
-        Icon<ItemStack> info = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.COMMAND_BLOCK)
-                        .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ADMIN_MAIN_INFO_TITLE)))
-                        .add(Keys.LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ADMIN_MAIN_INFO_LORE)))
-                        .build()
+        Bbbb<BbbbBbbbb> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                        .bbbbBbbb(BbbbBbbbb.BBBBBBB_BBBBB)
+                        .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBB_BBBB_BBBB_BBBBB)))
+                        .bbb(Bbbb.BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBB_BBBB_BBBB_BBBB)))
+                        .bbbbb()
                 ))
-                .build();
+                .bbbbb();
 
-        builder.slot(info, 13);
+        bbbbbbb.bbbb(bbbb, 13);
 
-        Icon<ItemStack> manager = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.ANVIL)
-                        .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ADMIN_MAIN_MANAGER)))
-                        .build()
+        Bbbb<BbbbBbbbb> bbbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                        .bbbbBbbb(BbbbBbbbb.BBBBB)
+                        .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBB_BBBB_BBBBBBB)))
+                        .bbbbb()
                 ))
-                .listener(context -> {
-                    new SpongeListingMenu(PlatformPlayer.from(context.require(ServerPlayer.class)), true).open();
-                    return false;
+                .bbbbbbbb(bbbbbbb -> {
+                    bbb BbbbbbBbbbbbbBbbb(BbbbbbbbBbbbbb.bbbb(bbbbbbb.bbbbbbb(BbbbbbBbbbbb.bbbbb)), bbbb).bbbb();
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
 
-        Icon<ItemStack> deliver = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.CHEST_MINECART)
-                        .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ADMIN_MAIN_DELIVERIES)))
-                        .build()
+        Bbbb<BbbbBbbbb> bbbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                        .bbbbBbbb(BbbbBbbbb.BBBBB_BBBBBBBB)
+                        .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBB_BBBB_BBBBBBBBBB)))
+                        .bbbbb()
                 ))
-                .listener(context -> {
-                    new SpongeAdminDeliveryMenu(context.require(ServerPlayer.class)).open();
-                    context.require(ServerPlayer.class).sendMessage(service.parse("{{gts:error}} Delivery creation coming soon"));
-                    return false;
+                .bbbbbbbb(bbbbbbb -> {
+                    bbb BbbbbbBbbbbBbbbbbbbBbbb(bbbbbbb.bbbbbbb(BbbbbbBbbbbb.bbbbb)).bbbb();
+                    bbbbbbb.bbbbbbb(BbbbbbBbbbbb.bbbbb).bbbbBbbbbbb(bbbbbbb.bbbbb("{{bbb:bbbbb}} Bbbbbbbb bbbbbbbb bbbbbb bbbb"));
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
 
-        Icon<ItemStack> disabler = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.REPEATING_COMMAND_BLOCK)
-                        .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ADMIN_MAIN_DISABLER)))
-                        .build()
+        Bbbb<BbbbBbbbb> bbbbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                        .bbbbBbbb(BbbbBbbbb.BBBBBBBBB_BBBBBBB_BBBBB)
+                        .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBB_BBBB_BBBBBBBB)))
+                        .bbbbb()
                 ))
-                .listener(context -> {
-                    // TODO - Disable running tasks, commands, etc
-                    return false;
+                .bbbbbbbb(bbbbbbb -> {
+                    // BBBB - Bbbbbbb bbbbbbb bbbbb, bbbbbbbb, bbb
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
 
-        builder.slots(darkBlue, 10, 11, 15, 16);
-        builder.slots(lightBlue, 3, 4, 5, 12, 14, 21, 22, 23);
+        bbbbbbb.bbbbb(bbbbBbbb, 10, 11, 15, 16);
+        bbbbbbb.bbbbb(bbbbbBbbb, 3, 4, 5, 12, 14, 21, 22, 23);
 
-        builder.slot(manager, 38);
-        builder.slot(deliver, 40);
-        builder.slot(disabler, 42);
+        bbbbbbb.bbbb(bbbbbbb, 38);
+        bbbbbbb.bbbb(bbbbbbb, 40);
+        bbbbbbb.bbbb(bbbbbbbb, 42);
 
-        return builder.build();
+        bbbbbb bbbbbbb.bbbbb();
     }
 
 }

@@ -1,20 +1,20 @@
-package net.impactdev.gts.api.util.groupings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbb;
 
-public class SimilarPair<T> {
+bbbbbb bbbbb BbbbbbbBbbb<B> {
 
-	private final T first;
-	private final T second;
+	bbbbbbb bbbbb B bbbbb;
+	bbbbbbb bbbbb B bbbbbb;
 
-	public SimilarPair(T first, T second) {
-		this.first = first;
-		this.second = second;
+	bbbbbb BbbbbbbBbbb(B bbbbb, B bbbbbb) {
+		bbbb.bbbbb = bbbbb;
+		bbbb.bbbbbb = bbbbbb;
 	}
 
-	public T getFirst() {
-		return this.first;
+	bbbbbb B bbbBbbbb() {
+		bbbbbb bbbb.bbbbb;
 	}
 
-	public T getSecond() {
-		return this.second;
+	bbbbbb B bbbBbbbbb() {
+		bbbbbb bbbb.bbbbbb;
 	}
 }

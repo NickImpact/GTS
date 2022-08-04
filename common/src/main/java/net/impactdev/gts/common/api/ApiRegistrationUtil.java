@@ -1,40 +1,40 @@
-package net.impactdev.gts.common.api;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbb;
 
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.GTSServiceProvider;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbbBbbbbbbb;
 
-import java.lang.reflect.Method;
+bbbbbb bbbb.bbbb.bbbbbbb.Bbbbbb;
 
-public class ApiRegistrationUtil {
+bbbbbb bbbbb BbbBbbbbbbbbbbbBbbb {
 
-	private static final Method REGISTER;
-	private static final Method UNREGISTER;
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBBBB;
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBBBBBB;
 
-	static {
-		try {
-			REGISTER = GTSServiceProvider.class.getDeclaredMethod("register", GTSService.class);
-			REGISTER.setAccessible(true);
+	bbbbbb {
+		bbb {
+			BBBBBBBB = BBBBbbbbbbBbbbbbbb.bbbbb.bbbBbbbbbbbBbbbbb("bbbbbbbb", BBBBbbbbbb.bbbbb);
+			BBBBBBBB.bbbBbbbbbbbbb(bbbb);
 
-			UNREGISTER = GTSServiceProvider.class.getDeclaredMethod("unregister");
-			UNREGISTER.setAccessible(true);
-		} catch (NoSuchMethodException e) {
-			throw new ExceptionInInitializerError(e);
+			BBBBBBBBBB = BBBBbbbbbbBbbbbbbb.bbbbb.bbbBbbbbbbbBbbbbb("bbbbbbbbbb");
+			BBBBBBBBBB.bbbBbbbbbbbbb(bbbb);
+		} bbbbb (BbBbbbBbbbbbBbbbbbbbb b) {
+			bbbbb bbb BbbbbbbbbBbBbbbbbbbbbbBbbbb(b);
 		}
 	}
 
-	public static void register(GTSService service) {
-		try {
-			REGISTER.invoke(null, service);
-		} catch (Exception e) {
-			e.printStackTrace();
+	bbbbbb bbbbbb bbbb bbbbbbbb(BBBBbbbbbb bbbbbbb) {
+		bbb {
+			BBBBBBBB.bbbbbb(bbbb, bbbbbbb);
+		} bbbbb (Bbbbbbbbb b) {
+			b.bbbbbBbbbbBbbbb();
 		}
 	}
 
-	public static void unregister() {
-		try {
-			UNREGISTER.invoke(null);
-		} catch (Exception e) {
-			e.printStackTrace();
+	bbbbbb bbbbbb bbbb bbbbbbbbbb() {
+		bbb {
+			BBBBBBBBBB.bbbbbb(bbbb);
+		} bbbbb (Bbbbbbbbb b) {
+			b.bbbbbBbbbbBbbbb();
 		}
 	}
 }

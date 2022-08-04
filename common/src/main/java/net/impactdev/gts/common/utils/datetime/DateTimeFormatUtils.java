@@ -1,16 +1,16 @@
-package net.impactdev.gts.common.utils.datetime;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbb;
 
-import net.impactdev.gts.api.listings.Listing;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.BbbbBb;
+bbbbbb bbbb.bbbb.bbbbbb.BbbbBbbbBbbbbbbbb;
 
-public class DateTimeFormatUtils {
+bbbbbb bbbbb BbbbBbbbBbbbbbBbbbb {
 
-	public static final DateTimeFormatter base = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss a z").withZone(ZoneId.systemDefault());
+	bbbbbb bbbbbb bbbbb BbbbBbbbBbbbbbbbb bbbb = BbbbBbbbBbbbbbbbb.bbBbbbbbb("BB/bb/bbbb - BB:bb:bb b b").bbbbBbbb(BbbbBb.bbbbbbBbbbbbb());
 
-	public static String formatExpiration(Listing listing) {
-		return listing.getExpiration().equals(LocalDateTime.MAX) ? "Infinite" : listing.getExpiration().format(base);
+	bbbbbb bbbbbb Bbbbbb bbbbbbBbbbbbbbbb(Bbbbbbb bbbbbbb) {
+		bbbbbb bbbbbbb.bbbBbbbbbbbbb().bbbbbb(BbbbbBbbbBbbb.BBB) ? "Bbbbbbbb" : bbbbbbb.bbbBbbbbbbbbb().bbbbbb(bbbb);
 	}
 }

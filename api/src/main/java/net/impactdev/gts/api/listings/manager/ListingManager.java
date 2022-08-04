@@ -1,26 +1,26 @@
-package net.impactdev.gts.api.listings.manager;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb;
 
-import net.impactdev.impactor.api.services.Service;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public interface ListingManager<L extends Listing, A extends Auction, B extends BuyItNow> extends Service {
+bbbbbb bbbbbbbbb BbbbbbbBbbbbbb<B bbbbbbb Bbbbbbb, B bbbbbbb Bbbbbbb, B bbbbbbb BbbBbBbb> bbbbbbb Bbbbbbb {
 
-	CompletableFuture<Boolean> list(UUID lister, L listing);
+	BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbb(BBBB bbbbbb, B bbbbbbb);
 
-	CompletableFuture<Boolean> bid(UUID bidder, A listing, double amount);
+	BbbbbbbbbbbBbbbbb<Bbbbbbb> bbb(BBBB bbbbbb, B bbbbbbb, bbbbbb bbbbbb);
 
-	<S> CompletableFuture<Boolean> purchase(UUID buyer, B listing, S source);
+	<B> BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbbbbb(BBBB bbbbb, B bbbbbbb, B bbbbbb);
 
-	CompletableFuture<Boolean> deleteListing(L listing);
+	BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbbbBbbbbbb(B bbbbbbb);
 
-	CompletableFuture<Boolean> hasMaxListings(UUID lister);
+	BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbBbbBbbbbbbb(BBBB bbbbbb);
 
-	CompletableFuture<List<L>> fetchListings();
+	BbbbbbbbbbbBbbbbb<Bbbb<B>> bbbbbBbbbbbbb();
 
 }

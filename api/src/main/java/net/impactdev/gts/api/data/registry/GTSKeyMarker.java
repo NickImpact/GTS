@@ -1,14 +1,14 @@
-package net.impactdev.gts.api.data.registry;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.Bbbbbb;
 
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface GTSKeyMarker {
+@Bbbbbb(BbbbbbbBbbb.BBBB)
+@Bbbbbbbbb(BbbbbbbbbBbbbbb.BBBBBBB)
+bbbbbb @bbbbbbbbb BBBBbbBbbbbb {
 
-    String[] value();
+    Bbbbbb[] bbbbb();
 
 }

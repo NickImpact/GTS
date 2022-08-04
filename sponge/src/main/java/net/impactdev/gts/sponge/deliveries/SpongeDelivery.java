@@ -1,141 +1,141 @@
-package net.impactdev.gts.sponge.deliveries;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbb;
 
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.entries.EntryManager;
-import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
-import net.impactdev.impactor.api.json.factory.JObject;
+bbbbbb bbb.bbbbbb.bbbb.JbbbObbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.GTSSbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Dbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Ebbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.EbbbbMbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb.SbbbbbEbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.JObbbbb;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.LbbbbDbbbTbbb;
+bbbbbb bbbb.bbbb.Obbbbbbb;
+bbbbbb bbbb.bbbb.UUID;
 
-public class SpongeDelivery implements Delivery {
+bbbbbb bbbbb SbbbbbDbbbbbbb bbbbbbbbbb Dbbbbbbb {
 
-    private final UUID id;
-    private final UUID source;
-    private final UUID recipient;
-    private final SpongeEntry<?> content;
-    private final LocalDateTime expiration;
+    bbbbbbb bbbbb UUID bb;
+    bbbbbbb bbbbb UUID bbbbbb;
+    bbbbbbb bbbbb UUID bbbbbbbbb;
+    bbbbbbb bbbbb SbbbbbEbbbb<?> bbbbbbb;
+    bbbbbbb bbbbb LbbbbDbbbTbbb bbbbbbbbbb;
 
-    public SpongeDelivery(SpongeDeliveryBuilder builder) {
-        this.id = builder.id;
-        this.source = builder.source;
-        this.recipient = builder.recipient;
-        this.content = builder.content;
-        this.expiration = builder.expiration;
+    bbbbbb SbbbbbDbbbbbbb(SbbbbbDbbbbbbbBbbbbbb bbbbbbb) {
+        bbbb.bb = bbbbbbb.bb;
+        bbbb.bbbbbb = bbbbbbb.bbbbbb;
+        bbbb.bbbbbbbbb = bbbbbbb.bbbbbbbbb;
+        bbbb.bbbbbbb = bbbbbbb.bbbbbbb;
+        bbbb.bbbbbbbbbb = bbbbbbb.bbbbbbbbbb;
     }
 
-    @Override
-    public UUID getID() {
-        return this.id;
+    @Obbbbbbb
+    bbbbbb UUID bbbID() {
+        bbbbbb bbbb.bb;
     }
 
-    @Override
-    public UUID getSource() {
-        return this.source;
+    @Obbbbbbb
+    bbbbbb UUID bbbSbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
-    @Override
-    public UUID getRecipient() {
-        return this.recipient;
+    @Obbbbbbb
+    bbbbbb UUID bbbRbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb;
     }
 
-    @Override
-    public SpongeEntry<?> getContent() {
-        return this.content;
+    @Obbbbbbb
+    bbbbbb SbbbbbEbbbb<?> bbbCbbbbbb() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    @Override
-    public Optional<LocalDateTime> getExpiration() {
-        return Optional.ofNullable(this.expiration);
+    @Obbbbbbb
+    bbbbbb Obbbbbbb<LbbbbDbbbTbbb> bbbEbbbbbbbbb() {
+        bbbbbb Obbbbbbb.bbNbbbbbbb(bbbb.bbbbbbbbbb);
     }
 
-    @Override
-    public void deliver() {
+    @Obbbbbbb
+    bbbbbb bbbb bbbbbbb() {
 
     }
 
-    @Override
-    public int getVersion() {
-        return 1;
+    @Obbbbbbb
+    bbbbbb bbb bbbVbbbbbb() {
+        bbbbbb 1;
     }
 
-    @Override
-    public JObject serialize() {
-        JObject result = new JObject();
-        result.add("version", this.getVersion());
-        result.add("data", new JObject()
-                .add("id", this.id.toString())
-                .add("source", this.source.toString())
-                .add("recipient", this.recipient.toString())
-                .add("content", this.content.serialize())
-                .consume(o -> {
-                    this.getExpiration().ifPresent(e -> o.add("expiration", e.toString()));
+    @Obbbbbbb
+    bbbbbb JObbbbb bbbbbbbbb() {
+        JObbbbb bbbbbb = bbb JObbbbb();
+        bbbbbb.bbb("bbbbbbb", bbbb.bbbVbbbbbb());
+        bbbbbb.bbb("bbbb", bbb JObbbbb()
+                .bbb("bb", bbbb.bb.bbSbbbbb())
+                .bbb("bbbbbb", bbbb.bbbbbb.bbSbbbbb())
+                .bbb("bbbbbbbbb", bbbb.bbbbbbbbb.bbSbbbbb())
+                .bbb("bbbbbbb", bbbb.bbbbbbb.bbbbbbbbb())
+                .bbbbbbb(b -> {
+                    bbbb.bbbEbbbbbbbbb().bbPbbbbbb(b -> b.bbb("bbbbbbbbbb", b.bbSbbbbb()));
                 }));
 
-        return result;
+        bbbbbb bbbbbb;
     }
 
-    public static SpongeDelivery deserialize(JsonObject json) {
-        JsonObject focus = json.getAsJsonObject("data");
-        JsonObject element = focus.getAsJsonObject("entry");
-        EntryManager<?> em = GTSService.getInstance().getGTSComponentManager()
-                .getEntryManager(element.get("key").getAsString())
-                .orElseThrow(() -> new RuntimeException("No Entry Manager found for key: " + element.get("key").getAsString()));
+    bbbbbb bbbbbb SbbbbbDbbbbbbb bbbbbbbbbbb(JbbbObbbbb bbbb) {
+        JbbbObbbbb bbbbb = bbbb.bbbBbJbbbObbbbb("bbbb");
+        JbbbObbbbb bbbbbbb = bbbbb.bbbBbJbbbObbbbb("bbbbb");
+        EbbbbMbbbbbb<?> bb = GTSSbbbbbb.bbbIbbbbbbb().bbbGTSCbbbbbbbbMbbbbbb()
+                .bbbEbbbbMbbbbbb(bbbbbbb.bbb("bbb").bbbBbSbbbbb())
+                .bbEbbbTbbbb(() -> bbb RbbbbbbEbbbbbbbb("Nb Ebbbb Mbbbbbb bbbbb bbb bbb: " + bbbbbbb.bbb("bbb").bbbBbSbbbbb()));
 
-        return (SpongeDelivery) Delivery.builder()
-                .id(UUID.fromString(focus.get("id").getAsString()))
-                .source(UUID.fromString(focus.get("source").getAsString()))
-                .recipient(UUID.fromString(focus.get("recipient").getAsString()))
-                .content((SpongeEntry<?>) em.getDeserializer().deserialize(element))
-                .expiration(LocalDateTime.parse(focus.get("expiration").getAsString()))
-                .build();
+        bbbbbb (SbbbbbDbbbbbbb) Dbbbbbbb.bbbbbbb()
+                .bb(UUID.bbbbSbbbbb(bbbbb.bbb("bb").bbbBbSbbbbb()))
+                .bbbbbb(UUID.bbbbSbbbbb(bbbbb.bbb("bbbbbb").bbbBbSbbbbb()))
+                .bbbbbbbbb(UUID.bbbbSbbbbb(bbbbb.bbb("bbbbbbbbb").bbbBbSbbbbb()))
+                .bbbbbbb((SbbbbbEbbbb<?>) bb.bbbDbbbbbbbbbbb().bbbbbbbbbbb(bbbbbbb))
+                .bbbbbbbbbb(LbbbbDbbbTbbb.bbbbb(bbbbb.bbb("bbbbbbbbbb").bbbBbSbbbbb()))
+                .bbbbb();
     }
 
-    public static class SpongeDeliveryBuilder implements DeliveryBuilder {
+    bbbbbb bbbbbb bbbbb SbbbbbDbbbbbbbBbbbbbb bbbbbbbbbb DbbbbbbbBbbbbbb {
 
-        private UUID id = UUID.randomUUID();
-        private UUID source;
-        private UUID recipient;
-        private SpongeEntry<?> content;
-        private LocalDateTime expiration;
+        bbbbbbb UUID bb = UUID.bbbbbbUUID();
+        bbbbbbb UUID bbbbbb;
+        bbbbbbb UUID bbbbbbbbb;
+        bbbbbbb SbbbbbEbbbb<?> bbbbbbb;
+        bbbbbbb LbbbbDbbbTbbb bbbbbbbbbb;
 
-        @Override
-        public DeliveryBuilder id(UUID id) {
-            this.id = id;
-            return this;
+        @Obbbbbbb
+        bbbbbb DbbbbbbbBbbbbbb bb(UUID bb) {
+            bbbb.bb = bb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public DeliveryBuilder source(UUID source) {
-            this.source = source;
-            return this;
+        @Obbbbbbb
+        bbbbbb DbbbbbbbBbbbbbb bbbbbb(UUID bbbbbb) {
+            bbbb.bbbbbb = bbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public DeliveryBuilder recipient(UUID recipient) {
-            this.recipient = recipient;
-            return this;
+        @Obbbbbbb
+        bbbbbb DbbbbbbbBbbbbbb bbbbbbbbb(UUID bbbbbbbbb) {
+            bbbb.bbbbbbbbb = bbbbbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public DeliveryBuilder content(Entry<?, ?> content) {
-            this.content = (SpongeEntry<?>) content;
-            return this;
+        @Obbbbbbb
+        bbbbbb DbbbbbbbBbbbbbb bbbbbbb(Ebbbb<?, ?> bbbbbbb) {
+            bbbb.bbbbbbb = (SbbbbbEbbbb<?>) bbbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public DeliveryBuilder expiration(LocalDateTime expiration) {
-            this.expiration = expiration;
-            return this;
+        @Obbbbbbb
+        bbbbbb DbbbbbbbBbbbbbb bbbbbbbbbb(LbbbbDbbbTbbb bbbbbbbbbb) {
+            bbbb.bbbbbbbbbb = bbbbbbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public Delivery build() {
-            return new SpongeDelivery(this);
+        @Obbbbbbb
+        bbbbbb Dbbbbbbb bbbbb() {
+            bbbbbb bbb SbbbbbDbbbbbbb(bbbb);
         }
     }
 }

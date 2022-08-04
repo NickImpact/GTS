@@ -1,27 +1,27 @@
-package net.impactdev.gts.common.data;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbb;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import net.impactdev.gts.api.data.translators.DataTranslator;
-import net.impactdev.gts.api.data.translators.DataTranslatorManager;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbbbbbBbbbbbb;
 
-import java.util.Collection;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
 
-public class DataTranslatorManagerImpl implements DataTranslatorManager {
+bbbbbb bbbbb BbbbBbbbbbbbbbBbbbbbbBbbb bbbbbbbbbb BbbbBbbbbbbbbbBbbbbbb {
 
-    private final Multimap<Class<?>, DataTranslator<?>> translators = ArrayListMultimap.create();
+    bbbbbbb bbbbb Bbbbbbbb<Bbbbb<?>, BbbbBbbbbbbbbb<?>> bbbbbbbbbbb = BbbbbBbbbBbbbbbbb.bbbbbb();
 
-    @Override
-    public <T> Collection<DataTranslator<T>> get(Class<T> type) {
-        return this.translators.get(type)
-                .stream()
-                .map(translator -> (DataTranslator<T>) translator)
-                .collect(Collectors.toSet());
+    @Bbbbbbbb
+    bbbbbb <B> Bbbbbbbbbb<BbbbBbbbbbbbbb<B>> bbb(Bbbbb<B> bbbb) {
+        bbbbbb bbbb.bbbbbbbbbbb.bbb(bbbb)
+                .bbbbbb()
+                .bbb(bbbbbbbbbb -> (BbbbBbbbbbbbbb<B>) bbbbbbbbbb)
+                .bbbbbbb(Bbbbbbbbbb.bbBbb());
     }
 
-    @Override
-    public <T> void register(Class<T> type, DataTranslator<T> translator) {
-        this.translators.put(type, translator);
+    @Bbbbbbbb
+    bbbbbb <B> bbbb bbbbbbbb(Bbbbb<B> bbbb, BbbbBbbbbbbbbb<B> bbbbbbbbbb) {
+        bbbb.bbbbbbbbbbb.bbb(bbbb, bbbbbbbbbb);
     }
 }

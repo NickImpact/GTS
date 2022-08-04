@@ -1,23 +1,23 @@
-package net.impactdev.gts.common.config.wrappers;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbb;
 
-import java.util.List;
+bbbbbb bbbb.bbbb.Bbbb;
 
-public class TitleLorePair {
+bbbbbb bbbbb BbbbbBbbbBbbb {
 
-	private final String title;
-	private final List<String> lore;
+	bbbbbbb bbbbb Bbbbbb bbbbb;
+	bbbbbbb bbbbb Bbbb<Bbbbbb> bbbb;
 
-	public TitleLorePair(String title, List<String> lore) {
-		this.title = title;
-		this.lore = lore;
+	bbbbbb BbbbbBbbbBbbb(Bbbbbb bbbbb, Bbbb<Bbbbbb> bbbb) {
+		bbbb.bbbbb = bbbbb;
+		bbbb.bbbb = bbbb;
 	}
 
-	public String getTitle() {
-		return this.title;
+	bbbbbb Bbbbbb bbbBbbbb() {
+		bbbbbb bbbb.bbbbb;
 	}
 
-	public List<String> getLore() {
-		return this.lore;
+	bbbbbb Bbbb<Bbbbbb> bbbBbbb() {
+		bbbbbb bbbb.bbbb;
 	}
 
 }

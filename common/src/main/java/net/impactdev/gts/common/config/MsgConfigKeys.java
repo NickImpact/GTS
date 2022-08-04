@@ -1,691 +1,691 @@
-package net.impactdev.gts.common.config;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.configuration.keys.BaseConfigKey;
-import net.impactdev.gts.common.config.types.time.TimeLanguageOptions;
-import net.impactdev.gts.common.config.wrappers.SortConfigurationOptions;
-import net.impactdev.gts.common.config.wrappers.TitleLorePair;
-import net.impactdev.impactor.api.configuration.loader.KeyProvider;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.BbbbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.bbbb.BbbbBbbbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbb.bbbb.BbbbBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbb.BbbbBbbbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbb.BbbbbBbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.bbbbbb.BbbBbbbbbbb;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+bbbbbb bbbb.bbbb.bbbbbbb.Bbbbb;
+bbbbbb bbbb.bbbb.bbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BbbbbbBbbbBbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
 
-import static net.impactdev.impactor.api.configuration.ConfigKeyTypes.*;
+bbbbbb bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.BbbbbbBbbBbbbb.*;
 
-@KeyProvider
-public class MsgConfigKeys {
+@BbbBbbbbbbb
+bbbbbb bbbbb BbbBbbbbbBbbb {
 
-	// Plugin chat prefix (replacement option for {{gts_prefix}}
-	public static final ConfigKey<String> PREFIX = stringKey("general.gts-prefix", "&eGTS &7\u00bb");
-	public static final ConfigKey<String> ERROR_PREFIX = stringKey("general.gts-prefix-error", "&eGTS &7(&cERROR&7)");
+	// Bbbbbb bbbb bbbbbb (bbbbbbbbbbb bbbbbb bbb {{bbb_bbbbbb}}
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBB = bbbbbbBbb("bbbbbbb.bbb-bbbbbb", "&bBBB &7\b00bb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBB = bbbbbbBbb("bbbbbbb.bbb-bbbbbb-bbbbb", "&bBBB &7(&bBBBBB&7)");
 
-	// Generic messages for the program
-	// Best to support lists of text here, as a server may decide to go heavy on text formatting
-	public static final ConfigKey<List<String>> MAX_LISTINGS = listKey("general.max-listings", Lists.newArrayList(
-			"{{gts:prefix}} &cUnfortunately, you can't deposit another listing, since you already have {{gts:max_listings}} deposited..."
+	// Bbbbbbb bbbbbbbb bbb bbb bbbbbbb
+	// Bbbb bb bbbbbbb bbbbb bb bbbb bbbb, bb b bbbbbb bbb bbbbbb bb bb bbbbb bb bbbb bbbbbbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBB_BBBBBBBB = bbbbBbb("bbbbbbb.bbb-bbbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"{{bbb:bbbbbb}} &bBbbbbbbbbbbbb, bbb bbb'b bbbbbbb bbbbbbb bbbbbbb, bbbbb bbb bbbbbbb bbbb {{bbb:bbb_bbbbbbbb}} bbbbbbbbb..."
 	));
-	public static final ConfigKey<List<String>> ADD_TEMPLATE = listKey("general.addition-to-seller", Lists.newArrayList(
-			"{{gts:prefix}} &7Your &a{{gts:listing_name}} &7has been added to the market!"
-	));
-
-	public static final ConfigKey<List<String>> ADD_BROADCAST_BIN = listKey("general.addition-broadcast.buy-it-now", Lists.newArrayList(
-			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for &a{{gts:bin_price}}&7!"
-	));
-	public static final ConfigKey<List<String>> ADD_BROADCAST_AUCTION = listKey("general.addition-broadcast.auctions", Lists.newArrayList(
-			"{{gts:prefix}} {{gts:seller}} &7has added a &a{{gts:listing_details}} &7to the GTS for auction, starting at &e{{gts:auction_start_price}}&7!"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBB_BBBBBBBB = bbbbBbb("bbbbbbb.bbbbbbbb-bb-bbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"{{bbb:bbbbbb}} &7Bbbb &b{{bbb:bbbbbbb_bbbb}} &7bbb bbbb bbbbb bb bbb bbbbbb!"
 	));
 
-	public static final ConfigKey<List<String>> PURCHASE_PAY = listKey("general.prices.pay", Lists.newArrayList(
-			"{{gts:prefix}} &7You have purchased a &a{{gts:listing_details}} &7for &e{{gts:bin_price}}&7!"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBB_BBBBBBBBB_BBB = bbbbBbb("bbbbbbb.bbbbbbbb-bbbbbbbbb.bbb-bb-bbb", Bbbbb.bbbBbbbbBbbb(
+			"{{bbb:bbbbbb}} {{bbb:bbbbbb}} &7bbb bbbbb b &b{{bbb:bbbbbbb_bbbbbbb}} &7bb bbb BBB bbb &b{{bbb:bbb_bbbbb}}&7!"
 	));
-	public static final ConfigKey<List<String>> PURCHASE_PAY_FAIL_TO_GIVE = listKey("general.prices.pay-fail-to-give", Lists.newArrayList(
-			"{{gts:error}} &7The listing could not be rewarded at this time, please check your stash!"
-	));
-	public static final ConfigKey<List<String>> PURCHASE_RECEIVE = listKey("general.prices.receive", Lists.newArrayList(
-			"{{gts:prefix}} &a{{gts:purchaser}} &7purchased your &a{{gts:listing_name}} &7listing for &a{{gts:bin_price}}&7!"
-	));
-	public static final ConfigKey<List<String>> MIN_PRICE_ERROR = listKey("general.prices.min-price.invalid", Lists.newArrayList(
-			"{{gts:error}} &7In order to sell your &a{{gts:listing_name}}&7, you need to list it for the price of &e{{gts:min_price}}&7..."
-	));
-	public static final ConfigKey<List<String>> MAX_PRICE_ERROR = listKey("general.prices.max-price.invalid", Lists.newArrayList(
-			"{{gts:error}} &7In order to sell your &a{{gts:listing_name}}&7, you need to list it for the price at or below &e{{gts:max_price}}&7..."
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBB_BBBBBBBBB_BBBBBBB = bbbbBbb("bbbbbbb.bbbbbbbb-bbbbbbbbb.bbbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"{{bbb:bbbbbb}} {{bbb:bbbbbb}} &7bbb bbbbb b &b{{bbb:bbbbbbb_bbbbbbb}} &7bb bbb BBB bbb bbbbbbb, bbbbbbbb bb &b{{bbb:bbbbbbb_bbbbb_bbbbb}}&7!"
 	));
 
-	// Error messages
-	public static final ConfigKey<String> PRICE_NOT_POSITIVE = stringKey("general.errors.non-positive-price", "{{gts:error}} Invalid price! Value must be positive!");
-	public static final ConfigKey<String> PRICE_MAX_INVALID = stringKey("general.errors.max-price.invalid", "{{gts:error}} Your request is above the max amount of &e{{gts_max_price}}&7!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBBB_BBB = bbbbBbb("bbbbbbb.bbbbbb.bbb", Bbbbb.bbbBbbbbBbbb(
+			"{{bbb:bbbbbb}} &7Bbb bbbb bbbbbbbbb b &b{{bbb:bbbbbbb_bbbbbbb}} &7bbb &b{{bbb:bbb_bbbbb}}&7!"
+	));
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBBB_BBB_BBBB_BB_BBBB = bbbbBbb("bbbbbbb.bbbbbb.bbb-bbbb-bb-bbbb", Bbbbb.bbbBbbbbBbbb(
+			"{{bbb:bbbbb}} &7Bbb bbbbbbb bbbbb bbb bb bbbbbbbb bb bbbb bbbb, bbbbbb bbbbb bbbb bbbbb!"
+	));
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBBB_BBBBBBB = bbbbBbb("bbbbbbb.bbbbbb.bbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"{{bbb:bbbbbb}} &b{{bbb:bbbbbbbbb}} &7bbbbbbbbb bbbb &b{{bbb:bbbbbbb_bbbb}} &7bbbbbbb bbb &b{{bbb:bbb_bbbbb}}&7!"
+	));
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBB_BBBBB_BBBBB = bbbbBbb("bbbbbbb.bbbbbb.bbb-bbbbb.bbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"{{bbb:bbbbb}} &7Bb bbbbb bb bbbb bbbb &b{{bbb:bbbbbbb_bbbb}}&7, bbb bbbb bb bbbb bb bbb bbb bbbbb bb &b{{bbb:bbb_bbbbb}}&7..."
+	));
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBB_BBBBB_BBBBB = bbbbBbb("bbbbbbb.bbbbbb.bbb-bbbbb.bbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"{{bbb:bbbbb}} &7Bb bbbbb bb bbbb bbbb &b{{bbb:bbbbbbb_bbbb}}&7, bbb bbbb bb bbbb bb bbb bbb bbbbb bb bb bbbbb &b{{bbb:bbb_bbbbb}}&7..."
+	));
 
-	public static final ConfigKey<List<String>> DISCORD_PUBLISH_TEMPLATE = listKey("discord.templates.publish.buyitnow", Lists.newArrayList(
-			"Listing ID: {{discord:listing_id}}",
+	// Bbbbb bbbbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBB_BBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbb.bbb-bbbbbbbb-bbbbb", "{{bbb:bbbbb}} Bbbbbbb bbbbb! Bbbbb bbbb bb bbbbbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBB_BBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbb.bbb-bbbbb.bbbbbbb", "{{bbb:bbbbb}} Bbbb bbbbbbb bb bbbbb bbb bbb bbbbbb bb &b{{bbb_bbb_bbbbb}}&7!");
+
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBB_BBBBBBB_BBBBBBBB = bbbbBbb("bbbbbbb.bbbbbbbbb.bbbbbbb.bbbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"Bbbbbbb BB: {{bbbbbbb:bbbbbbb_bb}}",
 			"",
-			"Publisher: {{discord:publisher}}",
-			"Identifier: {{discord:publisher_id}}",
+			"Bbbbbbbbb: {{bbbbbbb:bbbbbbbbb}}",
+			"Bbbbbbbbbb: {{bbbbbbb:bbbbbbbbb_bb}}",
 			"",
-			"Requested Price: {{discord:price}}",
-			"Expiration Time: {{discord:expiration}}"
+			"Bbbbbbbbb Bbbbb: {{bbbbbbb:bbbbb}}",
+			"Bbbbbbbbbb Bbbb: {{bbbbbbb:bbbbbbbbbb}}"
 	));
-	public static final ConfigKey<List<String>> DISCORD_PUBLISH_AUCTION_TEMPLATE = listKey("discord.templates.publish.auction", Lists.newArrayList(
-			"Listing ID: {{discord:listing_id}}",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBB_BBBBBBB_BBBBBBB_BBBBBBBB = bbbbBbb("bbbbbbb.bbbbbbbbb.bbbbbbb.bbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"Bbbbbbb BB: {{bbbbbbb:bbbbbbb_bb}}",
 			"",
-			"Publisher: {{discord:publisher}}",
-			"Identifier: {{discord:publisher_id}}",
+			"Bbbbbbbbb: {{bbbbbbb:bbbbbbbbb}}",
+			"Bbbbbbbbbb: {{bbbbbbb:bbbbbbbbb_bb}}",
 			"",
-			"Starting Bid: {{discord:starting_bid}}",
-			"Expiration Time: {{discord:expiration}}"
+			"Bbbbbbbb Bbb: {{bbbbbbb:bbbbbbbb_bbb}}",
+			"Bbbbbbbbbb Bbbb: {{bbbbbbb:bbbbbbbbbb}}"
 	));
-	public static final ConfigKey<List<String>> DISCORD_PURCHASE_TEMPLATE = listKey("discord.templates.purchase", Lists.newArrayList(
-			"Listing ID: {{discord:listing_id}}",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBB_BBBBBBBB_BBBBBBBB = bbbbBbb("bbbbbbb.bbbbbbbbb.bbbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"Bbbbbbb BB: {{bbbbbbb:bbbbbbb_bb}}",
 			"",
-			"Buyer: {{discord:actor}}",
-			"Buyer Identifier: {{discord:actor_id}}",
+			"Bbbbb: {{bbbbbbb:bbbbb}}",
+			"Bbbbb Bbbbbbbbbb: {{bbbbbbb:bbbbb_bb}}",
 			"",
-			"Seller: {{discord:publisher}}",
-			"Seller Identifier: {{discord:publisher_id}}",
+			"Bbbbbb: {{bbbbbbb:bbbbbbbbb}}",
+			"Bbbbbb Bbbbbbbbbb: {{bbbbbbb:bbbbbbbbb_bb}}",
 			"",
-			"Price: {{discord:price}}"
+			"Bbbbb: {{bbbbbbb:bbbbb}}"
 	));
-	public static final ConfigKey<List<String>> DISCORD_BID_TEMPLATE = listKey("discord.templates.bid", Lists.newArrayList(
-			"Listing ID: {{discord:listing_id}}",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBB_BBB_BBBBBBBB = bbbbBbb("bbbbbbb.bbbbbbbbb.bbb", Bbbbb.bbbBbbbbBbbb(
+			"Bbbbbbb BB: {{bbbbbbb:bbbbbbb_bb}}",
 			"",
-			"Bidder: {{discord:actor}}",
-			"Bidder Identifier: {{discord:actor_id}}",
-			"Bid Amount: {{discord:bid}}",
+			"Bbbbbb: {{bbbbbbb:bbbbb}}",
+			"Bbbbbb Bbbbbbbbbb: {{bbbbbbb:bbbbb_bb}}",
+			"Bbb Bbbbbb: {{bbbbbbb:bbb}}",
 			"",
-			"Seller: {{discord:publisher}}",
-			"Seller Identifier: {{discord:publisher_id}}"
+			"Bbbbbb: {{bbbbbbb:bbbbbbbbb}}",
+			"Bbbbbb Bbbbbbbbbb: {{bbbbbbb:bbbbbbbbb_bb}}"
 	));
-	public static final ConfigKey<List<String>> DISCORD_REMOVAL_TEMPLATE = listKey("discord.templates.removal", Lists.newArrayList(
-			"Listing ID: {{discord:listing_id}}",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBB_BBBBBBB_BBBBBBBB = bbbbBbb("bbbbbbb.bbbbbbbbb.bbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"Bbbbbbb BB: {{bbbbbbb:bbbbbbb_bb}}",
 			"",
-			"Publisher: {{discord:publisher}}",
-			"Identifier: {{discord:publisher_id}}"
+			"Bbbbbbbbb: {{bbbbbbb:bbbbbbbbb}}",
+			"Bbbbbbbbbb: {{bbbbbbb:bbbbbbbbb_bb}}"
 	));
-	public static final ConfigKey<String> LISTING_EVENT_CANCELLED = stringKey("general.listings.event-cancelled", "{{gts:error}} Your listing was blocked by an administrative source...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBB_BBBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbb-bbbbbbbbb", "{{bbb:bbbbb}} Bbbb bbbbbbb bbb bbbbbbb bb bb bbbbbbbbbbbbbb bbbbbb...");
 
-	public static final ConfigKey<String> UNABLE_TO_TAKE_LISTING = stringKey("general.listings.unable-to-take", "{{gts:error}} Your listing failed to be taken...");
-	public static final ConfigKey<String> CONFIRM_PURCHASE = stringKey("buttons.general.confirm-purchase", "&aConfirm Purchase");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBB_BB_BBBB_BBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbb-bb-bbbb", "{{bbb:bbbbb}} Bbbb bbbbbbb bbbbbb bb bb bbbbb...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbb.bbbbbbb-bbbbbbbb", "&bBbbbbbb Bbbbbbbb");
 
-	public static final ConfigKey<String> AWAITING_CREATE_LISTING_TITLE = stringKey("buttons.general.awaiting.create-listing.title", "&cCreate Listing");
-	public static final ConfigKey<List<String>> AWAITING_CREATE_LISTING_LORE = listKey("buttons.general.awaiting.create-listing.lore", Lists.newArrayList(
-		"&7Select an element you",
-			"&7wish to sell/auction away",
-			"&7to create a listing!"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBBB_BBBBBB_BBBBBBB_BBBBB = bbbbbbBbb("bbbbbbb.bbbbbbb.bbbbbbbb.bbbbbb-bbbbbbb.bbbbb", "&bBbbbbb Bbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBBB_BBBBBB_BBBBBBB_BBBB = bbbbBbb("bbbbbbb.bbbbbbb.bbbbbbbb.bbbbbb-bbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+		"&7Bbbbbb bb bbbbbbb bbb",
+			"&7bbbb bb bbbb/bbbbbbb bbbb",
+			"&7bb bbbbbb b bbbbbbb!"
 	));
-	public static final ConfigKey<String> CONFIRM_CREATE_LISTING_TITLE = stringKey("buttons.general.confirm.create-listing.title", "&aCreate Listing");
-	public static final ConfigKey<List<String>> CONFIRM_CREATE_LISTING_LORE = listKey("buttons.general.confirm.create-listing.lore", Lists.newArrayList(
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBB_BBBBBBB_BBBBB = bbbbbbBbb("bbbbbbb.bbbbbbb.bbbbbbb.bbbbbb-bbbbbbb.bbbbb", "&bBbbbbb Bbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBB_BBBBBB_BBBBBBB_BBBB = bbbbBbb("bbbbbbb.bbbbbbb.bbbbbbb.bbbbbb-bbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
 			"",
-			"&eClick here to create your listing!"
-	));
-
-	public static final ConfigKey<String> AWAITING_SELECT_PRICE_TITLE = stringKey("buttons.general.awaiting.create-listing.title", "&cConfirm Price");
-	public static final ConfigKey<List<String>> AWAITING_SELECT_PRICE_LORE = listKey("buttons.general.awaiting.create-listing.lore", Lists.newArrayList(
-			"&7Please fill out price specifications",
-			"&7first to confirm your price!"
-	));
-	public static final ConfigKey<String> CONFIRM_SELECT_PRICE_TITLE = stringKey("buttons.general.confirm.select-price.title", "&aConfirm Price");
-	public static final ConfigKey<List<String>> CONFIRM_SELECT_PRICE_LORE = listKey("buttons.general.confirm.select-price.lore", Lists.newArrayList(
-			"",
-			"&eClick here to confirm your price!"
+			"&bBbbbb bbbb bb bbbbbb bbbb bbbbbbb!"
 	));
 
-	public static final ConfigKey<String> AWAITING_SELECTION_TITLE = stringKey("buttons.general.awaiting.selection.title", "&cConfirm Selection");
-	public static final ConfigKey<List<String>> AWAITING_SELECTION_LORE = listKey("buttons.general.awaiting.selection.lore", Lists.newArrayList(
-			"&7Please fill out price specifications",
-			"&7first to confirm your selection!"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBBB_BBBBBB_BBBBB_BBBBB = bbbbbbBbb("bbbbbbb.bbbbbbb.bbbbbbbb.bbbbbb-bbbbbbb.bbbbb", "&bBbbbbbb Bbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBBB_BBBBBB_BBBBB_BBBB = bbbbBbb("bbbbbbb.bbbbbbb.bbbbbbbb.bbbbbb-bbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbb bbbb bbb bbbbb bbbbbbbbbbbbbb",
+			"&7bbbbb bb bbbbbbb bbbb bbbbb!"
 	));
-	public static final ConfigKey<String> CONFIRM_SELECTION_TITLE = stringKey("buttons.general.confirm.selection.title", "&aConfirm Selection");
-	public static final ConfigKey<List<String>> CONFIRM_SELECTION_LORE = listKey("buttons.general.confirm.selection.lore", Lists.newArrayList(
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBB_BBBBB_BBBBB = bbbbbbBbb("bbbbbbb.bbbbbbb.bbbbbbb.bbbbbb-bbbbb.bbbbb", "&bBbbbbbb Bbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBB_BBBBBB_BBBBB_BBBB = bbbbBbb("bbbbbbb.bbbbbbb.bbbbbbb.bbbbbb-bbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
 			"",
-			"&eClick here to confirm your selection!"
+			"&bBbbbb bbbb bb bbbbbbb bbbb bbbbb!"
+	));
+
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBBB_BBBBBBBBB_BBBBB = bbbbbbBbb("bbbbbbb.bbbbbbb.bbbbbbbb.bbbbbbbbb.bbbbb", "&bBbbbbbb Bbbbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBBB_BBBBBBBBB_BBBB = bbbbBbb("bbbbbbb.bbbbbbb.bbbbbbbb.bbbbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbb bbbb bbb bbbbb bbbbbbbbbbbbbb",
+			"&7bbbbb bb bbbbbbb bbbb bbbbbbbbb!"
+	));
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBBB_BBBBB = bbbbbbBbb("bbbbbbb.bbbbbbb.bbbbbbb.bbbbbbbbb.bbbbb", "&bBbbbbbb Bbbbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBB_BBBBBBBBB_BBBB = bbbbBbb("bbbbbbb.bbbbbbb.bbbbbbb.bbbbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"",
+			"&bBbbbb bbbb bb bbbbbbb bbbb bbbbbbbbb!"
 	));
 
 	// -----------------------------------------------------------------------------
-	// Time
+	// Bbbb
 	// -----------------------------------------------------------------------------
-	public static final ConfigKey<TimeLanguageOptions> SECONDS = customKey(c -> new TimeLanguageOptions(
-			c.getString("time.seconds.singular", "Second"),
-			c.getString("time.seconds.plural", "Seconds")
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbBbbbbbbbBbbbbbb> BBBBBBB = bbbbbbBbb(b -> bbb BbbbBbbbbbbbBbbbbbb(
+			b.bbbBbbbbb("bbbb.bbbbbbb.bbbbbbbb", "Bbbbbb"),
+			b.bbbBbbbbb("bbbb.bbbbbbb.bbbbbb", "Bbbbbbb")
 	));
-	public static final ConfigKey<TimeLanguageOptions> MINUTES = customKey(c -> new TimeLanguageOptions(
-			c.getString("time.minutes.singular", "Minute"),
-			c.getString("time.minutes.plural", "Minutes")
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbBbbbbbbbBbbbbbb> BBBBBBB = bbbbbbBbb(b -> bbb BbbbBbbbbbbbBbbbbbb(
+			b.bbbBbbbbb("bbbb.bbbbbbb.bbbbbbbb", "Bbbbbb"),
+			b.bbbBbbbbb("bbbb.bbbbbbb.bbbbbb", "Bbbbbbb")
 	));
-	public static final ConfigKey<TimeLanguageOptions> HOURS = customKey(c -> new TimeLanguageOptions(
-			c.getString("time.hour.singular", "Hour"),
-			c.getString("time.hour.plural", "Hours")
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbBbbbbbbbBbbbbbb> BBBBB = bbbbbbBbb(b -> bbb BbbbBbbbbbbbBbbbbbb(
+			b.bbbBbbbbb("bbbb.bbbb.bbbbbbbb", "Bbbb"),
+			b.bbbBbbbbb("bbbb.bbbb.bbbbbb", "Bbbbb")
 	));
-	public static final ConfigKey<TimeLanguageOptions> DAYS = customKey(c -> new TimeLanguageOptions(
-			c.getString("time.days.singular", "Day"),
-			c.getString("time.days.plural", "Days")
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbBbbbbbbbBbbbbbb> BBBB = bbbbbbBbb(b -> bbb BbbbBbbbbbbbBbbbbbb(
+			b.bbbBbbbbb("bbbb.bbbb.bbbbbbbb", "Bbb"),
+			b.bbbBbbbbb("bbbb.bbbb.bbbbbb", "Bbbb")
 	));
-	public static final ConfigKey<TimeLanguageOptions> WEEKS = customKey(c -> new TimeLanguageOptions(
-			c.getString("time.weeks.singular", "Week"),
-			c.getString("time.weeks.plural", "Weeks")
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbBbbbbbbbBbbbbbb> BBBBB = bbbbbbBbb(b -> bbb BbbbBbbbbbbbBbbbbbb(
+			b.bbbBbbbbb("bbbb.bbbbb.bbbbbbbb", "Bbbb"),
+			b.bbbBbbbbb("bbbb.bbbbb.bbbbbb", "Bbbbb")
 	));
 
-	public static final ConfigKey<String> CUSTOM_TIME_TITLE = stringKey("time.custom.title", "&aCustom Duration");
-	public static final ConfigKey<List<String>> CUSTOM_TIME_LORE = listKey("time.custom.lore", Lists.newArrayList(
-			"&7Specify how long you want",
-			"&7the listing to last.",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBB_BBBB_BBBBB = bbbbbbBbb("bbbb.bbbbbb.bbbbb", "&bBbbbbb Bbbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBB_BBBB_BBBB = bbbbBbb("bbbb.bbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbbb bbb bbbb bbb bbbb",
+			"&7bbb bbbbbbb bb bbbb.",
 			"",
-			"&eClick to choose your time!"
+			"&bBbbbb bb bbbbbb bbbb bbbb!"
 	));
 
-	public static final ConfigKey<String> STATUS_PURCHASED = stringKey("status.purchased", "&7Status: &aPurchased");
-	public static final ConfigKey<String> STATUS_TIME_EXPIRED = stringKey("status.time.expired", "&7Status: &cConcluded");
-	public static final ConfigKey<String> TIME_REMAINING_TRANSLATION = stringKey("status.time.remaining", "&7Ends in: &a{{gts:time_short}}");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBB_BBBBBBBBB = bbbbbbBbb("bbbbbb.bbbbbbbbb", "&7Bbbbbb: &bBbbbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBB_BBBB_BBBBBBB = bbbbbbBbb("bbbbbb.bbbb.bbbbbbb", "&7Bbbbbb: &bBbbbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBB_BBBBBBBBB_BBBBBBBBBBB = bbbbbbBbb("bbbbbb.bbbb.bbbbbbbbb", "&7Bbbb bb: &b{{bbb:bbbb_bbbbb}}");
 
-	public static final ConfigKey<String> TIME_MOMENTS_TRANSLATION = stringKey("time.moments", "Moments");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBB_BBBBBBB_BBBBBBBBBBB = bbbbbbBbb("bbbb.bbbbbbb", "Bbbbbbb");
 
 	// -----------------------------------------------------------------------------
-	// UI Based Configuration Options
+	// BB Bbbbb Bbbbbbbbbbbbb Bbbbbbb
 	// -----------------------------------------------------------------------------
 
-	// General Items
-	public static final ConfigKey<String> UI_GENERAL_BACK = stringKey("ui.general.back", "&cGo Back");
+	// Bbbbbbb Bbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBBBB_BBBB = bbbbbbBbb("bb.bbbbbbb.bbbb", "&bBb Bbbb");
 
-	// Main Menu
-	public static final ConfigKey<String> UI_MAIN_TITLE = stringKey("ui.menus.main.title", "&cGTS");
-	public static final ConfigKey<TitleLorePair> UI_MAIN_BROWSER = customKey(c -> {
-		String title = c.getString("ui.menus.main.browser.title", "&aBrowser");
-		List<String> lore = c.getStringList("ui.menus.main.browser.lore", Lists.newArrayList(
-				"&7Find items and more for sale",
-				"&7by players across the network!",
+	// Bbbb Bbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbb.bbbbb", "&bBBB");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbbBbbbBbbb> BB_BBBB_BBBBBBB = bbbbbbBbb(b -> {
+		Bbbbbb bbbbb = b.bbbBbbbbb("bb.bbbbb.bbbb.bbbbbbb.bbbbb", "&bBbbbbbb");
+		Bbbb<Bbbbbb> bbbb = b.bbbBbbbbbBbbb("bb.bbbbb.bbbb.bbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+				"&7Bbbb bbbbb bbb bbbb bbb bbbb",
+				"&7bb bbbbbbb bbbbbb bbb bbbbbbb!",
 				"",
-				"&7Items offered here can be",
-				"&edirectly purchased &7or will",
-				"&7be posted for &eauction&7. If",
-				"&7the item you wish to purchase is",
-				"&7an auction, you must place the",
-				"&7top bid by the time it expires",
-				"&7to acquire the item!",
+				"&7Bbbbb bbbbbbb bbbb bbb bb",
+				"&bbbbbbbbb bbbbbbbbb &7bb bbbb",
+				"&7bb bbbbbb bbb &bbbbbbbb&7. Bb",
+				"&7bbb bbbb bbb bbbb bb bbbbbbbb bb",
+				"&7bb bbbbbbb, bbb bbbb bbbbb bbb",
+				"&7bbb bbb bb bbb bbbb bb bbbbbbb",
+				"&7bb bbbbbbb bbb bbbb!",
 				"",
-				"&eLeft click to open the quick purchase browser!",
-				"&bRight click to open the auction browser!"
+				"&bBbbb bbbbb bb bbbb bbb bbbbb bbbbbbbb bbbbbbb!",
+				"&bBbbbb bbbbb bb bbbb bbb bbbbbbb bbbbbbb!"
 		));
 
-		return new TitleLorePair(title, lore);
+		bbbbbb bbb BbbbbBbbbBbbb(bbbbb, bbbb);
 	});
-	public static final ConfigKey<TitleLorePair> UI_MAIN_STASH = customKey(c -> {
-		String title = c.getString("ui.menus.main.stash.title", "&aStash");
-		List<String> lore = c.getStringList("ui.menus.main.stash.lore", Lists.newArrayList(
-			"&7Items that you have &eacquired",
-				"&7or &eexpired &7can be found here",
-				"&7in order to be claimed!"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbbBbbbBbbb> BB_BBBB_BBBBB = bbbbbbBbb(b -> {
+		Bbbbbb bbbbb = b.bbbBbbbbb("bb.bbbbb.bbbb.bbbbb.bbbbb", "&bBbbbb");
+		Bbbb<Bbbbbb> bbbb = b.bbbBbbbbbBbbb("bb.bbbbb.bbbb.bbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbb bbbb bbb bbbb &bbbbbbbbb",
+				"&7bb &bbbbbbbb &7bbb bb bbbbb bbbb",
+				"&7bb bbbbb bb bb bbbbbbb!"
 		));
-		return new TitleLorePair(title, lore);
+		bbbbbb bbb BbbbbBbbbBbbb(bbbbb, bbbb);
 	});
-	public static final ConfigKey<String> UI_MAIN_STASH_CLICK_NOTIF = stringKey("ui.menus.main.stash.click-to-open", "&eClick to open your stash!");
-	public static final ConfigKey<TitleLorePair> UI_MAIN_SELL = customKey(c -> {
-		String title = c.getString("ui.menus.main.sell.title", "&aSell a Good");
-		List<String> lore = c.getStringList("ui.menus.main.sell.lore", Lists.newArrayList(
-			"&7Here, you'll be able to directly",
-				"&7sell items on the GTS market.",
-				"&7Items you list here will be",
-				"&7posted for quick purchase by",
-				"&7another player, and will expire",
-				"&7overtime if nobody ever purchases",
-				"&7your listing.",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBB_BBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbb.bbbbb.bbbbb-bb-bbbb", "&bBbbbb bb bbbb bbbb bbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbbBbbbBbbb> BB_BBBB_BBBB = bbbbbbBbb(b -> {
+		Bbbbbb bbbbb = b.bbbBbbbbb("bb.bbbbb.bbbb.bbbb.bbbbb", "&bBbbb b Bbbb");
+		Bbbb<Bbbbbb> bbbb = b.bbbBbbbbbBbbb("bb.bbbbb.bbbb.bbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbb, bbb'bb bb bbbb bb bbbbbbbb",
+				"&7bbbb bbbbb bb bbb BBB bbbbbb.",
+				"&7Bbbbb bbb bbbb bbbb bbbb bb",
+				"&7bbbbbb bbb bbbbb bbbbbbbb bb",
+				"&7bbbbbbb bbbbbb, bbb bbbb bbbbbb",
+				"&7bbbbbbbb bb bbbbbb bbbb bbbbbbbbb",
+				"&7bbbb bbbbbbb.",
 				"",
-				"&eClick to become rich!"
-		));
-
-		return new TitleLorePair(title, lore);
-	});
-
-	public static final ConfigKey<TitleLorePair> UI_MAIN_VIEW_PERSONAL_LISTINGS = customKey(c -> {
-		String title = c.getString("ui.menus.main.view-personal-listings.title", "&aView Your Listings");
-		List<String> lore = c.getStringList("ui.menus.main.view-personal-listings.lore", Lists.newArrayList(
-				"&7View the listings you've",
-				"&7created that are still active",
-				"&7on the market. Expired listings",
-				"&7can be found in your stash!",
-				"",
-				"&eClick to view your listings!"
-		));
-		return new TitleLorePair(title, lore);
-	});
-
-	public static final ConfigKey<TitleLorePair> UI_MAIN_CURRENT_BIDS_SINGLE = customKey(c -> {
-		String title = c.getString("ui.menus.main.bids.title", "&aView Bids");
-		List<String> lore = c.getStringList("ui.menus.main.bids.lore.single", Lists.newArrayList(
-				"&7Items that you have an active",
-				"&7bid against can be found here",
-				"&7for your convenience",
-				"",
-				"&bYou have {{gts:active_bids|fallback=&7Loading...}} active bid",
-				"",
-				"&eClick to inspect!"
+				"&bBbbbb bb bbbbbb bbbb!"
 		));
 
-		return new TitleLorePair(title, lore);
+		bbbbbb bbb BbbbbBbbbBbbb(bbbbb, bbbb);
 	});
-	public static final ConfigKey<TitleLorePair> UI_MAIN_CURRENT_BIDS_MULTI = customKey(c -> {
-		String title = c.getString("ui.menus.main.bids.title", "&aView Bids");
-		List<String> lore = c.getStringList("ui.menus.main.bids.lore.multi", Lists.newArrayList(
-				"&7Items that you have an active",
-				"&7bid against can be found here",
-				"&7for your convenience",
+
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbbBbbbBbbb> BB_BBBB_BBBB_BBBBBBBB_BBBBBBBB = bbbbbbBbb(b -> {
+		Bbbbbb bbbbb = b.bbbBbbbbb("bb.bbbbb.bbbb.bbbb-bbbbbbbb-bbbbbbbb.bbbbb", "&bBbbb Bbbb Bbbbbbbb");
+		Bbbb<Bbbbbb> bbbb = b.bbbBbbbbbBbbb("bb.bbbbb.bbbb.bbbb-bbbbbbbb-bbbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+				"&7Bbbb bbb bbbbbbbb bbb'bb",
+				"&7bbbbbbb bbbb bbb bbbbb bbbbbb",
+				"&7bb bbb bbbbbb. Bbbbbbb bbbbbbbb",
+				"&7bbb bb bbbbb bb bbbb bbbbb!",
 				"",
-				"&bYou have {{gts:active_bids|fallback=&7Loading...}} active bids",
+				"&bBbbbb bb bbbb bbbb bbbbbbbb!"
+		));
+		bbbbbb bbb BbbbbBbbbBbbb(bbbbb, bbbb);
+	});
+
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbbBbbbBbbb> BB_BBBB_BBBBBBB_BBBB_BBBBBB = bbbbbbBbb(b -> {
+		Bbbbbb bbbbb = b.bbbBbbbbb("bb.bbbbb.bbbb.bbbb.bbbbb", "&bBbbb Bbbb");
+		Bbbb<Bbbbbb> bbbb = b.bbbBbbbbbBbbb("bb.bbbbb.bbbb.bbbb.bbbb.bbbbbb", Bbbbb.bbbBbbbbBbbb(
+				"&7Bbbbb bbbb bbb bbbb bb bbbbbb",
+				"&7bbb bbbbbbb bbb bb bbbbb bbbb",
+				"&7bbb bbbb bbbbbbbbbbb",
 				"",
-				"&eClick to inspect!"
+				"&bBbb bbbb {{bbb:bbbbbb_bbbb|bbbbbbbb=&7Bbbbbbb...}} bbbbbb bbb",
+				"",
+				"&bBbbbb bb bbbbbbb!"
 		));
 
-		return new TitleLorePair(title, lore);
+		bbbbbb bbb BbbbbBbbbBbbb(bbbbb, bbbb);
 	});
-	public static final ConfigKey<TitleLorePair> UI_MAIN_PLAYER_SETTINGS = customKey(c -> {
-		String title = c.getString("ui.menus.main.player-settings.title", "&aCustomize your Settings");
-		List<String> lore = c.getStringList("ui.menus.main.player-settings.lore", Lists.newArrayList(
-				"&7Control output made by GTS",
-				"&7specifically for yourself!",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbbBbbbBbbb> BB_BBBB_BBBBBBB_BBBB_BBBBB = bbbbbbBbb(b -> {
+		Bbbbbb bbbbb = b.bbbBbbbbb("bb.bbbbb.bbbb.bbbb.bbbbb", "&bBbbb Bbbb");
+		Bbbb<Bbbbbb> bbbb = b.bbbBbbbbbBbbb("bb.bbbbb.bbbb.bbbb.bbbb.bbbbb", Bbbbb.bbbBbbbbBbbb(
+				"&7Bbbbb bbbb bbb bbbb bb bbbbbb",
+				"&7bbb bbbbbbb bbb bb bbbbb bbbb",
+				"&7bbb bbbb bbbbbbbbbbb",
 				"",
-				"&7Here, you can set flags that",
-				"&7control a specific output",
-				"&7type!",
+				"&bBbb bbbb {{bbb:bbbbbb_bbbb|bbbbbbbb=&7Bbbbbbb...}} bbbbbb bbbb",
 				"",
-				"&eClick to begin editing!"
+				"&bBbbbb bb bbbbbbb!"
 		));
 
-		return new TitleLorePair(title, lore);
+		bbbbbb bbb BbbbbBbbbBbbb(bbbbb, bbbb);
+	});
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbbBbbbBbbb> BB_BBBB_BBBBBB_BBBBBBBB = bbbbbbBbb(b -> {
+		Bbbbbb bbbbb = b.bbbBbbbbb("bb.bbbbb.bbbb.bbbbbb-bbbbbbbb.bbbbb", "&bBbbbbbbbb bbbb Bbbbbbbb");
+		Bbbb<Bbbbbb> bbbb = b.bbbBbbbbbBbbb("bb.bbbbb.bbbb.bbbbbb-bbbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+				"&7Bbbbbbb bbbbbb bbbb bb BBB",
+				"&7bbbbbbbbbbbb bbb bbbbbbbb!",
+				"",
+				"&7Bbbb, bbb bbb bbb bbbbb bbbb",
+				"&7bbbbbbb b bbbbbbbb bbbbbb",
+				"&7bbbb!",
+				"",
+				"&bBbbbb bb bbbbb bbbbbbb!"
+		));
+
+		bbbbbb bbb BbbbbBbbbBbbb(bbbbb, bbbb);
 	});
 
-	// Listings Menu
-	public static final ConfigKey<String> UI_MENU_LISTINGS_TITLE = stringKey("ui.menus.listings.title", "&cGTS &7\u00bb &3Listings");
-	public static final ConfigKey<String> UI_MENU_SEARCH_TITLE = stringKey(
-			"ui.menus.listings.search.title",
-			"&aSearch"
+	// Bbbbbbbb Bbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbbb.bbbbb", "&bBBB &7\b00bb &3Bbbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBB_BBBBB = bbbbbbBbb(
+			"bb.bbbbb.bbbbbbbb.bbbbbb.bbbbb",
+			"&bBbbbbb"
 	);
-	public static final ConfigKey<List<String>> UI_MENU_SEARCH_LORE_NO_QUERY = listKey(
-			"ui.menus.listings.search.lore.no-query",
-			Lists.newArrayList(
-					"&7Find items by name, type,",
-					"&7or any other options that",
-					"&7can identify an item.",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBBB_BBBB_BB_BBBBB = bbbbBbb(
+			"bb.bbbbb.bbbbbbbb.bbbbbb.bbbb.bb-bbbbb",
+			Bbbbb.bbbBbbbbBbbb(
+					"&7Bbbb bbbbb bb bbbb, bbbb,",
+					"&7bb bbb bbbbb bbbbbbb bbbb",
+					"&7bbb bbbbbbbb bb bbbb.",
 					"",
-					"&eClick to begin search!"
+					"&bBbbbb bb bbbbb bbbbbb!"
 			)
 	);
-	public static final ConfigKey<List<String>> UI_MENU_SEARCH_LORE_QUERIED = listKey(
-			"ui.menus.listings.search.lore.queried",
-			Lists.newArrayList(
-					"&7Find items by name, type,",
-					"&7or any other options that",
-					"&7can identify an item.",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBBB_BBBB_BBBBBBB = bbbbBbb(
+			"bb.bbbbb.bbbbbbbb.bbbbbb.bbbb.bbbbbbb",
+			Bbbbb.bbbBbbbbBbbb(
+					"&7Bbbb bbbbb bb bbbb, bbbb,",
+					"&7bb bbb bbbbb bbbbbbb bbbb",
+					"&7bbb bbbbbbbb bb bbbb.",
 					"",
-					"&aCurrent Query:",
-					"&3{{gts:search_query}}",
+					"&bBbbbbbb Bbbbb:",
+					"&3{{bbb:bbbbbb_bbbbb}}",
 					"",
-					"&eClick to edit search!"
+					"&bBbbbb bb bbbb bbbbbb!"
 			)
 	);
 
-	public static final ConfigKey<SortConfigurationOptions> UI_MENU_LISTINGS_SORT = customKey(c -> new SortConfigurationOptions(
-			c.getString("ui.menus.listings.sort.title", "&aSort"),
-			c.getString("ui.menus.listings.sort.lore.coloring.selected", "&b"),
-			c.getString("ui.menus.listings.sort.lore.coloring.not-selected", "&7"),
-			c.getString("ui.menus.listings.sort.lore.quick-purchase.most-recent", "Most Recent"),
-			c.getString("ui.menus.listings.sort.lore.quick-purchase.ending-soon", "Ending Soon"),
-			c.getString("ui.menus.listings.sort.lore.auctions.highest-bid", "Highest Bid"),
-			c.getString("ui.menus.listings.sort.lore.auctions.lowest-bid", "Lowest Bid"),
-			c.getString("ui.menus.listings.sort.lore.auctions.ending-soon", "Ending Soon"),
-			c.getString("ui.menus.listings.sort.lore.auctions.most-bids", "Most Bids")
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbBbbbbbbbbbbbbBbbbbbb> BB_BBBB_BBBBBBBB_BBBB = bbbbbbBbb(b -> bbb BbbbBbbbbbbbbbbbbBbbbbbb(
+			b.bbbBbbbbb("bb.bbbbb.bbbbbbbb.bbbb.bbbbb", "&bBbbb"),
+			b.bbbBbbbbb("bb.bbbbb.bbbbbbbb.bbbb.bbbb.bbbbbbbb.bbbbbbbb", "&b"),
+			b.bbbBbbbbb("bb.bbbbb.bbbbbbbb.bbbb.bbbb.bbbbbbbb.bbb-bbbbbbbb", "&7"),
+			b.bbbBbbbbb("bb.bbbbb.bbbbbbbb.bbbb.bbbb.bbbbb-bbbbbbbb.bbbb-bbbbbb", "Bbbb Bbbbbb"),
+			b.bbbBbbbbb("bb.bbbbb.bbbbbbbb.bbbb.bbbb.bbbbb-bbbbbbbb.bbbbbb-bbbb", "Bbbbbb Bbbb"),
+			b.bbbBbbbbb("bb.bbbbb.bbbbbbbb.bbbb.bbbb.bbbbbbbb.bbbbbbb-bbb", "Bbbbbbb Bbb"),
+			b.bbbBbbbbb("bb.bbbbb.bbbbbbbb.bbbb.bbbb.bbbbbbbb.bbbbbb-bbb", "Bbbbbb Bbb"),
+			b.bbbBbbbbb("bb.bbbbb.bbbbbbbb.bbbb.bbbb.bbbbbbbb.bbbbbb-bbbb", "Bbbbbb Bbbb"),
+			b.bbbBbbbbb("bb.bbbbb.bbbbbbbb.bbbb.bbbb.bbbbbbbb.bbbb-bbbb", "Bbbb Bbbb")
 	));
-	public static final ConfigKey<String> UI_MENU_LISTINGS_SPECIAL_LOADING = stringKey("ui.menus.listings.special.loading", "&eFetching Listings...");
-	public static final ConfigKey<TitleLorePair> UI_MENU_LISTINGS_SPECIAL_TIMED_OUT = customKey(c -> {
-		String title = c.getString("ui.menus.listings.special.timed-out.title", "&cFetch Timed Out");
-		List<String> lore = c.getStringList("ui.menus.listings.special.timed-out.lore", Lists.newArrayList(
-				"&7GTS failed to lookup the stored",
-				"&7listings in a timely manner...",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBBBB_BBBBBBB_BBBBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbbb.bbbbbbb.bbbbbbb", "&bBbbbbbbb Bbbbbbbb...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbbBbbbBbbb> BB_BBBB_BBBBBBBB_BBBBBBB_BBBBB_BBB = bbbbbbBbb(b -> {
+		Bbbbbb bbbbb = b.bbbBbbbbb("bb.bbbbb.bbbbbbbb.bbbbbbb.bbbbb-bbb.bbbbb", "&bBbbbb Bbbbb Bbb");
+		Bbbb<Bbbbbb> bbbb = b.bbbBbbbbbBbbb("bb.bbbbb.bbbbbbbb.bbbbbbb.bbbbb-bbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+				"&7BBB bbbbbb bb bbbbbb bbb bbbbbb",
+				"&7bbbbbbbb bb b bbbbbb bbbbbb...",
 				"",
-				"&7Please retry opening the menu",
-				"&7in a few moments!"
+				"&7Bbbbbb bbbbb bbbbbbb bbb bbbb",
+				"&7bb b bbb bbbbbbb!"
 		));
 
-		return new TitleLorePair(title, lore);
+		bbbbbb bbb BbbbbBbbbBbbb(bbbbb, bbbb);
 	});
 
-	// Stash Window
-	public static final ConfigKey<String> UI_MENU_STASH_TITLE = stringKey("ui.menus.stash.title", "&cGTS &7\u00bb &3Stash");
-	public static final ConfigKey<String> UI_MENU_MAIN_STASH_STATUS = stringKey("ui.menus.main.stash.status", "&b* You have items available for pickup!");
-	public static final ConfigKey<String> STASH_COLLECT_JOIN_MESSAGE = stringKey("ui.menus.main.stash.collect.join", "&b* You have items to collect in your GTS Stash!");
-	public static final ConfigKey<String> UI_ICON_STASH_COLLECT_ALL_TITLE = stringKey("ui.icons.stash.collect-all.title", "&aCollect All");
-	public static final ConfigKey<List<String>> UI_ICON_STASH_COLLECT_ALL_LORE = listKey("ui.icons.stash.collect-all.lore", Lists.newArrayList(
-			"&7Allows you to claim all your stashed",
-			"&7listings at once! Note that if you",
-			"&7don't have the space for a particular",
-			"&7listing, it'll be skipped",
+	// Bbbbb Bbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbb.bbbbb", "&bBBB &7\b00bb &3Bbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBB_BBBBB_BBBBBB = bbbbbbBbb("bb.bbbbb.bbbb.bbbbb.bbbbbb", "&b* Bbb bbbb bbbbb bbbbbbbbb bbb bbbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB_BBBB_BBBBBBB = bbbbbbBbb("bb.bbbbb.bbbb.bbbbb.bbbbbbb.bbbb", "&b* Bbb bbbb bbbbb bb bbbbbbb bb bbbb BBB Bbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBB_BBBBBBB_BBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbb.bbbbbbb-bbb.bbbbb", "&bBbbbbbb Bbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBB_BBBBBBB_BBB_BBBB = bbbbBbb("bb.bbbbb.bbbbb.bbbbbbb-bbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbb bbb bb bbbbb bbb bbbb bbbbbbb",
+			"&7bbbbbbbb bb bbbb! Bbbb bbbb bb bbb",
+			"&7bbb'b bbbb bbb bbbbb bbb b bbbbbbbbbb",
+			"&7bbbbbbb, bb'bb bb bbbbbbb",
 			"",
-			"&eClick to begin your claim request!"
+			"&bBbbbb bb bbbbb bbbb bbbbb bbbbbbb!"
 	));
 
-	public static final ConfigKey<String> STASH_COLLECT_ALL_RESULTS = stringKey("ui.menus.stash.collect-all.results", "{{gts:prefix}} &7Successfully returned {{gts:stash_returned}} listings!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB_BBB_BBBBBBB = bbbbbbBbb("bb.bbbbb.bbbbb.bbbbbbb-bbb.bbbbbbb", "{{bbb:bbbbbb}} &7Bbbbbbbbbbbb bbbbbbbb {{bbb:bbbbb_bbbbbbbb}} bbbbbbbb!");
 
-	public static final ConfigKey<String> UI_MENU_ENTRY_SELECT_TITLE = stringKey("ui.menus.entry-select.title", "&cGTS &7\u00bb &3Select Entry Type");
-	public static final ConfigKey<String> UI_MENU_PRICE_SELECT_TITLE = stringKey("ui.menus.price-select.title", "&cGTS &7\u00bb &3Select Price Type");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBB_BBBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbb-bbbbbb.bbbbb", "&bBBB &7\b00bb &3Bbbbbb Bbbbb Bbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBB_BBBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbb-bbbbbb.bbbbb", "&bBBB &7\b00bb &3Bbbbbb Bbbbb Bbbb");
 
-	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_OTHER = stringKey("ui.menus.listing-selected.purchaser", "&cGTS &7\u00bb &3Purchase Listing?");
-	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_OTHER_AUCTION = stringKey("ui.menus.listing-selected.bidder", "&cGTS &7\u00bb &3Bid on Listing?");
-	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_LISTER = stringKey("ui.menus.listing-selected.lister", "&cGTS &7\u00bb &3Remove Listing?");
-	public static final ConfigKey<String> UI_MENU_LISTING_SELECTED_CLAIM = stringKey("ui.menus.listing-selected.claim", "&cGTS &7\u00bb &3Claim Rewards?");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBBB_BBBBBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbb-bbbbbbbb.bbbbbbbbb", "&bBBB &7\b00bb &3Bbbbbbbb Bbbbbbb?");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBBB_BBBBBBBB_BBBBB_BBBBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbb-bbbbbbbb.bbbbbb", "&bBBB &7\b00bb &3Bbb bb Bbbbbbb?");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBBB_BBBBBBBB_BBBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbb-bbbbbbbb.bbbbbb", "&bBBB &7\b00bb &3Bbbbbb Bbbbbbb?");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBBB_BBBBBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbb-bbbbbbbb.bbbbb", "&bBBB &7\b00bb &3Bbbbb Bbbbbbb?");
 
-	// Icons
-	public static final ConfigKey<String> UI_ICON_BIN_CREATE_TITLE = stringKey("ui.icons.bin.creator.title", "&aBIN Mode");
-	public static final ConfigKey<List<String>> UI_ICON_BIN_CREATE_LORE = listKey("ui.icons.bin.creator.lore", Lists.newArrayList(
-			"&7Set a price, then one player",
-			"&7may buy the listing at that",
-			"&7price.",
+	// Bbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBB_BBBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbb.bbbbbbb.bbbbb", "&bBBB Bbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBB_BBBBBB_BBBB = bbbbBbb("bb.bbbbb.bbb.bbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbb b bbbbb, bbbb bbb bbbbbb",
+			"&7bbb bbb bbb bbbbbbb bb bbbb",
+			"&7bbbbb.",
 			"",
-			"&8(BIN means Buy It Now)",
+			"&8(BBB bbbbb Bbb Bb Bbb)",
 			"",
-			"&eClick to switch to Auction Mode!"
+			"&bBbbbb bb bbbbbb bb Bbbbbbb Bbbb!"
 	));
 
-	public static final ConfigKey<String> UI_ICON_AUCTION_CREATE_TITLE = stringKey("ui.icons.auction.creator.title", "&aAuction Mode");
-	public static final ConfigKey<List<String>> UI_ICON_AUCTION_CREATE_LORE = listKey("ui.icons.auctions.creator.lore", Lists.newArrayList(
-			"&7A listing in which multiple",
-			"&7players compete for the listing",
-			"&7by bidding against each other",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBBB_BBBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbb.bbbbbbb.bbbbb", "&bBbbbbbb Bbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBBBB_BBBBBB_BBBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7B bbbbbbb bb bbbbb bbbbbbbb",
+			"&7bbbbbbb bbbbbbb bbb bbb bbbbbbb",
+			"&7bb bbbbbbb bbbbbbb bbbb bbbbb",
 			"",
-			"&eClick to switch to BIN Mode!"
+			"&bBbbbb bb bbbbbb bb BBB Bbbb!"
 	));
 
-	public static final ConfigKey<String> UI_ICON_SELECTED_REMOVE_TITLE = stringKey("ui.icons.selected.remove.title", "&cRemove Listing?");
-	public static final ConfigKey<List<String>> UI_ICON_SELECTED_REMOVE_LORE = listKey("ui.icons.selected.remove.lore", Lists.newArrayList(
-			"&7Requests a removal of your",
-			"&7listing from the &bGTS&7.",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBBBB_BBBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbbb.bbbbbb.bbbbb", "&bBbbbbb Bbbbbbb?");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBBBBB_BBBBBB_BBBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbbbb b bbbbbbb bb bbbb",
+			"&7bbbbbbb bbbb bbb &bBBB&7.",
 			"",
-			"&7NOTE: If your listing has already",
-			"&7been claimed, this request may",
-			"&7fail...",
+			"&7BBBB: Bb bbbb bbbbbbb bbb bbbbbbb",
+			"&7bbbb bbbbbbb, bbbb bbbbbbb bbb",
+			"&7bbbb...",
 			"",
-			"&eClick here to request removal!"
+			"&bBbbbb bbbb bb bbbbbbb bbbbbbb!"
 	));
 
-	public static final ConfigKey<String> UI_ICON_SELECTED_CLAIM_TITLE = stringKey("ui.icons.selected.claim.title", "&eClaim your {{gts:claim_item}}?");
-	public static final ConfigKey<List<String>> UI_ICON_SELECTED_CLAIM_LORE = listKey("ui.icons.selected.remove.lore", Lists.newArrayList(
-			"&7Requests a removal of your",
-			"&7listing from the &bGTS&7.",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBBBB_BBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbbb.bbbbb.bbbbb", "&bBbbbb bbbb {{bbb:bbbbb_bbbb}}?");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBBBBB_BBBBB_BBBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbbbb b bbbbbbb bb bbbb",
+			"&7bbbbbbb bbbb bbb &bBBB&7.",
 			"",
-			"&7NOTE: If your listing has already",
-			"&7been claimed, this request may",
-			"&7fail...",
+			"&7BBBB: Bb bbbb bbbbbbb bbb bbbbbbb",
+			"&7bbbb bbbbbbb, bbbb bbbbbbb bbb",
+			"&7bbbb...",
 			"",
-			"&eClick here to request removal!"
+			"&bBbbbb bbbb bb bbbbbbb bbbbbbb!"
 	));
 
-	public static final ConfigKey<String> UI_ICON_PLACE_BID_TITLE = stringKey("ui.icons.auctions.place-bid.title", "&ePlace Bid");
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_LORE = listKey("ui.icons.auctions.place-bid.lore", Lists.newArrayList(
-			"&7New Bid: &6{{gts:auction_next_required_bid}}"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBB_BBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbbb.bbbbb-bbb.bbbbb", "&bBbbbb Bbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBB_BBB_BBBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbbbb-bbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbb Bbb: &6{{bbb:bbbbbbb_bbbb_bbbbbbbb_bbb}}"
 	));
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_WITH_USER_BID_PLACED_LORE = listKey("ui.icons.auctions.place-bid.user-previously-bid.lore", Lists.newArrayList(
-			"&7New Bid: &6{{gts:auction_next_required_bid}}",
-			"&7Your previous bid: &e{{gts:auction_previous_user_bid}}"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBB_BBB_BBBB_BBBB_BBB_BBBBBB_BBBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbbbb-bbb.bbbb-bbbbbbbbbb-bbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbb Bbb: &6{{bbb:bbbbbbb_bbbb_bbbbbbbb_bbb}}",
+			"&7Bbbb bbbbbbbb bbb: &b{{bbb:bbbbbbb_bbbbbbbb_bbbb_bbb}}"
 	));
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_CAN_AFFORD = listKey("ui.icons.auctions.place-bid.appenders.can-afford", Lists.newArrayList(
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBB_BBB_BBB_BBBBBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbbbb-bbb.bbbbbbbbb.bbb-bbbbbb", Bbbbb.bbbBbbbbBbbb(
 			"",
-			"&eClick to bid!"
+			"&bBbbbb bb bbb!"
 	));
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_CANT_AFFORD = listKey("ui.icons.auctions.place-bid.appenders.cant-afford", Lists.newArrayList(
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBB_BBB_BBBB_BBBBBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbbbb-bbb.bbbbbbbbb.bbbb-bbbbbb", Bbbbb.bbbBbbbbBbbb(
 			"",
-			"&cCan't afford bid!"
+			"&bBbb'b bbbbbb bbb!"
 	));
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_BID_IS_TOP_BID = listKey("ui.icons.auctions.place-bid.appenders.user-is-top-bidder", Lists.newArrayList(
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBB_BBB_BB_BBB_BBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbbbb-bbb.bbbbbbbbb.bbbb-bb-bbb-bbbbbb", Bbbbb.bbbBbbbbBbbb(
 			"",
-			"&cYou already hold the top bid!"
+			"&bBbb bbbbbbb bbbb bbb bbb bbb!"
 	));
 
-	public static final ConfigKey<String> UI_ICON_PLACE_CUSTOM_BID_TITLE = stringKey("ui.icons.auctions.place-bid.custom.title", "&eCustom Bid");
-	public static final ConfigKey<List<String>> UI_ICON_PLACE_CUSTOM_BID_LORE_BASE = listKey("ui.icons.auctions.place-bid.custom.lore.base", Lists.newArrayList(
-			"&7With this option, you can",
-			"&7specify a custom bid of your",
-			"&7desires, so long as it's",
-			"&7at least able to meet the",
-			"&7current requirement for the",
-			"&7next bid!",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBB_BBBBBB_BBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbbb.bbbbb-bbb.bbbbbb.bbbbb", "&bBbbbbb Bbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBB_BBBBBB_BBB_BBBB_BBBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbbbb-bbb.bbbbbb.bbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbb bbbb bbbbbb, bbb bbb",
+			"&7bbbbbbb b bbbbbb bbb bb bbbb",
+			"&7bbbbbbb, bb bbbb bb bb'b",
+			"&7bb bbbbb bbbb bb bbbb bbb",
+			"&7bbbbbbb bbbbbbbbbbb bbb bbb",
+			"&7bbbb bbb!",
 			"",
-			"&eClick to cast a custom bid!"
+			"&bBbbbb bb bbbb b bbbbbb bbb!"
 	));
 
-	public static final ConfigKey<String> CUSTOM_BID_INVALID = stringKey("ui.icons.auctions.place-bid.custom.actions.bid-invalid", "{{gts:error}} You must bid at least &e{{gts:auction_next_required_bid}}&7!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBB_BBB_BBBBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbbb.bbbbb-bbb.bbbbbb.bbbbbbb.bbb-bbbbbbb", "{{bbb:bbbbb}} Bbb bbbb bbb bb bbbbb &b{{bbb:bbbbbbb_bbbb_bbbbbbbb_bbb}}&7!");
 
-	public static final ConfigKey<String> UI_ICON_BID_HISTORY_TITLE = stringKey("ui.icons.auctions.bid-history.title", "&eBid History");
-	public static final ConfigKey<List<String>> UI_ICON_BID_HISTORY_BASE_INFO = listKey("ui.icons.auctions.bid-history.base-info", Lists.newArrayList(
-			"&7Bids Placed: &e{{gts:auction_bids}}"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBB_BBBBBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbbb.bbb-bbbbbbb.bbbbb", "&bBbb Bbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBB_BBBBBBB_BBBB_BBBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbb-bbbbbbb.bbbb-bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbb Bbbbbb: &b{{bbb:bbbbbbb_bbbb}}"
 	));
-	public static final ConfigKey<String> UI_ICON_BID_HISTORY_SEPARATOR = stringKey("ui.icons.auctions.bid-history.separator", "&8&m-------------------");
-	public static final ConfigKey<List<String>> UI_ICON_BID_HISTORY_BID_INFO = listKey("ui.icons.auctions.bid-history.bid-info", Lists.newArrayList(
-			"&7Bid: &e{{gts:auction_bid_amount}}",
-			"&7By: &e{{gts:auction_bid_actor}}",
-			"&b{{gts:auction_bid_since_placed}} ago"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBB_BBBBBBB_BBBBBBBBB = bbbbbbBbb("bb.bbbbb.bbbbbbbb.bbb-bbbbbbb.bbbbbbbbb", "&8&b-------------------");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBB_BBBBBBB_BBB_BBBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbb-bbbbbbb.bbb-bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbb: &b{{bbb:bbbbbbb_bbb_bbbbbb}}",
+			"&7Bb: &b{{bbb:bbbbbbb_bbb_bbbbb}}",
+			"&b{{bbb:bbbbbbb_bbb_bbbbb_bbbbbb}} bbb"
 	));
-	public static final ConfigKey<List<String>> UI_ICON_BID_HISTORY_NO_BIDS = listKey("ui.icons.auctions.bid-history.no-bids", Lists.newArrayList(
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBB_BBBBBBB_BB_BBBB = bbbbBbb("bb.bbbbb.bbbbbbbb.bbb-bbbbbbb.bb-bbbb", Bbbbb.bbbBbbbbBbbb(
 			"",
-			"&7Be the first to place a",
-			"&7bid on this auction!"
+			"&7Bb bbb bbbbb bb bbbbb b",
+			"&7bbb bb bbbb bbbbbbb!"
 	));
 
-	// Price Selection
-	public static final ConfigKey<String> UI_PRICE_DISPLAY_TITLE = stringKey("ui.components.price.display.title", "&ePrice: {{gts:price_selection}}");
-	public static final ConfigKey<List<String>> UI_PRICE_DISPLAY_LORE = listKey("ui.components.price.display.lore.base", Lists.newArrayList(
-			"&7How much to list your",
-			"&7be listed on the GTS."
+	// Bbbbb Bbbbbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBB_BBBBBBB_BBBBB = bbbbbbBbb("bb.bbbbbbbbbb.bbbbb.bbbbbbb.bbbbb", "&bBbbbb: {{bbb:bbbbb_bbbbbbbbb}}");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBB_BBBBBBB_BBBB = bbbbBbb("bb.bbbbbbbbbb.bbbbb.bbbbbbb.bbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbb bbbb bb bbbb bbbb",
+			"&7bb bbbbbb bb bbb BBB."
 	));
 
-	public static final ConfigKey<List<String>> UI_PRICE_DISPLAY_FEES = listKey("ui.components.price.display.lore.fees", Lists.newArrayList(
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBB_BBBBBBB_BBBB = bbbbBbb("bb.bbbbbbbbbb.bbbbb.bbbbbbb.bbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
 			"",
-			"&7Fee: &6{{gts:price_fee}} &e({{gts:price_fee_rate}})"
+			"&7Bbb: &6{{bbb:bbbbb_bbb}} &b({{bbb:bbbbb_bbb_bbbb}})"
 	));
 
-	// Time Selection
-	public static final ConfigKey<String> UI_TIME_SELECT_TITLE = stringKey("ui.time-select.title", "Select a Time");
+	// Bbbb Bbbbbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBB_BBBBB = bbbbbbBbb("bb.bbbb-bbbbbb.bbbbb", "Bbbbbb b Bbbb");
 
-	public static final ConfigKey<String> UI_TIME_DISPLAY_TITLE = stringKey("ui.components.time.display.title", "&eDuration: {{gts:time}}");
-	public static final ConfigKey<List<String>> UI_TIME_DISPLAY_LORE = listKey("ui.components.time.display.lore.base", Lists.newArrayList(
-			"&7How long the listing will",
-			"&7be listed on the GTS."
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBB_BBBBBBB_BBBBB = bbbbbbBbb("bb.bbbbbbbbbb.bbbb.bbbbbbb.bbbbb", "&bBbbbbbbb: {{bbb:bbbb}}");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBBBB_BBBB = bbbbBbb("bb.bbbbbbbbbb.bbbb.bbbbbbb.bbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbb bbbb bbb bbbbbbb bbbb",
+			"&7bb bbbbbb bb bbb BBB."
 	));
 
-	public static final ConfigKey<List<String>> UI_TIME_DISPLAY_FEES = listKey("ui.components.time.display.lore.fees", Lists.newArrayList(
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBB_BBBBBBB_BBBB = bbbbBbb("bb.bbbbbbbbbb.bbbb.bbbbbbb.bbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
 			"",
-			"&7Fee: &6{{gts:time_fee}}"
+			"&7Bbb: &6{{bbb:bbbb_bbb}}"
 	));
 
-	public static final ConfigKey<List<String>> UI_COMPONENT_EDIT_LORE = listKey("ui.components.edit-lore", Lists.newArrayList(
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBBBBBB_BBBB_BBBB = bbbbBbb("bb.bbbbbbbbbb.bbbb-bbbb", Bbbbb.bbbBbbbbBbbb(
 			"",
-			"&eClick to edit!"
+			"&bBbbbb bb bbbb!"
 	));
 
-	// Fees
-	public static final ConfigKey<List<String>> FEE_APPLICATION = listKey("general.fees.applied", Lists.newArrayList(
-			"{{gts:prefix}} &c&l- {{gts:fees}} &7(&aFees&7)"
+	// Bbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBB_BBBBBBBBBBB = bbbbBbb("bbbbbbb.bbbb.bbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"{{bbb:bbbbbb}} &b&b- {{bbb:bbbb}} &7(&bBbbb&7)"
 	));
-	public static final ConfigKey<List<String>> FEE_INVALID = listKey("general.fees.invalid", Lists.newArrayList(
-			"{{gts:prefix}} &cUnable to afford the tax of &e{{gts:fees}} &cfor this listing..."
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBB_BBBBBBB = bbbbBbb("bbbbbbb.bbbb.bbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"{{bbb:bbbbbb}} &bBbbbbb bb bbbbbb bbb bbb bb &b{{bbb:bbbb}} &bbbb bbbb bbbbbbb..."
 	));
-	public static final ConfigKey<String> FEE_PRICE_FORMAT = stringKey("general.fees.price-format", "&7Price Selection: {{gts:price_fee}}");
-	public static final ConfigKey<String> FEE_TIME_FORMAT = stringKey("general.fees.time-format", "&7Time Selection: {{gts:time_fee}}");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBB_BBBBB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbb.bbbbb-bbbbbb", "&7Bbbbb Bbbbbbbbb: {{bbb:bbbbb_bbb}}");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBB_BBBB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbb.bbbb-bbbbbb", "&7Bbbb Bbbbbbbbb: {{bbb:bbbb_bbb}}");
 
-	// Admin Menus
-	public static final ConfigKey<String> UI_ADMIN_MAIN_TITLE = stringKey("ui.admin.main.title", "&cGTS &7\u00bb &3Admin Mode");
+	// Bbbbb Bbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBB_BBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbb.bbbbb", "&bBBB &7\b00bb &3Bbbbb Bbbb");
 
-	public static final ConfigKey<String> UI_ADMIN_MAIN_MANAGER = stringKey("ui.admin.main.icons.manager", "&aGTS Listing Manager");
-	public static final ConfigKey<String> UI_ADMIN_MAIN_PRICE_MGMT = stringKey("ui.admin.main.icons.price-management", "&aPricing Management");
-	public static final ConfigKey<String> UI_ADMIN_MAIN_DELIVERIES = stringKey("ui.admin.main.icons.deliveries", "&aDelivery Management");;
-	public static final ConfigKey<String> UI_ADMIN_MAIN_DISABLER = stringKey("ui.admin.main.icons.disabler", "&cMaintenance Mode");
-	public static final ConfigKey<String> UI_ADMIN_MAIN_INFO_TITLE = stringKey("ui.admin.main.icons.info.title", "&eGTS Admin Mode");
-	public static final ConfigKey<List<String>> UI_ADMIN_MAIN_INFO_LORE = listKey("ui.admin.main.icons.info.lore", Lists.newArrayList(
-			"&7Welcome to the GTS Admin Interface.",
-			"&7All interactions provided are designed",
-			"&7for server operators to effectively",
-			"&7control the GTS system from in-game.",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBB_BBBB_BBBBBBB = bbbbbbBbb("bb.bbbbb.bbbb.bbbbb.bbbbbbb", "&bBBB Bbbbbbb Bbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBB_BBBB_BBBBB_BBBB = bbbbbbBbb("bb.bbbbb.bbbb.bbbbb.bbbbb-bbbbbbbbbb", "&bBbbbbbb Bbbbbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBB_BBBB_BBBBBBBBBB = bbbbbbBbb("bb.bbbbb.bbbb.bbbbb.bbbbbbbbbb", "&bBbbbbbbb Bbbbbbbbbb");;
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBB_BBBB_BBBBBBBB = bbbbbbBbb("bb.bbbbb.bbbb.bbbbb.bbbbbbbb", "&bBbbbbbbbbbb Bbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBB_BBBB_BBBB_BBBBB = bbbbbbBbb("bb.bbbbb.bbbb.bbbbb.bbbb.bbbbb", "&bBBB Bbbbb Bbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBB_BBBB_BBBB_BBBB = bbbbBbb("bb.bbbbb.bbbb.bbbbb.bbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbbb bb bbb BBB Bbbbb Bbbbbbbbb.",
+			"&7Bbb bbbbbbbbbbbb bbbbbbbb bbb bbbbbbbb",
+			"&7bbb bbbbbb bbbbbbbbb bb bbbbbbbbbbb",
+			"&7bbbbbbb bbb BBB bbbbbb bbbb bb-bbbb.",
 			"",
-			"&7Here, you can control &bpublished listings&7,",
-			"&bprice management&7, and place the system",
-			"&7into &bmaintenance mode&7."
+			"&7Bbbb, bbb bbb bbbbbbb &bbbbbbbbbb bbbbbbbb&7,",
+			"&bbbbbb bbbbbbbbbb&7, bbb bbbbb bbb bbbbbb",
+			"&7bbbb &bbbbbbbbbbbb bbbb&7."
 	));
 
-	public static final ConfigKey<List<String>> UI_LISTING_DETAIL_SEPARATOR = listKey("ui.listings.detail-separator", Lists.newArrayList(
-			"&8&m-------------------------"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBBBB_BBBBBB_BBBBBBBBB = bbbbBbb("bb.bbbbbbbb.bbbbbb-bbbbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"&8&b-------------------------"
 	));
-	public static final ConfigKey<List<String>> UI_BIN_DETAILS = listKey("ui.listings.buy-it-now.details", Lists.newArrayList(
-			"&7Seller: &e{{gts:seller}}",
-			"&7Buy it now: &a{{gts:bin_price}}",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBB_BBBBBBB = bbbbBbb("bb.bbbbbbbb.bbb-bb-bbb.bbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbb: &b{{bbb:bbbbbb}}",
+			"&7Bbb bb bbb: &b{{bbb:bbb_bbbbb}}",
 			"",
-			"{{gts:listing_status}}",
+			"{{bbb:bbbbbbb_bbbbbb}}",
 			"",
-			"&eClick to inspect!"
+			"&bBbbbb bb bbbbbbb!"
 	));
-	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS_NO_BIDS = listKey("ui.listings.auctions.details.no-bids", Lists.newArrayList(
-			"&7Seller: &e{{gts:seller}}",
-			"&7Starting Bid: &e{{gts:auction_start_price}}",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBBBB_BBBBBBB_BB_BBBB = bbbbBbb("bb.bbbbbbbb.bbbbbbbb.bbbbbbb.bb-bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbb: &b{{bbb:bbbbbb}}",
+			"&7Bbbbbbbb Bbb: &b{{bbb:bbbbbbb_bbbbb_bbbbb}}",
 			"",
-			"{{gts:listing_status}}",
+			"{{bbb:bbbbbbb_bbbbbb}}",
 			"",
-			"&eClick to inspect!"
+			"&bBbbbb bb bbbbbbb!"
 	));
-	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS_WITH_SINGLE_BID = listKey("ui.listings.auctions.details.with-single-bid", Lists.newArrayList(
-			"&7Seller: &e{{gts:seller}}",
-			"&7Bids: &a{{gts:auction_bids}} bid",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBBBB_BBBBBBB_BBBB_BBBBBB_BBB = bbbbBbb("bb.bbbbbbbb.bbbbbbbb.bbbbbbb.bbbb-bbbbbb-bbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbb: &b{{bbb:bbbbbb}}",
+			"&7Bbbb: &b{{bbb:bbbbbbb_bbbb}} bbb",
 			"",
-			"&7Top bid: &e{{gts:auction_high_bid}}",
-			"&7Bidder: {{gts:auction_high_bidder}}",
+			"&7Bbb bbb: &b{{bbb:bbbbbbb_bbbb_bbb}}",
+			"&7Bbbbbb: {{bbb:bbbbbbb_bbbb_bbbbbb}}",
 			"",
-			"{{gts:listing_status}}",
+			"{{bbb:bbbbbbb_bbbbbb}}",
 			"",
-			"&eClick to inspect!"
+			"&bBbbbb bb bbbbbbb!"
 	));
-	public static final ConfigKey<List<String>> UI_AUCTION_DETAILS_WITH_BIDS = listKey("ui.listings.auctions.details.with-multiple-bids", Lists.newArrayList(
-			"&7Seller: &e{{gts:seller}}",
-			"&7Bids: &a{{gts:auction_bids}} bids",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBBBB_BBBBBBB_BBBB_BBBB = bbbbBbb("bb.bbbbbbbb.bbbbbbbb.bbbbbbb.bbbb-bbbbbbbb-bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbb: &b{{bbb:bbbbbb}}",
+			"&7Bbbb: &b{{bbb:bbbbbbb_bbbb}} bbbb",
 			"",
-			"&7Top bid: &e{{gts:auction_high_bid}}",
-			"&7Bidder: {{gts:auction_high_bidder}}",
+			"&7Bbb bbb: &b{{bbb:bbbbbbb_bbbb_bbb}}",
+			"&7Bbbbbb: {{bbb:bbbbbbb_bbbb_bbbbbb}}",
 			"",
-			"{{gts:listing_status}}",
+			"{{bbb:bbbbbbb_bbbbbb}}",
 			"",
-			"&eClick to inspect!"
+			"&bBbbbb bb bbbbbbb!"
 	));
 
-	// Player Settings Menu
-	public static final ConfigKey<String> UI_PLAYER_SETTINGS_TITLE = stringKey("ui.player-settings.title", "&cGTS &7\u00bb &3User Settings");
-	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_TITLE = stringKey("ui.player-settings.setting-display.title", "&e{{setting}} Notifications");
-	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_PUBLISH_SETTING_LORE = listKey("ui.player-settings.setting-display.publish", Lists.newArrayList(
-			"&7This settings controls whether",
-			"&7you'll be informed of new listings",
-			"&7that are published to the GTS!"
+	// Bbbbbb Bbbbbbbb Bbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBBB_BBBBBBBB_BBBBB = bbbbbbBbb("bb.bbbbbb-bbbbbbbb.bbbbb", "&bBBB &7\b00bb &3Bbbb Bbbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBB = bbbbbbBbb("bb.bbbbbb-bbbbbbbb.bbbbbbb-bbbbbbb.bbbbb", "&b{{bbbbbbb}} Bbbbbbbbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBBBB_BBBB = bbbbBbb("bb.bbbbbb-bbbbbbbb.bbbbbbb-bbbbbbb.bbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbb bbbbbbbb bbbbbbbb bbbbbbb",
+			"&7bbb'bb bb bbbbbbbb bb bbb bbbbbbbb",
+			"&7bbbb bbb bbbbbbbbb bb bbb BBB!"
 	));
-	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_SOLD_SETTING_LORE = listKey("ui.player-settings.setting-display.sold", Lists.newArrayList(
-			"&7This settings controls whether",
-			"&7you'll be informed when your BIN",
-			"&7listings have been purchased!"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBBB_BBBBBBBB_BBBB_BBBBBBB_BBBB = bbbbBbb("bb.bbbbbb-bbbbbbbb.bbbbbbb-bbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbb bbbbbbbb bbbbbbbb bbbbbbb",
+			"&7bbb'bb bb bbbbbbbb bbbb bbbb BBB",
+			"&7bbbbbbbb bbbb bbbb bbbbbbbbb!"
 	));
-	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_BID_SETTING_LORE = listKey("ui.player-settings.setting-display.bid", Lists.newArrayList(
-			"&7This settings controls whether",
-			"&7you'll be informed when your auctions",
-			"&7have received a new bid!"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBBB_BBBBBBBB_BBB_BBBBBBB_BBBB = bbbbBbb("bb.bbbbbb-bbbbbbbb.bbbbbbb-bbbbbbb.bbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbb bbbbbbbb bbbbbbbb bbbbbbb",
+			"&7bbb'bb bb bbbbbbbb bbbb bbbb bbbbbbbb",
+			"&7bbbb bbbbbbbb b bbb bbb!"
 	));
-	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_OUTBID_SETTING_LORE = listKey("ui.player-settings.setting-display.outbid", Lists.newArrayList(
-			"&7This settings controls whether",
-			"&7you'll be informed when you've been",
-			"&7outbid on an auction you've previously",
-			"&7bid on!"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBBB_BBBBBBBB_BBBBBB_BBBBBBB_BBBB = bbbbBbb("bb.bbbbbb-bbbbbbbb.bbbbbbb-bbbbbbb.bbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbb bbbbbbbb bbbbbbbb bbbbbbb",
+			"&7bbb'bb bb bbbbbbbb bbbb bbb'bb bbbb",
+			"&7bbbbbb bb bb bbbbbbb bbb'bb bbbbbbbbbb",
+			"&7bbb bb!"
 	));
-	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_ENABLED = stringKey("ui.player-settings.setting.enabled", "&aEnabled");
-	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_DISABLED = stringKey("ui.player-settings.setting.disabled", "&cDisabled");
-	public static final ConfigKey<String> UI_PLAYER_SETTINGS_SETTING_LOADING = stringKey("ui.player-settings.setting.loading", "&6Loading...");
-	public static final ConfigKey<List<String>> UI_PLAYER_SETTINGS_SETTING_TOGGLE_LORE = listKey("ui.player-settings.setting.toggle-lore", Lists.newArrayList(
-			"&7Click me to toggle the state",
-			"&7of this setting!"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBBBB = bbbbbbBbb("bb.bbbbbb-bbbbbbbb.bbbbbbb.bbbbbbb", "&bBbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBBBBB = bbbbbbBbb("bb.bbbbbb-bbbbbbbb.bbbbbbb.bbbbbbbb", "&bBbbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBBBB = bbbbbbBbb("bb.bbbbbb-bbbbbbbb.bbbbbbb.bbbbbbb", "&6Bbbbbbb...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBBB_BBBB = bbbbBbb("bb.bbbbbb-bbbbbbbb.bbbbbbb.bbbbbb-bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbb bb bb bbbbbb bbb bbbbb",
+			"&7bb bbbb bbbbbbb!"
 	));
-	public static final ConfigKey<List<String>> UI_LISTING_TYPE_FILTER = listKey("ui.listings.type-filter", Lists.newArrayList(
-			"&7Click to filter the shown listings",
-			"&7to this type only!"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BB_BBBBBBB_BBBB_BBBBBB = bbbbBbb("bb.bbbbbbbb.bbbb-bbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbb bb bbbbbb bbb bbbbb bbbbbbbb",
+			"&7bb bbbb bbbb bbbb!"
 	));
 
-	// Generic Messages
-	public static final ConfigKey<String> GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST = stringKey("general.feedback.begin-feedback-request", "&7Processing your request...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_FEES_COLLECTION = stringKey("general.feedback.fees-collect", "&7Collecting fees...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_COLLECT_LISTING = stringKey("general.feedback.collect-listing", "&7Collecting your listing...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_RETURN_FEES = stringKey("general.feedback.return-fees-from-failure", "&7Returning fees...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_RETURNED = stringKey("general.feedback.listing-returned", "{{gts:prefix}} Your listing has been returned!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_ITEM_CLAIMED = stringKey("general.feedback.item-claimed", "{{gts:prefix}} You claimed your &a{{gts:claim_item}}&7!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN = stringKey("general.feedback.listing-fail-to-return", "{{gts:error}} We failed to return your listing... We've kept it in your stash for now!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER = stringKey("general.feedback.auctions.already-top-bidder", "{{gts:error}} You already hold the top bid on this auction!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID = stringKey("general.feedback.auctions.cant-afford-bid", "{{gts:error}} You're unable to afford that bid...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_BLACKLISTED = stringKey("general.feedback.blacklisted", "{{gts:error}} Your selection is &cblacklisted &7from being listed on the GTS...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_OUTBID = stringKey("general.feedback.auctions.outbid", "{{gts:prefix}} &a{{gts:auction_bidder}} &7outbid you by &e{{gts:auction_outbid_amount}} &7for &a{{gts:listing_name}}&7!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_OUTBIDSNIPED = stringKey("general.feedback.auctions.outbid-sniped", "{{gts:prefix}} &a{{gts:auction_bidder}} &7outbid you by &e{{gts:auction_outbid_amount}} &7for &a{{gts:listing_name}}, &7but the expiry time of the auction has been set to &e{{gts:time}} &7due to bid sniping prevention!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_NEWBID = stringKey("general.feedback.auctions.new-bid", "{{gts:prefix}} &a{{gts:auction_bidder}} &7bid &e{{gts:auction_bid_amount}} &7for your &a{{gts:listing_name}}&7!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_NEWBIDSNIPED = stringKey("general.feedback.auctions.new-bid-sniped", "{{gts:prefix}} &a{{gts:auction_bidder}} &7bid &e{{gts:auction_bid_amount}} &7for your &a{{gts:listing_name}}, &7but the expiry time of the auction has been set to &e{{gts:time}} &7due to bid sniping prevention!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_CANCELLED = stringKey("general.feedback.auctions.cancelled", "{{gts:prefix}} Heads up! The auction for {{gts:listing_name}} has been cancelled, so you've been refunded your money!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_PROCESSING_BID = stringKey("general.feedback.processing-bid", "&7Processing bid...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_FUNDS_TO_ESCROW = stringKey("general.feedback.funds-to-escrow", "&7Putting funds in escrow...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_FUNDS_FROM_ESCROW = stringKey("general.feedback.funds-from-escrow", "&7Returning your funds from escrow...");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_BID_PLACED = stringKey("general.feedback.auctions.bid-placed", "{{gts:prefix}} Your bid of {{gts:auction_bid_amount}} has been placed!");
-	public static final ConfigKey<String> GENERAL_FEEDBACK_AUCTIONS_BID_PLACEDSNIPED = stringKey("general.feedback.auctions.bid-placed-sniped", "{{gts:prefix}} &7Your bid of {{gts:auction_bid_amount}} has been placed, but the expiry time of the auction has been set to &e{{gts:time}} &7due to bid sniping prevention!");
+	// Bbbbbbb Bbbbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBB_BBBBBBBBBB_BBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbb-bbbbbbbb-bbbbbbb", "&7Bbbbbbbbbb bbbb bbbbbbb...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBB_BBBBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbb-bbbbbbb", "&7Bbbbbbbbbb bbbb...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBB_BBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbb-bbbbbbb", "&7Bbbbbbbbbb bbbb bbbbbbb...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBB_BBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbb-bbbb-bbbb-bbbbbbb", "&7Bbbbbbbbb bbbb...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBB_BBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbb-bbbbbbbb", "{{bbb:bbbbbb}} Bbbb bbbbbbb bbb bbbb bbbbbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBB_BBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbb-bbbbbbb", "{{bbb:bbbbbb}} Bbb bbbbbbb bbbb &b{{bbb:bbbbb_bbbb}}&7!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBB_BBBB_BB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbb-bbbb-bb-bbbbbb", "{{bbb:bbbbb}} Bb bbbbbb bb bbbbbb bbbb bbbbbbb... Bb'bb bbbb bb bb bbbb bbbbb bbb bbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBBB_BBB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbb-bbb-bbbbbb", "{{bbb:bbbbb}} Bbb bbbbbbb bbbb bbb bbb bbb bb bbbb bbbbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBBB_BBBB_BBBBBB_BBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbbb.bbbb-bbbbbb-bbb", "{{bbb:bbbbb}} Bbb'bb bbbbbb bb bbbbbb bbbb bbb...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbbbbbb", "{{bbb:bbbbb}} Bbbb bbbbbbbbb bb &bbbbbbbbbbbb &7bbbb bbbbb bbbbbb bb bbb BBB...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbb", "{{bbb:bbbbbb}} &b{{bbb:bbbbbbb_bbbbbb}} &7bbbbbb bbb bb &b{{bbb:bbbbbbb_bbbbbb_bbbbbb}} &7bbb &b{{bbb:bbbbbbb_bbbb}}&7!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbb-bbbbbb", "{{bbb:bbbbbb}} &b{{bbb:bbbbbbb_bbbbbb}} &7bbbbbb bbb bb &b{{bbb:bbbbbbb_bbbbbb_bbbbbb}} &7bbb &b{{bbb:bbbbbbb_bbbb}}, &7bbb bbb bbbbbb bbbb bb bbb bbbbbbb bbb bbbb bbb bb &b{{bbb:bbbb}} &7bbb bb bbb bbbbbbb bbbbbbbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbbb.bbb-bbb", "{{bbb:bbbbbb}} &b{{bbb:bbbbbbb_bbbbbb}} &7bbb &b{{bbb:bbbbbbb_bbb_bbbbbb}} &7bbb bbbb &b{{bbb:bbbbbbb_bbbb}}&7!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbbb.bbb-bbb-bbbbbb", "{{bbb:bbbbbb}} &b{{bbb:bbbbbbb_bbbbbb}} &7bbb &b{{bbb:bbbbbbb_bbb_bbbbbb}} &7bbb bbbb &b{{bbb:bbbbbbb_bbbb}}, &7bbb bbb bbbbbb bbbb bb bbb bbbbbbb bbb bbbb bbb bb &b{{bbb:bbbb}} &7bbb bb bbb bbbbbbb bbbbbbbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbbb", "{{bbb:bbbbbb}} Bbbbb bb! Bbb bbbbbbb bbb {{bbb:bbbbbbb_bbbb}} bbb bbbb bbbbbbbbb, bb bbb'bb bbbb bbbbbbbb bbbb bbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBBBBB_BBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbbbbb-bbb", "&7Bbbbbbbbbb bbb...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBB_BB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbb-bb-bbbbbb", "&7Bbbbbbb bbbbb bb bbbbbb...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBB_BBBB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbb-bbbb-bbbbbb", "&7Bbbbbbbbb bbbb bbbbb bbbb bbbbbb...");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBBB_BBB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbbb.bbb-bbbbbb", "{{bbb:bbbbbb}} Bbbb bbb bb {{bbb:bbbbbbb_bbb_bbbbbb}} bbb bbbb bbbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBBB_BBBBBBBB_BBB_BBBBBBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbbb.bbb-bbbbbb-bbbbbb", "{{bbb:bbbbbb}} &7Bbbb bbb bb {{bbb:bbbbbbb_bbb_bbbbbb}} bbb bbbb bbbbbb, bbb bbb bbbbbb bbbb bb bbb bbbbbbb bbb bbbb bbb bb &b{{bbb:bbbb}} &7bbb bb bbb bbbbbbb bbbbbbbbbb!");
 
-	public static final ConfigKey<String> REQUEST_FAILED = stringKey("general.requests.failure", "{{gts:prefix}} &7Request failed with status code (&c{{gts:error_code}}&7)");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbbbbb", "{{bbb:bbbbbb}} &7Bbbbbbb bbbbbb bbbb bbbbbb bbbb (&b{{bbb:bbbbb_bbbb}}&7)");
 
-	public static final ConfigKey<String> UPDATE_AVAILABLE = stringKey("general.update-check.available", "{{gts:prefix}} &7A new update is available (&a{{new_version}}&7), and you are running &e{{current_version}}&7! Check Ore or Discord for the update!");
-	public static final ConfigKey<String> UPDATE_LATEST = stringKey("general.update-check.latest", "{{gts:prefix}} You're using the latest version!");
-	public static final ConfigKey<String> UPDATE_SNAPSHOT = stringKey("general.update-check.snapshot", "{{gts:prefix}} You're using a snapshot version of GTS, things may not work correctly!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBB_BBBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbb-bbbbb.bbbbbbbbb", "{{bbb:bbbbbb}} &7B bbb bbbbbb bb bbbbbbbbb (&b{{bbb_bbbbbbb}}&7), bbb bbb bbb bbbbbbb &b{{bbbbbbb_bbbbbbb}}&7! Bbbbb Bbb bb Bbbbbbb bbb bbb bbbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbbbb-bbbbb.bbbbbb", "{{bbb:bbbbbb}} Bbb'bb bbbbb bbb bbbbbb bbbbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBB_BBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbb-bbbbb.bbbbbbbb", "{{bbb:bbbbbb}} Bbb'bb bbbbb b bbbbbbbb bbbbbbb bb BBB, bbbbbb bbb bbb bbbb bbbbbbbbb!");
 
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_TITLE = stringKey("admin.listing-editor.title", "&cGTS &7\u00bb &3Listing Editor");
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_TITLE = stringKey("admin.listing-editor.icons.delete.title", "&aDelete Listing");
-	public static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_LORE = listKey("admin.listing-editor.icons.delete.lore", Lists.newArrayList());
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_RETURN_TITLE = stringKey("admin.listing-editor.icons.delete-and-return.title", "&aDelete and Return Listing");
-	public static final ConfigKey<List<String>> ADMIN_LISTING_EDITOR_DELETE_RETURN_LORE = listKey("admin.listing-editor.icons.delete-and-return.lore", Lists.newArrayList());
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS = stringKey("admin.listing-editor.responses.success", "{{gts:prefix}} The target listing has been deleted!");
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_FAILURE = stringKey("admin.listing-editor.responses.error", "{{gts:error}} The target listing failed to be deleted, with error code &7(&c{{gts:error_code}}&7)");
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER = stringKey("admin.listing-editor.responses.user-delete", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin!");
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN = stringKey("admin.listing-editor.responses.user-return", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin, but the item was returned to you!");
-	public static final ConfigKey<String> ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN_STASH = stringKey("admin.listing-editor.responses.user-stash", "{{gts:prefix}} One of your listings has been forcibly deleted by an admin, but the item was returned to your stash!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB_BBBBBB_BBBBB = bbbbbbBbb("bbbbb.bbbbbbb-bbbbbb.bbbbb", "&bBBB &7\b00bb &3Bbbbbbb Bbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB = bbbbbbBbb("bbbbb.bbbbbbb-bbbbbb.bbbbb.bbbbbb.bbbbb", "&bBbbbbb Bbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBB = bbbbBbb("bbbbb.bbbbbbb-bbbbbb.bbbbb.bbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb());
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBBB_BBBBB = bbbbbbBbb("bbbbb.bbbbbbb-bbbbbb.bbbbb.bbbbbb-bbb-bbbbbb.bbbbb", "&bBbbbbb bbb Bbbbbb Bbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBBB_BBBB = bbbbBbb("bbbbb.bbbbbbb-bbbbbb.bbbbb.bbbbbb-bbb-bbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb());
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBBBBB = bbbbbbBbb("bbbbb.bbbbbbb-bbbbbb.bbbbbbbbb.bbbbbbb", "{{bbb:bbbbbb}} Bbb bbbbbb bbbbbbb bbb bbbb bbbbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBBBBB = bbbbbbBbb("bbbbb.bbbbbbb-bbbbbb.bbbbbbbbb.bbbbb", "{{bbb:bbbbb}} Bbb bbbbbb bbbbbbb bbbbbb bb bb bbbbbbb, bbbb bbbbb bbbb &7(&b{{bbb:bbbbb_bbbb}}&7)");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBB = bbbbbbBbb("bbbbb.bbbbbbb-bbbbbb.bbbbbbbbb.bbbb-bbbbbb", "{{bbb:bbbbbb}} Bbb bb bbbb bbbbbbbb bbb bbbb bbbbbbbb bbbbbbb bb bb bbbbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBB_BBBBBB = bbbbbbBbb("bbbbb.bbbbbbb-bbbbbb.bbbbbbbbb.bbbb-bbbbbb", "{{bbb:bbbbbb}} Bbb bb bbbb bbbbbbbb bbb bbbb bbbbbbbb bbbbbbb bb bb bbbbb, bbb bbb bbbb bbb bbbbbbbb bb bbb!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBB_BBBBBB_BBBBB = bbbbbbBbb("bbbbb.bbbbbbb-bbbbbb.bbbbbbbbb.bbbb-bbbbb", "{{bbb:bbbbbb}} Bbb bb bbbb bbbbbbbb bbb bbbb bbbbbbbb bbbbbbb bb bb bbbbb, bbb bbb bbbb bbb bbbbbbbb bb bbbb bbbbb!");
 
-	public static final ConfigKey<List<String>> ITEM_DISCORD_DETAILS = listKey("discord.items.details", Lists.newArrayList(
-			"Lore:",
-			"{{gts:item_lore}}",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBB_BBBBBBB_BBBBBBB = bbbbBbb("bbbbbbb.bbbbb.bbbbbbb", Bbbbb.bbbBbbbbBbbb(
+			"Bbbb:",
+			"{{bbb:bbbb_bbbb}}",
 			"",
-			"Enchantments:",
-			"{{gts:item_enchantments}}"
+			"Bbbbbbbbbbbb:",
+			"{{bbb:bbbb_bbbbbbbbbbbb}}"
 	));
 
-	public static final ConfigKey<String> SAFE_MODE_FEEDBACK = stringKey("general.feedback.safe-mode", "{{gts:error}} &cThe plugin is currently in safe mode! All functionality is disabled! Reason: &7(&c{{gts:error_code}}&7)");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBB_BBBB_BBBBBBBB = bbbbbbBbb("bbbbbbb.bbbbbbbb.bbbb-bbbb", "{{bbb:bbbbb}} &bBbb bbbbbb bb bbbbbbbbb bb bbbb bbbb! Bbb bbbbbbbbbbbbb bb bbbbbbbb! Bbbbbb: &7(&b{{bbb:bbbbb_bbbb}}&7)");
 
-	public static final ConfigKey<List<String>> DELIVERY_INFO = listKey("deliveries.info", Lists.newArrayList(
-			"&7Delivered by: &e{{gts:delivery_source}}"
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBBB_BBBB = bbbbBbb("bbbbbbbbbb.bbbb", Bbbbb.bbbBbbbbBbbb(
+			"&7Bbbbbbbbb bb: &b{{bbb:bbbbbbbb_bbbbbb}}"
 	));
 
-	public static final ConfigKey<String> DELIVERY_EXPIRATION_INFO = stringKey("deliveries.expire-tag", "&7Expires in: &e{{gts:time}}");
-	public static final ConfigKey<String> PLAYER_REQUIRED_COMMAND = stringKey("commands.requirements.must-be-player", "&7Only a player can use this command!");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBBB_BBBBBBBBBB_BBBB = bbbbbbBbb("bbbbbbbbbb.bbbbbb-bbb", "&7Bbbbbbb bb: &b{{bbb:bbbb}}");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBB_BBBBBBBB_BBBBBBB = bbbbbbBbb("bbbbbbbb.bbbbbbbbbbbb.bbbb-bb-bbbbbb", "&7Bbbb b bbbbbb bbb bbb bbbb bbbbbbb!");
 
-	public static final ConfigKey<String> SELL_COMMAND_HEADER = stringKey("commands.sell.header", "&3GTS Sell Help Window");
-	public static final ConfigKey<List<String>> SELL_COMMAND_USAGE = listKey("commands.sell.usage", Lists.newArrayList(
-			"&fCommand Structure:",
-			"&3/gts sell &7--time=(time) &d(entry type) (entry specs) &c(price type) &d(price specs)",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBB_BBBBBBB_BBBBBB = bbbbbbBbb("bbbbbbbb.bbbb.bbbbbb", "&3BBB Bbbb Bbbb Bbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBB_BBBBBBB_BBBBB = bbbbBbb("bbbbbbbb.bbbb.bbbbb", Bbbbb.bbbBbbbbBbbb(
+			"&bBbbbbbb Bbbbbbbbb:",
+			"&3/bbb bbbb &7--bbbb=(bbbb) &b(bbbbb bbbb) (bbbbb bbbbb) &b(bbbbb bbbb) &b(bbbbb bbbbb)",
 			"",
-			"&fAll components are optional past &3/gts sell&f.",
-			"&fIf you only supply a type, the UI for that type will open.",
-			"&fOtherwise, you can specify all the details on the command line",
-			"&fin order to list your listing without UI interaction."
+			"&bBbb bbbbbbbbbb bbb bbbbbbbb bbbb &3/bbb bbbb&b.",
+			"&bBb bbb bbbb bbbbbb b bbbb, bbb BB bbb bbbb bbbb bbbb bbbb.",
+			"&bBbbbbbbbb, bbb bbb bbbbbbb bbb bbb bbbbbbb bb bbb bbbbbbb bbbb",
+			"&bbb bbbbb bb bbbb bbbb bbbbbbb bbbbbbb BB bbbbbbbbbbb."
 	));
 
-	public static final ConfigKey<String> AUCTION_COMMAND_HEADER = stringKey("commands.auction.header", "&3GTS Auction Help Window");
-	public static final ConfigKey<List<String>> AUCTION_COMMAND_USAGE = listKey("commands.auction.usage", Lists.newArrayList(
-			"&fCommand Structure:",
-			"&3/gts auction &7--time=(time) &e(starting price) (increment %) &d(entry type) (entry specs)",
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBB_BBBBBB = bbbbbbBbb("bbbbbbbb.bbbbbbb.bbbbbb", "&3BBB Bbbbbbb Bbbb Bbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBB_BBBBBBB_BBBBB = bbbbBbb("bbbbbbbb.bbbbbbb.bbbbb", Bbbbb.bbbBbbbbBbbb(
+			"&bBbbbbbb Bbbbbbbbb:",
+			"&3/bbb bbbbbbb &7--bbbb=(bbbb) &b(bbbbbbbb bbbbb) (bbbbbbbbb %) &b(bbbbb bbbb) (bbbbb bbbbb)",
 			"",
-			"&fThe only allowed price is a currency based value.",
-			"&fTo specify the increment, you can specify it in the following formats:",
-			"&fx% or x, where X is a number. The &c--time&f section is optional.",
-			"&fAdditionally, you must at least specify a entry typing for this command."
+			"&bBbb bbbb bbbbbbb bbbbb bb b bbbbbbbb bbbbb bbbbb.",
+			"&bBb bbbbbbb bbb bbbbbbbbb, bbb bbb bbbbbbb bb bb bbb bbbbbbbbb bbbbbbb:",
+			"&bb% bb b, bbbbb B bb b bbbbbb. Bbb &b--bbbb&b bbbbbbb bb bbbbbbbb.",
+			"&bBbbbbbbbbbbb, bbb bbbb bb bbbbb bbbbbbb b bbbbb bbbbbb bbb bbbb bbbbbbb."
 	));
-    public static final ConfigKey<String> ADMIN_TIMEOUT = stringKey("commands.admin.timeout", "{{gts:error}} Timed out waiting for a response...");
-    public static final ConfigKey<String> ADMIN_USERNAME_QUERY = stringKey("commands.admin.username-query", "{{gts:prefix}} Please supply a valid username to target...");
+    bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB = bbbbbbBbb("bbbbbbbb.bbbbb.bbbbbbb", "{{bbb:bbbbb}} Bbbbb bbb bbbbbbb bbb b bbbbbbbb...");
+    bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBBB_BBBBB = bbbbbbBbb("bbbbbbbb.bbbbb.bbbbbbbb-bbbbb", "{{bbb:bbbbbb}} Bbbbbb bbbbbb b bbbbb bbbbbbbb bb bbbbbb...");
 
 }

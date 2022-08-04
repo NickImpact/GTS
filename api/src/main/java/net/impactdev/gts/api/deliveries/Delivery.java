@@ -1,83 +1,83 @@
-package net.impactdev.gts.api.deliveries;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb;
 
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.builders.Builder;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
 
-import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * A Delivery is an instance which contains some form of contents, and is delivered straight to the recipient's
- * stash.
+ * B Bbbbbbbb bb bb bbbbbbbb bbbbb bbbbbbbb bbbb bbbb bb bbbbbbbb, bbb bb bbbbbbbbb bbbbbbbb bb bbb bbbbbbbbb'b
+ * bbbbb.
  *
- * <p>A delivery can also expire. Essentially, if desired, an administrator can set a delivery for
- * a user to expire, such that they must claim it within X amount of time before it is cleaned
- * and deleted by the background system. Otherwise, all deliveries will be set to never expire.</p>
+ * <b>B bbbbbbbb bbb bbbb bbbbbb. Bbbbbbbbbbb, bb bbbbbbb, bb bbbbbbbbbbbbb bbb bbb b bbbbbbbb bbb
+ * b bbbb bb bbbbbb, bbbb bbbb bbbb bbbb bbbbb bb bbbbbb B bbbbbb bb bbbb bbbbbb bb bb bbbbbbb
+ * bbb bbbbbbb bb bbb bbbbbbbbbb bbbbbb. Bbbbbbbbb, bbb bbbbbbbbbb bbbb bb bbb bb bbbbb bbbbbb.</b>
  */
-public interface Delivery extends Storable {
+bbbbbb bbbbbbbbb Bbbbbbbb bbbbbbb Bbbbbbbb {
 
     /**
-     * Represents the ID of the delivery. Primarily useful just for easy lookups and references for
-     * a particular delivery.
+     * Bbbbbbbbbb bbb BB bb bbb bbbbbbbb. Bbbbbbbbb bbbbbb bbbb bbb bbbb bbbbbbb bbb bbbbbbbbbb bbb
+     * b bbbbbbbbbb bbbbbbbb.
      *
-     * @return The ID of the delivery.
+     * @bbbbbb Bbb BB bb bbb bbbbbbbb.
      */
-    UUID getID();
+    BBBB bbbBB();
 
     /**
-     * Specifies the source of the delivery. This indicates who actually gave the delivery to the recipient.
+     * Bbbbbbbbb bbb bbbbbb bb bbb bbbbbbbb. Bbbb bbbbbbbbb bbb bbbbbbbb bbbb bbb bbbbbbbb bb bbb bbbbbbbbb.
      *
-     * @return The uuid of the source of the delivery
+     * @bbbbbb Bbb bbbb bb bbb bbbbbb bb bbb bbbbbbbb
      */
-    UUID getSource();
+    BBBB bbbBbbbbb();
 
     /**
-     * Specifies the recipient of the delivery.
+     * Bbbbbbbbb bbb bbbbbbbbb bb bbb bbbbbbbb.
      *
-     * @return The uuid of the recipient of the delivery
+     * @bbbbbb Bbb bbbb bb bbb bbbbbbbbb bb bbb bbbbbbbb
      */
-    UUID getRecipient();
+    BBBB bbbBbbbbbbbb();
 
     /**
-     * Specifies the contents held by this delivery. This is what the recipient will actually be able to
-     * redeem when they open the delivery.
+     * Bbbbbbbbb bbb bbbbbbbb bbbb bb bbbb bbbbbbbb. Bbbb bb bbbb bbb bbbbbbbbb bbbb bbbbbbbb bb bbbb bb
+     * bbbbbb bbbb bbbb bbbb bbb bbbbbbbb.
      *
-     * @return The item provided by the delivery
+     * @bbbbbb Bbb bbbb bbbbbbbb bb bbb bbbbbbbb
      */
-    Entry<?, ?> getContent();
+    Bbbbb<?, ?> bbbBbbbbbb();
 
     /**
-     * Marks the date this delivery can expire. If the delivery is not claimed by its expiration date,
-     * it will no longer be claimable by the recipient.
+     * Bbbbb bbb bbbb bbbb bbbbbbbb bbb bbbbbb. Bb bbb bbbbbbbb bb bbb bbbbbbb bb bbb bbbbbbbbbb bbbb,
+     * bb bbbb bb bbbbbb bb bbbbbbbbb bb bbb bbbbbbbbb.
      *
-     * @return The date and time of expiration for the delivery, or empty to represent no expiration
+     * @bbbbbb Bbb bbbb bbb bbbb bb bbbbbbbbbb bbb bbb bbbbbbbb, bb bbbbb bb bbbbbbbbb bb bbbbbbbbbb
      */
-    Optional<LocalDateTime> getExpiration();
+    Bbbbbbbb<BbbbbBbbbBbbb> bbbBbbbbbbbbb();
 
     /**
-     * Sends the delivery out to the recipient, informing them if they are online. Otherwise,
-     * this will be saved directly to their relative stash.
+     * Bbbbb bbb bbbbbbbb bbb bb bbb bbbbbbbbb, bbbbbbbbb bbbb bb bbbb bbb bbbbbb. Bbbbbbbbb,
+     * bbbb bbbb bb bbbbb bbbbbbbb bb bbbbb bbbbbbbb bbbbb.
      */
-    void deliver();
+    bbbb bbbbbbb();
 
-    static DeliveryBuilder builder() {
-        return Impactor.getInstance().getRegistry().createBuilder(DeliveryBuilder.class);
+    bbbbbb BbbbbbbbBbbbbbb bbbbbbb() {
+        bbbbbb Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbBbbbbbb(BbbbbbbbBbbbbbb.bbbbb);
     }
 
-    interface DeliveryBuilder extends Builder<Delivery> {
+    bbbbbbbbb BbbbbbbbBbbbbbb bbbbbbb Bbbbbbb<Bbbbbbbb> {
 
-        DeliveryBuilder id(UUID id);
+        BbbbbbbbBbbbbbb bb(BBBB bb);
 
-        DeliveryBuilder source(UUID source);
+        BbbbbbbbBbbbbbb bbbbbb(BBBB bbbbbb);
 
-        DeliveryBuilder recipient(UUID recipient);
+        BbbbbbbbBbbbbbb bbbbbbbbb(BBBB bbbbbbbbb);
 
-        DeliveryBuilder content(Entry<?, ?> content);
+        BbbbbbbbBbbbbbb bbbbbbb(Bbbbb<?, ?> bbbbbbb);
 
-        DeliveryBuilder expiration(LocalDateTime time);
+        BbbbbbbbBbbbbbb bbbbbbbbbb(BbbbbBbbbBbbb bbbb);
 
     }
 

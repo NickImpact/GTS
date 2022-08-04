@@ -1,125 +1,125 @@
-package net.impactdev.gts.api.messaging.message.type.auctions;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb;
 
-import com.google.common.collect.TreeMultimap;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
-import org.checkerframework.checker.index.qual.Positive;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * Represents a message that belongs to an auction. These messages are meant to inform a user
- * about an action that has just occurred with an auction.
+ * Bbbbbbbbbb b bbbbbbb bbbb bbbbbbb bb bb bbbbbbb. Bbbbb bbbbbbbb bbb bbbbb bb bbbbbb b bbbb
+ * bbbbb bb bbbbbb bbbb bbb bbbb bbbbbbbb bbbb bb bbbbbbb.
  */
-public interface AuctionMessage extends OutgoingMessage {
+bbbbbb bbbbbbbbb BbbbbbbBbbbbbb bbbbbbb BbbbbbbbBbbbbbb {
 
 	/**
-	 * Represents the ID of the auction being acted on. This ID is the primary key to locating an auction,
-	 * and as such, should be unique to one specific auction.
+	 * Bbbbbbbbbb bbb BB bb bbb bbbbbbb bbbbb bbbbb bb. Bbbb BB bb bbb bbbbbbb bbb bb bbbbbbbb bb bbbbbbb,
+	 * bbb bb bbbb, bbbbbb bb bbbbbb bb bbb bbbbbbbb bbbbbbb.
 	 *
-	 * @return The ID of the auction
+	 * @bbbbbb Bbb BB bb bbb bbbbbbb
 	 */
-	@NonNull UUID getAuctionID();
+	@BbbBbbb BBBB bbbBbbbbbbBB();
 
 	/**
-	 * Represents the UUID of a player or another source that is applying the action to this auction.
+	 * Bbbbbbbbbb bbb BBBB bb b bbbbbb bb bbbbbbb bbbbbb bbbb bb bbbbbbbb bbb bbbbbb bb bbbb bbbbbbb.
 	 *
-	 * @return The UUID of the source applying the action
+	 * @bbbbbb Bbb BBBB bb bbb bbbbbb bbbbbbbb bbb bbbbbb
 	 */
-	@NonNull UUID getActor();
+	@BbbBbbb BBBB bbbBbbbb();
 
 	/**
-	 * Represents a bid action. This message is created whenever a player decides to bid on an auction.
-	 * The responsibility of this message is to inform the users who have all made bids, as well
-	 * as the seller, that a new bid has been placed, either outbidding someone else, or simply
-	 * just informing the seller.
+	 * Bbbbbbbbbb b bbb bbbbbb. Bbbb bbbbbbb bb bbbbbbb bbbbbbbb b bbbbbb bbbbbbb bb bbb bb bb bbbbbbb.
+	 * Bbb bbbbbbbbbbbbbb bb bbbb bbbbbbb bb bb bbbbbb bbb bbbbb bbb bbbb bbb bbbb bbbb, bb bbbb
+	 * bb bbb bbbbbb, bbbb b bbb bbb bbb bbbb bbbbbb, bbbbbb bbbbbbbbbb bbbbbbb bbbb, bb bbbbbb
+	 * bbbb bbbbbbbbb bbb bbbbbb.
 	 *
-	 * <p>To aid in avoiding redundant querying, this message will be processed on the proxy as it comes
-	 * in. On the proxy, the listing will be queried for through the appropriate storage manager, applying
-	 * that data to this message as to populate it with that information. This information includes the
-	 * seller and the mapping of bids.</p>
+	 * <b>Bb bbb bb bbbbbbbb bbbbbbbbb bbbbbbbb, bbbb bbbbbbb bbbb bb bbbbbbbbb bb bbb bbbbb bb bb bbbbb
+	 * bb. Bb bbb bbbbb, bbb bbbbbbb bbbb bb bbbbbbb bbb bbbbbbb bbb bbbbbbbbbbb bbbbbbb bbbbbbb, bbbbbbbb
+	 * bbbb bbbb bb bbbb bbbbbbb bb bb bbbbbbbb bb bbbb bbbb bbbbbbbbbbb. Bbbb bbbbbbbbbbb bbbbbbbb bbb
+	 * bbbbbb bbb bbb bbbbbbb bb bbbb.</b>
 	 *
-	 * <p>It is expected on the proxy to have the seller and bid list be possibly null. In other words,
-	 * this is really only meant to suggest that the proxy should be the one processing the listing, and then
-	 * reporting all other relevant information.</p>
+	 * <b>Bb bb bbbbbbbb bb bbb bbbbb bb bbbb bbb bbbbbb bbb bbb bbbb bb bbbbbbbb bbbb. Bb bbbbb bbbbb,
+	 * bbbb bb bbbbbb bbbb bbbbb bb bbbbbbb bbbb bbb bbbbb bbbbbb bb bbb bbb bbbbbbbbbb bbb bbbbbbb, bbb bbbb
+	 * bbbbbbbbb bbb bbbbb bbbbbbbb bbbbbbbbbbb.</b>
 	 */
-	interface Bid extends AuctionMessage {
+	bbbbbbbbb Bbb bbbbbbb BbbbbbbBbbbbbb {
 
-		@Positive double getAmountBid();
+		@Bbbbbbbb bbbbbb bbbBbbbbbBbb();
 
 		/**
-		 * Represents the message that'll be sent to the proxy servers. While it contains no further data, this
-		 * message is built to simply be an identifier for the proxy.
+		 * Bbbbbbbbbb bbb bbbbbbb bbbb'bb bb bbbb bb bbb bbbbb bbbbbbb. Bbbbb bb bbbbbbbb bb bbbbbbb bbbb, bbbb
+		 * bbbbbbb bb bbbbb bb bbbbbb bb bb bbbbbbbbbb bbb bbb bbbbb.
 		 */
-		interface Request extends Bid, MessageType.Request<Response> {}
+		bbbbbbbbb Bbbbbbb bbbbbbb Bbb, BbbbbbbBbbb.Bbbbbbb<Bbbbbbbb> {}
 
 		/**
-		 * Represents the response that'll be sent out to all servers. Essentially, the bid message will be initially
-		 * processed by the Request, and evaluated for its information. After the proxy has determined the results of the
-		 * bid, it'll send this response message, which specifies whether or not the bid was successful, who the seller
-		 * was, and a mapping of all bids placed by other players.
+		 * Bbbbbbbbbb bbb bbbbbbbb bbbb'bb bb bbbb bbb bb bbb bbbbbbb. Bbbbbbbbbbb, bbb bbb bbbbbbb bbbb bb bbbbbbbbb
+		 * bbbbbbbbb bb bbb Bbbbbbb, bbb bbbbbbbbb bbb bbb bbbbbbbbbbb. Bbbbb bbb bbbbb bbb bbbbbbbbbb bbb bbbbbbb bb bbb
+		 * bbb, bb'bb bbbb bbbb bbbbbbbb bbbbbbb, bbbbb bbbbbbbbb bbbbbbb bb bbb bbb bbb bbb bbbbbbbbbb, bbb bbb bbbbbb
+		 * bbb, bbb b bbbbbbb bb bbb bbbb bbbbbb bb bbbbb bbbbbbb.
 		 */
-		interface Response extends Bid, MessageType.Response {
+		bbbbbbbbb Bbbbbbbb bbbbbbb Bbb, BbbbbbbBbbb.Bbbbbbbb {
 
 			/**
-			 * Specifies the seller of the listing. The seller is the individual who should receive notice of their
-			 * auction being bid on, when a bid is successful.
+			 * Bbbbbbbbb bbb bbbbbb bb bbb bbbbbbb. Bbb bbbbbb bb bbb bbbbbbbbbb bbb bbbbbb bbbbbbb bbbbbb bb bbbbb
+			 * bbbbbbb bbbbb bbb bb, bbbb b bbb bb bbbbbbbbbb.
 			 *
-			 * @return The UUID of the user who created the auction
+			 * @bbbbbb Bbb BBBB bb bbb bbbb bbb bbbbbbb bbb bbbbbbb
 			 */
-			@NonNull UUID getSeller();
+			@BbbBbbb BBBB bbbBbbbbb();
 
 			/**
-			 * Represents a filtered map of users to their highest bids. While a user may have multiple bids on a listing,
-			 * this data will only be populated by their highest bids. This is meant to be a quick and easy way to inform
-			 * a user of just how much money they are outbid by.
+			 * Bbbbbbbbbb b bbbbbbbb bbb bb bbbbb bb bbbbb bbbbbbb bbbb. Bbbbb b bbbb bbb bbbb bbbbbbbb bbbb bb b bbbbbbb,
+			 * bbbb bbbb bbbb bbbb bb bbbbbbbbb bb bbbbb bbbbbbb bbbb. Bbbb bb bbbbb bb bb b bbbbb bbb bbbb bbb bb bbbbbb
+			 * b bbbb bb bbbb bbb bbbb bbbbb bbbb bbb bbbbbb bb.
 			 *
-			 * @return A mapping of users to their highest bids on the auction currently
+			 * @bbbbbb B bbbbbbb bb bbbbb bb bbbbb bbbbbbb bbbb bb bbb bbbbbbb bbbbbbbbb
 			 */
-			@NonNull TreeMultimap<UUID, Auction.Bid> getAllOtherBids();
+			@BbbBbbb BbbbBbbbbbbb<BBBB, Bbbbbbb.Bbb> bbbBbbBbbbbBbbb();
 
-			boolean wasSniped();
+			bbbbbbb bbbBbbbbb();
 
 		}
 	}
 
 	/**
-	 * Represents the act of the auction creator cancelling their auction. This message is entirely dependent on
-	 * two main aspects of plugin configuration: The allowance of a user being able to cancel an auction, and the
-	 * amount of time left on the auction per some ratio that'll actually allow a user to cancel their auction.
+	 * Bbbbbbbbbb bbb bbb bb bbb bbbbbbb bbbbbbb bbbbbbbbbb bbbbb bbbbbbb. Bbbb bbbbbbb bb bbbbbbbb bbbbbbbbb bb
+	 * bbb bbbb bbbbbbb bb bbbbbb bbbbbbbbbbbbb: Bbb bbbbbbbbb bb b bbbb bbbbb bbbb bb bbbbbb bb bbbbbbb, bbb bbb
+	 * bbbbbb bb bbbb bbbb bb bbb bbbbbbb bbb bbbb bbbbb bbbb'bb bbbbbbbb bbbbb b bbbb bb bbbbbb bbbbb bbbbbbb.
 	 *
-	 * <p>If an auction is cancelled, this message will thereby be sent as a means to inform all current
-	 * bidders that the auction has been cancelled.</p>
+	 * <b>Bb bb bbbbbbb bb bbbbbbbbb, bbbb bbbbbbb bbbb bbbbbbb bb bbbb bb b bbbbb bb bbbbbb bbb bbbbbbb
+	 * bbbbbbb bbbb bbb bbbbbbb bbb bbbb bbbbbbbbb.</b>
 	 */
-	interface Cancel extends AuctionMessage {
+	bbbbbbbbb Bbbbbb bbbbbbb BbbbbbbBbbbbbb {
 
-		interface Request extends Cancel, MessageType.Request<Response> {}
+		bbbbbbbbb Bbbbbbb bbbbbbb Bbbbbb, BbbbbbbBbbb.Bbbbbbb<Bbbbbbbb> {}
 
 		/**
-		 * After processing, this is the message that the proxy will attempt to send back to the servers.
+		 * Bbbbb bbbbbbbbbb, bbbb bb bbb bbbbbbb bbbb bbb bbbbb bbbb bbbbbbb bb bbbb bbbb bb bbb bbbbbbb.
 		 */
-		interface Response extends Cancel, MessageType.Response {
+		bbbbbbbbb Bbbbbbbb bbbbbbb Bbbbbb, BbbbbbbBbbb.Bbbbbbbb {
 
 			/**
-			 * Contextual information regarding this listing will be deleted by the time a server processing
-			 * the response will have begun. As such, we will pass a copy of the data alongside the response
-			 * so listeners can interact with the information.
+			 * Bbbbbbbbbb bbbbbbbbbbb bbbbbbbbb bbbb bbbbbbb bbbb bb bbbbbbb bb bbb bbbb b bbbbbb bbbbbbbbbb
+			 * bbb bbbbbbbb bbbb bbbb bbbbb. Bb bbbb, bb bbbb bbbb b bbbb bb bbb bbbb bbbbbbbbb bbb bbbbbbbb
+			 * bb bbbbbbbbb bbb bbbbbbbb bbbb bbb bbbbbbbbbbb.
 			 *
-			 * @return The data of the auction that was just cancelled
+			 * @bbbbbb Bbb bbbb bb bbb bbbbbbb bbbb bbb bbbb bbbbbbbbb
 			 */
-			Auction getData();
+			Bbbbbbb bbbBbbb();
 
 			/**
-			 * Specifies the list of users who have bid on this auction at least once. They should
-			 * be informed of the auction being cancelled.
+			 * Bbbbbbbbb bbb bbbb bb bbbbb bbb bbbb bbb bb bbbb bbbbbbb bb bbbbb bbbb. Bbbb bbbbbb
+			 * bb bbbbbbbb bb bbb bbbbbbb bbbbb bbbbbbbbb.
 			 *
-			 * @return The list of all bidders
+			 * @bbbbbb Bbb bbbb bb bbb bbbbbbb
 			 */
-			List<UUID> getBidders();
+			Bbbb<BBBB> bbbBbbbbbb();
 
 		}
 	}

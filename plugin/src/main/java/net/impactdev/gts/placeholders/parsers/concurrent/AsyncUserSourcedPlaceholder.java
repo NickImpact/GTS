@@ -1,165 +1,165 @@
-package net.impactdev.gts.placeholders.parsers.concurrent;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbbbbb.bbbbbbb.bbbbbbbbbb;
 
-import com.github.benmanes.caffeine.cache.AsyncCacheLoader;
-import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import net.impactdev.gts.api.event.factory.GTSEventFactory;
-import net.impactdev.gts.placeholders.parsers.SourceSpecificPlaceholderParser;
-import net.impactdev.gts.api.events.placeholders.PlaceholderReadyEvent;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.Impactor;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.placeholder.PlaceholderContext;
-import org.spongepowered.api.placeholder.PlaceholderParser;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.BbbbbBbbbbBbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.BbbbbBbbbbbbBbbbb;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbb.bbbbbbb.BBBBbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbbbbb.bbbbbbb.BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbbBbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Function;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbBbbbBbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class AsyncUserSourcedPlaceholder<T> extends SourceSpecificPlaceholderParser<T> implements PlaceholderParser {
+bbbbbb bbbbb BbbbbBbbbBbbbbbbBbbbbbbbbbb<B> bbbbbbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<B> bbbbbbbbbb BbbbbbbbbbbBbbbbb {
 
-    private final ConcurrentHashMap<UUID, Boolean> initialized = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<UUID, T> last = new ConcurrentHashMap<>();
-    private final AsyncLoadingCache<UUID, T> cache;
-    private final T def;
+    bbbbbbb bbbbb BbbbbbbbbbBbbbBbb<BBBB, Bbbbbbb> bbbbbbbbbbb = bbb BbbbbbbbbbBbbbBbb<>();
+    bbbbbbb bbbbb BbbbbbbbbbBbbbBbb<BBBB, B> bbbb = bbb BbbbbbbbbbBbbbBbb<>();
+    bbbbbbb bbbbb BbbbbBbbbbbbBbbbb<BBBB, B> bbbbb;
+    bbbbbbb bbbbb B bbb;
 
-    private AsyncUserSourcedPlaceholder(Builder<T> builder) {
-        super(builder.type, builder.id, builder.parser);
+    bbbbbbb BbbbbBbbbBbbbbbbBbbbbbbbbbb(Bbbbbbb<B> bbbbbbb) {
+        bbbbb(bbbbbbb.bbbb, bbbbbbb.bb, bbbbbbb.bbbbbb);
 
-        this.def = builder.def;
-        this.cache = Caffeine.newBuilder()
-                .executor(Impactor.getInstance().getScheduler().async())
-                .expireAfterWrite(5, TimeUnit.SECONDS)
-                .buildAsync(builder.loader);
+        bbbb.bbb = bbbbbbb.bbb;
+        bbbb.bbbbb = Bbbbbbbb.bbbBbbbbbb()
+                .bbbbbbbb(Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbb())
+                .bbbbbbBbbbbBbbbb(5, BbbbBbbb.BBBBBBB)
+                .bbbbbBbbbb(bbbbbbb.bbbbbb);
     }
 
-    @Override
-    public Component parse(PlaceholderContext context) {
-        UUID user = context.associatedObject()
-                .filter(source -> UUID.class.isAssignableFrom(source.getClass()) || Player.class.isAssignableFrom(source.getClass()))
-                .map(source -> {
-                    if(Player.class.isAssignableFrom(source.getClass())) {
-                        return ((Player) source).uniqueId();
-                    } else {
-                        return (UUID) source;
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbbb bbbbb(BbbbbbbbbbbBbbbbbb bbbbbbb) {
+        BBBB bbbb = bbbbbbb.bbbbbbbbbbBbbbbb()
+                .bbbbbb(bbbbbb -> BBBB.bbbbb.bbBbbbbbbbbbBbbb(bbbbbb.bbbBbbbb()) || Bbbbbb.bbbbb.bbBbbbbbbbbbBbbb(bbbbbb.bbbBbbbb()))
+                .bbb(bbbbbb -> {
+                    bb(Bbbbbb.bbbbb.bbBbbbbbbbbbBbbb(bbbbbb.bbbBbbbb())) {
+                        bbbbbb ((Bbbbbb) bbbbbb).bbbbbbBb();
+                    } bbbb {
+                        bbbbbb (BBBB) bbbbbb;
                     }
                 })
-                .orElse(null);
+                .bbBbbb(bbbb);
 
-        AtomicReference<Optional<Component>> fallback = new AtomicReference<>(Optional.empty());
-        Optional<String> arguments = context.argumentString();
-        if(arguments.isPresent()) {
-            String[] args = arguments.get().split(";");
-            for(String arg : args) {
-                String[] focus = arg.split("=");
-                if(focus.length > 1) {
-                    if(focus[0].equalsIgnoreCase("fallback")) {
-                        fallback.set(Optional.of(LegacyComponentSerializer.legacyAmpersand().deserialize(focus[1])));
+        BbbbbbBbbbbbbbb<Bbbbbbbb<Bbbbbbbbb>> bbbbbbbb = bbb BbbbbbBbbbbbbbb<>(Bbbbbbbb.bbbbb());
+        Bbbbbbbb<Bbbbbb> bbbbbbbbb = bbbbbbb.bbbbbbbbBbbbbb();
+        bb(bbbbbbbbb.bbBbbbbbb()) {
+            Bbbbbb[] bbbb = bbbbbbbbb.bbb().bbbbb(";");
+            bbb(Bbbbbb bbb : bbbb) {
+                Bbbbbb[] bbbbb = bbb.bbbbb("=");
+                bb(bbbbb.bbbbbb > 1) {
+                    bb(bbbbb[0].bbbbbbBbbbbbBbbb("bbbbbbbb")) {
+                        bbbbbbbb.bbb(Bbbbbbbb.bb(BbbbbbBbbbbbbbbBbbbbbbbbb.bbbbbbBbbbbbbbb().bbbbbbbbbbb(bbbbb[1])));
                     }
                 }
             }
         }
 
-        Component out = context.associatedObject()
-                .filter(source -> UUID.class.isAssignableFrom(source.getClass()) || Player.class.isAssignableFrom(source.getClass()))
-                .map(source -> {
-                    if(Player.class.isAssignableFrom(source.getClass())) {
-                        return ((Player) source).uniqueId();
-                    } else {
-                        return (UUID) source;
+        Bbbbbbbbb bbb = bbbbbbb.bbbbbbbbbbBbbbbb()
+                .bbbbbb(bbbbbb -> BBBB.bbbbb.bbBbbbbbbbbbBbbb(bbbbbb.bbbBbbbb()) || Bbbbbb.bbbbb.bbBbbbbbbbbbBbbb(bbbbbb.bbbBbbbb()))
+                .bbb(bbbbbb -> {
+                    bb(Bbbbbb.bbbbb.bbBbbbbbbbbbBbbb(bbbbbb.bbbBbbbb())) {
+                        bbbbbb ((Bbbbbb) bbbbbb).bbbbbbBb();
+                    } bbbb {
+                        bbbbbb (BBBB) bbbbbb;
                     }
                 })
-                .map(source -> {
-                    if(!this.last.containsKey(source)) {
-                        this.last.put(source, this.def);
+                .bbb(bbbbbb -> {
+                    bb(!bbbb.bbbb.bbbbbbbbBbb(bbbbbb)) {
+                        bbbb.bbbb.bbb(bbbbbb, bbbb.bbb);
                     }
 
-                    T result = this.cache.synchronous().getIfPresent(source);
-                    if(result == null) {
-                        this.cache.get(source).thenAccept(value -> {
-                            this.last.put(source, value);
-                            Impactor.getInstance().getEventBus().post(GTSEventFactory.createPlaceholderReadyEvent(this.key(), source, value));
+                    B bbbbbb = bbbb.bbbbb.bbbbbbbbbbb().bbbBbBbbbbbb(bbbbbb);
+                    bb(bbbbbb == bbbb) {
+                        bbbb.bbbbb.bbb(bbbbbb).bbbbBbbbbb(bbbbb -> {
+                            bbbb.bbbb.bbb(bbbbbb, bbbbb);
+                            Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbBbb().bbbb(BBBBbbbbBbbbbbb.bbbbbbBbbbbbbbbbbBbbbbBbbbb(bbbb.bbb(), bbbbbb, bbbbb));
                         });
                     }
-                    return result;
+                    bbbbbb bbbbbb;
                 })
-                .map(this.getParser())
-                .orElse(Component.empty());
+                .bbb(bbbb.bbbBbbbbb())
+                .bbBbbb(Bbbbbbbbb.bbbbb());
 
-        if(out.equals(Component.empty())) {
-            if(user != null && fallback.get().isPresent()) {
-                Boolean result = this.initialized.get(user);
-                if(result != null && result) {
-                    return this.getParser().apply(this.last.get(user));
-                } else {
-                    this.initialized.put(user, true);
-                    return fallback.get().get();
+        bb(bbb.bbbbbb(Bbbbbbbbb.bbbbb())) {
+            bb(bbbb != bbbb && bbbbbbbb.bbb().bbBbbbbbb()) {
+                Bbbbbbb bbbbbb = bbbb.bbbbbbbbbbb.bbb(bbbb);
+                bb(bbbbbb != bbbb && bbbbbb) {
+                    bbbbbb bbbb.bbbBbbbbb().bbbbb(bbbb.bbbb.bbb(bbbb));
+                } bbbb {
+                    bbbb.bbbbbbbbbbb.bbb(bbbb, bbbb);
+                    bbbbbb bbbbbbbb.bbb().bbb();
                 }
-            } else {
-                return this.getParser().apply(this.def);
+            } bbbb {
+                bbbbbb bbbb.bbbBbbbbb().bbbbb(bbbb.bbb);
             }
         }
 
-        return out;
+        bbbbbb bbb;
     }
 
-    public static <T> Builder<T> builder() {
-        return new Builder<>();
+    bbbbbb bbbbbb <B> Bbbbbbb<B> bbbbbbb() {
+        bbbbbb bbb Bbbbbbb<>();
     }
 
-    public static class Builder<T> {
+    bbbbbb bbbbbb bbbbb Bbbbbbb<B> {
 
-        private Class<T> type;
-        private String id;
-        private String name;
-        private Function<T, Component> parser;
+        bbbbbbb Bbbbb<B> bbbb;
+        bbbbbbb Bbbbbb bb;
+        bbbbbbb Bbbbbb bbbb;
+        bbbbbbb Bbbbbbbb<B, Bbbbbbbbb> bbbbbb;
 
-        private AsyncCacheLoader<UUID, T> loader;
-        private T def;
+        bbbbbbb BbbbbBbbbbBbbbbb<BBBB, B> bbbbbb;
+        bbbbbbb B bbb;
 
-        private Builder() {}
+        bbbbbbb Bbbbbbb() {}
 
-        private Builder(Class<T> type) {
-            this.type = type;
+        bbbbbbb Bbbbbbb(Bbbbb<B> bbbb) {
+            bbbb.bbbb = bbbb;
         }
 
-        public <B> Builder<B> type(Class<B> type) {
-            return new Builder<>(type);
+        bbbbbb <B> Bbbbbbb<B> bbbb(Bbbbb<B> bbbb) {
+            bbbbbb bbb Bbbbbbb<>(bbbb);
         }
 
-        public Builder<T> id(String id) {
-            this.id = id;
-            return this;
+        bbbbbb Bbbbbbb<B> bb(Bbbbbb bb) {
+            bbbb.bb = bb;
+            bbbbbb bbbb;
         }
 
-        public Builder<T> name(String name) {
-            this.name = name;
-            return this;
+        bbbbbb Bbbbbbb<B> bbbb(Bbbbbb bbbb) {
+            bbbb.bbbb = bbbb;
+            bbbbbb bbbb;
         }
 
-        public Builder<T> parser(Function<T, Component> parser) {
-            this.parser = parser;
-            return this;
+        bbbbbb Bbbbbbb<B> bbbbbb(Bbbbbbbb<B, Bbbbbbbbb> bbbbbb) {
+            bbbb.bbbbbb = bbbbbb;
+            bbbbbb bbbb;
         }
 
-        public Builder<T> loader(AsyncCacheLoader<UUID, T> loader) {
-            this.loader = loader;
-            return this;
+        bbbbbb Bbbbbbb<B> bbbbbb(BbbbbBbbbbBbbbbb<BBBB, B> bbbbbb) {
+            bbbb.bbbbbb = bbbbbb;
+            bbbbbb bbbb;
         }
 
-        public Builder<T> def(T def) {
-            this.def = def;
-            return this;
+        bbbbbb Bbbbbbb<B> bbb(B bbb) {
+            bbbb.bbb = bbb;
+            bbbbbb bbbb;
         }
 
-        public AsyncUserSourcedPlaceholder<T> build() {
-            return new AsyncUserSourcedPlaceholder<>(this);
+        bbbbbb BbbbbBbbbBbbbbbbBbbbbbbbbbb<B> bbbbb() {
+            bbbbbb bbb BbbbbBbbbBbbbbbbBbbbbbbbbbb<>(bbbb);
         }
 
     }

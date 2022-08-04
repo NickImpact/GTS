@@ -1,195 +1,195 @@
-package net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbBbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public abstract class BINPurchaseMessage extends AbstractMessage implements BuyItNowMessage.Purchase {
+bbbbbb bbbbbbbb bbbbb BBBBbbbbbbbBbbbbbb bbbbbbb BbbbbbbbBbbbbbb bbbbbbbbbb BbbBbBbbBbbbbbb.Bbbbbbbb {
 
-    protected final UUID listing;
-    protected final UUID actor;
+    bbbbbbbbb bbbbb BBBB bbbbbbb;
+    bbbbbbbbb bbbbb BBBB bbbbb;
 
-    public BINPurchaseMessage(UUID id, UUID listing, UUID actor) {
-        super(id);
-        this.listing = listing;
-        this.actor = actor;
+    bbbbbb BBBBbbbbbbbBbbbbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbb) {
+        bbbbb(bb);
+        bbbb.bbbbbbb = bbbbbbb;
+        bbbb.bbbbb = bbbbb;
     }
 
-    @Override
-    public UUID getListingID() {
-        return this.listing;
+    @Bbbbbbbb
+    bbbbbb BBBB bbbBbbbbbbBB() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    @Override
-    public UUID getActor() {
-        return this.actor;
+    @Bbbbbbbb
+    bbbbbb BBBB bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    public static class Request extends BINPurchaseMessage implements Purchase.Request {
+    bbbbbb bbbbbb bbbbb Bbbbbbb bbbbbbb BBBBbbbbbbbBbbbbbb bbbbbbbbbb Bbbbbbbb.Bbbbbbb {
 
-        public static final String TYPE = "BIN/Purchase/Request";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "BBB/Bbbbbbbb/Bbbbbbb";
 
-        public static BINPurchaseMessage.Request decode(@Nullable JsonElement content, UUID id) {
-            if(content == null) {
-                throw new IllegalStateException("Raw JSON data was null");
+        bbbbbb bbbbbb BBBBbbbbbbbBbbbbbb.Bbbbbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            bb(bbbbbbb == bbbb) {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBBB bbbb bbb bbbb");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            BbbbBbbbbb bbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-            UUID listing = Optional.ofNullable(raw.get("listing"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
+            BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb BB"));
+            BBBB bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbb BB"));
 
-            return new BINPurchaseMessage.Request(id, listing, actor);
+            bbbbbb bbb BBBBbbbbbbbBbbbbbb.Bbbbbbb(bb, bbbbbbb, bbbbb);
         }
 
-        public Request(UUID id, UUID listing, UUID actor) {
-            super(id, listing, actor);
+        bbbbbb Bbbbbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbb) {
+            bbbbb(bb, bbbbbbb, bbbbb);
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject()
-                            .add("listing", this.listing.toString())
-                            .add("actor", this.actor.toString())
-                            .toJson()
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb()
+                            .bbb("bbbbbbb", bbbb.bbbbbbb.bbBbbbbb())
+                            .bbb("bbbbb", bbbb.bbbbb.bbBbbbbb())
+                            .bbBbbb()
             );
         }
 
 
-        @Override
-        public CompletableFuture<Purchase.Response> respond() {
-            return GTSPlugin.instance().storage().processPurchase(this);
+        @Bbbbbbbb
+        bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbbb.Bbbbbbbb> bbbbbbb() {
+            bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbbb(bbbb);
         }
 
-        @Override
-        public void print(PrettyPrinter printer) {
-            printer.kv("Request ID", this.getID())
-                    .kv("Listing ID", this.getListingID())
-                    .kv("Actor", this.getActor());
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+            bbbbbbb.bb("Bbbbbbb BB", bbbb.bbbBB())
+                    .bb("Bbbbbbb BB", bbbb.bbbBbbbbbbBB())
+                    .bb("Bbbbb", bbbb.bbbBbbbb());
         }
     }
 
-    public static class Response extends BINPurchaseMessage implements Purchase.Response {
+    bbbbbb bbbbbb bbbbb Bbbbbbbb bbbbbbb BBBBbbbbbbbBbbbbbb bbbbbbbbbb Bbbbbbbb.Bbbbbbbb {
 
-        public static final String TYPE = "BIN/Purchase/Response";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "BBB/Bbbbbbbb/Bbbbbbbb";
 
-        public static BINPurchaseMessage.Response decode(@Nullable JsonElement content, UUID id) {
-            if (content == null) {
-                throw new IllegalStateException("Raw JSON data was null");
+        bbbbbb bbbbbb BBBBbbbbbbbBbbbbbb.Bbbbbbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            bb (bbbbbbb == bbbb) {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBBB bbbb bbb bbbb");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            BbbbBbbbbb bbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-            UUID listing = Optional.ofNullable(raw.get("listing"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            UUID request = Optional.ofNullable(raw.get("request"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate request ID"));
-            UUID seller = Optional.ofNullable(raw.get("seller"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate seller ID"));
-            boolean successful = Optional.ofNullable(raw.get("successful"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate successful status marker"));
-            ErrorCode error = Optional.ofNullable(raw.get("error"))
-                    .map(x -> ErrorCodes.get(x.getAsInt()))
-                    .orElse(null);
+            BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb BB"));
+            BBBB bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbb BB"));
+            BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb BB"));
+            BBBB bbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbb BB"));
+            bbbbbbb bbbbbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbbbbb"))
+                    .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbbbbb bbbbbb bbbbbb"));
+            BbbbbBbbb bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BbbbbBbbbb.bbb(b.bbbBbBbb()))
+                    .bbBbbb(bbbb);
 
-            return new BINPurchaseMessage.Response(id, request, listing, actor, seller, successful, error);
+            bbbbbb bbb BBBBbbbbbbbBbbbbbb.Bbbbbbbb(bb, bbbbbbb, bbbbbbb, bbbbb, bbbbbb, bbbbbbbbbb, bbbbb);
         }
 
-        private final UUID request;
-        private final UUID seller;
-        private final boolean successful;
-        private long time;
+        bbbbbbb bbbbb BBBB bbbbbbb;
+        bbbbbbb bbbbb BBBB bbbbbb;
+        bbbbbbb bbbbb bbbbbbb bbbbbbbbbb;
+        bbbbbbb bbbb bbbb;
 
-        private final ErrorCode error;
+        bbbbbbb bbbbb BbbbbBbbb bbbbb;
 
-        public Response(UUID id, UUID request, UUID listing, UUID actor, UUID seller, boolean successful, ErrorCode error) {
-            super(id, listing, actor);
-            this.request = request;
-            this.seller = seller;
-            this.successful = successful;
-            this.error = error;
+        bbbbbb Bbbbbbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbbbb, BBBB bbbbb, BBBB bbbbbb, bbbbbbb bbbbbbbbbb, BbbbbBbbb bbbbb) {
+            bbbbb(bb, bbbbbbb, bbbbb);
+            bbbb.bbbbbbb = bbbbbbb;
+            bbbb.bbbbbb = bbbbbb;
+            bbbb.bbbbbbbbbb = bbbbbbbbbb;
+            bbbb.bbbbb = bbbbb;
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject()
-                            .add("request", this.request.toString())
-                            .add("listing", this.listing.toString())
-                            .add("actor", this.actor.toString())
-                            .add("seller", this.seller.toString())
-                            .add("successful", this.successful)
-                            .consume(o -> this.getErrorCode().ifPresent(e -> o.add("error", e.ordinal())))
-                            .toJson()
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb()
+                            .bbb("bbbbbbb", bbbb.bbbbbbb.bbBbbbbb())
+                            .bbb("bbbbbbb", bbbb.bbbbbbb.bbBbbbbb())
+                            .bbb("bbbbb", bbbb.bbbbb.bbBbbbbb())
+                            .bbb("bbbbbb", bbbb.bbbbbb.bbBbbbbb())
+                            .bbb("bbbbbbbbbb", bbbb.bbbbbbbbbb)
+                            .bbbbbbb(b -> bbbb.bbbBbbbbBbbb().bbBbbbbbb(b -> b.bbb("bbbbb", b.bbbbbbb())))
+                            .bbBbbb()
             );
         }
 
-        @Override
-        public UUID getRequestID() {
-            return this.request;
+        @Bbbbbbbb
+        bbbbbb BBBB bbbBbbbbbbBB() {
+            bbbbbb bbbb.bbbbbbb;
         }
 
-        @Override
-        public long getResponseTime() {
-            return this.time;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb() {
+            bbbbbb bbbb.bbbb;
         }
 
-        @Override
-        public void setResponseTime(long millis) {
-            this.time = millis;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb(bbbb bbbbbb) {
+            bbbb.bbbb = bbbbbb;
         }
 
-        @Override
-        public boolean wasSuccessful() {
-            return this.successful;
+        @Bbbbbbbb
+        bbbbbb bbbbbbb bbbBbbbbbbbbb() {
+            bbbbbb bbbb.bbbbbbbbbb;
         }
 
-        @Override
-        public Optional<ErrorCode> getErrorCode() {
-            return Optional.ofNullable(this.error);
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbb<BbbbbBbbb> bbbBbbbbBbbb() {
+            bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbb);
         }
 
-        @Override
-        public void print(PrettyPrinter printer) {
-            printer.kv("Response ID", this.getID())
-                    .kv("Request ID", this.getRequestID())
-                    .kv("Listing ID", this.getListingID())
-                    .kv("Actor", this.getActor())
-                    .kv("Seller", this.getSeller());
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+            bbbbbbb.bb("Bbbbbbbb BB", bbbb.bbbBB())
+                    .bb("Bbbbbbb BB", bbbb.bbbBbbbbbbBB())
+                    .bb("Bbbbbbb BB", bbbb.bbbBbbbbbbBB())
+                    .bb("Bbbbb", bbbb.bbbBbbbb())
+                    .bb("Bbbbbb", bbbb.bbbBbbbbb());
         }
 
-        @Override
-        public UUID getSeller() {
-            return this.seller;
+        @Bbbbbbbb
+        bbbbbb BBBB bbbBbbbbb() {
+            bbbbbb bbbb.bbbbbb;
         }
     }
 

@@ -1,68 +1,68 @@
-package net.impactdev.gts.messaging;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb;
 
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.messaging.types.PluginMessageMessenger;
-import net.impactdev.gts.messaging.types.SpongeSingleServerModeMessenger;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.MessengerProvider;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.InternalMessagingService;
-import net.impactdev.gts.common.messaging.MessagingFactory;
-import net.impactdev.gts.messaging.processor.SpongeIncomingMessageConsumer;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbb.BbbbbbBbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbb.BbbbbbBbbbbbBbbbbbBbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbbbBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbb.BbbbbbBbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-public class SpongeMessagingFactory extends MessagingFactory<GTSPlugin> {
+bbbbbb bbbbb BbbbbbBbbbbbbbbBbbbbbb bbbbbbb BbbbbbbbbBbbbbbb<BBBBbbbbb> {
 
-	public SpongeMessagingFactory(GTSPlugin plugin) {
-		super(plugin);
+	bbbbbb BbbbbbBbbbbbbbbBbbbbbb(BBBBbbbbb bbbbbb) {
+		bbbbb(bbbbbb);
 	}
 
-	@Override
-	protected InternalMessagingService getServiceFor(String messageType) {
-		if(this.getPlugin().configuration().main().get(ConfigKeys.USE_MULTI_SERVER)) {
-			if (messageType.equals("pluginmsg") || messageType.equals("bungee") || messageType.equals("velocity")) {
-				return new GTSMessagingService(this.getPlugin(), new PluginMessageMessengerProvider(), new SpongeIncomingMessageConsumer(this.getPlugin()));
+	@Bbbbbbbb
+	bbbbbbbbb BbbbbbbbBbbbbbbbbBbbbbbb bbbBbbbbbbBbb(Bbbbbb bbbbbbbBbbb) {
+		bb(bbbb.bbbBbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBB_BBBBB_BBBBBB)) {
+			bb (bbbbbbbBbbb.bbbbbb("bbbbbbbbb") || bbbbbbbBbbb.bbbbbb("bbbbbb") || bbbbbbbBbbb.bbbbbb("bbbbbbbb")) {
+				bbbbbb bbb BBBBbbbbbbbbBbbbbbb(bbbb.bbbBbbbbb(), bbb BbbbbbBbbbbbbBbbbbbbbbBbbbbbbb(), bbb BbbbbbBbbbbbbbBbbbbbbBbbbbbbb(bbbb.bbbBbbbbb()));
 			}
 
-			if (messageType.equalsIgnoreCase("redis")) {
-				if (this.getPlugin().configuration().main().get(ConfigKeys.REDIS_ENABLED)) {
-					return new GTSMessagingService(this.getPlugin(), new RedisMessengerProvider(), new SpongeIncomingMessageConsumer(this.getPlugin()));
-				} else {
-					this.getPlugin().logger().warn("Messaging Service was set to redis, but redis is not enabled!");
+			bb (bbbbbbbBbbb.bbbbbbBbbbbbBbbb("bbbbb")) {
+				bb (bbbb.bbbBbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBB_BBBBBBB)) {
+					bbbbbb bbb BBBBbbbbbbbbBbbbbbb(bbbb.bbbBbbbbb(), bbb BbbbbBbbbbbbbbBbbbbbbb(), bbb BbbbbbBbbbbbbbBbbbbbbBbbbbbbb(bbbb.bbbBbbbbb()));
+				} bbbb {
+					bbbb.bbbBbbbbb().bbbbbb().bbbb("Bbbbbbbbb Bbbbbbb bbb bbb bb bbbbb, bbb bbbbb bb bbb bbbbbbb!");
 				}
 			}
 		}
 
-		return new GTSMessagingService(this.getPlugin(), new SingleServerMessengerProvider(), new SpongeIncomingMessageConsumer(this.getPlugin()));
+		bbbbbb bbb BBBBbbbbbbbbBbbbbbb(bbbb.bbbBbbbbb(), bbb BbbbbbBbbbbbBbbbbbbbbBbbbbbbb(), bbb BbbbbbBbbbbbbbBbbbbbbBbbbbbbb(bbbb.bbbBbbbbb()));
 	}
 
-	private class PluginMessageMessengerProvider implements MessengerProvider {
+	bbbbbbb bbbbb BbbbbbBbbbbbbBbbbbbbbbBbbbbbbb bbbbbbbbbb BbbbbbbbbBbbbbbbb {
 
-		@Override
-		public @NonNull String getName() {
-			return "Plugin Messenger";
+		@Bbbbbbbb
+		bbbbbb @BbbBbbb Bbbbbb bbbBbbb() {
+			bbbbbb "Bbbbbb Bbbbbbbbb";
 		}
 
-		@Override
-		public @NonNull Messenger obtain(@NonNull IncomingMessageConsumer incomingMessageConsumer) {
-			PluginMessageMessenger messenger = new PluginMessageMessenger(SpongeMessagingFactory.this.getPlugin(), incomingMessageConsumer);
-			messenger.init();
-			return messenger;
+		@Bbbbbbbb
+		bbbbbb @BbbBbbb Bbbbbbbbb bbbbbb(@BbbBbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbbBbbbbbbBbbbbbbb) {
+			BbbbbbBbbbbbbBbbbbbbbb bbbbbbbbb = bbb BbbbbbBbbbbbbBbbbbbbbb(BbbbbbBbbbbbbbbBbbbbbb.bbbb.bbbBbbbbb(), bbbbbbbbBbbbbbbBbbbbbbb);
+			bbbbbbbbb.bbbb();
+			bbbbbb bbbbbbbbb;
 		}
 	}
 
-	public static class SingleServerMessengerProvider implements MessengerProvider {
+	bbbbbb bbbbbb bbbbb BbbbbbBbbbbbBbbbbbbbbBbbbbbbb bbbbbbbbbb BbbbbbbbbBbbbbbbb {
 
-		@Override
-		public @NonNull String getName() {
-			return "Sponge Single Server Mode";
+		@Bbbbbbbb
+		bbbbbb @BbbBbbb Bbbbbb bbbBbbb() {
+			bbbbbb "Bbbbbb Bbbbbb Bbbbbb Bbbb";
 		}
 
-		@Override
-		public @NonNull Messenger obtain(@NonNull IncomingMessageConsumer incomingMessageConsumer) {
-			return new SpongeSingleServerModeMessenger(incomingMessageConsumer);
+		@Bbbbbbbb
+		bbbbbb @BbbBbbb Bbbbbbbbb bbbbbb(@BbbBbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbbBbbbbbbBbbbbbbb) {
+			bbbbbb bbb BbbbbbBbbbbbBbbbbbBbbbBbbbbbbbb(bbbbbbbbBbbbbbbBbbbbbbb);
 		}
 	}
 }

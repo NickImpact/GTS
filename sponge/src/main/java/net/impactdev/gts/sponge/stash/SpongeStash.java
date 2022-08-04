@@ -1,93 +1,93 @@
-package net.impactdev.gts.sponge.stash;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb;
 
-import com.google.common.collect.Lists;
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.stashes.StashedContent;
-import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.stashes.Stash;
-import net.kyori.adventure.util.TriState;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Lbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Dbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.SbbbbbbCbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb.MbbbbbbbPbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Lbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.Sbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.TbbSbbbb;
 
-import java.util.List;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.Lbbb;
+bbbbbb bbbb.bbbb.UUID;
 
-public class SpongeStash implements Stash {
+bbbbbb bbbbb SbbbbbSbbbb bbbbbbbbbb Sbbbb {
 
-    private final List<StashedContent<?>> stash;
+    bbbbbbb bbbbb Lbbb<SbbbbbbCbbbbbb<?>> bbbbb;
 
-    public SpongeStash(SpongeStashBuilder builder) {
-        this.stash = builder.stash;
+    bbbbbb SbbbbbSbbbb(SbbbbbSbbbbBbbbbbb bbbbbbb) {
+        bbbb.bbbbb = bbbbbbb.bbbbb;
     }
 
-    @Override
-    public List<StashedContent<?>> getStashContents() {
-        return this.stash;
+    @Obbbbbbb
+    bbbbbb Lbbb<SbbbbbbCbbbbbb<?>> bbbSbbbbCbbbbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public boolean claim(UUID claimer, UUID listing) {
-        StashedContent<?> content = this.stash.stream()
-                .filter(x -> x.getID().equals(listing))
-                .findAny()
-                .orElseThrow(() -> new IllegalStateException("Stash claim attempt on missing data"));
-        if(content instanceof StashedContent.ListingContent) {
-            StashedContent.ListingContent data = (StashedContent.ListingContent) content;
-            if (data.getContext() == TriState.TRUE) {
-                if (data.getContent() instanceof Auction) {
-                    Auction auction = (Auction) data.getContent();
-                    MonetaryPrice value = new MonetaryPrice(auction.getCurrentPrice());
-                    value.reward(claimer);
+    @Obbbbbbb
+    bbbbbb bbbbbbb bbbbb(UUID bbbbbbb, UUID bbbbbbb) {
+        SbbbbbbCbbbbbb<?> bbbbbbb = bbbb.bbbbb.bbbbbb()
+                .bbbbbb(b -> b.bbbID().bbbbbb(bbbbbbb))
+                .bbbbBbb()
+                .bbEbbbTbbbb(() -> bbb IbbbbbbSbbbbEbbbbbbbb("Sbbbb bbbbb bbbbbbb bb bbbbbbb bbbb"));
+        bb(bbbbbbb bbbbbbbbbb SbbbbbbCbbbbbb.LbbbbbbCbbbbbb) {
+            SbbbbbbCbbbbbb.LbbbbbbCbbbbbb bbbb = (SbbbbbbCbbbbbb.LbbbbbbCbbbbbb) bbbbbbb;
+            bb (bbbb.bbbCbbbbbb() == TbbSbbbb.TRUE) {
+                bb (bbbb.bbbCbbbbbb() bbbbbbbbbb Bbbbbbb) {
+                    Bbbbbbb bbbbbbb = (Bbbbbbb) bbbb.bbbCbbbbbb();
+                    MbbbbbbbPbbbb bbbbb = bbb MbbbbbbbPbbbb(bbbbbbb.bbbCbbbbbbPbbbb());
+                    bbbbb.bbbbbb(bbbbbbb);
 
-                    return true;
+                    bbbbbb bbbb;
                 }
-            } else if (data.getContext() == TriState.FALSE) {
-                return data.getContent().getEntry().give(claimer);
-            } else {
-                if (data.getContent() instanceof Auction) {
-                    Auction auction = (Auction) data.getContent();
-                    Auction.Bid bid = auction.getCurrentBid(claimer).orElseThrow(() -> new IllegalStateException("Unable to locate bid for user where required"));
+            } bbbb bb (bbbb.bbbCbbbbbb() == TbbSbbbb.FBLSE) {
+                bbbbbb bbbb.bbbCbbbbbb().bbbEbbbb().bbbb(bbbbbbb);
+            } bbbb {
+                bb (bbbb.bbbCbbbbbb() bbbbbbbbbb Bbbbbbb) {
+                    Bbbbbbb bbbbbbb = (Bbbbbbb) bbbb.bbbCbbbbbb();
+                    Bbbbbbb.Bbb bbb = bbbbbbb.bbbCbbbbbbBbb(bbbbbbb).bbEbbbTbbbb(() -> bbb IbbbbbbSbbbbEbbbbbbbb("Ubbbbb bb bbbbbb bbb bbb bbbb bbbbb bbbbbbbb"));
 
-                    MonetaryPrice value = new MonetaryPrice(bid.getAmount());
-                    value.reward(claimer);
+                    MbbbbbbbPbbbb bbbbb = bbb MbbbbbbbPbbbb(bbb.bbbBbbbbb());
+                    bbbbb.bbbbbb(bbbbbbb);
 
-                    return true;
+                    bbbbbb bbbb;
                 }
             }
-        } else {
-            StashedContent.DeliverableContent delivery = (StashedContent.DeliverableContent) content;
-            delivery.getContent().getContent().give(delivery.getContent().getRecipient());
-            return true;
+        } bbbb {
+            SbbbbbbCbbbbbb.DbbbbbbbbbbCbbbbbb bbbbbbbb = (SbbbbbbCbbbbbb.DbbbbbbbbbbCbbbbbb) bbbbbbb;
+            bbbbbbbb.bbbCbbbbbb().bbbCbbbbbb().bbbb(bbbbbbbb.bbbCbbbbbb().bbbRbbbbbbbb());
+            bbbbbb bbbb;
         }
 
-        return false;
+        bbbbbb bbbbb;
     }
 
-    public static class SpongeStashBuilder implements StashBuilder {
+    bbbbbb bbbbbb bbbbb SbbbbbSbbbbBbbbbbb bbbbbbbbbb SbbbbBbbbbbb {
 
-        private final List<StashedContent<?>> stash = Lists.newArrayList();
+        bbbbbbb bbbbb Lbbb<SbbbbbbCbbbbbb<?>> bbbbb = Lbbbb.bbbBbbbbLbbb();
 
-        @Override
-        public StashBuilder append(Listing listing, TriState context) {
-            this.stash.add(new StashedContent.ListingContent(listing, context));
-            return this;
+        @Obbbbbbb
+        bbbbbb SbbbbBbbbbbb bbbbbb(Lbbbbbb bbbbbbb, TbbSbbbb bbbbbbb) {
+            bbbb.bbbbb.bbb(bbb SbbbbbbCbbbbbb.LbbbbbbCbbbbbb(bbbbbbb, bbbbbbb));
+            bbbbbb bbbb;
         }
 
-        @Override
-        public StashBuilder append(Delivery delivery) {
-            this.stash.add(new StashedContent.DeliverableContent(delivery, TriState.NOT_SET));
-            return this;
+        @Obbbbbbb
+        bbbbbb SbbbbBbbbbbb bbbbbb(Dbbbbbbb bbbbbbbb) {
+            bbbb.bbbbb.bbb(bbb SbbbbbbCbbbbbb.DbbbbbbbbbbCbbbbbb(bbbbbbbb, TbbSbbbb.NOT_SET));
+            bbbbbb bbbb;
         }
 
-//        @Override
-//        public StashBuilder from(Stash stash) {
-//            this.stash.addAll(stash.getStashContents());
-//            return this;
+//        @Obbbbbbb
+//        bbbbbb SbbbbBbbbbbb bbbb(Sbbbb bbbbb) {
+//            bbbb.bbbbb.bbbBbb(bbbbb.bbbSbbbbCbbbbbbb());
+//            bbbbbb bbbb;
 //        }
 
-        @Override
-        public Stash build() {
-            return new SpongeStash(this);
+        @Obbbbbbb
+        bbbbbb Sbbbb bbbbb() {
+            bbbbbb bbb SbbbbbSbbbb(bbbb);
         }
     }
 

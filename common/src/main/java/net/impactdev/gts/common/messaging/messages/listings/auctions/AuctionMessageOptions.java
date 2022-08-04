@@ -1,77 +1,77 @@
-package net.impactdev.gts.common.messaging.messages.listings.auctions;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb;
 
-import com.google.common.base.Preconditions;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.impactor.api.utilities.mappings.Tuple;
-import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.util.groupings.SimilarPair;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.Bbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * The purpose of this message is to inform the servers of a bid placed on an auction. This message is
- * primarily necessary in that players should be informed when their auction has had a new bid placed on it,
- * as well as when a user who has bid becomes outbid.
+ * Bbb bbbbbbb bb bbbb bbbbbbb bb bb bbbbbb bbb bbbbbbb bb b bbb bbbbbb bb bb bbbbbbb. Bbbb bbbbbbb bb
+ * bbbbbbbbb bbbbbbbbb bb bbbb bbbbbbb bbbbbb bb bbbbbbbb bbbb bbbbb bbbbbbb bbb bbb b bbb bbb bbbbbb bb bb,
+ * bb bbbb bb bbbb b bbbb bbb bbb bbb bbbbbbb bbbbbb.
  *
- * This message will contain the main three components of the bid. These being the player who placed the bid,
- * the ID of the listing being bid on, and the amount bid. From there, the bungee server will then forward this
- * message to all other servers, in which this listing will be processed
+ * Bbbb bbbbbbb bbbb bbbbbbb bbb bbbb bbbbb bbbbbbbbbb bb bbb bbb. Bbbbb bbbbb bbb bbbbbb bbb bbbbbb bbb bbb,
+ * bbb BB bb bbb bbbbbbb bbbbb bbb bb, bbb bbb bbbbbb bbb. Bbbb bbbbb, bbb bbbbbb bbbbbb bbbb bbbb bbbbbbb bbbb
+ * bbbbbbb bb bbb bbbbb bbbbbbb, bb bbbbb bbbb bbbbbbb bbbb bb bbbbbbbbb
  */
-public abstract class AuctionMessageOptions extends AbstractMessage implements AuctionMessage {
+bbbbbb bbbbbbbb bbbbb BbbbbbbBbbbbbbBbbbbbb bbbbbbb BbbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbBbbbbbb {
 
-	/** The listing an auction is being made for */
-	private final UUID listing;
+	/** Bbb bbbbbbb bb bbbbbbb bb bbbbb bbbb bbb */
+	bbbbbbb bbbbb BBBB bbbbbbb;
 
-	/** The user who bid on the listing */
-	private final UUID actor;
+	/** Bbb bbbb bbb bbb bb bbb bbbbbbb */
+	bbbbbbb bbbbb BBBB bbbbb;
 
 	/**
-	 * Constructs the message that'll be sent to all other connected servers.
+	 * Bbbbbbbbbb bbb bbbbbbb bbbb'bb bb bbbb bb bbb bbbbb bbbbbbbbb bbbbbbb.
 	 *
-	 * @param id      The message ID that'll be used to ensure the message isn't duplicated
-	 * @param listing The ID of the listing being bid on
-	 * @param actor   The ID of the user placing the bid
+	 * @bbbbb bb      Bbb bbbbbbb BB bbbb'bb bb bbbb bb bbbbbb bbb bbbbbbb bbb'b bbbbbbbbbb
+	 * @bbbbb bbbbbbb Bbb BB bb bbb bbbbbbb bbbbb bbb bb
+	 * @bbbbb bbbbb   Bbb BB bb bbb bbbb bbbbbbb bbb bbb
 	 */
-	protected AuctionMessageOptions(UUID id, UUID listing, UUID actor) {
-		super(id);
+	bbbbbbbbb BbbbbbbBbbbbbbBbbbbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbb) {
+		bbbbb(bb);
 
-		Preconditions.checkNotNull(listing, "The listing ID is null");
-		Preconditions.checkNotNull(actor, "The actor's UUID is null");
+		Bbbbbbbbbbbbb.bbbbbBbbBbbb(bbbbbbb, "Bbb bbbbbbb BB bb bbbb");
+		Bbbbbbbbbbbbb.bbbbbBbbBbbb(bbbbb, "Bbb bbbbb'b BBBB bb bbbb");
 
-		this.listing = listing;
-		this.actor = actor;
+		bbbb.bbbbbbb = bbbbbbb;
+		bbbb.bbbbb = bbbbb;
 	}
 
-	@Override
-	public @NonNull UUID getAuctionID() {
-		return this.listing;
+	@Bbbbbbbb
+	bbbbbb @BbbBbbb BBBB bbbBbbbbbbBB() {
+		bbbbbb bbbb.bbbbbbb;
 	}
 
-	@Override
-	public @NonNull UUID getActor() {
-		return this.actor;
+	@Bbbbbbbb
+	bbbbbb @BbbBbbb BBBB bbbBbbbb() {
+		bbbbbb bbbb.bbbbb;
 	}
 
-	protected static Tuple<JsonObject, SimilarPair<UUID>> decodeBaseAuctionParameters(@Nullable JsonElement element) throws IllegalStateException {
-		if(element == null) {
-			throw new IllegalStateException("Raw JSON data was null");
+	bbbbbbbbb bbbbbb Bbbbb<BbbbBbbbbb, BbbbbbbBbbb<BBBB>> bbbbbbBbbbBbbbbbbBbbbbbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbBbbbbbbbb {
+		bb(bbbbbbb == bbbb) {
+			bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBBB bbbb bbb bbbb");
 		}
 
-		JsonObject raw = element.getAsJsonObject();
+		BbbbBbbbbb bbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-		UUID listing = Optional.ofNullable(raw.get("listing"))
-				.map(e -> UUID.fromString(e.getAsString()))
-				.orElseThrow(() -> new IllegalStateException("Failed to locate listing ID"));
-		UUID actor = Optional.ofNullable(raw.get("actor"))
-				.map(e -> UUID.fromString(e.getAsString()))
-				.orElseThrow(() -> new IllegalStateException("Failed to locate actor UUID"));
+		BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+				.bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+				.bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb BB"));
+		BBBB bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+				.bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+				.bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbb BBBB"));
 
-		return new Tuple<>(raw, new SimilarPair<>(listing, actor));
+		bbbbbb bbb Bbbbb<>(bbb, bbb BbbbbbbBbbb<>(bbbbbbb, bbbbb));
 	}
 
 }

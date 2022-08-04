@@ -1,32 +1,32 @@
-package net.impactdev.gts.common.blacklist;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import net.impactdev.gts.api.blacklist.Blacklist;
-import net.kyori.adventure.key.Key;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbb.Bbb;
 
-public class BlacklistImpl implements Blacklist {
+bbbbbb bbbbb BbbbbbbbbBbbb bbbbbbbbbb Bbbbbbbbb {
 
-    private final Multimap<Class<?>, String> blacklist = ArrayListMultimap.create();
+    bbbbbbb bbbbb Bbbbbbbb<Bbbbb<?>, Bbbbbb> bbbbbbbbb = BbbbbBbbbBbbbbbbb.bbbbbb();
 
-    @Override
-    public Multimap<Class<?>, String> getBlacklist() {
-        return this.blacklist;
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<Bbbbb<?>, Bbbbbb> bbbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb;
     }
 
-    @Override
-    public void append(Class<?> registrar, String key) {
-        this.blacklist.put(registrar, key);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbb(Bbbbb<?> bbbbbbbbb, Bbbbbb bbb) {
+        bbbb.bbbbbbbbb.bbb(bbbbbbbbb, bbb);
     }
 
-    @Override
-    public boolean isBlacklisted(Class<?> registrar, String query) {
-        return this.blacklist.get(registrar).contains(query);
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbBbbbbbbbbbb(Bbbbb<?> bbbbbbbbb, Bbbbbb bbbbb) {
+        bbbbbb bbbb.bbbbbbbbb.bbb(bbbbbbbbb).bbbbbbbb(bbbbb);
     }
 
-    @Override
-    public void clear() {
-        this.blacklist.clear();
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb() {
+        bbbb.bbbbbbbbb.bbbbb();
     }
 
 }

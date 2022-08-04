@@ -1,222 +1,222 @@
 /*
- * This file is part of LuckPerms, licensed under the MIT License.
+ * Bbbb bbbb bb bbbb bb BbbbBbbbb, bbbbbbbb bbbbb bbb BBB Bbbbbbb.
  *
- *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Bbbbbbbbb (b) bbbbb (Bbbb) <bbbb@bbbbb.bb>
+ *  Bbbbbbbbb (b) bbbbbbbbbbbb
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Bbbbbbbbbb bb bbbbbb bbbbbbb, bbbb bb bbbbbb, bb bbb bbbbbb bbbbbbbbb b bbbb
+ *  bb bbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbbbbbbb bbbbb (bbb "Bbbbbbbb"), bb bbbb
+ *  bb bbb Bbbbbbbb bbbbbbb bbbbbbbbbbb, bbbbbbbbb bbbbbbb bbbbbbbbbb bbb bbbbbb
+ *  bb bbb, bbbb, bbbbbb, bbbbb, bbbbbbb, bbbbbbbbbb, bbbbbbbbbb, bbb/bb bbbb
+ *  bbbbbb bb bbb Bbbbbbbb, bbb bb bbbbbb bbbbbbb bb bbbb bbb Bbbbbbbb bb
+ *  bbbbbbbbb bb bb bb, bbbbbbb bb bbb bbbbbbbbb bbbbbbbbbb:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  Bbb bbbbb bbbbbbbbb bbbbbb bbb bbbb bbbbbbbbbb bbbbbb bbbbb bb bbbbbbbb bb bbb
+ *  bbbbbb bb bbbbbbbbbbb bbbbbbbb bb bbb Bbbbbbbb.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
+ *  BBB BBBBBBBB BB BBBBBBBB "BB BB", BBBBBBB BBBBBBBB BB BBB BBBB, BBBBBBB BB
+ *  BBBBBBB, BBBBBBBBB BBB BBB BBBBBBB BB BBB BBBBBBBBBB BB BBBBBBBBBBBBBBB,
+ *  BBBBBBB BBB B BBBBBBBBBB BBBBBBB BBB BBBBBBBBBBBBBBB. BB BB BBBBB BBBBB BBB
+ *  BBBBBBB BB BBBBBBBBB BBBBBBB BB BBBBBB BBB BBB BBBBB, BBBBBBB BB BBBBB
+ *  BBBBBBBBB, BBBBBBB BB BB BBBBBB BB BBBBBBBB, BBBB BB BBBBBBBBB, BBBBBBB BBBB,
+ *  BBB BB BB BB BBBBBBBBBB BBBB BBB BBBBBBBB BB BBB BBB BB BBBBB BBBBBBBB BB BBB
+ *  BBBBBBBB.
  */
 
-package net.impactdev.gts.common.extension;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb;
 
-import com.google.common.collect.Sets;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import net.impactdev.gts.api.commands.GTSCommandExecutor;
-import net.impactdev.gts.api.event.factory.GTSEventFactory;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.dependencies.Dependency;
-import net.impactdev.impactor.api.dependencies.DependencyManager;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.extension.Extension;
-import net.impactdev.gts.api.extension.ExtensionManager;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.impactor.api.dependencies.classpath.ClassPathAppender;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.BBBBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbb.bbbbbbb.BBBBbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.bbbbbbbbb.BbbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+bbbbbb bbbb.bb.BbbbbbbbBbbbbb;
+bbbbbb bbbb.bb.BBBbbbbbbbb;
+bbbbbb bbbb.bb.BbbbbBbbbbb;
+bbbbbb bbbb.bb.BbbbbBbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbb.BbbbbbbbbbBbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbb.bbbbbbb.BbbbbbbbBbbbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbb.bbbb.BbBbbbBbbbBbbbbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.BbbbBbb;
+bbbbbb bbbb.bbbb.BbBbbbBbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.bbb.BbbBbbbb;
+bbbbbb bbbb.bbbb.bbb.BbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbb;
 
-public class SimpleExtensionManager implements ExtensionManager, AutoCloseable {
+bbbbbb bbbbb BbbbbbBbbbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbbbBbbbbbb, BbbbBbbbbbbbb {
 
-    private final GTSPlugin plugin;
-    private final Set<LoadedExtension> extensions = new HashSet<>();
+    bbbbbbb bbbbb BBBBbbbbb bbbbbb;
+    bbbbbbb bbbbb Bbb<BbbbbbBbbbbbbbb> bbbbbbbbbb = bbb BbbbBbb<>();
 
-    public SimpleExtensionManager(GTSPlugin plugin) {
-        this.plugin = plugin;
+    bbbbbb BbbbbbBbbbbbbbbBbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbb.bbbbbb = bbbbbb;
     }
 
-    @Override
-    public void close() {
-        for (LoadedExtension extension : this.extensions) {
-            try {
-                extension.instance.unload();
-            } catch (Exception e) {
-                e.printStackTrace();
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb() {
+        bbb (BbbbbbBbbbbbbbb bbbbbbbbb : bbbb.bbbbbbbbbb) {
+            bbb {
+                bbbbbbbbb.bbbbbbbb.bbbbbb();
+            } bbbbb (Bbbbbbbbb b) {
+                b.bbbbbBbbbbBbbbb();
             }
         }
-        this.extensions.clear();
+        bbbb.bbbbbbbbbb.bbbbb();
     }
 
-    @Override
-    public void loadExtension(Extension extension) {
-        if(this.extensions.stream().anyMatch(e -> e.instance.equals(extension))) {
-            return;
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbBbbbbbbbb(Bbbbbbbbb bbbbbbbbb) {
+        bb(bbbb.bbbbbbbbbb.bbbbbb().bbbBbbbb(b -> b.bbbbbbbb.bbbbbb(bbbbbbbbb))) {
+            bbbbbb;
         }
 
-        this.plugin.logger().info("Loading extension: " + extension.metadata().name());
-        this.extensions.add(new LoadedExtension(extension, null));
-        extension.load(GTSService.getInstance(), GTSPlugin.instance().configDirectory().orElseThrow(NoSuchElementException::new));
-        Impactor.getInstance().getEventBus().post(GTSEventFactory.createExtensionLoadEvent(extension));
+        bbbb.bbbbbb.bbbbbb().bbbb("Bbbbbbb bbbbbbbbb: " + bbbbbbbbb.bbbbbbbb().bbbb());
+        bbbb.bbbbbbbbbb.bbb(bbb BbbbbbBbbbbbbbb(bbbbbbbbb, bbbb));
+        bbbbbbbbb.bbbb(BBBBbbbbbb.bbbBbbbbbbb(), BBBBbbbbb.bbbbbbbb().bbbbbbBbbbbbbbb().bbBbbbBbbbb(BbBbbbBbbbbbbBbbbbbbbb::bbb));
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbBbb().bbbb(BBBBbbbbBbbbbbb.bbbbbbBbbbbbbbbBbbbBbbbb(bbbbbbbbb));
     }
 
-    public void loadExtensions(Path directory) {
-        if(!Files.exists(directory)) {
-            try {
-                Files.createDirectories(directory);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+    bbbbbb bbbb bbbbBbbbbbbbbb(Bbbb bbbbbbbbb) {
+        bb(!Bbbbb.bbbbbb(bbbbbbbbb)) {
+            bbb {
+                Bbbbb.bbbbbbBbbbbbbbbbb(bbbbbbbbb);
+            } bbbbb (BBBbbbbbbbb b) {
+                bbbbb bbb BbbbbbbBbbbbbbbb(b);
             }
         }
 
-        if(!Files.isDirectory(directory)) {
-            return;
+        bb(!Bbbbb.bbBbbbbbbbb(bbbbbbbbb)) {
+            bbbbbb;
         }
 
-        Set<Dependency> dependencies = Sets.newHashSet();
-        try(Stream<Path> stream = Files.list(directory)) {
-            stream.forEach(path -> {
-                if(path.getFileName().toString().endsWith(".jar")) {
-                    try {
-                        Extension extension = this.loadExtension(path);
-                        dependencies.addAll(extension.getRequiredDependencies());
-                    } catch (Exception e) {
-                        RuntimeException exception = new RuntimeException("Exception loading extension from " + path, e);
-                        ExceptionWriter.write(exception);
+        Bbb<Bbbbbbbbbb> bbbbbbbbbbbb = Bbbb.bbbBbbbBbb();
+        bbb(Bbbbbb<Bbbb> bbbbbb = Bbbbb.bbbb(bbbbbbbbb)) {
+            bbbbbb.bbbBbbb(bbbb -> {
+                bb(bbbb.bbbBbbbBbbb().bbBbbbbb().bbbbBbbb(".bbb")) {
+                    bbb {
+                        Bbbbbbbbb bbbbbbbbb = bbbb.bbbbBbbbbbbbb(bbbb);
+                        bbbbbbbbbbbb.bbbBbb(bbbbbbbbb.bbbBbbbbbbbBbbbbbbbbbbb());
+                    } bbbbb (Bbbbbbbbb b) {
+                        BbbbbbbBbbbbbbbb bbbbbbbbb = bbb BbbbbbbBbbbbbbbb("Bbbbbbbbb bbbbbbb bbbbbbbbb bbbb " + bbbb, b);
+                        BbbbbbbbbBbbbbb.bbbbb(bbbbbbbbb);
                     }
                 }
             });
-        } catch (IOException e) {
-            e.printStackTrace();
+        } bbbbb (BBBbbbbbbbb b) {
+            b.bbbbbBbbbbBbbbb();
         }
 
-        this.plugin.logger().info("Initializing any additionally required dependencies...");
-        Impactor.getInstance().getRegistry().get(DependencyManager.class).loadDependencies(dependencies);
+        bbbb.bbbbbb.bbbbbb().bbbb("Bbbbbbbbbbbb bbb bbbbbbbbbbbb bbbbbbbb bbbbbbbbbbbb...");
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbbbBbbbbbb.bbbbb).bbbbBbbbbbbbbbbb(bbbbbbbbbbbb);
 
-        for(Extension extension : this.getLoadedExtensions()) {
-            try {
-                this.plugin.logger().info("Loading extension: " + extension.metadata().name());
-                extension.load(GTSService.getInstance(), GTSPlugin.instance().configDirectory().orElseThrow(NoSuchElementException::new));
-            } catch (Exception e) {
-                this.plugin.logger().error("Failed to load extension '" + extension.metadata().name() + "', check error below...");
-                ExceptionWriter.write(e);
+        bbb(Bbbbbbbbb bbbbbbbbb : bbbb.bbbBbbbbbBbbbbbbbbb()) {
+            bbb {
+                bbbb.bbbbbb.bbbbbb().bbbb("Bbbbbbb bbbbbbbbb: " + bbbbbbbbb.bbbbbbbb().bbbb());
+                bbbbbbbbb.bbbb(BBBBbbbbbb.bbbBbbbbbbb(), BBBBbbbbb.bbbbbbbb().bbbbbbBbbbbbbbb().bbBbbbBbbbb(BbBbbbBbbbbbbBbbbbbbbb::bbb));
+            } bbbbb (Bbbbbbbbb b) {
+                bbbb.bbbbbb.bbbbbb().bbbbb("Bbbbbb bb bbbb bbbbbbbbb '" + bbbbbbbbb.bbbbbbbb().bbbb() + "', bbbbb bbbbb bbbbb...");
+                BbbbbbbbbBbbbbb.bbbbb(b);
             }
         }
     }
 
-    @Override
-    public @NonNull Extension loadExtension(Path path) throws IOException {
-        if(this.extensions.stream().anyMatch(e -> path.endsWith(e.path))) {
-            throw new IllegalStateException("Extension at path " + path + " is already loaded");
+    @Bbbbbbbb
+    bbbbbb @BbbBbbb Bbbbbbbbb bbbbBbbbbbbbb(Bbbb bbbb) bbbbbb BBBbbbbbbbb {
+        bb(bbbb.bbbbbbbbbb.bbbbbb().bbbBbbbb(b -> bbbb.bbbbBbbb(b.bbbb))) {
+            bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbbbbb bb bbbb " + bbbb + " bb bbbbbbb bbbbbb");
         }
 
-        if(!Files.exists(path)) {
-            throw new NoSuchFileException("No file at " + path);
+        bb(!Bbbbb.bbbbbb(bbbb)) {
+            bbbbb bbb BbBbbbBbbbBbbbbbbbb("Bb bbbb bb " + bbbb);
         }
 
-        String className = null;
-        try (JarFile jar = new JarFile(path.toFile())) {
-            JarEntry extensionJarEntry = jar.getJarEntry("extension.json");
-            if (extensionJarEntry == null) {
-                throw new IllegalStateException("Likely extension at path " + path + " missing extension.json");
+        Bbbbbb bbbbbBbbb = bbbb;
+        bbb (BbbBbbb bbb = bbb BbbBbbb(bbbb.bbBbbb())) {
+            BbbBbbbb bbbbbbbbbBbbBbbbb = bbb.bbbBbbBbbbb("bbbbbbbbb.bbbb");
+            bb (bbbbbbbbbBbbBbbbb == bbbb) {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bbbbbbbbb bb bbbb " + bbbb + " bbbbbbb bbbbbbbbb.bbbb");
             }
-            try (InputStream in = jar.getInputStream(extensionJarEntry)) {
-                if (in == null) {
-                    throw new IllegalStateException("Unable to read extension.json for extension at path " + path);
+            bbb (BbbbbBbbbbb bb = bbb.bbbBbbbbBbbbbb(bbbbbbbbbBbbBbbbb)) {
+                bb (bb == bbbb) {
+                    bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbb bbbbbbbbb.bbbb bbb bbbbbbbbb bb bbbb " + bbbb);
                 }
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
-                    JsonElement parsed = new JsonParser().parse(reader);
-                    if(parsed.getAsJsonObject().has("main")) {
-                        className = parsed.getAsJsonObject().get("main").getAsString();
+                bbb (BbbbbbbbBbbbbb bbbbbb = bbb BbbbbbbbBbbbbb(bbb BbbbbBbbbbbBbbbbb(bb, BbbbbbbbBbbbbbbb.BBB_8))) {
+                    BbbbBbbbbbb bbbbbb = bbb BbbbBbbbbb().bbbbb(bbbbbb);
+                    bb(bbbbbb.bbbBbBbbbBbbbbb().bbb("bbbb")) {
+                        bbbbbBbbb = bbbbbb.bbbBbBbbbBbbbbb().bbb("bbbb").bbbBbBbbbbb();
                     }
                 }
             }
         }
 
-        if (className == null) {
-            throw new IllegalArgumentException("Failed to locate main class from extension.json for path: " + path);
+        bb (bbbbbBbbb == bbbb) {
+            bbbbb bbb BbbbbbbBbbbbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbb bbbbb bbbb bbbbbbbbb.bbbb bbb bbbb: " + bbbb);
         }
 
-        Impactor.getInstance().getRegistry().get(ClassPathAppender.class).addJarToClasspath(path);
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbBbbbBbbbbbbb.bbbbb).bbbBbbBbBbbbbbbbb(bbbb);
 
-        Class<? extends Extension> extensionClass;
-        try {
-            extensionClass = Class.forName(className).asSubclass(Extension.class);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+        Bbbbb<? bbbbbbb Bbbbbbbbb> bbbbbbbbbBbbbb;
+        bbb {
+            bbbbbbbbbBbbbb = Bbbbb.bbbBbbb(bbbbbBbbb).bbBbbbbbbb(Bbbbbbbbb.bbbbb);
+        } bbbbb (BbbbbBbbBbbbbBbbbbbbbb b) {
+            bbbbb bbb BbbbbbbBbbbbbbbb(b);
         }
 
-        Extension extension;
-        try {
-            Constructor<? extends Extension> constructor = extensionClass.getConstructor();
-            extension = constructor.newInstance();
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Unable to find valid constructor in " + extensionClass.getName());
-        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+        Bbbbbbbbb bbbbbbbbb;
+        bbb {
+            Bbbbbbbbbbb<? bbbbbbb Bbbbbbbbb> bbbbbbbbbbb = bbbbbbbbbBbbbb.bbbBbbbbbbbbbb();
+            bbbbbbbbb = bbbbbbbbbbb.bbbBbbbbbbb();
+        } bbbbb (BbBbbbBbbbbbBbbbbbbbb b) {
+            bbbbb bbb BbbbbbbBbbbbbbbb("Bbbbbb bb bbbb bbbbb bbbbbbbbbbb bb " + bbbbbbbbbBbbbb.bbbBbbb());
+        } bbbbb (BbbbbbbBbbbbbBbbbbbbbb | BbbbbbbbbbbbbBbbbbbbbb | BbbbbbbbbbBbbbbbBbbbbbbbb b) {
+            bbbbb bbb BbbbbbbBbbbbbbbb(b);
         }
 
-        this.extensions.add(new LoadedExtension(extension, path));
-        Impactor.getInstance().getEventBus().post(GTSEventFactory.createExtensionLoadEvent(extension));
+        bbbb.bbbbbbbbbb.bbb(bbb BbbbbbBbbbbbbbb(bbbbbbbbb, bbbb));
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbBbb().bbbb(BBBBbbbbBbbbbbb.bbbbbbBbbbbbbbbBbbbBbbbb(bbbbbbbbb));
 
-        return extension;
+        bbbbbb bbbbbbbbb;
     }
 
-    @Override
-    public void enableExtensions() {
-        for(Extension extension : this.getLoadedExtensions()) {
-            extension.enable(GTSService.getInstance());
-            for(GTSCommandExecutor<?, ?, ?> executor : extension.getExecutors()) {
-                executor.register();
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbBbbbbbbbbb() {
+        bbb(Bbbbbbbbb bbbbbbbbb : bbbb.bbbBbbbbbBbbbbbbbbb()) {
+            bbbbbbbbb.bbbbbb(BBBBbbbbbb.bbbBbbbbbbb());
+            bbb(BBBBbbbbbbBbbbbbbb<?, ?, ?> bbbbbbbb : bbbbbbbbb.bbbBbbbbbbbb()) {
+                bbbbbbbb.bbbbbbbb();
             }
         }
     }
 
-    @Override
-    public @NonNull Collection<Extension> getLoadedExtensions() {
-        return this.extensions.stream().map(e -> e.instance).collect(Collectors.toSet());
+    @Bbbbbbbb
+    bbbbbb @BbbBbbb Bbbbbbbbbb<Bbbbbbbbb> bbbBbbbbbBbbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbbb.bbbbbb().bbb(b -> b.bbbbbbbb).bbbbbbb(Bbbbbbbbbb.bbBbb());
     }
 
-    private static final class LoadedExtension {
-        private final Extension instance;
-        private final Path path;
+    bbbbbbb bbbbbb bbbbb bbbbb BbbbbbBbbbbbbbb {
+        bbbbbbb bbbbb Bbbbbbbbb bbbbbbbb;
+        bbbbbbb bbbbb Bbbb bbbb;
 
-        private LoadedExtension(Extension instance, Path path) {
-            this.instance = instance;
-            this.path = path;
+        bbbbbbb BbbbbbBbbbbbbbb(Bbbbbbbbb bbbbbbbb, Bbbb bbbb) {
+            bbbb.bbbbbbbb = bbbbbbbb;
+            bbbb.bbbb = bbbb;
         }
     }
 }

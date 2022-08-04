@@ -1,49 +1,49 @@
-package net.impactdev.gts.common.discord;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb;
 
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
 
-import java.awt.*;
-import java.util.List;
-import java.util.NoSuchElementException;
+bbbbbb bbbb.bbb.*;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.BbBbbbBbbbbbbBbbbbbbbb;
 
-public class DiscordOption {
+bbbbbb bbbbb BbbbbbbBbbbbb {
 
-	private final String descriptor;
-	private final Color color;
-	private final List<String> webhookChannels;
+	bbbbbbb bbbbb Bbbbbb bbbbbbbbbb;
+	bbbbbbb bbbbb Bbbbb bbbbb;
+	bbbbbbb bbbbb Bbbb<Bbbbbb> bbbbbbbBbbbbbbb;
 
-	public DiscordOption(String descriptor, Color color, List<String> webhookChannels) {
-		this.descriptor = descriptor;
-		this.color = color;
-		this.webhookChannels = webhookChannels;
+	bbbbbb BbbbbbbBbbbbb(Bbbbbb bbbbbbbbbb, Bbbbb bbbbb, Bbbb<Bbbbbb> bbbbbbbBbbbbbbb) {
+		bbbb.bbbbbbbbbb = bbbbbbbbbb;
+		bbbb.bbbbb = bbbbb;
+		bbbb.bbbbbbbBbbbbbbb = bbbbbbbBbbbbbbb;
 	}
 
-	public String getDescriptor() {
-		return this.descriptor;
+	bbbbbb Bbbbbb bbbBbbbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbbbb;
 	}
 
-	public Color getColor() {
-		return this.color;
+	bbbbbb Bbbbb bbbBbbbb() {
+		bbbbbb bbbb.bbbbb;
 	}
 
-	public List<String> getWebhookChannels() {
-		return this.webhookChannels;
+	bbbbbb Bbbb<Bbbbbb> bbbBbbbbbbBbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbBbbbbbbb;
 	}
 
-	public static DiscordOption fetch(Options option) {
-		return GTSPlugin.instance().config()
-				.orElseThrow(NoSuchElementException::new)
-				.get(ConfigKeys.DISCORD_LINKS)
-				.get(option);
+	bbbbbb bbbbbb BbbbbbbBbbbbb bbbbb(Bbbbbbb bbbbbb) {
+		bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbb()
+				.bbBbbbBbbbb(BbBbbbBbbbbbbBbbbbbbbb::bbb)
+				.bbb(BbbbbbBbbb.BBBBBBB_BBBBB)
+				.bbb(bbbbbb);
 	}
 
-	public enum Options {
-		List_BIN,
-		List_Auction,
-		Purchase,
-		Remove,
-		Bid,
-		Claim,
+	bbbbbb bbbb Bbbbbbb {
+		Bbbb_BBB,
+		Bbbb_Bbbbbbb,
+		Bbbbbbbb,
+		Bbbbbb,
+		Bbb,
+		Bbbbb,
 	}
 }

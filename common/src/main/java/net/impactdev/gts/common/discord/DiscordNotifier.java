@@ -1,206 +1,206 @@
-package net.impactdev.gts.common.discord;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.common.components.GTSFlattenerListener;
-import net.impactdev.gts.common.discord.internal.DiscordPlaceholderParser;
-import net.impactdev.gts.common.discord.internal.DiscordSourceSpecificPlaceholderParser;
-import net.impactdev.gts.common.utils.EconomicFormatter;
-import net.impactdev.gts.common.utils.datetime.DateTimeFormatUtils;
-import net.impactdev.gts.common.utils.lang.StringComposer;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.flattener.ComponentFlattener;
-import net.kyori.adventure.text.flattener.FlattenerListener;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.NotNull;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.Bbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbb.BBBBbbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb.BbbbbbbBbbbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb.BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.BbbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbb.BbbbBbbbBbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.BbbbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbb.BbbbbbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbbBbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbbbbb.BbbbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbbbbb.BbbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbbbbb.BbbBbbb;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+bbbbbb bbbbb.bbb.bbb.BbbbbBBBBbbbbbbbbb;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.BbBbbbBbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.bbbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
 
-public class DiscordNotifier {
+bbbbbb bbbbb BbbbbbbBbbbbbbb {
 
-	private final GTSPlugin plugin;
+	bbbbbbb bbbbb BBBBbbbbb bbbbbb;
 
-	private MessageParser parser;
+	bbbbbbb BbbbbbbBbbbbb bbbbbb;
 
-	public DiscordNotifier(GTSPlugin plugin) {
-		this.plugin = plugin;
-		this.initialize();
+	bbbbbb BbbbbbbBbbbbbbb(BBBBbbbbb bbbbbb) {
+		bbbb.bbbbbb = bbbbbb;
+		bbbb.bbbbbbbbbb();
 	}
 
-	public CompletableFuture<Void> forgeAndSend(DiscordOption option, ConfigKey<List<String>> template, final Listing listing, final PlaceholderSources sources) {
-		return CompletableFutureManager.makeFuture(() -> {
-			Preconditions.checkArgument(!listing.getEntry().getDetails().isEmpty(), "Details must be specified for an entry");
-			Config config = this.plugin.config().orElseThrow(NoSuchElementException::new);
+	bbbbbb BbbbbbbbbbbBbbbbb<Bbbb> bbbbbBbbBbbb(BbbbbbbBbbbbb bbbbbb, BbbbbbBbb<Bbbb<Bbbbbb>> bbbbbbbb, bbbbb Bbbbbbb bbbbbbb, bbbbb BbbbbbbbbbbBbbbbbb bbbbbbb) {
+		bbbbbb BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(() -> {
+			Bbbbbbbbbbbbb.bbbbbBbbbbbbb(!bbbbbbb.bbbBbbbb().bbbBbbbbbb().bbBbbbb(), "Bbbbbbb bbbb bb bbbbbbbbb bbb bb bbbbb");
+			Bbbbbb bbbbbb = bbbb.bbbbbb.bbbbbb().bbBbbbBbbbb(BbBbbbBbbbbbbBbbbbbbbb::bbb);
 
-			PlaceholderSources context = PlaceholderSources.builder()
-					.from(sources)
-					.appendIfAbsent(Listing.class, () -> listing)
-					.build();
+			BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+					.bbbb(bbbbbbb)
+					.bbbbbbBbBbbbbb(Bbbbbbb.bbbbb, () -> bbbbbbb)
+					.bbbbb();
 
-			Field base = new Field("Listing Information", this.parser.interpret(this.plugin.configuration().language().get(template), context), true);
-			Field entry = new Field(StringComposer.readNameFromComponent(listing.getEntry().getName()), StringComposer.composeListAsString(listing.getEntry().getDetails()), true);
+			Bbbbb bbbb = bbb Bbbbb("Bbbbbbb Bbbbbbbbbbb", bbbb.bbbbbb.bbbbbbbbb(bbbb.bbbbbb.bbbbbbbbbbbbb().bbbbbbbb().bbb(bbbbbbbb), bbbbbbb), bbbb);
+			Bbbbb bbbbb = bbb Bbbbb(BbbbbbBbbbbbbb.bbbbBbbbBbbbBbbbbbbbb(bbbbbbb.bbbBbbbb().bbbBbbb()), BbbbbbBbbbbbbb.bbbbbbbBbbbBbBbbbbb(bbbbbbb.bbbBbbbb().bbbBbbbbbb()), bbbb);
 
-			Embed.Builder embed = Embed.builder()
-					.title(option.getDescriptor())
-					.color(option.getColor().getRGB())
-					.timestamp(LocalDateTime.now())
-					.field(base)
-					.field(entry);
+			Bbbbb.Bbbbbbb bbbbb = Bbbbb.bbbbbbb()
+					.bbbbb(bbbbbb.bbbBbbbbbbbbb())
+					.bbbbb(bbbbbb.bbbBbbbb().bbbBBB())
+					.bbbbbbbbb(BbbbbBbbbBbbb.bbb())
+					.bbbbb(bbbb)
+					.bbbbb(bbbbb);
 
-			listing.getEntry().getThumbnailURL().ifPresent(embed::thumbnail);
+			bbbbbbb.bbbBbbbb().bbbBbbbbbbbbBBB().bbBbbbbbb(bbbbb::bbbbbbbbb);
 
-			Message message = new Message(
-					config.get(ConfigKeys.DISCORD_TITLE),
-					config.get(ConfigKeys.DISCORD_AVATAR),
-					option
-			).addEmbed(embed.build());
+			Bbbbbbb bbbbbbb = bbb Bbbbbbb(
+					bbbbbb.bbb(BbbbbbBbbb.BBBBBBB_BBBBB),
+					bbbbbb.bbb(BbbbbbBbbb.BBBBBBB_BBBBBB),
+					bbbbbb
+			).bbbBbbbb(bbbbb.bbbbb());
 
-			if(config.get(ConfigKeys.DISCORD_LOGGING_ENABLED)) {
-				final List<String> URLS = message.getWebhooks();
+			bb(bbbbbb.bbb(BbbbbbBbbb.BBBBBBB_BBBBBBB_BBBBBBB)) {
+				bbbbb Bbbb<Bbbbbb> BBBB = bbbbbbb.bbbBbbbbbbb();
 
-				for (final String URL : URLS) {
-					this.plugin.logger().debug("[WebHook-Debug] Sending webhook payload to " + URL);
-					this.plugin.logger().debug("[WebHook-Debug] Payload: " + message.getJsonString());
+				bbb (bbbbb Bbbbbb BBB : BBBB) {
+					bbbb.bbbbbb.bbbbbb().bbbbb("[BbbBbbb-Bbbbb] Bbbbbbb bbbbbbb bbbbbbb bb " + BBB);
+					bbbb.bbbbbb.bbbbbb().bbbbb("[BbbBbbb-Bbbbb] Bbbbbbb: " + bbbbbbb.bbbBbbbBbbbbb());
 
-					HttpsURLConnection connection = message.send(URL);
-					int status = connection.getResponseCode();
-					this.plugin.logger().debug("[WebHook-Debug] Payload info received, status code: " + status);
+					BbbbbBBBBbbbbbbbbb bbbbbbbbbb = bbbbbbb.bbbb(BBB);
+					bbb bbbbbb = bbbbbbbbbb.bbbBbbbbbbbBbbb();
+					bbbb.bbbbbb.bbbbbb().bbbbb("[BbbBbbb-Bbbbb] Bbbbbbb bbbb bbbbbbbb, bbbbbb bbbb: " + bbbbbb);
 				}
 			}
 		});
 	}
 
-	private void initialize() {
-		this.parser = new MessageParser();
-		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
-				Listing.class,
-				"discord:listing_id",
-				listing -> listing.getID().toString()
+	bbbbbbb bbbb bbbbbbbbbb() {
+		bbbb.bbbbbb = bbb BbbbbbbBbbbbb();
+		bbbb.bbbbbb.bbbBbbbbbbbbbb(bbb BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+				Bbbbbbb.bbbbb,
+				"bbbbbbb:bbbbbbb_bb",
+				bbbbbbb -> bbbbbbb.bbbBB().bbBbbbbb()
 		));
-		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
-				Listing.class,
-				"discord:publisher",
-				listing -> GTSPlugin.instance().playerDisplayName(listing.getLister()).join()
+		bbbb.bbbbbb.bbbBbbbbbbbbbb(bbb BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+				Bbbbbbb.bbbbb,
+				"bbbbbbb:bbbbbbbbb",
+				bbbbbbb -> BBBBbbbbb.bbbbbbbb().bbbbbbBbbbbbbBbbb(bbbbbbb.bbbBbbbbb()).bbbb()
 		));
-		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
-				Listing.class,
-				"discord:publisher_id",
-				listing -> listing.getLister().toString()
+		bbbb.bbbbbb.bbbBbbbbbbbbbb(bbb BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+				Bbbbbbb.bbbbb,
+				"bbbbbbb:bbbbbbbbb_bb",
+				bbbbbbb -> bbbbbbb.bbbBbbbbb().bbBbbbbb()
 		));
-		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
-				BuyItNow.class,
-				"discord:price",
-				listing -> {
-					TextComponent price = listing.getPrice().getText();
-					StringBuilder out = new StringBuilder(price.content());
-					for(Component child : price.children().stream().filter(x -> x instanceof TextComponent).collect(Collectors.toList())) {
-						out.append(((TextComponent) child).content());
+		bbbb.bbbbbb.bbbBbbbbbbbbbb(bbb BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+				BbbBbBbb.bbbbb,
+				"bbbbbbb:bbbbb",
+				bbbbbbb -> {
+					BbbbBbbbbbbbb bbbbb = bbbbbbb.bbbBbbbb().bbbBbbb();
+					BbbbbbBbbbbbb bbb = bbb BbbbbbBbbbbbb(bbbbb.bbbbbbb());
+					bbb(Bbbbbbbbb bbbbb : bbbbb.bbbbbbbb().bbbbbb().bbbbbb(b -> b bbbbbbbbbb BbbbBbbbbbbbb).bbbbbbb(Bbbbbbbbbb.bbBbbb())) {
+						bbb.bbbbbb(((BbbbBbbbbbbbb) bbbbb).bbbbbbb());
 					}
-					return out.toString();
+					bbbbbb bbb.bbBbbbbb();
 				}
 		));
-		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
-				Auction.class,
-				"discord:starting_bid",
-				auction -> {
-					final StringBuilder builder = new StringBuilder();
-					FlattenerListener listener = new FlattenerListener() {
+		bbbb.bbbbbb.bbbBbbbbbbbbbb(bbb BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+				Bbbbbbb.bbbbb,
+				"bbbbbbb:bbbbbbbb_bbb",
+				bbbbbbb -> {
+					bbbbb BbbbbbBbbbbbb bbbbbbb = bbb BbbbbbBbbbbbb();
+					BbbbbbbbbBbbbbbbb bbbbbbbb = bbb BbbbbbbbbBbbbbbbb() {
 
-						@Override
-						public void component(@NotNull String text) {
-							builder.append(text);
+						@Bbbbbbbb
+						bbbbbb bbbb bbbbbbbbb(@BbbBbbb Bbbbbb bbbb) {
+							bbbbbbb.bbbbbb(bbbb);
 						}
 					};
 
-					ComponentFlattener.textOnly().flatten(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(auction.getStartingPrice()), listener);
-					return builder.toString();
+					BbbbbbbbbBbbbbbbbb.bbbbBbbb().bbbbbbb(Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbBbbbbbbbb.bbbbb).bbbbbb(bbbbbbb.bbbBbbbbbbbBbbbb()), bbbbbbbb);
+					bbbbbb bbbbbbb.bbBbbbbb();
 				}));
-		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
-				Listing.class,
-				"discord:expiration",
-				DateTimeFormatUtils::formatExpiration
+		bbbb.bbbbbb.bbbBbbbbbbbbbb(bbb BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+				Bbbbbbb.bbbbb,
+				"bbbbbbb:bbbbbbbbbb",
+				BbbbBbbbBbbbbbBbbbb::bbbbbbBbbbbbbbbb
 		));
-		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
-				UUID.class,
-				"discord:actor",
-				actor -> GTSPlugin.instance().playerDisplayName(actor).join()
+		bbbb.bbbbbb.bbbBbbbbbbbbbb(bbb BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+				BBBB.bbbbb,
+				"bbbbbbb:bbbbb",
+				bbbbb -> BBBBbbbbb.bbbbbbbb().bbbbbbBbbbbbbBbbb(bbbbb).bbbb()
 		));
-		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
-				UUID.class,
-				"discord:actor_id",
-				UUID::toString
+		bbbb.bbbbbb.bbbBbbbbbbbbbb(bbb BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+				BBBB.bbbbb,
+				"bbbbbbb:bbbbb_bb",
+				BBBB::bbBbbbbb
 		));
-		this.parser.addPlaceholder(new DiscordSourceSpecificPlaceholderParser<>(
-				Double.class,
-				"discord:bid",
-				amount -> {
-					GTSFlattenerListener listener = new GTSFlattenerListener();
-					ComponentFlattener.textOnly().flatten(Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(amount), listener);
-					return listener.result();
+		bbbb.bbbbbb.bbbBbbbbbbbbbb(bbb BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+				Bbbbbb.bbbbb,
+				"bbbbbbb:bbb",
+				bbbbbb -> {
+					BBBBbbbbbbbbBbbbbbbb bbbbbbbb = bbb BBBBbbbbbbbbBbbbbbbb();
+					BbbbbbbbbBbbbbbbbb.bbbbBbbb().bbbbbbb(Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbBbbbbbbbb.bbbbb).bbbbbb(bbbbbb), bbbbbbbb);
+					bbbbbb bbbbbbbb.bbbbbb();
 				}
 		));
 	}
 
-	private static class MessageParser {
+	bbbbbbb bbbbbb bbbbb BbbbbbbBbbbbb {
 
-		private static final Pattern TOKEN_LOCATOR = Pattern.compile("[{][{]([\\w-:]+)[}][}]");
+		bbbbbbb bbbbbb bbbbb Bbbbbbb BBBBB_BBBBBBB = Bbbbbbb.bbbbbbb("[{][{]([\\b-:]+)[}][}]");
 
-		private final Map<String, DiscordPlaceholderParser> placeholders = Maps.newHashMap();
+		bbbbbbb bbbbb Bbb<Bbbbbb, BbbbbbbBbbbbbbbbbbBbbbbb> bbbbbbbbbbbb = Bbbb.bbbBbbbBbb();
 
-		public String interpret(List<String> base, PlaceholderSources sources) {
-			List<String> out = Lists.newArrayList();
-			for(String s : base) {
-				out.add(this.parse(s, sources));
+		bbbbbb Bbbbbb bbbbbbbbb(Bbbb<Bbbbbb> bbbb, BbbbbbbbbbbBbbbbbb bbbbbbb) {
+			Bbbb<Bbbbbb> bbb = Bbbbb.bbbBbbbbBbbb();
+			bbb(Bbbbbb b : bbbb) {
+				bbb.bbb(bbbb.bbbbb(b, bbbbbbb));
 			}
 
-			return StringComposer.composeListAsString(out);
+			bbbbbb BbbbbbBbbbbbbb.bbbbbbbBbbbBbBbbbbb(bbb);
 		}
 
 
-		void addPlaceholder(DiscordPlaceholderParser parser) {
-			this.placeholders.put(parser.getID(), parser);
+		bbbb bbbBbbbbbbbbbb(BbbbbbbBbbbbbbbbbbBbbbbb bbbbbb) {
+			bbbb.bbbbbbbbbbbb.bbb(bbbbbb.bbbBB(), bbbbbb);
 		}
 
-		public String parse(@NonNull String message, PlaceholderSources sources) {
-			Matcher matcher = TOKEN_LOCATOR.matcher(message);
+		bbbbbb Bbbbbb bbbbb(@BbbBbbb Bbbbbb bbbbbbb, BbbbbbbbbbbBbbbbbb bbbbbbb) {
+			Bbbbbbb bbbbbbb = BBBBB_BBBBBBB.bbbbbbb(bbbbbbb);
 
-			AtomicReference<String> result = new AtomicReference<>(message);
-			while(matcher.find()) {
-				String placeholder = matcher.group(1);
-				Optional.ofNullable(this.placeholders.get(placeholder.toLowerCase())).ifPresent(parser -> {
-					String out = parser.parse(sources);
-					if(out != null) {
-						result.set(result.get().replace("{{" + placeholder + "}}", out));
+			BbbbbbBbbbbbbbb<Bbbbbb> bbbbbb = bbb BbbbbbBbbbbbbbb<>(bbbbbbb);
+			bbbbb(bbbbbbb.bbbb()) {
+				Bbbbbb bbbbbbbbbbb = bbbbbbb.bbbbb(1);
+				Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbbbbbbbb.bbb(bbbbbbbbbbb.bbBbbbbBbbb())).bbBbbbbbb(bbbbbb -> {
+					Bbbbbb bbb = bbbbbb.bbbbb(bbbbbbb);
+					bb(bbb != bbbb) {
+						bbbbbb.bbb(bbbbbb.bbb().bbbbbbb("{{" + bbbbbbbbbbb + "}}", bbb));
 					}
 				});
 			}
 
-			return result.get();
+			bbbbbb bbbbbb.bbb();
 		}
 	}
 

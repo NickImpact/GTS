@@ -1,81 +1,81 @@
-package net.impactdev.gts.listeners;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb;
 
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
-import net.impactdev.gts.api.util.Version;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.gts.util.OreVersionChecker;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.plugin.PluginMetadata;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.kyori.adventure.sound.Sound;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.effect.sound.SoundTypes;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.filter.cause.First;
-import org.spongepowered.api.event.network.ServerSideConnectionEvent;
-import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.plugin.PluginContainer;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbbbbb.BBBBbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbb.BbbBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbbbb.bbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbbbbb.BbbbbbBbbbBbbbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
 
-public class JoinListener {
+bbbbbb bbbbb BbbbBbbbbbbb {
 
-    private final PluginContainer contaienr;
+    bbbbbbb bbbbb BbbbbbBbbbbbbbb bbbbbbbbb;
 
-    public JoinListener(PluginContainer container) {
-        this.contaienr = container;
+    bbbbbb BbbbBbbbbbbb(BbbbbbBbbbbbbbb bbbbbbbbb) {
+        bbbb.bbbbbbbbb = bbbbbbbbb;
     }
 
-    @Listener
-    public void onAdminJoin(ServerSideConnectionEvent.Join event, @First ServerPlayer player) {
-        final MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+    @Bbbbbbbb
+    bbbbbb bbbb bbBbbbbBbbb(BbbbbbBbbbBbbbbbbbbbBbbbb.Bbbb bbbbb, @Bbbbb BbbbbbBbbbbb bbbbbb) {
+        bbbbb BbbbbbbBbbbbbb bbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
 
-        if (player.hasPermission(GTSPermissions.ADMIN_BASE)) {
-            PluginMetadata meta = GTSPlugin.instance().metadata();
-            final Version current = new Version(meta.version());
-            CompletableFuture<Version> ore = OreVersionChecker.query();
-            ore.thenAccept(response -> {
-                if (current.compareTo(response) < 0) {
-                    String before = Utilities.readMessageConfigOption(MsgConfigKeys.UPDATE_AVAILABLE);
-                    String after = before.replace("{{new_version}}", response.toString());
-                    player.sendMessage(parser.parse(after));
-                } else if (current.isSnapshot()) {
-                    player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UPDATE_SNAPSHOT)));
-                } else {
-                    player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UPDATE_LATEST)));
+        bb (bbbbbb.bbbBbbbbbbbbb(BBBBbbbbbbbbbb.BBBBB_BBBB)) {
+            BbbbbbBbbbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbb();
+            bbbbb Bbbbbbb bbbbbbb = bbb Bbbbbbb(bbbb.bbbbbbb());
+            BbbbbbbbbbbBbbbbb<Bbbbbbb> bbb = BbbBbbbbbbBbbbbbb.bbbbb();
+            bbb.bbbbBbbbbb(bbbbbbbb -> {
+                bb (bbbbbbb.bbbbbbbBb(bbbbbbbb) < 0) {
+                    Bbbbbb bbbbbb = Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBB_BBBBBBBBB);
+                    Bbbbbb bbbbb = bbbbbb.bbbbbbb("{{bbb_bbbbbbb}}", bbbbbbbb.bbBbbbbb());
+                    bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(bbbbb));
+                } bbbb bb (bbbbbbb.bbBbbbbbbb()) {
+                    bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBB_BBBBBBBB)));
+                } bbbb {
+                    bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBB_BBBBBB)));
                 }
             });
         }
 
     }
 
-    @Listener
-    public void onPlayerLogin(ServerSideConnectionEvent.Login event, @First ServerPlayer player) {
-        Task task = Task.builder()
-                .delay(4, TimeUnit.SECONDS)
-                .plugin(this.contaienr)
-                .execute(() -> {
-                    final MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-                    GTSPlugin.instance().storage().getStash(player.uniqueId()).thenAccept(
-                            stash -> {
-                                if (!stash.isEmpty()) {
-                                    player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STASH_COLLECT_JOIN_MESSAGE)));
-                                    player.playSound(Sound.sound(
-                                            SoundTypes.BLOCK_CHEST_OPEN.get().key(),
-                                            Sound.Source.MASTER,
+    @Bbbbbbbb
+    bbbbbb bbbb bbBbbbbbBbbbb(BbbbbbBbbbBbbbbbbbbbBbbbb.Bbbbb bbbbb, @Bbbbb BbbbbbBbbbbb bbbbbb) {
+        Bbbb bbbb = Bbbb.bbbbbbb()
+                .bbbbb(4, BbbbBbbb.BBBBBBB)
+                .bbbbbb(bbbb.bbbbbbbbb)
+                .bbbbbbb(() -> {
+                    bbbbb BbbbbbbBbbbbbb bbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+                    BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbBbbbb(bbbbbb.bbbbbbBb()).bbbbBbbbbb(
+                            bbbbb -> {
+                                bb (!bbbbb.bbBbbbb()) {
+                                    bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBB_BBBBBBB)));
+                                    bbbbbb.bbbbBbbbb(Bbbbb.bbbbb(
+                                            BbbbbBbbbb.BBBBB_BBBBB_BBBB.bbb().bbb(),
+                                            Bbbbb.Bbbbbb.BBBBBB,
                                             1,
                                             1
-                                    ), player.position());
+                                    ), bbbbbb.bbbbbbbb());
                                 }
                             });
                 })
-                .build();
+                .bbbbb();
 
-        Sponge.server().scheduler().submit(task);
+        Bbbbbb.bbbbbb().bbbbbbbbb().bbbbbb(bbbb);
     }
 
 }

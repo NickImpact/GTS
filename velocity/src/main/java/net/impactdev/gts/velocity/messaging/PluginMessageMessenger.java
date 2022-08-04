@@ -1,84 +1,84 @@
-package net.impactdev.gts.velocity.messaging;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
-import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.connection.PluginMessageEvent;
-import com.velocitypowered.api.proxy.Player;
-import com.velocitypowered.api.proxy.ProxyServer;
-import com.velocitypowered.api.proxy.messages.ChannelIdentifier;
-import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
-import com.velocitypowered.api.proxy.server.RegisteredServer;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.velocity.GTSVelocityPlugin;
-import net.impactdev.impactor.api.Impactor;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbb.bbbbbb.bb.BbbbBbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bb.BbbbBbbbbBbbbBbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbb.bbbbbbbbbb.BbbbbbBbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbb.BbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbb.bbbbbbbb.BbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbb.bbbbbbbb.BbbbbbbbbBbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbb.bbbbbb.BbbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.BBBBbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-public class PluginMessageMessenger implements Messenger {
+bbbbbb bbbbb BbbbbbBbbbbbbBbbbbbbbb bbbbbbbbbb Bbbbbbbbb {
 
-    private static final ChannelIdentifier CHANNEL = MinecraftChannelIdentifier.create("gts", "update");
+    bbbbbbb bbbbbb bbbbb BbbbbbbBbbbbbbbbb BBBBBBB = BbbbbbbbbBbbbbbbBbbbbbbbbb.bbbbbb("bbb", "bbbbbb");
 
-    private final GTSVelocityPlugin plugin;
-    private final IncomingMessageConsumer consumer;
+    bbbbbbb bbbbb BBBBbbbbbbbBbbbbb bbbbbb;
+    bbbbbbb bbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb;
 
-    public PluginMessageMessenger(GTSVelocityPlugin plugin, IncomingMessageConsumer consumer) {
-        this.plugin = plugin;
-        this.consumer = consumer;
+    bbbbbb BbbbbbBbbbbbbBbbbbbbbb(BBBBbbbbbbbBbbbbb bbbbbb, BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb) {
+        bbbb.bbbbbb = bbbbbb;
+        bbbb.bbbbbbbb = bbbbbbbb;
     }
 
-    @Override
-    public IncomingMessageConsumer getMessageConsumer() {
-        return this.consumer;
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbBbbbbbbBbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbb;
     }
 
-    public void init() {
-        ProxyServer proxy = this.plugin.bootstrap().getProxy();
-        proxy.getChannelRegistrar().register(CHANNEL);
-        proxy.getEventManager().register(this.plugin.bootstrap(), this);
+    bbbbbb bbbb bbbb() {
+        BbbbbBbbbbb bbbbb = bbbb.bbbbbb.bbbbbbbbb().bbbBbbbb();
+        bbbbb.bbbBbbbbbbBbbbbbbbb().bbbbbbbb(BBBBBBB);
+        bbbbb.bbbBbbbbBbbbbbb().bbbbbbbb(bbbb.bbbbbb.bbbbbbbbb(), bbbb);
     }
 
-    @Override
-    public void close() {
-        ProxyServer proxy = this.plugin.bootstrap().getProxy();
-        proxy.getChannelRegistrar().unregister(CHANNEL);
-        proxy.getEventManager().unregisterListener(this.plugin.bootstrap(), this);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb() {
+        BbbbbBbbbbb bbbbb = bbbb.bbbbbb.bbbbbbbbb().bbbBbbbb();
+        bbbbb.bbbBbbbbbbBbbbbbbbb().bbbbbbbbbb(BBBBBBB);
+        bbbbb.bbbBbbbbBbbbbbb().bbbbbbbbbbBbbbbbbb(bbbb.bbbbbb.bbbbbbbbb(), bbbb);
     }
 
-    private void dispatch(byte[] message) {
-        for(RegisteredServer server : this.plugin.bootstrap().getProxy().getAllServers()) {
-            server.sendPluginMessage(CHANNEL, message);
+    bbbbbbb bbbb bbbbbbbb(bbbb[] bbbbbbb) {
+        bbb(BbbbbbbbbbBbbbbb bbbbbb : bbbb.bbbbbb.bbbbbbbbb().bbbBbbbb().bbbBbbBbbbbbb()) {
+            bbbbbb.bbbbBbbbbbBbbbbbb(BBBBBBB, bbbbbbb);
         }
     }
 
-    @Override
-    public void sendOutgoingMessage(@NonNull OutgoingMessage outgoingMessage) {
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF(outgoingMessage.asEncodedString());
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbBbbbbbbbBbbbbbb(@BbbBbbb BbbbbbbbBbbbbbb bbbbbbbbBbbbbbb) {
+        BbbbBbbbbBbbbBbbbbb bbb = BbbbBbbbbbb.bbbBbbbBbbbbb();
+        bbb.bbbbbBBB(bbbbbbbbBbbbbbb.bbBbbbbbbBbbbbb());
 
-        byte[] message = out.toByteArray();
-        this.dispatch(message);
+        bbbb[] bbbbbbb = bbb.bbBbbbBbbbb();
+        bbbb.bbbbbbbb(bbbbbbb);
     }
 
-    @Subscribe
-    public void onPluginMessage(PluginMessageEvent event) {
-        if(!event.getIdentifier().getId().equals(CHANNEL.getId())) {
-            return;
+    @Bbbbbbbbb
+    bbbbbb bbbb bbBbbbbbBbbbbbb(BbbbbbBbbbbbbBbbbb bbbbb) {
+        bb(!bbbbb.bbbBbbbbbbbbb().bbbBb().bbbbbb(BBBBBBB.bbbBb())) {
+            bbbbbb;
         }
 
-        event.setResult(PluginMessageEvent.ForwardResult.handled());
+        bbbbb.bbbBbbbbb(BbbbbbBbbbbbbBbbbb.BbbbbbbBbbbbb.bbbbbbb());
 
-        if(event.getSource() instanceof Player) {
-            return;
+        bb(bbbbb.bbbBbbbbb() bbbbbbbbbb Bbbbbb) {
+            bbbbbb;
         }
 
-        ByteArrayDataInput in = event.dataAsDataStream();
-        String msg = in.readUTF();
+        BbbbBbbbbBbbbBbbbb bb = bbbbb.bbbbBbBbbbBbbbbb();
+        Bbbbbb bbb = bb.bbbbBBB();
 
-        if(this.consumer.consumeIncomingMessageAsString(msg)) {
-            Impactor.getInstance().getScheduler().executeAsync(() -> this.dispatch(event.getData()));
+        bb(bbbb.bbbbbbbb.bbbbbbbBbbbbbbbBbbbbbbBbBbbbbb(bbb)) {
+            Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbbb(() -> bbbb.bbbbbbbb(bbbbb.bbbBbbb()));
         }
     }
 }

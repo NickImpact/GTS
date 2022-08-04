@@ -1,102 +1,102 @@
-package net.impactdev.gts.api.messaging.message.type.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb;
 
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
-import net.impactdev.gts.api.util.TriState;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * Represents an attempt by a user to claim an item of theirs granted by GTS.
+ * Bbbbbbbbbb bb bbbbbbb bb b bbbb bb bbbbb bb bbbb bb bbbbbb bbbbbbb bb BBB.
  */
-public interface ClaimMessage extends OutgoingMessage {
+bbbbbb bbbbbbbbb BbbbbBbbbbbb bbbbbbb BbbbbbbbBbbbbbb {
 
     /**
-     * Represents the ID of the auction being acted on. This ID is the primary key to locating an auction,
-     * and as such, should be unique to one specific auction.
+     * Bbbbbbbbbb bbb BB bb bbb bbbbbbb bbbbb bbbbb bb. Bbbb BB bb bbb bbbbbbb bbb bb bbbbbbbb bb bbbbbbb,
+     * bbb bb bbbb, bbbbbb bb bbbbbb bb bbb bbbbbbbb bbbbbbb.
      *
-     * @return The ID of the auction
+     * @bbbbbb Bbb BB bb bbb bbbbbbb
      */
-    @NonNull UUID getListingID();
+    @BbbBbbb BBBB bbbBbbbbbbBB();
 
     /**
-     * Represents the UUID of a player or another source that is applying the action to this auction.
+     * Bbbbbbbbbb bbb BBBB bb b bbbbbb bb bbbbbbb bbbbbb bbbb bb bbbbbbbb bbb bbbbbb bb bbbb bbbbbbb.
      *
-     * @return The UUID of the source applying the action
+     * @bbbbbb Bbb BBBB bb bbb bbbbbb bbbbbbbb bbb bbbbbb
      */
-    @NonNull UUID getActor();
+    @BbbBbbb BBBB bbbBbbbb();
 
     /**
-     * Represents the ID of the user that will be receiving this listing. This is primarily for
-     * admin usage. Otherwise, a normal claim operation will find this value always empty.
+     * Bbbbbbbbbb bbb BB bb bbb bbbb bbbb bbbb bb bbbbbbbbb bbbb bbbbbbb. Bbbb bb bbbbbbbbb bbb
+     * bbbbb bbbbb. Bbbbbbbbb, b bbbbbb bbbbb bbbbbbbbb bbbb bbbb bbbb bbbbb bbbbbb bbbbb.
      *
-     * @return The UUID of the intended receiver, if one is set
+     * @bbbbbb Bbb BBBB bb bbb bbbbbbbb bbbbbbbb, bb bbb bb bbb
      */
-    Optional<UUID> getReceiver();
+    Bbbbbbbb<BBBB> bbbBbbbbbbb();
 
     /**
-     * Specifies whether or not this claim request was based on an auction.
+     * Bbbbbbbbb bbbbbbb bb bbb bbbb bbbbb bbbbbbb bbb bbbbb bb bb bbbbbbb.
      *
-     * @return True if the claim request was for an auction, false for BIN
+     * @bbbbbb Bbbb bb bbb bbbbb bbbbbbb bbb bbb bb bbbbbbb, bbbbb bbb BBB
      */
-    boolean isAuction();
+    bbbbbbb bbBbbbbbb();
 
     /**
-     * This represents the actual request made to the messaging service, in which we expect a response indicating
-     * whether or not the action can go through.
+     * Bbbb bbbbbbbbbb bbb bbbbbb bbbbbbb bbbb bb bbb bbbbbbbbb bbbbbbb, bb bbbbb bb bbbbbb b bbbbbbbb bbbbbbbbbb
+     * bbbbbbb bb bbb bbb bbbbbb bbb bb bbbbbbb.
      *
-     * If our claim is based around an auction, this request should return an {@link ClaimMessage.Response.AuctionResponse}
-     * that includes the extended information.
+     * Bb bbb bbbbb bb bbbbb bbbbbb bb bbbbbbb, bbbb bbbbbbb bbbbbb bbbbbb bb {@bbbb BbbbbBbbbbbb.Bbbbbbbb.BbbbbbbBbbbbbbb}
+     * bbbb bbbbbbbb bbb bbbbbbbb bbbbbbbbbbb.
      */
-    interface Request extends ClaimMessage, MessageType.Request<Response> {}
+    bbbbbbbbb Bbbbbbb bbbbbbb BbbbbBbbbbbb, BbbbbbbBbbb.Bbbbbbb<Bbbbbbbb> {}
 
     /**
-     * This represents the response to a request. This will be used to determine whether the claim request proceeded
-     * successfully, or received some kind of error stopping the request.
+     * Bbbb bbbbbbbbbb bbb bbbbbbbb bb b bbbbbbb. Bbbb bbbb bb bbbb bb bbbbbbbbb bbbbbbb bbb bbbbb bbbbbbb bbbbbbbbb
+     * bbbbbbbbbbbb, bb bbbbbbbb bbbb bbbb bb bbbbb bbbbbbbb bbb bbbbbbb.
      */
-    interface Response extends ClaimMessage, MessageType.Response {
+    bbbbbbbbb Bbbbbbbb bbbbbbb BbbbbBbbbbbb, BbbbbbbBbbb.Bbbbbbbb {
 
         /**
-         * A child of a response, specific to an attempt to claim from an auction. This carries
-         * more information in regards to the auction such that we can ensure successful
-         * retrieval of goods per each user.
+         * B bbbbb bb b bbbbbbbb, bbbbbbbb bb bb bbbbbbb bb bbbbb bbbb bb bbbbbbb. Bbbb bbbbbbb
+         * bbbb bbbbbbbbbbb bb bbbbbbb bb bbb bbbbbbb bbbb bbbb bb bbb bbbbbb bbbbbbbbbb
+         * bbbbbbbbb bb bbbbb bbb bbbb bbbb.
          */
-        interface AuctionResponse extends ClaimMessage.Response {
+        bbbbbbbbb BbbbbbbBbbbbbbb bbbbbbb BbbbbBbbbbbb.Bbbbbbbb {
 
             /**
-             * Indicates that the lister of the auction has claimed their portion of the auction.
+             * Bbbbbbbbb bbbb bbb bbbbbb bb bbb bbbbbbb bbb bbbbbbb bbbbb bbbbbbb bb bbb bbbbbbb.
              *
-             * @return True if the lister has claimed part of the auction, false otherwise
+             * @bbbbbb Bbbb bb bbb bbbbbb bbb bbbbbbb bbbb bb bbb bbbbbbb, bbbbb bbbbbbbbb
              */
-            boolean hasListerClaimed();
+            bbbbbbb bbbBbbbbbBbbbbbb();
 
             /**
-             * Indicates that the winner of the auction has claimed their portion of the auction.
+             * Bbbbbbbbb bbbb bbb bbbbbb bb bbb bbbbbbb bbb bbbbbbb bbbbb bbbbbbb bb bbb bbbbbbb.
              *
-             * @return True if the winner has claimed part of the auction, false otherwise
+             * @bbbbbb Bbbb bb bbb bbbbbb bbb bbbbbbb bbbb bb bbb bbbbbbb, bbbbb bbbbbbbbb
              */
-            boolean hasWinnerClaimed();
+            bbbbbbb bbbBbbbbbBbbbbbb();
 
             /**
-             * Specifies whether or not a particular user has claimed their bid they placed on an auction
-             * that they did not win.
+             * Bbbbbbbbb bbbbbbb bb bbb b bbbbbbbbbb bbbb bbb bbbbbbb bbbbb bbb bbbb bbbbbb bb bb bbbbbbb
+             * bbbb bbbb bbb bbb bbb.
              *
-             * @param uuid The ID of the user
-             * @return True if the user has claimed, false if not, undefined if they are not available
-             * within the contextual query
+             * @bbbbb bbbb Bbb BB bb bbb bbbb
+             * @bbbbbb Bbbb bb bbb bbbb bbb bbbbbbb, bbbbb bb bbb, bbbbbbbbb bb bbbb bbb bbb bbbbbbbbb
+             * bbbbbb bbb bbbbbbbbbb bbbbb
              */
-            TriState hasOtherBidderClaimed(UUID uuid);
+            BbbBbbbb bbbBbbbbBbbbbbBbbbbbb(BBBB bbbb);
 
             /**
-             * Specifies the list of users who have lost this auction, and have already claimed their money
-             * back from their loss.
+             * Bbbbbbbbb bbb bbbb bb bbbbb bbb bbbb bbbb bbbb bbbbbbb, bbb bbbb bbbbbbb bbbbbbb bbbbb bbbbb
+             * bbbb bbbb bbbbb bbbb.
              *
-             * @return The list of users who lost this auction and claimed their money back
+             * @bbbbbb Bbb bbbb bb bbbbb bbb bbbb bbbb bbbbbbb bbb bbbbbbb bbbbb bbbbb bbbb
              */
-            List<UUID> getAllOtherClaimers();
+            Bbbb<BBBB> bbbBbbBbbbbBbbbbbbb();
 
         }
 

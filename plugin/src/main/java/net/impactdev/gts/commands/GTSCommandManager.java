@@ -1,38 +1,38 @@
-package net.impactdev.gts.commands;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb;
 
-import com.google.common.collect.Lists;
-import net.impactdev.gts.api.commands.CommandRegistrar;
-import net.impactdev.gts.commands.executors.GlobalExecutor;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.sponge.commands.SpongeGTSCmdExecutor;
-import org.spongepowered.api.command.Command;
-import org.spongepowered.api.event.lifecycle.RegisterCommandEvent;
-import org.spongepowered.plugin.PluginContainer;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBBBBbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
 
-import java.util.List;
+bbbbbb bbbb.bbbb.Bbbb;
 
-public class GTSCommandManager implements CommandRegistrar<Command.Parameterized, SpongeGTSCmdExecutor> {
+bbbbbb bbbbb BBBBbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbBbbbbbbbb<Bbbbbbb.Bbbbbbbbbbbbb, BbbbbbBBBBbbBbbbbbbb> {
 
-    private final PluginContainer container;
-    private final RegisterCommandEvent<Command.Parameterized> event;
+    bbbbbbb bbbbb BbbbbbBbbbbbbbb bbbbbbbbb;
+    bbbbbbb bbbbb BbbbbbbbBbbbbbbBbbbb<Bbbbbbb.Bbbbbbbbbbbbb> bbbbb;
 
-    public GTSCommandManager(PluginContainer container, RegisterCommandEvent<Command.Parameterized> event) {
-        this.container = container;
-        this.event = event;
+    bbbbbb BBBBbbbbbbBbbbbbb(BbbbbbBbbbbbbbb bbbbbbbbb, BbbbbbbbBbbbbbbBbbbb<Bbbbbbb.Bbbbbbbbbbbbb> bbbbb) {
+        bbbb.bbbbbbbbb = bbbbbbbbb;
+        bbbb.bbbbb = bbbbb;
     }
 
-    @Override
-    public void register(SpongeGTSCmdExecutor executor) {
-        try {
-            String primary = executor.aliases().get(0);
-            List<String> remaining = Lists.newArrayList(executor.aliases());
-            remaining.remove(0);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb(BbbbbbBBBBbbBbbbbbbb bbbbbbbb) {
+        bbb {
+            Bbbbbb bbbbbbb = bbbbbbbb.bbbbbbb().bbb(0);
+            Bbbb<Bbbbbb> bbbbbbbbb = Bbbbb.bbbBbbbbBbbb(bbbbbbbb.bbbbbbb());
+            bbbbbbbbb.bbbbbb(0);
 
-            this.event.register(this.container, executor.build(), primary, remaining.toArray(new String[]{}));
-        } catch (Exception e) {
-            e.printStackTrace();
-            ExceptionWriter.write(e);
+            bbbb.bbbbb.bbbbbbbb(bbbb.bbbbbbbbb, bbbbbbbb.bbbbb(), bbbbbbb, bbbbbbbbb.bbBbbbb(bbb Bbbbbb[]{}));
+        } bbbbb (Bbbbbbbbb b) {
+            b.bbbbbBbbbbBbbbb();
+            BbbbbbbbbBbbbbb.bbbbb(b);
         }
     }
 }

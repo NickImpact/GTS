@@ -1,46 +1,46 @@
-repositories {
-    mavenCentral()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-    maven { url 'https://repo.lucko.me/' }
-    maven {
-        name = "Velocity"
-        url = "https://nexus.velocitypowered.com/repository/maven-public/"
+bbbbbbbbbbbb {
+    bbbbbBbbbbbb()
+    bbbbb { bbb 'bbbbb://bbb.bbbbbbbb.bbb/bbbbbbb/bbbbbbbbbbbb/bbbbbbbbb' }
+    bbbbb { bbb 'bbbbb://bbbb.bbbbb.bb/' }
+    bbbbb {
+        bbbb = "Bbbbbbbb"
+        bbb = "bbbbb://bbbbb.bbbbbbbbbbbbbbb.bbb/bbbbbbbbbb/bbbbb-bbbbbb/"
     }
 }
 
-dependencies {
-    api project(':api')
-    implementation project(':common')
-    implementation 'net.impactdev.impactor:launcher:4.0.0'
+bbbbbbbbbbbb {
+    bbb bbbbbbb(':bbb')
+    bbbbbbbbbbbbbb bbbbbbb(':bbbbbb')
+    bbbbbbbbbbbbbb 'bbb.bbbbbbbbb.bbbbbbbb:bbbbbbbb:4.0.0'
 
-    shadow('com.velocitypowered:velocity-api:3.0.1')
-    annotationProcessor 'com.velocitypowered:velocity-api:3.0.1'
+    bbbbbb('bbb.bbbbbbbbbbbbbbb:bbbbbbbb-bbb:3.0.1')
+    bbbbbbbbbbBbbbbbbbb 'bbb.bbbbbbbbbbbbbbb:bbbbbbbb-bbb:3.0.1'
 
-    testImplementation group: 'junit', name: 'junit', version: '4.12'
+    bbbbBbbbbbbbbbbbbb bbbbb: 'bbbbb', bbbb: 'bbbbb', bbbbbbb: '4.12'
 }
 
-shadowJar {
-    archiveName = "GTS-Velocity-${project.version}.jar"
+bbbbbbBbb {
+    bbbbbbbBbbb = "BBB-Bbbbbbbb-${bbbbbbb.bbbbbbb}.bbb"
 
-    dependencies {
-        include project(':api')
-        include project(':common')
+    bbbbbbbbbbbb {
+        bbbbbbb bbbbbbb(':bbb')
+        bbbbbbb bbbbbbb(':bbbbbb')
     }
 
-    relocate ('com.github.benmanes.caffeine', 'net.impactdev.impactor.relocations.caffeine')
-    relocate ('io.github.classgraph', 'net.impactdev.impactor.relocations.classgraph')
-    relocate ('org.mariuszgromada.math.mxparser', 'net.impactdev.impactor.relocations.mxparser')
+    bbbbbbbb ('bbb.bbbbbb.bbbbbbbb.bbbbbbbb', 'bbb.bbbbbbbbb.bbbbbbbb.bbbbbbbbbbb.bbbbbbbb')
+    bbbbbbbb ('bb.bbbbbb.bbbbbbbbbb', 'bbb.bbbbbbbbb.bbbbbbbb.bbbbbbbbbbb.bbbbbbbbbb')
+    bbbbbbbb ('bbb.bbbbbbbbbbbbbb.bbbb.bbbbbbbb', 'bbb.bbbbbbbbb.bbbbbbbb.bbbbbbbbbbb.bbbbbbbb')
 }
 
-processResources {
-    from(sourceSets.main.resources.srcDirs) {
-        expand 'pluginVersion': project.version
-        include 'plugin.yml'
+bbbbbbbBbbbbbbbb {
+    bbbb(bbbbbbBbbb.bbbb.bbbbbbbbb.bbbBbbb) {
+        bbbbbb 'bbbbbbBbbbbbb': bbbbbbb.bbbbbbb
+        bbbbbbb 'bbbbbb.bbb'
     }
 }
 
-blossom {
-    replaceToken '@version@', version
-    replaceToken '@git_commit@', gitHash.commit
-    replaceToken '@description@', 'A player controlled market system'
+bbbbbbb {
+    bbbbbbbBbbbb '@bbbbbbb@', bbbbbbb
+    bbbbbbbBbbbb '@bbb_bbbbbb@', bbbBbbb.bbbbbb
+    bbbbbbbBbbbb '@bbbbbbbbbbb@', 'B bbbbbb bbbbbbbbbb bbbbbb bbbbbb'
 }

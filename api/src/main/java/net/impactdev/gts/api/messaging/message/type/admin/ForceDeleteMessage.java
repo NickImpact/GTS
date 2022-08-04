@@ -1,79 +1,79 @@
-package net.impactdev.gts.api.messaging.message.type.admin;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb;
 
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.builders.Builder;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * Represents the message that'll be sent when an administrator decides to force delete a listing off the
- * GTS market. Realistically, returning the data to a user is outside the scope of the message, and should
- * be handled by the requester.
+ * Bbbbbbbbbb bbb bbbbbbb bbbb'bb bb bbbb bbbb bb bbbbbbbbbbbbb bbbbbbb bb bbbbb bbbbbb b bbbbbbb bbb bbb
+ * BBB bbbbbb. Bbbbbbbbbbbbb, bbbbbbbbb bbb bbbb bb b bbbb bb bbbbbbb bbb bbbbb bb bbb bbbbbbb, bbb bbbbbb
+ * bb bbbbbbb bb bbb bbbbbbbbb.
  */
-public interface ForceDeleteMessage extends OutgoingMessage {
+bbbbbb bbbbbbbbb BbbbbBbbbbbBbbbbbb bbbbbbb BbbbbbbbBbbbbbb {
 
     /**
-     * Represents the ID of the auction being acted on. This ID is the primary key to locating an auction,
-     * and as such, should be unique to one specific auction.
+     * Bbbbbbbbbb bbb BB bb bbb bbbbbbb bbbbb bbbbb bb. Bbbb BB bb bbb bbbbbbb bbb bb bbbbbbbb bb bbbbbbb,
+     * bbb bb bbbb, bbbbbb bb bbbbbb bb bbb bbbbbbbb bbbbbbb.
      *
-     * @return The ID of the auction
+     * @bbbbbb Bbb BB bb bbb bbbbbbb
      */
-    @NonNull UUID getListingID();
+    @BbbBbbb BBBB bbbBbbbbbbBB();
 
     /**
-     * Represents the UUID of a player or another source that is applying the action to this auction.
+     * Bbbbbbbbbb bbb BBBB bb b bbbbbb bb bbbbbbb bbbbbb bbbb bb bbbbbbbb bbb bbbbbb bb bbbb bbbbbbb.
      *
-     * @return The UUID of the source applying the action
+     * @bbbbbb Bbb BBBB bb bbb bbbbbb bbbbbbbb bbb bbbbbb
      */
-    @NonNull UUID getActor();
+    @BbbBbbb BBBB bbbBbbbb();
 
     /**
-     * States if this request should return the data contained in the listing if it is deleted.
+     * Bbbbbb bb bbbb bbbbbbb bbbbbb bbbbbb bbb bbbb bbbbbbbbb bb bbb bbbbbbb bb bb bb bbbbbbb.
      *
-     * @return True if the entry should be returned to the user on deletion
+     * @bbbbbb Bbbb bb bbb bbbbb bbbbbb bb bbbbbbbb bb bbb bbbb bb bbbbbbbb
      */
-    boolean shouldGive();
+    bbbbbbb bbbbbbBbbb();
 
-    interface Request extends ForceDeleteMessage, MessageType.Request<Response> {}
+    bbbbbbbbb Bbbbbbb bbbbbbb BbbbbBbbbbbBbbbbbb, BbbbbbbBbbb.Bbbbbbb<Bbbbbbbb> {}
 
-    interface Response extends ForceDeleteMessage, MessageType.Response {
+    bbbbbbbbb Bbbbbbbb bbbbbbb BbbbbBbbbbbBbbbbbb, BbbbbbbBbbb.Bbbbbbbb {
 
         /**
-         * Represents the UUID of the user who had their listing deleted. Since the listing will have been
-         * deleted before the response is made available to the requesting server, we will need to supply
-         * information back to the server about the listing.
+         * Bbbbbbbbbb bbb BBBB bb bbb bbbb bbb bbb bbbbb bbbbbbb bbbbbbb. Bbbbb bbb bbbbbbb bbbb bbbb bbbb
+         * bbbbbbb bbbbbb bbb bbbbbbbb bb bbbb bbbbbbbbb bb bbb bbbbbbbbbb bbbbbb, bb bbbb bbbb bb bbbbbb
+         * bbbbbbbbbbb bbbb bb bbb bbbbbb bbbbb bbb bbbbbbb.
          *
-         * Note that if the request was marked unsuccessful, this value will not be populated.
+         * Bbbb bbbb bb bbb bbbbbbb bbb bbbbbb bbbbbbbbbbbb, bbbb bbbbb bbbb bbb bb bbbbbbbbb.
          *
-         * @return The ID of the user who made the listing
+         * @bbbbbb Bbb BB bb bbb bbbb bbb bbbb bbb bbbbbbb
          */
-        Optional<Listing> getDeletedListing();
+        Bbbbbbbb<Bbbbbbb> bbbBbbbbbbBbbbbbb();
 
-        static ResponseBuilder builder() {
-            return Impactor.getInstance().getRegistry().createBuilder(ResponseBuilder.class);
+        bbbbbb BbbbbbbbBbbbbbb bbbbbbb() {
+            bbbbbb Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbBbbbbbb(BbbbbbbbBbbbbbb.bbbbb);
         }
 
-        interface ResponseBuilder extends Builder<ForceDeleteMessage.Response> {
+        bbbbbbbbb BbbbbbbbBbbbbbb bbbbbbb Bbbbbbb<BbbbbBbbbbbBbbbbbb.Bbbbbbbb> {
 
-            ResponseBuilder request(UUID request);
+            BbbbbbbbBbbbbbb bbbbbbb(BBBB bbbbbbb);
 
-            ResponseBuilder listing(UUID listing);
+            BbbbbbbbBbbbbbb bbbbbbb(BBBB bbbbbbb);
 
-            ResponseBuilder actor(UUID actor);
+            BbbbbbbbBbbbbbb bbbbb(BBBB bbbbb);
 
-            ResponseBuilder data(Listing data);
+            BbbbbbbbBbbbbbb bbbb(Bbbbbbb bbbb);
 
-            ResponseBuilder give(boolean give);
+            BbbbbbbbBbbbbbb bbbb(bbbbbbb bbbb);
 
-            ResponseBuilder successful(boolean successful);
+            BbbbbbbbBbbbbbb bbbbbbbbbb(bbbbbbb bbbbbbbbbb);
 
-            ResponseBuilder error(ErrorCode error);
+            BbbbbbbbBbbbbbb bbbbb(BbbbbBbbb bbbbb);
 
         }
 

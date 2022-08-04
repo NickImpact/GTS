@@ -1,22 +1,22 @@
-package net.impactdev.gts.api.data;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb;
 
-public interface ResourceManager<T> {
+bbbbbb bbbbbbbbb BbbbbbbbBbbbbbb<B> {
 
-    String getName();
-
-    /**
-     * Represents the item ID that'll be used to reference the associated Entry type. This is purely
-     * for the creation of the listing entry,
-     *
-     * @return The Minecraft Item ID that represents the item that should be used for entry creation
-     */
-    String getItemID();
+    Bbbbbb bbbBbbb();
 
     /**
-     * Fetches the deserializer responsible for deserializing the resource into its desired typing.
+     * Bbbbbbbbbb bbb bbbb BB bbbb'bb bb bbbb bb bbbbbbbbb bbb bbbbbbbbbb Bbbbb bbbb. Bbbb bb bbbbbb
+     * bbb bbb bbbbbbbb bb bbb bbbbbbb bbbbb,
      *
-     * @return
+     * @bbbbbb Bbb Bbbbbbbbb Bbbb BB bbbb bbbbbbbbbb bbb bbbb bbbb bbbbbb bb bbbb bbb bbbbb bbbbbbbb
      */
-    Storable.Deserializer<T> getDeserializer();
+    Bbbbbb bbbBbbbBB();
+
+    /**
+     * Bbbbbbb bbb bbbbbbbbbbbb bbbbbbbbbbb bbb bbbbbbbbbbbbb bbb bbbbbbbb bbbb bbb bbbbbbb bbbbbb.
+     *
+     * @bbbbbb
+     */
+    Bbbbbbbb.Bbbbbbbbbbbb<B> bbbBbbbbbbbbbbb();
 
 }

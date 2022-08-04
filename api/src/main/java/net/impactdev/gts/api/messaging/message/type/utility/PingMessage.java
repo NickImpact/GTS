@@ -1,27 +1,27 @@
-package net.impactdev.gts.api.messaging.message.type.utility;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbb;
 
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
-import net.impactdev.gts.api.messaging.message.type.UpdateMessage;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbBbbbbbb;
 
 /**
- * Represents a message that GTS can use as a means to ping the proxy and vice versa. These messages are namely
- * useful in determining the messaging service is properly connected.
+ * Bbbbbbbbbb b bbbbbbb bbbb BBB bbb bbb bb b bbbbb bb bbbb bbb bbbbb bbb bbbb bbbbb. Bbbbb bbbbbbbb bbb bbbbbb
+ * bbbbbb bb bbbbbbbbbbb bbb bbbbbbbbb bbbbbbb bb bbbbbbbb bbbbbbbbb.
  */
-public interface PingMessage extends UpdateMessage, OutgoingMessage {
+bbbbbb bbbbbbbbb BbbbBbbbbbb bbbbbbb BbbbbbBbbbbbb, BbbbbbbbBbbbbbb {
 
 	/**
-	 * This message type simply asks the proxy server if it can see this ping. If it does, it'll respond
-	 * to that server with a {@link Pong Pong} message.
+	 * Bbbb bbbbbbb bbbb bbbbbb bbbb bbb bbbbb bbbbbb bb bb bbb bbb bbbb bbbb. Bb bb bbbb, bb'bb bbbbbbb
+	 * bb bbbb bbbbbb bbbb b {@bbbb Bbbb Bbbb} bbbbbbb.
 	 */
-	interface Ping extends PingMessage, MessageType.Request<Pong> {}
+	bbbbbbbbb Bbbb bbbbbbb BbbbBbbbbbb, BbbbbbbBbbb.Bbbbbbb<Bbbb> {}
 
 	/**
-	 * Simply indicates that the proxy has heard the ping sent.
+	 * Bbbbbb bbbbbbbbb bbbb bbb bbbbb bbb bbbbb bbb bbbb bbbb.
 	 */
-	interface Pong extends PingMessage, MessageType.Response {
+	bbbbbbbbb Bbbb bbbbbbb BbbbBbbbbbb, BbbbbbbBbbb.Bbbbbbbb {
 
-		long getResponseTime();
+		bbbb bbbBbbbbbbbBbbb();
 
 	}
 

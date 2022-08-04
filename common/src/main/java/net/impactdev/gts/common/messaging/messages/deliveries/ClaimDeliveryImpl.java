@@ -1,239 +1,239 @@
-package net.impactdev.gts.common.messaging.messages.deliveries;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbbbb;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
-import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.builders.Builder;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbbbb.BbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public abstract class ClaimDeliveryImpl extends AbstractMessage implements ClaimDelivery {
+bbbbbb bbbbbbbb bbbbb BbbbbBbbbbbbbBbbb bbbbbbb BbbbbbbbBbbbbbb bbbbbbbbbb BbbbbBbbbbbbb {
 
-    private final UUID delivery;
-    private final UUID actor;
+    bbbbbbb bbbbb BBBB bbbbbbbb;
+    bbbbbbb bbbbb BBBB bbbbb;
 
-    public ClaimDeliveryImpl(UUID id, UUID delivery, UUID actor) {
-        super(id);
-        this.delivery = delivery;
-        this.actor = actor;
+    bbbbbb BbbbbBbbbbbbbBbbb(BBBB bb, BBBB bbbbbbbb, BBBB bbbbb) {
+        bbbbb(bb);
+        bbbb.bbbbbbbb = bbbbbbbb;
+        bbbb.bbbbb = bbbbb;
     }
 
-    @Override
-    public @NonNull UUID getDeliveryID() {
-        return this.delivery;
+    @Bbbbbbbb
+    bbbbbb @BbbBbbb BBBB bbbBbbbbbbbBB() {
+        bbbbbb bbbb.bbbbbbbb;
     }
 
-    @Override
-    public @NonNull UUID getActor() {
-        return this.actor;
+    @Bbbbbbbb
+    bbbbbb @BbbBbbb BBBB bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public void print(PrettyPrinter printer) {
-        printer.kv("delivery", this.delivery.toString())
-                .kv("actor", this.delivery.toString());
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+        bbbbbbb.bb("bbbbbbbb", bbbb.bbbbbbbb.bbBbbbbb())
+                .bb("bbbbb", bbbb.bbbbbbbb.bbBbbbbb());
     }
 
-    public static class ClaimDeliveryRequestImpl extends ClaimDeliveryImpl implements ClaimDelivery.Request {
+    bbbbbb bbbbbb bbbbb BbbbbBbbbbbbbBbbbbbbBbbb bbbbbbb BbbbbBbbbbbbbBbbb bbbbbbbbbb BbbbbBbbbbbbb.Bbbbbbb {
 
-        public static final String TYPE = "Delivery/Claim/Request";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "Bbbbbbbb/Bbbbb/Bbbbbbb";
 
-        public static ClaimDeliveryRequestImpl decode(@Nullable JsonElement content, UUID id) {
-            if (content == null) {
-                throw new IllegalStateException("Raw JSON data was null");
+        bbbbbb bbbbbb BbbbbBbbbbbbbBbbbbbbBbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            bb (bbbbbbb == bbbb) {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBBB bbbb bbb bbbb");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            BbbbBbbbbb bbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-            UUID delivery = Optional.ofNullable(raw.get("delivery"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate delivery ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
+            BBBB bbbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbbb BB"));
+            BBBB bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbb BB"));
 
-            return new ClaimDeliveryRequestImpl(id, delivery, actor);
+            bbbbbb bbb BbbbbBbbbbbbbBbbbbbbBbbb(bb, bbbbbbbb, bbbbb);
         }
 
-        public ClaimDeliveryRequestImpl(UUID id, UUID delivery, UUID actor) {
-            super(id, delivery, actor);
+        bbbbbb BbbbbBbbbbbbbBbbbbbbBbbb(BBBB bb, BBBB bbbbbbbb, BBBB bbbbb) {
+            bbbbb(bb, bbbbbbbb, bbbbb);
         }
 
-        @Override
-        public CompletableFuture<ClaimDelivery.Response> respond() {
-            return GTSPlugin.instance().storage().claimDelivery(this);
+        @Bbbbbbbb
+        bbbbbb BbbbbbbbbbbBbbbbb<BbbbbBbbbbbbb.Bbbbbbbb> bbbbbbb() {
+            bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbBbbbbbbb(bbbb);
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject()
-                            .add("delivery", this.getDeliveryID().toString())
-                            .add("actor", this.getActor().toString())
-                            .toJson()
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb()
+                            .bbb("bbbbbbbb", bbbb.bbbBbbbbbbbBB().bbBbbbbb())
+                            .bbb("bbbbb", bbbb.bbbBbbbb().bbBbbbbb())
+                            .bbBbbb()
             );
         }
     }
 
-    public static class ClaimDeliveryResponseImpl extends ClaimDeliveryImpl implements ClaimDelivery.Response {
+    bbbbbb bbbbbb bbbbb BbbbbBbbbbbbbBbbbbbbbBbbb bbbbbbb BbbbbBbbbbbbbBbbb bbbbbbbbbb BbbbbBbbbbbbb.Bbbbbbbb {
 
-        public static final String TYPE = "Delivery/Claim/Response";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "Bbbbbbbb/Bbbbb/Bbbbbbbb";
 
-        public static ClaimDeliveryResponseImpl decode(@Nullable JsonElement content, UUID id) {
-            if (content == null) {
-                throw new IllegalStateException("Raw JSON data was null");
+        bbbbbb bbbbbb BbbbbBbbbbbbbBbbbbbbbBbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            bb (bbbbbbb == bbbb) {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBBB bbbb bbb bbbb");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            BbbbBbbbbb bbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-            UUID request = Optional.ofNullable(raw.get("request"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-            UUID delivery = Optional.ofNullable(raw.get("delivery"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate delivery ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            boolean successful = Optional.ofNullable(raw.get("successful"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Failed to locate successful status"));
-            ErrorCode error = Optional.ofNullable(raw.get("error"))
-                    .map(x -> ErrorCodes.get(x.getAsInt()))
-                    .orElse(null);
+            BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bb bbbbb bbbbbbb BB"));
+            BBBB bbbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbbb BB"));
+            BBBB bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbb BB"));
+            bbbbbbb bbbbbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbbbbb"))
+                    .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbbbbb bbbbbb"));
+            BbbbbBbbb bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BbbbbBbbbb.bbb(b.bbbBbBbb()))
+                    .bbBbbb(bbbb);
 
-            DeliveryClaimResponseBuilder builder = builder()
-                    .id(id)
-                    .request(request)
-                    .delivery(delivery)
-                    .actor(actor)
-                    .error(error);
+            BbbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbb = bbbbbbb()
+                    .bb(bb)
+                    .bbbbbbb(bbbbbbb)
+                    .bbbbbbbb(bbbbbbbb)
+                    .bbbbb(bbbbb)
+                    .bbbbb(bbbbb);
 
-            if(successful) {
-                return builder.successful().build();
+            bb(bbbbbbbbbb) {
+                bbbbbb bbbbbbb.bbbbbbbbbb().bbbbb();
             }
 
-            return builder.build();
+            bbbbbb bbbbbbb.bbbbb();
         }
 
-        private final UUID request;
-        private final ErrorCode error;
-        private final boolean successful;
+        bbbbbbb bbbbb BBBB bbbbbbb;
+        bbbbbbb bbbbb BbbbbBbbb bbbbb;
+        bbbbbbb bbbbb bbbbbbb bbbbbbbbbb;
 
-        private long time;
+        bbbbbbb bbbb bbbb;
 
-        public ClaimDeliveryResponseImpl(DeliveryClaimResponseBuilder builder) {
-            super(builder.id, builder.delivery, builder.actor);
-            this.request = builder.request;
-            this.error = builder.error;
-            this.successful = builder.successful;
+        bbbbbb BbbbbBbbbbbbbBbbbbbbbBbbb(BbbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbb) {
+            bbbbb(bbbbbbb.bb, bbbbbbb.bbbbbbbb, bbbbbbb.bbbbb);
+            bbbb.bbbbbbb = bbbbbbb.bbbbbbb;
+            bbbb.bbbbb = bbbbbbb.bbbbb;
+            bbbb.bbbbbbbbbb = bbbbbbb.bbbbbbbbbb;
         }
 
-        @Override
-        public UUID getRequestID() {
-            return this.request;
+        @Bbbbbbbb
+        bbbbbb BBBB bbbBbbbbbbBB() {
+            bbbbbb bbbb.bbbbbbb;
         }
 
 
-        @Override
-        public long getResponseTime() {
-            return this.time;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb() {
+            bbbbbb bbbb.bbbb;
         }
 
-        @Override
-        public void setResponseTime(long millis) {
-            this.time = millis;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb(bbbb bbbbbb) {
+            bbbb.bbbb = bbbbbb;
         }
 
-        @Override
-        public boolean wasSuccessful() {
-            return this.successful;
+        @Bbbbbbbb
+        bbbbbb bbbbbbb bbbBbbbbbbbbb() {
+            bbbbbb bbbb.bbbbbbbbbb;
         }
 
-        @Override
-        public Optional<ErrorCode> getErrorCode() {
-            return Optional.ofNullable(this.error);
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbb<BbbbbBbbb> bbbBbbbbBbbb() {
+            bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbb);
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject()
-                            .add("request", this.request.toString())
-                            .add("delivery", this.getDeliveryID().toString())
-                            .add("actor", this.getActor().toString())
-                            .add("successful", this.successful)
-                            .consume(o -> {
-                                this.getErrorCode().ifPresent(e -> o.add("error", this.error.ordinal()));
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb()
+                            .bbb("bbbbbbb", bbbb.bbbbbbb.bbBbbbbb())
+                            .bbb("bbbbbbbb", bbbb.bbbBbbbbbbbBB().bbBbbbbb())
+                            .bbb("bbbbb", bbbb.bbbBbbbb().bbBbbbbb())
+                            .bbb("bbbbbbbbbb", bbbb.bbbbbbbbbb)
+                            .bbbbbbb(b -> {
+                                bbbb.bbbBbbbbBbbb().bbBbbbbbb(b -> b.bbb("bbbbb", bbbb.bbbbb.bbbbbbb()));
                             })
-                            .toJson()
+                            .bbBbbb()
             );
         }
 
-        public static DeliveryClaimResponseBuilder builder() {
-            return new DeliveryClaimResponseBuilder();
+        bbbbbb bbbbbb BbbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbb() {
+            bbbbbb bbb BbbbbbbbBbbbbBbbbbbbbBbbbbbb();
         }
 
 
 
-        public static class DeliveryClaimResponseBuilder implements Builder<ClaimDeliveryResponseImpl> {
+        bbbbbb bbbbbb bbbbb BbbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbbbbb Bbbbbbb<BbbbbBbbbbbbbBbbbbbbbBbbb> {
 
-            protected UUID id;
-            protected UUID delivery;
-            protected UUID actor;
+            bbbbbbbbb BBBB bb;
+            bbbbbbbbb BBBB bbbbbbbb;
+            bbbbbbbbb BBBB bbbbb;
 
-            protected UUID request;
-            protected boolean successful;
-            protected ErrorCode error;
+            bbbbbbbbb BBBB bbbbbbb;
+            bbbbbbbbb bbbbbbb bbbbbbbbbb;
+            bbbbbbbbb BbbbbBbbb bbbbb;
 
-            public DeliveryClaimResponseBuilder id(UUID id) {
-                this.id = id;
-                return this;
+            bbbbbb BbbbbbbbBbbbbBbbbbbbbBbbbbbb bb(BBBB bb) {
+                bbbb.bb = bb;
+                bbbbbb bbbb;
             }
 
-            public DeliveryClaimResponseBuilder delivery(UUID delivery) {
-                this.delivery = delivery;
-                return this;
+            bbbbbb BbbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbbb(BBBB bbbbbbbb) {
+                bbbb.bbbbbbbb = bbbbbbbb;
+                bbbbbb bbbb;
             }
 
-            public DeliveryClaimResponseBuilder actor(UUID actor) {
-                this.actor = actor;
-                return this;
+            bbbbbb BbbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbb(BBBB bbbbb) {
+                bbbb.bbbbb = bbbbb;
+                bbbbbb bbbb;
             }
 
-            public DeliveryClaimResponseBuilder request(UUID request) {
-                this.request = request;
-                return this;
+            bbbbbb BbbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbb(BBBB bbbbbbb) {
+                bbbb.bbbbbbb = bbbbbbb;
+                bbbbbb bbbb;
             }
 
-            public DeliveryClaimResponseBuilder successful() {
-                this.successful = true;
-                return this;
+            bbbbbb BbbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbbbbb() {
+                bbbb.bbbbbbbbbb = bbbb;
+                bbbbbb bbbb;
             }
 
-            public DeliveryClaimResponseBuilder error(ErrorCode error) {
-                this.error = error;
-                return this;
+            bbbbbb BbbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbb(BbbbbBbbb bbbbb) {
+                bbbb.bbbbb = bbbbb;
+                bbbbbb bbbb;
             }
 
-            @Override
-            public ClaimDeliveryResponseImpl build() {
-                return new ClaimDeliveryResponseImpl(this);
+            @Bbbbbbbb
+            bbbbbb BbbbbBbbbbbbbBbbbbbbbBbbb bbbbb() {
+                bbbbbb bbb BbbbbBbbbbbbbBbbbbbbbBbbb(bbbb);
             }
         }
     }

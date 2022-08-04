@@ -1,13 +1,13 @@
-package net.impactdev.gts.api.listings.prices;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb;
 
 /**
- * Represents an Entry that has a set of price controls applied to it. This design is meant to only
- * cover prices that are controlled via a set currency background.
+ * Bbbbbbbbbb bb Bbbbb bbbb bbb b bbb bb bbbbb bbbbbbbb bbbbbbb bb bb. Bbbb bbbbbb bb bbbbb bb bbbb
+ * bbbbb bbbbbb bbbb bbb bbbbbbbbbb bbb b bbb bbbbbbbb bbbbbbbbbb.
  */
-public interface PriceControlled {
+bbbbbb bbbbbbbbb BbbbbBbbbbbbbbb {
 
-    double getMin();
+    bbbbbb bbbBbb();
 
-    double getMax();
+    bbbbbb bbbBbb();
 
 }

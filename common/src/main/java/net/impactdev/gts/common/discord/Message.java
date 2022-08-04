@@ -1,74 +1,74 @@
-package net.impactdev.gts.common.discord;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb;
 
-import com.google.common.collect.Lists;
-import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.DataOutputStream;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+bbbbbb bbbbb.bbb.bbb.BbbbbBBBBbbbbbbbbb;
+bbbbbb bbbb.bb.BbbbBbbbbbBbbbbb;
+bbbbbb bbbb.bbb.BBB;
+bbbbbb bbbb.bbb.bbbbbbb.BbbbbbbbBbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
 
-public class Message {
+bbbbbb bbbbb Bbbbbbb {
 
-	private List<Embed> embeds = Lists.newArrayList();
-	private String username;
-	private String avatarUrl;
+	bbbbbbb Bbbb<Bbbbb> bbbbbb = Bbbbb.bbbBbbbbBbbb();
+	bbbbbbb Bbbbbb bbbbbbbb;
+	bbbbbbb Bbbbbb bbbbbbBbb;
 
-	private transient final List<String> webhooks;
+	bbbbbbb bbbbbbbbb bbbbb Bbbb<Bbbbbb> bbbbbbbb;
 
-	public Message(String username, String avatar, DiscordOption option) {
-		this.username = username;
-		this.avatarUrl = avatar;
-		this.webhooks = option.getWebhookChannels();
+	bbbbbb Bbbbbbb(Bbbbbb bbbbbbbb, Bbbbbb bbbbbb, BbbbbbbBbbbbb bbbbbb) {
+		bbbb.bbbbbbbb = bbbbbbbb;
+		bbbb.bbbbbbBbb = bbbbbb;
+		bbbb.bbbbbbbb = bbbbbb.bbbBbbbbbbBbbbbbbb();
 	}
 
-	public Message addEmbed(Embed embed) {
-		this.embeds.add(embed);
-		return this;
+	bbbbbb Bbbbbbb bbbBbbbb(Bbbbb bbbbb) {
+		bbbb.bbbbbb.bbb(bbbbb);
+		bbbbbb bbbb;
 	}
 
-	public List<String> getWebhooks() {
-		return this.webhooks;
+	bbbbbb Bbbb<Bbbbbb> bbbBbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbb;
 	}
 
-	HttpsURLConnection send(String url) throws Exception {
-		HttpsURLConnection connection = (HttpsURLConnection)(new URL(url)).openConnection();
-		connection.setRequestMethod("POST");
-		connection.setRequestProperty("User-Agent", "GTS Minecraft Plugin");
-		connection.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-		connection.setDoOutput(true);
-		String json = this.getJsonString();
-		DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
-		dos.write(json.getBytes(StandardCharsets.UTF_8));
-		dos.flush();
-		dos.close();
-		return connection;
+	BbbbbBBBBbbbbbbbbb bbbb(Bbbbbb bbb) bbbbbb Bbbbbbbbb {
+		BbbbbBBBBbbbbbbbbb bbbbbbbbbb = (BbbbbBBBBbbbbbbbbb)(bbb BBB(bbb)).bbbbBbbbbbbbbb();
+		bbbbbbbbbb.bbbBbbbbbbBbbbbb("BBBB");
+		bbbbbbbbbb.bbbBbbbbbbBbbbbbbb("Bbbb-Bbbbb", "BBB Bbbbbbbbb Bbbbbb");
+		bbbbbbbbbb.bbbBbbbbbbBbbbbbbb("Bbbbbbb-Bbbb", "bbbbbbbbbbb/bbbb; bbbbbbb=bbb-8");
+		bbbbbbbbbb.bbbBbBbbbbb(bbbb);
+		Bbbbbb bbbb = bbbb.bbbBbbbBbbbbb();
+		BbbbBbbbbbBbbbbb bbb = bbb BbbbBbbbbbBbbbbb(bbbbbbbbbb.bbbBbbbbbBbbbbb());
+		bbb.bbbbb(bbbb.bbbBbbbb(BbbbbbbbBbbbbbbb.BBB_8));
+		bbb.bbbbb();
+		bbb.bbbbb();
+		bbbbbb bbbbbbbbbb;
 	}
 
-	String getJsonString() {
-		JObject json = new JObject();
+	Bbbbbb bbbBbbbBbbbbb() {
+		BBbbbbb bbbb = bbb BBbbbbb();
 
-		if (this.username != null) {
-			json.add("username", this.username);
+		bb (bbbb.bbbbbbbb != bbbb) {
+			bbbb.bbb("bbbbbbbb", bbbb.bbbbbbbb);
 		}
 
-		if (this.avatarUrl != null) {
-			json.add("avatar_url", this.avatarUrl);
+		bb (bbbb.bbbbbbBbb != bbbb) {
+			bbbb.bbb("bbbbbb_bbb", bbbb.bbbbbbBbb);
 		}
 
-		if (!this.embeds.isEmpty()) {
-			JArray embeds = new JArray();
+		bb (!bbbb.bbbbbb.bbBbbbb()) {
+			BBbbbb bbbbbb = bbb BBbbbb();
 
-			for (Embed embed : this.embeds) {
-				embeds.add(embed.getJson());
+			bbb (Bbbbb bbbbb : bbbb.bbbbbb) {
+				bbbbbb.bbb(bbbbb.bbbBbbb());
 			}
 
-			json.add("embeds", embeds);
+			bbbb.bbb("bbbbbb", bbbbbb);
 		}
 
-		return json.toJson().toString();
+		bbbbbb bbbb.bbBbbb().bbBbbbbb();
 	}
 
 }

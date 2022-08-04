@@ -1,34 +1,34 @@
-package net.impactdev.gts.api.messaging.message.errors;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb;
 
 /**
  *
  */
-public interface ErrorCode {
+bbbbbb bbbbbbbbb BbbbbBbbb {
 
     /**
-     * Represents the ordinal value of this error code. This is calculated during the setup of the entire
-     * error codes file. The purpose of such is to provide a proper fallback option for messages featuring
-     * an error code in their response. Rather than saving description, we can save an index that'll be universal
-     * across all setups (assuming people are up to date and no new error codes exist across versions).
+     * Bbbbbbbbbb bbb bbbbbbb bbbbb bb bbbb bbbbb bbbb. Bbbb bb bbbbbbbbbb bbbbbb bbb bbbbb bb bbb bbbbbb
+     * bbbbb bbbbb bbbb. Bbb bbbbbbb bb bbbb bb bb bbbbbbb b bbbbbb bbbbbbbb bbbbbb bbb bbbbbbbb bbbbbbbbb
+     * bb bbbbb bbbb bb bbbbb bbbbbbbb. Bbbbbb bbbb bbbbbb bbbbbbbbbbb, bb bbb bbbb bb bbbbb bbbb'bb bb bbbbbbbbb
+     * bbbbbb bbb bbbbbb (bbbbbbbb bbbbbb bbb bb bb bbbb bbb bb bbb bbbbb bbbbb bbbbb bbbbbb bbbbbbbb).
      *
-     * @return The ordinal value of this error code
+     * @bbbbbb Bbb bbbbbbb bbbbb bb bbbb bbbbb bbbb
      */
-    int ordinal();
+    bbb bbbbbbb();
 
     /**
-     * The front of the error code reported to a user when an error occurs. For information on what the key means,
-     * a user should be able to hover over the key to receive what is specified by {@link #getDescription()}.
+     * Bbb bbbbb bb bbb bbbbb bbbb bbbbbbbb bb b bbbb bbbb bb bbbbb bbbbbb. Bbb bbbbbbbbbbb bb bbbb bbb bbb bbbbb,
+     * b bbbb bbbbbb bb bbbb bb bbbbb bbbb bbb bbb bb bbbbbbb bbbb bb bbbbbbbbb bb {@bbbb #bbbBbbbbbbbbbb()}.
      *
-     * @return The key of this error code
+     * @bbbbbb Bbb bbb bb bbbb bbbbb bbbb
      */
-    String getKey();
+    Bbbbbb bbbBbb();
 
     /**
-     * Represents the error code description for this error. This is meant to help a user identify what exactly
-     * happened in response to a request failing.
+     * Bbbbbbbbbb bbb bbbbb bbbb bbbbbbbbbbb bbb bbbb bbbbb. Bbbb bb bbbbb bb bbbb b bbbb bbbbbbbb bbbb bbbbbbb
+     * bbbbbbbb bb bbbbbbbb bb b bbbbbbb bbbbbbb.
      *
-     * @return The error's description
+     * @bbbbbb Bbb bbbbb'b bbbbbbbbbbb
      */
-    String getDescription();
+    Bbbbbb bbbBbbbbbbbbbb();
 
 }

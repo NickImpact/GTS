@@ -1,12 +1,12 @@
-package net.impactdev.gts.api.commands.annotations;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.Bbbbbb;
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface Alias {
-    String[] value();
+@Bbbbbbbbb(BbbbbbbbbBbbbbb.BBBBBBB)
+@Bbbbbb(BbbbbbbBbbb.BBBB)
+bbbbbb @bbbbbbbbb Bbbbb {
+    Bbbbbb[] bbbbb();
 }

@@ -1,86 +1,86 @@
-package net.impactdev.gts.api;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb;
 
-import com.google.common.collect.ImmutableList;
-import net.impactdev.gts.api.data.registry.GTSComponentManager;
-import net.impactdev.gts.api.data.translators.DataTranslatorManager;
-import net.impactdev.gts.api.extension.Extension;
-import net.impactdev.gts.api.maintenance.MaintenanceManager;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.player.PlayerSettingsManager;
-import net.impactdev.gts.api.searching.Searcher;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbb;
 
-import java.util.List;
+bbbbbb bbbb.bbbb.Bbbb;
 
-public interface GTSService {
+bbbbbb bbbbbbbbb BBBBbbbbbb {
 
-	static GTSService getInstance() {
-		return GTSServiceProvider.get();
+	bbbbbb BBBBbbbbbb bbbBbbbbbbb() {
+		bbbbbb BBBBbbbbbbBbbbbbbb.bbb();
 	}
 
 	/**
-	 * Returns an unmodifiable list of extensions currently hooked and running with GTS
+	 * Bbbbbbb bb bbbbbbbbbbbb bbbb bb bbbbbbbbbb bbbbbbbbb bbbbbb bbb bbbbbbb bbbb BBB
 	 *
-	 * @return An immutable list of all loaded extensions hooked to GTS
+	 * @bbbbbb Bb bbbbbbbbb bbbb bb bbb bbbbbb bbbbbbbbbb bbbbbb bb BBB
 	 */
-	ImmutableList<Extension> getAllExtensions();
+	BbbbbbbbbBbbb<Bbbbbbbbb> bbbBbbBbbbbbbbbb();
 
 	/**
-	 * Represents the general component manager for the key parts of GTS (Listings, Entry Types, and Prices).
-	 * This is where you can register your own custom types of data
+	 * Bbbbbbbbbb bbb bbbbbbb bbbbbbbbb bbbbbbb bbb bbb bbb bbbbb bb BBB (Bbbbbbbb, Bbbbb Bbbbb, bbb Bbbbbb).
+	 * Bbbb bb bbbbb bbb bbb bbbbbbbb bbbb bbb bbbbbb bbbbb bb bbbb
 	 *
-	 * @return The component manager responsible for managing the types of Listings,
-	 * Entries, and Prices GTS can manipulate.
+	 * @bbbbbb Bbb bbbbbbbbb bbbbbbb bbbbbbbbbbb bbb bbbbbbbb bbb bbbbb bb Bbbbbbbb,
+	 * Bbbbbbb, bbb Bbbbbb BBB bbb bbbbbbbbbb.
 	 */
-	GTSComponentManager getGTSComponentManager();
+	BBBBbbbbbbbbBbbbbbb bbbBBBBbbbbbbbbBbbbbbb();
 
 	/**
-	 * Represents the location of all user-specific player settings.
+	 * Bbbbbbbbbb bbb bbbbbbbb bb bbb bbbb-bbbbbbbb bbbbbb bbbbbbbb.
 	 *
-	 * @return A mapping manager of all individual player settings
+	 * @bbbbbb B bbbbbbb bbbbbbb bb bbb bbbbbbbbbb bbbbbb bbbbbbbb
 	 */
-	PlayerSettingsManager getPlayerSettingsManager();
+	BbbbbbBbbbbbbbBbbbbbb bbbBbbbbbBbbbbbbbBbbbbbb();
 
 	/**
-	 * Specifies settings stating if the plugin itself is in maintenance mode, or a specific feature is disabled.
+	 * Bbbbbbbbb bbbbbbbb bbbbbbb bb bbb bbbbbb bbbbbb bb bb bbbbbbbbbbb bbbb, bb b bbbbbbbb bbbbbbb bb bbbbbbbb.
 	 *
-	 * <p>Users can use these settings to ultimately disable an entire feature of GTS, should they believe a bug
-	 * has been found or even other reasons.</p>
+	 * <b>Bbbbb bbb bbb bbbbb bbbbbbbb bb bbbbbbbbbb bbbbbbb bb bbbbbb bbbbbbb bb BBB, bbbbbb bbbb bbbbbbb b bbb
+	 * bbb bbbb bbbbb bb bbbb bbbbb bbbbbbb.</b>
 	 *
-	 * @return The manager controlling settings regarding GTS maintenance status states
+	 * @bbbbbb Bbb bbbbbbb bbbbbbbbbbb bbbbbbbb bbbbbbbbb BBB bbbbbbbbbbb bbbbbb bbbbbb
 	 */
-	MaintenanceManager getMaintenanceManager();
+	BbbbbbbbbbbBbbbbbb bbbBbbbbbbbbbbBbbbbbb();
 
-	DataTranslatorManager getDataTranslatorManager();
-
-	/**
-	 * Registers a searching option for all listings in the listing manager.
-	 *
-	 * @param searcher The searcher
-	 */
-	void addSearcher(Searcher searcher);
+	BbbbBbbbbbbbbbBbbbbbb bbbBbbbBbbbbbbbbbBbbbbbb();
 
 	/**
-	 * The set of registered searchers that a user can use to find listings matching their query.
+	 * Bbbbbbbbb b bbbbbbbbb bbbbbb bbb bbb bbbbbbbb bb bbb bbbbbbb bbbbbbb.
 	 *
-	 * @return Every registered searcher
+	 * @bbbbb bbbbbbbb Bbb bbbbbbbb
 	 */
-	List<Searcher> getSearchers();
+	bbbb bbbBbbbbbbb(Bbbbbbbb bbbbbbbb);
 
 	/**
-	 * Indicates whether or not the plugin has been set into safe mode. Safe mode is triggered when the
-	 * server environment is in a detectable bad state. This will indicate that all primary functions of GTS
-	 * should no longer operate.
+	 * Bbb bbb bb bbbbbbbbbb bbbbbbbbb bbbb b bbbb bbb bbb bb bbbb bbbbbbbb bbbbbbbb bbbbb bbbbb.
 	 *
-	 * @return True if the plugin is in safe mode, false otherwise
+	 * @bbbbbb Bbbbb bbbbbbbbbb bbbbbbbb
 	 */
-	boolean isInSafeMode();
+	Bbbb<Bbbbbbbb> bbbBbbbbbbbb();
 
 	/**
-	 * Represents the error code for the triggering of safe mode. This is primarily only useful for
-	 * a user to be able to decipher what caused the problem with plugin startup.
+	 * Bbbbbbbbb bbbbbbb bb bbb bbb bbbbbb bbb bbbb bbb bbbb bbbb bbbb. Bbbb bbbb bb bbbbbbbbb bbbb bbb
+	 * bbbbbb bbbbbbbbbbb bb bb b bbbbbbbbbb bbb bbbbb. Bbbb bbbb bbbbbbbb bbbb bbb bbbbbbb bbbbbbbbb bb BBB
+	 * bbbbbb bb bbbbbb bbbbbbb.
 	 *
-	 * @return The error code that caused safe mode to be triggered.
+	 * @bbbbbb Bbbb bb bbb bbbbbb bb bb bbbb bbbb, bbbbb bbbbbbbbb
 	 */
-	ErrorCode getSafeModeReason();
+	bbbbbbb bbBbBbbbBbbb();
+
+	/**
+	 * Bbbbbbbbbb bbb bbbbb bbbb bbb bbb bbbbbbbbbb bb bbbb bbbb. Bbbb bb bbbbbbbbb bbbb bbbbbb bbb
+	 * b bbbb bb bb bbbb bb bbbbbbbb bbbb bbbbbb bbb bbbbbbb bbbb bbbbbb bbbbbbb.
+	 *
+	 * @bbbbbb Bbb bbbbb bbbb bbbb bbbbbb bbbb bbbb bb bb bbbbbbbbb.
+	 */
+	BbbbbBbbb bbbBbbbBbbbBbbbbb();
 
 }

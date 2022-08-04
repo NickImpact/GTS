@@ -1,25 +1,25 @@
-package net.impactdev.gts.api.events.buyitnow;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.bbbbbbbb;
 
-import net.impactdev.impactor.api.event.ImpactorEvent;
-import net.impactdev.impactor.api.event.type.Cancellable;
-import net.impactdev.gts.api.listings.Listing;
-import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbBbbbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * This PurchaseEvent represents the action of a Player purchasing any type of listing from the GTS
- * market, whether it be through auction or simplistic purchase. To access the data of the listing,
- * just simply parse through the fields of the listing variable provided by the event.
+ * Bbbb BbbbbbbbBbbbb bbbbbbbbbb bbb bbbbbb bb b Bbbbbb bbbbbbbbbb bbb bbbb bb bbbbbbb bbbb bbb BBB
+ * bbbbbb, bbbbbbb bb bb bbbbbbb bbbbbbb bb bbbbbbbbbb bbbbbbbb. Bb bbbbbb bbb bbbb bb bbb bbbbbbb,
+ * bbbb bbbbbb bbbbb bbbbbbb bbb bbbbbb bb bbb bbbbbbb bbbbbbbb bbbbbbbb bb bbb bbbbb.
  *
- * @author NickImpact
+ * @bbbbbb BbbbBbbbbb
  */
-@GenerateFactoryMethod
-public interface PurchaseListingEvent extends ImpactorEvent, Cancellable {
+@BbbbbbbbBbbbbbbBbbbbb
+bbbbbb bbbbbbbbb BbbbbbbbBbbbbbbBbbbb bbbbbbb BbbbbbbbBbbbb, Bbbbbbbbbbb {
 
-    UUID getBuyer();
+    BBBB bbbBbbbb();
 
-    Listing getListing();
+    Bbbbbbb bbbBbbbbbb();
 
 
 }

@@ -1,224 +1,224 @@
-package net.impactdev.gts.common.messaging.messages.listings.auctions.impl;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbb;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.util.groupings.SimilarPair;
-import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.AuctionMessageOptions;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.mappings.Tuple;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbbbBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public abstract class AuctionCancelMessage extends AuctionMessageOptions implements AuctionMessage.Cancel {
+bbbbbb bbbbbbbb bbbbb BbbbbbbBbbbbbBbbbbbb bbbbbbb BbbbbbbBbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbBbbbbbb.Bbbbbb {
 
     /**
-     * Constructs the message that'll be sent to all other connected servers.
+     * Bbbbbbbbbb bbb bbbbbbb bbbb'bb bb bbbb bb bbb bbbbb bbbbbbbbb bbbbbbb.
      *
-     * @param id      The message ID that'll be used to ensure the message isn't duplicated
-     * @param listing The ID of the listing being bid on
-     * @param actor   The ID of the user placing the bid
+     * @bbbbb bb      Bbb bbbbbbb BB bbbb'bb bb bbbb bb bbbbbb bbb bbbbbbb bbb'b bbbbbbbbbb
+     * @bbbbb bbbbbbb Bbb BB bb bbb bbbbbbb bbbbb bbb bb
+     * @bbbbb bbbbb   Bbb BB bb bbb bbbb bbbbbbb bbb bbb
      */
-    protected AuctionCancelMessage(UUID id, UUID listing, UUID actor) {
-        super(id, listing, actor);
+    bbbbbbbbb BbbbbbbBbbbbbBbbbbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbb) {
+        bbbbb(bb, bbbbbbb, bbbbb);
     }
 
-    public static class Request extends AuctionCancelMessage implements Cancel.Request {
+    bbbbbb bbbbbb bbbbb Bbbbbbb bbbbbbb BbbbbbbBbbbbbBbbbbbb bbbbbbbbbb Bbbbbb.Bbbbbbb {
 
-        public static final String TYPE = "Auction/Cancel/Request";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "Bbbbbbb/Bbbbbb/Bbbbbbb";
 
-        public static AuctionCancelMessage.Request decode(@Nullable JsonElement element, UUID id) {
-            Tuple<JsonObject, SimilarPair<UUID>> base = AuctionMessageOptions.decodeBaseAuctionParameters(element);
-            UUID listing = base.getSecond().getFirst();
-            UUID actor = base.getSecond().getSecond();
+        bbbbbb bbbbbb BbbbbbbBbbbbbBbbbbbb.Bbbbbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            Bbbbb<BbbbBbbbbb, BbbbbbbBbbb<BBBB>> bbbb = BbbbbbbBbbbbbbBbbbbbb.bbbbbbBbbbBbbbbbbBbbbbbbbbb(bbbbbbb);
+            BBBB bbbbbbb = bbbb.bbbBbbbbb().bbbBbbbb();
+            BBBB bbbbb = bbbb.bbbBbbbbb().bbbBbbbbb();
 
-            return new AuctionCancelMessage.Request(id, listing, actor);
+            bbbbbb bbb BbbbbbbBbbbbbBbbbbbb.Bbbbbbb(bb, bbbbbbb, bbbbb);
         }
 
         /**
-         * Constructs the message that'll be sent to all other connected servers.
+         * Bbbbbbbbbb bbb bbbbbbb bbbb'bb bb bbbb bb bbb bbbbb bbbbbbbbb bbbbbbb.
          *
-         * @param id      The message ID that'll be used to ensure the message isn't duplicated
-         * @param listing The ID of the listing being bid on
-         * @param actor   The ID of the user placing the bid
+         * @bbbbb bb      Bbb bbbbbbb BB bbbb'bb bb bbbb bb bbbbbb bbb bbbbbbb bbb'b bbbbbbbbbb
+         * @bbbbb bbbbbbb Bbb BB bb bbb bbbbbbb bbbbb bbb bb
+         * @bbbbb bbbbb   Bbb BB bb bbb bbbb bbbbbbb bbb bbb
          */
-        public Request(UUID id, UUID listing, UUID actor) {
-            super(id, listing, actor);
+        bbbbbb Bbbbbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbb) {
+            bbbbb(bb, bbbbbbb, bbbbb);
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject()
-                            .add("listing", this.getAuctionID().toString())
-                            .add("actor", this.getActor().toString())
-                            .toJson()
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb()
+                            .bbb("bbbbbbb", bbbb.bbbBbbbbbbBB().bbBbbbbb())
+                            .bbb("bbbbb", bbbb.bbbBbbbb().bbBbbbbb())
+                            .bbBbbb()
             );
         }
 
-        @Override
-        public CompletableFuture<Cancel.Response> respond() {
-            return GTSPlugin.instance().storage().processAuctionCancelRequest(this);
+        @Bbbbbbbb
+        bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbb.Bbbbbbbb> bbbbbbb() {
+            bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbbBbbbbbBbbbbbb(bbbb);
         }
 
-        @Override
-        public void print(PrettyPrinter printer) {
-            printer.kv("Request ID", this.getID())
-                    .kv("Auction ID", this.getAuctionID())
-                    .kv("Actor", this.getActor());
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+            bbbbbbb.bb("Bbbbbbb BB", bbbb.bbbBB())
+                    .bb("Bbbbbbb BB", bbbb.bbbBbbbbbbBB())
+                    .bb("Bbbbb", bbbb.bbbBbbbb());
         }
     }
 
-    public static class Response extends AuctionCancelMessage implements Cancel.Response {
+    bbbbbb bbbbbb bbbbb Bbbbbbbb bbbbbbb BbbbbbbBbbbbbBbbbbbb bbbbbbbbbb Bbbbbb.Bbbbbbbb {
 
-        public static final String TYPE = "Auction/Cancel/Response";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "Bbbbbbb/Bbbbbb/Bbbbbbbb";
 
-        public static AuctionCancelMessage.Response decode(@Nullable JsonElement element, UUID id) {
-            Tuple<JsonObject, SimilarPair<UUID>> base = AuctionMessageOptions.decodeBaseAuctionParameters(element);
-            JsonObject raw = base.getFirst();
-            UUID listing = base.getSecond().getFirst();
-            UUID actor = base.getSecond().getSecond();
+        bbbbbb bbbbbb BbbbbbbBbbbbbBbbbbbb.Bbbbbbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            Bbbbb<BbbbBbbbbb, BbbbbbbBbbb<BBBB>> bbbb = BbbbbbbBbbbbbbBbbbbbb.bbbbbbBbbbBbbbbbbBbbbbbbbbb(bbbbbbb);
+            BbbbBbbbbb bbb = bbbb.bbbBbbbb();
+            BBBB bbbbbbb = bbbb.bbbBbbbbb().bbbBbbbb();
+            BBBB bbbbb = bbbb.bbbBbbbbb().bbbBbbbbb();
 
-            Auction data = Optional.ofNullable(raw.get("data"))
-                    .map(x -> GTSService.getInstance().getGTSComponentManager()
-                            .getListingResourceManager(Auction.class)
-                            .get()
-                            .getDeserializer()
-                            .deserialize(x.getAsJsonObject())
+            Bbbbbbb bbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbb"))
+                    .bbb(b -> BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+                            .bbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbbbb.bbbbb)
+                            .bbb()
+                            .bbbBbbbbbbbbbbb()
+                            .bbbbbbbbbbb(b.bbbBbBbbbBbbbbb())
                     )
-                    .orElseThrow(() -> new IllegalStateException("Response lacking auction data"));
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbbbb bbbbbbb bbbbbbb bbbb"));
 
-            UUID request = Optional.ofNullable(raw.get("request"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-            List<UUID> bidders = Optional.ofNullable(raw.get("bidders"))
-                    .map(x -> {
-                        List<UUID> result = Lists.newArrayList();
-                        JsonArray array = x.getAsJsonArray();
-                        for(JsonElement s : array) {
-                            result.add(UUID.fromString(s.getAsString()));
+            BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bb bbbbb bbbbbbb BB"));
+            Bbbb<BBBB> bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> {
+                        Bbbb<BBBB> bbbbbb = Bbbbb.bbbBbbbbBbbb();
+                        BbbbBbbbb bbbbb = b.bbbBbBbbbBbbbb();
+                        bbb(BbbbBbbbbbb b : bbbbb) {
+                            bbbbbb.bbb(BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()));
                         }
-                        return result;
+                        bbbbbb bbbbbb;
                     })
-                    .orElseThrow(() -> new IllegalStateException("Failed to locate bidder information"));
-            boolean successful = Optional.ofNullable(raw.get("successful"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Failed to locate success parameter"));
-            ErrorCode error = Optional.ofNullable(raw.get("error"))
-                    .map(x -> ErrorCodes.get(x.getAsInt()))
-                    .orElse(null);
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbb bbbbbbbbbbb"));
+            bbbbbbb bbbbbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbbbbb"))
+                    .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb bbbbbbbbb"));
+            BbbbbBbbb bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BbbbbBbbbb.bbb(b.bbbBbBbb()))
+                    .bbBbbb(bbbb);
 
-            return new AuctionCancelMessage.Response(id, request, data, listing, actor, ImmutableList.copyOf(bidders), successful, error);
+            bbbbbb bbb BbbbbbbBbbbbbBbbbbbb.Bbbbbbbb(bb, bbbbbbb, bbbb, bbbbbbb, bbbbb, BbbbbbbbbBbbb.bbbbBb(bbbbbbb), bbbbbbbbbb, bbbbb);
         }
 
-        private final Auction data;
+        bbbbbbb bbbbb Bbbbbbb bbbb;
 
-        private final UUID request;
-        private final ImmutableList<UUID> bidders;
-        private final boolean success;
-        private final ErrorCode error;
+        bbbbbbb bbbbb BBBB bbbbbbb;
+        bbbbbbb bbbbb BbbbbbbbbBbbb<BBBB> bbbbbbb;
+        bbbbbbb bbbbb bbbbbbb bbbbbbb;
+        bbbbbbb bbbbb BbbbbBbbb bbbbb;
 
-        private long responseTime;
+        bbbbbbb bbbb bbbbbbbbBbbb;
 
         /**
-         * Constructs the message that'll be sent to all other connected servers.
+         * Bbbbbbbbbb bbb bbbbbbb bbbb'bb bb bbbb bb bbb bbbbb bbbbbbbbb bbbbbbb.
          *
-         * @param id      The message ID that'll be used to ensure the message isn't duplicated
-         * @param request The ID of the message that spawned this response
-         * @param listing The ID of the listing being bid on
-         * @param actor   The ID of the user placing the bid
-         * @param bidders The set of individuals who have bid on the listing
-         * @param success The state of the response
-         * @param error   An error code marking the reason of failure, should it be necessary. Can be null
+         * @bbbbb bb      Bbb bbbbbbb BB bbbb'bb bb bbbb bb bbbbbb bbb bbbbbbb bbb'b bbbbbbbbbb
+         * @bbbbb bbbbbbb Bbb BB bb bbb bbbbbbb bbbb bbbbbbb bbbb bbbbbbbb
+         * @bbbbb bbbbbbb Bbb BB bb bbb bbbbbbb bbbbb bbb bb
+         * @bbbbb bbbbb   Bbb BB bb bbb bbbb bbbbbbb bbb bbb
+         * @bbbbb bbbbbbb Bbb bbb bb bbbbbbbbbbb bbb bbbb bbb bb bbb bbbbbbb
+         * @bbbbb bbbbbbb Bbb bbbbb bb bbb bbbbbbbb
+         * @bbbbb bbbbb   Bb bbbbb bbbb bbbbbbb bbb bbbbbb bb bbbbbbb, bbbbbb bb bb bbbbbbbbb. Bbb bb bbbb
          */
-        public Response(UUID id, UUID request, Auction data, UUID listing, UUID actor, ImmutableList<UUID> bidders, boolean success, @Nullable ErrorCode error) {
-            super(id, listing, actor);
+        bbbbbb Bbbbbbbb(BBBB bb, BBBB bbbbbbb, Bbbbbbb bbbb, BBBB bbbbbbb, BBBB bbbbb, BbbbbbbbbBbbb<BBBB> bbbbbbb, bbbbbbb bbbbbbb, @Bbbbbbbb BbbbbBbbb bbbbb) {
+            bbbbb(bb, bbbbbbb, bbbbb);
 
-            this.data = data;
-            this.request = request;
-            this.bidders = bidders;
-            this.success = success;
-            this.error = error;
+            bbbb.bbbb = bbbb;
+            bbbb.bbbbbbb = bbbbbbb;
+            bbbb.bbbbbbb = bbbbbbb;
+            bbbb.bbbbbbb = bbbbbbb;
+            bbbb.bbbbb = bbbbb;
         }
 
-        @Override
-        public Auction getData() {
-            return this.data;
+        @Bbbbbbbb
+        bbbbbb Bbbbbbb bbbBbbb() {
+            bbbbbb bbbb.bbbb;
         }
 
-        @Override
-        public List<UUID> getBidders() {
-            return this.bidders;
+        @Bbbbbbbb
+        bbbbbb Bbbb<BBBB> bbbBbbbbbb() {
+            bbbbbb bbbb.bbbbbbb;
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject()
-                            .add("request", this.request.toString())
-                            .add("listing", this.getAuctionID().toString())
-                            .add("actor", this.getActor().toString())
-                            .consume(o -> {
-                                JArray bidders = new JArray();
-                                for(UUID bidder : this.bidders) {
-                                    bidders.add(bidder.toString());
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb()
+                            .bbb("bbbbbbb", bbbb.bbbbbbb.bbBbbbbb())
+                            .bbb("bbbbbbb", bbbb.bbbBbbbbbbBB().bbBbbbbb())
+                            .bbb("bbbbb", bbbb.bbbBbbbb().bbBbbbbb())
+                            .bbbbbbb(b -> {
+                                BBbbbb bbbbbbb = bbb BBbbbb();
+                                bbb(BBBB bbbbbb : bbbb.bbbbbbb) {
+                                    bbbbbbb.bbb(bbbbbb.bbBbbbbb());
                                 }
-                                o.add("bidders", bidders);
+                                b.bbb("bbbbbbb", bbbbbbb);
                             })
-                            .add("successful", this.success)
-                            .add("data", this.data.serialize())
-                            .consume(o -> this.getErrorCode().ifPresent(error -> o.add("error", error.ordinal())))
-                            .toJson()
+                            .bbb("bbbbbbbbbb", bbbb.bbbbbbb)
+                            .bbb("bbbb", bbbb.bbbb.bbbbbbbbb())
+                            .bbbbbbb(b -> bbbb.bbbBbbbbBbbb().bbBbbbbbb(bbbbb -> b.bbb("bbbbb", bbbbb.bbbbbbb())))
+                            .bbBbbb()
             );
         }
 
-        @Override
-        public UUID getRequestID() {
-            return this.request;
+        @Bbbbbbbb
+        bbbbbb BBBB bbbBbbbbbbBB() {
+            bbbbbb bbbb.bbbbbbb;
         }
 
-        @Override
-        public long getResponseTime() {
-            return this.responseTime;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb() {
+            bbbbbb bbbb.bbbbbbbbBbbb;
         }
 
-        @Override
-        public void setResponseTime(long millis) {
-            this.responseTime = millis;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb(bbbb bbbbbb) {
+            bbbb.bbbbbbbbBbbb = bbbbbb;
         }
 
-        @Override
-        public boolean wasSuccessful() {
-            return this.success;
+        @Bbbbbbbb
+        bbbbbb bbbbbbb bbbBbbbbbbbbb() {
+            bbbbbb bbbb.bbbbbbb;
         }
 
-        @Override
-        public Optional<ErrorCode> getErrorCode() {
-            return Optional.ofNullable(this.error);
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbb<BbbbbBbbb> bbbBbbbbBbbb() {
+            bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbb);
         }
 
-        @Override
-        public void print(PrettyPrinter printer) {
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
 
         }
     }

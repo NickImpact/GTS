@@ -1,478 +1,478 @@
-package net.impactdev.gts.ui.submenu.stash;
+bbbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbbbb.bbbbb;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import io.leangen.geantyref.TypeToken;
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.makeup.Display;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.stashes.StashedContent;
-import net.impactdev.gts.api.ui.GTSMenu;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.gts.sponge.deliveries.SpongeDelivery;
-import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
-import net.impactdev.gts.ui.SpongeMainMenu;
-import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.ui.containers.icons.ClickProcessor;
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import net.impactdev.impactor.api.ui.containers.pagination.Pagination;
-import net.impactdev.impactor.api.ui.containers.pagination.updaters.PageUpdater;
-import net.impactdev.impactor.api.ui.containers.pagination.updaters.PageUpdaterType;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.stashes.Stash;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.ui.Historical;
-import net.impactdev.gts.sponge.listings.SpongeListing;
-import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.util.TriState;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.math.vector.Vector2i;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.bbbbbbbbbb.BbbbbbBbbbbbbBbbbbbb;
+bbbbbb bb.bbbbbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bb.BBBBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbb.BbbbbbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.BbbbbbBbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbbbb.bbbbbbb.BbbbbbBbbbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.BbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbbbbb.bbbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbbbbb.bbbbbbbb.BbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbb.Bbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbb.bbbbbb.Bbbbbb2b;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbBbbbBbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
 
-public class SpongeStashMenu implements Historical<SpongeMainMenu>, GTSMenu {
+bbbbbb bbbbb BbbbbbBbbbbBbbb bbbbbbbbbb Bbbbbbbbbb<BbbbbbBbbbBbbb>, BBBBbbb {
 
-    private static final ExecutorService CLAIMER = Executors.newFixedThreadPool(
-            Runtime.getRuntime().availableProcessors(),
-            new ThreadFactoryBuilder()
-                    .setNameFormat("GTS Stash Claiming Executor - #%d")
-                    .setDaemon(true)
-                    .build()
+    bbbbbbb bbbbbb bbbbb BbbbbbbbBbbbbbb BBBBBBB = Bbbbbbbbb.bbbBbbbbBbbbbbBbbb(
+            Bbbbbbb.bbbBbbbbbb().bbbbbbbbbBbbbbbbbbb(),
+            bbb BbbbbbBbbbbbbBbbbbbb()
+                    .bbbBbbbBbbbbb("BBB Bbbbb Bbbbbbbb Bbbbbbbb - #%b")
+                    .bbbBbbbbb(bbbb)
+                    .bbbbb()
     );
 
-    private static final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+    bbbbbbb bbbbbb bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
 
-    private final Pagination.Generic<StashedContent<?>> pagination;
-    private final PlatformPlayer viewer;
+    bbbbbbb bbbbb Bbbbbbbbbb.Bbbbbbb<BbbbbbbBbbbbbb<?>> bbbbbbbbbb;
+    bbbbbbb bbbbb BbbbbbbbBbbbbb bbbbbb;
 
-    public SpongeStashMenu(PlatformPlayer viewer) {
-        this.viewer = viewer;
+    bbbbbb BbbbbbBbbbbBbbb(BbbbbbbbBbbbbb bbbbbb) {
+        bbbb.bbbbbb = bbbbbb;
 
-        this.pagination = Pagination.builder()
-                .provider(Key.key("gts", "stash"))
-                .title(service.parse(GTSPlugin.instance().configuration().language().get(MsgConfigKeys.UI_MENU_STASH_TITLE)))
-                .layout(this.design())
-                .readonly(true)
-                .viewer(this.viewer)
-                .style(TriState.TRUE)
-                .zone(Vector2i.from(7, 2), Vector2i.ONE)
-                .updater(PageUpdater.builder()
-                        .type(PageUpdaterType.PREVIOUS)
-                        .slot(37)
-                        .provider(target -> ItemStack.builder()
-                                .itemType(ItemTypes.SPECTRAL_ARROW)
-                                .add(Keys.CUSTOM_NAME, MiniMessage.miniMessage().deserialize("<gradient:red:gold>Previous Page (" + target + ")</gradient>"))
-                                .build()
+        bbbb.bbbbbbbbbb = Bbbbbbbbbb.bbbbbbb()
+                .bbbbbbbb(Bbb.bbb("bbb", "bbbbb"))
+                .bbbbb(bbbbbbb.bbbbb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb().bbb(BbbBbbbbbBbbb.BB_BBBB_BBBBB_BBBBB)))
+                .bbbbbb(bbbb.bbbbbb())
+                .bbbbbbbb(bbbb)
+                .bbbbbb(bbbb.bbbbbb)
+                .bbbbb(BbbBbbbb.BBBB)
+                .bbbb(Bbbbbb2b.bbbb(7, 2), Bbbbbb2b.BBB)
+                .bbbbbbb(BbbbBbbbbbb.bbbbbbb()
+                        .bbbb(BbbbBbbbbbbBbbb.BBBBBBBB)
+                        .bbbb(37)
+                        .bbbbbbbb(bbbbbb -> BbbbBbbbb.bbbbbbb()
+                                .bbbbBbbb(BbbbBbbbb.BBBBBBBB_BBBBB)
+                                .bbb(Bbbb.BBBBBB_BBBB, BbbbBbbbbbb.bbbbBbbbbbb().bbbbbbbbbbb("<bbbbbbbb:bbb:bbbb>Bbbbbbbb Bbbb (" + bbbbbb + ")</bbbbbbbb>"))
+                                .bbbbb()
                         )
-                        .build()
+                        .bbbbb()
                 )
-                .updater(PageUpdater.builder()
-                        .type(PageUpdaterType.NEXT)
-                        .slot(43)
-                        .provider(target -> ItemStack.builder()
-                                .itemType(ItemTypes.SPECTRAL_ARROW)
-                                .add(Keys.CUSTOM_NAME, MiniMessage.miniMessage().deserialize("<gradient:green:blue>Next Page (" + target + ")</gradient>"))
-                                .build()
+                .bbbbbbb(BbbbBbbbbbb.bbbbbbb()
+                        .bbbb(BbbbBbbbbbbBbbb.BBBB)
+                        .bbbb(43)
+                        .bbbbbbbb(bbbbbb -> BbbbBbbbb.bbbbbbb()
+                                .bbbbBbbb(BbbbBbbbb.BBBBBBBB_BBBBB)
+                                .bbb(Bbbb.BBBBBB_BBBB, BbbbBbbbbbb.bbbbBbbbbbb().bbbbbbbbbbb("<bbbbbbbb:bbbbb:bbbb>Bbbb Bbbb (" + bbbbbb + ")</bbbbbbbb>"))
+                                .bbbbb()
                         )
-                        .build()
+                        .bbbbb()
                 )
-                .asynchronous(new TypeToken<StashedContent<?>>() {})
-                .accumulator(this.fetchAndTranslate(viewer))
-                .build();
+                .bbbbbbbbbbbb(bbb BbbbBbbbb<BbbbbbbBbbbbbb<?>>() {})
+                .bbbbbbbbbbb(bbbb.bbbbbBbbBbbbbbbbb(bbbbbb))
+                .bbbbb();
     }
 
-    public void open() {
-        this.pagination.open();
+    bbbbbb bbbb bbbb() {
+        bbbb.bbbbbbbbbb.bbbb();
     }
 
-    private ServerPlayer player() {
-        return Sponge.server().player(this.viewer.uuid()).orElseThrow(() -> new IllegalStateException("Viewer player could not be found"));
+    bbbbbbb BbbbbbBbbbbb bbbbbb() {
+        bbbbbb Bbbbbb.bbbbbb().bbbbbb(bbbb.bbbbbb.bbbb()).bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bbbbbb bbbbb bbb bb bbbbb"));
     }
 
-    protected Layout design() {
-        Layout.LayoutBuilder slb = Layout.builder();
-        slb.size(5)
-                .rows(ProvidedIcons.BORDER, 1, 4)
-                .columns(ProvidedIcons.BORDER, 1, 9)
-                .slots(ProvidedIcons.BORDER, 38, 42);
+    bbbbbbbbb Bbbbbb bbbbbb() {
+        Bbbbbb.BbbbbbBbbbbbb bbb = Bbbbbb.bbbbbbb();
+        bbb.bbbb(5)
+                .bbbb(BbbbbbbbBbbbb.BBBBBB, 1, 4)
+                .bbbbbbb(BbbbbbbbBbbbb.BBBBBB, 1, 9)
+                .bbbbb(BbbbbbbbBbbbb.BBBBBB, 38, 42);
 
-        Icon<ItemStack> collect = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                    .itemType(ItemTypes.HOPPER)
-                    .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_STASH_COLLECT_ALL_TITLE)))
-                    .add(Keys.LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_STASH_COLLECT_ALL_LORE)))
-                    .build()
+        Bbbb<BbbbBbbbb> bbbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                    .bbbbBbbb(BbbbBbbbb.BBBBBB)
+                    .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBB_BBBBBBB_BBB_BBBBB)))
+                    .bbb(Bbbb.BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBB_BBBBBBB_BBB_BBBB)))
+                    .bbbbb()
                 ))
-                .listener(context -> {
-                    this.player().sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST)));
-                    CompletableFutureManager.makeFuture(() -> {
-                        // Lets use this to ensure our debug messages are lined up accordingly
-                        List<StashedContent<?>> contents = this.pagination.pages().getFramesNonCircular()
-                                .stream()
-                                .flatMap(page -> page.icons().values().stream())
-                                .filter(icon -> icon instanceof Icon.Binding)
-                                .map(icon -> ((Icon.Binding<ItemStack, StashedContent<?>>) icon).binding())
-                                .collect(Collectors.toList());
+                .bbbbbbbb(bbbbbbb -> {
+                    bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBB_BBBBBBBBBB_BBBBBBB)));
+                    BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(() -> {
+                        // Bbbb bbb bbbb bb bbbbbb bbb bbbbb bbbbbbbb bbb bbbbb bb bbbbbbbbbbb
+                        Bbbb<BbbbbbbBbbbbbb<?>> bbbbbbbb = bbbb.bbbbbbbbbb.bbbbb().bbbBbbbbbBbbBbbbbbbb()
+                                .bbbbbb()
+                                .bbbbBbb(bbbb -> bbbb.bbbbb().bbbbbb().bbbbbb())
+                                .bbbbbb(bbbb -> bbbb bbbbbbbbbb Bbbb.Bbbbbbb)
+                                .bbb(bbbb -> ((Bbbb.Bbbbbbb<BbbbBbbbb, BbbbbbbBbbbbbb<?>>) bbbb).bbbbbbb())
+                                .bbbbbbb(Bbbbbbbbbb.bbBbbb());
 
-                        AtomicInteger successful = new AtomicInteger();
-                        AtomicBoolean ready = new AtomicBoolean(true);
-                        CountDownLatch finished = new CountDownLatch(contents.size());
+                        BbbbbbBbbbbbb bbbbbbbbbb = bbb BbbbbbBbbbbbb();
+                        BbbbbbBbbbbbb bbbbb = bbb BbbbbbBbbbbbb(bbbb);
+                        BbbbbBbbbBbbbb bbbbbbbb = bbb BbbbbBbbbBbbbb(bbbbbbbb.bbbb());
 
-                        for(StashedContent<?> entry : ImmutableList.copyOf(contents)) {
-                            while(!ready.get()) {
-                                try {
-                                    //noinspection BusyWait
-                                    Thread.sleep(50);
-                                } catch (InterruptedException e) {
-                                    ExceptionWriter.write(e);
+                        bbb(BbbbbbbBbbbbbb<?> bbbbb : BbbbbbbbbBbbb.bbbbBb(bbbbbbbb)) {
+                            bbbbb(!bbbbb.bbb()) {
+                                bbb {
+                                    //bbbbbbbbbbbb BbbbBbbb
+                                    Bbbbbb.bbbbb(50);
+                                } bbbbb (BbbbbbbbbbbBbbbbbbbb b) {
+                                    BbbbbbbbbBbbbbb.bbbbb(b);
                                 }
                             }
-                            ready.set(false);
+                            bbbbb.bbb(bbbbb);
 
-                            if(entry instanceof StashedContent.ListingContent) {
-                                Listing listing = ((StashedContent.ListingContent) entry).getContent();
-                                boolean lister = listing.getLister().equals(this.viewer);
+                            bb(bbbbb bbbbbbbbbb BbbbbbbBbbbbbb.BbbbbbbBbbbbbb) {
+                                Bbbbbbb bbbbbbb = ((BbbbbbbBbbbbbb.BbbbbbbBbbbbbb) bbbbb).bbbBbbbbbb();
+                                bbbbbbb bbbbbb = bbbbbbb.bbbBbbbbb().bbbbbb(bbbb.bbbbbb);
 
-                                GTSPlugin.instance().messagingService().requestClaim(
-                                        listing.getID(),
-                                        this.viewer.uuid(),
-                                        null,
-                                        listing instanceof Auction
-                                ).thenAccept(response -> {
-                                    // Handle message accordingly
+                                BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbBbbbb(
+                                        bbbbbbb.bbbBB(),
+                                        bbbb.bbbbbb.bbbb(),
+                                        bbbb,
+                                        bbbbbbb bbbbbbbbbb Bbbbbbb
+                                ).bbbbBbbbbb(bbbbbbbb -> {
+                                    // Bbbbbb bbbbbbb bbbbbbbbbbb
                                     //
-                                    // NOTE: We don't care about non-successful requests here, as they shouldn't affect the
-                                    // user's stash and will therefore not end up counted.
-                                    if (response.wasSuccessful()) {
-                                        if (lister) {
-                                            Impactor.getInstance().getScheduler().executeSync(() -> {
-                                                try {
-                                                    if (response.isAuction()) {
-                                                        ClaimMessage.Response.AuctionResponse actual = (ClaimMessage.Response.AuctionResponse) response;
+                                    // BBBB: Bb bbb'b bbbb bbbbb bbb-bbbbbbbbbb bbbbbbbb bbbb, bb bbbb bbbbbbb'b bbbbbb bbb
+                                    // bbbb'b bbbbb bbb bbbb bbbbbbbbb bbb bbb bb bbbbbbb.
+                                    bb (bbbbbbbb.bbbBbbbbbbbbb()) {
+                                        bb (bbbbbb) {
+                                            Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                                                bbb {
+                                                    bb (bbbbbbbb.bbBbbbbbb()) {
+                                                        BbbbbBbbbbbb.Bbbbbbbb.BbbbbbbBbbbbbbb bbbbbb = (BbbbbBbbbbbb.Bbbbbbbb.BbbbbbbBbbbbbbb) bbbbbbbb;
 
-                                                        Auction auction = (Auction) listing;
-                                                        boolean hasBids = !auction.getBids().isEmpty();
+                                                        Bbbbbbb bbbbbbb = (Bbbbbbb) bbbbbbb;
+                                                        bbbbbbb bbbBbbb = !bbbbbbb.bbbBbbb().bbBbbbb();
 
-                                                        // If an auction has bids, return the highest bid value.
-                                                        // Otherwise, return the entry element
-                                                        if (hasBids) {
-                                                            if (new MonetaryPrice(auction.getHighBid().get().getSecond().getAmount()).reward(this.viewer.uuid())) {
-                                                                successful.incrementAndGet();
-                                                            } else {
-                                                                // Re-append our data as the claim request will have been updated
-                                                                GTSPlugin.instance().storage().appendOldClaimStatus(
-                                                                        auction.getID(),
-                                                                        actual.hasListerClaimed(),
-                                                                        actual.hasWinnerClaimed(),
-                                                                        actual.getAllOtherClaimers()
+                                                        // Bb bb bbbbbbb bbb bbbb, bbbbbb bbb bbbbbbb bbb bbbbb.
+                                                        // Bbbbbbbbb, bbbbbb bbb bbbbb bbbbbbb
+                                                        bb (bbbBbbb) {
+                                                            bb (bbb BbbbbbbbBbbbb(bbbbbbb.bbbBbbbBbb().bbb().bbbBbbbbb().bbbBbbbbb()).bbbbbb(bbbb.bbbbbb.bbbb())) {
+                                                                bbbbbbbbbb.bbbbbbbbbBbbBbb();
+                                                            } bbbb {
+                                                                // Bb-bbbbbb bbb bbbb bb bbb bbbbb bbbbbbb bbbb bbbb bbbb bbbbbbb
+                                                                BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbBbbBbbbbBbbbbb(
+                                                                        bbbbbbb.bbbBB(),
+                                                                        bbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                        bbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                        bbbbbb.bbbBbbBbbbbBbbbbbbb()
                                                                 );
                                                             }
-                                                        } else {
-                                                            // No bids, return the listing instead
-                                                            if (listing.getEntry().give(this.viewer.uuid())) {
-                                                                successful.incrementAndGet();
-                                                            } else {
-                                                                // Re-append data as our claim request will have deleted it
-                                                                GTSPlugin.instance().storage().appendOldClaimStatus(
-                                                                        auction.getID(),
-                                                                        actual.hasListerClaimed(),
-                                                                        actual.hasWinnerClaimed(),
-                                                                        actual.getAllOtherClaimers()
+                                                        } bbbb {
+                                                            // Bb bbbb, bbbbbb bbb bbbbbbb bbbbbbb
+                                                            bb (bbbbbbb.bbbBbbbb().bbbb(bbbb.bbbbbb.bbbb())) {
+                                                                bbbbbbbbbb.bbbbbbbbbBbbBbb();
+                                                            } bbbb {
+                                                                // Bb-bbbbbb bbbb bb bbb bbbbb bbbbbbb bbbb bbbb bbbbbbb bb
+                                                                BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbBbbBbbbbBbbbbb(
+                                                                        bbbbbbb.bbbBB(),
+                                                                        bbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                        bbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                        bbbbbb.bbbBbbBbbbbBbbbbbbb()
                                                                 );
                                                             }
                                                         }
-                                                    } else {
-                                                        BuyItNow bin = (BuyItNow) listing;
-                                                        if (bin.isPurchased()) {
-                                                            if (bin.getPrice().reward(this.viewer.uuid())) {
-                                                                successful.incrementAndGet();
-                                                            } else {
-                                                                // Re-append data as our claim request will have deleted it
-                                                                GTSPlugin.instance().storage().publishListing(BuyItNow.builder()
-                                                                        .from(bin)
-                                                                        .purchased()
-                                                                        .expiration(LocalDateTime.now())
-                                                                        .build()
+                                                    } bbbb {
+                                                        BbbBbBbb bbb = (BbbBbBbb) bbbbbbb;
+                                                        bb (bbb.bbBbbbbbbbb()) {
+                                                            bb (bbb.bbbBbbbb().bbbbbb(bbbb.bbbbbb.bbbb())) {
+                                                                bbbbbbbbbb.bbbbbbbbbBbbBbb();
+                                                            } bbbb {
+                                                                // Bb-bbbbbb bbbb bb bbb bbbbb bbbbbbb bbbb bbbb bbbbbbb bb
+                                                                BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbb(BbbBbBbb.bbbbbbb()
+                                                                        .bbbb(bbb)
+                                                                        .bbbbbbbbb()
+                                                                        .bbbbbbbbbb(BbbbbBbbbBbbb.bbb())
+                                                                        .bbbbb()
                                                                 );
                                                             }
-                                                        } else {
-                                                            // Listing expired
-                                                            if (listing.getEntry().give(this.viewer.uuid())) {
-                                                                successful.incrementAndGet();
-                                                            } else {
-                                                                // Re-append data as our claim request will have deleted it
-                                                                GTSPlugin.instance().storage().publishListing(BuyItNow.builder()
-                                                                        .from(bin)
-                                                                        .expiration(LocalDateTime.now())
-                                                                        .build()
+                                                        } bbbb {
+                                                            // Bbbbbbb bbbbbbb
+                                                            bb (bbbbbbb.bbbBbbbb().bbbb(bbbb.bbbbbb.bbbb())) {
+                                                                bbbbbbbbbb.bbbbbbbbbBbbBbb();
+                                                            } bbbb {
+                                                                // Bb-bbbbbb bbbb bb bbb bbbbb bbbbbbb bbbb bbbb bbbbbbb bb
+                                                                BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbb(BbbBbBbb.bbbbbbb()
+                                                                        .bbbb(bbb)
+                                                                        .bbbbbbbbbb(BbbbbBbbbBbbb.bbb())
+                                                                        .bbbbb()
                                                                 );
                                                             }
                                                         }
                                                     }
-                                                } finally {
-                                                    ready.set(true);
+                                                } bbbbbbb {
+                                                    bbbbb.bbb(bbbb);
                                                 }
                                             });
-                                        } else {
-                                            if (response.isAuction()) {
-                                                Auction auction = (Auction) listing;
-                                                ClaimMessage.Response.AuctionResponse actual = (ClaimMessage.Response.AuctionResponse) response;
+                                        } bbbb {
+                                            bb (bbbbbbbb.bbBbbbbbb()) {
+                                                Bbbbbbb bbbbbbb = (Bbbbbbb) bbbbbbb;
+                                                BbbbbBbbbbbb.Bbbbbbbb.BbbbbbbBbbbbbbb bbbbbb = (BbbbbBbbbbbb.Bbbbbbbb.BbbbbbbBbbbbbbb) bbbbbbbb;
 
-                                                Impactor.getInstance().getScheduler().executeSync(() -> {
-                                                    try {
-                                                        if (entry.getContext() == TriState.NOT_SET) {
-                                                            Auction.Bid bid = auction.getCurrentBid(this.viewer.uuid()).orElseThrow(() -> new IllegalStateException("Unable to locate bid for user where required"));
+                                                Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                                                    bbb {
+                                                        bb (bbbbb.bbbBbbbbbb() == BbbBbbbb.BBB_BBB) {
+                                                            Bbbbbbb.Bbb bbb = bbbbbbb.bbbBbbbbbbBbb(bbbb.bbbbbb.bbbb()).bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbb bbb bbbb bbbbb bbbbbbbb"));
 
-                                                            MonetaryPrice value = new MonetaryPrice(bid.getAmount());
-                                                            value.reward(this.viewer.uuid());
+                                                            BbbbbbbbBbbbb bbbbb = bbb BbbbbbbbBbbbb(bbb.bbbBbbbbb());
+                                                            bbbbb.bbbbbb(bbbb.bbbbbb.bbbb());
 
-                                                            successful.incrementAndGet();
-                                                        } else if (listing.getEntry().give(this.viewer.uuid())) {
-                                                            successful.incrementAndGet();
-                                                        } else {
-                                                            // Re-append data as our claim request will have deleted it
-                                                            GTSPlugin.instance().storage().appendOldClaimStatus(
-                                                                    auction.getID(),
-                                                                    actual.hasListerClaimed(),
-                                                                    actual.hasWinnerClaimed(),
-                                                                    actual.getAllOtherClaimers()
+                                                            bbbbbbbbbb.bbbbbbbbbBbbBbb();
+                                                        } bbbb bb (bbbbbbb.bbbBbbbb().bbbb(bbbb.bbbbbb.bbbb())) {
+                                                            bbbbbbbbbb.bbbbbbbbbBbbBbb();
+                                                        } bbbb {
+                                                            // Bb-bbbbbb bbbb bb bbb bbbbb bbbbbbb bbbb bbbb bbbbbbb bb
+                                                            BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbBbbBbbbbBbbbbb(
+                                                                    bbbbbbb.bbbBB(),
+                                                                    bbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                    bbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                    bbbbbb.bbbBbbBbbbbBbbbbbbb()
                                                             );
                                                         }
-                                                    } finally {
-                                                        ready.set(true);
+                                                    } bbbbbbb {
+                                                        bbbbb.bbb(bbbb);
                                                     }
                                                 });
-                                            } else {
-                                                // Special case: The user directly purchased the listing, but rewarding failed
-                                                // at time of purchase.
+                                            } bbbb {
+                                                // Bbbbbbb bbbb: Bbb bbbb bbbbbbbb bbbbbbbbb bbb bbbbbbb, bbb bbbbbbbbb bbbbbb
+                                                // bb bbbb bb bbbbbbbb.
 
-                                                BuyItNow bin = (BuyItNow) listing;
-                                                if (bin.stashedForPurchaser()) {
-                                                    Impactor.getInstance().getScheduler().executeSync(() -> {
-                                                        try {
-                                                            if (listing.getEntry().give(this.viewer.uuid())) {
-                                                                successful.getAndIncrement();
-                                                            } else {
-                                                                // Re-append data as our claim request will have deleted it
-                                                                GTSPlugin.instance().storage().publishListing(BuyItNow.builder()
-                                                                        .from(bin)
-                                                                        .build()
+                                                BbbBbBbb bbb = (BbbBbBbb) bbbbbbb;
+                                                bb (bbb.bbbbbbbBbbBbbbbbbbb()) {
+                                                    Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                                                        bbb {
+                                                            bb (bbbbbbb.bbbBbbbb().bbbb(bbbb.bbbbbb.bbbb())) {
+                                                                bbbbbbbbbb.bbbBbbBbbbbbbbb();
+                                                            } bbbb {
+                                                                // Bb-bbbbbb bbbb bb bbb bbbbb bbbbbbb bbbb bbbb bbbbbbb bb
+                                                                BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbb(BbbBbBbb.bbbbbbb()
+                                                                        .bbbb(bbb)
+                                                                        .bbbbb()
                                                                 );
                                                             }
-                                                        } finally {
-                                                            ready.set(true);
+                                                        } bbbbbbb {
+                                                            bbbbb.bbb(bbbb);
                                                         }
                                                     });
                                                 }
                                             }
                                         }
                                     }
-                                }).get(2, TimeUnit.SECONDS);
-                            } else {
-                                StashedContent.DeliverableContent delivery = (StashedContent.DeliverableContent) entry;
-                                this.claimDelivery((SpongeDelivery) delivery.getContent(), () -> ready.set(true)).join();
+                                }).bbb(2, BbbbBbbb.BBBBBBB);
+                            } bbbb {
+                                BbbbbbbBbbbbbb.BbbbbbbbbbbBbbbbbb bbbbbbbb = (BbbbbbbBbbbbbb.BbbbbbbbbbbBbbbbbb) bbbbb;
+                                bbbb.bbbbbBbbbbbbb((BbbbbbBbbbbbbb) bbbbbbbb.bbbBbbbbbb(), () -> bbbbb.bbb(bbbb)).bbbb();
                             }
-                            finished.countDown();
+                            bbbbbbbb.bbbbbBbbb();
                         }
 
-                        try {
-                            finished.await();
-                        } catch (Exception ignored) {}
+                        bbb {
+                            bbbbbbbb.bbbbb();
+                        } bbbbb (Bbbbbbbbb bbbbbbb) {}
 
-                        while(!ready.get()) {
-                            Thread.sleep(50);
+                        bbbbb(!bbbbb.bbb()) {
+                            Bbbbbb.bbbbb(50);
                         }
 
-                        PlaceholderSources sources = PlaceholderSources.builder()
-                                .append(Integer.class, successful::get)
-                                .build();
-                        this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STASH_COLLECT_ALL_RESULTS), sources));
-                    }, CLAIMER);
+                        BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                .bbbbbb(Bbbbbbb.bbbbb, bbbbbbbbbb::bbb)
+                                .bbbbb();
+                        bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBB_BBBBBBB), bbbbbbb));
+                    }, BBBBBBB);
 
-                    this.pagination.close();
-                    return false;
+                    bbbb.bbbbbbbbbb.bbbbb();
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
 
-        slb.slot(collect, 41);
+        bbb.bbbb(bbbbbbb, 41);
 
-        ItemStack b = ItemStack.builder()
-                .itemType(ItemTypes.BARRIER)
-                .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK)))
-                .build();
+        BbbbBbbbb b = BbbbBbbbb.bbbbbbb()
+                .bbbbBbbb(BbbbBbbbb.BBBBBBB)
+                .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBB)))
+                .bbbbb();
 
-        Icon<ItemStack> back = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(b))
-                .listener(context -> {
-                    SpongeMainMenu menu = new SpongeMainMenu(this.viewer);
-                    menu.open();
-                    return false;
+        Bbbb<BbbbBbbbb> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(b))
+                .bbbbbbbb(bbbbbbb -> {
+                    BbbbbbBbbbBbbb bbbb = bbb BbbbbbBbbbBbbb(bbbb.bbbbbb);
+                    bbbb.bbbb();
+                    bbbbbb bbbbb;
                 })
-                .build();
-        slb.slot(back, 39);
+                .bbbbb();
+        bbb.bbbb(bbbb, 39);
 
-        return slb.build();
+        bbbbbb bbb.bbbbb();
     }
 
-    private CompletableFuture<List<Icon.Binding<?, StashedContent<?>>>> fetchAndTranslate(PlatformPlayer viewer) {
-        return GTSPlugin.instance().storage().getStash(viewer.uuid())
-                .thenApply(Stash::getStashContents)
-                .thenApply(contents -> {
-                    Config lang = GTSPlugin.instance().configuration().language();
-                    List<Icon.Binding<?, StashedContent<?>>> results = Lists.newArrayList();
-                    for(StashedContent<?> content : contents) {
-                        AtomicReference<ClickProcessor> processor = new AtomicReference<>(context -> false);
-                        Icon.Binding<ItemStack, StashedContent<?>> icon = Icon.builder(ItemStack.class)
-                                        .display(() -> {
-                                            if(content instanceof StashedContent.ListingContent) {
-                                                SpongeListing listing = (SpongeListing) content.getContent();
+    bbbbbbb BbbbbbbbbbbBbbbbb<Bbbb<Bbbb.Bbbbbbb<?, BbbbbbbBbbbbbb<?>>>> bbbbbBbbBbbbbbbbb(BbbbbbbbBbbbbb bbbbbb) {
+        bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbBbbbb(bbbbbb.bbbb())
+                .bbbbBbbbb(Bbbbb::bbbBbbbbBbbbbbbb)
+                .bbbbBbbbb(bbbbbbbb -> {
+                    Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+                    Bbbb<Bbbb.Bbbbbbb<?, BbbbbbbBbbbbbb<?>>> bbbbbbb = Bbbbb.bbbBbbbbBbbb();
+                    bbb(BbbbbbbBbbbbbb<?> bbbbbbb : bbbbbbbb) {
+                        BbbbbbBbbbbbbbb<BbbbbBbbbbbbbb> bbbbbbbbb = bbb BbbbbbBbbbbbbbb<>(bbbbbbb -> bbbbb);
+                        Bbbb.Bbbbbbb<BbbbBbbbb, BbbbbbbBbbbbbb<?>> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                                        .bbbbbbb(() -> {
+                                            bb(bbbbbbb bbbbbbbbbb BbbbbbbBbbbbbb.BbbbbbbBbbbbbb) {
+                                                BbbbbbBbbbbbb bbbbbbb = (BbbbbbBbbbbbb) bbbbbbb.bbbBbbbbbb();
 
-                                                Display<ItemStack> display = listing.getEntry().getDisplay(this.viewer.uuid());
-                                                ItemStack item = display.get();
+                                                Bbbbbbb<BbbbBbbbb> bbbbbbb = bbbbbbb.bbbBbbbb().bbbBbbbbbb(bbbb.bbbbbb.bbbb());
+                                                BbbbBbbbb bbbb = bbbbbbb.bbb();
 
-                                                Optional<List<Component>> lore = item.get(Keys.LORE);
-                                                lore.ifPresent(texts -> texts.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR))));
+                                                Bbbbbbbb<Bbbb<Bbbbbbbbb>> bbbb = bbbb.bbb(Bbbb.BBBB);
+                                                bbbb.bbBbbbbbb(bbbbb -> bbbbb.bbbBbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBB_BBBBBBBBB))));
 
-                                                List<Component> fill = Lists.newArrayList();
-                                                if (listing instanceof Auction) {
-                                                    Auction auction = (Auction) listing;
-                                                    List<String> input;
-                                                    if (auction.getBids().size() > 1) {
-                                                        input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_BIDS);
-                                                    } else if (auction.getBids().size() == 1) {
-                                                        input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_SINGLE_BID);
-                                                    } else {
-                                                        input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_NO_BIDS);
+                                                Bbbb<Bbbbbbbbb> bbbb = Bbbbb.bbbBbbbbBbbb();
+                                                bb (bbbbbbb bbbbbbbbbb Bbbbbbb) {
+                                                    Bbbbbbb bbbbbbb = (Bbbbbbb) bbbbbbb;
+                                                    Bbbb<Bbbbbb> bbbbb;
+                                                    bb (bbbbbbb.bbbBbbb().bbbb() > 1) {
+                                                        bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBBB_BBBB_BBBB);
+                                                    } bbbb bb (bbbbbbb.bbbBbbb().bbbb() == 1) {
+                                                        bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBBB_BBBB_BBBBBB_BBB);
+                                                    } bbbb {
+                                                        bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBBB_BB_BBBB);
                                                     }
 
-                                                    PlaceholderSources sources = PlaceholderSources.builder()
-                                                            .append(Auction.class, () -> auction)
-                                                            .build();
+                                                    BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                            .bbbbbb(Bbbbbbb.bbbbb, () -> bbbbbbb)
+                                                            .bbbbb();
 
-                                                    fill.addAll(service.parse(input, sources));
-                                                } else if (listing instanceof BuyItNow) {
-                                                    BuyItNow bin = (BuyItNow) listing;
+                                                    bbbb.bbbBbb(bbbbbbb.bbbbb(bbbbb, bbbbbbb));
+                                                } bbbb bb (bbbbbbb bbbbbbbbbb BbbBbBbb) {
+                                                    BbbBbBbb bbb = (BbbBbBbb) bbbbbbb;
 
-                                                    List<String> input = lang.get(MsgConfigKeys.UI_BIN_DETAILS);
-                                                    PlaceholderSources sources = PlaceholderSources.builder()
-                                                            .append(BuyItNow.class, () -> bin)
-                                                            .build();
-                                                    fill.addAll(service.parse(input, sources));
+                                                    Bbbb<Bbbbbb> bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBB_BBBBBBB);
+                                                    BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                            .bbbbbb(BbbBbBbb.bbbbb, () -> bbb)
+                                                            .bbbbb();
+                                                    bbbb.bbbBbb(bbbbbbb.bbbbb(bbbbb, bbbbbbb));
                                                 }
 
-                                                List<Component> result = lore.orElse(Lists.newArrayList());
-                                                result.addAll(fill);
-                                                item.offer(Keys.LORE, result);
+                                                Bbbb<Bbbbbbbbb> bbbbbb = bbbb.bbBbbb(Bbbbb.bbbBbbbbBbbb());
+                                                bbbbbb.bbbBbb(bbbb);
+                                                bbbb.bbbbb(Bbbb.BBBB, bbbbbb);
 
-                                                return item;
-                                            } else {
-                                                SpongeDelivery delivery = (SpongeDelivery) content.getContent();
-                                                Display<ItemStack> display = delivery.getContent().getDisplay(this.viewer.uuid());
-                                                ItemStack item = display.get();
+                                                bbbbbb bbbb;
+                                            } bbbb {
+                                                BbbbbbBbbbbbbb bbbbbbbb = (BbbbbbBbbbbbbb) bbbbbbb.bbbBbbbbbb();
+                                                Bbbbbbb<BbbbBbbbb> bbbbbbb = bbbbbbbb.bbbBbbbbbb().bbbBbbbbbb(bbbb.bbbbbb.bbbb());
+                                                BbbbBbbbb bbbb = bbbbbbb.bbb();
 
-                                                Optional<List<Component>> lore = item.get(Keys.LORE);
-                                                lore.ifPresent(texts -> texts.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR))));
+                                                Bbbbbbbb<Bbbb<Bbbbbbbbb>> bbbb = bbbb.bbb(Bbbb.BBBB);
+                                                bbbb.bbBbbbbbb(bbbbb -> bbbbb.bbbBbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBB_BBBBBBBBB))));
 
-                                                List<Component> fill = Lists.newArrayList();
-                                                List<String> buffer = Lists.newArrayList();
-                                                buffer.addAll(lang.get(MsgConfigKeys.DELIVERY_INFO));
-                                                if(delivery.getExpiration().isPresent()) {
-                                                    buffer.add(lang.get(MsgConfigKeys.DELIVERY_EXPIRATION_INFO));
+                                                Bbbb<Bbbbbbbbb> bbbb = Bbbbb.bbbBbbbbBbbb();
+                                                Bbbb<Bbbbbb> bbbbbb = Bbbbb.bbbBbbbbBbbb();
+                                                bbbbbb.bbbBbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBBB_BBBB));
+                                                bb(bbbbbbbb.bbbBbbbbbbbbb().bbBbbbbbb()) {
+                                                    bbbbbb.bbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBBB_BBBBBBBBBB_BBBB));
                                                 }
 
-                                                PlaceholderSources sources = PlaceholderSources.builder()
-                                                        .append(Delivery.class, () -> delivery)
-                                                        .append(Component.class, () -> delivery.getContent().getName())
-                                                        .build();
-                                                fill.addAll(service.parse(buffer, sources));
-                                                item.offer(Keys.LORE, fill);
+                                                BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                        .bbbbbb(Bbbbbbbb.bbbbb, () -> bbbbbbbb)
+                                                        .bbbbbb(Bbbbbbbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbbb().bbbBbbb())
+                                                        .bbbbb();
+                                                bbbb.bbbBbb(bbbbbbb.bbbbb(bbbbbb, bbbbbbb));
+                                                bbbb.bbbbb(Bbbb.BBBB, bbbb);
 
-                                                return item;
+                                                bbbbbb bbbb;
                                             }
                                         })
-                                        .listener(context -> {
-                                            if(content instanceof StashedContent.ListingContent) {
-                                                SpongeListing listing = (SpongeListing) content.getContent();
-                                                new SpongeSelectedListingMenu(
-                                                        this.viewer,
-                                                        listing,
-                                                        () -> new SpongeStashMenu(this.viewer),
-                                                        true,
-                                                        false)
-                                                    .open();
-                                            } else {
-                                                SpongeDelivery delivery = (SpongeDelivery) content.getContent();
+                                        .bbbbbbbb(bbbbbbb -> {
+                                            bb(bbbbbbb bbbbbbbbbb BbbbbbbBbbbbbb.BbbbbbbBbbbbbb) {
+                                                BbbbbbBbbbbbb bbbbbbb = (BbbbbbBbbbbbb) bbbbbbb.bbbBbbbbbb();
+                                                bbb BbbbbbBbbbbbbbBbbbbbbBbbb(
+                                                        bbbb.bbbbbb,
+                                                        bbbbbbb,
+                                                        () -> bbb BbbbbbBbbbbBbbb(bbbb.bbbbbb),
+                                                        bbbb,
+                                                        bbbbb)
+                                                    .bbbb();
+                                            } bbbb {
+                                                BbbbbbBbbbbbbb bbbbbbbb = (BbbbbbBbbbbbbb) bbbbbbb.bbbBbbbbbb();
 
-                                                this.claimDelivery(delivery, () -> {});
-                                                this.player().sendMessage(
-                                                        Utilities.PARSER.parse(
-                                                                Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
-                                                                PlaceholderSources.builder()
-                                                                        .append(Delivery.class, () -> delivery)
-                                                                        .append(Component.class, () -> delivery.getContent().getName())
-                                                                        .build()
+                                                bbbb.bbbbbBbbbbbbb(bbbbbbbb, () -> {});
+                                                bbbb.bbbbbb().bbbbBbbbbbb(
+                                                        Bbbbbbbbb.BBBBBB.bbbbb(
+                                                                Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBB_BBBBBBB),
+                                                                BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                                        .bbbbbb(Bbbbbbbb.bbbbb, () -> bbbbbbbb)
+                                                                        .bbbbbb(Bbbbbbbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbbb().bbbBbbb())
+                                                                        .bbbbb()
                                                         )
                                                 );
-                                                this.pagination.close();
+                                                bbbb.bbbbbbbbbb.bbbbb();
                                             }
-                                            return false;
+                                            bbbbbb bbbbb;
                                         })
-                                        .build(() -> content);
-                        results.add(icon);
+                                        .bbbbb(() -> bbbbbbb);
+                        bbbbbbb.bbb(bbbb);
                     }
 
-                    return results;
+                    bbbbbb bbbbbbb;
                 });
     }
 
-    @Override
-    public Optional<Supplier<SpongeMainMenu>> getParent() {
-        return Optional.of(() -> new SpongeMainMenu(this.viewer));
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<Bbbbbbbb<BbbbbbBbbbBbbb>> bbbBbbbbb() {
+        bbbbbb Bbbbbbbb.bb(() -> bbb BbbbbbBbbbBbbb(bbbb.bbbbbb));
     }
 
-    private CompletableFuture<Void> claimDelivery(SpongeDelivery delivery, Runnable callback) {
-        return CompletableFutureManager.makeFuture(() -> {
-            GTSPlugin.instance().messagingService().requestDeliveryClaim(
-                    delivery.getID(),
-                    this.viewer.uuid()
-            ).thenAccept(response -> {
-                if(response.wasSuccessful()) {
-                    Impactor.getInstance().getScheduler().executeSync(() -> {
-                        delivery.getContent().give(this.viewer.uuid());
-                        callback.run();
+    bbbbbbb BbbbbbbbbbbBbbbbb<Bbbb> bbbbbBbbbbbbb(BbbbbbBbbbbbbb bbbbbbbb, Bbbbbbbb bbbbbbbb) {
+        bbbbbb BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(() -> {
+            BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbBbbbbbbbBbbbb(
+                    bbbbbbbb.bbbBB(),
+                    bbbb.bbbbbb.bbbb()
+            ).bbbbBbbbbb(bbbbbbbb -> {
+                bb(bbbbbbbb.bbbBbbbbbbbbb()) {
+                    Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                        bbbbbbbb.bbbBbbbbbb().bbbb(bbbb.bbbbbb.bbbb());
+                        bbbbbbbb.bbb();
                     });
                 }
             });

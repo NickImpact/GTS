@@ -1,60 +1,60 @@
-package net.impactdev.gts.bungee.messaging.types;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbb;
 
-import com.imaginarycode.minecraft.redisbungee.RedisBungee;
-import com.imaginarycode.minecraft.redisbungee.RedisBungeeAPI;
-import com.imaginarycode.minecraft.redisbungee.events.PubSubMessageEvent;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.bungee.GTSBungeePlugin;
-import net.md_5.bungee.api.plugin.Listener;
-import net.md_5.bungee.event.EventHandler;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbbbbb.bbbbbbbbbbb.BbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbbbbb.bbbbbbbbbbb.BbbbbBbbbbbBBB;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbbbbb.bbbbbbbbbbb.bbbbbb.BbbBbbBbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.BBBBbbbbbBbbbbb;
+bbbbbb bbb.bb_5.bbbbbb.bbb.bbbbbb.Bbbbbbbb;
+bbbbbb bbb.bb_5.bbbbbb.bbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-public class RedisBungeeMessenger implements Messenger, Listener {
+bbbbbb bbbbb BbbbbBbbbbbBbbbbbbbb bbbbbbbbbb Bbbbbbbbb, Bbbbbbbb {
 
-	private static final String CHANNEL = "gts:update";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBBB = "bbb:bbbbbb";
 
-	private final GTSBungeePlugin plugin;
-	private final IncomingMessageConsumer consumer;
-	private RedisBungeeAPI redisBungee;
+	bbbbbbb bbbbb BBBBbbbbbBbbbbb bbbbbb;
+	bbbbbbb bbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb;
+	bbbbbbb BbbbbBbbbbbBBB bbbbbBbbbbb;
 
-	public RedisBungeeMessenger(GTSBungeePlugin plugin, IncomingMessageConsumer consumer) {
-		this.plugin = plugin;
-		this.consumer = consumer;
+	bbbbbb BbbbbBbbbbbBbbbbbbbb(BBBBbbbbbBbbbbb bbbbbb, BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb) {
+		bbbb.bbbbbb = bbbbbb;
+		bbbb.bbbbbbbb = bbbbbbbb;
 	}
 
-	public void init() {
-		this.redisBungee = RedisBungee.getApi();
-		this.redisBungee.registerPubSubChannels(CHANNEL);
+	bbbbbb bbbb bbbb() {
+		bbbb.bbbbbBbbbbb = BbbbbBbbbbb.bbbBbb();
+		bbbb.bbbbbBbbbbb.bbbbbbbbBbbBbbBbbbbbbb(BBBBBBB);
 
-		this.plugin.bootstrap().proxy().getProxy().getPluginManager().registerListener(this.plugin.bootstrap().proxy(), this);
+		bbbb.bbbbbb.bbbbbbbbb().bbbbb().bbbBbbbb().bbbBbbbbbBbbbbbb().bbbbbbbbBbbbbbbb(bbbb.bbbbbb.bbbbbbbbb().bbbbb(), bbbb);
 	}
 
-	@Override
-	public void close() {
-		this.redisBungee.unregisterPubSubChannels(CHANNEL);
-		this.redisBungee = null;
+	@Bbbbbbbb
+	bbbbbb bbbb bbbbb() {
+		bbbb.bbbbbBbbbbb.bbbbbbbbbbBbbBbbBbbbbbbb(BBBBBBB);
+		bbbb.bbbbbBbbbbb = bbbb;
 
-		this.plugin.bootstrap().proxy().getProxy().getPluginManager().unregisterListener(this);
+		bbbb.bbbbbb.bbbbbbbbb().bbbbb().bbbBbbbb().bbbBbbbbbBbbbbbb().bbbbbbbbbbBbbbbbbb(bbbb);
 	}
 
-	@Override
-	public IncomingMessageConsumer getMessageConsumer() {
-		return this.consumer;
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbBbbbbbbBbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbb;
 	}
 
-	@Override
-	public void sendOutgoingMessage(@NonNull OutgoingMessage outgoingMessage) {
-		this.redisBungee.sendChannelMessage(CHANNEL, outgoingMessage.asEncodedString());
+	@Bbbbbbbb
+	bbbbbb bbbb bbbbBbbbbbbbBbbbbbb(@BbbBbbb BbbbbbbbBbbbbbb bbbbbbbbBbbbbbb) {
+		bbbb.bbbbbBbbbbb.bbbbBbbbbbbBbbbbbb(BBBBBBB, bbbbbbbbBbbbbbb.bbBbbbbbbBbbbbb());
 	}
 
-	@EventHandler
-	public void onMessage(PubSubMessageEvent event) {
-		if(!event.getChannel().equals(CHANNEL)) {
-			return;
+	@BbbbbBbbbbbb
+	bbbbbb bbbb bbBbbbbbb(BbbBbbBbbbbbbBbbbb bbbbb) {
+		bb(!bbbbb.bbbBbbbbbb().bbbbbb(BBBBBBB)) {
+			bbbbbb;
 		}
 
-		this.consumer.consumeIncomingMessageAsString(event.getMessage());
+		bbbb.bbbbbbbb.bbbbbbbBbbbbbbbBbbbbbbBbBbbbbb(bbbbb.bbbBbbbbbb());
 	}
 }

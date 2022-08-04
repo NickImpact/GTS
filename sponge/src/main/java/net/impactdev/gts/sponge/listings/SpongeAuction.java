@@ -1,279 +1,279 @@
-package net.impactdev.gts.sponge.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.TreeMultimap;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
-import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.mappings.Tuple;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.entries.EntryManager;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.Pbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbLbbbMbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Mbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Mbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.TbbbMbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.JbbbEbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.JbbbObbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb.SbbbbbEbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.JBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.JObbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.Tbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.GTSSbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Ebbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.EbbbbMbbbbbb;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.SortedSet;
-import java.util.UUID;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bbbb.LbbbbDbbbTbbb;
+bbbbbb bbbb.bbbb.BbbbbLbbb;
+bbbbbb bbbb.bbbb.Cbbbbbbbbbb;
+bbbbbb bbbb.bbbb.Cbbbbbbbbb;
+bbbbbb bbbb.bbbb.Mbb;
+bbbbbb bbbb.bbbb.Obbbbbbb;
+bbbbbb bbbb.bbbb.SbbbbbSbb;
+bbbbbb bbbb.bbbb.UUID;
+bbbbbb bbbb.bbbb.bbbbbb.Cbbbbbbbbb;
 
-public class SpongeAuction extends SpongeListing implements Auction {
+bbbbbb bbbbb SbbbbbBbbbbbb bbbbbbb SbbbbbLbbbbbb bbbbbbbbbb Bbbbbbb {
 
-	/** The starting price of this auction */
-	private final double start;
+	/** Tbb bbbbbbbb bbbbb bb bbbb bbbbbbb */
+	bbbbbbb bbbbb bbbbbb bbbbb;
 
-	/** The current price of this auction, representing the start or highest bid */
-	private double price;
+	/** Tbb bbbbbbb bbbbb bb bbbb bbbbbbb, bbbbbbbbbbbb bbb bbbbb bb bbbbbbb bbb */
+	bbbbbbb bbbbbb bbbbb;
 
-	/** The base increment percentage required to place a bid */
-	private final float increment;
+	/** Tbb bbbb bbbbbbbbb bbbbbbbbbb bbbbbbbb bb bbbbb b bbb */
+	bbbbbbb bbbbb bbbbb bbbbbbbbb;
 
-	private final TreeMultimap<UUID, Bid> bids = TreeMultimap.create(
-			Comparator.naturalOrder(),
-			Collections.reverseOrder(Comparator.comparing(Bid::getAmount))
+	bbbbbbb bbbbb TbbbMbbbbbbb<UUID, Bbb> bbbb = TbbbMbbbbbbb.bbbbbb(
+			Cbbbbbbbbb.bbbbbbbObbbb(),
+			Cbbbbbbbbbb.bbbbbbbObbbb(Cbbbbbbbbb.bbbbbbbbb(Bbb::bbbBbbbbb))
 	);
 
-	private SpongeAuction(SpongeAuctionBuilder builder) {
-		super(builder.id, builder.lister, builder.entry, builder.published, builder.expiration);
-		this.start = builder.start;
-		this.price = Math.max(builder.current, this.start);
-		this.increment = builder.increment;
-		if(builder.bids != null) {
-			builder.bids.forEach(this.bids::put);
+	bbbbbbb SbbbbbBbbbbbb(SbbbbbBbbbbbbBbbbbbb bbbbbbb) {
+		bbbbb(bbbbbbb.bb, bbbbbbb.bbbbbb, bbbbbbb.bbbbb, bbbbbbb.bbbbbbbbb, bbbbbbb.bbbbbbbbbb);
+		bbbb.bbbbb = bbbbbbb.bbbbb;
+		bbbb.bbbbb = Mbbb.bbb(bbbbbbb.bbbbbbb, bbbb.bbbbb);
+		bbbb.bbbbbbbbb = bbbbbbb.bbbbbbbbb;
+		bb(bbbbbbb.bbbb != bbbb) {
+			bbbbbbb.bbbb.bbbEbbb(bbbb.bbbb::bbb);
 		}
 	}
 
-	@Override
-	public Optional<Tuple<UUID, Bid>> getHighBid() {
-		return this.bids.entries().stream()
-				.max(Comparator.comparing(value -> value.getValue().getAmount()))
-				.map(e -> new Tuple<>(e.getKey(), e.getValue()));
+	@Obbbbbbb
+	bbbbbb Obbbbbbb<Tbbbb<UUID, Bbb>> bbbHbbbBbb() {
+		bbbbbb bbbb.bbbb.bbbbbbb().bbbbbb()
+				.bbb(Cbbbbbbbbb.bbbbbbbbb(bbbbb -> bbbbb.bbbVbbbb().bbbBbbbbb()))
+				.bbb(b -> bbb Tbbbb<>(b.bbbKbb(), b.bbbVbbbb()));
 	}
 
-	@Override
-	public double getStartingPrice() {
-		return this.start;
+	@Obbbbbbb
+	bbbbbb bbbbbb bbbSbbbbbbbPbbbb() {
+		bbbbbb bbbb.bbbbb;
 	}
 
-	@Override
-	public double getCurrentPrice() {
-		return this.price;
+	@Obbbbbbb
+	bbbbbb bbbbbb bbbCbbbbbbPbbbb() {
+		bbbbbb bbbb.bbbbb;
 	}
 
-	@Override
-	public float getIncrement() {
-		return this.increment;
+	@Obbbbbbb
+	bbbbbb bbbbb bbbIbbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbbb;
 	}
 
-	@Override
-	public double getNextBidRequirement() {
-		double result;
-		if(this.getBids().size() == 0) {
-			result = this.getStartingPrice();
-		} else {
-			result = this.getCurrentPrice() * (1.0 + this.getIncrement());
+	@Obbbbbbb
+	bbbbbb bbbbbb bbbNbbbBbbRbbbbbbbbbb() {
+		bbbbbb bbbbbb;
+		bb(bbbb.bbbBbbb().bbbb() == 0) {
+			bbbbbb = bbbb.bbbSbbbbbbbPbbbb();
+		} bbbb {
+			bbbbbb = bbbb.bbbCbbbbbbPbbbb() * (1.0 + bbbb.bbbIbbbbbbbb());
 		}
 
-		return result;
+		bbbbbb bbbbbb;
 	}
 
-	@Override
-	public boolean bid(UUID user, double amount) {
-		if(this.bids.size() == 0 || (amount >= this.getHighBid().get().getSecond().getAmount() * (1.0 + this.getIncrement()))) {
-			this.getBids().put(user, new Bid(amount));
-			this.price = amount;
-			return true;
+	@Obbbbbbb
+	bbbbbb bbbbbbb bbb(UUID bbbb, bbbbbb bbbbbb) {
+		bb(bbbb.bbbb.bbbb() == 0 || (bbbbbb >= bbbb.bbbHbbbBbb().bbb().bbbSbbbbb().bbbBbbbbb() * (1.0 + bbbb.bbbIbbbbbbbb()))) {
+			bbbb.bbbBbbb().bbb(bbbb, bbb Bbb(bbbbbb));
+			bbbb.bbbbb = bbbbbb;
+			bbbbbb bbbb;
 		}
-		return false;
+		bbbbbb bbbbb;
 	}
 
-	@Override
-	public Optional<Bid> getCurrentBid(UUID uuid) {
-		return Optional.of(this.getBids().get(uuid))
-				.map(set -> {
-					if(set.isEmpty()) {
-						return null;
+	@Obbbbbbb
+	bbbbbb Obbbbbbb<Bbb> bbbCbbbbbbBbb(UUID bbbb) {
+		bbbbbb Obbbbbbb.bb(bbbb.bbbBbbb().bbb(bbbb))
+				.bbb(bbb -> {
+					bb(bbb.bbEbbbb()) {
+						bbbbbb bbbb;
 					}
 
-					return set;
+					bbbbbb bbb;
 				})
-				.map(SortedSet::first);
+				.bbb(SbbbbbSbb::bbbbb);
 	}
 
-	@Override
-	public TreeMultimap<UUID, Bid> getBids() {
-		return this.bids;
+	@Obbbbbbb
+	bbbbbb TbbbMbbbbbbb<UUID, Bbb> bbbBbbb() {
+		bbbbbb bbbb.bbbb;
 	}
 
-	@Override
-	public Map<UUID, Bid> getUniqueBiddersWithHighestBids() {
-		Map<UUID, Bid> unique = Maps.newHashMap();
-		for(UUID uuid : new ArrayList<>(this.getBids().keys())) {
-			unique.put(uuid, this.getBids().get(uuid).first());
+	@Obbbbbbb
+	bbbbbb Mbb<UUID, Bbb> bbbUbbbbbBbbbbbbWbbbHbbbbbbBbbb() {
+		Mbb<UUID, Bbb> bbbbbb = Mbbb.bbbHbbbMbb();
+		bbb(UUID bbbb : bbb BbbbbLbbb<>(bbbb.bbbBbbb().bbbb())) {
+			bbbbbb.bbb(bbbb, bbbb.bbbBbbb().bbb(bbbb).bbbbb());
 		}
 
-		return unique;
+		bbbbbb bbbbbb;
 	}
 
-	@Override
-	public JObject serialize() {
-		JObject json = super.serialize();
+	@Obbbbbbb
+	bbbbbb JObbbbb bbbbbbbbb() {
+		JObbbbb bbbb = bbbbb.bbbbbbbbb();
 
-		JObject bids = new JObject();
+		JObbbbb bbbb = bbb JObbbbb();
 
-		for(UUID id : this.bids.keys()) {
-			JArray array = new JArray();
-			for(Bid bid : this.bids.get(id).stream().sorted(Collections.reverseOrder(Comparator.comparing(Bid::getAmount))).collect(Collectors.toList())) {
-				array.add(bid.serialize());
+		bbb(UUID bb : bbbb.bbbb.bbbb()) {
+			JBbbbb bbbbb = bbb JBbbbb();
+			bbb(Bbb bbb : bbbb.bbbb.bbb(bb).bbbbbb().bbbbbb(Cbbbbbbbbbb.bbbbbbbObbbb(Cbbbbbbbbb.bbbbbbbbb(Bbb::bbbBbbbbb))).bbbbbbb(Cbbbbbbbbb.bbLbbb())) {
+				bbbbb.bbb(bbb.bbbbbbbbb());
 			}
-			bids.add(id.toString(), array);
+			bbbb.bbb(bb.bbSbbbbb(), bbbbb);
 		}
 
-		JObject pricing = new JObject()
-				.add("start", this.getStartingPrice())
-				.add("current", this.getCurrentPrice())
-				.add("increment", this.getIncrement());
+		JObbbbb bbbbbbb = bbb JObbbbb()
+				.bbb("bbbbb", bbbb.bbbSbbbbbbbPbbbb())
+				.bbb("bbbbbbb", bbbb.bbbCbbbbbbPbbbb())
+				.bbb("bbbbbbbbb", bbbb.bbbIbbbbbbbb());
 
-		json.add("auction", new JObject()
-				.add("bids", bids)
-				.add("pricing", pricing)
+		bbbb.bbb("bbbbbbb", bbb JObbbbb()
+				.bbb("bbbb", bbbb)
+				.bbb("bbbbbbb", bbbbbbb)
 		);
-		json.add("type", "auction");
-		return json;
+		bbbb.bbb("bbbb", "bbbbbbb");
+		bbbbbb bbbb;
 	}
 
-	public static SpongeAuction deserialize(JsonObject object) {
-		SpongeAuctionBuilder builder = (SpongeAuctionBuilder) Auction.builder()
-				.id(UUID.fromString(object.get("id").getAsString()))
-				.lister(UUID.fromString(object.get("lister").getAsString()))
-				.published(LocalDateTime.parse(object.getAsJsonObject("timings").get("published").getAsString()))
-				.expiration(LocalDateTime.parse(object.getAsJsonObject("timings").get("expiration").getAsString()))
-				.start(object.getAsJsonObject("auction").getAsJsonObject("pricing").get("start").getAsDouble())
-				.current(object.getAsJsonObject("auction").getAsJsonObject("pricing").get("current").getAsDouble())
-				.increment(object.getAsJsonObject("auction").getAsJsonObject("pricing").get("increment").getAsFloat());
+	bbbbbb bbbbbb SbbbbbBbbbbbb bbbbbbbbbbb(JbbbObbbbb bbbbbb) {
+		SbbbbbBbbbbbbBbbbbbb bbbbbbb = (SbbbbbBbbbbbbBbbbbbb) Bbbbbbb.bbbbbbb()
+				.bb(UUID.bbbbSbbbbb(bbbbbb.bbb("bb").bbbBbSbbbbb()))
+				.bbbbbb(UUID.bbbbSbbbbb(bbbbbb.bbb("bbbbbb").bbbBbSbbbbb()))
+				.bbbbbbbbb(LbbbbDbbbTbbb.bbbbb(bbbbbb.bbbBbJbbbObbbbb("bbbbbbb").bbb("bbbbbbbbb").bbbBbSbbbbb()))
+				.bbbbbbbbbb(LbbbbDbbbTbbb.bbbbb(bbbbbb.bbbBbJbbbObbbbb("bbbbbbb").bbb("bbbbbbbbbb").bbbBbSbbbbb()))
+				.bbbbb(bbbbbb.bbbBbJbbbObbbbb("bbbbbbb").bbbBbJbbbObbbbb("bbbbbbb").bbb("bbbbb").bbbBbDbbbbb())
+				.bbbbbbb(bbbbbb.bbbBbJbbbObbbbb("bbbbbbb").bbbBbJbbbObbbbb("bbbbbbb").bbb("bbbbbbb").bbbBbDbbbbb())
+				.bbbbbbbbb(bbbbbb.bbbBbJbbbObbbbb("bbbbbbb").bbbBbJbbbObbbbb("bbbbbbb").bbb("bbbbbbbbb").bbbBbFbbbb());
 
-		JsonObject element = object.getAsJsonObject("entry");
-		EntryManager<?> entryManager = GTSService.getInstance().getGTSComponentManager()
-				.getEntryManager(element.get("key").getAsString())
-				.orElseThrow(() -> new RuntimeException("JSON Data for entry is missing mapping key"));
-		builder.entry((SpongeEntry<?>) entryManager.getDeserializer().deserialize(element.getAsJsonObject("content")));
+		JbbbObbbbb bbbbbbb = bbbbbb.bbbBbJbbbObbbbb("bbbbb");
+		EbbbbMbbbbbb<?> bbbbbMbbbbbb = GTSSbbbbbb.bbbIbbbbbbb().bbbGTSCbbbbbbbbMbbbbbb()
+				.bbbEbbbbMbbbbbb(bbbbbbb.bbb("bbb").bbbBbSbbbbb())
+				.bbEbbbTbbbb(() -> bbb RbbbbbbEbbbbbbbb("JSON Dbbb bbb bbbbb bb bbbbbbb bbbbbbb bbb"));
+		bbbbbbb.bbbbb((SbbbbbEbbbb<?>) bbbbbMbbbbbb.bbbDbbbbbbbbbbb().bbbbbbbbbbb(bbbbbbb.bbbBbJbbbObbbbb("bbbbbbb")));
 
-		JsonObject bids = object.getAsJsonObject("auction").getAsJsonObject("bids");
-		if(bids != null) {
-			Multimap<UUID, Bid> mapping = ArrayListMultimap.create();
-			for (Map.Entry<String, JsonElement> entry : bids.entrySet()) {
-				if (entry.getValue().isJsonArray()) {
-					entry.getValue().getAsJsonArray().forEach(e -> {
-						JsonObject data = e.getAsJsonObject();
-						Bid bid = Bid.builder()
-								.amount(data.get("amount").getAsDouble())
-								.timestamp(LocalDateTime.parse(data.get("timestamp").getAsString()))
-								.build();
+		JbbbObbbbb bbbb = bbbbbb.bbbBbJbbbObbbbb("bbbbbbb").bbbBbJbbbObbbbb("bbbb");
+		bb(bbbb != bbbb) {
+			Mbbbbbbb<UUID, Bbb> bbbbbbb = BbbbbLbbbMbbbbbbb.bbbbbb();
+			bbb (Mbb.Ebbbb<Sbbbbb, JbbbEbbbbbb> bbbbb : bbbb.bbbbbSbb()) {
+				bb (bbbbb.bbbVbbbb().bbJbbbBbbbb()) {
+					bbbbb.bbbVbbbb().bbbBbJbbbBbbbb().bbbEbbb(b -> {
+						JbbbObbbbb bbbb = b.bbbBbJbbbObbbbb();
+						Bbb bbb = Bbb.bbbbbbb()
+								.bbbbbb(bbbb.bbb("bbbbbb").bbbBbDbbbbb())
+								.bbbbbbbbb(LbbbbDbbbTbbb.bbbbb(bbbb.bbb("bbbbbbbbb").bbbBbSbbbbb()))
+								.bbbbb();
 
-						mapping.put(UUID.fromString(entry.getKey()), bid);
+						bbbbbbb.bbb(UUID.bbbbSbbbbb(bbbbb.bbbKbb()), bbb);
 					});
 				}
 			}
-			builder.bids(mapping);
+			bbbbbbb.bbbb(bbbbbbb);
 		}
 
-		return builder.build();
+		bbbbbb bbbbbbb.bbbbb();
 	}
 
-	public static class SpongeAuctionBuilder implements AuctionBuilder {
+	bbbbbb bbbbbb bbbbb SbbbbbBbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbBbbbbbb {
 
-		private UUID id = UUID.randomUUID();
-		private UUID lister;
-		private SpongeEntry<?> entry;
-		private LocalDateTime published = LocalDateTime.now();
-		private LocalDateTime expiration;
-		private double start;
-		private float increment;
-		private double current;
-		private Multimap<UUID, Bid> bids;
+		bbbbbbb UUID bb = UUID.bbbbbbUUID();
+		bbbbbbb UUID bbbbbb;
+		bbbbbbb SbbbbbEbbbb<?> bbbbb;
+		bbbbbbb LbbbbDbbbTbbb bbbbbbbbb = LbbbbDbbbTbbb.bbb();
+		bbbbbbb LbbbbDbbbTbbb bbbbbbbbbb;
+		bbbbbbb bbbbbb bbbbb;
+		bbbbbbb bbbbb bbbbbbbbb;
+		bbbbbbb bbbbbb bbbbbbb;
+		bbbbbbb Mbbbbbbb<UUID, Bbb> bbbb;
 
-		@Override
-		public AuctionBuilder id(UUID id) {
-			this.id = id;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbbbbbBbbbbbb bb(UUID bb) {
+			bbbb.bb = bb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public AuctionBuilder lister(UUID lister) {
-			this.lister = lister;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbbbbbBbbbbbb bbbbbb(UUID bbbbbb) {
+			bbbb.bbbbbb = bbbbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public AuctionBuilder entry(Entry<?, ?> entry) {
-			Preconditions.checkArgument(entry instanceof SpongeEntry, "Mixing of invalid types!");
-			this.entry = (SpongeEntry<?>) entry;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbbbbbBbbbbbb bbbbb(Ebbbb<?, ?> bbbbb) {
+			Pbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbbb bbbbbbbbbb SbbbbbEbbbb, "Mbbbbb bb bbbbbbb bbbbb!");
+			bbbb.bbbbb = (SbbbbbEbbbb<?>) bbbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public AuctionBuilder published(LocalDateTime published) {
-			this.published = published;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbbbbbBbbbbbb bbbbbbbbb(LbbbbDbbbTbbb bbbbbbbbb) {
+			bbbb.bbbbbbbbb = bbbbbbbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public AuctionBuilder expiration(LocalDateTime expiration) {
-			this.expiration = expiration;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbbbbbBbbbbbb bbbbbbbbbb(LbbbbDbbbTbbb bbbbbbbbbb) {
+			bbbb.bbbbbbbbbb = bbbbbbbbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public AuctionBuilder start(double amount) {
-			this.start = amount;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbbbbbBbbbbbb bbbbb(bbbbbb bbbbbb) {
+			bbbb.bbbbb = bbbbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public AuctionBuilder increment(float rate) {
-			this.increment = rate;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbbbbbBbbbbbb bbbbbbbbb(bbbbb bbbb) {
+			bbbb.bbbbbbbbb = bbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public AuctionBuilder current(double current) {
-			this.current = current;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbbbbbBbbbbbb bbbbbbb(bbbbbb bbbbbbb) {
+			bbbb.bbbbbbb = bbbbbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public AuctionBuilder bids(Multimap<UUID, Bid> bids) {
-			this.bids = bids;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbbbbbBbbbbbb bbbb(Mbbbbbbb<UUID, Bbb> bbbb) {
+			bbbb.bbbb = bbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public AuctionBuilder from(Auction input) {
-			Preconditions.checkArgument(input instanceof SpongeAuction, "Mixing of invalid types!");
-			this.id = input.getID();
-			this.lister = input.getLister();
-			this.entry = (SpongeEntry<?>) input.getEntry();
-			this.published = input.getPublishTime();
-			this.expiration = input.getExpiration();
-			this.start = input.getStartingPrice();
-			this.increment = input.getIncrement();
-			this.current = input.getCurrentPrice();
+		@Obbbbbbb
+		bbbbbb BbbbbbbBbbbbbb bbbb(Bbbbbbb bbbbb) {
+			Pbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbbb bbbbbbbbbb SbbbbbBbbbbbb, "Mbbbbb bb bbbbbbb bbbbb!");
+			bbbb.bb = bbbbb.bbbID();
+			bbbb.bbbbbb = bbbbb.bbbLbbbbb();
+			bbbb.bbbbb = (SbbbbbEbbbb<?>) bbbbb.bbbEbbbb();
+			bbbb.bbbbbbbbb = bbbbb.bbbPbbbbbbTbbb();
+			bbbb.bbbbbbbbbb = bbbbb.bbbEbbbbbbbbb();
+			bbbb.bbbbb = bbbbb.bbbSbbbbbbbPbbbb();
+			bbbb.bbbbbbbbb = bbbbb.bbbIbbbbbbbb();
+			bbbb.bbbbbbb = bbbbb.bbbCbbbbbbPbbbb();
 
-			return this;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public SpongeAuction build() {
-			return new SpongeAuction(this);
+		@Obbbbbbb
+		bbbbbb SbbbbbBbbbbbb bbbbb() {
+			bbbbbb bbb SbbbbbBbbbbbb(bbbb);
 		}
 
 	}

@@ -1,39 +1,39 @@
-package net.impactdev.gts.util;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbb;
 
-import com.google.gson.JsonObject;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.api.util.Version;
-import net.impactdev.impactor.api.Impactor;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbbb.bbb.bbb.BbbbbBBBBbbbbbbbbb;
+bbbbbb bbbb.bb.BbbbbBbbbbb;
+bbbbbb bbbb.bb.BbbbbBbbbbbBbbbbb;
+bbbbbb bbbb.bbb.BBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public class OreVersionChecker {
+bbbbbb bbbbb BbbBbbbbbbBbbbbbb {
 
-    public static CompletableFuture<Version> query() {
-        String url = "https://ore.spongepowered.org/api/v1/projects/gts";
+    bbbbbb bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbb() {
+        Bbbbbb bbb = "bbbbb://bbb.bbbbbbbbbbbbb.bbb/bbb/b1/bbbbbbbb/bbb";
 
-        return CompletableFuture.supplyAsync(() -> {
-            try {
-                HttpsURLConnection connection = (HttpsURLConnection) (new URL(url)).openConnection();
-                connection.setRequestMethod("GET");
-                connection.setRequestProperty("User-Agent", "GTS Minecraft Plugin");
-                connection.setDoInput(true);
-                connection.setReadTimeout(5000);
-                InputStream in = connection.getInputStream();
+        bbbbbb BbbbbbbbbbbBbbbbb.bbbbbbBbbbb(() -> {
+            bbb {
+                BbbbbBBBBbbbbbbbbb bbbbbbbbbb = (BbbbbBBBBbbbbbbbbb) (bbb BBB(bbb)).bbbbBbbbbbbbbb();
+                bbbbbbbbbb.bbbBbbbbbbBbbbbb("BBB");
+                bbbbbbbbbb.bbbBbbbbbbBbbbbbbb("Bbbb-Bbbbb", "BBB Bbbbbbbbb Bbbbbb");
+                bbbbbbbbbb.bbbBbBbbbb(bbbb);
+                bbbbbbbbbb.bbbBbbbBbbbbbb(5000);
+                BbbbbBbbbbb bb = bbbbbbbbbb.bbbBbbbbBbbbbb();
 
-                JsonObject response = GTSPlugin.instance().gson().fromJson(new InputStreamReader(in), JsonObject.class);
-                if (response.has("recommended")) {
-                    return new Version(response.getAsJsonObject("recommended").get("name").getAsString());
+                BbbbBbbbbb bbbbbbbb = BBBBbbbbb.bbbbbbbb().bbbb().bbbbBbbb(bbb BbbbbBbbbbbBbbbbb(bb), BbbbBbbbbb.bbbbb);
+                bb (bbbbbbbb.bbb("bbbbbbbbbbb")) {
+                    bbbbbb bbb Bbbbbbb(bbbbbbbb.bbbBbBbbbBbbbbb("bbbbbbbbbbb").bbb("bbbb").bbbBbBbbbbb());
                 }
 
-                return new Version("");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+                bbbbbb bbb Bbbbbbb("");
+            } bbbbb (Bbbbbbbbb b) {
+                bbbbb bbb BbbbbbbBbbbbbbbb(b);
             }
-        }, Impactor.getInstance().getScheduler().async());
+        }, Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbb());
     }
 }

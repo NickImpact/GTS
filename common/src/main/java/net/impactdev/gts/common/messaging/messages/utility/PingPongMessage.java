@@ -1,148 +1,148 @@
-package net.impactdev.gts.common.messaging.messages.utility;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbb;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
-import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbb.BbbbbbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public abstract class PingPongMessage extends AbstractMessage implements PingMessage {
+bbbbbb bbbbbbbb bbbbb BbbbBbbbBbbbbbb bbbbbbb BbbbbbbbBbbbbbb bbbbbbbbbb BbbbBbbbbbb {
 
-    public PingPongMessage(UUID id) {
-        super(id);
+    bbbbbb BbbbBbbbBbbbbbb(BBBB bb) {
+        bbbbb(bb);
     }
 
-    public static class Ping extends PingPongMessage implements PingMessage.Ping {
+    bbbbbb bbbbbb bbbbb Bbbb bbbbbbb BbbbBbbbBbbbbbb bbbbbbbbbb BbbbBbbbbbb.Bbbb {
 
-        public static final String TYPE = "PING";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "BBBB";
 
-        public static PingPongMessage.Ping decode(@Nullable JsonElement content, UUID id) {
-            return new PingPongMessage.Ping(id);
+        bbbbbb bbbbbb BbbbBbbbBbbbbbb.Bbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            bbbbbb bbb BbbbBbbbBbbbbbb.Bbbb(bb);
         }
 
-        public Ping(UUID id) {
-            super(id);
+        bbbbbb Bbbb(BBBB bb) {
+            bbbbb(bb);
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject().toJson()
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb().bbBbbb()
             );
         }
 
-        @Override
-        public CompletableFuture<PingMessage.Pong> respond() {
-            return CompletableFutureManager.makeFuture(() -> new PingPongMessage.Pong(
-                    GTSPlugin.instance().messagingService().generatePingID(),
-                    this.getID(),
-                    true,
-                    null
+        @Bbbbbbbb
+        bbbbbb BbbbbbbbbbbBbbbbb<BbbbBbbbbbb.Bbbb> bbbbbbb() {
+            bbbbbb BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(() -> bbb BbbbBbbbBbbbbbb.Bbbb(
+                    BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB(),
+                    bbbb.bbbBB(),
+                    bbbb,
+                    bbbb
             ));
         }
 
-        @Override
-        public void print(PrettyPrinter printer) {
-            printer.kv("ID", this.getID());
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+            bbbbbbb.bb("BB", bbbb.bbbBB());
         }
     }
 
-    public static class Pong extends PingPongMessage implements PingMessage.Pong {
+    bbbbbb bbbbbb bbbbb Bbbb bbbbbbb BbbbBbbbBbbbbbb bbbbbbbbbb BbbbBbbbbbb.Bbbb {
 
-        public static final String TYPE = "PONG";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "BBBB";
 
-        public static PingPongMessage.Pong decode(@Nullable JsonElement content, UUID id) {
-            if(content == null) {
-                throw new IllegalStateException("Raw JSON data was null");
+        bbbbbb bbbbbb BbbbBbbbBbbbbbb.Bbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            bb(bbbbbbb == bbbb) {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBBB bbbb bbb bbbb");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            BbbbBbbbbb bbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-            UUID requestID = Optional.ofNullable(raw.get("request"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-            boolean successful = Optional.ofNullable(raw.get("successful"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate success state"));
-            ErrorCode error = Optional.ofNullable(raw.get("error"))
-                    .map(x -> ErrorCodes.get(x.getAsInt()))
-                    .orElse(null);
+            BBBB bbbbbbbBB = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bb bbbbb bbbbbbb BB"));
+            bbbbbbb bbbbbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbbbbb"))
+                    .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb bbbbb"));
+            BbbbbBbbb bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BbbbbBbbbb.bbb(b.bbbBbBbb()))
+                    .bbBbbb(bbbb);
 
-            return new PingPongMessage.Pong(id, requestID, successful, error);
+            bbbbbb bbb BbbbBbbbBbbbbbb.Bbbb(bb, bbbbbbbBB, bbbbbbbbbb, bbbbb);
         }
 
-        private final UUID request;
-        private long time;
-        private boolean successful;
-        private ErrorCode error;
+        bbbbbbb bbbbb BBBB bbbbbbb;
+        bbbbbbb bbbb bbbb;
+        bbbbbbb bbbbbbb bbbbbbbbbb;
+        bbbbbbb BbbbbBbbb bbbbb;
 
-        public Pong(UUID id, UUID request, boolean successful, ErrorCode error) {
-            super(id);
-            this.request = request;
-            this.successful = successful;
-            this.error = error;
+        bbbbbb Bbbb(BBBB bb, BBBB bbbbbbb, bbbbbbb bbbbbbbbbb, BbbbbBbbb bbbbb) {
+            bbbbb(bb);
+            bbbb.bbbbbbb = bbbbbbb;
+            bbbb.bbbbbbbbbb = bbbbbbbbbb;
+            bbbb.bbbbb = bbbbb;
         }
 
-        @Override
-        public UUID getRequestID() {
-            return this.request;
+        @Bbbbbbbb
+        bbbbbb BBBB bbbBbbbbbbBB() {
+            bbbbbb bbbb.bbbbbbb;
         }
 
-        @Override
-        public long getResponseTime() {
-            return this.time;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb() {
+            bbbbbb bbbb.bbbb;
         }
 
-        @Override
-        public void setResponseTime(long millis) {
-            this.time = millis;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb(bbbb bbbbbb) {
+            bbbb.bbbb = bbbbbb;
         }
 
-        @Override
-        public boolean wasSuccessful() {
-            return this.successful;
+        @Bbbbbbbb
+        bbbbbb bbbbbbb bbbBbbbbbbbbb() {
+            bbbbbb bbbb.bbbbbbbbbb;
         }
 
-        @Override
-        public Optional<ErrorCode> getErrorCode() {
-            return Optional.ofNullable(this.error);
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbb<BbbbbBbbb> bbbBbbbbBbbb() {
+            bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbb);
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject()
-                            .add("request", this.getRequestID().toString())
-                            .add("successful", this.successful)
-                            .consume(o -> {
-                                if(this.getErrorCode().isPresent()) {
-                                    o.add("error", this.error.ordinal());
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb()
+                            .bbb("bbbbbbb", bbbb.bbbBbbbbbbBB().bbBbbbbb())
+                            .bbb("bbbbbbbbbb", bbbb.bbbbbbbbbb)
+                            .bbbbbbb(b -> {
+                                bb(bbbb.bbbBbbbbBbbb().bbBbbbbbb()) {
+                                    b.bbb("bbbbb", bbbb.bbbbb.bbbbbbb());
                                 }
                             })
-                            .toJson()
+                            .bbBbbb()
             );
         }
 
-        @Override
-        public void print(PrettyPrinter printer) {
-            printer.kv("ID", this.getID())
-                    .kv("Ping ID", this.getRequestID());
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+            bbbbbbb.bb("BB", bbbb.bbbBB())
+                    .bb("Bbbb BB", bbbb.bbbBbbbbbbBB());
         }
     }
 

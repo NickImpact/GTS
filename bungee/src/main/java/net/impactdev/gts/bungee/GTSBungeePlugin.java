@@ -1,202 +1,202 @@
-package net.impactdev.gts.bungee;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
-import net.impactdev.gts.bungee.listings.BungeeAuction;
-import net.impactdev.gts.bungee.listings.BungeeBIN;
-import net.impactdev.gts.bungee.messaging.interpreters.BungeeAdminInterpreters;
-import net.impactdev.gts.bungee.messaging.interpreters.BungeeAuctionInterpreter;
-import net.impactdev.gts.bungee.messaging.interpreters.BungeeListingInterpreter;
-import net.impactdev.gts.common.api.ApiRegistrationUtil;
-import net.impactdev.gts.common.api.GTSAPIProvider;
-import net.impactdev.gts.common.config.ConfigProvider;
-import net.impactdev.gts.common.data.ResourceManagerImpl;
-import net.impactdev.gts.common.dependencies.GTSDependencies;
-import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
-import net.impactdev.gts.api.environment.Environment;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.dependencies.Dependency;
-import net.impactdev.impactor.api.dependencies.ProvidedDependencies;
-import net.impactdev.impactor.api.logging.PluginLogger;
-import net.impactdev.impactor.api.plugin.PluginMetadata;
-import net.impactdev.impactor.api.storage.StorageType;
-import net.impactdev.gts.api.blacklist.Blacklist;
-import net.impactdev.gts.api.extension.ExtensionManager;
-import net.impactdev.gts.api.storage.GTSStorage;
-import net.impactdev.gts.bungee.messaging.BungeeMessagingFactory;
-import net.impactdev.gts.bungee.messaging.interpreters.BungeeBINInterpreters;
-import net.impactdev.gts.bungee.messaging.interpreters.BungeePingPongInterpreter;
-import net.impactdev.gts.common.blacklist.BlacklistImpl;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.messaging.InternalMessagingService;
-import net.impactdev.gts.common.messaging.MessagingFactory;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.storage.StorageFactory;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb.BbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.BbbbbbBbbbbBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.BbbbbbBbbbbbbBbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.BbbbbbBbbbbbbBbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbb.BbbBbbbbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbb.BBBBBBBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbb.BbbbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbbbb.BBBBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbb.BbbbbBbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.BbbbbbBBBBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.BbbbbbBbbbBbbbBbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbbbBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bb.BBBbbbbbbbb;
+bbbbbb bbbb.bb.BbbbbBbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public class GTSBungeePlugin implements GTSPlugin {
+bbbbbb bbbbb BBBBbbbbbBbbbbb bbbbbbbbbb BBBBbbbbb {
 
-	private final GTSBungeeBootstrap bootstrap;
+	bbbbbbb bbbbb BBBBbbbbbBbbbbbbbb bbbbbbbbb;
 
-	private ConfigProvider provider;
+	bbbbbbb BbbbbbBbbbbbbb bbbbbbbb;
 
-	private GTSStorage storage;
-	private InternalMessagingService messagingService;
+	bbbbbbb BBBBbbbbbb bbbbbbb;
+	bbbbbbb BbbbbbbbBbbbbbbbbBbbbbbb bbbbbbbbbBbbbbbb;
 
-	private Environment environment;
+	bbbbbbb Bbbbbbbbbbb bbbbbbbbbbb;
 
-	public GTSBungeePlugin(GTSBungeeBootstrap bootstrap) {
-		this.bootstrap = bootstrap;
-		this.register();
+	bbbbbb BBBBbbbbbBbbbbb(BBBBbbbbbBbbbbbbbb bbbbbbbbb) {
+		bbbb.bbbbbbbbb = bbbbbbbbb;
+		bbbb.bbbbbbbb();
 	}
 
-	@Override
-	public <T extends GTSPlugin> T as(Class<T> type) {
-		if(!type.isAssignableFrom(this.getClass())) {
-			throw new RuntimeException("Invalid plugin typing");
+	@Bbbbbbbb
+	bbbbbb <B bbbbbbb BBBBbbbbb> B bb(Bbbbb<B> bbbb) {
+		bb(!bbbb.bbBbbbbbbbbbBbbb(bbbb.bbbBbbbb())) {
+			bbbbb bbb BbbbbbbBbbbbbbbb("Bbbbbbb bbbbbb bbbbbb");
 		}
-		return (T) this;
+		bbbbbb (B) bbbb;
 	}
 
-	@Override
-	public GTSBungeeBootstrap bootstrap() {
-		return this.bootstrap;
+	@Bbbbbbbb
+	bbbbbb BBBBbbbbbBbbbbbbbb bbbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbbb;
 	}
 
-	@Override
-	public ConfigProvider configuration() {
-		return this.provider;
+	@Bbbbbbbb
+	bbbbbb BbbbbbBbbbbbbb bbbbbbbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbb;
 	}
 
-	@Override
-	public Environment environment() {
-		Environment environment = Optional.ofNullable(this.environment)
-				.orElseGet(() -> (this.environment = new Environment()));
-		environment.append(this.bootstrap.proxy().getProxy().getName(), this.bootstrap.proxy().getProxy().getVersion());
-		environment.append("Impactor", this.bootstrap.proxy().getProxy().getPluginManager().getPlugin("Impactor").getDescription().getVersion());
-		environment.append("GTS", this.metadata().version());
+	@Bbbbbbbb
+	bbbbbb Bbbbbbbbbbb bbbbbbbbbbb() {
+		Bbbbbbbbbbb bbbbbbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbbbbbbb)
+				.bbBbbbBbb(() -> (bbbb.bbbbbbbbbbb = bbb Bbbbbbbbbbb()));
+		bbbbbbbbbbb.bbbbbb(bbbb.bbbbbbbbb.bbbbb().bbbBbbbb().bbbBbbb(), bbbb.bbbbbbbbb.bbbbb().bbbBbbbb().bbbBbbbbbb());
+		bbbbbbbbbbb.bbbbbb("Bbbbbbbb", bbbb.bbbbbbbbb.bbbbb().bbbBbbbb().bbbBbbbbbBbbbbbb().bbbBbbbbb("Bbbbbbbb").bbbBbbbbbbbbbb().bbbBbbbbbb());
+		bbbbbbbbbbb.bbbbbb("BBB", bbbb.bbbbbbbb().bbbbbbb());
 
-		return environment;
+		bbbbbb bbbbbbbbbbb;
 	}
 
-	@Override
-	public Gson gson() {
-		return new GsonBuilder().create();
+	@Bbbbbbbb
+	bbbbbb Bbbb bbbb() {
+		bbbbbb bbb BbbbBbbbbbb().bbbbbb();
 	}
 
-	@Override
-	public GTSStorage storage() {
-		return this.storage;
+	@Bbbbbbbb
+	bbbbbb BBBBbbbbbb bbbbbbb() {
+		bbbbbb bbbb.bbbbbbb;
 	}
 
-	@Override
-	public ExtensionManager extensionManager() {
-		return null;
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbbBbbbbbb bbbbbbbbbBbbbbbb() {
+		bbbbbb bbbb;
 	}
 
-	@Override
-	public InternalMessagingService messagingService() {
-		return this.messagingService;
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbBbbbbbbbbBbbbbbb bbbbbbbbbBbbbbbb() {
+		bbbbbb bbbb.bbbbbbbbbBbbbbbb;
 	}
 
-	@Override
-	public CompletableFuture<String> playerDisplayName(UUID id) {
-		return CompletableFuture.completedFuture(this.bootstrap().proxy().getProxy().getPlayer(id).getName());
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbb> bbbbbbBbbbbbbBbbb(BBBB bb) {
+		bbbbbb BbbbbbbbbbbBbbbbb.bbbbbbbbbBbbbbb(bbbb.bbbbbbbbb().bbbbb().bbbBbbbb().bbbBbbbbb(bb).bbbBbbb());
 	}
 
-	public MessagingFactory<?> getMessagingFactory() {
-		return new BungeeMessagingFactory(this);
+	bbbbbb BbbbbbbbbBbbbbbb<?> bbbBbbbbbbbbBbbbbbb() {
+		bbbbbb bbb BbbbbbBbbbbbbbbBbbbbbb(bbbb);
 	}
 
-	@Override
-	public PluginMetadata metadata() {
-		return PluginMetadata.builder()
-				.id("gts")
-				.name("GTS")
-				.version("@version@")
-				.build();
+	@Bbbbbbbb
+	bbbbbb BbbbbbBbbbbbbb bbbbbbbb() {
+		bbbbbb BbbbbbBbbbbbbb.bbbbbbb()
+				.bb("bbb")
+				.bbbb("BBB")
+				.bbbbbbb("@bbbbbbb@")
+				.bbbbb();
 	}
 
-	@Override
-	public PluginLogger logger() {
-		return this.bootstrap.logger();
+	@Bbbbbbbb
+	bbbbbb BbbbbbBbbbbb bbbbbb() {
+		bbbbbb bbbb.bbbbbbbbb.bbbbbb();
 	}
 
-	@Override
-	public void construct() throws Exception {
-		ApiRegistrationUtil.register(new GTSAPIProvider());
+	@Bbbbbbbb
+	bbbbbb bbbb bbbbbbbbb() bbbbbb Bbbbbbbbb {
+		BbbBbbbbbbbbbbbBbbb.bbbbbbbb(bbb BBBBBBBbbbbbbb());
 
-		Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
-		Impactor.getInstance().getRegistry().register(Blacklist.class, new BlacklistImpl());
+		Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbb(BBBBbbbbb.bbbbb, bbbb);
+		Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbb(Bbbbbbbbb.bbbbb, bbb BbbbbbbbbBbbb());
 
-		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(BuyItNow.class, new ResourceManagerImpl<>("BIN", "N/A", BungeeBIN::deserialize));
-		GTSService.getInstance().getGTSComponentManager().registerListingResourceManager(Auction.class, new ResourceManagerImpl<>("Auctions", "N/A", BungeeAuction::deserialize));
-		Impactor.getInstance().getRegistry().registerBuilderSupplier(Auction.AuctionBuilder.class, BungeeAuction.BungeeAuctionBuilder::new);
-		Impactor.getInstance().getRegistry().registerBuilderSupplier(BuyItNow.BuyItNowBuilder.class, BungeeBIN.BungeeBINBuilder::new);
-		Impactor.getInstance().getRegistry().registerBuilderSupplier(ForceDeleteMessage.Response.ResponseBuilder.class, ForceDeleteMessageImpl.ForceDeleteResponse.ForcedDeleteResponseBuilder::new);
+		BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbbBbbbbbbbBbbbbbb(BbbBbBbb.bbbbb, bbb BbbbbbbbBbbbbbbBbbb<>("BBB", "B/B", BbbbbbBBB::bbbbbbbbbbb));
+		BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbbbb.bbbbb, bbb BbbbbbbbBbbbbbbBbbb<>("Bbbbbbbb", "B/B", BbbbbbBbbbbbb::bbbbbbbbbbb));
+		Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbbBbbbbbbBbbbbbbb(Bbbbbbb.BbbbbbbBbbbbbb.bbbbb, BbbbbbBbbbbbb.BbbbbbBbbbbbbBbbbbbb::bbb);
+		Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbbBbbbbbbBbbbbbbb(BbbBbBbb.BbbBbBbbBbbbbbb.bbbbb, BbbbbbBBB.BbbbbbBBBBbbbbbb::bbb);
+		Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbbBbbbbbbBbbbbbbb(BbbbbBbbbbbBbbbbbb.Bbbbbbbb.BbbbbbbbBbbbbbb.bbbbb, BbbbbBbbbbbBbbbbbbBbbb.BbbbbBbbbbbBbbbbbbb.BbbbbbBbbbbbBbbbbbbbBbbbbbb::bbb);
 
-		Path configDirectory = this.bootstrap.configDirectory();
-		this.copyResource(Paths.get("gts.conf"), configDirectory);
-		Config config = Config.builder()
-				.path(configDirectory.resolve("gts.conf"))
-				.provider(ConfigKeys.class)
-				.build();
+		Bbbb bbbbbbBbbbbbbbb = bbbb.bbbbbbbbb.bbbbbbBbbbbbbbb();
+		bbbb.bbbbBbbbbbbb(Bbbbb.bbb("bbb.bbbb"), bbbbbbBbbbbbbbb);
+		Bbbbbb bbbbbb = Bbbbbb.bbbbbbb()
+				.bbbb(bbbbbbBbbbbbbbb.bbbbbbb("bbb.bbbb"))
+				.bbbbbbbb(BbbbbbBbbb.bbbbb)
+				.bbbbb();
 
-		this.provider = new ConfigProvider(config, null);
-		this.storage = new StorageFactory(this).getInstance(StorageType.MARIADB);
+		bbbb.bbbbbbbb = bbb BbbbbbBbbbbbbb(bbbbbb, bbbb);
+		bbbb.bbbbbbb = bbb BbbbbbbBbbbbbb(bbbb).bbbBbbbbbbb(BbbbbbbBbbb.BBBBBBB);
 
-		this.messagingService = this.getMessagingFactory().getInstance();
+		bbbb.bbbbbbbbbBbbbbbb = bbbb.bbbBbbbbbbbbBbbbbbb().bbbBbbbbbbb();
 
-		BungeePingPongInterpreter.registerDecoders(this);
-		BungeePingPongInterpreter.registerInterpreters(this);
-		new BungeeBINInterpreters().register(this);
-		new BungeeAuctionInterpreter().register(this);
-		new BungeeListingInterpreter().register(this);
-		new BungeeAdminInterpreters().register(this);
+		BbbbbbBbbbBbbbBbbbbbbbbbb.bbbbbbbbBbbbbbbb(bbbb);
+		BbbbbbBbbbBbbbBbbbbbbbbbb.bbbbbbbbBbbbbbbbbbbb(bbbb);
+		bbb BbbbbbBBBBbbbbbbbbbbb().bbbbbbbb(bbbb);
+		bbb BbbbbbBbbbbbbBbbbbbbbbbb().bbbbbbbb(bbbb);
+		bbb BbbbbbBbbbbbbBbbbbbbbbbb().bbbbbbbb(bbbb);
+		bbb BbbbbbBbbbbBbbbbbbbbbbb().bbbbbbbb(bbbb);
 	}
 
-	@Override
-	public void shutdown() throws Exception {}
+	@Bbbbbbbb
+	bbbbbb bbbb bbbbbbbb() bbbbbb Bbbbbbbbb {}
 
-	@Override
-	public Set<Dependency> dependencies() {
-		return Sets.newHashSet(
-				ProvidedDependencies.ADVENTURE,
-				ProvidedDependencies.ADVENTURE_LEGACY_SERIALIZER,
-				ProvidedDependencies.ADVENTURE_GSON_SERIALIZER,
-				ProvidedDependencies.CAFFEINE,
-				ProvidedDependencies.CONFIGURATE_CORE,
-				ProvidedDependencies.CONFIGURATE_HOCON,
-				ProvidedDependencies.CONFIGURATE_GSON,
-				ProvidedDependencies.CONFIGURATE_YAML,
-				ProvidedDependencies.TYPESAFE_CONFIG,
-				GTSDependencies.MXPARSER
+	@Bbbbbbbb
+	bbbbbb Bbb<Bbbbbbbbbb> bbbbbbbbbbbb() {
+		bbbbbb Bbbb.bbbBbbbBbb(
+				BbbbbbbbBbbbbbbbbbbb.BBBBBBBBB,
+				BbbbbbbbBbbbbbbbbbbb.BBBBBBBBB_BBBBBB_BBBBBBBBBB,
+				BbbbbbbbBbbbbbbbbbbb.BBBBBBBBB_BBBB_BBBBBBBBBB,
+				BbbbbbbbBbbbbbbbbbbb.BBBBBBBB,
+				BbbbbbbbBbbbbbbbbbbb.BBBBBBBBBBB_BBBB,
+				BbbbbbbbBbbbbbbbbbbb.BBBBBBBBBBB_BBBBB,
+				BbbbbbbbBbbbbbbbbbbb.BBBBBBBBBBB_BBBB,
+				BbbbbbbbBbbbbbbbbbbb.BBBBBBBBBBB_BBBB,
+				BbbbbbbbBbbbbbbbbbbb.BBBBBBBB_BBBBBB,
+				BBBBbbbbbbbbbbb.BBBBBBBB
 		);
 	}
 
-	private void copyResource(Path path, Path destination) {
-		if(!Files.exists(destination.resolve(path))) {
-			try (InputStream resource = this.resource(path.toString().replace("\\", "/"))) {
-				Files.createDirectories(destination.resolve(path).getParent());
-				Files.copy(resource, destination.resolve(path));
-			} catch (IOException e) {
-				throw new RuntimeException(e);
+	bbbbbbb bbbb bbbbBbbbbbbb(Bbbb bbbb, Bbbb bbbbbbbbbbb) {
+		bb(!Bbbbb.bbbbbb(bbbbbbbbbbb.bbbbbbb(bbbb))) {
+			bbb (BbbbbBbbbbb bbbbbbbb = bbbb.bbbbbbbb(bbbb.bbBbbbbb().bbbbbbb("\\", "/"))) {
+				Bbbbb.bbbbbbBbbbbbbbbbb(bbbbbbbbbbb.bbbbbbb(bbbb).bbbBbbbbb());
+				Bbbbb.bbbb(bbbbbbbb, bbbbbbbbbbb.bbbbbbb(bbbb));
+			} bbbbb (BBBbbbbbbbb b) {
+				bbbbb bbb BbbbbbbBbbbbbbbb(b);
 			}
 		}
 	}

@@ -1,25 +1,25 @@
-repositories {
-    mavenCentral()
-    maven {
-        name 'Sponge Releases'
-        url 'https://repo.spongepowered.org/repository/maven-releases'
+bbbbbbbbbbbb {
+    bbbbbCbbbbbb()
+    bbbbb {
+        bbbb 'Sbbbbb Rbbbbbbb'
+        bbb 'bbbbb://bbbb.bbbbbbbbbbbbb.bbb/bbbbbbbbbb/bbbbb-bbbbbbbb'
     }
 }
 
-dependencies {
-    api project(':api')
-    implementation project(':common')
+bbbbbbbbbbbb {
+    bbb bbbbbbb(':bbb')
+    bbbbbbbbbbbbbb bbbbbbb(':bbbbbb')
 
-    shadow 'org.spongepowered:spongeapi:8.0.0'
-    shadow 'net.kyori:adventure-api:4.10.1'
-    shadow 'net.kyori:adventure-text-serializer-gson:4.10.1'
-    shadow 'net.kyori:adventure-text-serializer-legacy:4.10.1'
+    bbbbbb 'bbb.bbbbbbbbbbbbb:bbbbbbbbb:8.0.0'
+    bbbbbb 'bbb.bbbbb:bbbbbbbbb-bbb:4.10.1'
+    bbbbbb 'bbb.bbbbb:bbbbbbbbb-bbbb-bbbbbbbbbb-bbbb:4.10.1'
+    bbbbbb 'bbb.bbbbb:bbbbbbbbb-bbbb-bbbbbbbbbb-bbbbbb:4.10.1'
 
 }
 
-shadowJar {
-    dependencies {
-        include project(':api')
-        include project(':common')
+bbbbbbJbb {
+    bbbbbbbbbbbb {
+        bbbbbbb bbbbbbb(':bbb')
+        bbbbbbb bbbbbbb(':bbbbbb')
     }
 }

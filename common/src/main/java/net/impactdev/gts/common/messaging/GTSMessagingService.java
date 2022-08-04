@@ -1,390 +1,390 @@
 /*
- * This file is part of LuckPerms, licensed under the MIT License.
+ * Bbbb bbbb bb bbbb bb BbbbBbbbb, bbbbbbbb bbbbb bbb BBB Bbbbbbb.
  *
- *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Bbbbbbbbb (b) bbbbb (Bbbb) <bbbb@bbbbb.bb>
+ *  Bbbbbbbbb (b) bbbbbbbbbbbb
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Bbbbbbbbbb bb bbbbbb bbbbbbb, bbbb bb bbbbbb, bb bbb bbbbbb bbbbbbbbb b bbbb
+ *  bb bbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbbbbbbb bbbbb (bbb "Bbbbbbbb"), bb bbbb
+ *  bb bbb Bbbbbbbb bbbbbbb bbbbbbbbbbb, bbbbbbbbb bbbbbbb bbbbbbbbbb bbb bbbbbb
+ *  bb bbb, bbbb, bbbbbb, bbbbb, bbbbbbb, bbbbbbbbbb, bbbbbbbbbb, bbb/bb bbbb
+ *  bbbbbb bb bbb Bbbbbbbb, bbb bb bbbbbb bbbbbbb bb bbbb bbb Bbbbbbbb bb
+ *  bbbbbbbbb bb bb bb, bbbbbbb bb bbb bbbbbbbbb bbbbbbbbbb:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  Bbb bbbbb bbbbbbbbb bbbbbb bbb bbbb bbbbbbbbbb bbbbbb bbbbb bb bbbbbbbb bb bbb
+ *  bbbbbb bb bbbbbbbbbbb bbbbbbbb bb bbb Bbbbbbbb.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
+ *  BBB BBBBBBBB BB BBBBBBBB "BB BB", BBBBBBB BBBBBBBB BB BBB BBBB, BBBBBBB BB
+ *  BBBBBBB, BBBBBBBBB BBB BBB BBBBBBB BB BBB BBBBBBBBBB BB BBBBBBBBBBBBBBB,
+ *  BBBBBBB BBB B BBBBBBBBBB BBBBBBB BBB BBBBBBBBBBBBBBB. BB BB BBBBB BBBBB BBB
+ *  BBBBBBB BB BBBBBBBBB BBBBBBB BB BBBBBB BBB BBB BBBBB, BBBBBBB BB BBBBB
+ *  BBBBBBBBB, BBBBBBB BB BB BBBBBB BB BBBBBBBB, BBBB BB BBBBBBBBB, BBBBBBB BBBB,
+ *  BBB BB BB BB BBBBBBBBBB BBBB BBB BBBBBBBB BB BBB BBB BB BBBBB BBBBBBBB BB BBB
+ *  BBBBBBBB.
  */
 
-package net.impactdev.gts.common.messaging;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.TreeMultimap;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.event.factory.GTSEventFactory;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
-import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
-import net.impactdev.gts.api.util.TriConsumer;
-import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
-import net.impactdev.gts.common.messaging.messages.deliveries.ClaimDeliveryImpl;
-import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
-import net.impactdev.gts.common.messaging.messages.listings.PublishListingMessageImpl;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
-import net.impactdev.gts.common.messaging.messages.utility.PingPongMessage;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.MessengerProvider;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbBbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbb.bbbbbbb.BBBBbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb.BbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbbbb.BbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbb.BbbbbBbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbbbb.BbbbbBbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbbbBbbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbb.BbbbbbbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.BBBBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbb.BBBBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbb.BbbbBbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbb.BbbbbbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbBbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.time.Instant;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+bbbbbb bbbb.bbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbBbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbBbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class GTSMessagingService implements InternalMessagingService {
+bbbbbb bbbbb BBBBbbbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbbBbbbbbbbbBbbbbbb {
 
-    private final GTSPlugin plugin;
+    bbbbbbb bbbbb BBBBbbbbb bbbbbb;
 
-    private final MessengerProvider messengerProvider;
-    private final Messenger messenger;
+    bbbbbbb bbbbb BbbbbbbbbBbbbbbbb bbbbbbbbbBbbbbbbb;
+    bbbbbbb bbbbb Bbbbbbbbb bbbbbbbbb;
 
-    private Map<String, BiFunction<JsonElement, UUID, ? extends OutgoingMessage>> decoders = Maps.newHashMap();
+    bbbbbbb Bbb<Bbbbbb, BbBbbbbbbb<BbbbBbbbbbb, BBBB, ? bbbbbbb BbbbbbbbBbbbbbb>> bbbbbbbb = Bbbb.bbbBbbbBbb();
 
-    public static final Gson NORMAL = new GsonBuilder().disableHtmlEscaping().create();
+    bbbbbb bbbbbb bbbbb Bbbb BBBBBB = bbb BbbbBbbbbbb().bbbbbbbBbbbBbbbbbbb().bbbbbb();
 
-    public GTSMessagingService(GTSPlugin plugin, MessengerProvider messengerProvider, IncomingMessageConsumer consumer) {
-        this.plugin = plugin;
+    bbbbbb BBBBbbbbbbbbBbbbbbb(BBBBbbbbb bbbbbb, BbbbbbbbbBbbbbbbb bbbbbbbbbBbbbbbbb, BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb) {
+        bbbb.bbbbbb = bbbbbb;
 
-        this.messengerProvider = messengerProvider;
-        this.messenger = messengerProvider.obtain(consumer);
-        Objects.requireNonNull(this.messenger, "messenger");
+        bbbb.bbbbbbbbbBbbbbbbb = bbbbbbbbbBbbbbbbb;
+        bbbb.bbbbbbbbb = bbbbbbbbbBbbbbbbb.bbbbbb(bbbbbbbb);
+        Bbbbbbb.bbbbbbbBbbBbbb(bbbb.bbbbbbbbb, "bbbbbbbbb");
     }
 
-    @Override
-    public String getName() {
-        return this.messengerProvider.getName();
+    @Bbbbbbbb
+    bbbbbb Bbbbbb bbbBbbb() {
+        bbbbbb bbbb.bbbbbbbbbBbbbbbbb.bbbBbbb();
     }
 
-    @Override
-    public Messenger getMessenger() {
-        return this.messenger;
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbbb bbbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb;
     }
 
-    @Override
-    public MessengerProvider getMessengerProvider() {
-        return this.messengerProvider;
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbBbbbbbbb bbbBbbbbbbbbBbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbbBbbbbbbb;
     }
 
-    @Override
-    public void close() {
-        this.messenger.close();
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb() {
+        bbbb.bbbbbbbbb.bbbbb();
     }
 
-    @Override
-    public <T extends OutgoingMessage> void registerDecoder(String type, BiFunction<JsonElement, UUID, T> decoder) {
-        this.decoders.put(type, decoder);
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb BbbbbbbbBbbbbbb> bbbb bbbbbbbbBbbbbbb(Bbbbbb bbbb, BbBbbbbbbb<BbbbBbbbbbb, BBBB, B> bbbbbbb) {
+        bbbb.bbbbbbbb.bbb(bbbb, bbbbbbb);
     }
 
-    @Override
-    public BiFunction<JsonElement, UUID, ? extends OutgoingMessage> getDecoder(String type) {
-        return this.decoders.get(type);
+    @Bbbbbbbb
+    bbbbbb BbBbbbbbbb<BbbbBbbbbbb, BBBB, ? bbbbbbb BbbbbbbbBbbbbbb> bbbBbbbbbb(Bbbbbb bbbb) {
+        bbbbbb bbbb.bbbbbbbb.bbb(bbbb);
     }
 
-    @Override
-    public UUID generatePingID() {
-        UUID uuid = UUID.randomUUID();
-        this.messenger.getMessageConsumer().cacheReceivedID(uuid);
-        return uuid;
+    @Bbbbbbbb
+    bbbbbb BBBB bbbbbbbbBbbbBB() {
+        BBBB bbbb = BBBB.bbbbbbBBBB();
+        bbbb.bbbbbbbbb.bbbBbbbbbbBbbbbbbb().bbbbbBbbbbbbbBB(bbbb);
+        bbbbbb bbbb;
     }
 
-    @Override
-    public CompletableFuture<PingMessage.Pong> sendPing() {
-        PingMessage.Ping ping = new PingPongMessage.Ping(this.generatePingID());
-        return new MessageProcessor<PingMessage.Pong, PingMessage.Ping>(
-                "Ping Request",
-                ping,
-                () -> this.await(ping),
-                error -> new PingPongMessage.Pong(
-                        UUID.randomUUID(),
-                        ping.getID(),
-                        false,
-                        error
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbBbbbbbb.Bbbb> bbbbBbbb() {
+        BbbbBbbbbbb.Bbbb bbbb = bbb BbbbBbbbBbbbbbb.Bbbb(bbbb.bbbbbbbbBbbbBB());
+        bbbbbb bbb BbbbbbbBbbbbbbbb<BbbbBbbbbbb.Bbbb, BbbbBbbbbbb.Bbbb>(
+                "Bbbb Bbbbbbb",
+                bbbb,
+                () -> bbbb.bbbbb(bbbb),
+                bbbbb -> bbb BbbbBbbbBbbbbbb.Bbbb(
+                        BBBB.bbbbbbBBBB(),
+                        bbbb.bbbBB(),
+                        bbbbb,
+                        bbbbb
                 )
-        ).process();
+        ).bbbbbbb();
     }
 
-    @Override
-    public CompletableFuture<Void> sendPublishNotice(UUID listing, UUID actor, boolean auction) {
-        return CompletableFutureManager.makeFuture(() -> {
-            PublishListingMessageImpl message = new PublishListingMessageImpl(this.generatePingID(), listing, actor, auction);
-            GTSPlugin.instance().messagingService().getMessenger().sendOutgoingMessage(message);
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbb> bbbbBbbbbbbBbbbbb(BBBB bbbbbbb, BBBB bbbbb, bbbbbbb bbbbbbb) {
+        bbbbbb BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(() -> {
+            BbbbbbbBbbbbbbBbbbbbbBbbb bbbbbbb = bbb BbbbbbbBbbbbbbBbbbbbbBbbb(bbbb.bbbbbbbbBbbbBB(), bbbbbbb, bbbbb, bbbbbbb);
+            BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbb);
         });
     }
 
-    @Override
-    public CompletableFuture<AuctionMessage.Bid.Response> publishBid(UUID listing, UUID actor, double bid) {
-        AuctionMessage.Bid.Request request = new AuctionBidMessage.Request(this.generatePingID(), listing, actor, bid);
-        return new MessageProcessor<AuctionMessage.Bid.Response, AuctionMessage.Bid.Request>(
-                "Bid Publishing Request",
-                request,
-                () -> this.await(request),
-                error -> new AuctionBidMessage.Response(
-                        UUID.randomUUID(),
-                        request.getID(),
-                        request.getAuctionID(),
-                        request.getActor(),
-                        request.getAmountBid(),
-                        false,
-                        false,
-                        Listing.SERVER_ID,
-                        TreeMultimap.create(),
-                        error
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbbbbBbbbbbb.Bbb.Bbbbbbbb> bbbbbbbBbb(BBBB bbbbbbb, BBBB bbbbb, bbbbbb bbb) {
+        BbbbbbbBbbbbbb.Bbb.Bbbbbbb bbbbbbb = bbb BbbbbbbBbbBbbbbbb.Bbbbbbb(bbbb.bbbbbbbbBbbbBB(), bbbbbbb, bbbbb, bbb);
+        bbbbbb bbb BbbbbbbBbbbbbbbb<BbbbbbbBbbbbbb.Bbb.Bbbbbbbb, BbbbbbbBbbbbbb.Bbb.Bbbbbbb>(
+                "Bbb Bbbbbbbbbb Bbbbbbb",
+                bbbbbbb,
+                () -> bbbb.bbbbb(bbbbbbb),
+                bbbbb -> bbb BbbbbbbBbbBbbbbbb.Bbbbbbbb(
+                        BBBB.bbbbbbBBBB(),
+                        bbbbbbb.bbbBB(),
+                        bbbbbbb.bbbBbbbbbbBB(),
+                        bbbbbbb.bbbBbbbb(),
+                        bbbbbbb.bbbBbbbbbBbb(),
+                        bbbbb,
+                        bbbbb,
+                        Bbbbbbb.BBBBBB_BB,
+                        BbbbBbbbbbbb.bbbbbb(),
+                        bbbbb
                 )
-        ).process();
+        ).bbbbbbb();
     }
 
-    @Override
-    public CompletableFuture<AuctionMessage.Cancel.Response> requestAuctionCancellation(UUID listing, UUID actor) {
-        AuctionMessage.Cancel.Request request = new AuctionCancelMessage.Request(this.generatePingID(), listing, actor);
-        return new MessageProcessor<AuctionMessage.Cancel.Response, AuctionMessage.Cancel.Request>(
-                "Auction Cancellation Request",
-                request,
-                () -> this.await(request),
-                error -> new AuctionCancelMessage.Response(
-                        UUID.randomUUID(),
-                        request.getID(),
-                        null,
-                        request.getAuctionID(),
-                        request.getActor(),
-                        ImmutableList.of(),
-                        false,
-                        error
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbbb> bbbbbbbBbbbbbbBbbbbbbbbbbb(BBBB bbbbbbb, BBBB bbbbb) {
+        BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb = bbb BbbbbbbBbbbbbBbbbbbb.Bbbbbbb(bbbb.bbbbbbbbBbbbBB(), bbbbbbb, bbbbb);
+        bbbbbb bbb BbbbbbbBbbbbbbbb<BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbbb, BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbb>(
+                "Bbbbbbb Bbbbbbbbbbbb Bbbbbbb",
+                bbbbbbb,
+                () -> bbbb.bbbbb(bbbbbbb),
+                bbbbb -> bbb BbbbbbbBbbbbbBbbbbbb.Bbbbbbbb(
+                        BBBB.bbbbbbBBBB(),
+                        bbbbbbb.bbbBB(),
+                        bbbb,
+                        bbbbbbb.bbbBbbbbbbBB(),
+                        bbbbbbb.bbbBbbbb(),
+                        BbbbbbbbbBbbb.bb(),
+                        bbbbb,
+                        bbbbb
                 )
-        ).process();
+        ).bbbbbbb();
     }
 
-    @Override
-    public CompletableFuture<ClaimMessage.Response> requestClaim(UUID listing, UUID actor, @Nullable UUID receiver, boolean auction) {
-        ClaimMessageImpl.ClaimRequestImpl request = new ClaimMessageImpl.ClaimRequestImpl(this.generatePingID(), listing, actor, receiver, auction);
-        return new MessageProcessor<ClaimMessage.Response, ClaimMessage.Request>(
-                "Claim Request",
-                request,
-                () -> this.await(request),
-                error -> ClaimMessageImpl.ClaimResponseImpl.builder()
-                        .id(UUID.randomUUID())
-                        .request(request.getID())
-                        .listing(request.getListingID())
-                        .actor(request.getActor())
-                        .receiver(request.getReceiver().orElse(null))
-                        .error(error)
-                        .build()
-        ).process();
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbbBbbbbbb.Bbbbbbbb> bbbbbbbBbbbb(BBBB bbbbbbb, BBBB bbbbb, @Bbbbbbbb BBBB bbbbbbbb, bbbbbbb bbbbbbb) {
+        BbbbbBbbbbbbBbbb.BbbbbBbbbbbbBbbb bbbbbbb = bbb BbbbbBbbbbbbBbbb.BbbbbBbbbbbbBbbb(bbbb.bbbbbbbbBbbbBB(), bbbbbbb, bbbbb, bbbbbbbb, bbbbbbb);
+        bbbbbb bbb BbbbbbbBbbbbbbbb<BbbbbBbbbbbb.Bbbbbbbb, BbbbbBbbbbbb.Bbbbbbb>(
+                "Bbbbb Bbbbbbb",
+                bbbbbbb,
+                () -> bbbb.bbbbb(bbbbbbb),
+                bbbbb -> BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.bbbbbbb()
+                        .bb(BBBB.bbbbbbBBBB())
+                        .bbbbbbb(bbbbbbb.bbbBB())
+                        .bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+                        .bbbbb(bbbbbbb.bbbBbbbb())
+                        .bbbbbbbb(bbbbbbb.bbbBbbbbbbb().bbBbbb(bbbb))
+                        .bbbbb(bbbbb)
+                        .bbbbb()
+        ).bbbbbbb();
     }
 
-    @Override
-    public CompletableFuture<BuyItNowMessage.Purchase.Response> requestBINPurchase(UUID listing, UUID actor, Object source) {
-        BuyItNowMessage.Purchase.Request request = new BINPurchaseMessage.Request(this.generatePingID(), listing, actor);
-        return new MessageProcessor<BuyItNowMessage.Purchase.Response, BuyItNowMessage.Purchase.Request>(
-                "BIN Purchase Request",
-                request,
-                () -> this.await(request),
-                error -> new BINPurchaseMessage.Response(
-                        UUID.randomUUID(),
-                        request.getID(),
-                        listing, actor,
-                        Listing.SERVER_ID,
-                        false,
-                        error
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbbb> bbbbbbbBBBBbbbbbbb(BBBB bbbbbbb, BBBB bbbbb, Bbbbbb bbbbbb) {
+        BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbb bbbbbbb = bbb BBBBbbbbbbbBbbbbbb.Bbbbbbb(bbbb.bbbbbbbbBbbbBB(), bbbbbbb, bbbbb);
+        bbbbbb bbb BbbbbbbBbbbbbbbb<BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbbb, BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbb>(
+                "BBB Bbbbbbbb Bbbbbbb",
+                bbbbbbb,
+                () -> bbbb.bbbbb(bbbbbbb),
+                bbbbb -> bbb BBBBbbbbbbbBbbbbbb.Bbbbbbbb(
+                        BBBB.bbbbbbBBBB(),
+                        bbbbbbb.bbbBB(),
+                        bbbbbbb, bbbbb,
+                        Bbbbbbb.BBBBBB_BB,
+                        bbbbb,
+                        bbbbb
                 )
-        ).process();
+        ).bbbbbbb();
     }
 
-    @Override
-    public CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive) {
-        BuyItNowMessage.Remove.Request request = new BINRemoveMessage.Request(this.generatePingID(), listing, actor, receiver, shouldReceive);
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbbb> bbbbbbbBBBBbbbbbBbbbbbb(BBBB bbbbbbb, BBBB bbbbb, @Bbbbbbbb BBBB bbbbbbbb, bbbbbbb bbbbbbBbbbbbb) {
+        BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb = bbb BBBBbbbbbBbbbbbb.Bbbbbbb(bbbb.bbbbbbbbBbbbBB(), bbbbbbb, bbbbb, bbbbbbbb, bbbbbbBbbbbbb);
 
-        return new MessageProcessor<BuyItNowMessage.Remove.Response, BuyItNowMessage.Remove.Request>(
-                "BIN Removal Request",
-                request,
-                () -> this.await(request),
-                error -> new BINRemoveMessage.Response(
-                        UUID.randomUUID(),
-                        request.getID(),
-                        listing,
-                        actor,
-                        receiver,
-                        shouldReceive,
-                        false,
-                        error
+        bbbbbb bbb BbbbbbbBbbbbbbbb<BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbbb, BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbb>(
+                "BBB Bbbbbbb Bbbbbbb",
+                bbbbbbb,
+                () -> bbbb.bbbbb(bbbbbbb),
+                bbbbb -> bbb BBBBbbbbbBbbbbbb.Bbbbbbbb(
+                        BBBB.bbbbbbBBBB(),
+                        bbbbbbb.bbbBB(),
+                        bbbbbbb,
+                        bbbbb,
+                        bbbbbbbb,
+                        bbbbbbBbbbbbb,
+                        bbbbb,
+                        bbbbb
                 )
-        ).process();
+        ).bbbbbbb();
     }
 
-    @Override
-    public CompletableFuture<ForceDeleteMessage.Response> requestForcedDeletion(UUID listing, UUID actor, boolean give) {
-        ForceDeleteMessage.Request request = new ForceDeleteMessageImpl.ForceDeleteRequest(this.generatePingID(), listing, actor, give);
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbbBbbbbbBbbbbbb.Bbbbbbbb> bbbbbbbBbbbbbBbbbbbbb(BBBB bbbbbbb, BBBB bbbbb, bbbbbbb bbbb) {
+        BbbbbBbbbbbBbbbbbb.Bbbbbbb bbbbbbb = bbb BbbbbBbbbbbBbbbbbbBbbb.BbbbbBbbbbbBbbbbbb(bbbb.bbbbbbbbBbbbBB(), bbbbbbb, bbbbb, bbbb);
 
-        return new MessageProcessor<ForceDeleteMessage.Response, ForceDeleteMessage.Request>(
-                "Admin - Forced Deletion",
-                request,
-                () -> this.await(request),
-                error -> ForceDeleteMessage.Response.builder()
-                    .request(request.getID())
-                    .listing(request.getListingID())
-                    .actor(request.getActor())
-                    .data(null)
-                    .successful(false)
-                    .error(error)
-                    .build()
-        ).process();
+        bbbbbb bbb BbbbbbbBbbbbbbbb<BbbbbBbbbbbBbbbbbb.Bbbbbbbb, BbbbbBbbbbbBbbbbbb.Bbbbbbb>(
+                "Bbbbb - Bbbbbb Bbbbbbbb",
+                bbbbbbb,
+                () -> bbbb.bbbbb(bbbbbbb),
+                bbbbb -> BbbbbBbbbbbBbbbbbb.Bbbbbbbb.bbbbbbb()
+                    .bbbbbbb(bbbbbbb.bbbBB())
+                    .bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+                    .bbbbb(bbbbbbb.bbbBbbbb())
+                    .bbbb(bbbb)
+                    .bbbbbbbbbb(bbbbb)
+                    .bbbbb(bbbbb)
+                    .bbbbb()
+        ).bbbbbbb();
     }
 
-    @Override
-    public CompletableFuture<ClaimDelivery.Response> requestDeliveryClaim(UUID delivery, UUID actor) {
-        ClaimDelivery.Request request = new ClaimDeliveryImpl.ClaimDeliveryRequestImpl(this.generatePingID(), delivery, actor);
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbbBbbbbbbb.Bbbbbbbb> bbbbbbbBbbbbbbbBbbbb(BBBB bbbbbbbb, BBBB bbbbb) {
+        BbbbbBbbbbbbb.Bbbbbbb bbbbbbb = bbb BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbBbbb(bbbb.bbbbbbbbBbbbBB(), bbbbbbbb, bbbbb);
 
-        return new MessageProcessor<ClaimDelivery.Response, ClaimDelivery.Request>(
-                "Delivery - Claim Request",
-                request,
-                () -> this.await(request),
-                error -> ClaimDeliveryImpl.ClaimDeliveryResponseImpl.builder()
-                        .request(request.getID())
-                        .delivery(request.getDeliveryID())
-                        .actor(request.getActor())
-                        .error(error)
-                        .build()
-        ).process();
+        bbbbbb bbb BbbbbbbBbbbbbbbb<BbbbbBbbbbbbb.Bbbbbbbb, BbbbbBbbbbbbb.Bbbbbbb>(
+                "Bbbbbbbb - Bbbbb Bbbbbbb",
+                bbbbbbb,
+                () -> bbbb.bbbbb(bbbbbbb),
+                bbbbb -> BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbbBbbb.bbbbbbb()
+                        .bbbbbbb(bbbbbbb.bbbBB())
+                        .bbbbbbbb(bbbbbbb.bbbBbbbbbbbBB())
+                        .bbbbb(bbbbbbb.bbbBbbbb())
+                        .bbbbb(bbbbb)
+                        .bbbbb()
+        ).bbbbbbb();
     }
 
-    public static String encodeMessageAsString(String type, UUID id, @Nullable JsonElement content) {
-        JsonObject json = new JObject()
-                .add("id", id.toString())
-                .add("type", type)
-                .consume(o -> {
-                    if (content != null) {
-                        o.add("content", content);
+    bbbbbb bbbbbb Bbbbbb bbbbbbBbbbbbbBbBbbbbb(Bbbbbb bbbb, BBBB bb, @Bbbbbbbb BbbbBbbbbbb bbbbbbb) {
+        BbbbBbbbbb bbbb = bbb BBbbbbb()
+                .bbb("bb", bb.bbBbbbbb())
+                .bbb("bbbb", bbbb)
+                .bbbbbbb(b -> {
+                    bb (bbbbbbb != bbbb) {
+                        b.bbb("bbbbbbb", bbbbbbb);
                     }
                 })
-                .toJson();
+                .bbBbbb();
 
-        return NORMAL.toJson(json);
+        bbbbbb BBBBBB.bbBbbb(bbbb);
     }
 
-    private static class MessageProcessor<T extends MessageType.Response, E extends MessageType.Request<T>> {
+    bbbbbbb bbbbbb bbbbb BbbbbbbBbbbbbbbb<B bbbbbbb BbbbbbbBbbb.Bbbbbbbb, B bbbbbbb BbbbbbbBbbb.Bbbbbbb<B>> {
 
-        private final String name;
+        bbbbbbb bbbbb Bbbbbb bbbb;
 
-        private final E request;
-        private final Supplier<T> supplier;
-        private final Function<ErrorCode, T> error;
+        bbbbbbb bbbbb B bbbbbbb;
+        bbbbbbb bbbbb Bbbbbbbb<B> bbbbbbbb;
+        bbbbbbb bbbbb Bbbbbbbb<BbbbbBbbb, B> bbbbb;
 
-        MessageProcessor(String name, E request, Supplier<T> supplier, Function<ErrorCode, T> error) {
-            this.name = name;
-            this.request = request;
-            this.supplier = supplier;
-            this.error = error;
+        BbbbbbbBbbbbbbbb(Bbbbbb bbbb, B bbbbbbb, Bbbbbbbb<B> bbbbbbbb, Bbbbbbbb<BbbbbBbbb, B> bbbbb) {
+            bbbb.bbbb = bbbb;
+            bbbb.bbbbbbb = bbbbbbb;
+            bbbb.bbbbbbbb = bbbbbbbb;
+            bbbb.bbbbb = bbbbb;
         }
 
-        CompletableFuture<T> process() {
-            PrettyPrinter debugger = new PrettyPrinter(53).add(this.name).center().hr();
-            final AtomicLong start = new AtomicLong();
+        BbbbbbbbbbbBbbbbb<B> bbbbbbb() {
+            BbbbbbBbbbbbb bbbbbbbb = bbb BbbbbbBbbbbbb(53).bbb(bbbb.bbbb).bbbbbb().bb();
+            bbbbb BbbbbbBbbb bbbbb = bbb BbbbbbBbbb();
 
-            return CompletableFutureManager.makeFuture(() -> {
-                start.set(System.nanoTime());
+            bbbbbb BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(() -> {
+                bbbbb.bbb(Bbbbbb.bbbbBbbb());
 
-                T response = this.supplier.get();
-                this.populate(debugger, request, response);
+                B bbbbbbbb = bbbb.bbbbbbbb.bbb();
+                bbbb.bbbbbbbb(bbbbbbbb, bbbbbbb, bbbbbbbb);
 
-                return response;
-            }).applyToEither(
-                    CompletableFutureManager.timeoutAfter(5, TimeUnit.SECONDS),
-                    response -> {
-                        debugger.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.DEBUG);
-                        return response;
+                bbbbbb bbbbbbbb;
+            }).bbbbbBbBbbbbb(
+                    BbbbbbbbbbbBbbbbbBbbbbbb.bbbbbbbBbbbb(5, BbbbBbbb.BBBBBBB),
+                    bbbbbbbb -> {
+                        bbbbbbbb.bbb(BBBBbbbbb.bbbbbbbb().bbbbbb(), BbbbbbBbbbbbb.Bbbbb.BBBBB);
+                        bbbbbb bbbbbbbb;
                     }
-            ).exceptionally(completion -> {
-                Throwable e = completion.getCause();
+            ).bbbbbbbbbbbbb(bbbbbbbbbb -> {
+                Bbbbbbbbb b = bbbbbbbbbb.bbbBbbbb();
 
-                ErrorCode error;
-                if(e instanceof MessagingException) {
-                    error = ((MessagingException) e).getError();
-                } else {
-                    error = ErrorCodes.FATAL_ERROR;
-                    ExceptionWriter.write(e);
+                BbbbbBbbb bbbbb;
+                bb(b bbbbbbbbbb BbbbbbbbbBbbbbbbbb) {
+                    bbbbb = ((BbbbbbbbbBbbbbbbbb) b).bbbBbbbb();
+                } bbbb {
+                    bbbbb = BbbbbBbbbb.BBBBB_BBBBB;
+                    BbbbbbbbbBbbbbb.bbbbb(b);
                 }
 
-                T response = this.error.apply(error);
+                B bbbbbbbb = bbbb.bbbbb.bbbbb(bbbbb);
 
-                long end = System.nanoTime();
-                response.setResponseTime(TimeUnit.SECONDS.toMillis(
-                        error.equals(ErrorCodes.REQUEST_TIMED_OUT) ? 5 :
-                                (end - start.get()) / 1_000_000_000
+                bbbb bbb = Bbbbbb.bbbbBbbb();
+                bbbbbbbb.bbbBbbbbbbbBbbb(BbbbBbbb.BBBBBBB.bbBbbbbb(
+                        bbbbb.bbbbbb(BbbbbBbbbb.BBBBBBB_BBBBB_BBB) ? 5 :
+                                (bbb - bbbbb.bbb()) / 1_000_000_000
                 ));
 
-                this.populate(debugger, request, response);
-                debugger.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.DEBUG);
+                bbbb.bbbbbbbb(bbbbbbbb, bbbbbbb, bbbbbbbb);
+                bbbbbbbb.bbb(BBBBbbbbb.bbbbbbbb().bbbbbb(), BbbbbbBbbbbbb.Bbbbb.BBBBB);
 
-                return response;
+                bbbbbb bbbbbbbb;
             });
         }
 
-        private void populate(PrettyPrinter printer, MessageType.Request<?> request, MessageType.Response response) {
-            printer.newline()
-                    .add("Request Information:")
-                    .hr('-')
-                    .add(request)
-                    .newline()
-                    .hr('=')
-                    .newline()
-                    .add("Response Information:")
-                    .hr('-')
-                    .add(response)
-                    .newline()
-                    .consume(response::finalizeReport)
-                    .newline();
+        bbbbbbb bbbb bbbbbbbb(BbbbbbBbbbbbb bbbbbbb, BbbbbbbBbbb.Bbbbbbb<?> bbbbbbb, BbbbbbbBbbb.Bbbbbbbb bbbbbbbb) {
+            bbbbbbb.bbbbbbb()
+                    .bbb("Bbbbbbb Bbbbbbbbbbb:")
+                    .bb('-')
+                    .bbb(bbbbbbb)
+                    .bbbbbbb()
+                    .bb('=')
+                    .bbbbbbb()
+                    .bbb("Bbbbbbbb Bbbbbbbbbbb:")
+                    .bb('-')
+                    .bbb(bbbbbbbb)
+                    .bbbbbbb()
+                    .bbbbbbb(bbbbbbbb::bbbbbbbbBbbbbb)
+                    .bbbbbbb();
         }
 
     }

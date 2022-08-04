@@ -1,29 +1,29 @@
 {
-  "id": "9ef13cc5-372b-44d4-a2a2-ddcbbca9fc4d",
-  "lister": "158529c0-3a4b-47a8-ad09-4c66b3eed575",
-  "version": 1,
-  "timings": {
-    "published": "2022-06-18T16:40:10.793",
-    "expiration": "2022-06-18T16:40:10.796"
+  "bb": "9bb13bb5-372b-44b4-b2b2-bbbbbbb9bb4b",
+  "bbbbbb": "158529b0-3b4b-47b8-bb09-4b66b3bbb575",
+  "bbbbbbb": 1,
+  "bbbbbbb": {
+    "bbbbbbbbb": "2022-06-18B16:40:10.793",
+    "bbbbbbbbbb": "2022-06-18B16:40:10.796"
   },
-  "entry": {
-    "key": "test",
-    "content": {
-      "id": "c3a83faf-c56b-47d3-b9c2-f115fbf94691",
-      "version": 1,
-      "name": "I'm a set of test data",
-      "child": {
-        "testing": 123,
-        "123": "testing"
+  "bbbbb": {
+    "bbb": "bbbb",
+    "bbbbbbb": {
+      "bb": "b3b83bbb-b56b-47b3-b9b2-b115bbb94691",
+      "bbbbbbb": 1,
+      "bbbb": "B'b b bbb bb bbbb bbbb",
+      "bbbbb": {
+        "bbbbbbb": 123,
+        "123": "bbbbbbb"
       }
     }
   },
-  "price": {
-    "key": "test",
-    "content": {
-      "version": 1,
-      "price": "123"
+  "bbbbb": {
+    "bbb": "bbbb",
+    "bbbbbbb": {
+      "bbbbbbb": 1,
+      "bbbbb": "123"
     }
   },
-  "type": "bin"
+  "bbbb": "bbb"
 }

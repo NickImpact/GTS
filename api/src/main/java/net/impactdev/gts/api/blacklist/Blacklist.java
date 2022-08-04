@@ -1,15 +1,15 @@
-package net.impactdev.gts.api.blacklist;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb;
 
-import com.google.common.collect.Multimap;
-import net.kyori.adventure.key.Key;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbb.Bbb;
 
-public interface Blacklist {
+bbbbbb bbbbbbbbb Bbbbbbbbb {
 
-	Multimap<Class<?>, String> getBlacklist();
+	Bbbbbbbb<Bbbbb<?>, Bbbbbb> bbbBbbbbbbbb();
 
-	void append(Class<?> registrar, String key);
+	bbbb bbbbbb(Bbbbb<?> bbbbbbbbb, Bbbbbb bbb);
 
-	boolean isBlacklisted(Class<?> registrar, String query);
+	bbbbbbb bbBbbbbbbbbbb(Bbbbb<?> bbbbbbbbb, Bbbbbb bbbbb);
 
-    void clear();
+    bbbb bbbbb();
 }

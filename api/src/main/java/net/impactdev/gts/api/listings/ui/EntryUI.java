@@ -1,28 +1,28 @@
-package net.impactdev.gts.api.listings.ui;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb;
 
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Bbbb;
 
-import java.util.Optional;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-public interface EntryUI<E> {
+bbbbbb bbbbbbbbb BbbbbBB<B> {
 
-	Optional<E> getChosenOption();
+	Bbbbbbbb<B> bbbBbbbbbBbbbbb();
 
-	void open(PlatformPlayer user);
+	bbbb bbbb(BbbbbbbbBbbbbb bbbb);
 
-	Icon<?> generateWaitingIcon(boolean auction);
+	Bbbb<?> bbbbbbbbBbbbbbbBbbb(bbbbbbb bbbbbbb);
 
-	Icon<?> generateConfirmIcon();
+	Bbbb<?> bbbbbbbbBbbbbbbBbbb();
 
-	Icon<?> createNoneChosenIcon();
+	Bbbb<?> bbbbbbBbbbBbbbbbBbbb();
 
-	Icon<?> createChosenIcon();
+	Bbbb<?> bbbbbbBbbbbbBbbb();
 
-	Icon<?> createPriceIcon();
+	Bbbb<?> bbbbbbBbbbbBbbb();
 
-	Icon<?> createTimeIcon();
+	Bbbb<?> bbbbbbBbbbBbbb();
 
-	void style(boolean selected);
+	bbbb bbbbb(bbbbbbb bbbbbbbb);
 
 }

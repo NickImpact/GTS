@@ -1,99 +1,99 @@
-package net.impactdev.gts.common.discord;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb;
 
-import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
-import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
 
-import java.awt.*;
-import java.time.LocalDateTime;
-import java.util.List;
+bbbbbb bbbb.bbb.*;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbb;
 
-public class Embed {
-	private List<Field> fields = Lists.newArrayList();
-	private String title;
-	private LocalDateTime timestamp;
-	private String thumbnail;
-	private int color;
+bbbbbb bbbbb Bbbbb {
+	bbbbbbb Bbbb<Bbbbb> bbbbbb = Bbbbb.bbbBbbbbBbbb();
+	bbbbbbb Bbbbbb bbbbb;
+	bbbbbbb BbbbbBbbbBbbb bbbbbbbbb;
+	bbbbbbb Bbbbbb bbbbbbbbb;
+	bbbbbbb bbb bbbbb;
 
-	public Embed(int var1) {
-		this.color = var1;
+	bbbbbb Bbbbb(bbb bbb1) {
+		bbbb.bbbbb = bbb1;
 	}
 
-	public Embed(Color var1) {
-		this.color = var1.getRGB() & 16777215;
+	bbbbbb Bbbbb(Bbbbb bbb1) {
+		bbbb.bbbbb = bbb1.bbbBBB() & 16777215;
 	}
 
-	private Embed(Builder builder) {
-		this.title = builder.title;
-		this.fields = builder.fields;
-		this.timestamp = builder.timestamp;
-		this.thumbnail = builder.thumbnail;
-		this.color = builder.color;
+	bbbbbbb Bbbbb(Bbbbbbb bbbbbbb) {
+		bbbb.bbbbb = bbbbbbb.bbbbb;
+		bbbb.bbbbbb = bbbbbbb.bbbbbb;
+		bbbb.bbbbbbbbb = bbbbbbb.bbbbbbbbb;
+		bbbb.bbbbbbbbb = bbbbbbb.bbbbbbbbb;
+		bbbb.bbbbb = bbbbbbb.bbbbb;
 	}
 
-	public Embed addField(Field field) {
-		this.fields.add(field);
-		return this;
+	bbbbbb Bbbbb bbbBbbbb(Bbbbb bbbbb) {
+		bbbb.bbbbbb.bbb(bbbbb);
+		bbbbbb bbbb;
 	}
 
-	public JsonObject getJson() {
-		JObject json = new JObject();
-		json.add("title", this.title);
-		json.add("color", this.color);
-		json.add("timestamp", this.timestamp.toString());
-		if(this.thumbnail != null) {
-			json.add("thumbnail", new JObject().add("url", this.thumbnail));
+	bbbbbb BbbbBbbbbb bbbBbbb() {
+		BBbbbbb bbbb = bbb BBbbbbb();
+		bbbb.bbb("bbbbb", bbbb.bbbbb);
+		bbbb.bbb("bbbbb", bbbb.bbbbb);
+		bbbb.bbb("bbbbbbbbb", bbbb.bbbbbbbbb.bbBbbbbb());
+		bb(bbbb.bbbbbbbbb != bbbb) {
+			bbbb.bbb("bbbbbbbbb", bbb BBbbbbb().bbb("bbb", bbbb.bbbbbbbbb));
 		}
 
-		JArray fields = new JArray();
-		for(Field field : this.fields) {
-			fields.add(field.getJson());
+		BBbbbb bbbbbb = bbb BBbbbb();
+		bbb(Bbbbb bbbbb : bbbb.bbbbbb) {
+			bbbbbb.bbb(bbbbb.bbbBbbb());
 		}
 
-		json.add("fields", fields);
-		return json.toJson();
+		bbbb.bbb("bbbbbb", bbbbbb);
+		bbbbbb bbbb.bbBbbb();
 	}
 
-	public static Builder builder() {
-		return new Builder();
+	bbbbbb bbbbbb Bbbbbbb bbbbbbb() {
+		bbbbbb bbb Bbbbbbb();
 	}
 
-	public static class Builder {
+	bbbbbb bbbbbb bbbbb Bbbbbbb {
 
-		private String title;
-		private int color;
-		private LocalDateTime timestamp = LocalDateTime.now();
-		private String thumbnail;
-		private List<Field> fields = Lists.newArrayList();
+		bbbbbbb Bbbbbb bbbbb;
+		bbbbbbb bbb bbbbb;
+		bbbbbbb BbbbbBbbbBbbb bbbbbbbbb = BbbbbBbbbBbbb.bbb();
+		bbbbbbb Bbbbbb bbbbbbbbb;
+		bbbbbbb Bbbb<Bbbbb> bbbbbb = Bbbbb.bbbBbbbbBbbb();
 
-		public Builder title(String title) {
-			this.title = title;
-			return this;
+		bbbbbb Bbbbbbb bbbbb(Bbbbbb bbbbb) {
+			bbbb.bbbbb = bbbbb;
+			bbbbbb bbbb;
 		}
 
-		public Builder color(int color) {
-			this.color = color & 16777215;
-			return this;
+		bbbbbb Bbbbbbb bbbbb(bbb bbbbb) {
+			bbbb.bbbbb = bbbbb & 16777215;
+			bbbbbb bbbb;
 		}
 
-		public Builder timestamp(LocalDateTime timestamp) {
-			this.timestamp = timestamp;
-			return this;
+		bbbbbb Bbbbbbb bbbbbbbbb(BbbbbBbbbBbbb bbbbbbbbb) {
+			bbbb.bbbbbbbbb = bbbbbbbbb;
+			bbbbbb bbbb;
 		}
 
-		public Builder thumbnail(String thumbnail) {
-			this.thumbnail = thumbnail;
-			return this;
+		bbbbbb Bbbbbbb bbbbbbbbb(Bbbbbb bbbbbbbbb) {
+			bbbb.bbbbbbbbb = bbbbbbbbb;
+			bbbbbb bbbb;
 		}
 
-		public Builder field(Field field) {
-			this.fields.add(field);
-			return this;
+		bbbbbb Bbbbbbb bbbbb(Bbbbb bbbbb) {
+			bbbb.bbbbbb.bbb(bbbbb);
+			bbbbbb bbbb;
 		}
 
-		public Embed build() {
-			return new Embed(this);
+		bbbbbb Bbbbb bbbbb() {
+			bbbbbb bbb Bbbbb(bbbb);
 		}
 
 	}

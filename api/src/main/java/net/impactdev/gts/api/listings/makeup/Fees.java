@@ -1,61 +1,61 @@
-package net.impactdev.gts.api.listings.makeup;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb;
 
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.impactor.api.builders.Builder;
-import net.impactdev.impactor.api.utilities.Time;
-import net.impactdev.impactor.api.utilities.mappings.Tuple;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.Bbbbb;
 
-public class Fees {
+bbbbbb bbbbb Bbbb {
 
-    private final Tuple<Price<?, ?, ?>, Boolean> price;
-    private final Tuple<Time, Double> time;
+    bbbbbbb bbbbb Bbbbb<Bbbbb<?, ?, ?>, Bbbbbbb> bbbbb;
+    bbbbbbb bbbbb Bbbbb<Bbbb, Bbbbbb> bbbb;
 
-    public Fees(FeeBuilder builder) {
-        this.price = builder.price;
-        this.time = builder.time;
+    bbbbbb Bbbb(BbbBbbbbbb bbbbbbb) {
+        bbbb.bbbbb = bbbbbbb.bbbbb;
+        bbbb.bbbb = bbbbbbb.bbbb;
     }
 
-    public Tuple<Price<?, ?, ?>, Boolean> getPrice() {
-        return this.price;
+    bbbbbb Bbbbb<Bbbbb<?, ?, ?>, Bbbbbbb> bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    public Tuple<Time, Double> getTime() {
-        return this.time;
+    bbbbbb Bbbbb<Bbbb, Bbbbbb> bbbBbbb() {
+        bbbbbb bbbb.bbbb;
     }
 
-    public double getTotal() {
-        return this.price.getFirst().calculateFee(this.price.getSecond()) + this.time.getSecond();
+    bbbbbb bbbbbb bbbBbbbb() {
+        bbbbbb bbbb.bbbbb.bbbBbbbb().bbbbbbbbbBbb(bbbb.bbbbb.bbbBbbbbb()) + bbbb.bbbb.bbbBbbbbb();
     }
 
-    public static FeeBuilder builder() {
-        return new FeeBuilder();
+    bbbbbb bbbbbb BbbBbbbbbb bbbbbbb() {
+        bbbbbb bbb BbbBbbbbbb();
     }
 
-    public static class FeeBuilder implements Builder<Fees> {
+    bbbbbb bbbbbb bbbbb BbbBbbbbbb bbbbbbbbbb Bbbbbbb<Bbbb> {
 
-        private Tuple<Price<?, ?, ?>, Boolean> price;
-        private Tuple<Time, Double> time;
+        bbbbbbb Bbbbb<Bbbbb<?, ?, ?>, Bbbbbbb> bbbbb;
+        bbbbbbb Bbbbb<Bbbb, Bbbbbb> bbbb;
 
-        public FeeBuilder price(Price<?, ?, ?> value, boolean type) {
-            this.price = new Tuple<>(value, type);
-            return this;
+        bbbbbb BbbBbbbbbb bbbbb(Bbbbb<?, ?, ?> bbbbb, bbbbbbb bbbb) {
+            bbbb.bbbbb = bbb Bbbbb<>(bbbbb, bbbb);
+            bbbbbb bbbb;
         }
 
-        public FeeBuilder time(Time time, double value) {
-            this.time = new Tuple<>(time, value);
-            return this;
+        bbbbbb BbbBbbbbbb bbbb(Bbbb bbbb, bbbbbb bbbbb) {
+            bbbb.bbbb = bbb Bbbbb<>(bbbb, bbbbb);
+            bbbbbb bbbb;
         }
 
-//        @Override
-//        public FeeBuilder from(Fees fees) {
-//            this.price = fees.price;
-//            this.time = fees.time;
-//            return this;
+//        @Bbbbbbbb
+//        bbbbbb BbbBbbbbbb bbbb(Bbbb bbbb) {
+//            bbbb.bbbbb = bbbb.bbbbb;
+//            bbbb.bbbb = bbbb.bbbb;
+//            bbbbbb bbbb;
 //        }
 
-        @Override
-        public Fees build() {
-            return new Fees(this);
+        @Bbbbbbbb
+        bbbbbb Bbbb bbbbb() {
+            bbbbbb bbb Bbbb(bbbb);
         }
     }
 }

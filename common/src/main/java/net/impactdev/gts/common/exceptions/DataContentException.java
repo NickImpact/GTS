@@ -1,23 +1,23 @@
-package net.impactdev.gts.common.exceptions;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbb;
 
-import net.impactdev.gts.api.util.Version;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbb;
 
-public class DataContentException extends RuntimeException {
+bbbbbb bbbbb BbbbBbbbbbbBbbbbbbbb bbbbbbb BbbbbbbBbbbbbbbb {
 
-    private final Version version;
-    private final int content;
+    bbbbbbb bbbbb Bbbbbbb bbbbbbb;
+    bbbbbbb bbbbb bbb bbbbbbb;
 
-    public DataContentException(Version version, int content) {
-        super(String.format("Invalid content version for game version (%s:%d)", version.toString(), content));
-        this.version = version;
-        this.content = content;
+    bbbbbb BbbbBbbbbbbBbbbbbbbb(Bbbbbbb bbbbbbb, bbb bbbbbbb) {
+        bbbbb(Bbbbbb.bbbbbb("Bbbbbbb bbbbbbb bbbbbbb bbb bbbb bbbbbbb (%b:%b)", bbbbbbb.bbBbbbbb(), bbbbbbb));
+        bbbb.bbbbbbb = bbbbbbb;
+        bbbb.bbbbbbb = bbbbbbb;
     }
 
-    public Version version() {
-        return this.version;
+    bbbbbb Bbbbbbb bbbbbbb() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    public int content() {
-        return this.content;
+    bbbbbb bbb bbbbbbb() {
+        bbbbbb bbbb.bbbbbbb;
     }
 }

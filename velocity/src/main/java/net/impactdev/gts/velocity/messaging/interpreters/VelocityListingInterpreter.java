@@ -1,40 +1,40 @@
-package net.impactdev.gts.velocity.messaging.interpreters;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbbbbbbbbbb;
 
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.common.messaging.interpreters.Interpreter;
-import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
-import net.impactdev.gts.common.messaging.messages.listings.PublishListingMessageImpl;
-import net.impactdev.gts.common.plugin.GTSPlugin;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbbbBbbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
 
-public class VelocityListingInterpreter implements Interpreter {
+bbbbbb bbbbb BbbbbbbbBbbbbbbBbbbbbbbbbb bbbbbbbbbb Bbbbbbbbbbb {
 
-    @Override
-    public void register(GTSPlugin plugin) {
-        this.getDecoders(plugin);
-        this.getInterpreters(plugin);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbb.bbbBbbbbbbb(bbbbbb);
+        bbbb.bbbBbbbbbbbbbbb(bbbbbb);
     }
 
-    @Override
-    public void getDecoders(GTSPlugin plugin) {
-        plugin.messagingService().registerDecoder(
-                PublishListingMessageImpl.TYPE, PublishListingMessageImpl::decode
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BbbbbbbBbbbbbbBbbbbbbBbbb.BBBB, BbbbbbbBbbbbbbBbbbbbbBbbb::bbbbbb
         );
-        plugin.messagingService().registerDecoder(
-                ClaimMessageImpl.ClaimRequestImpl.TYPE, ClaimMessageImpl.ClaimRequestImpl::decode
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BbbbbBbbbbbbBbbb.BbbbbBbbbbbbBbbb.BBBB, BbbbbBbbbbbbBbbb.BbbbbBbbbbbbBbbb::bbbbbb
         );
     }
 
-    @Override
-    public void getInterpreters(GTSPlugin plugin) {
-        IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbbbbbb(BBBBbbbbb bbbbbb) {
+        BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb = bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbBbbbbbbBbbbbbbb();
 
-        consumer.registerInternalConsumer(
-                PublishListingMessageImpl.class, message -> plugin.messagingService().getMessenger().sendOutgoingMessage(message)
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BbbbbbbBbbbbbbBbbbbbbBbbb.bbbbb, bbbbbbb -> bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbb)
         );
-        consumer.registerInternalConsumer(
-                ClaimMessageImpl.ClaimRequestImpl.class, request -> {
-                    request.respond()
-                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BbbbbBbbbbbbBbbb.BbbbbBbbbbbbBbbb.bbbbb, bbbbbbb -> {
+                    bbbbbbb.bbbbbbb()
+                            .bbbbBbbbbb(bbbbbbbb -> bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbbb));
                 }
         );
     }

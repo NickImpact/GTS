@@ -1,106 +1,106 @@
-package net.impactdev.gts;
+bbbbbbb bbb.bbbbbbbbb.bbb;
 
-import com.google.inject.Injector;
-import net.impactdev.gts.commands.GTSCommandManager;
-import net.impactdev.gts.commands.executors.GlobalExecutor;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.launcher.LaunchParameters;
-import net.impactdev.impactor.api.logging.Log4jLogger;
-import net.impactdev.impactor.api.logging.PluginLogger;
-import net.impactdev.impactor.launcher.LauncherBootstrap;
-import org.apache.logging.log4j.Logger;
-import org.spongepowered.api.Platform;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.plugin.PluginContainer;
-import org.spongepowered.plugin.metadata.PluginMetadata;
+bbbbbb bbb.bbbbbb.bbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.BBBBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.BbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.Bbb4bBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbbb.bbb4b.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbb.bbbbbbbb.BbbbbbBbbbbbbb;
 
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.function.Supplier;
+bbbbbb bbbb.bb.BbbbbBbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class SpongeGTSBootstrap implements LauncherBootstrap, GTSBootstrap {
+bbbbbb bbbbb BbbbbbBBBBbbbbbbbb bbbbbbbbbb BbbbbbbbBbbbbbbbb, BBBBbbbbbbbb {
 
-    private final Supplier<Injector> loader;
+    bbbbbbb bbbbb Bbbbbbbb<Bbbbbbbb> bbbbbb;
 
-    private final SpongeGTSPlugin plugin;
+    bbbbbbb bbbbb BbbbbbBBBBbbbbb bbbbbb;
 
-    private final PluginContainer container;
-    private final PluginLogger logger;
-    private final Path configDirectory;
+    bbbbbbb bbbbb BbbbbbBbbbbbbbb bbbbbbbbb;
+    bbbbbbb bbbbb BbbbbbBbbbbb bbbbbb;
+    bbbbbbb bbbbb Bbbb bbbbbbBbbbbbbbb;
 
-    public SpongeGTSBootstrap(LaunchParameters parameters) {
-        this.loader = parameters.loader();
+    bbbbbb BbbbbbBBBBbbbbbbbb(BbbbbbBbbbbbbbbb bbbbbbbbbb) {
+        bbbb.bbbbbb = bbbbbbbbbb.bbbbbb();
 
-        Injector injector = loader.get();
-        this.container = injector.getInstance(PluginContainer.class);
-        this.logger = new Log4jLogger(injector.getInstance(Logger.class));
-        this.configDirectory = parameters.configDirectory();
+        Bbbbbbbb bbbbbbbb = bbbbbb.bbb();
+        bbbb.bbbbbbbbb = bbbbbbbb.bbbBbbbbbbb(BbbbbbBbbbbbbbb.bbbbb);
+        bbbb.bbbbbb = bbb Bbb4bBbbbbb(bbbbbbbb.bbbBbbbbbbb(Bbbbbb.bbbbb));
+        bbbb.bbbbbbBbbbbbbbb = bbbbbbbbbb.bbbbbbBbbbbbbbb();
 
-        this.plugin = new SpongeGTSPlugin(this);
+        bbbb.bbbbbb = bbb BbbbbbBBBBbbbbb(bbbb);
     }
 
-    @Override
-    public void construct() {
-        try {
-            this.printBanner(this.logger);
-            this.plugin.construct();
-        } catch (Exception e) {
-            ExceptionWriter.write(e);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbbb() {
+        bbb {
+            bbbb.bbbbbBbbbbb(bbbb.bbbbbb);
+            bbbb.bbbbbb.bbbbbbbbb();
+        } bbbbb (Bbbbbbbbb b) {
+            BbbbbbbbbBbbbbb.bbbbb(b);
         }
     }
 
-    @Override
-    public void shutdown() {
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb() {
 
     }
 
-    public PluginContainer container() {
-        return this.container;
+    bbbbbb BbbbbbBbbbbbbbb bbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb;
     }
 
-    public void registerListener(Object object) {
-        Sponge.game().eventManager().registerListeners(this.container, object);
+    bbbbbb bbbb bbbbbbbbBbbbbbbb(Bbbbbb bbbbbb) {
+        Bbbbbb.bbbb().bbbbbBbbbbbb().bbbbbbbbBbbbbbbbb(bbbb.bbbbbbbbb, bbbbbb);
     }
 
-    @Override
-    public PluginLogger logger() {
-        return this.logger;
+    @Bbbbbbbb
+    bbbbbb BbbbbbBbbbbb bbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
-    @Override
-    public Path configDirectory() {
-        return this.configDirectory;
+    @Bbbbbbbb
+    bbbbbb Bbbb bbbbbbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbBbbbbbbbb;
     }
 
-    @Override
-    public Path dataDirectory() {
-        return Paths.get("gts");
+    @Bbbbbbbb
+    bbbbbb Bbbb bbbbBbbbbbbbb() {
+        bbbbbb Bbbbb.bbb("bbb");
     }
 
-    @Override
-    public Optional<InputStream> resource(Path path) {
-        return Optional.ofNullable(this.getClass().getClassLoader().getResourceAsStream(path.toString().replace("\\", "/")));
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<BbbbbBbbbbb> bbbbbbbb(Bbbb bbbb) {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbBbbbb().bbbBbbbbBbbbbb().bbbBbbbbbbbBbBbbbbb(bbbb.bbBbbbbb().bbbbbbb("\\", "/")));
     }
 
-    @Override
-    public Optional<Throwable> launchError() {
-        return Optional.empty();
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<Bbbbbbbbb> bbbbbbBbbbb() {
+        bbbbbb Bbbbbbbb.bbbbb();
     }
 
-    private void printBanner(PluginLogger logger) {
-        PluginMetadata sponge = Sponge.game().platform().container(Platform.Component.IMPLEMENTATION).metadata();
+    bbbbbbb bbbb bbbbbBbbbbb(BbbbbbBbbbbb bbbbbb) {
+        BbbbbbBbbbbbbb bbbbbb = Bbbbbb.bbbb().bbbbbbbb().bbbbbbbbb(Bbbbbbbb.Bbbbbbbbb.BBBBBBBBBBBBBB).bbbbbbbb();
 
-        logger.info("");
-        logger.info("     _________________");
-        logger.info("    / ____/_  __/ ___/       GTS " + this.plugin.metadata().version());
-        logger.info("   / / __  / /  \\__ \\        Running on: " + sponge.name().get() + " " + sponge.version());
-        logger.info("  / /_/ / / /  ___/ /        Author: NickImpact");
-        logger.info("  \\____/ /_/  /____/");
-        logger.info("");
+        bbbbbb.bbbb("");
+        bbbbbb.bbbb("     _________________");
+        bbbbbb.bbbb("    / ____/_  __/ ___/       BBB " + bbbb.bbbbbb.bbbbbbbb().bbbbbbb());
+        bbbbbb.bbbb("   / / __  / /  \\__ \\        Bbbbbbb bb: " + bbbbbb.bbbb().bbb() + " " + bbbbbb.bbbbbbb());
+        bbbbbb.bbbb("  / /_/ / / /  ___/ /        Bbbbbb: BbbbBbbbbb");
+        bbbbbb.bbbb("  \\____/ /_/  /____/");
+        bbbbbb.bbbb("");
     }
 
 }

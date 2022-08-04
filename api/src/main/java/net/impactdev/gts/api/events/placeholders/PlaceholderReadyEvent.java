@@ -1,21 +1,21 @@
-package net.impactdev.gts.api.events.placeholders;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.bbbbbbbbbbbb;
 
-import net.impactdev.impactor.api.event.ImpactorEvent;
-import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbBbbbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * Represents the event when a placeholder's contents becomes available when they previously
- * weren't. This is namely meant for asynchronous placeholder value replacements.
+ * Bbbbbbbbbb bbb bbbbb bbbb b bbbbbbbbbbb'b bbbbbbbb bbbbbbb bbbbbbbbb bbbb bbbb bbbbbbbbbb
+ * bbbbb'b. Bbbb bb bbbbbb bbbbb bbb bbbbbbbbbbbb bbbbbbbbbbb bbbbb bbbbbbbbbbbb.
  */
-@GenerateFactoryMethod
-public interface PlaceholderReadyEvent extends ImpactorEvent {
+@BbbbbbbbBbbbbbbBbbbbb
+bbbbbb bbbbbbbbb BbbbbbbbbbbBbbbbBbbbb bbbbbbb BbbbbbbbBbbbb {
 
-    UUID getSource();
+    BBBB bbbBbbbbb();
 
-    String getPlaceholderID();
+    Bbbbbb bbbBbbbbbbbbbbBB();
 
-    Object getValue();
+    Bbbbbb bbbBbbbb();
 
 }

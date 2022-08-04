@@ -1,83 +1,83 @@
-package net.impactdev.gts.common.messaging.redis;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbb;
 
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
-import redis.clients.jedis.JedisPubSub;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbbbb.bbbbbbb.bbbbb.Bbbbb;
+bbbbbb bbbbb.bbbbbbb.bbbbb.BbbbbBbbb;
+bbbbbb bbbbb.bbbbbbb.bbbbb.BbbbbBbbbBbbbbb;
+bbbbbb bbbbb.bbbbbbb.bbbbb.BbbbbBbbBbb;
 
-public class RedisMessenger implements Messenger {
+bbbbbb bbbbb BbbbbBbbbbbbbb bbbbbbbbbb Bbbbbbbbb {
 
-	private static final String CHANNEL = "gts:update";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBBB = "bbb:bbbbbb";
 
-	private final IncomingMessageConsumer consumer;
+	bbbbbbb bbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb;
 
-	public RedisMessenger(IncomingMessageConsumer consumer) {
-		this.consumer = consumer;
+	bbbbbb BbbbbBbbbbbbbb(BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb) {
+		bbbb.bbbbbbbb = bbbbbbbb;
 	}
 
-	private JedisPool jedisPool;
-	private Subscription sub;
+	bbbbbbb BbbbbBbbb bbbbbBbbb;
+	bbbbbbb Bbbbbbbbbbbb bbb;
 
-	public void init(String address, String password) {
-		String[] addressSplit = address.split(":");
-		String host = addressSplit[0];
-		int port = addressSplit.length > 1 ? Integer.parseInt(addressSplit[1]) : 6379;
+	bbbbbb bbbb bbbb(Bbbbbb bbbbbbb, Bbbbbb bbbbbbbb) {
+		Bbbbbb[] bbbbbbbBbbbb = bbbbbbb.bbbbb(":");
+		Bbbbbb bbbb = bbbbbbbBbbbb[0];
+		bbb bbbb = bbbbbbbBbbbb.bbbbbb > 1 ? Bbbbbbb.bbbbbBbb(bbbbbbbBbbbb[1]) : 6379;
 
-		if(password.equals("")) {
-			this.jedisPool = new JedisPool(new JedisPoolConfig(), host, port);
-		} else {
-			this.jedisPool = new JedisPool(new JedisPoolConfig(), host, port, 0, password);
+		bb(bbbbbbbb.bbbbbb("")) {
+			bbbb.bbbbbBbbb = bbb BbbbbBbbb(bbb BbbbbBbbbBbbbbb(), bbbb, bbbb);
+		} bbbb {
+			bbbb.bbbbbBbbb = bbb BbbbbBbbb(bbb BbbbbBbbbBbbbbb(), bbbb, bbbb, 0, bbbbbbbb);
 		}
 
-		Impactor.getInstance().getScheduler().executeAsync(() -> {
-			this.sub = new Subscription(this);
-			try(Jedis jedis = this.jedisPool.getResource()) {
-				jedis.subscribe(this.sub, CHANNEL);
-			} catch (Exception e) {
-				e.printStackTrace();
+		Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbbb(() -> {
+			bbbb.bbb = bbb Bbbbbbbbbbbb(bbbb);
+			bbb(Bbbbb bbbbb = bbbb.bbbbbBbbb.bbbBbbbbbbb()) {
+				bbbbb.bbbbbbbbb(bbbb.bbb, BBBBBBB);
+			} bbbbb (Bbbbbbbbb b) {
+				b.bbbbbBbbbbBbbbb();
 			}
 		});
 	}
 
-	@Override
-	public IncomingMessageConsumer getMessageConsumer() {
-		return this.consumer;
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbBbbbbbbBbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbb;
 	}
 
-	@Override
-	public void sendOutgoingMessage(@NonNull OutgoingMessage outgoingMessage) {
-		try (Jedis jedis = this.jedisPool.getResource()) {
-			jedis.publish(CHANNEL, outgoingMessage.asEncodedString());
-		} catch (Exception e) {
-			e.printStackTrace();
+	@Bbbbbbbb
+	bbbbbb bbbb bbbbBbbbbbbbBbbbbbb(@BbbBbbb BbbbbbbbBbbbbbb bbbbbbbbBbbbbbb) {
+		bbb (Bbbbb bbbbb = bbbb.bbbbbBbbb.bbbBbbbbbbb()) {
+			bbbbb.bbbbbbb(BBBBBBB, bbbbbbbbBbbbbbb.bbBbbbbbbBbbbbb());
+		} bbbbb (Bbbbbbbbb b) {
+			b.bbbbbBbbbbBbbbb();
 		}
 	}
 
-	@Override
-	public void close() {
-		this.sub.unsubscribe();
-		this.jedisPool.destroy();
+	@Bbbbbbbb
+	bbbbbb bbbb bbbbb() {
+		bbbb.bbb.bbbbbbbbbbb();
+		bbbb.bbbbbBbbb.bbbbbbb();
 	}
 
-	private static class Subscription extends JedisPubSub {
-		private final RedisMessenger parent;
+	bbbbbbb bbbbbb bbbbb Bbbbbbbbbbbb bbbbbbb BbbbbBbbBbb {
+		bbbbbbb bbbbb BbbbbBbbbbbbbb bbbbbb;
 
-		public Subscription(RedisMessenger parent) {
-			this.parent = parent;
+		bbbbbb Bbbbbbbbbbbb(BbbbbBbbbbbbbb bbbbbb) {
+			bbbb.bbbbbb = bbbbbb;
 		}
 
-		@Override
-		public void onMessage(String channel, String msg) {
-			if(!channel.equals(CHANNEL)) {
-				return;
+		@Bbbbbbbb
+		bbbbbb bbbb bbBbbbbbb(Bbbbbb bbbbbbb, Bbbbbb bbb) {
+			bb(!bbbbbbb.bbbbbb(BBBBBBB)) {
+				bbbbbb;
 			}
 
-			this.parent.consumer.consumeIncomingMessageAsString(msg);
+			bbbb.bbbbbb.bbbbbbbb.bbbbbbbBbbbbbbbBbbbbbbBbBbbbbb(bbb);
 		}
 	}
 }

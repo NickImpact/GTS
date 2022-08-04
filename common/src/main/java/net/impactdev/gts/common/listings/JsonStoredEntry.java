@@ -1,86 +1,86 @@
-package net.impactdev.gts.common.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb;
 
-import com.google.gson.JsonObject;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.makeup.Display;
-import net.kyori.adventure.text.TextComponent;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbbBbbbbbbbb;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * A JsonStoredEntry represents the backing that Proxy servers will use in order to manage all listings from the
- * representative cache. As these proxy servers will have no way to determine what type of entry they are working
- * with, they must all end up in a similar manner. To achieve this, this class simply does 0 deserialization. In
- * other words, any and all JSON data representing a entry will remain serialized should the element ever be requested.
+ * B BbbbBbbbbbBbbbb bbbbbbbbbb bbb bbbbbbb bbbb Bbbbb bbbbbbb bbbb bbb bb bbbbb bb bbbbbb bbb bbbbbbbb bbbb bbb
+ * bbbbbbbbbbbbbb bbbbb. Bb bbbbb bbbbb bbbbbbb bbbb bbbb bb bbb bb bbbbbbbbb bbbb bbbb bb bbbbb bbbb bbb bbbbbbb
+ * bbbb, bbbb bbbb bbb bbb bb bb b bbbbbbb bbbbbb. Bb bbbbbbb bbbb, bbbb bbbbb bbbbbb bbbb 0 bbbbbbbbbbbbbbb. Bb
+ * bbbbb bbbbb, bbb bbb bbb BBBB bbbb bbbbbbbbbbbb b bbbbb bbbb bbbbbb bbbbbbbbbb bbbbbb bbb bbbbbbb bbbb bb bbbbbbbbb.
  *
- * NOTE: This class is only intended for references. As such, all other functionality other than data fetching
- * will be unsupported, and throw an error during any attempt to call these functions.
+ * BBBB: Bbbb bbbbb bb bbbb bbbbbbbb bbb bbbbbbbbbb. Bb bbbb, bbb bbbbb bbbbbbbbbbbbb bbbbb bbbb bbbb bbbbbbbb
+ * bbbb bb bbbbbbbbbbb, bbb bbbbb bb bbbbb bbbbbb bbb bbbbbbb bb bbbb bbbbb bbbbbbbbb.
  */
-public class JsonStoredEntry implements Entry<JsonObject, Void> {
+bbbbbb bbbbb BbbbBbbbbbBbbbb bbbbbbbbbb Bbbbb<BbbbBbbbbb, Bbbb> {
 
-	private final JsonObject data;
+	bbbbbbb bbbbb BbbbBbbbbb bbbb;
 
-	public JsonStoredEntry(JsonObject data) {
-		this.data = data;
+	bbbbbb BbbbBbbbbbBbbbb(BbbbBbbbbb bbbb) {
+		bbbb.bbbb = bbbb;
 	}
 
-	@Override
-	public Class<? extends Entry<JsonObject, Void>> type() {
-		return JsonStoredEntry.class;
+	@Bbbbbbbb
+	bbbbbb Bbbbb<? bbbbbbb Bbbbb<BbbbBbbbbb, Bbbb>> bbbb() {
+		bbbbbb BbbbBbbbbbBbbbb.bbbbb;
 	}
 
-	@Override
-	public JsonObject getOrCreateElement() {
-		return this.data;
+	@Bbbbbbbb
+	bbbbbb BbbbBbbbbb bbbBbBbbbbbBbbbbbb() {
+		bbbbbb bbbb.bbbb;
 	}
 
-	@Override
-	public TextComponent getName() {
-		throw new UnsupportedOperationException();
+	@Bbbbbbbb
+	bbbbbb BbbbBbbbbbbbb bbbBbbb() {
+		bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb();
 	}
 
-	@Override
-	public TextComponent getDescription() {
-		throw new UnsupportedOperationException();
+	@Bbbbbbbb
+	bbbbbb BbbbBbbbbbbbb bbbBbbbbbbbbbb() {
+		bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb();
 	}
 
-	@Override
-	public Display<Void> getDisplay(UUID viewer) {
-		throw new UnsupportedOperationException();
+	@Bbbbbbbb
+	bbbbbb Bbbbbbb<Bbbb> bbbBbbbbbb(BBBB bbbbbb) {
+		bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb();
 	}
 
-	@Override
-	public boolean give(UUID receiver) {
-		throw new UnsupportedOperationException();
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbb(BBBB bbbbbbbb) {
+		bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb();
 	}
 
-	@Override
-	public boolean take(UUID depositor) {
-		throw new UnsupportedOperationException();
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbb(BBBB bbbbbbbbb) {
+		bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb();
 	}
 
-	@Override
-	public Optional<String> getThumbnailURL() {
-		throw new UnsupportedOperationException();
+	@Bbbbbbbb
+	bbbbbb Bbbbbbbb<Bbbbbb> bbbBbbbbbbbbBBB() {
+		bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb();
 	}
 
-	@Override
-	public List<String> getDetails() {
-		throw new UnsupportedOperationException();
+	@Bbbbbbbb
+	bbbbbb Bbbb<Bbbbbb> bbbBbbbbbb() {
+		bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb();
 	}
 
-	@Override
-	public int getVersion() {
-		throw new UnsupportedOperationException();
+	@Bbbbbbbb
+	bbbbbb bbb bbbBbbbbbb() {
+		bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb();
 	}
 
-	@Override
-	public JObject serialize() {
-		throw new UnsupportedOperationException();
+	@Bbbbbbbb
+	bbbbbb BBbbbbb bbbbbbbbb() {
+		bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb();
 	}
 
 }

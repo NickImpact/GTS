@@ -1,28 +1,28 @@
-package net.impactdev.gts.commands.elements;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb;
 
-import net.impactdev.impactor.api.utilities.Time;
-import org.spongepowered.api.command.CommandCompletion;
-import org.spongepowered.api.command.exception.ArgumentParseException;
-import org.spongepowered.api.command.parameter.ArgumentReader;
-import org.spongepowered.api.command.parameter.CommandContext;
-import org.spongepowered.api.command.parameter.Parameter;
-import org.spongepowered.api.command.parameter.managed.ValueParameter;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbbBbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.bbbbbbb.BbbbbBbbbbbbbb;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-public class TimeElement implements ValueParameter<Time> {
+bbbbbb bbbbb BbbbBbbbbbb bbbbbbbbbb BbbbbBbbbbbbbb<Bbbb> {
 
-    @Override
-    public List<CommandCompletion> complete(CommandContext context, String currentInput) {
-        return Collections.emptyList();
+    @Bbbbbbbb
+    bbbbbb Bbbb<BbbbbbbBbbbbbbbbb> bbbbbbbb(BbbbbbbBbbbbbb bbbbbbb, Bbbbbb bbbbbbbBbbbb) {
+        bbbbbb Bbbbbbbbbbb.bbbbbBbbb();
     }
 
-    @Override
-    public Optional<? extends Time> parseValue(Parameter.Key<? super Time> parameterKey, ArgumentReader.Mutable reader, CommandContext.Builder context) throws ArgumentParseException {
-        return Optional.ofNullable(reader.parseString())
-                .map(Time::new);
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<? bbbbbbb Bbbb> bbbbbBbbbb(Bbbbbbbbb.Bbb<? bbbbb Bbbb> bbbbbbbbbBbb, BbbbbbbbBbbbbb.Bbbbbbb bbbbbb, BbbbbbbBbbbbbb.Bbbbbbb bbbbbbb) bbbbbb BbbbbbbbBbbbbBbbbbbbbb {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbbbb.bbbbbBbbbbb())
+                .bbb(Bbbb::bbb);
     }
 
 }

@@ -1,54 +1,54 @@
-package net.impactdev.gts.api.logs;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb;
 
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.builders.Builder;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * Represents a set of details that provide general information about an action carried out by some user
- * or system with GTS.
+ * Bbbbbbbbbb b bbb bb bbbbbbb bbbb bbbbbbb bbbbbbb bbbbbbbbbbb bbbbb bb bbbbbb bbbbbbb bbb bb bbbb bbbb
+ * bb bbbbbb bbbb BBB.
  */
-public interface Log {
+bbbbbb bbbbbbbbb Bbb {
 
-	static LogBuilder builder() {
-		return Impactor.getInstance().getRegistry().createBuilder(LogBuilder.class);
+	bbbbbb BbbBbbbbbb bbbbbbb() {
+		bbbbbb Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbBbbbbbb(BbbBbbbbbb.bbbbb);
 	}
 
-	interface LogBuilder extends Builder<Log> {
+	bbbbbbbbb BbbBbbbbbb bbbbbbb Bbbbbbb<Bbb> {
 
 		/**
-		 * Sets the focus point of this log
+		 * Bbbb bbb bbbbb bbbbb bb bbbb bbb
 		 *
-		 * @param listing The listing context
-		 * @return The current instance of the builder
+		 * @bbbbb bbbbbbb Bbb bbbbbbb bbbbbbb
+		 * @bbbbbb Bbb bbbbbbb bbbbbbbb bb bbb bbbbbbb
 		 */
-		LogBuilder listing(Listing listing);
+		BbbBbbbbbb bbbbbbb(Bbbbbbb bbbbbbb);
 
 		/**
-		 * Sets the actor providing the logged action. In other words, this is the ID of the user which provoked
-		 * the action to create the log.
+		 * Bbbb bbb bbbbb bbbbbbbbb bbb bbbbbb bbbbbb. Bb bbbbb bbbbb, bbbb bb bbb BB bb bbb bbbb bbbbb bbbbbbbb
+		 * bbb bbbbbb bb bbbbbb bbb bbb.
 		 *
-		 * @param actor The uuid of the actor
-		 * @return The current instance of the builder
+		 * @bbbbb bbbbb Bbb bbbb bb bbb bbbbb
+		 * @bbbbbb Bbb bbbbbbb bbbbbbbb bb bbb bbbbbbb
 		 */
-		LogBuilder actor(UUID actor);
+		BbbBbbbbbb bbbbb(BBBB bbbbb);
 
 		/**
-		 * Marks the action carried out for this listing
+		 * Bbbbb bbb bbbbbb bbbbbbb bbb bbb bbbb bbbbbbb
 		 *
-		 * @param action The action performed
-		 * @return The current instance of the builder
+		 * @bbbbb bbbbbb Bbb bbbbbb bbbbbbbbb
+		 * @bbbbbb Bbb bbbbbbb bbbbbbbb bb bbb bbbbbbb
 		 */
-		//LogBuilder action(ListingActionType action);
+		//BbbBbbbbbb bbbbbb(BbbbbbbBbbbbbBbbb bbbbbb);
 
 		/**
-		 * Marks a logged action as an administrative action
+		 * Bbbbb b bbbbbb bbbbbb bb bb bbbbbbbbbbbbbb bbbbbb
 		 *
-		 * @return The current instance of the builder
+		 * @bbbbbb Bbb bbbbbbb bbbbbbbb bb bbb bbbbbbb
 		 */
-		LogBuilder administrative();
+		BbbBbbbbbb bbbbbbbbbbbbbb();
 
 	}
 

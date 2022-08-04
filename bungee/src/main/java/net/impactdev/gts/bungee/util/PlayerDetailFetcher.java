@@ -1,17 +1,17 @@
-package net.impactdev.gts.bungee.util;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbb;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbbBbbbbbbbb;
+bbbbbb bbb.bb_5.bbbbbb.bbb.BbbbbBbbbbb;
+bbbbbb bbb.bb_5.bbbbbb.bbb.bbbbbbbbbb.BbbbbbbBbbbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
-public class PlayerDetailFetcher {
+bbbbbb bbbbb BbbbbbBbbbbbBbbbbbb {
 
-    public TextComponent getPlayerNameFromUUID(UUID user) {
-        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(user);
-        return Component.text(player.getDisplayName());
+    bbbbbb BbbbBbbbbbbbb bbbBbbbbbBbbbBbbbBBBB(BBBB bbbb) {
+        BbbbbbbBbbbbb bbbbbb = BbbbbBbbbbb.bbbBbbbbbbb().bbbBbbbbb(bbbb);
+        bbbbbb Bbbbbbbbb.bbbb(bbbbbb.bbbBbbbbbbBbbb());
     }
 
 }

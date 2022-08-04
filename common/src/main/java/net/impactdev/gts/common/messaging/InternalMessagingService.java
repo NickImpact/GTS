@@ -1,203 +1,203 @@
 /*
- * This file is part of LuckPerms, licensed under the MIT License.
+ * Bbbb bbbb bb bbbb bb BbbbBbbbb, bbbbbbbb bbbbb bbb BBB Bbbbbbb.
  *
- *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Bbbbbbbbb (b) bbbbb (Bbbb) <bbbb@bbbbb.bb>
+ *  Bbbbbbbbb (b) bbbbbbbbbbbb
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Bbbbbbbbbb bb bbbbbb bbbbbbb, bbbb bb bbbbbb, bb bbb bbbbbb bbbbbbbbb b bbbb
+ *  bb bbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbbbbbbb bbbbb (bbb "Bbbbbbbb"), bb bbbb
+ *  bb bbb Bbbbbbbb bbbbbbb bbbbbbbbbbb, bbbbbbbbb bbbbbbb bbbbbbbbbb bbb bbbbbb
+ *  bb bbb, bbbb, bbbbbb, bbbbb, bbbbbbb, bbbbbbbbbb, bbbbbbbbbb, bbb/bb bbbb
+ *  bbbbbb bb bbb Bbbbbbbb, bbb bb bbbbbb bbbbbbb bb bbbb bbb Bbbbbbbb bb
+ *  bbbbbbbbb bb bb bb, bbbbbbb bb bbb bbbbbbbbb bbbbbbbbbb:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  Bbb bbbbb bbbbbbbbb bbbbbb bbb bbbb bbbbbbbbbb bbbbbb bbbbb bb bbbbbbbb bb bbb
+ *  bbbbbb bb bbbbbbbbbbb bbbbbbbb bb bbb Bbbbbbbb.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
+ *  BBB BBBBBBBB BB BBBBBBBB "BB BB", BBBBBBB BBBBBBBB BB BBB BBBB, BBBBBBB BB
+ *  BBBBBBB, BBBBBBBBB BBB BBB BBBBBBB BB BBB BBBBBBBBBB BB BBBBBBBBBBBBBBB,
+ *  BBBBBBB BBB B BBBBBBBBBB BBBBBBB BBB BBBBBBBBBBBBBBB. BB BB BBBBB BBBBB BBB
+ *  BBBBBBB BB BBBBBBBBB BBBBBBB BB BBBBBB BBB BBB BBBBB, BBBBBBB BB BBBBB
+ *  BBBBBBBBB, BBBBBBB BB BB BBBBBB BB BBBBBBBB, BBBB BB BBBBBBBBB, BBBBBBB BBBB,
+ *  BBB BB BB BB BBBBBBBBBB BBBB BBB BBBBBBBB BB BBB BBB BB BBBBB BBBBBBBB BB BBB
+ *  BBBBBBBB.
  */
 
-package net.impactdev.gts.common.messaging;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb;
 
-import com.google.gson.JsonElement;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
-import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.messaging.message.type.utility.PingMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.MessengerProvider;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb.BbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbbbb.BbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbb.BbbbbbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbBbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
-import java.util.function.Function;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbBbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbBbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public interface InternalMessagingService {
+bbbbbb bbbbbbbbb BbbbbbbbBbbbbbbbbBbbbbbb {
 
     /**
-     * Gets the name of this messaging service
+     * Bbbb bbb bbbb bb bbbb bbbbbbbbb bbbbbbb
      *
-     * @return the name of this messaging service
+     * @bbbbbb bbb bbbb bb bbbb bbbbbbbbb bbbbbbb
      */
-    String getName();
+    Bbbbbb bbbBbbb();
 
-    Messenger getMessenger();
+    Bbbbbbbbb bbbBbbbbbbbb();
 
-    MessengerProvider getMessengerProvider();
+    BbbbbbbbbBbbbbbbb bbbBbbbbbbbbBbbbbbbb();
 
     /**
-     * Closes the messaging service
+     * Bbbbbb bbb bbbbbbbbb bbbbbbb
      */
-    void close();
+    bbbb bbbbb();
 
-    <T extends OutgoingMessage> void registerDecoder(final String type, BiFunction<JsonElement, UUID, T> decoder);
+    <B bbbbbbb BbbbbbbbBbbbbbb> bbbb bbbbbbbbBbbbbbb(bbbbb Bbbbbb bbbb, BbBbbbbbbb<BbbbBbbbbbb, BBBB, B> bbbbbbb);
 
-    BiFunction<JsonElement, UUID, ? extends OutgoingMessage> getDecoder(final String type);
+    BbBbbbbbbb<BbbbBbbbbbb, BBBB, ? bbbbbbb BbbbbbbbBbbbbbb> bbbBbbbbbb(bbbbb Bbbbbb bbbb);
 
     /**
-     * Generates a ping ID that'll represent the message being sent across the servers.
+     * Bbbbbbbbb b bbbb BB bbbb'bb bbbbbbbbb bbb bbbbbbb bbbbb bbbb bbbbbb bbb bbbbbbb.
      *
-     * @return The ID of the message that is being sent
+     * @bbbbbb Bbb BB bb bbb bbbbbbb bbbb bb bbbbb bbbb
      */
-    UUID generatePingID();
+    BBBB bbbbbbbbBbbbBB();
 
     /**
-     * More of a utility method, this method processes a request by placing it in the receiver queue for the hooked
-     * incoming message receiver. It'll hold the active thread until a response has been received. Once received,
-     * it is to return that value.
+     * Bbbb bb b bbbbbbb bbbbbb, bbbb bbbbbb bbbbbbbbb b bbbbbbb bb bbbbbbb bb bb bbb bbbbbbbb bbbbb bbb bbb bbbbbb
+     * bbbbbbbb bbbbbbb bbbbbbbb. Bb'bb bbbb bbb bbbbbb bbbbbb bbbbb b bbbbbbbb bbb bbbb bbbbbbbb. Bbbb bbbbbbbb,
+     * bb bb bb bbbbbb bbbb bbbbb.
      *
-     * @param request The request being made
-     * @param <R> The type of request being made
-     * @param <W> The intended return type
-     * @return The response as soon as it's available
+     * @bbbbb bbbbbbb Bbb bbbbbbb bbbbb bbbb
+     * @bbbbb <B> Bbb bbbb bb bbbbbbb bbbbb bbbb
+     * @bbbbb <B> Bbb bbbbbbbb bbbbbb bbbb
+     * @bbbbbb Bbb bbbbbbbb bb bbbb bb bb'b bbbbbbbbb
      */
-    default <R extends MessageType.Request<?> & OutgoingMessage, W extends MessageType.Response> W await(R request) {
-        AtomicReference<W> reference = new AtomicReference<>(null);
-        long start = System.nanoTime();
+    bbbbbbb <B bbbbbbb BbbbbbbBbbb.Bbbbbbb<?> & BbbbbbbbBbbbbbb, B bbbbbbb BbbbbbbBbbb.Bbbbbbbb> B bbbbb(B bbbbbbb) {
+        BbbbbbBbbbbbbbb<B> bbbbbbbbb = bbb BbbbbbBbbbbbbbb<>(bbbb);
+        bbbb bbbbb = Bbbbbb.bbbbBbbb();
 
-        GTSPlugin.instance().messagingService().getMessenger().getMessageConsumer().registerRequest(request.getID(), reference::set);
-        GTSPlugin.instance().messagingService().getMessenger().sendOutgoingMessage(request);
-        while(reference.get() == null) {
-            try {
-                //noinspection BusyWait
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                ExceptionWriter.write(e);
+        BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbBbbbbbbBbbbbbbb().bbbbbbbbBbbbbbb(bbbbbbb.bbbBB(), bbbbbbbbb::bbb);
+        BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbb);
+        bbbbb(bbbbbbbbb.bbb() == bbbb) {
+            bbb {
+                //bbbbbbbbbbbb BbbbBbbb
+                Bbbbbb.bbbbb(50);
+            } bbbbb (BbbbbbbbbbbBbbbbbbbb b) {
+                BbbbbbbbbBbbbbb.bbbbb(b);
             }
         }
 
-        long finish = System.nanoTime();
-        return reference.updateAndGet(response -> {
-            response.setResponseTime((finish - start) / 1000000);
-            return response;
+        bbbb bbbbbb = Bbbbbb.bbbbBbbb();
+        bbbbbb bbbbbbbbb.bbbbbbBbbBbb(bbbbbbbb -> {
+            bbbbbbbb.bbbBbbbbbbbBbbb((bbbbbb - bbbbb) / 1000000);
+            bbbbbb bbbbbbbb;
         });
     }
 
     //------------------------------------------------------------------------------------
     //
-    //  General Plugin Messages
+    //  Bbbbbbb Bbbbbb Bbbbbbbb
     //
     //------------------------------------------------------------------------------------
 
     /**
-     * Sends a ping to the proxy controller. The proxy will then respond with a pong message, assuming the message
-     * is properly processed. This message will route between all servers due to its nature, but will only
-     * be parsed by the server that meets the requirements of the pong message. Those being the server
-     * address and port for which they were attached at the time of the message being sent.
+     * Bbbbb b bbbb bb bbb bbbbb bbbbbbbbbb. Bbb bbbbb bbbb bbbb bbbbbbb bbbb b bbbb bbbbbbb, bbbbbbbb bbb bbbbbbb
+     * bb bbbbbbbb bbbbbbbbb. Bbbb bbbbbbb bbbb bbbbb bbbbbbb bbb bbbbbbb bbb bb bbb bbbbbb, bbb bbbb bbbb
+     * bb bbbbbb bb bbb bbbbbb bbbb bbbbb bbb bbbbbbbbbbbb bb bbb bbbb bbbbbbb. Bbbbb bbbbb bbb bbbbbb
+     * bbbbbbb bbb bbbb bbb bbbbb bbbb bbbb bbbbbbbb bb bbb bbbb bb bbb bbbbbbb bbbbb bbbb.
      */
-    CompletableFuture<PingMessage.Pong> sendPing();
+    BbbbbbbbbbbBbbbbb<BbbbBbbbbbb.Bbbb> bbbbBbbb();
 
     /**
-     * Sends an update to the messaging service indicating a new listing has been published.
+     * Bbbbb bb bbbbbb bb bbb bbbbbbbbb bbbbbbb bbbbbbbbbb b bbb bbbbbbb bbb bbbb bbbbbbbbb.
      *
-     * @param listing The ID of the listing just published
-     * @param actor The ID of the user who published the listing
-     * @param auction Whether the listing is an auction or BIN listing
-     * @return An empty value, likely just null
+     * @bbbbb bbbbbbb Bbb BB bb bbb bbbbbbb bbbb bbbbbbbbb
+     * @bbbbb bbbbb Bbb BB bb bbb bbbb bbb bbbbbbbbb bbb bbbbbbb
+     * @bbbbb bbbbbbb Bbbbbbb bbb bbbbbbb bb bb bbbbbbb bb BBB bbbbbbb
+     * @bbbbbb Bb bbbbb bbbbb, bbbbbb bbbb bbbb
      */
-    CompletableFuture<Void> sendPublishNotice(UUID listing, UUID actor, boolean auction);
+    BbbbbbbbbbbBbbbbb<Bbbb> bbbbBbbbbbbBbbbbb(BBBB bbbbbbb, BBBB bbbbb, bbbbbbb bbbbbbb);
 
     //------------------------------------------------------------------------------------
     //
-    //  Auction Based Messages
+    //  Bbbbbbb Bbbbb Bbbbbbbb
     //
     //------------------------------------------------------------------------------------
 
     /**
-     * Attempts to publish a bid to the central database for GTS. This message simply controls the process
-     * of sending the initial message. Afterwords, the proxy handling the message will respond with a
-     * {@link AuctionMessage.Bid.Response Bid Response} that'll specify all other required information
-     * regarding the bid.
+     * Bbbbbbbb bb bbbbbbb b bbb bb bbb bbbbbbb bbbbbbbb bbb BBB. Bbbb bbbbbbb bbbbbb bbbbbbbb bbb bbbbbbb
+     * bb bbbbbbb bbb bbbbbbb bbbbbbb. Bbbbbbbbbb, bbb bbbbb bbbbbbbb bbb bbbbbbb bbbb bbbbbbb bbbb b
+     * {@bbbb BbbbbbbBbbbbbb.Bbb.Bbbbbbbb Bbb Bbbbbbbb} bbbb'bb bbbbbbb bbb bbbbb bbbbbbbb bbbbbbbbbbb
+     * bbbbbbbbb bbb bbb.
      *
-     * @param listing The listing being bid on
-     * @param actor   The user who placed the bid
-     * @param bid     The amount the user has just bid on the auction for
-     * @return A completable future wrapping a response message for a users bid request
+     * @bbbbb bbbbbbb Bbb bbbbbbb bbbbb bbb bb
+     * @bbbbb bbbbb   Bbb bbbb bbb bbbbbb bbb bbb
+     * @bbbbb bbb     Bbb bbbbbb bbb bbbb bbb bbbb bbb bb bbb bbbbbbb bbb
+     * @bbbbbb B bbbbbbbbbbb bbbbbb bbbbbbbb b bbbbbbbb bbbbbbb bbb b bbbbb bbb bbbbbbb
      */
-    CompletableFuture<AuctionMessage.Bid.Response> publishBid(UUID listing, UUID actor, double bid);
+    BbbbbbbbbbbBbbbbb<BbbbbbbBbbbbbb.Bbb.Bbbbbbbb> bbbbbbbBbb(BBBB bbbbbbb, BBBB bbbbb, bbbbbb bbb);
 
     /**
      *
      *
-     * @param listing
-     * @param actor
+     * @bbbbb bbbbbbb
+     * @bbbbb bbbbb
      */
-    CompletableFuture<AuctionMessage.Cancel.Response> requestAuctionCancellation(UUID listing, UUID actor);
+    BbbbbbbbbbbBbbbbb<BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbbb> bbbbbbbBbbbbbbBbbbbbbbbbbb(BBBB bbbbbbb, BBBB bbbbb);
 
     /**
      *
      *
-     * @param listing
-     * @param actor
-     * @param receiver
-     * @param auction
+     * @bbbbb bbbbbbb
+     * @bbbbb bbbbb
+     * @bbbbb bbbbbbbb
+     * @bbbbb bbbbbbb
      */
-    CompletableFuture<ClaimMessage.Response> requestClaim(UUID listing, UUID actor, @Nullable UUID receiver, boolean auction);
+    BbbbbbbbbbbBbbbbb<BbbbbBbbbbbb.Bbbbbbbb> bbbbbbbBbbbb(BBBB bbbbbbb, BBBB bbbbb, @Bbbbbbbb BBBB bbbbbbbb, bbbbbbb bbbbbbb);
 
     //------------------------------------------------------------------------------------
     //
-    //  BuyItNow Based Messages
+    //  BbbBbBbb Bbbbb Bbbbbbbb
     //
     //------------------------------------------------------------------------------------
 
-    CompletableFuture<BuyItNowMessage.Purchase.Response> requestBINPurchase(UUID listing, UUID actor, Object source);
+    BbbbbbbbbbbBbbbbb<BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbbb> bbbbbbbBBBBbbbbbbb(BBBB bbbbbbb, BBBB bbbbb, Bbbbbb bbbbbb);
 
     /**
      *
      *
-     * @param listing
-     * @param actor
-     * @return
+     * @bbbbb bbbbbbb
+     * @bbbbb bbbbb
+     * @bbbbbb
      */
-    default CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor) {
-        return this.requestBINRemoveRequest(listing, actor, null, true);
+    bbbbbbb BbbbbbbbbbbBbbbbb<BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbbb> bbbbbbbBBBBbbbbbBbbbbbb(BBBB bbbbbbb, BBBB bbbbb) {
+        bbbbbb bbbb.bbbbbbbBBBBbbbbbBbbbbbb(bbbbbbb, bbbbb, bbbb, bbbb);
     }
 
-    CompletableFuture<BuyItNowMessage.Remove.Response> requestBINRemoveRequest(UUID listing, UUID actor, @Nullable UUID receiver, boolean shouldReceive);
+    BbbbbbbbbbbBbbbbb<BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbbb> bbbbbbbBBBBbbbbbBbbbbbb(BBBB bbbbbbb, BBBB bbbbb, @Bbbbbbbb BBBB bbbbbbbb, bbbbbbb bbbbbbBbbbbbb);
 
-    CompletableFuture<ForceDeleteMessage.Response> requestForcedDeletion(UUID listing, UUID actor, boolean give);
+    BbbbbbbbbbbBbbbbb<BbbbbBbbbbbBbbbbbb.Bbbbbbbb> bbbbbbbBbbbbbBbbbbbbb(BBBB bbbbbbb, BBBB bbbbb, bbbbbbb bbbb);
 
-    CompletableFuture<ClaimDelivery.Response> requestDeliveryClaim(UUID delivery, UUID actor);
+    BbbbbbbbbbbBbbbbb<BbbbbBbbbbbbb.Bbbbbbbb> bbbbbbbBbbbbbbbBbbbb(BBBB bbbbbbbb, BBBB bbbbb);
 
 }

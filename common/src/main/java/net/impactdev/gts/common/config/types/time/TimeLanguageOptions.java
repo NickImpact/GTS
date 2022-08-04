@@ -1,20 +1,20 @@
-package net.impactdev.gts.common.config.types.time;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbb.bbbb;
 
-public class TimeLanguageOptions {
+bbbbbb bbbbb BbbbBbbbbbbbBbbbbbb {
 
-    private final String singular;
-    private final String plural;
+    bbbbbbb bbbbb Bbbbbb bbbbbbbb;
+    bbbbbbb bbbbb Bbbbbb bbbbbb;
 
-    public TimeLanguageOptions(String singular, String plural) {
-        this.singular = singular;
-        this.plural = plural;
+    bbbbbb BbbbBbbbbbbbBbbbbbb(Bbbbbb bbbbbbbb, Bbbbbb bbbbbb) {
+        bbbb.bbbbbbbb = bbbbbbbb;
+        bbbb.bbbbbb = bbbbbb;
     }
 
-    public String getSingular() {
-        return this.singular;
+    bbbbbb Bbbbbb bbbBbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbb;
     }
 
-    public String getPlural() {
-        return this.plural;
+    bbbbbb Bbbbbb bbbBbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 }

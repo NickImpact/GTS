@@ -1,1127 +1,1127 @@
 /*
- * This file is part of LuckPerms, licensed under the MIT License.
+ * Bbbb bbbb bb bbbb bb BbbbBbbbb, bbbbbbbb bbbbb bbb BBB Bbbbbbb.
  *
- *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Bbbbbbbbb (b) bbbbb (Bbbb) <bbbb@bbbbb.bb>
+ *  Bbbbbbbbb (b) bbbbbbbbbbbb
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Bbbbbbbbbb bb bbbbbb bbbbbbb, bbbb bb bbbbbb, bb bbb bbbbbb bbbbbbbbb b bbbb
+ *  bb bbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbbbbbbb bbbbb (bbb "Bbbbbbbb"), bb bbbb
+ *  bb bbb Bbbbbbbb bbbbbbb bbbbbbbbbbb, bbbbbbbbb bbbbbbb bbbbbbbbbb bbb bbbbbb
+ *  bb bbb, bbbb, bbbbbb, bbbbb, bbbbbbb, bbbbbbbbbb, bbbbbbbbbb, bbb/bb bbbb
+ *  bbbbbb bb bbb Bbbbbbbb, bbb bb bbbbbb bbbbbbb bb bbbb bbb Bbbbbbbb bb
+ *  bbbbbbbbb bb bb bb, bbbbbbb bb bbb bbbbbbbbb bbbbbbbbbb:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  Bbb bbbbb bbbbbbbbb bbbbbb bbb bbbb bbbbbbbbbb bbbbbb bbbbb bb bbbbbbbb bb bbb
+ *  bbbbbb bb bbbbbbbbbbb bbbbbbbb bb bbb Bbbbbbbb.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
+ *  BBB BBBBBBBB BB BBBBBBBB "BB BB", BBBBBBB BBBBBBBB BB BBB BBBB, BBBBBBB BB
+ *  BBBBBBB, BBBBBBBBB BBB BBB BBBBBBB BB BBB BBBBBBBBBB BB BBBBBBBBBBBBBBB,
+ *  BBBBBBB BBB B BBBBBBBBBB BBBBBBB BBB BBBBBBBBBBBBBBB. BB BB BBBBB BBBBB BBB
+ *  BBBBBBB BB BBBBBBBBB BBBBBBB BB BBBBBB BBB BBB BBBBB, BBBBBBB BB BBBBB
+ *  BBBBBBBBB, BBBBBBB BB BB BBBBBB BB BBBBBBBB, BBBB BB BBBBBBBBB, BBBBBBB BBBB,
+ *  BBB BB BB BB BBBBBBBBBB BBBB BBB BBBBBBBB BB BBB BBB BB BBBBB BBBBBBBB BB BBB
+ *  BBBBBBBB.
  */
 
-package net.impactdev.gts.common.storage.implementation.sql;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbbbbbbbb.bbb;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.TreeMultimap;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
-import net.impactdev.gts.api.data.ResourceManager;
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
-import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.player.NotificationSetting;
-import net.impactdev.gts.api.player.PlayerSettings;
-import net.impactdev.gts.api.storage.PurgeType;
-import net.impactdev.gts.api.util.groupings.SimilarPair;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.common.exceptions.DataContentException;
-import net.impactdev.gts.common.messaging.messages.deliveries.ClaimDeliveryImpl;
-import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.storage.connection.sql.SqlConnection;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import net.impactdev.gts.api.stashes.Stash;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.storage.implementation.StorageImplementation;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.kyori.adventure.util.TriState;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbBbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.bbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb.BbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbbbb.BbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbb.BbbbBbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbbbb.BbbbbBbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbb.BbbbbbbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.BBBBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbb.BBBBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.bbbbbbbbbb.bbb.BbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbBbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbbbbbbbb.BbbbbbbBbbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbBbbbb;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bb.BbbbbbbbBbbbbb;
+bbbbbb bbbb.bb.BbbbbBbbbbb;
+bbbbbb bbbb.bb.BbbbbBbbbbbBbbbbb;
+bbbbbb bbbb.bbb.bbbbbbb.BbbbbbbbBbbbbbbb;
+bbbbbb bbbb.bbb.*;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbbbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.BbBbbbBbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbBbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
 
-public class SqlImplementation implements StorageImplementation {
+bbbbbb bbbbb BbbBbbbbbbbbbbbbb bbbbbbbbbb BbbbbbbBbbbbbbbbbbbbb {
 
-	private static final String ADD_LISTING = "INSERT INTO `{prefix}listings` (id, lister, listing) VALUES (?, ?, ?)";
-	private static final String UPDATE_LISTING = "UPDATE `{prefix}listings` SET listing=? WHERE id=?";
-	private static final String SELECT_ALL_LISTINGS = "SELECT * FROM `{prefix}listings`";
-	private static final String GET_SPECIFIC_LISTING = "SELECT * FROM `{prefix}listings` WHERE id=?";
-	private static final String GET_ALL_USER_LISTINGS = "SELECT id, listing FROM `{prefix}listings` WHERE lister=?";
- 	private static final String DELETE_LISTING = "DELETE FROM `{prefix}listings` WHERE id=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBB_BBBBBBB = "BBBBBB BBBB `{bbbbbb}bbbbbbbb` (bb, bbbbbb, bbbbbbb) BBBBBB (?, ?, ?)";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBB_BBBBBBB = "BBBBBB `{bbbbbb}bbbbbbbb` BBB bbbbbbb=? BBBBB bb=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBB_BBB_BBBBBBBB = "BBBBBB * BBBB `{bbbbbb}bbbbbbbb`";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBB_BBBBBBBB_BBBBBBB = "BBBBBB * BBBB `{bbbbbb}bbbbbbbb` BBBBB bb=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBB_BBB_BBBB_BBBBBBBB = "BBBBBB bb, bbbbbbb BBBB `{bbbbbb}bbbbbbbb` BBBBB bbbbbb=?";
+ 	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBB_BBBBBBB = "BBBBBB BBBB `{bbbbbb}bbbbbbbb` BBBBB bb=?";
 
-	private static final String ADD_AUCTION_CLAIM_STATUS = "INSERT INTO `{prefix}auction_claims` (auction, lister, winner, others) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE lister=VALUES(lister), winner=VALUES(winner), others=VALUES(others)";
-	private static final String GET_AUCTION_CLAIM_STATUS = "SELECT * FROM `{prefix}auction_claims` WHERE auction=?";
-	private static final String UPDATE_AUCTION_CLAIM_LISTER = "UPDATE `{prefix}auction_claims` SET lister=? WHERE auction=?";
-	private static final String UPDATE_AUCTION_CLAIM_WINNER = "UPDATE `{prefix}auction_claims` SET winner=? WHERE auction=?";
-	private static final String UPDATE_AUCTION_CLAIM_OTHER = "UPDATE `{prefix}auction_claims` SET others=? WHERE auction=?";
-	private static final String DELETE_AUCTION_CLAIM_STATUS = "DELETE FROM `{prefix}auction_claims` WHERE auction=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBB_BBBBBBB_BBBBB_BBBBBB = "BBBBBB BBBB `{bbbbbb}bbbbbbb_bbbbbb` (bbbbbbb, bbbbbb, bbbbbb, bbbbbb) BBBBBB (?, ?, ?, ?) BB BBBBBBBBB BBB BBBBBB bbbbbb=BBBBBB(bbbbbb), bbbbbb=BBBBBB(bbbbbb), bbbbbb=BBBBBB(bbbbbb)";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBB_BBBBBBB_BBBBB_BBBBBB = "BBBBBB * BBBB `{bbbbbb}bbbbbbb_bbbbbb` BBBBB bbbbbbb=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBB_BBBBBBB_BBBBB_BBBBBB = "BBBBBB `{bbbbbb}bbbbbbb_bbbbbb` BBB bbbbbb=? BBBBB bbbbbbb=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBB_BBBBBBB_BBBBB_BBBBBB = "BBBBBB `{bbbbbb}bbbbbbb_bbbbbb` BBB bbbbbb=? BBBBB bbbbbbb=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBB_BBBBBBB_BBBBB_BBBBB = "BBBBBB `{bbbbbb}bbbbbbb_bbbbbb` BBB bbbbbb=? BBBBB bbbbbbb=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBB_BBBBBBB_BBBBB_BBBBBB = "BBBBBB BBBB `{bbbbbb}bbbbbbb_bbbbbb` BBBBB bbbbbbb=?";
 
-	private static final String APPLY_PLAYER_SETTINGS = "INSERT INTO `{prefix}player_settings` (uuid, pub_notif, sell_notif, bid_notif, outbid_notif) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE pub_notif=VALUES(pub_notif), sell_notif=VALUES(sell_notif), bid_notif=VALUES(bid_notif), outbid_notif=VALUES(outbid_notif)";
-	private static final String GET_PLAYER_SETTINGS = "SELECT pub_notif, sell_notif, bid_notif, outbid_notif FROM `{prefix}player_settings` WHERE uuid=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBB_BBBBBB_BBBBBBBB = "BBBBBB BBBB `{bbbbbb}bbbbbb_bbbbbbbb` (bbbb, bbb_bbbbb, bbbb_bbbbb, bbb_bbbbb, bbbbbb_bbbbb) BBBBBB (?, ?, ?, ?, ?) BB BBBBBBBBB BBB BBBBBB bbb_bbbbb=BBBBBB(bbb_bbbbb), bbbb_bbbbb=BBBBBB(bbbb_bbbbb), bbb_bbbbb=BBBBBB(bbb_bbbbb), bbbbbb_bbbbb=BBBBBB(bbbbbb_bbbbb)";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBB_BBBBBB_BBBBBBBB = "BBBBBB bbb_bbbbb, bbbb_bbbbb, bbb_bbbbb, bbbbbb_bbbbb BBBB `{bbbbbb}bbbbbb_bbbbbbbb` BBBBB bbbb=?";
 
-	private static final String ADD_DELIVERY = "INSERT INTO `{prefix}deliveries` (id, target, delivery) VALUES (?, ?, ?)";
-	private static final String GET_DELIVERIES = "SELECT id, delivery FROM `{prefix}deliveries` WHERE target=?";
-	private static final String GET_DELIVERY = "SELECT delivery FROM `{prefix}deliveries` WHERE id=?";
-	private static final String DELETE_DELIVERY = "DELETE FROM `{prefix}deliveries` WHERE id=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBB_BBBBBBBB = "BBBBBB BBBB `{bbbbbb}bbbbbbbbbb` (bb, bbbbbb, bbbbbbbb) BBBBBB (?, ?, ?)";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBB_BBBBBBBBBB = "BBBBBB bb, bbbbbbbb BBBB `{bbbbbb}bbbbbbbbbb` BBBBB bbbbbb=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBB_BBBBBBBB = "BBBBBB bbbbbbbb BBBB `{bbbbbb}bbbbbbbbbb` BBBBB bb=?";
+	bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBB_BBBBBBBB = "BBBBBB BBBB `{bbbbbb}bbbbbbbbbb` BBBBB bb=?";
 
-	private final GTSPlugin plugin;
+	bbbbbbb bbbbb BBBBbbbbb bbbbbb;
 
-	private final SqlConnection connectionFactory;
-	private final Function<String, String> processor;
+	bbbbbbb bbbbb BbbBbbbbbbbbb bbbbbbbbbbBbbbbbb;
+	bbbbbbb bbbbb Bbbbbbbb<Bbbbbb, Bbbbbb> bbbbbbbbb;
 
-	public SqlImplementation(GTSPlugin plugin, SqlConnection connectionFactory, String tablePrefix) {
-		this.plugin = plugin;
-		this.connectionFactory = connectionFactory;
-		this.processor = connectionFactory.getStatementProcessor().compose(s -> s.replace("{prefix}", tablePrefix).replace("{database}", GTSPlugin.instance().configuration().main().get(ConfigKeys.STORAGE_CREDENTIALS).getDatabase()));
+	bbbbbb BbbBbbbbbbbbbbbbb(BBBBbbbbb bbbbbb, BbbBbbbbbbbbb bbbbbbbbbbBbbbbbb, Bbbbbb bbbbbBbbbbb) {
+		bbbb.bbbbbb = bbbbbb;
+		bbbb.bbbbbbbbbbBbbbbbb = bbbbbbbbbbBbbbbbb;
+		bbbb.bbbbbbbbb = bbbbbbbbbbBbbbbbb.bbbBbbbbbbbbBbbbbbbbb().bbbbbbb(b -> b.bbbbbbb("{bbbbbb}", bbbbbBbbbbb).bbbbbbb("{bbbbbbbb}", BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBB_BBBBBBBBBBB).bbbBbbbbbbb()));
 	}
 
-	@Override
-	public GTSPlugin getPlugin() {
-		return this.plugin;
+	@Bbbbbbbb
+	bbbbbb BBBBbbbbb bbbBbbbbb() {
+		bbbbbb bbbb.bbbbbb;
 	}
 
-	@Override
-	public String getName() {
-		return this.connectionFactory.name();
+	@Bbbbbbbb
+	bbbbbb Bbbbbb bbbBbbb() {
+		bbbbbb bbbb.bbbbbbbbbbBbbbbbb.bbbb();
 	}
 
-	public SqlConnection getConnectionFactory() {
-		return this.connectionFactory;
+	bbbbbb BbbBbbbbbbbbb bbbBbbbbbbbbbBbbbbbb() {
+		bbbbbb bbbb.bbbbbbbbbbBbbbbbb;
 	}
 
-	public Function<String, String> getStatementProcessor() {
-		return this.processor;
+	bbbbbb Bbbbbbbb<Bbbbbb, Bbbbbb> bbbBbbbbbbbbBbbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbbb;
 	}
 
-	@Override
-	public void init() throws Exception {
-		this.connectionFactory.init();
+	@Bbbbbbbb
+	bbbbbb bbbb bbbb() bbbbbb Bbbbbbbbb {
+		bbbb.bbbbbbbbbbBbbbbbb.bbbb();
 
-		String schemaFileName = "assets/gts/schema/" + this.connectionFactory.name().toLowerCase() + ".sql";
-		try (InputStream is = this.plugin.resource(schemaFileName)) {
-			if (is == null) {
-				throw new Exception("Couldn't locate schema file for " + this.connectionFactory.name());
+		Bbbbbb bbbbbbBbbbBbbb = "bbbbbb/bbb/bbbbbb/" + bbbb.bbbbbbbbbbBbbbbbb.bbbb().bbBbbbbBbbb() + ".bbb";
+		bbb (BbbbbBbbbbb bb = bbbb.bbbbbb.bbbbbbbb(bbbbbbBbbbBbbb)) {
+			bb (bb == bbbb) {
+				bbbbb bbb Bbbbbbbbb("Bbbbbb'b bbbbbb bbbbbb bbbb bbb " + bbbb.bbbbbbbbbbBbbbbbb.bbbb());
 			}
 
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-				try (Connection connection = this.connectionFactory.connection()) {
-					try (Statement s = connection.createStatement()) {
-						StringBuilder sb = new StringBuilder();
-						String line;
-						while ((line = reader.readLine()) != null) {
-							if (line.startsWith("--") || line.startsWith("#")) continue;
+			bbb (BbbbbbbbBbbbbb bbbbbb = bbb BbbbbbbbBbbbbb(bbb BbbbbBbbbbbBbbbbb(bb, BbbbbbbbBbbbbbbb.BBB_8))) {
+				bbb (Bbbbbbbbbb bbbbbbbbbb = bbbb.bbbbbbbbbbBbbbbbb.bbbbbbbbbb()) {
+					bbb (Bbbbbbbbb b = bbbbbbbbbb.bbbbbbBbbbbbbbb()) {
+						BbbbbbBbbbbbb bb = bbb BbbbbbBbbbbbb();
+						Bbbbbb bbbb;
+						bbbbb ((bbbb = bbbbbb.bbbbBbbb()) != bbbb) {
+							bb (bbbb.bbbbbbBbbb("--") || bbbb.bbbbbbBbbb("#")) bbbbbbbb;
 
-							sb.append(line);
+							bb.bbbbbb(bbbb);
 
-							// check for end of declaration
-							if (line.endsWith(";")) {
-								sb.deleteCharAt(sb.length() - 1);
+							// bbbbb bbb bbb bb bbbbbbbbbbb
+							bb (bbbb.bbbbBbbb(";")) {
+								bb.bbbbbbBbbbBb(bb.bbbbbb() - 1);
 
-								String result = this.processor.apply(sb.toString().trim());
+								Bbbbbb bbbbbb = bbbb.bbbbbbbbb.bbbbb(bb.bbBbbbbb().bbbb());
 
-								if (!result.isEmpty()) {
-									if(result.startsWith("set mode")) {
-										s.addBatch(result);
-									} else {
-										if(SchemaReaders.any(this, result)) {
-											SchemaReaders.first(this, result, s);
+								bb (!bbbbbb.bbBbbbb()) {
+									bb(bbbbbb.bbbbbbBbbb("bbb bbbb")) {
+										b.bbbBbbbb(bbbbbb);
+									} bbbb {
+										bb(BbbbbbBbbbbbb.bbb(bbbb, bbbbbb)) {
+											BbbbbbBbbbbbb.bbbbb(bbbb, bbbbbb, b);
 										}
 									}
 								}
 
-								// reset
-								sb = new StringBuilder();
+								// bbbbb
+								bb = bbb BbbbbbBbbbbbb();
 							}
 						}
-						s.executeBatch();
+						b.bbbbbbbBbbbb();
 					}
 				}
 			}
 		}
 	}
 
-	@Override
-	public void shutdown() throws Exception {
-		this.connectionFactory.shutdown();
+	@Bbbbbbbb
+	bbbbbb bbbb bbbbbbbb() bbbbbb Bbbbbbbbb {
+		bbbb.bbbbbbbbbbBbbbbbb.bbbbbbbb();
 	}
 
-	@Override
-	public Map<String, String> getMeta() {
-		return this.connectionFactory.getMeta();
+	@Bbbbbbbb
+	bbbbbb Bbb<Bbbbbb, Bbbbbb> bbbBbbb() {
+		bbbbbb bbbb.bbbbbbbbbbBbbbbbb.bbbBbbb();
 	}
 
-	@FunctionalInterface
-	private interface SQLPrepared<T> {
-		T prepare(Connection connection, PreparedStatement ps) throws Exception;
+	@BbbbbbbbbbBbbbbbbbb
+	bbbbbbb bbbbbbbbb BBBBbbbbbbb<B> {
+		B bbbbbbb(Bbbbbbbbbb bbbbbbbbbb, BbbbbbbbBbbbbbbbb bb) bbbbbb Bbbbbbbbb;
 	}
 
-	private <T> T query(String key, SQLPrepared<T> action) throws Exception {
-		try(Connection connection = this.connectionFactory.connection()) {
-			try(PreparedStatement ps = connection.prepareStatement(this.processor.apply(key))) {
-				return action.prepare(connection, ps);
+	bbbbbbb <B> B bbbbb(Bbbbbb bbb, BBBBbbbbbbb<B> bbbbbb) bbbbbb Bbbbbbbbb {
+		bbb(Bbbbbbbbbb bbbbbbbbbb = bbbb.bbbbbbbbbbBbbbbbb.bbbbbbbbbb()) {
+			bbb(BbbbbbbbBbbbbbbbb bb = bbbbbbbbbb.bbbbbbbBbbbbbbbb(bbbb.bbbbbbbbb.bbbbb(bbb))) {
+				bbbbbb bbbbbb.bbbbbbb(bbbbbbbbbb, bb);
 			}
 		}
 	}
 
-	@FunctionalInterface
-	private interface SQLResults<T> {
-		T results(ResultSet rs) throws Exception;
+	@BbbbbbbbbbBbbbbbbbb
+	bbbbbbb bbbbbbbbb BBBBbbbbbb<B> {
+		B bbbbbbb(BbbbbbBbb bb) bbbbbb Bbbbbbbbb;
 	}
 
-	private <T> T results(PreparedStatement ps, SQLResults<T> action) throws Exception {
-		try(ResultSet rs = ps.executeQuery()) {
-			return action.results(rs);
+	bbbbbbb <B> B bbbbbbb(BbbbbbbbBbbbbbbbb bb, BBBBbbbbbb<B> bbbbbb) bbbbbb Bbbbbbbbb {
+		bbb(BbbbbbBbb bb = bb.bbbbbbbBbbbb()) {
+			bbbbbb bbbbbb.bbbbbbb(bb);
 		}
 	}
 
-	@Override
-	public boolean addListing(Listing listing) throws Exception {
-		return this.query(ADD_LISTING, (connection, ps) -> {
-			ps.setString(1, listing.getID().toString());
-			ps.setString(2, listing.getLister().toString());
-			ps.setString(3, this.plugin.gson().toJson(listing.serialize().toJson()));
-			ps.executeUpdate();
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbBbbbbbb(Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBB_BBBBBBB, (bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bbbbbbb.bbbBB().bbBbbbbb());
+			bb.bbbBbbbbb(2, bbbbbbb.bbbBbbbbb().bbBbbbbb());
+			bb.bbbBbbbbb(3, bbbb.bbbbbb.bbbb().bbBbbb(bbbbbbb.bbbbbbbbb().bbBbbb()));
+			bb.bbbbbbbBbbbbb();
 
-			return true;
+			bbbbbb bbbb;
 		});
 	}
 
-	@Override
-	public boolean deleteListing(UUID uuid) throws Exception {
-		return this.query(DELETE_LISTING, (connection, ps) -> {
-			ps.setString(1, uuid.toString());
-			return ps.executeUpdate() != 0;
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbbbbBbbbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBBBBB_BBBBBBB, (bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bbbb.bbBbbbbb());
+			bbbbbb bb.bbbbbbbBbbbbb() != 0;
 		});
 	}
 
-	@Override
-	public Optional<Listing> getListing(UUID id) throws Exception {
-		return this.query(GET_SPECIFIC_LISTING, (connection, ps) -> {
-			ps.setString(1, id.toString());
-			return Optional.ofNullable(this.results(ps, results -> {
-				if(results.next()) {
-					return this.translateFrom(results.getString("listing"));
+	@Bbbbbbbb
+	bbbbbb Bbbbbbbb<Bbbbbbb> bbbBbbbbbb(BBBB bb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBB_BBBBBBBB_BBBBBBB, (bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bb.bbBbbbbb());
+			bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbbb(bb, bbbbbbb -> {
+				bb(bbbbbbb.bbbb()) {
+					bbbbbb bbbb.bbbbbbbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbbb"));
 				}
-				return null;
+				bbbbbb bbbb;
 			}));
 		});
 	}
 
-	private Listing translateFrom(String data) throws Exception {
-		JsonObject json = GTSPlugin.instance().gson().fromJson(data, JsonObject.class);
-		if(!json.has("type")) {
-			throw new JsonParseException("Invalid Listing: Missing type");
+	bbbbbbb Bbbbbbb bbbbbbbbbBbbb(Bbbbbb bbbb) bbbbbb Bbbbbbbbb {
+		BbbbBbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbb().bbbbBbbb(bbbb, BbbbBbbbbb.bbbbb);
+		bb(!bbbb.bbb("bbbb")) {
+			bbbbb bbb BbbbBbbbbBbbbbbbbb("Bbbbbbb Bbbbbbb: Bbbbbbb bbbb");
 		}
 
-		String type = json.get("type").getAsString();
-		try {
-			if (type.equals("bin")) {
-				return GTSService.getInstance().getGTSComponentManager()
-						.getListingResourceManager(BuyItNow.class)
-						.get()
-						.getDeserializer()
-						.deserialize(json);
-			} else {
-				return GTSService.getInstance().getGTSComponentManager()
-						.getListingResourceManager(Auction.class)
-						.get()
-						.getDeserializer()
-						.deserialize(json);
+		Bbbbbb bbbb = bbbb.bbb("bbbb").bbbBbBbbbbb();
+		bbb {
+			bb (bbbb.bbbbbb("bbb")) {
+				bbbbbb BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+						.bbbBbbbbbbBbbbbbbbBbbbbbb(BbbBbBbb.bbbbb)
+						.bbb()
+						.bbbBbbbbbbbbbbb()
+						.bbbbbbbbbbb(bbbb);
+			} bbbb {
+				bbbbbb BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+						.bbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbbbb.bbbbb)
+						.bbb()
+						.bbbBbbbbbbbbbbb()
+						.bbbbbbbbbbb(bbbb);
 			}
-		} catch (DataContentException e) {
-			return null;
+		} bbbbb (BbbbBbbbbbbBbbbbbbbb b) {
+			bbbbbb bbbb;
 		}
 	}
 
-	@Override
-	public List<Listing> getListings() throws Exception {
-		this.translateLegacy();
-		return this.query(SELECT_ALL_LISTINGS, (connection, ps) -> this.results(ps, results -> {
-			List<Listing> entries = Lists.newArrayList();
+	@Bbbbbbbb
+	bbbbbb Bbbb<Bbbbbbb> bbbBbbbbbbb() bbbbbb Bbbbbbbbb {
+		bbbb.bbbbbbbbbBbbbbb();
+		bbbbbb bbbb.bbbbb(BBBBBB_BBB_BBBBBBBB, (bbbbbbbbbb, bb) -> bbbb.bbbbbbb(bb, bbbbbbb -> {
+			Bbbb<Bbbbbbb> bbbbbbb = Bbbbb.bbbBbbbbBbbb();
 
-			int failed = 0;
-			while(results.next()) {
-				try {
-					JsonObject json = GTSPlugin.instance().gson().fromJson(results.getString("listing"),
-							JsonObject.class);
-					if (!json.has("type")) {
-						throw new JsonParseException("Invalid Listing: Missing type");
+			bbb bbbbbb = 0;
+			bbbbb(bbbbbbb.bbbb()) {
+				bbb {
+					BbbbBbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbb().bbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbbb"),
+							BbbbBbbbbb.bbbbb);
+					bb (!bbbb.bbb("bbbb")) {
+						bbbbb bbb BbbbBbbbbBbbbbbbbb("Bbbbbbb Bbbbbbb: Bbbbbbb bbbb");
 					}
 
-					String type = json.get("type").getAsString();
-					if (type.equals("bin")) {
-						BuyItNow bin = GTSService.getInstance().getGTSComponentManager()
-								.getListingResourceManager(BuyItNow.class)
-								.get()
-								.getDeserializer()
-								.deserialize(json);
-						entries.add(bin);
+					Bbbbbb bbbb = bbbb.bbb("bbbb").bbbBbBbbbbb();
+					bb (bbbb.bbbbbb("bbb")) {
+						BbbBbBbb bbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+								.bbbBbbbbbbBbbbbbbbBbbbbbb(BbbBbBbb.bbbbb)
+								.bbb()
+								.bbbBbbbbbbbbbbb()
+								.bbbbbbbbbbb(bbbb);
+						bbbbbbb.bbb(bbb);
 					}
-					else {
-						Auction auction = GTSService.getInstance().getGTSComponentManager()
-								.getListingResourceManager(Auction.class)
-								.get()
-								.getDeserializer()
-								.deserialize(json);
-						entries.add(auction);
+					bbbb {
+						Bbbbbbb bbbbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+								.bbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbbbb.bbbbb)
+								.bbb()
+								.bbbBbbbbbbbbbbb()
+								.bbbbbbbbbbb(bbbb);
+						bbbbbbb.bbb(bbbbbbb);
 					}
-				} catch (DataContentException ignored) {
-				} catch (Exception e) {
-					this.plugin.logger().error("Unable to read listing with ID: " + results.getString("id"));
-					ExceptionWriter.write(e);
-					++failed;
+				} bbbbb (BbbbBbbbbbbBbbbbbbbb bbbbbbb) {
+				} bbbbb (Bbbbbbbbb b) {
+					bbbb.bbbbbb.bbbbbb().bbbbb("Bbbbbb bb bbbb bbbbbbb bbbb BB: " + bbbbbbb.bbbBbbbbb("bb"));
+					BbbbbbbbbBbbbbb.bbbbb(b);
+					++bbbbbb;
 				}
 			}
 
-			if(failed != 0) {
-				this.plugin.logger().error("Failed to read in &c" + failed + " &7listings...");
+			bb(bbbbbb != 0) {
+				bbbb.bbbbbb.bbbbbb().bbbbb("Bbbbbb bb bbbb bb &b" + bbbbbb + " &7bbbbbbbb...");
 			}
 
-			return entries;
+			bbbbbb bbbbbbb;
 		}));
 	}
 
-	@Override
-	public boolean hasMaxListings(UUID user) throws Exception {
-		return this.query(GET_ALL_USER_LISTINGS, (connection, ps) -> {
-			ps.setString(1, user.toString());
-			return this.results(ps, results -> {
-				AtomicInteger possesses = new AtomicInteger();
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbBbbBbbbbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBB_BBB_BBBB_BBBBBBBB, (bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bbbb.bbBbbbbb());
+			bbbbbb bbbb.bbbbbbb(bb, bbbbbbb -> {
+				BbbbbbBbbbbbb bbbbbbbbb = bbb BbbbbbBbbbbbb();
 
-				while(results.next()) {
-					Listing listing = this.translateFrom(results.getString("listing"));
-					if(listing instanceof BuyItNow) {
-						if(!((BuyItNow) listing).stashedForPurchaser()) {
-							possesses.getAndIncrement();
+				bbbbb(bbbbbbb.bbbb()) {
+					Bbbbbbb bbbbbbb = bbbb.bbbbbbbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbbb"));
+					bb(bbbbbbb bbbbbbbbbb BbbBbBbb) {
+						bb(!((BbbBbBbb) bbbbbbb).bbbbbbbBbbBbbbbbbbb()) {
+							bbbbbbbbb.bbbBbbBbbbbbbbb();
 						}
-					} else {
-						try(PreparedStatement query = connection.prepareStatement(this.processor.apply(GET_AUCTION_CLAIM_STATUS))) {
-							query.setString(1, results.getString("id"));
+					} bbbb {
+						bbb(BbbbbbbbBbbbbbbbb bbbbb = bbbbbbbbbb.bbbbbbbBbbbbbbbb(bbbb.bbbbbbbbb.bbbbb(BBB_BBBBBBB_BBBBB_BBBBBB))) {
+							bbbbb.bbbBbbbbb(1, bbbbbbb.bbbBbbbbb("bb"));
 
-							this.results(query, r -> {
-								if(r.next()) {
-									if(!r.getBoolean("lister")) {
-										possesses.getAndIncrement();
+							bbbb.bbbbbbb(bbbbb, b -> {
+								bb(b.bbbb()) {
+									bb(!b.bbbBbbbbbb("bbbbbb")) {
+										bbbbbbbbb.bbbBbbBbbbbbbbb();
 									}
-								} else {
-									possesses.getAndIncrement();
+								} bbbb {
+									bbbbbbbbb.bbbBbbBbbbbbbbb();
 								}
 
-								return null;
+								bbbbbb bbbb;
 							});
 						}
 					}
 				}
 
-				return possesses.get() >= GTSPlugin.instance().configuration().main().get(ConfigKeys.MAX_LISTINGS_PER_USER);
+				bbbbbb bbbbbbbbb.bbb() >= BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBB_BBBBBBBB_BBB_BBBB);
 			});
 		});
 	}
 
-	@Override
-	public boolean purge(PurgeType type) throws Exception {
-		final String TRUNCATE = "TRUNCATE TABLE ";
-		try (Connection connection = this.connectionFactory.connection()) {
-			Multimap<PurgeType, String> tables = ArrayListMultimap.create();
-			tables.putAll(PurgeType.ALL, Lists.newArrayList(
-					"{prefix}listings",
-					"{prefix}stash",
-					"{prefix}auction_claims",
-					"{prefix}deliveries"
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbbb(BbbbbBbbb bbbb) bbbbbb Bbbbbbbbb {
+		bbbbb Bbbbbb BBBBBBBB = "BBBBBBBB BBBBB ";
+		bbb (Bbbbbbbbbb bbbbbbbbbb = bbbb.bbbbbbbbbbBbbbbbb.bbbbbbbbbb()) {
+			Bbbbbbbb<BbbbbBbbb, Bbbbbb> bbbbbb = BbbbbBbbbBbbbbbbb.bbbbbb();
+			bbbbbb.bbbBbb(BbbbbBbbb.BBB, Bbbbb.bbbBbbbbBbbb(
+					"{bbbbbb}bbbbbbbb",
+					"{bbbbbb}bbbbb",
+					"{bbbbbb}bbbbbbb_bbbbbb",
+					"{bbbbbb}bbbbbbbbbb"
 			));
 
-			switch (type) {
-				case ALL:
-					for(String table : tables.get(PurgeType.ALL)) {
-						try (PreparedStatement ps = connection.prepareStatement(TRUNCATE + table)) {
-							ps.executeUpdate();
+			bbbbbb (bbbb) {
+				bbbb BBB:
+					bbb(Bbbbbb bbbbb : bbbbbb.bbb(BbbbbBbbb.BBB)) {
+						bbb (BbbbbbbbBbbbbbbbb bb = bbbbbbbbbb.bbbbbbbBbbbbbbbb(BBBBBBBB + bbbbb)) {
+							bb.bbbbbbbBbbbbb();
 						}
 					}
 			}
 		}
 
-		return false;
+		bbbbbb bbbbb;
 	}
 
-	@Override
-	public boolean clean() throws Exception {
-		if(this.tableExists(this.processor.apply("{prefix}listings_v3"))) {
-			try (Connection connection = this.connectionFactory.connection()) {
-				Statement statement = connection.createStatement();
-				statement.executeUpdate(this.processor.apply("DROP TABLE {prefix}listings_v3"));
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbbb() bbbbbb Bbbbbbbbb {
+		bb(bbbb.bbbbbBbbbbb(bbbb.bbbbbbbbb.bbbbb("{bbbbbb}bbbbbbbb_b3"))) {
+			bbb (Bbbbbbbbbb bbbbbbbbbb = bbbb.bbbbbbbbbbBbbbbbb.bbbbbbbbbb()) {
+				Bbbbbbbbb bbbbbbbbb = bbbbbbbbbb.bbbbbbBbbbbbbbb();
+				bbbbbbbbb.bbbbbbbBbbbbb(bbbb.bbbbbbbbb.bbbbb("BBBB BBBBB {bbbbbb}bbbbbbbb_b3"));
 			}
-			return true;
+			bbbbbb bbbb;
 		}
-		return false;
+		bbbbbb bbbbb;
 	}
 
-	@Override
-	public boolean sendDelivery(Delivery delivery) throws Exception {
-		return false;
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbbBbbbbbbb(Bbbbbbbb bbbbbbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbbb;
 	}
 
-	@Override
-	public Stash getStash(UUID user) throws Exception {
-		Stash.StashBuilder builder = Stash.builder();
+	@Bbbbbbbb
+	bbbbbb Bbbbb bbbBbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb {
+		Bbbbb.BbbbbBbbbbbb bbbbbbb = Bbbbb.bbbbbbb();
 
-		List<Listing> listings = this.getListings();
-		for(Listing listing : listings) {
-			if(listing.hasExpired() || (listing instanceof BuyItNow && ((BuyItNow) listing).isPurchased())) {
-				if (listing instanceof Auction) {
-					Auction auction = (Auction) listing;
-					if(auction.getLister().equals(user) || auction.getHighBid().map(bid -> bid.getFirst().equals(user)).orElse(false)) {
-						boolean state = auction.getLister().equals(user);
-						SimilarPair<Boolean> claimed = this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
-							ps.setString(1, auction.getID().toString());
-							return this.results(ps, results -> {
-								if(results.next()) {
-									return new SimilarPair<>(results.getBoolean("lister"), results.getBoolean("winner"));
-								} else {
-									return new SimilarPair<>(false, false);
+		Bbbb<Bbbbbbb> bbbbbbbb = bbbb.bbbBbbbbbbb();
+		bbb(Bbbbbbb bbbbbbb : bbbbbbbb) {
+			bb(bbbbbbb.bbbBbbbbbb() || (bbbbbbb bbbbbbbbbb BbbBbBbb && ((BbbBbBbb) bbbbbbb).bbBbbbbbbbb())) {
+				bb (bbbbbbb bbbbbbbbbb Bbbbbbb) {
+					Bbbbbbb bbbbbbb = (Bbbbbbb) bbbbbbb;
+					bb(bbbbbbb.bbbBbbbbb().bbbbbb(bbbb) || bbbbbbb.bbbBbbbBbb().bbb(bbb -> bbb.bbbBbbbb().bbbbbb(bbbb)).bbBbbb(bbbbb)) {
+						bbbbbbb bbbbb = bbbbbbb.bbbBbbbbb().bbbbbb(bbbb);
+						BbbbbbbBbbb<Bbbbbbb> bbbbbbb = bbbb.bbbbb(BBB_BBBBBBB_BBBBB_BBBBBB, (bbbbbbbbbb, bb) -> {
+							bb.bbbBbbbbb(1, bbbbbbb.bbbBB().bbBbbbbb());
+							bbbbbb bbbb.bbbbbbb(bb, bbbbbbb -> {
+								bb(bbbbbbb.bbbb()) {
+									bbbbbb bbb BbbbbbbBbbb<>(bbbbbbb.bbbBbbbbbb("bbbbbb"), bbbbbbb.bbbBbbbbbb("bbbbbb"));
+								} bbbb {
+									bbbbbb bbb BbbbbbbBbbb<>(bbbbb, bbbbb);
 								}
 							});
 						});
 
-						if(state && !claimed.getFirst()) {
-							builder.append(auction, TriState.FALSE);
-						} else if(!state && !claimed.getSecond()) {
-							builder.append(auction, TriState.TRUE);
+						bb(bbbbb && !bbbbbbb.bbbBbbbb()) {
+							bbbbbbb.bbbbbb(bbbbbbb, BbbBbbbb.BBBBB);
+						} bbbb bb(!bbbbb && !bbbbbbb.bbbBbbbbb()) {
+							bbbbbbb.bbbbbb(bbbbbbb, BbbBbbbb.BBBB);
 						}
-					} else if(auction.getBids().containsKey(user)) {
-						boolean result = this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
-							ps.setString(1, auction.getID().toString());
-							return this.results(ps, results -> {
-								if(results.next()) {
-									List<UUID> others = GTSPlugin.instance().gson().fromJson(
-											results.getString("others"),
-											new TypeToken<List<UUID>>() {}.getType()
+					} bbbb bb(bbbbbbb.bbbBbbb().bbbbbbbbBbb(bbbb)) {
+						bbbbbbb bbbbbb = bbbb.bbbbb(BBB_BBBBBBB_BBBBB_BBBBBB, (bbbbbbbbbb, bb) -> {
+							bb.bbbBbbbbb(1, bbbbbbb.bbbBB().bbBbbbbb());
+							bbbbbb bbbb.bbbbbbb(bb, bbbbbbb -> {
+								bb(bbbbbbb.bbbb()) {
+									Bbbb<BBBB> bbbbbb = BBBBbbbbb.bbbbbbbb().bbbb().bbbbBbbb(
+											bbbbbbb.bbbBbbbbb("bbbbbb"),
+											bbb BbbbBbbbb<Bbbb<BBBB>>() {}.bbbBbbb()
 									);
 
-									return Optional.ofNullable(others).orElse(Lists.newArrayList()).contains(user);
+									bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbbbb).bbBbbb(Bbbbb.bbbBbbbbBbbb()).bbbbbbbb(bbbb);
 								}
 
-								return false;
+								bbbbbb bbbbb;
 							});
 						});
 
-						if(!result) {
-							builder.append(auction, TriState.NOT_SET);
+						bb(!bbbbbb) {
+							bbbbbbb.bbbbbb(bbbbbbb, BbbBbbbb.BBB_BBB);
 						}
 					}
-				} else {
-					BuyItNow bin = (BuyItNow) listing;
-					if(bin.getLister().equals(user) && !bin.stashedForPurchaser()) {
-						builder.append(bin, TriState.FALSE);
-					} else if(bin.stashedForPurchaser()) {
-						if(bin.purchaser().equals(user)) {
-							builder.append(bin, TriState.TRUE);
+				} bbbb {
+					BbbBbBbb bbb = (BbbBbBbb) bbbbbbb;
+					bb(bbb.bbbBbbbbb().bbbbbb(bbbb) && !bbb.bbbbbbbBbbBbbbbbbbb()) {
+						bbbbbbb.bbbbbb(bbb, BbbBbbbb.BBBBB);
+					} bbbb bb(bbb.bbbbbbbBbbBbbbbbbbb()) {
+						bb(bbb.bbbbbbbbb().bbbbbb(bbbb)) {
+							bbbbbbb.bbbbbb(bbb, BbbBbbbb.BBBB);
 						}
 					}
 				}
 			}
 		}
 
-		this.query(GET_DELIVERIES, (connection, ps) -> {
-			ps.setString(1, user.toString());
-			this.results(ps, results -> {
-				Storable.Deserializer<Delivery> deserializer = GTSService.getInstance().getGTSComponentManager().getDeliveryDeserializer();
-				while(results.next()) {
-					try {
-						JsonObject json = GTSPlugin.instance().gson().fromJson(results.getString("delivery"), JsonObject.class);
-						builder.append(deserializer.deserialize(json));
-					} catch (Exception e) {
-						ExceptionWriter.write(new JsonParseException("Failed to decode delivery with ID: " + results.getString("id"), e));
+		bbbb.bbbbb(BBB_BBBBBBBBBB, (bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bbbb.bbBbbbbb());
+			bbbb.bbbbbbb(bb, bbbbbbb -> {
+				Bbbbbbbb.Bbbbbbbbbbbb<Bbbbbbbb> bbbbbbbbbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb().bbbBbbbbbbbBbbbbbbbbbbb();
+				bbbbb(bbbbbbb.bbbb()) {
+					bbb {
+						BbbbBbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbb().bbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbbbb"), BbbbBbbbbb.bbbbb);
+						bbbbbbb.bbbbbb(bbbbbbbbbbbb.bbbbbbbbbbb(bbbb));
+					} bbbbb (Bbbbbbbbb b) {
+						BbbbbbbbbBbbbbb.bbbbb(bbb BbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbbb bbbb BB: " + bbbbbbb.bbbBbbbbb("bb"), b));
 					}
 				}
-				return null;
+				bbbbbb bbbb;
 			});
 
-			return null;
+			bbbbbb bbbb;
 		});
 
-		return builder.build();
+		bbbbbb bbbbbbb.bbbbb();
 	}
 
-	@Override
-	public Optional<PlayerSettings> getPlayerSettings(UUID user) throws Exception {
-		return this.query(GET_PLAYER_SETTINGS, ((connection, ps) -> {
-			ps.setString(1, user.toString());
-			return this.results(ps, results -> {
-				if(results.next()) {
-					PlayerSettings settings = PlayerSettings.builder()
-							.set(NotificationSetting.Publish, results.getBoolean("pub_notif"))
-							.set(NotificationSetting.Sold, results.getBoolean("sell_notif"))
-							.set(NotificationSetting.Bid, results.getBoolean("bid_notif"))
-							.set(NotificationSetting.Outbid, results.getBoolean("outbid_notif"))
-							.build();
+	@Bbbbbbbb
+	bbbbbb Bbbbbbbb<BbbbbbBbbbbbbb> bbbBbbbbbBbbbbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBB_BBBBBB_BBBBBBBB, ((bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bbbb.bbBbbbbb());
+			bbbbbb bbbb.bbbbbbb(bb, bbbbbbb -> {
+				bb(bbbbbbb.bbbb()) {
+					BbbbbbBbbbbbbb bbbbbbbb = BbbbbbBbbbbbbb.bbbbbbb()
+							.bbb(BbbbbbbbbbbbBbbbbbb.Bbbbbbb, bbbbbbb.bbbBbbbbbb("bbb_bbbbb"))
+							.bbb(BbbbbbbbbbbbBbbbbbb.Bbbb, bbbbbbb.bbbBbbbbbb("bbbb_bbbbb"))
+							.bbb(BbbbbbbbbbbbBbbbbbb.Bbb, bbbbbbb.bbbBbbbbbb("bbb_bbbbb"))
+							.bbb(BbbbbbbbbbbbBbbbbbb.Bbbbbb, bbbbbbb.bbbBbbbbbb("bbbbbb_bbbbb"))
+							.bbbbb();
 
-					return Optional.of(settings);
+					bbbbbb Bbbbbbbb.bb(bbbbbbbb);
 				}
 
-				this.applyPlayerSettings(user, PlayerSettings.create());
-				return Optional.empty();
+				bbbb.bbbbbBbbbbbBbbbbbbb(bbbb, BbbbbbBbbbbbbb.bbbbbb());
+				bbbbbb Bbbbbbbb.bbbbb();
 			});
 		}));
 	}
 
-	@Override
-	public boolean applyPlayerSettings(UUID user, PlayerSettings updates) throws Exception {
-		return this.query(APPLY_PLAYER_SETTINGS, ((connection, ps) -> {
-			ps.setString(1, user.toString());
-			ps.setBoolean(2, updates.getPublishListenState());
-			ps.setBoolean(3, updates.getSoldListenState());
-			ps.setBoolean(4, updates.getBidListenState());
-			ps.setBoolean(5, updates.getOutbidListenState());
-			ps.executeUpdate();
-			return true; // Ignore return value of executeUpdate() as this can possibly end up being 0
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbbbBbbbbbBbbbbbbb(BBBB bbbb, BbbbbbBbbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBBBB_BBBBBB_BBBBBBBB, ((bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bbbb.bbBbbbbb());
+			bb.bbbBbbbbbb(2, bbbbbbb.bbbBbbbbbbBbbbbbBbbbb());
+			bb.bbbBbbbbbb(3, bbbbbbb.bbbBbbbBbbbbbBbbbb());
+			bb.bbbBbbbbbb(4, bbbbbbb.bbbBbbBbbbbbBbbbb());
+			bb.bbbBbbbbbb(5, bbbbbbb.bbbBbbbbbBbbbbbBbbbb());
+			bb.bbbbbbbBbbbbb();
+			bbbbbb bbbb; // Bbbbbb bbbbbb bbbbb bb bbbbbbbBbbbbb() bb bbbb bbb bbbbbbbb bbb bb bbbbb 0
 		}));
 	}
 
-	@Override
-	public BuyItNowMessage.Purchase.Response processPurchase(BuyItNowMessage.Purchase.Request request) throws Exception {
-		return this.query(GET_SPECIFIC_LISTING, (connection, ps) -> {
-			ps.setString(1, request.getListingID().toString());
-			return this.results(ps, results -> {
-				boolean successful = results.next();
-				UUID seller = Listing.SERVER_ID;
-				BuyItNow listing = null;
+	@Bbbbbbbb
+	bbbbbb BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbbb bbbbbbbBbbbbbbb(BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBB_BBBBBBBB_BBBBBBB, (bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bbbbbbb.bbbBbbbbbbBB().bbBbbbbb());
+			bbbbbb bbbb.bbbbbbb(bb, bbbbbbb -> {
+				bbbbbbb bbbbbbbbbb = bbbbbbb.bbbb();
+				BBBB bbbbbb = Bbbbbbb.BBBBBB_BB;
+				BbbBbBbb bbbbbbb = bbbb;
 
-				if(successful) {
-					JsonObject json = GTSPlugin.instance().gson().fromJson(results.getString("listing"), JsonObject.class);
-					if (!json.has("type")) {
-						throw new JsonParseException("Invalid Listing: Missing type");
+				bb(bbbbbbbbbb) {
+					BbbbBbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbb().bbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbbb"), BbbbBbbbbb.bbbbb);
+					bb (!bbbb.bbb("bbbb")) {
+						bbbbb bbb BbbbBbbbbBbbbbbbbb("Bbbbbbb Bbbbbbb: Bbbbbbb bbbb");
 					}
 
-					String type = json.get("type").getAsString();
-					if (type.equals("bin")) {
-						listing = GTSService.getInstance().getGTSComponentManager()
-								.getListingResourceManager(BuyItNow.class)
-								.get()
-								.getDeserializer()
-								.deserialize(json);
-					} else {
-						throw new IllegalArgumentException("Can't purchase an Auction");
+					Bbbbbb bbbb = bbbb.bbb("bbbb").bbbBbBbbbbb();
+					bb (bbbb.bbbbbb("bbb")) {
+						bbbbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+								.bbbBbbbbbbBbbbbbbbBbbbbbb(BbbBbBbb.bbbbb)
+								.bbb()
+								.bbbBbbbbbbbbbbb()
+								.bbbbbbbbbbb(bbbb);
+					} bbbb {
+						bbbbb bbb BbbbbbbBbbbbbbbBbbbbbbbb("Bbb'b bbbbbbbb bb Bbbbbbb");
 					}
 
-					seller = listing.getLister();
+					bbbbbb = bbbbbbb.bbbBbbbbb();
 
-					if (successful) {
-						successful = !listing.isPurchased();
-					}
-				}
-
-				if(successful) {
-					if(listing != null) {
-						listing.markPurchased();
-						this.sendListingUpdate(listing);
+					bb (bbbbbbbbbb) {
+						bbbbbbbbbb = !bbbbbbb.bbBbbbbbbbb();
 					}
 				}
 
-				return new BINPurchaseMessage.Response(
-						GTSPlugin.instance().messagingService().generatePingID(),
-						request.getID(),
-						request.getListingID(),
-						request.getActor(),
-						seller,
-						successful,
-						successful ? null : ErrorCodes.ALREADY_PURCHASED
+				bb(bbbbbbbbbb) {
+					bb(bbbbbbb != bbbb) {
+						bbbbbbb.bbbbBbbbbbbbb();
+						bbbb.bbbbBbbbbbbBbbbbb(bbbbbbb);
+					}
+				}
+
+				bbbbbb bbb BBBBbbbbbbbBbbbbbb.Bbbbbbbb(
+						BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB(),
+						bbbbbbb.bbbBB(),
+						bbbbbbb.bbbBbbbbbbBB(),
+						bbbbbbb.bbbBbbbb(),
+						bbbbbb,
+						bbbbbbbbbb,
+						bbbbbbbbbb ? bbbb : BbbbbBbbbb.BBBBBBB_BBBBBBBBB
 				);
 			});
 		});
 	}
 
-	@Override
-	public boolean sendListingUpdate(Listing listing) throws Exception {
-		return this.query(UPDATE_LISTING, (connection, ps) -> {
-			ps.setString(1, GTSPlugin.instance().gson().toJson(listing.serialize().toJson()));
-			ps.setString(2, listing.getID().toString());
-			return ps.executeUpdate() != 0;
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbbBbbbbbbBbbbbb(Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBBBBB_BBBBBBB, (bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, BBBBbbbbb.bbbbbbbb().bbbb().bbBbbb(bbbbbbb.bbbbbbbbb().bbBbbb()));
+			bb.bbbBbbbbb(2, bbbbbbb.bbbBB().bbBbbbbb());
+			bbbbbb bb.bbbbbbbBbbbbb() != 0;
 		});
 	}
 
-	@Override
-	public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) throws Exception {
-		return this.query(GET_SPECIFIC_LISTING, ((connection, ps) -> {
-			ps.setString(1, request.getAuctionID().toString());
-			return this.results(ps, results -> {
-				AuctionMessage.Bid.Response response;
+	@Bbbbbbbb
+	bbbbbb BbbbbbbBbbbbbb.Bbb.Bbbbbbbb bbbbbbbBbb(BbbbbbbBbbbbbb.Bbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBB_BBBBBBBB_BBBBBBB, ((bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bbbbbbb.bbbBbbbbbbBB().bbBbbbbb());
+			bbbbbb bbbb.bbbbbbb(bb, bbbbbbb -> {
+				BbbbbbbBbbbbbb.Bbb.Bbbbbbbb bbbbbbbb;
 
-				boolean fatal = false;
-				TriState successful = TriState.FALSE; // FALSE = Missing Listing ID
-				boolean sniped = false;
-				TreeMultimap<UUID, Auction.Bid> bids = TreeMultimap.create(
-						Comparator.naturalOrder(),
-						Collections.reverseOrder(Comparator.comparing(Auction.Bid::getAmount))
+				bbbbbbb bbbbb = bbbbb;
+				BbbBbbbb bbbbbbbbbb = BbbBbbbb.BBBBB; // BBBBB = Bbbbbbb Bbbbbbb BB
+				bbbbbbb bbbbbb = bbbbb;
+				BbbbBbbbbbbb<BBBB, Bbbbbbb.Bbb> bbbb = BbbbBbbbbbbb.bbbbbb(
+						Bbbbbbbbbb.bbbbbbbBbbbb(),
+						Bbbbbbbbbbb.bbbbbbbBbbbb(Bbbbbbbbbb.bbbbbbbbb(Bbbbbbb.Bbb::bbbBbbbbb))
 				);
 
-				if(results.next()) {
-					JsonObject json = GTSPlugin.instance().gson().fromJson(results.getString("listing"), JsonObject.class);
-					if(!json.has("type")) {
-						throw new JsonParseException("Invalid Listing: Missing type");
+				bb(bbbbbbb.bbbb()) {
+					BbbbBbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbb().bbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbbb"), BbbbBbbbbb.bbbbb);
+					bb(!bbbb.bbb("bbbb")) {
+						bbbbb bbb BbbbBbbbbBbbbbbbbb("Bbbbbbb Bbbbbbb: Bbbbbbb bbbb");
 					}
 
-					String type = json.get("type").getAsString();
-					if(!type.equals("auction")) {
-						throw new IllegalStateException("Trying to place bid on non-auction");
+					Bbbbbb bbbb = bbbb.bbb("bbbb").bbbBbBbbbbb();
+					bb(!bbbb.bbbbbb("bbbbbbb")) {
+						bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbb bbb bb bbb-bbbbbbb");
 					}
 
-					Auction auction = GTSService.getInstance().getGTSComponentManager()
-							.getListingResourceManager(Auction.class)
-							.map(ResourceManager::getDeserializer)
-							.get()
-							.deserialize(json);
+					Bbbbbbb bbbbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+							.bbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbbbb.bbbbb)
+							.bbb(BbbbbbbbBbbbbbb::bbbBbbbbbbbbbbb)
+							.bbb()
+							.bbbbbbbbbbb(bbbb);
 
-					successful = auction.bid(request.getActor(), request.getAmountBid()) ? TriState.TRUE : TriState.NOT_SET;
-					bids = auction.getBids();
+					bbbbbbbbbb = bbbbbbb.bbb(bbbbbbb.bbbBbbbb(), bbbbbbb.bbbBbbbbbBbb()) ? BbbBbbbb.BBBB : BbbBbbbb.BBB_BBB;
+					bbbb = bbbbbbb.bbbBbbb();
 
-					Config config = GTSPlugin.instance().configuration().main();
-					boolean snipingProtection = config.get(ConfigKeys.AUCTIONS_SNIPING_BIDS_ENABLED);
-					long snipingTime = config.get(ConfigKeys.AUCTIONS_MINIMUM_SNIPING_TIME).getTime();
-					long setTime = config.get(ConfigKeys.AUCTIONS_SET_TIME).getTime();
-					long timeDifference = ChronoUnit.SECONDS.between(LocalDateTime.now(), auction.getExpiration());
-					if (snipingTime >= timeDifference) {
-						if (snipingProtection) {
-							auction.setExpiration(LocalDateTime.now().plus(setTime, ChronoUnit.SECONDS));
-							sniped = true;
+					Bbbbbb bbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb();
+					bbbbbbb bbbbbbbBbbbbbbbbb = bbbbbb.bbb(BbbbbbBbbb.BBBBBBBB_BBBBBBB_BBBB_BBBBBBB);
+					bbbb bbbbbbbBbbb = bbbbbb.bbb(BbbbbbBbbb.BBBBBBBB_BBBBBBB_BBBBBBB_BBBB).bbbBbbb();
+					bbbb bbbBbbb = bbbbbb.bbb(BbbbbbBbbb.BBBBBBBB_BBB_BBBB).bbbBbbb();
+					bbbb bbbbBbbbbbbbbb = BbbbbbBbbb.BBBBBBB.bbbbbbb(BbbbbBbbbBbbb.bbb(), bbbbbbb.bbbBbbbbbbbbb());
+					bb (bbbbbbbBbbb >= bbbbBbbbbbbbbb) {
+						bb (bbbbbbbBbbbbbbbbb) {
+							bbbbbbb.bbbBbbbbbbbbb(BbbbbBbbbBbbb.bbb().bbbb(bbbBbbb, BbbbbbBbbb.BBBBBBB));
+							bbbbbb = bbbb;
 						}
 					}
-					if(!this.sendListingUpdate(auction)) {
-						successful = TriState.FALSE;
+					bb(!bbbb.bbbbBbbbbbbBbbbbb(bbbbbbb)) {
+						bbbbbbbbbb = BbbBbbbb.BBBBB;
 					}
 
 				}
 
-				response = new AuctionBidMessage.Response(
-						GTSPlugin.instance().messagingService().generatePingID(),
-						request.getID(),
-						request.getAuctionID(),
-						request.getActor(),
-						request.getAmountBid(),
-						successful.toBooleanOrElse(false),
-						sniped,
-						UUID.fromString(results.getString("lister")),
-						bids,
-						successful == TriState.NOT_SET ? ErrorCodes.OUTBID : successful == TriState.FALSE ?
-								(fatal ? ErrorCodes.FATAL_ERROR : ErrorCodes.LISTING_MISSING) : null
+				bbbbbbbb = bbb BbbbbbbBbbBbbbbbb.Bbbbbbbb(
+						BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB(),
+						bbbbbbb.bbbBB(),
+						bbbbbbb.bbbBbbbbbbBB(),
+						bbbbbbb.bbbBbbbb(),
+						bbbbbbb.bbbBbbbbbBbb(),
+						bbbbbbbbbb.bbBbbbbbbBbBbbb(bbbbb),
+						bbbbbb,
+						BBBB.bbbbBbbbbb(bbbbbbb.bbbBbbbbb("bbbbbb")),
+						bbbb,
+						bbbbbbbbbb == BbbBbbbb.BBB_BBB ? BbbbbBbbbb.BBBBBB : bbbbbbbbbb == BbbBbbbb.BBBBB ?
+								(bbbbb ? BbbbbBbbbb.BBBBB_BBBBB : BbbbbBbbbb.BBBBBBB_BBBBBBB) : bbbb
 				);
 
-				return response;
+				bbbbbb bbbbbbbb;
 			});
 		}));
 	}
 
-	@Override
-	public ClaimMessage.Response processClaimRequest(ClaimMessage.Request request) throws Exception {
-		Optional<Listing> listing = this.getListing(request.getListingID());
+	@Bbbbbbbb
+	bbbbbb BbbbbBbbbbbb.Bbbbbbbb bbbbbbbBbbbbBbbbbbb(BbbbbBbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+		Bbbbbbbb<Bbbbbbb> bbbbbbb = bbbb.bbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB());
 
-		UUID response = GTSPlugin.instance().messagingService().generatePingID();
-		if(!listing.isPresent()) {
-			return ClaimMessageImpl.ClaimResponseImpl.builder()
-					.id(response)
-					.request(request.getID())
-					.listing(request.getListingID())
-					.actor(request.getActor())
-					.receiver(request.getReceiver().orElse(null))
-					.error(ErrorCodes.LISTING_MISSING)
-					.build();
-		} else {
-			boolean isLister = request.getActor().equals(listing.get().getLister());
+		BBBB bbbbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB();
+		bb(!bbbbbbb.bbBbbbbbb()) {
+			bbbbbb BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.bbbbbbb()
+					.bb(bbbbbbbb)
+					.bbbbbbb(bbbbbbb.bbbBB())
+					.bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+					.bbbbb(bbbbbbb.bbbBbbbb())
+					.bbbbbbbb(bbbbbbb.bbbBbbbbbbb().bbBbbb(bbbb))
+					.bbbbb(BbbbbBbbbb.BBBBBBB_BBBBBBB)
+					.bbbbb();
+		} bbbb {
+			bbbbbbb bbBbbbbb = bbbbbbb.bbbBbbbb().bbbbbb(bbbbbbb.bbb().bbbBbbbbb());
 
-			if (listing.map(l -> l instanceof Auction).orElse(false)) {
-				if(!listing.map(l -> (Auction) l).get().hasAnyBidsPlaced()) {
-					ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
-							.id(response)
-							.request(request.getID())
-							.listing(request.getListingID())
-							.actor(request.getActor())
-							.successful()
-							.auction()
-							.winner(false)
-							.lister(false)
-							.receiver(request.getReceiver().orElse(null));
+			bb (bbbbbbb.bbb(b -> b bbbbbbbbbb Bbbbbbb).bbBbbb(bbbbb)) {
+				bb(!bbbbbbb.bbb(b -> (Bbbbbbb) b).bbb().bbbBbbBbbbBbbbbb()) {
+					BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbb bbbbbbb = BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.bbbbbbb()
+							.bb(bbbbbbbb)
+							.bbbbbbb(bbbbbbb.bbbBB())
+							.bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+							.bbbbb(bbbbbbb.bbbBbbbb())
+							.bbbbbbbbbb()
+							.bbbbbbb()
+							.bbbbbb(bbbbb)
+							.bbbbbb(bbbbb)
+							.bbbbbbbb(bbbbbbb.bbbBbbbbbbb().bbBbbb(bbbb));
 
-					if(this.deleteListing(request.getListingID())) {
-						builder.successful();
+					bb(bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB())) {
+						bbbbbbb.bbbbbbbbbb();
 					}
 
-					return builder.build();
+					bbbbbb bbbbbbb.bbbbb();
 				}
 
-				Auction auction = listing.map(l -> (Auction) l).get();
-				boolean claimer = isLister || auction.getHighBid().get().getFirst().equals(request.getActor());
+				Bbbbbbb bbbbbbb = bbbbbbb.bbb(b -> (Bbbbbbb) b).bbb();
+				bbbbbbb bbbbbbb = bbBbbbbb || bbbbbbb.bbbBbbbBbb().bbb().bbbBbbbb().bbbbbb(bbbbbbb.bbbBbbbb());
 
-				return this.query(GET_AUCTION_CLAIM_STATUS, (connection, ps) -> {
-					ps.setString(1, request.getListingID().toString());
-					return this.results(ps, results -> {
-						int result;
-						boolean lister;
-						boolean winner;
-						List<UUID> others = Lists.newArrayList();
+				bbbbbb bbbb.bbbbb(BBB_BBBBBBB_BBBBB_BBBBBB, (bbbbbbbbbb, bb) -> {
+					bb.bbbBbbbbb(1, bbbbbbb.bbbBbbbbbbBB().bbBbbbbb());
+					bbbbbb bbbb.bbbbbbb(bb, bbbbbbb -> {
+						bbb bbbbbb;
+						bbbbbbb bbbbbb;
+						bbbbbbb bbbbbb;
+						Bbbb<BBBB> bbbbbb = Bbbbb.bbbBbbbbBbbb();
 
-						if(results.next()) {
-							if(results.getString("others") == null) {
-								others = Lists.newArrayList();
-							} else {
-								others = GTSPlugin.instance().gson().fromJson(results.getString("others"), new TypeToken<List<UUID>>(){}.getType());
+						bb(bbbbbbb.bbbb()) {
+							bb(bbbbbbb.bbbBbbbbb("bbbbbb") == bbbb) {
+								bbbbbb = Bbbbb.bbbBbbbbBbbb();
+							} bbbb {
+								bbbbbb = BBBBbbbbb.bbbbbbbb().bbbb().bbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbb"), bbb BbbbBbbbb<Bbbb<BBBB>>(){}.bbbBbbb());
 							}
 
-							String key = isLister ? UPDATE_AUCTION_CLAIM_LISTER : claimer ? UPDATE_AUCTION_CLAIM_WINNER : UPDATE_AUCTION_CLAIM_OTHER;
-							try (PreparedStatement update = connection.prepareStatement(this.processor.apply(key))) {
-								if(claimer) {
-									update.setBoolean(1, true);
-								} else {
-									others.add(request.getActor());
-									update.setString(1, GTSPlugin.instance().gson().toJson(others));
+							Bbbbbb bbb = bbBbbbbb ? BBBBBB_BBBBBBB_BBBBB_BBBBBB : bbbbbbb ? BBBBBB_BBBBBBB_BBBBB_BBBBBB : BBBBBB_BBBBBBB_BBBBB_BBBBB;
+							bbb (BbbbbbbbBbbbbbbbb bbbbbb = bbbbbbbbbb.bbbbbbbBbbbbbbbb(bbbb.bbbbbbbbb.bbbbb(bbb))) {
+								bb(bbbbbbb) {
+									bbbbbb.bbbBbbbbbb(1, bbbb);
+								} bbbb {
+									bbbbbb.bbb(bbbbbbb.bbbBbbbb());
+									bbbbbb.bbbBbbbbb(1, BBBBbbbbb.bbbbbbbb().bbbb().bbBbbb(bbbbbb));
 								}
-								update.setString(2, request.getListingID().toString());
-								result = update.executeUpdate();
+								bbbbbb.bbbBbbbbb(2, bbbbbbb.bbbBbbbbbbBB().bbBbbbbb());
+								bbbbbb = bbbbbb.bbbbbbbBbbbbb();
 							}
 
-							lister = results.getBoolean("lister") || key.equals(UPDATE_AUCTION_CLAIM_LISTER);
-							winner = results.getBoolean("winner") || key.equals(UPDATE_AUCTION_CLAIM_WINNER);
-							boolean all = lister && winner && auction.getBids().keySet().stream()
-									.filter(bidder -> !auction.getHighBid().get().getFirst().equals(bidder))
-									.allMatch(others::contains);
+							bbbbbb = bbbbbbb.bbbBbbbbbb("bbbbbb") || bbb.bbbbbb(BBBBBB_BBBBBBB_BBBBB_BBBBBB);
+							bbbbbb = bbbbbbb.bbbBbbbbbb("bbbbbb") || bbb.bbbbbb(BBBBBB_BBBBBBB_BBBBB_BBBBBB);
+							bbbbbbb bbb = bbbbbb && bbbbbb && bbbbbbb.bbbBbbb().bbbBbb().bbbbbb()
+									.bbbbbb(bbbbbb -> !bbbbbbb.bbbBbbbBbb().bbb().bbbBbbbb().bbbbbb(bbbbbb))
+									.bbbBbbbb(bbbbbb::bbbbbbbb);
 
-							if(result > 0 && all) {
-								try(PreparedStatement delete = connection.prepareStatement(this.processor.apply(DELETE_AUCTION_CLAIM_STATUS))) {
-									delete.setString(1, request.getListingID().toString());
-									result = delete.executeUpdate();
+							bb(bbbbbb > 0 && bbb) {
+								bbb(BbbbbbbbBbbbbbbbb bbbbbb = bbbbbbbbbb.bbbbbbbBbbbbbbbb(bbbb.bbbbbbbbb.bbbbb(BBBBBB_BBBBBBB_BBBBB_BBBBBB))) {
+									bbbbbb.bbbBbbbbb(1, bbbbbbb.bbbBbbbbbbBB().bbBbbbbb());
+									bbbbbb = bbbbbb.bbbbbbbBbbbbb();
 
-									this.deleteListing(listing.get().getID());
+									bbbb.bbbbbbBbbbbbb(bbbbbbb.bbb().bbbBB());
 								}
 							}
-						} else {
-							if(!claimer) {
-								others.add(request.getActor());
+						} bbbb {
+							bb(!bbbbbbb) {
+								bbbbbb.bbb(bbbbbbb.bbbBbbbb());
 							}
 
-							try(PreparedStatement append = connection.prepareStatement(this.processor.apply(ADD_AUCTION_CLAIM_STATUS))) {
-								append.setString(1, request.getListingID().toString());
-								append.setBoolean(2, isLister);
-								append.setBoolean(3, !isLister && claimer);
-								append.setString(4, GTSPlugin.instance().gson().toJson(others));
-								result = append.executeUpdate();
+							bbb(BbbbbbbbBbbbbbbbb bbbbbb = bbbbbbbbbb.bbbbbbbBbbbbbbbb(bbbb.bbbbbbbbb.bbbbb(BBB_BBBBBBB_BBBBB_BBBBBB))) {
+								bbbbbb.bbbBbbbbb(1, bbbbbbb.bbbBbbbbbbBB().bbBbbbbb());
+								bbbbbb.bbbBbbbbbb(2, bbBbbbbb);
+								bbbbbb.bbbBbbbbbb(3, !bbBbbbbb && bbbbbbb);
+								bbbbbb.bbbBbbbbb(4, BBBBbbbbb.bbbbbbbb().bbbb().bbBbbb(bbbbbb));
+								bbbbbb = bbbbbb.bbbbbbbBbbbbb();
 							}
 
-							lister = isLister;
-							winner = !isLister;
+							bbbbbb = bbBbbbbb;
+							bbbbbb = !bbBbbbbb;
 						}
 
-						ImmutableList<UUID> o = ImmutableList.copyOf(others);
-						Map<UUID, Boolean> claimed = Maps.newHashMap();
-						auction.getBids().keySet().stream()
-								.filter(bidder -> !auction.getHighBid().get().getFirst().equals(bidder))
-								.forEach(bidder -> claimed.put(bidder, o.contains(bidder)));
+						BbbbbbbbbBbbb<BBBB> b = BbbbbbbbbBbbb.bbbbBb(bbbbbb);
+						Bbb<BBBB, Bbbbbbb> bbbbbbb = Bbbb.bbbBbbbBbb();
+						bbbbbbb.bbbBbbb().bbbBbb().bbbbbb()
+								.bbbbbb(bbbbbb -> !bbbbbbb.bbbBbbbBbb().bbb().bbbBbbbb().bbbbbb(bbbbbb))
+								.bbbBbbb(bbbbbb -> bbbbbbb.bbb(bbbbbb, b.bbbbbbbb(bbbbbb)));
 
-						ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
-								.id(response)
-								.request(request.getID())
-								.listing(request.getListingID())
-								.actor(request.getActor())
-								.receiver(request.getReceiver().orElse(null))
-								.successful()
-								.auction()
-								.lister(lister)
-								.winner(winner)
-								.others(claimed);
-						if(result > 0) {
-							builder.successful();
-						} else {
-							builder.error(ErrorCodes.FATAL_ERROR);
+						BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbb bbbbbbb = BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.bbbbbbb()
+								.bb(bbbbbbbb)
+								.bbbbbbb(bbbbbbb.bbbBB())
+								.bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+								.bbbbb(bbbbbbb.bbbBbbbb())
+								.bbbbbbbb(bbbbbbb.bbbBbbbbbbb().bbBbbb(bbbb))
+								.bbbbbbbbbb()
+								.bbbbbbb()
+								.bbbbbb(bbbbbb)
+								.bbbbbb(bbbbbb)
+								.bbbbbb(bbbbbbb);
+						bb(bbbbbb > 0) {
+							bbbbbbb.bbbbbbbbbb();
+						} bbbb {
+							bbbbbbb.bbbbb(BbbbbBbbbb.BBBBB_BBBBB);
 						}
 
-						return builder.build();
+						bbbbbb bbbbbbb.bbbbb();
 					});
 				});
-			} else {
-				ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
-						.id(response)
-						.request(request.getID())
-						.listing(request.getListingID())
-						.actor(request.getActor())
-						.receiver(request.getReceiver().orElse(null));
+			} bbbb {
+				BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbb bbbbbbb = BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.bbbbbbb()
+						.bb(bbbbbbbb)
+						.bbbbbbb(bbbbbbb.bbbBB())
+						.bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+						.bbbbb(bbbbbbb.bbbBbbbb())
+						.bbbbbbbb(bbbbbbb.bbbBbbbbbbb().bbBbbb(bbbb));
 
-				if(this.deleteListing(request.getListingID())) {
-					builder.successful();
+				bb(bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB())) {
+					bbbbbbb.bbbbbbbbbb();
 				}
 
-				return builder.build();
+				bbbbbb bbbbbbb.bbbbb();
 			}
 		}
 	}
 
-	@Override
-	public boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) throws Exception {
-		return this.query(ADD_AUCTION_CLAIM_STATUS, (connection, ps) -> {
-			ps.setString(1, auction.toString());
-			ps.setBoolean(2, lister);
-			ps.setBoolean(3, winner);
-			ps.setString(4, GTSPlugin.instance().gson().toJson(others));
-			return ps.executeUpdate() != 0;
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbbbbBbbBbbbbBbbbbb(BBBB bbbbbbb, bbbbbbb bbbbbb, bbbbbbb bbbbbb, Bbbb<BBBB> bbbbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBB_BBBBBBB_BBBBB_BBBBBB, (bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bbbbbbb.bbBbbbbb());
+			bb.bbbBbbbbbb(2, bbbbbb);
+			bb.bbbBbbbbbb(3, bbbbbb);
+			bb.bbbBbbbbb(4, BBBBbbbbb.bbbbbbbb().bbbb().bbBbbb(bbbbbb));
+			bbbbbb bb.bbbbbbbBbbbbb() != 0;
 		});
 	}
 
-	@Override
-	public AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception {
-		return this.query(GET_SPECIFIC_LISTING, (connection, ps) -> {
-			ps.setString(1, request.getAuctionID().toString());
-			AtomicReference<Auction> data = new AtomicReference<>();
-			return this.results(ps, results -> {
-				boolean result = false;
-				List<UUID> bidders = Lists.newArrayList();
-				ErrorCode error = null;
+	@Bbbbbbbb
+	bbbbbb BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbbb bbbbbbbBbbbbbbBbbbbbBbbbbbb(BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBB_BBBBBBBB_BBBBBBB, (bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bbbbbbb.bbbBbbbbbbBB().bbBbbbbb());
+			BbbbbbBbbbbbbbb<Bbbbbbb> bbbb = bbb BbbbbbBbbbbbbbb<>();
+			bbbbbb bbbb.bbbbbbb(bb, bbbbbbb -> {
+				bbbbbbb bbbbbb = bbbbb;
+				Bbbb<BBBB> bbbbbbb = Bbbbb.bbbBbbbbBbbb();
+				BbbbbBbbb bbbbb = bbbb;
 
-				if(results.next()) {
-					JsonObject json = GTSPlugin.instance().gson().fromJson(results.getString("listing"), JsonObject.class);
-					if(!json.has("type")) {
-						throw new JsonParseException("Invalid Listing: Missing type");
+				bb(bbbbbbb.bbbb()) {
+					BbbbBbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbb().bbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbbb"), BbbbBbbbbb.bbbbb);
+					bb(!bbbb.bbb("bbbb")) {
+						bbbbb bbb BbbbBbbbbBbbbbbbbb("Bbbbbbb Bbbbbbb: Bbbbbbb bbbb");
 					}
 
-					String type = json.get("type").getAsString();
-					if(!type.equals("auction")) {
-						throw new IllegalStateException("Trying to place bid on non-auction");
+					Bbbbbb bbbb = bbbb.bbb("bbbb").bbbBbBbbbbb();
+					bb(!bbbb.bbbbbb("bbbbbbb")) {
+						bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbb bbb bb bbb-bbbbbbb");
 					}
 
-					Auction auction = GTSService.getInstance().getGTSComponentManager()
-							.getListingResourceManager(Auction.class)
-							.map(ResourceManager::getDeserializer)
-							.get()
-							.deserialize(json);
-					data.set(auction);
+					Bbbbbbb bbbbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+							.bbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbbbb.bbbbb)
+							.bbb(BbbbbbbbBbbbbbb::bbbBbbbbbbbbbbb)
+							.bbb()
+							.bbbbbbbbbbb(bbbb);
+					bbbb.bbb(bbbbbbb);
 
-					Config config = GTSPlugin.instance().configuration().main();
-					if(config.get(ConfigKeys.AUCTIONS_ALLOW_CANCEL_WITH_BIDS)) {
-						auction.getBids().keySet().stream().distinct().forEach(bidders::add);
+					Bbbbbb bbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb();
+					bb(bbbbbb.bbb(BbbbbbBbbb.BBBBBBBB_BBBBB_BBBBBB_BBBB_BBBB)) {
+						bbbbbbb.bbbBbbb().bbbBbb().bbbbbb().bbbbbbbb().bbbBbbb(bbbbbbb::bbb);
 
-						result = this.deleteListing(auction.getID());
-					} else {
-						if(auction.getBids().size() > 0) {
-							error = ErrorCodes.BIDS_PLACED;
-						} else {
-							result = this.deleteListing(auction.getID());
+						bbbbbb = bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBB());
+					} bbbb {
+						bb(bbbbbbb.bbbBbbb().bbbb() > 0) {
+							bbbbb = BbbbbBbbbb.BBBB_BBBBBB;
+						} bbbb {
+							bbbbbb = bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBB());
 						}
 					}
 				}
 
-				return new AuctionCancelMessage.Response(
-						GTSPlugin.instance().messagingService().generatePingID(),
-						request.getID(),
-						data.get(),
-						request.getAuctionID(),
-						request.getActor(),
-						ImmutableList.copyOf(bidders),
-						result,
-						error
+				bbbbbb bbb BbbbbbbBbbbbbBbbbbbb.Bbbbbbbb(
+						BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB(),
+						bbbbbbb.bbbBB(),
+						bbbb.bbb(),
+						bbbbbbb.bbbBbbbbbbBB(),
+						bbbbbbb.bbbBbbbb(),
+						BbbbbbbbbBbbb.bbbbBb(bbbbbbb),
+						bbbbbb,
+						bbbbb
 				);
 			});
 		});
 	}
 
-	@Override
-	public BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception {
-		BiFunction<Boolean, ErrorCode, BINRemoveMessage.Response> processor = (success, error) -> {
-			return new BINRemoveMessage.Response(
-					GTSPlugin.instance().messagingService().generatePingID(),
-					request.getID(),
-					request.getListingID(),
-					request.getActor(),
-					request.getRecipient().orElse(null),
-					request.shouldReturnListing(),
-					success,
-					success ? null : error
+	@Bbbbbbbb
+	bbbbbb BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbbb bbbbbbbBbbbbbbBbbbbbBbbbbbb(BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+		BbBbbbbbbb<Bbbbbbb, BbbbbBbbb, BBBBbbbbbBbbbbbb.Bbbbbbbb> bbbbbbbbb = (bbbbbbb, bbbbb) -> {
+			bbbbbb bbb BBBBbbbbbBbbbbbb.Bbbbbbbb(
+					BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB(),
+					bbbbbbb.bbbBB(),
+					bbbbbbb.bbbBbbbbbbBB(),
+					bbbbbbb.bbbBbbbb(),
+					bbbbbbb.bbbBbbbbbbbb().bbBbbb(bbbb),
+					bbbbbbb.bbbbbbBbbbbbBbbbbbb(),
+					bbbbbbb,
+					bbbbbbb ? bbbb : bbbbb
 			);
 		};
 
-		Optional<Listing> listing = this.getListing(request.getListingID());
-		if(!listing.isPresent()) {
-			return processor.apply(false, ErrorCodes.LISTING_MISSING);
+		Bbbbbbbb<Bbbbbbb> bbbbbbb = bbbb.bbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB());
+		bb(!bbbbbbb.bbBbbbbbb()) {
+			bbbbbb bbbbbbbbb.bbbbb(bbbbb, BbbbbBbbbb.BBBBBBB_BBBBBBB);
 
 		}
 
-		Listing result = listing.get();
-		if(((BuyItNow) result).isPurchased()) {
-			return processor.apply(false, ErrorCodes.ALREADY_PURCHASED);
+		Bbbbbbb bbbbbb = bbbbbbb.bbb();
+		bb(((BbbBbBbb) bbbbbb).bbBbbbbbbbb()) {
+			bbbbbb bbbbbbbbb.bbbbb(bbbbb, BbbbbBbbbb.BBBBBBB_BBBBBBBBB);
 		}
 
-		return processor.apply(this.deleteListing(request.getListingID()), ErrorCodes.FATAL_ERROR);
+		bbbbbb bbbbbbbbb.bbbbb(bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB()), BbbbbBbbbb.BBBBB_BBBBB);
 	}
 
-	@Override
-	public ForceDeleteMessage.Response processForcedDeletion(ForceDeleteMessage.Request request) throws Exception {
-		Optional<Listing> listing = this.getListing(request.getListingID());
-		if(listing.isPresent()) {
-			boolean successful = this.deleteListing(request.getListingID());
-			return ForceDeleteMessage.Response.builder()
-					.request(request.getID())
-					.listing(request.getListingID())
-					.actor(request.getActor())
-					.data(listing.get())
-					.give(request.shouldGive())
-					.successful(successful)
-					.error(successful ? null : ErrorCodes.FATAL_ERROR)
-					.build();
-		} else {
-			return ForceDeleteMessage.Response.builder()
-					.request(request.getID())
-					.listing(request.getListingID())
-					.actor(request.getActor())
-					.successful(false)
-					.give(request.shouldGive())
-					.error(ErrorCodes.LISTING_MISSING)
-					.build();
+	@Bbbbbbbb
+	bbbbbb BbbbbBbbbbbBbbbbbb.Bbbbbbbb bbbbbbbBbbbbbBbbbbbbb(BbbbbBbbbbbBbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+		Bbbbbbbb<Bbbbbbb> bbbbbbb = bbbb.bbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB());
+		bb(bbbbbbb.bbBbbbbbb()) {
+			bbbbbbb bbbbbbbbbb = bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB());
+			bbbbbb BbbbbBbbbbbBbbbbbb.Bbbbbbbb.bbbbbbb()
+					.bbbbbbb(bbbbbbb.bbbBB())
+					.bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+					.bbbbb(bbbbbbb.bbbBbbbb())
+					.bbbb(bbbbbbb.bbb())
+					.bbbb(bbbbbbb.bbbbbbBbbb())
+					.bbbbbbbbbb(bbbbbbbbbb)
+					.bbbbb(bbbbbbbbbb ? bbbb : BbbbbBbbbb.BBBBB_BBBBB)
+					.bbbbb();
+		} bbbb {
+			bbbbbb BbbbbBbbbbbBbbbbbb.Bbbbbbbb.bbbbbbb()
+					.bbbbbbb(bbbbbbb.bbbBB())
+					.bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+					.bbbbb(bbbbbbb.bbbBbbbb())
+					.bbbbbbbbbb(bbbbb)
+					.bbbb(bbbbbbb.bbbbbbBbbb())
+					.bbbbb(BbbbbBbbbb.BBBBBBB_BBBBBBB)
+					.bbbbb();
 		}
 	}
 
-	@Override
-	public ClaimDelivery.Response claimDelivery(ClaimDelivery.Request request) throws Exception {
-		return this.query(GET_DELIVERY, (connection, ps) -> {
-			ps.setString(1, request.getDeliveryID().toString());
-			return this.results(ps, results -> {
-				ClaimDeliveryImpl.ClaimDeliveryResponseImpl.DeliveryClaimResponseBuilder builder = ClaimDeliveryImpl.ClaimDeliveryResponseImpl.builder();
-				builder.request(request.getID());
-				builder.delivery(request.getDeliveryID());
-				builder.actor(request.getActor());
-				if(results.next()) {
-					boolean delete = this.query(DELETE_DELIVERY, (c, p) -> {
-						p.setString(1, request.getDeliveryID().toString());
-						return p.executeUpdate() != 0;
+	@Bbbbbbbb
+	bbbbbb BbbbbBbbbbbbb.Bbbbbbbb bbbbbBbbbbbbb(BbbbbBbbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+		bbbbbb bbbb.bbbbb(BBB_BBBBBBBB, (bbbbbbbbbb, bb) -> {
+			bb.bbbBbbbbb(1, bbbbbbb.bbbBbbbbbbbBB().bbBbbbbb());
+			bbbbbb bbbb.bbbbbbb(bb, bbbbbbb -> {
+				BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbbBbbb.BbbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbb = BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbbBbbb.bbbbbbb();
+				bbbbbbb.bbbbbbb(bbbbbbb.bbbBB());
+				bbbbbbb.bbbbbbbb(bbbbbbb.bbbBbbbbbbbBB());
+				bbbbbbb.bbbbb(bbbbbbb.bbbBbbbb());
+				bb(bbbbbbb.bbbb()) {
+					bbbbbbb bbbbbb = bbbb.bbbbb(BBBBBB_BBBBBBBB, (b, b) -> {
+						b.bbbBbbbbb(1, bbbbbbb.bbbBbbbbbbbBB().bbBbbbbb());
+						bbbbbb b.bbbbbbbBbbbbb() != 0;
 					});
-					if(delete) {
-						builder.successful();
-					} else {
-						builder.error(ErrorCodes.FATAL_ERROR);
+					bb(bbbbbb) {
+						bbbbbbb.bbbbbbbbbb();
+					} bbbb {
+						bbbbbbb.bbbbb(BbbbbBbbbb.BBBBB_BBBBB);
 					}
-				} else {
-					builder.error(ErrorCodes.DELIVERY_MISSING);
+				} bbbb {
+					bbbbbbb.bbbbb(BbbbbBbbbb.BBBBBBBB_BBBBBBB);
 				}
 
-				return builder.build();
+				bbbbbb bbbbbbb.bbbbb();
 			});
 		});
 	}
 
-	private boolean tableExists(String table) throws SQLException {
-		try (Connection connection = this.connectionFactory.connection()) {
-			try (ResultSet rs = connection.getMetaData().getTables(null, null, "%", null)) {
-				while (rs.next()) {
-					if (rs.getString(3).equalsIgnoreCase(table)) {
-						return true;
+	bbbbbbb bbbbbbb bbbbbBbbbbb(Bbbbbb bbbbb) bbbbbb BBBBbbbbbbbb {
+		bbb (Bbbbbbbbbb bbbbbbbbbb = bbbb.bbbbbbbbbbBbbbbbb.bbbbbbbbbb()) {
+			bbb (BbbbbbBbb bb = bbbbbbbbbb.bbbBbbbBbbb().bbbBbbbbb(bbbb, bbbb, "%", bbbb)) {
+				bbbbb (bb.bbbb()) {
+					bb (bb.bbbBbbbbb(3).bbbbbbBbbbbbBbbb(bbbbb)) {
+						bbbbbb bbbb;
 					}
 				}
-				return false;
+				bbbbbb bbbbb;
 			}
 		}
 	}
 
-	@Deprecated
-	private boolean ran = false;
+	@Bbbbbbbbbb
+	bbbbbbb bbbbbbb bbb = bbbbb;
 
 	/**
-	 * This will read the old data from our database, and apply the necessary changes required to
-	 * update the data to our new system.
+	 * Bbbb bbbb bbbb bbb bbb bbbb bbbb bbb bbbbbbbb, bbb bbbbb bbb bbbbbbbbb bbbbbbb bbbbbbbb bb
+	 * bbbbbb bbb bbbb bb bbb bbb bbbbbb.
 	 *
-	 * @deprecated This is purely for legacy updating. This will be removed in 6.1
+	 * @bbbbbbbbbb Bbbb bb bbbbbb bbb bbbbbb bbbbbbbb. Bbbb bbbb bb bbbbbbb bb 6.1
 	 */
-	@Deprecated
-	private void translateLegacy() throws Exception {
-		if(!this.ran && this.tableExists(this.processor.apply("{prefix}listings_v3"))) {
-			GTSPlugin.instance().logger().info("&6Attempting to translate legacy data...");
-			AtomicInteger successful = new AtomicInteger();
-			AtomicInteger parsed = new AtomicInteger();
+	@Bbbbbbbbbb
+	bbbbbbb bbbb bbbbbbbbbBbbbbb() bbbbbb Bbbbbbbbb {
+		bb(!bbbb.bbb && bbbb.bbbbbBbbbbb(bbbb.bbbbbbbbb.bbbbb("{bbbbbb}bbbbbbbb_b3"))) {
+			BBBBbbbbb.bbbbbbbb().bbbbbb().bbbb("&6Bbbbbbbbbb bb bbbbbbbbb bbbbbb bbbb...");
+			BbbbbbBbbbbbb bbbbbbbbbb = bbb BbbbbbBbbbbbb();
+			BbbbbbBbbbbbb bbbbbb = bbb BbbbbbBbbbbbb();
 
-			this.ran = true;
-			this.query(
-					this.processor.apply("SELECT * from {prefix}listings_v3"),
-					(connection, query) -> this.results(query, incoming -> {
-						connection.setAutoCommit(false);
-						try (PreparedStatement ps = connection.prepareStatement(this.processor.apply(ADD_LISTING))) {
-							while (incoming.next()) {
-								UUID id = UUID.fromString(incoming.getString("id"));
+			bbbb.bbb = bbbb;
+			bbbb.bbbbb(
+					bbbb.bbbbbbbbb.bbbbb("BBBBBB * bbbb {bbbbbb}bbbbbbbb_b3"),
+					(bbbbbbbbbb, bbbbb) -> bbbb.bbbbbbb(bbbbb, bbbbbbbb -> {
+						bbbbbbbbbb.bbbBbbbBbbbbb(bbbbb);
+						bbb (BbbbbbbbBbbbbbbbb bb = bbbbbbbbbb.bbbbbbbBbbbbbbbb(bbbb.bbbbbbbbb.bbbbb(BBB_BBBBBBB))) {
+							bbbbb (bbbbbbbb.bbbb()) {
+								BBBB bb = BBBB.bbbbBbbbbb(bbbbbbbb.bbbBbbbbb("bb"));
 
-								if(this.getListing(id).isPresent()) {
-									continue;
+								bb(bbbb.bbbBbbbbbb(bb).bbBbbbbbb()) {
+									bbbbbbbb;
 								}
 
-								JsonObject json = GTSPlugin.instance().gson().fromJson(incoming.getString("entry"), JsonObject.class);
-								if(!json.has("element")) {
-									continue;
+								BbbbBbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbb().bbbbBbbb(bbbbbbbb.bbbBbbbbb("bbbbb"), BbbbBbbbbb.bbbbb);
+								bb(!bbbb.bbb("bbbbbbb")) {
+									bbbbbbbb;
 								}
 
-								try {
-									UUID lister = UUID.fromString(incoming.getString("owner"));
-									LocalDateTime expiration = incoming.getTimestamp("expiration").toLocalDateTime();
-									Price<?, ?, ?> price = GTSService.getInstance().getGTSComponentManager()
-											.getPriceManager("currency")
-											.orElseThrow(() -> new IllegalStateException("No deserializer for currency available"))
-											.getDeserializer()
-											.deserialize(new JObject().add("value", incoming.getDouble("price")).toJson());
+								bbb {
+									BBBB bbbbbb = BBBB.bbbbBbbbbb(bbbbbbbb.bbbBbbbbb("bbbbb"));
+									BbbbbBbbbBbbb bbbbbbbbbb = bbbbbbbb.bbbBbbbbbbbb("bbbbbbbbbb").bbBbbbbBbbbBbbb();
+									Bbbbb<?, ?, ?> bbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+											.bbbBbbbbBbbbbbb("bbbbbbbb")
+											.bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bb bbbbbbbbbbbb bbb bbbbbbbb bbbbbbbbb"))
+											.bbbBbbbbbbbbbbb()
+											.bbbbbbbbbbb(bbb BBbbbbb().bbb("bbbbb", bbbbbbbb.bbbBbbbbb("bbbbb")).bbBbbb());
 
-									Entry<?, ?> entry = GTSService.getInstance().getGTSComponentManager()
-											.getLegacyEntryDeserializer(json.get("type").getAsString())
-											.orElseThrow(() -> new IllegalStateException("No deserializer for legacy entry type: " + json.get("type").getAsString()))
-											.deserialize(json);
+									Bbbbb<?, ?> bbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+											.bbbBbbbbbBbbbbBbbbbbbbbbbb(bbbb.bbb("bbbb").bbbBbBbbbbb())
+											.bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bb bbbbbbbbbbbb bbb bbbbbb bbbbb bbbb: " + bbbb.bbb("bbbb").bbbBbBbbbbb()))
+											.bbbbbbbbbbb(bbbb);
 
-									BuyItNow bin = BuyItNow.builder()
-											.id(id)
-											.lister(lister)
-											.expiration(expiration)
-											.price(price)
-											.entry(entry)
-											.build();
+									BbbBbBbb bbb = BbbBbBbb.bbbbbbb()
+											.bb(bb)
+											.bbbbbb(bbbbbb)
+											.bbbbbbbbbb(bbbbbbbbbb)
+											.bbbbb(bbbbb)
+											.bbbbb(bbbbb)
+											.bbbbb();
 
-									ps.setString(1, id.toString());
-									ps.setString(2, lister.toString());
-									ps.setString(3, GTSPlugin.instance().gson().toJson(bin.serialize().toJson()));
+									bb.bbbBbbbbb(1, bb.bbBbbbbb());
+									bb.bbbBbbbbb(2, bbbbbb.bbBbbbbb());
+									bb.bbbBbbbbb(3, BBBBbbbbb.bbbbbbbb().bbbb().bbBbbb(bbb.bbbbbbbbb().bbBbbb()));
 
-									this.query(this.processor.apply("DELETE FROM {prefix}listings_v3 WHERE ID=?"), (con, p) -> {
-										p.setString(1, id.toString());
-										p.executeUpdate();
-										return null;
+									bbbb.bbbbb(bbbb.bbbbbbbbb.bbbbb("BBBBBB BBBB {bbbbbb}bbbbbbbb_b3 BBBBB BB=?"), (bbb, b) -> {
+										b.bbbBbbbbb(1, bb.bbBbbbbb());
+										b.bbbbbbbBbbbbb();
+										bbbbbb bbbb;
 									});
 
-									ps.addBatch();
-									successful.incrementAndGet();
-								} catch (IllegalStateException e) {
-									GTSPlugin.instance().logger().error("Failed to read listing with ID: " + id);
-									GTSPlugin.instance().logger().error("  * " + e.getMessage());
-								} catch (Exception e) {
-									GTSPlugin.instance().logger().error("Unexpectedly failed to read listing with ID: " + id);
-									ExceptionWriter.write(e);
-								} finally {
-									parsed.incrementAndGet();
+									bb.bbbBbbbb();
+									bbbbbbbbbb.bbbbbbbbbBbbBbb();
+								} bbbbb (BbbbbbbBbbbbBbbbbbbbb b) {
+									BBBBbbbbb.bbbbbbbb().bbbbbb().bbbbb("Bbbbbb bb bbbb bbbbbbb bbbb BB: " + bb);
+									BBBBbbbbb.bbbbbbbb().bbbbbb().bbbbb("  * " + b.bbbBbbbbbb());
+								} bbbbb (Bbbbbbbbb b) {
+									BBBBbbbbb.bbbbbbbb().bbbbbb().bbbbb("Bbbbbbbbbbbb bbbbbb bb bbbb bbbbbbb bbbb BB: " + bb);
+									BbbbbbbbbBbbbbb.bbbbb(b);
+								} bbbbbbb {
+									bbbbbb.bbbbbbbbbBbbBbb();
 								}
 							}
 
-							ps.executeBatch();
-							connection.commit();
-						} finally {
-							connection.setAutoCommit(true);
+							bb.bbbbbbbBbbbb();
+							bbbbbbbbbb.bbbbbb();
+						} bbbbbbb {
+							bbbbbbbbbb.bbbBbbbBbbbbb(bbbb);
 						}
 
-						return null;
+						bbbbbb bbbb;
 					})
 			);
 
-			if(successful.get() == parsed.get()) {
-				try (Connection connection = this.connectionFactory.connection()) {
-					Statement statement = connection.createStatement();
-					statement.executeUpdate(this.processor.apply("DROP TABLE {prefix}listings_v3"));
+			bb(bbbbbbbbbb.bbb() == bbbbbb.bbb()) {
+				bbb (Bbbbbbbbbb bbbbbbbbbb = bbbb.bbbbbbbbbbBbbbbbb.bbbbbbbbbb()) {
+					Bbbbbbbbb bbbbbbbbb = bbbbbbbbbb.bbbbbbBbbbbbbbb();
+					bbbbbbbbb.bbbbbbbBbbbbb(bbbb.bbbbbbbbb.bbbbb("BBBB BBBBB {bbbbbb}bbbbbbbb_b3"));
 				}
-				GTSPlugin.instance().logger().info("Successfully converted " + successful.get() + " instances of legacy data!");
-			} else {
-				GTSPlugin.instance().logger().warn("Some data failed to be converted, as such, we preserved the remaining data...");
-				GTSPlugin.instance().logger().warn("Check the logs above for further information!");
+				BBBBbbbbb.bbbbbbbb().bbbbbb().bbbb("Bbbbbbbbbbbb bbbbbbbbb " + bbbbbbbbbb.bbb() + " bbbbbbbbb bb bbbbbb bbbb!");
+			} bbbb {
+				BBBBbbbbb.bbbbbbbb().bbbbbb().bbbb("Bbbb bbbb bbbbbb bb bb bbbbbbbbb, bb bbbb, bb bbbbbbbbb bbb bbbbbbbbb bbbb...");
+				BBBBbbbbb.bbbbbbbb().bbbbbb().bbbb("Bbbbb bbb bbbb bbbbb bbb bbbbbbb bbbbbbbbbbb!");
 			}
 
 		}
 	}
 
-	private enum SchemaReaders {
-		CREATE_TABLE((impl, in) -> in.startsWith("CREATE TABLE"), (impl, in) -> !impl.tableExists(getTable(in))),
-		ALTER_TABLE((impl, in) -> in.startsWith("ALTER TABLE"), (impl, in) -> impl.tableExists(getTable(in))),
-		ANY((impl, input) -> true, (impl, input) -> true);
+	bbbbbbb bbbb BbbbbbBbbbbbb {
+		BBBBBB_BBBBB((bbbb, bb) -> bb.bbbbbbBbbb("BBBBBB BBBBB"), (bbbb, bb) -> !bbbb.bbbbbBbbbbb(bbbBbbbb(bb))),
+		BBBBB_BBBBB((bbbb, bb) -> bb.bbbbbbBbbb("BBBBB BBBBB"), (bbbb, bb) -> bbbb.bbbbbBbbbbb(bbbBbbbb(bb))),
+		BBB((bbbb, bbbbb) -> bbbb, (bbbb, bbbbb) -> bbbb);
 
-		private final SchemaPredicate initial;
-		private final SchemaPredicate last;
+		bbbbbbb bbbbb BbbbbbBbbbbbbbb bbbbbbb;
+		bbbbbbb bbbbb BbbbbbBbbbbbbbb bbbb;
 
-		SchemaReaders(SchemaPredicate initial, SchemaPredicate last) {
-			this.initial = initial;
-			this.last = last;
+		BbbbbbBbbbbbb(BbbbbbBbbbbbbbb bbbbbbb, BbbbbbBbbbbbbbb bbbb) {
+			bbbb.bbbbbbb = bbbbbbb;
+			bbbb.bbbb = bbbb;
 		}
 
-		public static boolean any(SqlImplementation impl, String in) {
-			return Arrays.stream(values()).map(sr -> {
-				try {
-					return sr.initial.test(impl, in);
-				} catch (Exception e) {
-					ExceptionWriter.write(e);
-					return false;
+		bbbbbb bbbbbb bbbbbbb bbb(BbbBbbbbbbbbbbbbb bbbb, Bbbbbb bb) {
+			bbbbbb Bbbbbb.bbbbbb(bbbbbb()).bbb(bb -> {
+				bbb {
+					bbbbbb bb.bbbbbbb.bbbb(bbbb, bb);
+				} bbbbb (Bbbbbbbbb b) {
+					BbbbbbbbbBbbbbb.bbbbb(b);
+					bbbbbb bbbbb;
 				}
-			}).filter(x -> x).findAny().orElse(false);
+			}).bbbbbb(b -> b).bbbbBbb().bbBbbb(bbbbb);
 		}
 
-		public static void first(SqlImplementation impl, String in, Statement statement) throws Exception {
-			for(SchemaReaders reader : SchemaReaders.values()) {
-				if(reader != ANY) {
-					if (reader.initial.test(impl, in) && reader.last.test(impl, in)) {
-						statement.addBatch(in);
-						return;
+		bbbbbb bbbbbb bbbb bbbbb(BbbBbbbbbbbbbbbbb bbbb, Bbbbbb bb, Bbbbbbbbb bbbbbbbbb) bbbbbb Bbbbbbbbb {
+			bbb(BbbbbbBbbbbbb bbbbbb : BbbbbbBbbbbbb.bbbbbb()) {
+				bb(bbbbbb != BBB) {
+					bb (bbbbbb.bbbbbbb.bbbb(bbbb, bb) && bbbbbb.bbbb.bbbb(bbbb, bb)) {
+						bbbbbbbbb.bbbBbbbb(bb);
+						bbbbbb;
 					}
-				} else {
-					for(SchemaReaders r : Arrays.stream(SchemaReaders.values()).filter(sr -> sr != ANY).collect(Collectors.toList())) {
-						if(r.initial.test(impl, in)) {
-							return;
+				} bbbb {
+					bbb(BbbbbbBbbbbbb b : Bbbbbb.bbbbbb(BbbbbbBbbbbbb.bbbbbb()).bbbbbb(bb -> bb != BBB).bbbbbbb(Bbbbbbbbbb.bbBbbb())) {
+						bb(b.bbbbbbb.bbbb(bbbb, bb)) {
+							bbbbbb;
 						}
 					}
 
-					statement.addBatch(in);
+					bbbbbbbbb.bbbBbbbb(bb);
 				}
 			}
 		}
 
-		private static String getTable(String in) {
-			int start = in.indexOf('`');
-			return in.substring(start + 1, in.indexOf('`', start + 1));
+		bbbbbbb bbbbbb Bbbbbb bbbBbbbb(Bbbbbb bb) {
+			bbb bbbbb = bb.bbbbbBb('`');
+			bbbbbb bb.bbbbbbbbb(bbbbb + 1, bb.bbbbbBb('`', bbbbb + 1));
 		}
 
 	}
 
-	private interface SchemaPredicate {
+	bbbbbbb bbbbbbbbb BbbbbbBbbbbbbbb {
 
-		boolean test(SqlImplementation impl, String input) throws Exception;
+		bbbbbbb bbbb(BbbBbbbbbbbbbbbbb bbbb, Bbbbbb bbbbb) bbbbbb Bbbbbbbbb;
 
 	}
 

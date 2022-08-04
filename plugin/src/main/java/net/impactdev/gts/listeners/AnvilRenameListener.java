@@ -1,25 +1,25 @@
-package net.impactdev.gts.listeners;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb;
 
-import net.minecraft.nbt.CompoundNBT;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.item.inventory.UpdateAnvilEvent;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbbbbBBB;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbb.bbbbbbbbb.BbbbbbBbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbbBbbbbbbb;
 
-public class AnvilRenameListener {
+bbbbbb bbbbb BbbbbBbbbbbBbbbbbbb {
 
-    @Listener
-    public void onAnvilRename(UpdateAnvilEvent event) {
-        ItemStackSnapshot result = event.result().finalReplacement();
-        if(!result.isEmpty()) {
-            if(!event.itemName().isEmpty()) {
-                net.minecraft.item.ItemStack mc = (net.minecraft.item.ItemStack) (Object) (result.createStack());
-                CompoundNBT nbt = new CompoundNBT();
-                mc.save(nbt);
-                nbt.getCompound("tag").putBoolean("GTS-Anvil", true);
-                mc = net.minecraft.item.ItemStack.of(nbt);
+    @Bbbbbbbb
+    bbbbbb bbbb bbBbbbbBbbbbb(BbbbbbBbbbbBbbbb bbbbb) {
+        BbbbBbbbbBbbbbbbb bbbbbb = bbbbb.bbbbbb().bbbbbBbbbbbbbbbb();
+        bb(!bbbbbb.bbBbbbb()) {
+            bb(!bbbbb.bbbbBbbb().bbBbbbb()) {
+                bbb.bbbbbbbbb.bbbb.BbbbBbbbb bb = (bbb.bbbbbbbbb.bbbb.BbbbBbbbb) (Bbbbbb) (bbbbbb.bbbbbbBbbbb());
+                BbbbbbbbBBB bbb = bbb BbbbbbbbBBB();
+                bb.bbbb(bbb);
+                bbb.bbbBbbbbbbb("bbb").bbbBbbbbbb("BBB-Bbbbb", bbbb);
+                bb = bbb.bbbbbbbbb.bbbb.BbbbBbbbb.bb(bbb);
 
-                event.result().setCustom(((ItemStack) (Object) mc).createSnapshot());
+                bbbbb.bbbbbb().bbbBbbbbb(((BbbbBbbbb) (Bbbbbb) bb).bbbbbbBbbbbbbb());
             }
         }
     }

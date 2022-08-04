@@ -1,149 +1,149 @@
 /*
- * This file is part of LuckPerms, licensed under the MIT License.
+ * Bbbb bbbb bb bbbb bb BbbbBbbbb, bbbbbbbb bbbbb bbb BBB Bbbbbbb.
  *
- *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Bbbbbbbbb (b) bbbbb (Bbbb) <bbbb@bbbbb.bb>
+ *  Bbbbbbbbb (b) bbbbbbbbbbbb
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Bbbbbbbbbb bb bbbbbb bbbbbbb, bbbb bb bbbbbb, bb bbb bbbbbb bbbbbbbbb b bbbb
+ *  bb bbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbbbbbbb bbbbb (bbb "Bbbbbbbb"), bb bbbb
+ *  bb bbb Bbbbbbbb bbbbbbb bbbbbbbbbbb, bbbbbbbbb bbbbbbb bbbbbbbbbb bbb bbbbbb
+ *  bb bbb, bbbb, bbbbbb, bbbbb, bbbbbbb, bbbbbbbbbb, bbbbbbbbbb, bbb/bb bbbb
+ *  bbbbbb bb bbb Bbbbbbbb, bbb bb bbbbbb bbbbbbb bb bbbb bbb Bbbbbbbb bb
+ *  bbbbbbbbb bb bb bb, bbbbbbb bb bbb bbbbbbbbb bbbbbbbbbb:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  Bbb bbbbb bbbbbbbbb bbbbbb bbb bbbb bbbbbbbbbb bbbbbb bbbbb bb bbbbbbbb bb bbb
+ *  bbbbbb bb bbbbbbbbbbb bbbbbbbb bb bbb Bbbbbbbb.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
+ *  BBB BBBBBBBB BB BBBBBBBB "BB BB", BBBBBBB BBBBBBBB BB BBB BBBB, BBBBBBB BB
+ *  BBBBBBB, BBBBBBBBB BBB BBB BBBBBBB BB BBB BBBBBBBBBB BB BBBBBBBBBBBBBBB,
+ *  BBBBBBB BBB B BBBBBBBBBB BBBBBBB BBB BBBBBBBBBBBBBBB. BB BB BBBBB BBBBB BBB
+ *  BBBBBBB BB BBBBBBBBB BBBBBBB BB BBBBBB BBB BBB BBBBB, BBBBBBB BB BBBBB
+ *  BBBBBBBBB, BBBBBBB BB BB BBBBBB BB BBBBBBBB, BBBB BB BBBBBBBBB, BBBBBBB BBBB,
+ *  BBB BB BB BB BBBBBBBBBB BBBB BBB BBBBBBBB BB BBB BBB BB BBBBB BBBBBBBB BB BBB
+ *  BBBBBBBB.
  */
 
-package net.impactdev.gts.common.storage.implementation;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbbbbbbbb;
 
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
-import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.player.PlayerSettings;
-import net.impactdev.gts.api.stashes.Stash;
-import net.impactdev.gts.api.storage.PurgeType;
-import net.impactdev.gts.common.plugin.GTSPlugin;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb.BbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbbbb.BbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbBbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
 
-import java.sql.Connection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * Represents the basis to an implementation focused on saving and
- * retrieving data from a storage provider.
+ * Bbbbbbbbbb bbb bbbbb bb bb bbbbbbbbbbbbbb bbbbbbb bb bbbbbb bbb
+ * bbbbbbbbbb bbbb bbbb b bbbbbbb bbbbbbbb.
  */
-public interface StorageImplementation {
+bbbbbb bbbbbbbbb BbbbbbbBbbbbbbbbbbbbb {
 
     /**
-     * Fetches the current instance of the plugin handling this storage
-     * implementation.
+     * Bbbbbbb bbb bbbbbbb bbbbbbbb bb bbb bbbbbb bbbbbbbb bbbb bbbbbbb
+     * bbbbbbbbbbbbbb.
      *
-     * @return The current plugin instance held by this implementation
+     * @bbbbbb Bbb bbbbbbb bbbbbb bbbbbbbb bbbb bb bbbb bbbbbbbbbbbbbb
      */
-    GTSPlugin getPlugin();
+    BBBBbbbbb bbbBbbbbb();
 
     /**
-     * The name of an implementation. In other words, this would be typically
-     * found as JSON, H2, MySQL, etc.
+     * Bbb bbbb bb bb bbbbbbbbbbbbbb. Bb bbbbb bbbbb, bbbb bbbbb bb bbbbbbbbb
+     * bbbbb bb BBBB, B2, BbBBB, bbb.
      *
-     * @return The name of the storage implementation
+     * @bbbbbb Bbb bbbb bb bbb bbbbbbb bbbbbbbbbbbbbb
      */
-    String getName();
+    Bbbbbb bbbBbbb();
 
     /**
-     * Attempts to initialize the storage implementation, throwing an exception
-     * if anything causes the implementation to fail to start.
+     * Bbbbbbbb bb bbbbbbbbbb bbb bbbbbbb bbbbbbbbbbbbbb, bbbbbbbb bb bbbbbbbbb
+     * bb bbbbbbbb bbbbbb bbb bbbbbbbbbbbbbb bb bbbb bb bbbbb.
      *
-     * @throws Exception if any event causes the storage provider to fail to load
+     * @bbbbbb Bbbbbbbbb bb bbb bbbbb bbbbbb bbb bbbbbbb bbbbbbbb bb bbbb bb bbbb
      */
-    void init() throws Exception;
+    bbbb bbbb() bbbbbb Bbbbbbbbb;
 
-    void shutdown() throws Exception;
+    bbbb bbbbbbbb() bbbbbb Bbbbbbbbb;
 
-    default Map<String, String> getMeta() {
-        return Collections.emptyMap();
+    bbbbbbb Bbb<Bbbbbb, Bbbbbb> bbbBbbb() {
+        bbbbbb Bbbbbbbbbbb.bbbbbBbb();
     }
 
-    boolean addListing(Listing listing) throws Exception;
+    bbbbbbb bbbBbbbbbb(Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb;
 
-    boolean deleteListing(UUID uuid) throws Exception;
+    bbbbbbb bbbbbbBbbbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb;
 
-    Optional<Listing> getListing(UUID id) throws Exception;
+    Bbbbbbbb<Bbbbbbb> bbbBbbbbbb(BBBB bb) bbbbbb Bbbbbbbbb;
 
-    List<Listing> getListings() throws Exception;
+    Bbbb<Bbbbbbb> bbbBbbbbbbb() bbbbbb Bbbbbbbbb;
 
-    boolean hasMaxListings(UUID user) throws Exception;
+    bbbbbbb bbbBbbBbbbbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb;
 
-    boolean purge(PurgeType type) throws Exception;
+    bbbbbbb bbbbb(BbbbbBbbb bbbb) bbbbbb Bbbbbbbbb;
 
-    @Deprecated
-    boolean clean() throws Exception;
+    @Bbbbbbbbbb
+    bbbbbbb bbbbb() bbbbbb Bbbbbbbbb;
 
     // ---------------------------------------------------------
-    // New methods
+    // Bbb bbbbbbb
     // ---------------------------------------------------------
 
-    boolean sendDelivery(Delivery delivery) throws Exception;
+    bbbbbbb bbbbBbbbbbbb(Bbbbbbbb bbbbbbbb) bbbbbb Bbbbbbbbb;
 
-    Stash getStash(UUID user) throws Exception;
+    Bbbbb bbbBbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb;
 
-    Optional<PlayerSettings> getPlayerSettings(UUID user) throws Exception;
+    Bbbbbbbb<BbbbbbBbbbbbbb> bbbBbbbbbBbbbbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb;
 
-    boolean applyPlayerSettings(UUID user, PlayerSettings updates) throws Exception;
-
-    /**
-     * Processes an incoming request to purchase a BIN listing, and responds with the results of the
-     * request.
-     *
-     * @param request Details regarding the request
-     * @return A response based on the request
-     * @throws Exception If an error occurs at all during processing of the request
-     */
-    BuyItNowMessage.Purchase.Response processPurchase(BuyItNowMessage.Purchase.Request request) throws Exception;
-
-    boolean sendListingUpdate(Listing listing) throws Exception;
+    bbbbbbb bbbbbBbbbbbBbbbbbbb(BBBB bbbb, BbbbbbBbbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb;
 
     /**
-     * Attempts to process a bid on an auction. This call will generate the response message that'll be sent back
-     * to the servers listening, as a means to inform them all of the success of the bid.
+     * Bbbbbbbbb bb bbbbbbbb bbbbbbb bb bbbbbbbb b BBB bbbbbbb, bbb bbbbbbbb bbbb bbb bbbbbbb bb bbb
+     * bbbbbbb.
      *
-     * This should only be called in response to a {@link AuctionMessage.Bid.Request bid} request.
-     *
-     * @param request The request sent for processing
-     * @return A response to the call which will contain data that marks the success of the bid,
-     * the seller of the auction, and all other bids currently placed on the auction in a filtered manner.
-     * In other words, all other bids will only contain the highest bid per player who has bid on this
-     * particular auction.
+     * @bbbbb bbbbbbb Bbbbbbb bbbbbbbbb bbb bbbbbbb
+     * @bbbbbb B bbbbbbbb bbbbb bb bbb bbbbbbb
+     * @bbbbbb Bbbbbbbbb Bb bb bbbbb bbbbbb bb bbb bbbbbb bbbbbbbbbb bb bbb bbbbbbb
      */
-    AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) throws Exception;
+    BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbbb bbbbbbbBbbbbbbb(BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb;
 
-    ClaimMessage.Response processClaimRequest(ClaimMessage.Request request) throws Exception;
+    bbbbbbb bbbbBbbbbbbBbbbbb(Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb;
 
-    boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) throws Exception;
+    /**
+     * Bbbbbbbb bb bbbbbbb b bbb bb bb bbbbbbb. Bbbb bbbb bbbb bbbbbbbb bbb bbbbbbbb bbbbbbb bbbb'bb bb bbbb bbbb
+     * bb bbb bbbbbbb bbbbbbbbb, bb b bbbbb bb bbbbbb bbbb bbb bb bbb bbbbbbb bb bbb bbb.
+     *
+     * Bbbb bbbbbb bbbb bb bbbbbb bb bbbbbbbb bb b {@bbbb BbbbbbbBbbbbbb.Bbb.Bbbbbbb bbb} bbbbbbb.
+     *
+     * @bbbbb bbbbbbb Bbb bbbbbbb bbbb bbb bbbbbbbbbb
+     * @bbbbbb B bbbbbbbb bb bbb bbbb bbbbb bbbb bbbbbbb bbbb bbbb bbbbb bbb bbbbbbb bb bbb bbb,
+     * bbb bbbbbb bb bbb bbbbbbb, bbb bbb bbbbb bbbb bbbbbbbbb bbbbbb bb bbb bbbbbbb bb b bbbbbbbb bbbbbb.
+     * Bb bbbbb bbbbb, bbb bbbbb bbbb bbbb bbbb bbbbbbb bbb bbbbbbb bbb bbb bbbbbb bbb bbb bbb bb bbbb
+     * bbbbbbbbbb bbbbbbb.
+     */
+    BbbbbbbBbbbbbb.Bbb.Bbbbbbbb bbbbbbbBbb(BbbbbbbBbbbbbb.Bbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb;
 
-    AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception;
+    BbbbbBbbbbbb.Bbbbbbbb bbbbbbbBbbbbBbbbbbb(BbbbbBbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb;
 
-    BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception;
+    bbbbbbb bbbbbbBbbBbbbbBbbbbb(BBBB bbbbbbb, bbbbbbb bbbbbb, bbbbbbb bbbbbb, Bbbb<BBBB> bbbbbb) bbbbbb Bbbbbbbbb;
 
-    ForceDeleteMessage.Response processForcedDeletion(ForceDeleteMessage.Request request) throws Exception;
+    BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbbb bbbbbbbBbbbbbbBbbbbbBbbbbbb(BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb;
 
-    ClaimDelivery.Response claimDelivery(ClaimDelivery.Request request) throws Exception;
+    BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbbb bbbbbbbBbbbbbbBbbbbbBbbbbbb(BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb;
+
+    BbbbbBbbbbbBbbbbbb.Bbbbbbbb bbbbbbbBbbbbbBbbbbbbb(BbbbbBbbbbbBbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb;
+
+    BbbbbBbbbbbbb.Bbbbbbbb bbbbbBbbbbbbb(BbbbbBbbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb;
 }

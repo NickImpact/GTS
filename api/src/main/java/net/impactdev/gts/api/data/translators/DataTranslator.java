@@ -1,11 +1,11 @@
-package net.impactdev.gts.api.data.translators;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbbbb;
 
 
-import java.util.Optional;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-@FunctionalInterface
-public interface DataTranslator<T> {
+@BbbbbbbbbbBbbbbbbbb
+bbbbbb bbbbbbbbb BbbbBbbbbbbbbb<B> {
 
-    Optional<T> translate(T input);
+    Bbbbbbbb<B> bbbbbbbbb(B bbbbb);
 
 }

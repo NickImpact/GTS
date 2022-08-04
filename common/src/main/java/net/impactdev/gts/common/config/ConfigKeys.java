@@ -1,216 +1,216 @@
-package net.impactdev.gts.common.config;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.util.TriState;
-import net.impactdev.gts.common.config.types.time.TimeKey;
-import net.impactdev.gts.common.config.wrappers.LazyBlacklist;
-import net.impactdev.gts.common.discord.DiscordOption;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.configuration.loader.KeyProvider;
-import net.impactdev.impactor.api.storage.StorageCredentials;
-import net.impactdev.impactor.api.storage.StorageType;
-import net.impactdev.impactor.api.utilities.Time;
-import net.impactdev.gts.api.blacklist.Blacklist;
-import net.kyori.adventure.key.Key;
-import org.mariuszgromada.math.mxparser.Function;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbb.bbbb.BbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbb.BbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.BbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.BbbbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.bbbbbb.BbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbb.Bbb;
+bbbbbb bbb.bbbbbbbbbbbbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-import java.awt.Color;
-import java.util.Map;
-import java.util.List;
-import java.util.function.BiFunction;
+bbbbbb bbbb.bbb.Bbbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbBbbbbbbb;
 
-import static net.impactdev.impactor.api.configuration.ConfigKeyTypes.*;
+bbbbbb bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.BbbbbbBbbBbbbb.*;
 
 /**
- * Represents the configuration options available to GTS. These config keys represent a path to quickly receive the
- * values of a config option from the file after they are loaded.
+ * Bbbbbbbbbb bbb bbbbbbbbbbbbb bbbbbbb bbbbbbbbb bb BBB. Bbbbb bbbbbb bbbb bbbbbbbbb b bbbb bb bbbbbbb bbbbbbb bbb
+ * bbbbbb bb b bbbbbb bbbbbb bbbb bbb bbbb bbbbb bbbb bbb bbbbbb.
  *
- * <p>The values here have since been redone, in favor of a new level of organization alongside new options.</p>
- * @since 6.0.0
+ * <b>Bbb bbbbbb bbbb bbbb bbbbb bbbb bbbbbb, bb bbbbb bb b bbb bbbbb bb bbbbbbbbbbbb bbbbbbbbb bbb bbbbbbb.</b>
+ * @bbbbb 6.0.0
  */
-@KeyProvider
-public final class ConfigKeys {
+@BbbBbbbbbbb
+bbbbbb bbbbb bbbbb BbbbbbBbbb {
 
-	// Essential Settings
-	public static final ConfigKey<Boolean> USE_MULTI_SERVER = booleanKey("multi-server", false);
-	public static final ConfigKey<String> LANGUAGE = stringKey("language", "en_us");
-	public static final ConfigKey<Boolean> DEBUG_ENABLED = booleanKey("debug", false);
+	// Bbbbbbbbb Bbbbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBB_BBBBB_BBBBBB = bbbbbbbBbb("bbbbb-bbbbbb", bbbbb);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBBB = bbbbbbBbb("bbbbbbbb", "bb_bb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBBB_BBBBBBB = bbbbbbbBbb("bbbbb", bbbbb);
 
-	// Storage Settings
-	public static final ConfigKey<StorageType> STORAGE_METHOD = enduringKey(customKey(adapter -> StorageType.parse(adapter.getString("storage-method", "H2"))));
-	public static final ConfigKey<StorageCredentials> STORAGE_CREDENTIALS = enduringKey(customKey(adapter -> {
-		String address = adapter.getString("data.address", "localhost");
-		String database = adapter.getString("data.database", "minecraft");
-		String username = adapter.getString("data.username", "root");
-		String password = adapter.getString("data.password", "");
+	// Bbbbbbb Bbbbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbbbbBbbb> BBBBBBB_BBBBBB = bbbbbbbbBbb(bbbbbbBbb(bbbbbbb -> BbbbbbbBbbb.bbbbb(bbbbbbb.bbbBbbbbb("bbbbbbb-bbbbbb", "B2"))));
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbbbbBbbbbbbbbbb> BBBBBBB_BBBBBBBBBBB = bbbbbbbbBbb(bbbbbbBbb(bbbbbbb -> {
+		Bbbbbb bbbbbbb = bbbbbbb.bbbBbbbbb("bbbb.bbbbbbb", "bbbbbbbbb");
+		Bbbbbb bbbbbbbb = bbbbbbb.bbbBbbbbb("bbbb.bbbbbbbb", "bbbbbbbbb");
+		Bbbbbb bbbbbbbb = bbbbbbb.bbbBbbbbb("bbbb.bbbbbbbb", "bbbb");
+		Bbbbbb bbbbbbbb = bbbbbbb.bbbBbbbbb("bbbb.bbbbbbbb", "");
 
-		int maxPoolSize = adapter.getInteger("data.pool-settings.maximum-pool-size", 10);
-		int minIdle = adapter.getInteger("data.pool-settings.minimum-idle", maxPoolSize);
-		int maxLifetime = adapter.getInteger("data.pool-settings.maximum-lifetime", 1800000);
-		int connectionTimeout = adapter.getInteger("data.pool-settings.connection-timeout", 5000);
-		int keepAliveTime = adapter.getInteger("data.pool-settings.keep-alive", 0);
-		Map<String, String> props = ImmutableMap.copyOf(adapter.getStringMap("data.pool-settings.properties", ImmutableMap.of()));
-		return new StorageCredentials(address, database, username, password, maxPoolSize, minIdle, maxLifetime, keepAliveTime, connectionTimeout, props);
+		bbb bbbBbbbBbbb = bbbbbbb.bbbBbbbbbb("bbbb.bbbb-bbbbbbbb.bbbbbbb-bbbb-bbbb", 10);
+		bbb bbbBbbb = bbbbbbb.bbbBbbbbbb("bbbb.bbbb-bbbbbbbb.bbbbbbb-bbbb", bbbBbbbBbbb);
+		bbb bbbBbbbbbbb = bbbbbbb.bbbBbbbbbb("bbbb.bbbb-bbbbbbbb.bbbbbbb-bbbbbbbb", 1800000);
+		bbb bbbbbbbbbbBbbbbbb = bbbbbbb.bbbBbbbbbb("bbbb.bbbb-bbbbbbbb.bbbbbbbbbb-bbbbbbb", 5000);
+		bbb bbbbBbbbbBbbb = bbbbbbb.bbbBbbbbbb("bbbb.bbbb-bbbbbbbb.bbbb-bbbbb", 0);
+		Bbb<Bbbbbb, Bbbbbb> bbbbb = BbbbbbbbbBbb.bbbbBb(bbbbbbb.bbbBbbbbbBbb("bbbb.bbbb-bbbbbbbb.bbbbbbbbbb", BbbbbbbbbBbb.bb()));
+		bbbbbb bbb BbbbbbbBbbbbbbbbbb(bbbbbbb, bbbbbbbb, bbbbbbbb, bbbbbbbb, bbbBbbbBbbb, bbbBbbb, bbbBbbbbbbb, bbbbBbbbbBbbb, bbbbbbbbbbBbbbbbb, bbbbb);
 	}));
-	public static final ConfigKey<String> SQL_TABLE_PREFIX = enduringKey(stringKey("table-prefix", "gts_"));
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBB_BBBBB_BBBBBB = bbbbbbbbBbb(bbbbbbBbb("bbbbb-bbbbbb", "bbb_"));
 
-	// Plugin Messaging
-	public static final ConfigKey<String> MESSAGE_SERVICE = stringKey("messaging-service", "none");
-	public static final ConfigKey<Boolean> REDIS_ENABLED = booleanKey("redis.enabled", false);
-	public static final ConfigKey<String> REDIS_ADDRESS = stringKey("redis.address", "localhost");
-	public static final ConfigKey<String> REDIS_PASSWORD = stringKey("redis.password", "");
+	// Bbbbbb Bbbbbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBBB = bbbbbbBbb("bbbbbbbbb-bbbbbbb", "bbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBBB_BBBBBBB = bbbbbbbBbb("bbbbb.bbbbbbb", bbbbb);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBB = bbbbbbBbb("bbbbb.bbbbbbb", "bbbbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBB_BBBBBBBB = bbbbbbBbb("bbbbb.bbbbbbbb", "");
 
-	// Discord Logging
-	public static final ConfigKey<Boolean> DISCORD_LOGGING_ENABLED = booleanKey("discord.enabled", true);
-	public static final ConfigKey<String> DISCORD_AVATAR = stringKey("discord.avatar", "https://cdn.bulbagarden.net/upload/thumb/f/f5/399Bidoof.png/600px-399Bidoof.png");
-	public static final ConfigKey<String> DISCORD_TITLE = stringKey("discord.title", "GTS Logging");
-	public static final ConfigKey<Map<DiscordOption.Options, DiscordOption>> DISCORD_LINKS = customKey(adapter -> {
-		BiFunction<String, String, String> options = (type, option) -> "discord.links.@type@.".replace("@type@", type) + option;
+	// Bbbbbbb Bbbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBBBBB_BBBBBBB_BBBBBBB = bbbbbbbBbb("bbbbbbb.bbbbbbb", bbbb);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBBB = bbbbbbBbb("bbbbbbb.bbbbbb", "bbbbb://bbb.bbbbbbbbbbb.bbb/bbbbbb/bbbbb/b/b5/399Bbbbbb.bbb/600bb-399Bbbbbb.bbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbb> BBBBBBB_BBBBB = bbbbbbBbb("bbbbbbb.bbbbb", "BBB Bbbbbbb");
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbb<BbbbbbbBbbbbb.Bbbbbbb, BbbbbbbBbbbbb>> BBBBBBB_BBBBB = bbbbbbBbb(bbbbbbb -> {
+		BbBbbbbbbb<Bbbbbb, Bbbbbb, Bbbbbb> bbbbbbb = (bbbb, bbbbbb) -> "bbbbbbb.bbbbb.@bbbb@.".bbbbbbb("@bbbb@", bbbb) + bbbbbb;
 
-		Map<DiscordOption.Options, DiscordOption> links = Maps.newHashMap();
-		links.put(DiscordOption.Options.List_BIN, new DiscordOption(
-			adapter.getString(options.apply("new-bin-listing", "descriptor"), "New \"Buy it Now\" Listing Published"),
-			Color.decode(adapter.getString(options.apply("new-bin-listing", "color"), "#00FF00")),
-			adapter.getStringList(options.apply("new-bin-listing", "hooks"), Lists.newArrayList())
+		Bbb<BbbbbbbBbbbbb.Bbbbbbb, BbbbbbbBbbbbb> bbbbb = Bbbb.bbbBbbbBbb();
+		bbbbb.bbb(BbbbbbbBbbbbb.Bbbbbbb.Bbbb_BBB, bbb BbbbbbbBbbbbb(
+			bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbb-bbb-bbbbbbb", "bbbbbbbbbb"), "Bbb \"Bbb bb Bbb\" Bbbbbbb Bbbbbbbbb"),
+			Bbbbb.bbbbbb(bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbb-bbb-bbbbbbb", "bbbbb"), "#00BB00")),
+			bbbbbbb.bbbBbbbbbBbbb(bbbbbbb.bbbbb("bbb-bbb-bbbbbbb", "bbbbb"), Bbbbb.bbbBbbbbBbbb())
 		));
-		links.put(DiscordOption.Options.List_Auction, new DiscordOption(
-				adapter.getString(options.apply("new-auction-listing", "descriptor"), "New Auction Published"),
-				Color.decode(adapter.getString(options.apply("new-auction-listing", "color"), "#66CCFF")),
-				adapter.getStringList(options.apply("new-auction-listing", "hooks"), Lists.newArrayList())
+		bbbbb.bbb(BbbbbbbBbbbbb.Bbbbbbb.Bbbb_Bbbbbbb, bbb BbbbbbbBbbbbb(
+				bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbb-bbbbbbb-bbbbbbb", "bbbbbbbbbb"), "Bbb Bbbbbbb Bbbbbbbbb"),
+				Bbbbb.bbbbbb(bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbb-bbbbbbb-bbbbbbb", "bbbbb"), "#66BBBB")),
+				bbbbbbb.bbbBbbbbbBbbb(bbbbbbb.bbbbb("bbb-bbbbbbb-bbbbbbb", "bbbbb"), Bbbbb.bbbBbbbbBbbb())
 		));
-		links.put(DiscordOption.Options.Purchase, new DiscordOption(
-				adapter.getString(options.apply("purchase", "descriptor"), "Listing Purchased"),
-				Color.decode(adapter.getString(options.apply("purchase", "color"), "#FFFF00")),
-				adapter.getStringList(options.apply("purchase", "hooks"), Lists.newArrayList())
+		bbbbb.bbb(BbbbbbbBbbbbb.Bbbbbbb.Bbbbbbbb, bbb BbbbbbbBbbbbb(
+				bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbbbbbbb", "bbbbbbbbbb"), "Bbbbbbb Bbbbbbbbb"),
+				Bbbbb.bbbbbb(bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbbbbbbb", "bbbbb"), "#BBBB00")),
+				bbbbbbb.bbbBbbbbbBbbb(bbbbbbb.bbbbb("bbbbbbbb", "bbbbb"), Bbbbb.bbbBbbbbBbbb())
 		));
-		links.put(DiscordOption.Options.Bid, new DiscordOption(
-				adapter.getString(options.apply("bid", "descriptor"), "Bid Posted"),
-				Color.decode(adapter.getString(options.apply("bid", "color"), "#FF9933")),
-				adapter.getStringList(options.apply("bid", "hooks"), Lists.newArrayList())
+		bbbbb.bbb(BbbbbbbBbbbbb.Bbbbbbb.Bbb, bbb BbbbbbbBbbbbb(
+				bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbb", "bbbbbbbbbb"), "Bbb Bbbbbb"),
+				Bbbbb.bbbbbb(bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbb", "bbbbb"), "#BB9933")),
+				bbbbbbb.bbbBbbbbbBbbb(bbbbbbb.bbbbb("bbb", "bbbbb"), Bbbbb.bbbBbbbbBbbb())
 		));
-		links.put(DiscordOption.Options.Remove, new DiscordOption(
-				adapter.getString(options.apply("remove", "descriptor"), "Listing Removed"),
-				Color.decode(adapter.getString(options.apply("remove", "color"), "#FF0000")),
-				adapter.getStringList(options.apply("remove", "hooks"), Lists.newArrayList())
+		bbbbb.bbb(BbbbbbbBbbbbb.Bbbbbbb.Bbbbbb, bbb BbbbbbbBbbbbb(
+				bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbbbbb", "bbbbbbbbbb"), "Bbbbbbb Bbbbbbb"),
+				Bbbbb.bbbbbb(bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbbbbb", "bbbbb"), "#BB0000")),
+				bbbbbbb.bbbBbbbbbBbbb(bbbbbbb.bbbbb("bbbbbb", "bbbbb"), Bbbbb.bbbBbbbbBbbb())
 		));
-		links.put(DiscordOption.Options.Claim, new DiscordOption(
-				adapter.getString(options.apply("claim", "descriptor"), "Listing Removed"),
-				Color.decode(adapter.getString(options.apply("claim", "color"), "#CC00FF")),
-				adapter.getStringList(options.apply("claim", "hooks"), Lists.newArrayList())
+		bbbbb.bbb(BbbbbbbBbbbbb.Bbbbbbb.Bbbbb, bbb BbbbbbbBbbbbb(
+				bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbbbb", "bbbbbbbbbb"), "Bbbbbbb Bbbbbbb"),
+				Bbbbb.bbbbbb(bbbbbbb.bbbBbbbbb(bbbbbbb.bbbbb("bbbbb", "bbbbb"), "#BB00BB")),
+				bbbbbbb.bbbBbbbbbBbbb(bbbbbbb.bbbbb("bbbbb", "bbbbb"), Bbbbb.bbbBbbbbBbbb())
 		));
 
-		return links;
+		bbbbbb bbbbb;
 	});
 
-	// Listing Management
-	public static final ConfigKey<LazyBlacklist> BLACKLIST = customKey(adapter -> new LazyBlacklist(() -> {
-		Blacklist blacklist = Impactor.getInstance().getRegistry().get(Blacklist.class);
-		List<String> blocked = adapter.getKeys("blacklist", Lists.newArrayList());
-		for(String classification : blocked) {
-			GTSService.getInstance().getGTSComponentManager().getEntryManager(classification).ifPresent(type -> {
-				Class<?> register = type.getBlacklistType();
-				for(String entry : adapter.getStringList("blacklist." + classification, Lists.newArrayList())) {
-					blacklist.append(register, entry);
+	// Bbbbbbb Bbbbbbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbbBbbbbbbbb> BBBBBBBBB = bbbbbbBbb(bbbbbbb -> bbb BbbbBbbbbbbbb(() -> {
+		Bbbbbbbbb bbbbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(Bbbbbbbbb.bbbbb);
+		Bbbb<Bbbbbb> bbbbbbb = bbbbbbb.bbbBbbb("bbbbbbbbb", Bbbbb.bbbBbbbbBbbb());
+		bbb(Bbbbbb bbbbbbbbbbbbbb : bbbbbbb) {
+			BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb().bbbBbbbbBbbbbbb(bbbbbbbbbbbbbb).bbBbbbbbb(bbbb -> {
+				Bbbbb<?> bbbbbbbb = bbbb.bbbBbbbbbbbbBbbb();
+				bbb(Bbbbbb bbbbb : bbbbbbb.bbbBbbbbbBbbb("bbbbbbbbb." + bbbbbbbbbbbbbb, Bbbbb.bbbBbbbbBbbb())) {
+					bbbbbbbbb.bbbbbb(bbbbbbbb, bbbbb);
 				}
 			});
 		}
-		return blacklist;
+		bbbbbb bbbbbbbbb;
 	}));
-	public static final ConfigKey<Integer> MAX_LISTINGS_PER_USER = intKey("max-listings-per-user", 5);
-	public static final ConfigKey<Time> LISTING_MIN_TIME = customKey(adapter -> {
-		try {
-			return new Time(Long.parseLong(adapter.getString("listing-min-time", "900")));
-		} catch (NumberFormatException e) {
-			return new Time(adapter.getString("listing-min-time", "15m"));
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBB_BBBBBBBB_BBB_BBBB = bbbBbb("bbb-bbbbbbbb-bbb-bbbb", 5);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb> BBBBBBB_BBB_BBBB = bbbbbbBbb(bbbbbbb -> {
+		bbb {
+			bbbbbb bbb Bbbb(Bbbb.bbbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbbb-bbb-bbbb", "900")));
+		} bbbbb (BbbbbbBbbbbbBbbbbbbbb b) {
+			bbbbbb bbb Bbbb(bbbbbbb.bbbBbbbbb("bbbbbbb-bbb-bbbb", "15b"));
 		}
 	});
-	public static final ConfigKey<Time> LISTING_MAX_TIME = customKey(adapter -> {
-		try {
-			return new Time(Long.parseLong(adapter.getString("listing-max-time", "604800")));
-		} catch (NumberFormatException e) {
-			return new Time(adapter.getString("listing-max-time", "7d"));
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb> BBBBBBB_BBB_BBBB = bbbbbbBbb(bbbbbbb -> {
+		bbb {
+			bbbbbb bbb Bbbb(Bbbb.bbbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbbb-bbb-bbbb", "604800")));
+		} bbbbb (BbbbbbBbbbbbBbbbbbbbb b) {
+			bbbbbb bbb Bbbb(bbbbbbb.bbbBbbbbb("bbbbbbb-bbb-bbbb", "7b"));
 		}
 	});
-	public static final ConfigKey<Long> LISTINGS_MIN_PRICE = longKey("pricing.control.min-price", 1);
-	public static final ConfigKey<Long> LISTINGS_MAX_PRICE = longKey("pricing.control.max-price", 10000000);
-	public static final ConfigKey<Boolean> FEES_ENABLED = booleanKey("pricing.fees.enabled", true);
-	public static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_BIN = customKey(adapter -> {
-		double input = adapter.getDouble("pricing.fees.starting-price.bin-rate", 0.02);
-		return (float) input;
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb> BBBBBBBB_BBB_BBBBB = bbbbBbb("bbbbbbb.bbbbbbb.bbb-bbbbb", 1);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb> BBBBBBBB_BBB_BBBBB = bbbbBbb("bbbbbbb.bbbbbbb.bbb-bbbbb", 10000000);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBB_BBBBBBB = bbbbbbbBbb("bbbbbbb.bbbb.bbbbbbb", bbbb);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbb> BBBB_BBBBBBBB_BBBBB_BBBB_BBB = bbbbbbBbb(bbbbbbb -> {
+		bbbbbb bbbbb = bbbbbbb.bbbBbbbbb("bbbbbbb.bbbb.bbbbbbbb-bbbbb.bbb-bbbb", 0.02);
+		bbbbbb (bbbbb) bbbbb;
 	});
-	public static final ConfigKey<Float> FEES_STARTING_PRICE_RATE_AUCTION = customKey(adapter -> {
-		double input = adapter.getDouble("pricing.fees.starting-price.auction-rate", 0.05);
-		return (float) input;
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbb> BBBB_BBBBBBBB_BBBBB_BBBB_BBBBBBB = bbbbbbBbb(bbbbbbb -> {
+		bbbbbb bbbbb = bbbbbbb.bbbBbbbbb("bbbbbbb.bbbb.bbbbbbbb-bbbbb.bbbbbbb-bbbb", 0.05);
+		bbbbbb (bbbbb) bbbbb;
 	});
-	public static final ConfigKey<Function> FEE_TIME_EQUATION = customKey(adapter -> {
-		return new Function(adapter.getString("pricing.fees.time.equation", "f(hours,minutes) = 5 * (hours - 1 + (minutes > 0)) + 50"));
-	});
-
-	public static final ConfigKey<Float> AUCTIONS_INCREMENT_RATE = customKey(adapter -> {
-		double in = adapter.getDouble("auctions.increment-rate", 0.03);
-		return (float) in;
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbbb> BBB_BBBB_BBBBBBBB = bbbbbbBbb(bbbbbbb -> {
+		bbbbbb bbb Bbbbbbbb(bbbbbbb.bbbBbbbbb("bbbbbbb.bbbb.bbbb.bbbbbbbb", "b(bbbbb,bbbbbbb) = 5 * (bbbbb - 1 + (bbbbbbb > 0)) + 50"));
 	});
 
-	public static final ConfigKey<Float> AUCTIONS_MIN_INCREMENT_RATE = customKey(adapter -> {
-		double in = adapter.getDouble("auctions.increments.min", 0.01);
-		return (float) in;
-	});
-	public static final ConfigKey<Float> AUCTIONS_MAX_INCREMENT_RATE = customKey(adapter -> {
-		double in = adapter.getDouble("auctions.increments.max", 0.1);
-		return (float) in;
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbb> BBBBBBBB_BBBBBBBBB_BBBB = bbbbbbBbb(bbbbbbb -> {
+		bbbbbb bb = bbbbbbb.bbbBbbbbb("bbbbbbbb.bbbbbbbbb-bbbb", 0.03);
+		bbbbbb (bbbbb) bb;
 	});
 
-	// Item Based Configuration Options
-	public static final ConfigKey<Boolean> ITEMS_ALLOW_ANVIL_NAMES = booleanKey("allow-anvil-names", true);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbb> BBBBBBBB_BBB_BBBBBBBBB_BBBB = bbbbbbBbb(bbbbbbb -> {
+		bbbbbb bb = bbbbbbb.bbbBbbbbb("bbbbbbbb.bbbbbbbbbb.bbb", 0.01);
+		bbbbbb (bbbbb) bb;
+	});
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbb> BBBBBBBB_BBB_BBBBBBBBB_BBBB = bbbbbbBbb(bbbbbbb -> {
+		bbbbbb bb = bbbbbbb.bbbBbbbbb("bbbbbbbb.bbbbbbbbbb.bbb", 0.1);
+		bbbbbb (bbbbb) bb;
+	});
 
-	public static final TimeKey LISTING_TIME_LOWEST = new TimeKey("listing-time-lowest", "2h");
-	public static final TimeKey LISTING_TIME_LOW = new TimeKey("listing-time-low", "6h");
-	public static final TimeKey LISTING_TIME_MID = new TimeKey("listing-time-mid", "12h");
-	public static final TimeKey LISTING_TIME_HIGH = new TimeKey("listing-time-high", "1d");
-	public static final TimeKey LISTING_TIME_HIGHEST = new TimeKey("listing-time-highest", "2d");
+	// Bbbb Bbbbb Bbbbbbbbbbbbb Bbbbbbb
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBBB_BBBBB_BBBBB_BBBBB = bbbbbbbBbb("bbbbb-bbbbb-bbbbb", bbbb);
 
-	public static final ConfigKey<Boolean> PRICE_CONTROL_ENABLED = booleanKey("pricing.control.enabled", true);
+	bbbbbb bbbbbb bbbbb BbbbBbb BBBBBBB_BBBB_BBBBBB = bbb BbbbBbb("bbbbbbb-bbbb-bbbbbb", "2b");
+	bbbbbb bbbbbb bbbbb BbbbBbb BBBBBBB_BBBB_BBB = bbb BbbbBbb("bbbbbbb-bbbb-bbb", "6b");
+	bbbbbb bbbbbb bbbbb BbbbBbb BBBBBBB_BBBB_BBB = bbb BbbbBbb("bbbbbbb-bbbb-bbb", "12b");
+	bbbbbb bbbbbb bbbbb BbbbBbb BBBBBBB_BBBB_BBBB = bbb BbbbBbb("bbbbbbb-bbbb-bbbb", "1b");
+	bbbbbb bbbbbb bbbbb BbbbBbb BBBBBBB_BBBB_BBBBBBB = bbb BbbbBbb("bbbbbbb-bbbb-bbbbbbb", "2b");
 
-	public static final ConfigKey<Boolean> AUCTIONS_ALLOW_CANCEL_WITH_BIDS = booleanKey("auctions.allow-cancel-with-bids", false);
-	public static final ConfigKey<Boolean> AUCTIONS_ENABLED = booleanKey("auctions.enabled", true);
-	public static final ConfigKey<Boolean> BINS_ENABLED = booleanKey("buyitnow.enabled", true);
-	public static final ConfigKey<Boolean> AUCTIONS_SNIPING_BIDS_ENABLED = booleanKey("auctions.bid-sniping.enabled", false);
-	public static final ConfigKey<Time> AUCTIONS_MINIMUM_SNIPING_TIME = customKey(adapter -> {
-		try {
-			return new Time(Long.parseLong(adapter.getString("auctions.bid-sniping.minimum-time", "30")));
-		} catch (NumberFormatException e) {
-			return new Time(adapter.getString("auctions.bid-sniping.minimum-time", "30s"));
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBBB_BBBBBBB_BBBBBBB = bbbbbbbBbb("bbbbbbb.bbbbbbb.bbbbbbb", bbbb);
+
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBBBBBB_BBBBB_BBBBBB_BBBB_BBBB = bbbbbbbBbb("bbbbbbbb.bbbbb-bbbbbb-bbbb-bbbb", bbbbb);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBBBBBB_BBBBBBB = bbbbbbbBbb("bbbbbbbb.bbbbbbb", bbbb);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBB_BBBBBBB = bbbbbbbBbb("bbbbbbbb.bbbbbbb", bbbb);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBBBBBB_BBBBBBB_BBBB_BBBBBBB = bbbbbbbBbb("bbbbbbbb.bbb-bbbbbbb.bbbbbbb", bbbbb);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb> BBBBBBBB_BBBBBBB_BBBBBBB_BBBB = bbbbbbBbb(bbbbbbb -> {
+		bbb {
+			bbbbbb bbb Bbbb(Bbbb.bbbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbbbb.bbb-bbbbbbb.bbbbbbb-bbbb", "30")));
+		} bbbbb (BbbbbbBbbbbbBbbbbbbbb b) {
+			bbbbbb bbb Bbbb(bbbbbbb.bbbBbbbbb("bbbbbbbb.bbb-bbbbbbb.bbbbbbb-bbbb", "30b"));
 		}
 	});
-	public static final ConfigKey<Time> AUCTIONS_SET_TIME = customKey(adapter -> {
-		try {
-			return new Time(Long.parseLong(adapter.getString("auctions.bid-sniping.set-time", "60")));
-		} catch (NumberFormatException e) {
-			return new Time(adapter.getString("auctions.bid-sniping.listing-set-time", "1m"));
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb> BBBBBBBB_BBB_BBBB = bbbbbbBbb(bbbbbbb -> {
+		bbb {
+			bbbbbb bbb Bbbb(Bbbb.bbbbbBbbb(bbbbbbb.bbbBbbbbb("bbbbbbbb.bbb-bbbbbbb.bbb-bbbb", "60")));
+		} bbbbb (BbbbbbBbbbbbBbbbbbbbb b) {
+			bbbbbb bbb Bbbb(bbbbbbb.bbbBbbbbb("bbbbbbbb.bbb-bbbbbbb.bbbbbbb-bbb-bbbb", "1b"));
 		}
 	});
-	public static final ConfigKey<Boolean> SHOULD_SHOW_USER_PREFIX = booleanKey("should-show-user-prefix", true);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBBBB_BBBB_BBBB_BBBBBB = bbbbbbbBbb("bbbbbb-bbbb-bbbb-bbbbbb", bbbb);
 
-	public static final ConfigKey<Boolean> ENABLE_ITEMS = booleanKey("allow-items", true);
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbbbbb> BBBBBB_BBBBB = bbbbbbbBbb("bbbbb-bbbbb", bbbb);
 
 	/**
-	 * Configuration keys for additional currency allowances. Each option should permit a new price option
-	 * using the server's economy service.
+	 * Bbbbbbbbbbbbb bbbb bbb bbbbbbbbbb bbbbbbbb bbbbbbbbbb. Bbbb bbbbbb bbbbbb bbbbbb b bbb bbbbb bbbbbb
+	 * bbbbb bbb bbbbbb'b bbbbbbb bbbbbbb.
 	 */
-	public static final ConfigKey<List<String>> ADDITIONAL_CURRENCIES = listKey("currencies.additionally-allowed", Lists.newArrayList());
-	public static final ConfigKey<TriState> USE_DEFAULT_CURRENCY = customKey(adapter -> {
-		boolean value = adapter.getBoolean("currencies.use-default", true);
-		if(value) {
-			return TriState.TRUE;
-		} else {
-			if(ADDITIONAL_CURRENCIES.context().parent().get(ADDITIONAL_CURRENCIES).isEmpty()) {
-				return TriState.UNDEFINED;
-			} else {
-				return TriState.FALSE;
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> BBBBBBBBBB_BBBBBBBBBB = bbbbBbb("bbbbbbbbbb.bbbbbbbbbbbb-bbbbbbb", Bbbbb.bbbBbbbbBbbb());
+	bbbbbb bbbbbb bbbbb BbbbbbBbb<BbbBbbbb> BBB_BBBBBBB_BBBBBBBB = bbbbbbBbb(bbbbbbb -> {
+		bbbbbbb bbbbb = bbbbbbb.bbbBbbbbbb("bbbbbbbbbb.bbb-bbbbbbb", bbbb);
+		bb(bbbbb) {
+			bbbbbb BbbBbbbb.BBBB;
+		} bbbb {
+			bb(BBBBBBBBBB_BBBBBBBBBB.bbbbbbb().bbbbbb().bbb(BBBBBBBBBB_BBBBBBBBBB).bbBbbbb()) {
+				bbbbbb BbbBbbbb.BBBBBBBBB;
+			} bbbb {
+				bbbbbb BbbBbbbb.BBBBB;
 			}
 		}
 	});

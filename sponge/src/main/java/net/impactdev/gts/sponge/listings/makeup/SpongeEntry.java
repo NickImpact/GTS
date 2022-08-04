@@ -1,6 +1,6 @@
-package net.impactdev.gts.sponge.listings.makeup;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb;
 
-import net.impactdev.gts.api.listings.entries.Entry;
-import org.spongepowered.api.item.inventory.ItemStack;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Ebbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.IbbbSbbbb;
 
-public abstract class SpongeEntry<T> implements Entry<T, ItemStack> {}
+bbbbbb bbbbbbbb bbbbb SbbbbbEbbbb<T> bbbbbbbbbb Ebbbb<T, IbbbSbbbb> {}

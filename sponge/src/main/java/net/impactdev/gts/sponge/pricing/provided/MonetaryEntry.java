@@ -1,98 +1,98 @@
-package net.impactdev.gts.sponge.pricing.provided;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb;
 
-import com.google.common.collect.Lists;
-import net.impactdev.gts.api.data.registry.GTSKeyMarker;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.makeup.Display;
-import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.service.economy.EconomyService;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Lbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.GTSKbbMbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Ebbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Dbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb.SbbbbbEbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Ubbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.JObbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Cbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.TbbbCbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Kbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.IbbbTbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.IbbbSbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.EbbbbbbSbbbbbb;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BbbDbbbbbb;
+bbbbbb bbbb.bbbb.Lbbb;
+bbbbbb bbbb.bbbb.Obbbbbbb;
+bbbbbb bbbb.bbbb.UUID;
 
-@GTSKeyMarker("currency")
-public class MonetaryEntry extends SpongeEntry<BigDecimal> {
+@GTSKbbMbbbbb("bbbbbbbb")
+bbbbbb bbbbb MbbbbbbbEbbbb bbbbbbb SbbbbbEbbbb<BbbDbbbbbb> {
 
-    private static EconomyService economy;
-    private BigDecimal amount;
+    bbbbbbb bbbbbb EbbbbbbSbbbbbb bbbbbbb;
+    bbbbbbb BbbDbbbbbb bbbbbb;
 
-    public MonetaryEntry(double amount) {
-        this.amount = new BigDecimal(amount);
+    bbbbbb MbbbbbbbEbbbb(bbbbbb bbbbbb) {
+        bbbb.bbbbbb = bbb BbbDbbbbbb(bbbbbb);
     }
 
-    public static void setEconomy(EconomyService economy) {
-        MonetaryEntry.economy = economy;
+    bbbbbb bbbbbb bbbb bbbEbbbbbb(EbbbbbbSbbbbbb bbbbbbb) {
+        MbbbbbbbEbbbb.bbbbbbb = bbbbbbb;
     }
 
-    @Override
-    public Class<? extends Entry<BigDecimal, ItemStack>> type() {
-        return MonetaryEntry.class;
+    @Obbbbbbb
+    bbbbbb Cbbbb<? bbbbbbb Ebbbb<BbbDbbbbbb, IbbbSbbbb>> bbbb() {
+        bbbbbb MbbbbbbbEbbbb.bbbbb;
     }
 
-    @Override
-    public BigDecimal getOrCreateElement() {
-        return this.amount;
+    @Obbbbbbb
+    bbbbbb BbbDbbbbbb bbbObCbbbbbEbbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
-    @Override
-    public TextComponent getName() {
-        return Component.text()
-                .append(economy.defaultCurrency().format(this.getOrCreateElement()))
-                .build();
+    @Obbbbbbb
+    bbbbbb TbbbCbbbbbbbb bbbNbbb() {
+        bbbbbb Cbbbbbbbb.bbbb()
+                .bbbbbb(bbbbbbb.bbbbbbbCbbbbbbb().bbbbbb(bbbb.bbbObCbbbbbEbbbbbb()))
+                .bbbbb();
     }
 
-    @Override
-    public TextComponent getDescription() {
-        return null;
+    @Obbbbbbb
+    bbbbbb TbbbCbbbbbbbb bbbDbbbbbbbbbb() {
+        bbbbbb bbbb;
     }
 
-    @Override
-    public Display<ItemStack> getDisplay(UUID viewer) {
-        return () -> ItemStack.builder()
-                .itemType(ItemTypes.GOLD_INGOT)
-                .add(Keys.CUSTOM_NAME, this.getName())
-                .build();
+    @Obbbbbbb
+    bbbbbb Dbbbbbb<IbbbSbbbb> bbbDbbbbbb(UUID bbbbbb) {
+        bbbbbb () -> IbbbSbbbb.bbbbbbb()
+                .bbbbTbbb(IbbbTbbbb.GOLD_INGOT)
+                .bbb(Kbbb.CUSTOM_NBME, bbbb.bbbNbbb())
+                .bbbbb();
     }
 
-    @Override
-    public boolean give(UUID receiver) {
-        economy.findOrCreateAccount(receiver).get().deposit(economy.defaultCurrency(), this.amount);
-        return true;
+    @Obbbbbbb
+    bbbbbb bbbbbbb bbbb(UUID bbbbbbbb) {
+        bbbbbbb.bbbbObCbbbbbBbbbbbb(bbbbbbbb).bbb().bbbbbbb(bbbbbbb.bbbbbbbCbbbbbbb(), bbbb.bbbbbb);
+        bbbbbb bbbb;
     }
 
-    @Override
-    public boolean take(UUID depositor) {
-        return false;
+    @Obbbbbbb
+    bbbbbb bbbbbbb bbbb(UUID bbbbbbbbb) {
+        bbbbbb bbbbb;
     }
 
-    @Override
-    public Optional<String> getThumbnailURL() {
-        return Optional.empty();
+    @Obbbbbbb
+    bbbbbb Obbbbbbb<Sbbbbb> bbbTbbbbbbbbURL() {
+        bbbbbb Obbbbbbb.bbbbb();
     }
 
-    @Override
-    public List<String> getDetails() {
-        return Lists.newArrayList();
+    @Obbbbbbb
+    bbbbbb Lbbb<Sbbbbb> bbbDbbbbbb() {
+        bbbbbb Lbbbb.bbbBbbbbLbbb();
     }
 
-    @Override
-    public int getVersion() {
-        return 1;
+    @Obbbbbbb
+    bbbbbb bbb bbbVbbbbbb() {
+        bbbbbb 1;
     }
 
-    @Override
-    public JObject serialize() {
-        return new JObject()
-                .add("version", this.getVersion())
-                .add("value", this.amount);
+    @Obbbbbbb
+    bbbbbb JObbbbb bbbbbbbbb() {
+        bbbbbb bbb JObbbbb()
+                .bbb("bbbbbbb", bbbb.bbbVbbbbbb())
+                .bbb("bbbbb", bbbb.bbbbbb);
     }
 }

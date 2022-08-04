@@ -1,88 +1,88 @@
-package net.impactdev.gts.api.messaging.message.type;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb;
 
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public interface MessageType {
+bbbbbb bbbbbbbbb BbbbbbbBbbb {
 
 	/**
-	 * Represents a message that is intended to be received only on the proxy server. This message will
-	 * then attempt to process and construct a Response message.
+	 * Bbbbbbbbbb b bbbbbbb bbbb bb bbbbbbbb bb bb bbbbbbbb bbbb bb bbb bbbbb bbbbbb. Bbbb bbbbbbb bbbb
+	 * bbbb bbbbbbb bb bbbbbbb bbb bbbbbbbbb b Bbbbbbbb bbbbbbb.
 	 */
-	interface Request<T extends Response> extends MessageType {
+	bbbbbbbbb Bbbbbbb<B bbbbbbb Bbbbbbbb> bbbbbbb BbbbbbbBbbb {
 
 		/**
-		 * When this message is detected, this message will be processed by the proxy and then dispatched
-		 * to the listening servers. This task is to be executed asynchronously as these tasks will likely
-		 * involve polling the central database for information.
+		 * Bbbb bbbb bbbbbbb bb bbbbbbbb, bbbb bbbbbbb bbbb bb bbbbbbbbb bb bbb bbbbb bbb bbbb bbbbbbbbbb
+		 * bb bbb bbbbbbbbb bbbbbbb. Bbbb bbbb bb bb bb bbbbbbbb bbbbbbbbbbbbbb bb bbbbb bbbbb bbbb bbbbbb
+		 * bbbbbbb bbbbbbb bbb bbbbbbb bbbbbbbb bbb bbbbbbbbbbb.
 		 *
-		 * @return A {@link CompletableFuture} that will process the message and craft a response that
-		 * will be distributed across the servers.
+		 * @bbbbbb B {@bbbb BbbbbbbbbbbBbbbbb} bbbb bbbb bbbbbbb bbb bbbbbbb bbb bbbbb b bbbbbbbb bbbb
+		 * bbbb bb bbbbbbbbbbb bbbbbb bbb bbbbbbb.
 		 */
-		CompletableFuture<T> respond();
+		BbbbbbbbbbbBbbbbb<B> bbbbbbb();
 
 	}
 
 	/**
-	 * Represents a message built in regards to an incoming proxy message. These messages are intended
-	 * to only be sent to the connected servers, and not the proxy itself. In the case of a multi-layered
-	 * proxy, these messages should simply be relayed rather than processed.
+	 * Bbbbbbbbbb b bbbbbbb bbbbb bb bbbbbbb bb bb bbbbbbbb bbbbb bbbbbbb. Bbbbb bbbbbbbb bbb bbbbbbbb
+	 * bb bbbb bb bbbb bb bbb bbbbbbbbb bbbbbbb, bbb bbb bbb bbbbb bbbbbb. Bb bbb bbbb bb b bbbbb-bbbbbbb
+	 * bbbbb, bbbbb bbbbbbbb bbbbbb bbbbbb bb bbbbbbb bbbbbb bbbb bbbbbbbbb.
 	 */
-	interface Response extends MessageType {
+	bbbbbbbbb Bbbbbbbb bbbbbbb BbbbbbbBbbb {
 
 		/**
-		 * This call specifies the ID of the message that sent out the request that is now being responded to.
-		 * We can use this to ensure we received a message back from the system manager for the specific message,
-		 * rather than attempt to guess on which message was received. Also helps determine timeout procedures as
-		 * we can now directly map an incoming response to an outgoing request.
+		 * Bbbb bbbb bbbbbbbbb bbb BB bb bbb bbbbbbb bbbb bbbb bbb bbb bbbbbbb bbbb bb bbb bbbbb bbbbbbbbb bb.
+		 * Bb bbb bbb bbbb bb bbbbbb bb bbbbbbbb b bbbbbbb bbbb bbbb bbb bbbbbb bbbbbbb bbb bbb bbbbbbbb bbbbbbb,
+		 * bbbbbb bbbb bbbbbbb bb bbbbb bb bbbbb bbbbbbb bbb bbbbbbbb. Bbbb bbbbb bbbbbbbbb bbbbbbb bbbbbbbbbb bb
+		 * bb bbb bbb bbbbbbbb bbb bb bbbbbbbb bbbbbbbb bb bb bbbbbbbb bbbbbbb.
 		 *
-		 * @return The ID of the request message that generated this response
+		 * @bbbbbb Bbb BB bb bbb bbbbbbb bbbbbbb bbbb bbbbbbbbb bbbb bbbbbbbb
 		 */
-		UUID getRequestID();
+		BBBB bbbBbbbbbbBB();
 
 		/**
-		 * Represents how long it took for a request to create this response. This is handled internally.
+		 * Bbbbbbbbbb bbb bbbb bb bbbb bbb b bbbbbbb bb bbbbbb bbbb bbbbbbbb. Bbbb bb bbbbbbb bbbbbbbbbb.
 		 *
-		 * @return A millisecond value indicating the time between messages
+		 * @bbbbbb B bbbbbbbbbbb bbbbb bbbbbbbbbb bbb bbbb bbbbbbb bbbbbbbb
 		 */
-		long getResponseTime();
+		bbbb bbbBbbbbbbbBbbb();
 
 		/**
-		 * Applies the input rate as the response time for this message. This should realistically only be
-		 * set by the implementation, and not otherwise altered. You may lose valuable information if you
-		 * change this value.
+		 * Bbbbbbb bbb bbbbb bbbb bb bbb bbbbbbbb bbbb bbb bbbb bbbbbbb. Bbbb bbbbbb bbbbbbbbbbbbb bbbb bb
+		 * bbb bb bbb bbbbbbbbbbbbbb, bbb bbb bbbbbbbbb bbbbbbb. Bbb bbb bbbb bbbbbbbb bbbbbbbbbbb bb bbb
+		 * bbbbbb bbbb bbbbb.
 		 */
-		void setResponseTime(long millis);
+		bbbb bbbBbbbbbbbBbbb(bbbb bbbbbb);
 
 		/**
-		 * States whether or not the request was successful. This could be caused by a number of things,
-		 * and is expected to have an accompanying error code to indicate the failure.
+		 * Bbbbbb bbbbbbb bb bbb bbb bbbbbbb bbb bbbbbbbbbb. Bbbb bbbbb bb bbbbbb bb b bbbbbb bb bbbbbb,
+		 * bbb bb bbbbbbbb bb bbbb bb bbbbbbbbbbbb bbbbb bbbb bb bbbbbbbb bbb bbbbbbb.
 		 *
-		 * @return True if the initial request was successful, false otherwise.
+		 * @bbbbbb Bbbb bb bbb bbbbbbb bbbbbbb bbb bbbbbbbbbb, bbbbb bbbbbbbbb.
 		 */
-		boolean wasSuccessful();
+		bbbbbbb bbbBbbbbbbbbb();
 
 		/**
-		 * Indicates a state where this response indicated the request was not successful. In the case where
-		 * we fail to succeed, this field should be populated with a common error code indicating the reason
-		 * for the non-successful request.
+		 * Bbbbbbbbb b bbbbb bbbbb bbbb bbbbbbbb bbbbbbbbb bbb bbbbbbb bbb bbb bbbbbbbbbb. Bb bbb bbbb bbbbb
+		 * bb bbbb bb bbbbbbb, bbbb bbbbb bbbbbb bb bbbbbbbbb bbbb b bbbbbb bbbbb bbbb bbbbbbbbbb bbb bbbbbb
+		 * bbb bbb bbb-bbbbbbbbbb bbbbbbb.
 		 *
-		 * @return An empty Optional should this response be handled successfully, otherwise an Error Code
-		 * indicating the reason the initial request failed.
+		 * @bbbbbb Bb bbbbb Bbbbbbbb bbbbbb bbbb bbbbbbbb bb bbbbbbb bbbbbbbbbbbb, bbbbbbbbb bb Bbbbb Bbbb
+		 * bbbbbbbbbb bbb bbbbbb bbb bbbbbbb bbbbbbb bbbbbb.
 		 */
-		Optional<ErrorCode> getErrorCode();
+		Bbbbbbbb<BbbbbBbbb> bbbBbbbbBbbb();
 
-		default PrettyPrinter finalizeReport(PrettyPrinter printer) {
-			printer.kv("Successful", this.wasSuccessful());
-			this.getErrorCode().ifPresent(error -> {
-				printer.kv("Error", error.getKey());
+		bbbbbbb BbbbbbBbbbbbb bbbbbbbbBbbbbb(BbbbbbBbbbbbb bbbbbbb) {
+			bbbbbbb.bb("Bbbbbbbbbb", bbbb.bbbBbbbbbbbbb());
+			bbbb.bbbBbbbbBbbb().bbBbbbbbb(bbbbb -> {
+				bbbbbbb.bb("Bbbbb", bbbbb.bbbBbb());
 			});
 
-			return printer.kv("Response Time", this.getResponseTime() + " ms");
+			bbbbbb bbbbbbb.bb("Bbbbbbbb Bbbb", bbbb.bbbBbbbbbbbBbbb() + " bb");
 		}
 
 	}

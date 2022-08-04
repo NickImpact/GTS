@@ -1,128 +1,128 @@
-package net.impactdev.gts.api.messaging.message.type.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb;
 
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbbBbbb;
 
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * These messages belong to a listing with a singular and finalized selling price. In other
- * words, unlike auctions, players will not be at war with each other for a set of time in
- * order to win the listing. Rather, a player can outright purchase the item immediately.
+ * Bbbbb bbbbbbbb bbbbbb bb b bbbbbbb bbbb b bbbbbbbb bbb bbbbbbbbb bbbbbbb bbbbb. Bb bbbbb
+ * bbbbb, bbbbbb bbbbbbbb, bbbbbbb bbbb bbb bb bb bbb bbbb bbbb bbbbb bbb b bbb bb bbbb bb
+ * bbbbb bb bbb bbb bbbbbbb. Bbbbbb, b bbbbbb bbb bbbbbbbb bbbbbbbb bbb bbbb bbbbbbbbbbb.
  */
-public interface BuyItNowMessage extends OutgoingMessage {
+bbbbbb bbbbbbbbb BbbBbBbbBbbbbbb bbbbbbb BbbbbbbbBbbbbbb {
 
 	/**
-	 * Specifies the ID of the listing this message is based on. It'll be used for reference
-	 * by any messages that may require it.
+	 * Bbbbbbbbb bbb BB bb bbb bbbbbbb bbbb bbbbbbb bb bbbbb bb. Bb'bb bb bbbb bbb bbbbbbbbb
+	 * bb bbb bbbbbbbb bbbb bbb bbbbbbb bb.
 	 *
-	 * @return The ID of the quick purchase listing.
+	 * @bbbbbb Bbb BB bb bbb bbbbb bbbbbbbb bbbbbbb.
 	 */
-	UUID getListingID();
+	BBBB bbbBbbbbbbBB();
 
 	/**
-	 * Represents the ID of the user who is making the purchase. This is to allow for a quick response
-	 * rather than need to require a mapping of actor to sent message IDs.
+	 * Bbbbbbbbbb bbb BB bb bbb bbbb bbb bb bbbbbb bbb bbbbbbbb. Bbbb bb bb bbbbb bbb b bbbbb bbbbbbbb
+	 * bbbbbb bbbb bbbb bb bbbbbbb b bbbbbbb bb bbbbb bb bbbb bbbbbbb BBb.
 	 *
-	 * @return The ID of the user who made the purchase
+	 * @bbbbbb Bbb BB bb bbb bbbb bbb bbbb bbb bbbbbbbb
 	 */
-	UUID getActor();
+	BBBB bbbBbbbb();
 
 	/**
-	 * This message type indicates that a new quick purchase listing has been published.
+	 * Bbbb bbbbbbb bbbb bbbbbbbbb bbbb b bbb bbbbb bbbbbbbb bbbbbbb bbb bbbb bbbbbbbbb.
 	 *
-	 * We cannot expect the message to be populated with physical decoded data given that this
-	 * message can be received on a proxy, where extensions should not be installed at all. Along
-	 * with that detail, the proxy will never even attempt to deserialize the raw data of a listing.
-	 * Therefore, this message is simply populated with the message that indicates that the listing
-	 * is actually being published globally, or within the scope of the configuration.
+	 * Bb bbbbbb bbbbbb bbb bbbbbbb bb bb bbbbbbbbb bbbb bbbbbbbb bbbbbbb bbbb bbbbb bbbb bbbb
+	 * bbbbbbb bbb bb bbbbbbbb bb b bbbbb, bbbbb bbbbbbbbbb bbbbbb bbb bb bbbbbbbbb bb bbb. Bbbbb
+	 * bbbb bbbb bbbbbb, bbb bbbbb bbbb bbbbb bbbb bbbbbbb bb bbbbbbbbbbb bbb bbb bbbb bb b bbbbbbb.
+	 * Bbbbbbbbb, bbbb bbbbbbb bb bbbbbb bbbbbbbbb bbbb bbb bbbbbbb bbbb bbbbbbbbb bbbb bbb bbbbbbb
+	 * bb bbbbbbbb bbbbb bbbbbbbbb bbbbbbbb, bb bbbbbb bbb bbbbb bb bbb bbbbbbbbbbbbb.
 	 */
-	interface Publish extends BuyItNowMessage {}
+	bbbbbbbbb Bbbbbbb bbbbbbb BbbBbBbbBbbbbbb {}
 
 	/**
-	 * These messages indicate that a purchase attempt has been made on a listing. Being as these messages
-	 * can possibly be concurrent, these messages make use of the request and response structure.
+	 * Bbbbb bbbbbbbb bbbbbbbb bbbb b bbbbbbbb bbbbbbb bbb bbbb bbbb bb b bbbbbbb. Bbbbb bb bbbbb bbbbbbbb
+	 * bbb bbbbbbbb bb bbbbbbbbbb, bbbbb bbbbbbbb bbbb bbb bb bbb bbbbbbb bbb bbbbbbbb bbbbbbbbb.
 	 *
-	 * By supplying the actor's UUID, we can make the request and response rather quick for the user making
-	 * the request, assuming the storage provider holds up.
+	 * Bb bbbbbbbbb bbb bbbbb'b BBBB, bb bbb bbbb bbb bbbbbbb bbb bbbbbbbb bbbbbb bbbbb bbb bbb bbbb bbbbbb
+	 * bbb bbbbbbb, bbbbbbbb bbb bbbbbbb bbbbbbbb bbbbb bb.
 	 */
-	interface Purchase extends BuyItNowMessage {
+	bbbbbbbbb Bbbbbbbb bbbbbbb BbbBbBbbBbbbbbb {
 
 		/**
-		 * This message indicates a request being made to purchase an item off the GTS. This request will then
-		 * be processed by the active GTS Service manager in action, as a means to ensure that the purchase
-		 * is indeed valid.
+		 * Bbbb bbbbbbb bbbbbbbbb b bbbbbbb bbbbb bbbb bb bbbbbbbb bb bbbb bbb bbb BBB. Bbbb bbbbbbb bbbb bbbb
+		 * bb bbbbbbbbb bb bbb bbbbbb BBB Bbbbbbb bbbbbbb bb bbbbbb, bb b bbbbb bb bbbbbb bbbb bbb bbbbbbbb
+		 * bb bbbbbb bbbbb.
 		 *
-		 * A valid request will then be further processed, apply the necessary actions to the storage manager,
-		 * and then further respond to the request with a new {@link Purchase.Response Response} message.
+		 * B bbbbb bbbbbbb bbbb bbbb bb bbbbbbb bbbbbbbbb, bbbbb bbb bbbbbbbbb bbbbbbb bb bbb bbbbbbb bbbbbbb,
+		 * bbb bbbb bbbbbbb bbbbbbb bb bbb bbbbbbb bbbb b bbb {@bbbb Bbbbbbbb.Bbbbbbbb Bbbbbbbb} bbbbbbb.
 		 */
-		interface Request extends Purchase, MessageType.Request<Response> {}
+		bbbbbbbbb Bbbbbbb bbbbbbb Bbbbbbbb, BbbbbbbBbbb.Bbbbbbb<Bbbbbbbb> {}
 
 		/**
-		 * This message indicates the response to a {@link Purchase.Request Request} made prior to this
-		 * message. In general, this message simply contains the UUID of the listing being purchased,
-		 * as well as the success status of the request.
+		 * Bbbb bbbbbbb bbbbbbbbb bbb bbbbbbbb bb b {@bbbb Bbbbbbbb.Bbbbbbb Bbbbbbb} bbbb bbbbb bb bbbb
+		 * bbbbbbb. Bb bbbbbbb, bbbb bbbbbbb bbbbbb bbbbbbbb bbb BBBB bb bbb bbbbbbb bbbbb bbbbbbbbb,
+		 * bb bbbb bb bbb bbbbbbb bbbbbb bb bbb bbbbbbb.
 		 */
-		interface Response extends Purchase, MessageType.Response {
+		bbbbbbbbb Bbbbbbbb bbbbbbb Bbbbbbbb, BbbbbbbBbbb.Bbbbbbbb {
 
 			/**
-			 * The UUID of the user selling this listing. This is meant to aid receiving servers in finding
-			 * out who we should try to inform of their listing being sold, if they are online at all.
+			 * Bbb BBBB bb bbb bbbb bbbbbbb bbbb bbbbbbb. Bbbb bb bbbbb bb bbb bbbbbbbbb bbbbbbb bb bbbbbbb
+			 * bbb bbb bb bbbbbb bbb bb bbbbbb bb bbbbb bbbbbbb bbbbb bbbb, bb bbbb bbb bbbbbb bb bbb.
 			 *
-			 * @return The UUID of the seller
+			 * @bbbbbb Bbb BBBB bb bbb bbbbbb
 			 */
-			UUID getSeller();
+			BBBB bbbBbbbbb();
 
 		}
 
 	}
 
 	/**
-	 * This messages indicate the attempt to remove a quick purchase listing from the GTS market entirely.
-	 * A listing may or may not be already purchased or removed prior to this request to remove it, and as such
-	 * this message also builds a response message in relation to a request made indicating success.
+	 * Bbbb bbbbbbbb bbbbbbbb bbb bbbbbbb bb bbbbbb b bbbbb bbbbbbbb bbbbbbb bbbb bbb BBB bbbbbb bbbbbbbb.
+	 * B bbbbbbb bbb bb bbb bbb bb bbbbbbb bbbbbbbbb bb bbbbbbb bbbbb bb bbbb bbbbbbb bb bbbbbb bb, bbb bb bbbb
+	 * bbbb bbbbbbb bbbb bbbbbb b bbbbbbbb bbbbbbb bb bbbbbbbb bb b bbbbbbb bbbb bbbbbbbbbb bbbbbbb.
 	 */
-	interface Remove extends BuyItNowMessage {
+	bbbbbbbbb Bbbbbb bbbbbbb BbbBbBbbBbbbbbb {
 
 		/**
-		 * Specifies the UUID of the user this listing should be returned to. This field is only checked
-		 * if the value of {@link #shouldReturnListing()} is true.
+		 * Bbbbbbbbb bbb BBBB bb bbb bbbb bbbb bbbbbbb bbbbbb bb bbbbbbbb bb. Bbbb bbbbb bb bbbb bbbbbbb
+		 * bb bbb bbbbb bb {@bbbb #bbbbbbBbbbbbBbbbbbb()} bb bbbb.
 		 *
-		 * If this value is true, it is expected that this value will be populated. Otherwise, an exception
-		 * will likely be thrown in response.
+		 * Bb bbbb bbbbb bb bbbb, bb bb bbbbbbbb bbbb bbbb bbbbb bbbb bb bbbbbbbbb. Bbbbbbbbb, bb bbbbbbbbb
+		 * bbbb bbbbbb bb bbbbbb bb bbbbbbbb.
 		 *
-		 * Given this can be administratively received/taken, the ID of the user can also be the administrator
-		 * executing a removal rather than the actual seller of the listing.
+		 * Bbbbb bbbb bbb bb bbbbbbbbbbbbbbbb bbbbbbbb/bbbbb, bbb BB bb bbb bbbb bbb bbbb bb bbb bbbbbbbbbbbbb
+		 * bbbbbbbbb b bbbbbbb bbbbbb bbbb bbb bbbbbb bbbbbb bb bbb bbbbbbb.
 		 *
-		 * @return The ID of the user optionally wrapped based on request parameters.
+		 * @bbbbbb Bbb BB bb bbb bbbb bbbbbbbbbb bbbbbbb bbbbb bb bbbbbbb bbbbbbbbbb.
 		 */
-		Optional<UUID> getRecipient();
+		Bbbbbbbb<BBBB> bbbBbbbbbbbb();
 
 		/**
-		 * Indicates whether or not this listing should have its item returned to the user who published it.
-		 * This is to ensure that items being removed for a specific purpose (server rule violations and etc.)
-		 * are not returned to the user and rather just deleted from the system.
+		 * Bbbbbbbbb bbbbbbb bb bbb bbbb bbbbbbb bbbbbb bbbb bbb bbbb bbbbbbbb bb bbb bbbb bbb bbbbbbbbb bb.
+		 * Bbbb bb bb bbbbbb bbbb bbbbb bbbbb bbbbbbb bbb b bbbbbbbb bbbbbbb (bbbbbb bbbb bbbbbbbbbb bbb bbb.)
+		 * bbb bbb bbbbbbbb bb bbb bbbb bbb bbbbbb bbbb bbbbbbb bbbb bbb bbbbbb.
 		 *
-		 * @return True if the listing should be returned to a user, false otherwise.
+		 * @bbbbbb Bbbb bb bbb bbbbbbb bbbbbb bb bbbbbbbb bb b bbbb, bbbbb bbbbbbbbb.
 		 */
-		boolean shouldReturnListing();
+		bbbbbbb bbbbbbBbbbbbBbbbbbb();
 
 		/**
-		 * This message indicates a user's request to remove a quick purchase listing from the GTS. While this
-		 * message contains no extended data, it will at least generate a response stating the outcome of the
-		 * removal attempt.
+		 * Bbbb bbbbbbb bbbbbbbbb b bbbb'b bbbbbbb bb bbbbbb b bbbbb bbbbbbbb bbbbbbb bbbb bbb BBB. Bbbbb bbbb
+		 * bbbbbbb bbbbbbbb bb bbbbbbbb bbbb, bb bbbb bb bbbbb bbbbbbbb b bbbbbbbb bbbbbbb bbb bbbbbbb bb bbb
+		 * bbbbbbb bbbbbbb.
 		 */
-		interface Request extends Remove, MessageType.Request<Response> {}
+		bbbbbbbbb Bbbbbbb bbbbbbb Bbbbbb, BbbbbbbBbbb.Bbbbbbb<Bbbbbbbb> {}
 
 		/**
-		 * This message indicates a response to a user's request to remove a quick purchase listing from
-		 * the GTS. Unlike the request, this response contains an extra field stating if the request was
-		 * successfully completed. A response will be marked a failure only if the listing in question is
-		 * no longer in the storage provider, which likely means the listing was removed from a purchase
-		 * or another request prior to the request this response is now responding to.
+		 * Bbbb bbbbbbb bbbbbbbbb b bbbbbbbb bb b bbbb'b bbbbbbb bb bbbbbb b bbbbb bbbbbbbb bbbbbbb bbbb
+		 * bbb BBB. Bbbbbb bbb bbbbbbb, bbbb bbbbbbbb bbbbbbbb bb bbbbb bbbbb bbbbbbb bb bbb bbbbbbb bbb
+		 * bbbbbbbbbbbb bbbbbbbbb. B bbbbbbbb bbbb bb bbbbbb b bbbbbbb bbbb bb bbb bbbbbbb bb bbbbbbbb bb
+		 * bb bbbbbb bb bbb bbbbbbb bbbbbbbb, bbbbb bbbbbb bbbbb bbb bbbbbbb bbb bbbbbbb bbbb b bbbbbbbb
+		 * bb bbbbbbb bbbbbbb bbbbb bb bbb bbbbbbb bbbb bbbbbbbb bb bbb bbbbbbbbbb bb.
 		 */
-		interface Response extends Remove, MessageType.Response {}
+		bbbbbbbbb Bbbbbbbb bbbbbbb Bbbbbb, BbbbbbbBbbb.Bbbbbbbb {}
 
 	}
 

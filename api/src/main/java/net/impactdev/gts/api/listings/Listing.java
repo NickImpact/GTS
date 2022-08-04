@@ -1,123 +1,123 @@
-package net.impactdev.gts.api.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb;
 
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.makeup.Display;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.builders.Builder;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-import java.util.function.Predicate;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbbb;
 
 /**
- * A listing represents the overall information of something listed onto the GTS.
+ * B bbbbbbb bbbbbbbbbb bbb bbbbbbb bbbbbbbbbbb bb bbbbbbbbb bbbbbb bbbb bbb BBB.
  */
-public interface Listing extends Storable {
+bbbbbb bbbbbbbbb Bbbbbbb bbbbbbb Bbbbbbbb {
 
-	/** The UUID to use when the server itself creates a listing */
-	UUID SERVER_ID = UUID.fromString("00000000-0000-0000-0000-000000000000");
+	/** Bbb BBBB bb bbb bbbb bbb bbbbbb bbbbbb bbbbbbb b bbbbbbb */
+	BBBB BBBBBB_BB = BBBB.bbbbBbbbbb("00000000-0000-0000-0000-000000000000");
 
-	Predicate<Listing> NON_EXPIRED_LISTINGS = listing -> !listing.hasExpired();
+	Bbbbbbbbb<Bbbbbbb> BBB_BBBBBBB_BBBBBBBB = bbbbbbb -> !bbbbbbb.bbbBbbbbbb();
 
-	default <T extends Listing> T as(Class<T> type) {
-		return type.cast(this);
+	bbbbbbb <B bbbbbbb Bbbbbbb> B bb(Bbbbb<B> bbbb) {
+		bbbbbb bbbb.bbbb(bbbb);
 	}
 
 	/**
-	 * Represents the ID of this listing. This is independent of the lister's UUID, which serves as a reference
-	 * to the player or system that listed the listing.
+	 * Bbbbbbbbbb bbb BB bb bbbb bbbbbbb. Bbbb bb bbbbbbbbbbb bb bbb bbbbbb'b BBBB, bbbbb bbbbbb bb b bbbbbbbbb
+	 * bb bbb bbbbbb bb bbbbbb bbbb bbbbbb bbb bbbbbbb.
 	 *
-	 * @return The unique ID of this listing
+	 * @bbbbbb Bbb bbbbbb BB bb bbbb bbbbbbb
 	 */
-	UUID getID();
+	BBBB bbbBB();
 
 	/**
-	 * Represents the user listing this Listing. If this is a player, the UUID will be that of the player.
-	 * If the server creates the listing, then this UUID will match the generic zeroed out ID.
+	 * Bbbbbbbbbb bbb bbbb bbbbbbb bbbb Bbbbbbb. Bb bbbb bb b bbbbbb, bbb BBBB bbbb bb bbbb bb bbb bbbbbb.
+	 * Bb bbb bbbbbb bbbbbbb bbb bbbbbbb, bbbb bbbb BBBB bbbb bbbbb bbb bbbbbbb bbbbbb bbb BB.
 	 *
-	 * @return The ID of the lister who created this listing
+	 * @bbbbbb Bbb BB bb bbb bbbbbb bbb bbbbbbb bbbb bbbbbbb
 	 */
-	UUID getLister();
+	BBBB bbbBbbbbb();
 
 	/**
-	 * Represents the actual component of the listing that will be contained by this listing. This is what a user will
-	 * be purchasing should they purchase the listing.
+	 * Bbbbbbbbbb bbb bbbbbb bbbbbbbbb bb bbb bbbbbbb bbbb bbbb bb bbbbbbbbb bb bbbb bbbbbbb. Bbbb bb bbbb b bbbb bbbb
+	 * bb bbbbbbbbbb bbbbbb bbbb bbbbbbbb bbb bbbbbbb.
 	 *
-	 * @return The entry making up this listing.
+	 * @bbbbbb Bbb bbbbb bbbbbb bb bbbb bbbbbbb.
 	 */
-	Entry<?, ?> getEntry();
+	Bbbbb<?, ?> bbbBbbbb();
 
 	/**
-	 * Represents the display of the listing. This is essentially how the listing will be displayed to the user
-	 * when queried in-game.
+	 * Bbbbbbbbbb bbb bbbbbbb bb bbb bbbbbbb. Bbbb bb bbbbbbbbbbb bbb bbb bbbbbbb bbbb bb bbbbbbbbb bb bbb bbbb
+	 * bbbb bbbbbbb bb-bbbb.
 	 *
-	 * @return The display parameters of this listing
+	 * @bbbbbb Bbb bbbbbbb bbbbbbbbbb bb bbbb bbbbbbb
 	 */
-	default Display<?> getDisplay(UUID viewer) {
-		return this.getEntry().getDisplay(viewer);
+	bbbbbbb Bbbbbbb<?> bbbBbbbbbb(BBBB bbbbbb) {
+		bbbbbb bbbb.bbbBbbbb().bbbBbbbbbb(bbbbbb);
 	}
 
 	/**
-	 * Details the exact time at which a listing was published to the GTS market. This is namely helpful
-	 * for tracking purposes.
+	 * Bbbbbbb bbb bbbbb bbbb bb bbbbb b bbbbbbb bbb bbbbbbbbb bb bbb BBB bbbbbb. Bbbb bb bbbbbb bbbbbbb
+	 * bbb bbbbbbbb bbbbbbbb.
 	 *
-	 * @return The time this listing was published
+	 * @bbbbbb Bbb bbbb bbbb bbbbbbb bbb bbbbbbbbb
 	 */
-	LocalDateTime getPublishTime();
+	BbbbbBbbbBbbb bbbBbbbbbbBbbb();
 
 	/**
-	 * Represents the time where this listing will expire.
+	 * Bbbbbbbbbb bbb bbbb bbbbb bbbb bbbbbbb bbbb bbbbbb.
 	 *
-	 * @return The time this listing will expire
+	 * @bbbbbb Bbb bbbb bbbb bbbbbbb bbbb bbbbbb
 	 */
-	LocalDateTime getExpiration();
+	BbbbbBbbbBbbb bbbBbbbbbbbbb();
 
 	/**
-	 * Sets the new expiration. Make sure to update the listing after using this.
+	 * Bbbb bbb bbb bbbbbbbbbb. Bbbb bbbb bb bbbbbb bbb bbbbbbb bbbbb bbbbb bbbb.
 	 */
-	void setExpiration(LocalDateTime expiration);
+	bbbb bbbBbbbbbbbbb(BbbbbBbbbBbbb bbbbbbbbbb);
 
 	/**
-	 * Attempts to verify whether or not a listing has expired. If a listing has no expiration, this call will
-	 * always be false. If an expiration does exist, this call will verify its validity based on the marked
-	 * expiration time with the current time at the time of the call.
+	 * Bbbbbbbb bb bbbbbb bbbbbbb bb bbb b bbbbbbb bbb bbbbbbb. Bb b bbbbbbb bbb bb bbbbbbbbbb, bbbb bbbb bbbb
+	 * bbbbbb bb bbbbb. Bb bb bbbbbbbbbb bbbb bbbbb, bbbb bbbb bbbb bbbbbb bbb bbbbbbbb bbbbb bb bbb bbbbbb
+	 * bbbbbbbbbb bbbb bbbb bbb bbbbbbb bbbb bb bbb bbbb bb bbb bbbb.
 	 *
-	 * @return True if the listing has an expiration and said expiration is before the current system time,
-	 * or false if the expiration is still after the current system time, or this listing has no expiration.
+	 * @bbbbbb Bbbb bb bbb bbbbbbb bbb bb bbbbbbbbbb bbb bbbb bbbbbbbbbb bb bbbbbb bbb bbbbbbb bbbbbb bbbb,
+	 * bb bbbbb bb bbb bbbbbbbbbb bb bbbbb bbbbb bbb bbbbbbb bbbbbb bbbb, bb bbbb bbbbbbb bbb bb bbbbbbbbbb.
 	 */
-	default boolean hasExpired() {
-		return LocalDateTime.now().isAfter(this.getExpiration());
+	bbbbbbb bbbbbbb bbbBbbbbbb() {
+		bbbbbb BbbbbBbbbBbbb.bbb().bbBbbbb(bbbb.bbbBbbbbbbbbb());
 	}
 
-	static ListingBuilder<?, ?> builder() {
-		return Impactor.getInstance().getRegistry().createBuilder(ListingBuilder.class);
+	bbbbbb BbbbbbbBbbbbbb<?, ?> bbbbbbb() {
+		bbbbbb Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbBbbbbbb(BbbbbbbBbbbbbb.bbbbb);
 	}
 
-	interface ListingBuilder<L extends Listing, B extends ListingBuilder<?, ?>> extends Builder<L> {
+	bbbbbbbbb BbbbbbbBbbbbbb<B bbbbbbb Bbbbbbb, B bbbbbbb BbbbbbbBbbbbbb<?, ?>> bbbbbbb Bbbbbbb<B> {
 
 		/**
-		 * Represents the ID of a listing. If not specified, this will be auto-generated at the time of constructing.
+		 * Bbbbbbbbbb bbb BB bb b bbbbbbb. Bb bbb bbbbbbbbb, bbbb bbbb bb bbbb-bbbbbbbbb bb bbb bbbb bb bbbbbbbbbbbb.
 		 *
-		 * @param id The ID to use for the listing
-		 * @return The builder modified with this value
+		 * @bbbbb bb Bbb BB bb bbb bbb bbb bbbbbbb
+		 * @bbbbbb Bbb bbbbbbb bbbbbbbb bbbb bbbb bbbbb
 		 */
-		B id(UUID id);
+		B bb(BBBB bb);
 
 		/**
-		 * Specifies the seller of this listing. The seller is simply a mapping to a
+		 * Bbbbbbbbb bbb bbbbbb bb bbbb bbbbbbb. Bbb bbbbbb bb bbbbbb b bbbbbbb bb b
 		 *
-		 * @param lister The individual creating this listing
-		 * @return The builder modified with this value
+		 * @bbbbb bbbbbb Bbb bbbbbbbbbb bbbbbbbb bbbb bbbbbbb
+		 * @bbbbbb Bbb bbbbbbb bbbbbbbb bbbb bbbb bbbbb
 		 */
-		B lister(UUID lister);
+		B bbbbbb(BBBB bbbbbb);
 
-		B entry(Entry<?, ?> entry);
+		B bbbbb(Bbbbb<?, ?> bbbbb);
 
-		B price(Price<?, ?, ?> price);
+		B bbbbb(Bbbbb<?, ?, ?> bbbbb);
 
-		B expiration(LocalDateTime expiration);
+		B bbbbbbbbbb(BbbbbBbbbBbbb bbbbbbbbbb);
 
 	}
 }

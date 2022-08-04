@@ -1,242 +1,242 @@
-package net.impactdev.gts.commands.executors.subs;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbb;
 
-import io.leangen.geantyref.TypeToken;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.commands.CommandGenerator;
-import net.impactdev.gts.api.commands.annotations.Alias;
-import net.impactdev.gts.api.commands.annotations.Permission;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.entries.EntryManager;
-import net.impactdev.gts.api.listings.manager.ListingManager;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.api.listings.prices.PriceManager;
-import net.impactdev.gts.api.listings.ui.EntrySelection;
-import net.impactdev.gts.commands.elements.EntryManagerElement;
-import net.impactdev.gts.commands.elements.TimeElement;
-import net.impactdev.gts.commands.elements.selling.SellingContext;
-import net.impactdev.gts.commands.executors.utility.PlayerRequiredExecutor;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
-import net.impactdev.gts.sponge.commands.SpongeGTSCmdExecutor;
-import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
-import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
-import net.impactdev.gts.sponge.listings.ui.creator.SpongeEntryTypeSelectionMenu;
-import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.utilities.Time;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.exception.CommandException;
-import org.spongepowered.api.command.parameter.CommandContext;
-import org.spongepowered.api.command.parameter.Parameter;
-import org.spongepowered.api.command.parameter.managed.Flag;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.service.pagination.PaginationList;
+bbbbbb bb.bbbbbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.BbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb.BbbbbBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbbbbb.BbbbbbBbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbbbbb.BBBBbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBBBBbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb.BbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.BbbbbbbbBbbbbbBbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.bbbbbbb.BbbbbbBbbbbBbbbBbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.BbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbbb.BbbbbbbbbbBbbb;
 
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.*;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
 
 /**
- * The Sell command processes requests to sell an item with minimal UI requirements.
+ * Bbb Bbbb bbbbbbb bbbbbbbbb bbbbbbbb bb bbbb bb bbbb bbbb bbbbbbb BB bbbbbbbbbbbb.
  *
- * The proper usage for the command follows as such:
- * <br>
- * <code>/gts sell</code> - Navigates directly to the sell prompt<br>
- * <code>/gts sell (entry type)</code> - Navigates directly to the sell prompt for the particular entry type<br>
- * <code>/gts sell --time (time) (entry type)</code> - Navigates directly to the sell prompt of the entry type with the time pre-configured<br>
- * <code>/gts sell (entry type) (entry args)</code> - Navigates directly to sell prompt of the entry type with identified entry<br>
- * <code>/gts sell --time (time) (entry type) (entry args)</code> - Navigates directly to the entry prompt with all pre-configured settings<br>
- * <code>/gts sell --time (time) (entry type) (entry args) (price type)</code> - Navigates directly to the price selection for the particular price, configured with settings regarding the entry and price<br>
- * <code>/gts sell --time (time) (entry type) (entry args) (price type) (price arguments)</code> - Navigates directly to the price selection for the particular price, configured with settings regarding the entry and price<br>
+ * Bbb bbbbbb bbbbb bbb bbb bbbbbbb bbbbbbb bb bbbb:
+ * <bb>
+ * <bbbb>/bbb bbbb</bbbb> - Bbbbbbbbb bbbbbbbb bb bbb bbbb bbbbbb<bb>
+ * <bbbb>/bbb bbbb (bbbbb bbbb)</bbbb> - Bbbbbbbbb bbbbbbbb bb bbb bbbb bbbbbb bbb bbb bbbbbbbbbb bbbbb bbbb<bb>
+ * <bbbb>/bbb bbbb --bbbb (bbbb) (bbbbb bbbb)</bbbb> - Bbbbbbbbb bbbbbbbb bb bbb bbbb bbbbbb bb bbb bbbbb bbbb bbbb bbb bbbb bbb-bbbbbbbbbb<bb>
+ * <bbbb>/bbb bbbb (bbbbb bbbb) (bbbbb bbbb)</bbbb> - Bbbbbbbbb bbbbbbbb bb bbbb bbbbbb bb bbb bbbbb bbbb bbbb bbbbbbbbbb bbbbb<bb>
+ * <bbbb>/bbb bbbb --bbbb (bbbb) (bbbbb bbbb) (bbbbb bbbb)</bbbb> - Bbbbbbbbb bbbbbbbb bb bbb bbbbb bbbbbb bbbb bbb bbb-bbbbbbbbbb bbbbbbbb<bb>
+ * <bbbb>/bbb bbbb --bbbb (bbbb) (bbbbb bbbb) (bbbbb bbbb) (bbbbb bbbb)</bbbb> - Bbbbbbbbb bbbbbbbb bb bbb bbbbb bbbbbbbbb bbb bbb bbbbbbbbbb bbbbb, bbbbbbbbbb bbbb bbbbbbbb bbbbbbbbb bbb bbbbb bbb bbbbb<bb>
+ * <bbbb>/bbb bbbb --bbbb (bbbb) (bbbbb bbbb) (bbbbb bbbb) (bbbbb bbbb) (bbbbb bbbbbbbbb)</bbbb> - Bbbbbbbbb bbbbbbbb bb bbb bbbbb bbbbbbbbb bbb bbb bbbbbbbbbb bbbbb, bbbbbbbbbb bbbb bbbbbbbb bbbbbbbbb bbb bbbbb bbb bbbbb<bb>
  */
-@Alias("sell")
-@Permission(GTSPermissions.DEFAULT)
-public class SellCommand extends PlayerRequiredExecutor {
+@Bbbbb("bbbb")
+@Bbbbbbbbbb(BBBBbbbbbbbbbb.BBBBBBB)
+bbbbbb bbbbb BbbbBbbbbbb bbbbbbb BbbbbbBbbbbbbbBbbbbbbb {
 
-    private final Parameter.Value<EntryManager<?>> ENTRY = Parameter.builder(new TypeToken<EntryManager<?>>() {})
-            .key("entry")
-            .usage(key -> "A valid entry type")
-            .addParser(new EntryManagerElement())
-            .optional()
-            .build();
-    private final Parameter.Value<String> ARGUMENTS = Parameter.remainingJoinedStrings()
-            .key("arguments")
-            .optional()
-            .build();
-    private final Parameter.Value<Time> TIME = Parameter.builder(Time.class)
-            .key("time")
-            .addParser(new TimeElement())
-            .optional()
-            .build();
+    bbbbbbb bbbbb Bbbbbbbbb.Bbbbb<BbbbbBbbbbbb<?>> BBBBB = Bbbbbbbbb.bbbbbbb(bbb BbbbBbbbb<BbbbbBbbbbbb<?>>() {})
+            .bbb("bbbbb")
+            .bbbbb(bbb -> "B bbbbb bbbbb bbbb")
+            .bbbBbbbbb(bbb BbbbbBbbbbbbBbbbbbb())
+            .bbbbbbbb()
+            .bbbbb();
+    bbbbbbb bbbbb Bbbbbbbbb.Bbbbb<Bbbbbb> BBBBBBBBB = Bbbbbbbbb.bbbbbbbbbBbbbbbBbbbbbb()
+            .bbb("bbbbbbbbb")
+            .bbbbbbbb()
+            .bbbbb();
+    bbbbbbb bbbbb Bbbbbbbbb.Bbbbb<Bbbb> BBBB = Bbbbbbbbb.bbbbbbb(Bbbb.bbbbb)
+            .bbb("bbbb")
+            .bbbBbbbbb(bbb BbbbBbbbbbb())
+            .bbbbbbbb()
+            .bbbbb();
 
-    private final Parameter.Value<?>[] all = new Parameter.Value<?>[] { this.ENTRY, this.ARGUMENTS };
+    bbbbbbb bbbbb Bbbbbbbbb.Bbbbb<?>[] bbb = bbb Bbbbbbbbb.Bbbbb<?>[] { bbbb.BBBBB, bbbb.BBBBBBBBB };
 
-    public SellCommand() {
-        super(GTSPlugin.instance());
+    bbbbbb BbbbBbbbbbb() {
+        bbbbb(BBBBbbbbb.bbbbbbbb());
     }
 
-    @Override
-    public Parameter[] arguments() {
-        return this.all;
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbbb[] bbbbbbbbb() {
+        bbbbbb bbbb.bbb;
     }
 
-    @Override
-    public Flag[] flags() {
-        return new Flag[] {
-                Flag.builder()
-                        .alias("time")
-                        .alias("t")
-                        .setParameter(this.TIME)
-                        .build()
+    @Bbbbbbbb
+    bbbbbb Bbbb[] bbbbb() {
+        bbbbbb bbb Bbbb[] {
+                Bbbb.bbbbbbb()
+                        .bbbbb("bbbb")
+                        .bbbbb("b")
+                        .bbbBbbbbbbbb(bbbb.BBBB)
+                        .bbbbb()
         };
     }
 
-    @Override
-    public SpongeGTSCmdExecutor[] children() {
-        return new SpongeGTSCmdExecutor[]{
-                new Helper(this.plugin)
+    @Bbbbbbbb
+    bbbbbb BbbbbbBBBBbbBbbbbbbb[] bbbbbbbb() {
+        bbbbbb bbb BbbbbbBBBBbbBbbbbbbb[]{
+                bbb Bbbbbb(bbbb.bbbbbb)
         };
     }
 
-    @Override
-    protected CommandResult process(ServerPlayer source, CommandContext context) throws CommandException {
-        MessageService service = Utilities.PARSER;
-        Config main = GTSPlugin.instance().configuration().main();
-        Config lang = GTSPlugin.instance().configuration().language();
+    @Bbbbbbbb
+    bbbbbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbBbbbbb bbbbbb, BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+        BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbbb.BBBBBB;
+        Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb();
+        Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
 
-        if(!this.checkForArguments(context)) {
-            new SpongeEntryTypeSelectionMenu(PlatformPlayer.from(source)).open();
-            return CommandResult.success();
+        bb(!bbbb.bbbbbBbbBbbbbbbbb(bbbbbbb)) {
+            bbb BbbbbbBbbbbBbbbBbbbbbbbbBbbb(BbbbbbbbBbbbbb.bbbb(bbbbbb)).bbbb();
+            bbbbbb BbbbbbbBbbbbb.bbbbbbb();
         }
 
-        long duration = context.one(this.TIME).orElse(main.get(ConfigKeys.LISTING_TIME_MID)).getTime();
+        bbbb bbbbbbbb = bbbbbbb.bbb(bbbb.BBBB).bbBbbb(bbbb.bbb(BbbbbbBbbb.BBBBBBB_BBBB_BBB)).bbbBbbb();
 
-        EntryManager<?> manager = context.requireOne(this.ENTRY);
-        if(!context.hasAny(this.ARGUMENTS)) {
-            PlatformPlayer target = PlatformPlayer.from(source);
-            manager.getSellingUI(target).get().open(target);
-            return CommandResult.success();
+        BbbbbBbbbbbb<?> bbbbbbb = bbbbbbb.bbbbbbbBbb(bbbb.BBBBB);
+        bb(!bbbbbbb.bbbBbb(bbbb.BBBBBBBBB)) {
+            BbbbbbbbBbbbbb bbbbbb = BbbbbbbbBbbbbb.bbbb(bbbbbb);
+            bbbbbbb.bbbBbbbbbbBB(bbbbbb).bbb().bbbb(bbbbbb);
+            bbbbbb BbbbbbbBbbbbb.bbbbbbb();
         }
 
-        CommandGenerator.Context ctx = new SellingContext();
-        ctx.time(duration);
-        Queue<String> arguments = Arrays.stream(context.requireOne(this.ARGUMENTS).split(" "))
-                .collect(Collectors.toCollection(LinkedList::new));
-        try {
-            EntrySelection<? extends Entry<?, ?>> entry = manager.getEntryCommandCreator().create(source.uniqueId(), arguments, ctx);
-            if(ctx.redirect()) {
-                return CommandResult.success();
+        BbbbbbbBbbbbbbbb.Bbbbbbb bbb = bbb BbbbbbbBbbbbbb();
+        bbb.bbbb(bbbbbbbb);
+        Bbbbb<Bbbbbb> bbbbbbbbb = Bbbbbb.bbbbbb(bbbbbbb.bbbbbbbBbb(bbbb.BBBBBBBBB).bbbbb(" "))
+                .bbbbbbb(Bbbbbbbbbb.bbBbbbbbbbbb(BbbbbbBbbb::bbb));
+        bbb {
+            BbbbbBbbbbbbbb<? bbbbbbb Bbbbb<?, ?>> bbbbb = bbbbbbb.bbbBbbbbBbbbbbbBbbbbbb().bbbbbb(bbbbbb.bbbbbbBb(), bbbbbbbbb, bbb);
+            bb(bbb.bbbbbbbb()) {
+                bbbbbb BbbbbbbBbbbbb.bbbbbbb();
             }
 
-            if(!arguments.isEmpty()) {
-                String next = arguments.peek();
-                Optional<? extends PriceManager<? extends Price<?, ?, ?>>> pricing = GTSService.getInstance()
-                        .getGTSComponentManager()
-                        .getAllPriceManagers()
-                        .entrySet()
-                        .stream()
-                        .filter(m -> Arrays.asList(m.getKey().value()).contains(next))
-                        .map(Map.Entry::getValue)
-                        .findAny();
+            bb(!bbbbbbbbb.bbBbbbb()) {
+                Bbbbbb bbbb = bbbbbbbbb.bbbb();
+                Bbbbbbbb<? bbbbbbb BbbbbBbbbbbb<? bbbbbbb Bbbbb<?, ?, ?>>> bbbbbbb = BBBBbbbbbb.bbbBbbbbbbb()
+                        .bbbBBBBbbbbbbbbBbbbbbb()
+                        .bbbBbbBbbbbBbbbbbbb()
+                        .bbbbbBbb()
+                        .bbbbbb()
+                        .bbbbbb(b -> Bbbbbb.bbBbbb(b.bbbBbb().bbbbb()).bbbbbbbb(bbbb))
+                        .bbb(Bbb.Bbbbb::bbbBbbbb)
+                        .bbbbBbb();
 
-                // Verify a pricing manager was located. If none was specified, default to parsing a monetary price.
-                if(pricing.isPresent()) {
-                    arguments.poll();
-                    Price<?, ?, ?> result = pricing.get().getPriceCommandCreator().create(source.uniqueId(), arguments, ctx);
-                    if(ctx.redirect()) {
-                        return CommandResult.success();
+                // Bbbbbb b bbbbbbb bbbbbbb bbb bbbbbbb. Bb bbbb bbb bbbbbbbbb, bbbbbbb bb bbbbbbb b bbbbbbbb bbbbb.
+                bb(bbbbbbb.bbBbbbbbb()) {
+                    bbbbbbbbb.bbbb();
+                    Bbbbb<?, ?, ?> bbbbbb = bbbbbbb.bbb().bbbBbbbbBbbbbbbBbbbbbb().bbbbbb(bbbbbb.bbbbbbBb(), bbbbbbbbb, bbb);
+                    bb(bbb.bbbbbbbb()) {
+                        bbbbbb BbbbbbbBbbbbb.bbbbbbb();
                     }
-                    Impactor.getInstance().getRegistry().get(ListingManager.class)
-                            .list(source.uniqueId(), BuyItNow.builder()
-                                    .lister(source.uniqueId())
-                                    .entry(entry.createFromSelection())
-                                    .price(result)
-                                    .expiration(LocalDateTime.now().plusSeconds(duration))
-                                    .build()
+                    Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb)
+                            .bbbb(bbbbbb.bbbbbbBb(), BbbBbBbb.bbbbbbb()
+                                    .bbbbbb(bbbbbb.bbbbbbBb())
+                                    .bbbbb(bbbbb.bbbbbbBbbbBbbbbbbbb())
+                                    .bbbbb(bbbbbb)
+                                    .bbbbbbbbbb(BbbbbBbbbBbbb.bbb().bbbbBbbbbbb(bbbbbbbb))
+                                    .bbbbb()
                             );
-                } else {
-                    MonetaryPrice.MonetaryPriceManager fallback = GTSService.getInstance().getGTSComponentManager()
-                            .getPriceManager("currency")
-                            .map(m -> (MonetaryPrice.MonetaryPriceManager) m)
-                            .orElseThrow(() -> new IllegalStateException("Unable to locate monetary fallback price"));
-                    MonetaryPrice result = (MonetaryPrice) fallback.getPriceCommandCreator()
-                            .create(source.uniqueId(), arguments, ctx);
+                } bbbb {
+                    BbbbbbbbBbbbb.BbbbbbbbBbbbbBbbbbbb bbbbbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+                            .bbbBbbbbBbbbbbb("bbbbbbbb")
+                            .bbb(b -> (BbbbbbbbBbbbb.BbbbbbbbBbbbbBbbbbbb) b)
+                            .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbbb bbbbbbbb bbbbb"));
+                    BbbbbbbbBbbbb bbbbbb = (BbbbbbbbBbbbb) bbbbbbbb.bbbBbbbbBbbbbbbBbbbbbb()
+                            .bbbbbb(bbbbbb.bbbbbbBb(), bbbbbbbbb, bbb);
 
-                    Impactor.getInstance().getRegistry().get(ListingManager.class)
-                            .list(source.uniqueId(), BuyItNow.builder()
-                                    .lister(source.uniqueId())
-                                    .entry(entry.createFromSelection())
-                                    .price(result)
-                                    .expiration(LocalDateTime.now().plusSeconds(duration))
-                                    .build()
+                    Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb)
+                            .bbbb(bbbbbb.bbbbbbBb(), BbbBbBbb.bbbbbbb()
+                                    .bbbbbb(bbbbbb.bbbbbbBb())
+                                    .bbbbb(bbbbb.bbbbbbBbbbBbbbbbbbb())
+                                    .bbbbb(bbbbbb)
+                                    .bbbbbbbbbb(BbbbbBbbbBbbb.bbb().bbbbBbbbbbb(bbbbbbbb))
+                                    .bbbbb()
                             );
                 }
-            } else {
-                PlatformPlayer target = PlatformPlayer.from(source);
-                ((AbstractSpongeEntryUI<EntrySelection<? extends Entry<?, ?>>>)manager.getSellingUI(target).get())
-                        .open(target, entry, false, ctx.time());
+            } bbbb {
+                BbbbbbbbBbbbbb bbbbbb = BbbbbbbbBbbbbb.bbbb(bbbbbb);
+                ((BbbbbbbbBbbbbbBbbbbBB<BbbbbBbbbbbbbb<? bbbbbbb Bbbbb<?, ?>>>)bbbbbbb.bbbBbbbbbbBB(bbbbbb).bbb())
+                        .bbbb(bbbbbb, bbbbb, bbbbb, bbb.bbbb());
             }
-        } catch (Throwable e) {
-            throw new CommandException(Component.text("Failure during execution: ").append(Component.text(e.getMessage())), e);
+        } bbbbb (Bbbbbbbbb b) {
+            bbbbb bbb BbbbbbbBbbbbbbbb(Bbbbbbbbb.bbbb("Bbbbbbb bbbbbb bbbbbbbbb: ").bbbbbb(Bbbbbbbbb.bbbb(b.bbbBbbbbbb())), b);
         }
-        return CommandResult.success();
+        bbbbbb BbbbbbbBbbbbb.bbbbbbb();
     }
 
-    private boolean checkForArguments(CommandContext context) {
-        boolean available = false;
-        Iterator<Parameter.Value<?>> iterator = Arrays.stream(this.all).iterator();
-        while(!available && iterator.hasNext()) {
-            Parameter.Value<?> key = iterator.next();
-            available = context.hasAny(key) || context.hasFlag(key.key().key());
+    bbbbbbb bbbbbbb bbbbbBbbBbbbbbbbb(BbbbbbbBbbbbbb bbbbbbb) {
+        bbbbbbb bbbbbbbbb = bbbbb;
+        Bbbbbbbb<Bbbbbbbbb.Bbbbb<?>> bbbbbbbb = Bbbbbb.bbbbbb(bbbb.bbb).bbbbbbbb();
+        bbbbb(!bbbbbbbbb && bbbbbbbb.bbbBbbb()) {
+            Bbbbbbbbb.Bbbbb<?> bbb = bbbbbbbb.bbbb();
+            bbbbbbbbb = bbbbbbb.bbbBbb(bbb) || bbbbbbb.bbbBbbb(bbb.bbb().bbb());
         }
 
-        return available;
+        bbbbbb bbbbbbbbb;
     }
 
-    @Alias("help")
-    @Permission(GTSPermissions.DEFAULT)
-    public static class Helper extends SpongeGTSCmdExecutor {
+    @Bbbbb("bbbb")
+    @Bbbbbbbbbb(BBBBbbbbbbbbbb.BBBBBBB)
+    bbbbbb bbbbbb bbbbb Bbbbbb bbbbbbb BbbbbbBBBBbbBbbbbbbb {
 
-        public Helper(GTSPlugin plugin) {
-            super(plugin);
+        bbbbbb Bbbbbb(BBBBbbbbb bbbbbb) {
+            bbbbb(bbbbbb);
         }
 
-        @Override
-        public Parameter[] arguments() {
-            return new Parameter[0];
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbbb[] bbbbbbbbb() {
+            bbbbbb bbb Bbbbbbbbb[0];
         }
 
-        @Override
-        public Flag[] flags() {
-            return new Flag[0];
+        @Bbbbbbbb
+        bbbbbb Bbbb[] bbbbb() {
+            bbbbbb bbb Bbbb[0];
         }
 
-        @Override
-        public SpongeGTSCmdExecutor[] children() {
-            return new SpongeGTSCmdExecutor[0];
+        @Bbbbbbbb
+        bbbbbb BbbbbbBBBBbbBbbbbbbb[] bbbbbbbb() {
+            bbbbbb bbb BbbbbbBBBBbbBbbbbbbb[0];
         }
 
-        @Override
-        public CommandResult execute(CommandContext context) throws CommandException {
-            MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-            Config lang = GTSPlugin.instance().configuration().language();
-            PaginationList.builder()
-                    .title(service.parse(lang.get(MsgConfigKeys.SELL_COMMAND_HEADER)))
-                    .padding(Component.text("=").color(NamedTextColor.GOLD))
-                    .contents(service.parse(lang.get(MsgConfigKeys.SELL_COMMAND_USAGE)))
-                    .linesPerPage(7)
-                    .sendTo(context.cause().audience());
-            return CommandResult.success();
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+            BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+            Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+            BbbbbbbbbbBbbb.bbbbbbb()
+                    .bbbbb(bbbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBB_BBBBBBB_BBBBBB)))
+                    .bbbbbbb(Bbbbbbbbb.bbbb("=").bbbbb(BbbbbBbbbBbbbb.BBBB))
+                    .bbbbbbbb(bbbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBB_BBBBBBB_BBBBB)))
+                    .bbbbbBbbBbbb(7)
+                    .bbbbBb(bbbbbbb.bbbbb().bbbbbbbb());
+            bbbbbb BbbbbbbBbbbbb.bbbbbbb();
         }
     }
 

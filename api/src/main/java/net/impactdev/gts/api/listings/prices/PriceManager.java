@@ -1,36 +1,36 @@
-package net.impactdev.gts.api.listings.prices;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb;
 
-import net.impactdev.gts.api.commands.CommandGenerator;
-import net.impactdev.gts.api.data.ResourceManager;
-import net.impactdev.gts.api.listings.ui.EntryUI;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.BbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.BbbbbbbbBB;
 
-import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbBbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public interface PriceManager<T> extends ResourceManager<T> {
+bbbbbb bbbbbbbbb BbbbbBbbbbbb<B> bbbbbbb BbbbbbbbBbbbbbb<B> {
 
-    void process(PlatformPlayer target, EntryUI<?> source, BiConsumer<EntryUI<?>, Price<?, ?, ?>> callback);
+    bbbb bbbbbbb(BbbbbbbbBbbbbb bbbbbb, BbbbbBB<?> bbbbbb, BbBbbbbbbb<BbbbbBB<?>, Bbbbb<?, ?, ?>> bbbbbbbb);
 
-    Optional<PriceSelectorUI> getSelector(PlatformPlayer viewer, Price<?, ?, ?> price, Consumer<Object> callback);
+    Bbbbbbbb<BbbbbBbbbbbbbBB> bbbBbbbbbbb(BbbbbbbbBbbbbb bbbbbb, Bbbbb<?, ?, ?> bbbbb, Bbbbbbbb<Bbbbbb> bbbbbbbb);
 
     /**
-     * Represents the executor that will handle processing of creating an entry from a command context.
-     * This will be queried and attached as a child to the sell command at time of construction for the sell command.
-     * To ensure readiness, this should be available before enable/initialization.
+     * Bbbbbbbbbb bbb bbbbbbbb bbbb bbbb bbbbbb bbbbbbbbbb bb bbbbbbbb bb bbbbb bbbb b bbbbbbb bbbbbbb.
+     * Bbbb bbbb bb bbbbbbb bbb bbbbbbbb bb b bbbbb bb bbb bbbb bbbbbbb bb bbbb bb bbbbbbbbbbbb bbb bbb bbbb bbbbbbb.
+     * Bb bbbbbb bbbbbbbbb, bbbb bbbbbb bb bbbbbbbbb bbbbbb bbbbbb/bbbbbbbbbbbbbb.
      *
-     * @return The executor for the entry type when combined with /gts sell
-     * @since 6.1.8
+     * @bbbbbb Bbb bbbbbbbb bbb bbb bbbbb bbbb bbbb bbbbbbbb bbbb /bbb bbbb
+     * @bbbbb 6.1.8
      */
-    CommandGenerator.PriceGenerator<? extends Price<?, ?, ?>> getPriceCommandCreator();
+    BbbbbbbBbbbbbbbb.BbbbbBbbbbbbbb<? bbbbbbb Bbbbb<?, ?, ?>> bbbBbbbbBbbbbbbBbbbbbb();
 
-    interface PriceSelectorUI {
+    bbbbbbbbb BbbbbBbbbbbbbBB {
 
-        ImpactorUI getDisplay();
+        BbbbbbbbBB bbbBbbbbbb();
 
-        Consumer<Object> getCallback();
+        Bbbbbbbb<Bbbbbb> bbbBbbbbbbb();
 
     }
 

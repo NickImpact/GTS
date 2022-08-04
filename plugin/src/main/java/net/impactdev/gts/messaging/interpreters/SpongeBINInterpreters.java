@@ -1,93 +1,93 @@
-package net.impactdev.gts.messaging.interpreters;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbbbbb;
 
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.player.PlayerSettingsManager;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.messaging.interpreters.Interpreter;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.Sponge;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.BBBBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbb.BBBBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
-public class SpongeBINInterpreters implements Interpreter {
+bbbbbb bbbbb BbbbbbBBBBbbbbbbbbbbb bbbbbbbbbb Bbbbbbbbbbb {
 
-    @Override
-    public void register(GTSPlugin plugin) {
-        this.getDecoders(plugin);
-        this.getInterpreters(plugin);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbb.bbbBbbbbbbb(bbbbbb);
+        bbbb.bbbBbbbbbbbbbbb(bbbbbb);
     }
 
-    @Override
-    public void getDecoders(GTSPlugin plugin) {
-        plugin.messagingService().registerDecoder(
-                BINRemoveMessage.Request.TYPE, BINRemoveMessage.Request::decode
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BBBBbbbbbBbbbbbb.Bbbbbbb.BBBB, BBBBbbbbbBbbbbbb.Bbbbbbb::bbbbbb
         );
-        plugin.messagingService().registerDecoder(
-                BINRemoveMessage.Response.TYPE, BINRemoveMessage.Response::decode
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BBBBbbbbbBbbbbbb.Bbbbbbbb.BBBB, BBBBbbbbbBbbbbbb.Bbbbbbbb::bbbbbb
         );
-        plugin.messagingService().registerDecoder(
-                BINPurchaseMessage.Request.TYPE, BINPurchaseMessage.Request::decode
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BBBBbbbbbbbBbbbbbb.Bbbbbbb.BBBB, BBBBbbbbbbbBbbbbbb.Bbbbbbb::bbbbbb
         );
-        plugin.messagingService().registerDecoder(
-                BINPurchaseMessage.Response.TYPE, BINPurchaseMessage.Response::decode
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BBBBbbbbbbbBbbbbbb.Bbbbbbbb.BBBB, BBBBbbbbbbbBbbbbbb.Bbbbbbbb::bbbbbb
         );
     }
 
-    @Override
-    public void getInterpreters(GTSPlugin plugin) {
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        final IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+        bbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb = bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbBbbbbbbBbbbbbbb();
 
-        consumer.registerInternalConsumer(
-                BINRemoveMessage.Request.class, request -> {
-                    GTSPlugin.instance().storage()
-                            .processListingRemoveRequest(request)
-                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BBBBbbbbbBbbbbbb.Bbbbbbb.bbbbb, bbbbbbb -> {
+                    BBBBbbbbb.bbbbbbbb().bbbbbbb()
+                            .bbbbbbbBbbbbbbBbbbbbBbbbbbb(bbbbbbb)
+                            .bbbbBbbbbb(bbbbbbbb -> bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbbb));
                 }
         );
-        consumer.registerInternalConsumer(
-                BINRemoveMessage.Response.class, response -> {
-                    consumer.processRequest(response.getRequestID(), response);
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BBBBbbbbbBbbbbbb.Bbbbbbbb.bbbbb, bbbbbbbb -> {
+                    bbbbbbbb.bbbbbbbBbbbbbb(bbbbbbbb.bbbBbbbbbbBB(), bbbbbbbb);
                 }
         );
 
-        // Purchase Requests/Responses
-        consumer.registerInternalConsumer(
-                BINPurchaseMessage.Request.class, request -> {
-                    GTSPlugin.instance().storage()
-                            .processPurchase(request)
-                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
+        // Bbbbbbbb Bbbbbbbb/Bbbbbbbbb
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BBBBbbbbbbbBbbbbbb.Bbbbbbb.bbbbb, bbbbbbb -> {
+                    BBBBbbbbb.bbbbbbbb().bbbbbbb()
+                            .bbbbbbbBbbbbbbb(bbbbbbb)
+                            .bbbbBbbbbb(bbbbbbbb -> bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbbb));
                 }
         );
-        consumer.registerInternalConsumer(
-                BINPurchaseMessage.Response.class, response -> {
-                    consumer.processRequest(response.getRequestID(), response);
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BBBBbbbbbbbBbbbbbb.Bbbbbbbb.bbbbb, bbbbbbbb -> {
+                    bbbbbbbb.bbbbbbbBbbbbbb(bbbbbbbb.bbbBbbbbbbBB(), bbbbbbbb);
 
-                    if(response.wasSuccessful()) {
-                        GTSPlugin.instance().storage().getListing(response.getListingID()).thenAccept(listing -> {
-                            listing.ifPresent(info -> {
-                                Sponge.server().player(response.getSeller()).ifPresent(player -> {
-                                    PlayerSettingsManager manager = GTSService.getInstance().getPlayerSettingsManager();
-                                    manager.retrieve(response.getSeller()).thenAccept(settings -> {
-                                        if(settings.getSoldListenState()) {
-                                            PlaceholderSources sources = PlaceholderSources.builder()
-                                                    .append(Listing.class, () -> info)
-                                                    .append(UUID.class, response::getActor)
-                                                    .build();
+                    bb(bbbbbbbb.bbbBbbbbbbbbb()) {
+                        BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbBbbbbbb(bbbbbbbb.bbbBbbbbbbBB()).bbbbBbbbbb(bbbbbbb -> {
+                            bbbbbbb.bbBbbbbbb(bbbb -> {
+                                Bbbbbb.bbbbbb().bbbbbb(bbbbbbbb.bbbBbbbbb()).bbBbbbbbb(bbbbbb -> {
+                                    BbbbbbBbbbbbbbBbbbbbb bbbbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBbbbbbBbbbbbbbBbbbbbb();
+                                    bbbbbbb.bbbbbbbb(bbbbbbbb.bbbBbbbbb()).bbbbBbbbbb(bbbbbbbb -> {
+                                        bb(bbbbbbbb.bbbBbbbBbbbbbBbbbb()) {
+                                            BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                    .bbbbbb(Bbbbbbb.bbbbb, () -> bbbb)
+                                                    .bbbbbb(BBBB.bbbbb, bbbbbbbb::bbbBbbbb)
+                                                    .bbbbb();
 
-                                            service.parse(
-                                                    Utilities.readMessageConfigOption(MsgConfigKeys.PURCHASE_RECEIVE),
-                                                    sources
-                                            ).forEach(player::sendMessage);
+                                            bbbbbbb.bbbbb(
+                                                    Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBBB_BBBBBBB),
+                                                    bbbbbbb
+                                            ).bbbBbbb(bbbbbb::bbbbBbbbbbb);
                                         }
                                     });
                                 });

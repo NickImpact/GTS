@@ -1,23 +1,23 @@
-package net.impactdev.gts.common.config;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb;
 
-import net.impactdev.impactor.api.configuration.Config;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
 
-public class ConfigProvider {
+bbbbbb bbbbb BbbbbbBbbbbbbb {
 
-    private final Config main;
-    private final Config lang;
+    bbbbbbb bbbbb Bbbbbb bbbb;
+    bbbbbbb bbbbb Bbbbbb bbbb;
 
-    public ConfigProvider(Config main, Config lang) {
-        this.main = main;
-        this.lang = lang;
+    bbbbbb BbbbbbBbbbbbbb(Bbbbbb bbbb, Bbbbbb bbbb) {
+        bbbb.bbbb = bbbb;
+        bbbb.bbbb = bbbb;
     }
 
-    public Config main() {
-        return this.main;
+    bbbbbb Bbbbbb bbbb() {
+        bbbbbb bbbb.bbbb;
     }
 
-    public Config language() {
-        return this.lang;
+    bbbbbb Bbbbbb bbbbbbbb() {
+        bbbbbb bbbb.bbbb;
     }
 
 }

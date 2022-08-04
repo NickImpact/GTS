@@ -1,42 +1,42 @@
-package net.impactdev.gts.velocity.messaging.interpreters;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbbbbbbbbbb;
 
-import net.impactdev.gts.common.messaging.interpreters.Interpreter;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.BBBBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbb.BBBBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
 
-public class VelocityBINInterpreter implements Interpreter {
+bbbbbb bbbbb BbbbbbbbBBBBbbbbbbbbbb bbbbbbbbbb Bbbbbbbbbbb {
 
-    @Override
-    public void register(GTSPlugin plugin) {
-        this.getDecoders(plugin);
-        this.getInterpreters(plugin);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbb.bbbBbbbbbbb(bbbbbb);
+        bbbb.bbbBbbbbbbbbbbb(bbbbbb);
     }
 
-    @Override
-    public void getDecoders(GTSPlugin plugin) {
-        plugin.messagingService().registerDecoder(
-                BINRemoveMessage.Request.TYPE, BINRemoveMessage.Request::decode
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BBBBbbbbbBbbbbbb.Bbbbbbb.BBBB, BBBBbbbbbBbbbbbb.Bbbbbbb::bbbbbb
         );
-        plugin.messagingService().registerDecoder(
-                BINPurchaseMessage.Request.TYPE, BINPurchaseMessage.Request::decode
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BBBBbbbbbbbBbbbbbb.Bbbbbbb.BBBB, BBBBbbbbbbbBbbbbbb.Bbbbbbb::bbbbbb
         );
     }
 
-    @Override
-    public void getInterpreters(GTSPlugin plugin) {
-        plugin.messagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
-                BINRemoveMessage.Request.class, request -> {
-                    GTSPlugin.instance().storage()
-                            .processListingRemoveRequest(request)
-                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbBbbbbbbBbbbbbbb().bbbbbbbbBbbbbbbbBbbbbbbb(
+                BBBBbbbbbBbbbbbb.Bbbbbbb.bbbbb, bbbbbbb -> {
+                    BBBBbbbbb.bbbbbbbb().bbbbbbb()
+                            .bbbbbbbBbbbbbbBbbbbbBbbbbbb(bbbbbbb)
+                            .bbbbBbbbbb(bbbbbbbb -> bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbbb));
                 }
         );
-        plugin.messagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
-                BINPurchaseMessage.Request.class, request -> {
-                    GTSPlugin.instance().storage()
-                            .processPurchase(request)
-                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbBbbbbbbBbbbbbbb().bbbbbbbbBbbbbbbbBbbbbbbb(
+                BBBBbbbbbbbBbbbbbb.Bbbbbbb.bbbbb, bbbbbbb -> {
+                    BBBBbbbbb.bbbbbbbb().bbbbbbb()
+                            .bbbbbbbBbbbbbbb(bbbbbbb)
+                            .bbbbBbbbbb(bbbbbbbb -> bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbbb));
                 }
         );
     }

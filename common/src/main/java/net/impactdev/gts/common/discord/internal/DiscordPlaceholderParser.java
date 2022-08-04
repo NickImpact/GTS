@@ -1,14 +1,14 @@
-package net.impactdev.gts.common.discord.internal;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb;
 
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
 
-import java.util.List;
-import java.util.function.Supplier;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public interface DiscordPlaceholderParser {
+bbbbbb bbbbbbbbb BbbbbbbBbbbbbbbbbbBbbbbb {
 
-    String getID();
+    Bbbbbb bbbBB();
 
-    String parse(PlaceholderSources sources);
+    Bbbbbb bbbbb(BbbbbbbbbbbBbbbbbb bbbbbbb);
 
 }

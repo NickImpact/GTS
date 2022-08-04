@@ -1,14 +1,14 @@
-package net.impactdev.gts.api.events.maintenance;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.bbbbbbbbbbb;
 
-import net.impactdev.gts.api.maintenance.MaintenanceMode;
-import net.impactdev.impactor.api.event.ImpactorEvent;
-import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbBbbbbb;
 
-@GenerateFactoryMethod
-public interface MaintenanceModeUpdateEvent extends ImpactorEvent {
+@BbbbbbbbBbbbbbbBbbbbb
+bbbbbb bbbbbbbbb BbbbbbbbbbbBbbbBbbbbbBbbbb bbbbbbb BbbbbbbbBbbbb {
 
-    MaintenanceMode getMode();
+    BbbbbbbbbbbBbbb bbbBbbb();
 
-    boolean getNewState();
+    bbbbbbb bbbBbbBbbbb();
 
 }

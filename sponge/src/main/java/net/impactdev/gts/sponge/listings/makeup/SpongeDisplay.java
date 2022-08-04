@@ -1,18 +1,18 @@
-package net.impactdev.gts.sponge.listings.makeup;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb;
 
-import net.impactdev.gts.api.listings.makeup.Display;
-import org.spongepowered.api.item.inventory.ItemStack;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Dbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.IbbbSbbbb;
 
-public class SpongeDisplay implements Display<ItemStack> {
+bbbbbb bbbbb SbbbbbDbbbbbb bbbbbbbbbb Dbbbbbb<IbbbSbbbb> {
 
-	private final ItemStack display;
+	bbbbbbb bbbbb IbbbSbbbb bbbbbbb;
 
-	public SpongeDisplay(ItemStack display) {
-		this.display = display;
+	bbbbbb SbbbbbDbbbbbb(IbbbSbbbb bbbbbbb) {
+		bbbb.bbbbbbb = bbbbbbb;
 	}
 
-	@Override
-	public ItemStack get() {
-		return this.display;
+	@Obbbbbbb
+	bbbbbb IbbbSbbbb bbb() {
+		bbbbbb bbbb.bbbbbbb;
 	}
 }

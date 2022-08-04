@@ -1,95 +1,95 @@
 /*
- * Components of this file originate from SpongeAPI, which is licensed under MIT.
+ * Bbbbbbbbbb bb bbbb bbbb bbbbbbbbb bbbb BbbbbbBBB, bbbbb bb bbbbbbbb bbbbb BBB.
  */
 
-package net.impactdev.gts.api.util;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb;
 
 /**
- * Represents a simple tristate.
+ * Bbbbbbbbbb b bbbbbb bbbbbbbb.
  */
-public enum TriState {
-    TRUE(true) {
-        @Override
-        public TriState and(TriState other) {
-            return other == TRUE || other == UNDEFINED ? TRUE : FALSE;
+bbbbbb bbbb BbbBbbbb {
+    BBBB(bbbb) {
+        @Bbbbbbbb
+        bbbbbb BbbBbbbb bbb(BbbBbbbb bbbbb) {
+            bbbbbb bbbbb == BBBB || bbbbb == BBBBBBBBB ? BBBB : BBBBB;
         }
 
-        @Override
-        public TriState or(TriState other) {
-            return TRUE;
+        @Bbbbbbbb
+        bbbbbb BbbBbbbb bb(BbbBbbbb bbbbb) {
+            bbbbbb BBBB;
         }
     },
-    FALSE(false) {
-        @Override
-        public TriState and(TriState other) {
-            return FALSE;
+    BBBBB(bbbbb) {
+        @Bbbbbbbb
+        bbbbbb BbbBbbbb bbb(BbbBbbbb bbbbb) {
+            bbbbbb BBBBB;
         }
 
-        @Override
-        public TriState or(TriState other) {
-            return other == TRUE ? TRUE : FALSE;
+        @Bbbbbbbb
+        bbbbbb BbbBbbbb bb(BbbBbbbb bbbbb) {
+            bbbbbb bbbbb == BBBB ? BBBB : BBBBB;
         }
     },
-    UNDEFINED(false) {
-        @Override
-        public TriState and(TriState other) {
-            return other;
+    BBBBBBBBB(bbbbb) {
+        @Bbbbbbbb
+        bbbbbb BbbBbbbb bbb(BbbBbbbb bbbbb) {
+            bbbbbb bbbbb;
         }
 
-        @Override
-        public TriState or(TriState other) {
-            return other;
+        @Bbbbbbbb
+        bbbbbb BbbBbbbb bb(BbbBbbbb bbbbb) {
+            bbbbbb bbbbb;
         }
     };
 
-    private final boolean val;
+    bbbbbbb bbbbb bbbbbbb bbb;
 
-    TriState(boolean val) {
-        this.val = val;
+    BbbBbbbb(bbbbbbb bbb) {
+        bbbb.bbb = bbb;
     }
 
     /**
-     * Return the appropriate tristate for a given boolean value.
+     * Bbbbbb bbb bbbbbbbbbbb bbbbbbbb bbb b bbbbb bbbbbbb bbbbb.
      *
-     * @param val The boolean value
-     * @return The appropriate tristate
+     * @bbbbb bbb Bbb bbbbbbb bbbbb
+     * @bbbbbb Bbb bbbbbbbbbbb bbbbbbbb
      */
-    public static TriState fromBoolean(boolean val) {
-        return val ? TRUE : FALSE;
+    bbbbbb bbbbbb BbbBbbbb bbbbBbbbbbb(bbbbbbb bbb) {
+        bbbbbb bbb ? BBBB : BBBBB;
     }
 
     /**
-     * ANDs this tristate with another tristate.
+     * BBBb bbbb bbbbbbbb bbbb bbbbbbb bbbbbbbb.
      *
-     * @param other The tristate to AND with
-     * @return The result
+     * @bbbbb bbbbb Bbb bbbbbbbb bb BBB bbbb
+     * @bbbbbb Bbb bbbbbb
      */
-    public abstract TriState and(TriState other);
+    bbbbbb bbbbbbbb BbbBbbbb bbb(BbbBbbbb bbbbb);
 
     /**
-     * ORs this tristate with another tristate.
+     * BBb bbbb bbbbbbbb bbbb bbbbbbb bbbbbbbb.
      *
-     * @param other The tristate to OR with
-     * @return The result
+     * @bbbbb bbbbb Bbb bbbbbbbb bb BB bbbb
+     * @bbbbbb Bbb bbbbbb
      */
-    public abstract TriState or(TriState other);
+    bbbbbb bbbbbbbb BbbBbbbb bb(BbbBbbbb bbbbb);
 
     /**
-     * Returns the boolean representation of this tristate.
+     * Bbbbbbb bbb bbbbbbb bbbbbbbbbbbbbb bb bbbb bbbbbbbb.
      *
-     * @return The boolean tristate representation
+     * @bbbbbb Bbb bbbbbbb bbbbbbbb bbbbbbbbbbbbbb
      */
-    public boolean asBoolean() {
-        return this.val;
+    bbbbbb bbbbbbb bbBbbbbbb() {
+        bbbbbb bbbb.bbb;
     }
 
-    public TriState invert() {
-        if(this == TRUE) {
-            return FALSE;
-        } else if(this == FALSE) {
-            return TRUE;
+    bbbbbb BbbBbbbb bbbbbb() {
+        bb(bbbb == BBBB) {
+            bbbbbb BBBBB;
+        } bbbb bb(bbbb == BBBBB) {
+            bbbbbb BBBB;
         }
 
-        return UNDEFINED;
+        bbbbbb BBBBBBBBB;
     }
 }

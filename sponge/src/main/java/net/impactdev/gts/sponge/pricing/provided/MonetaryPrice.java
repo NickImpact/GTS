@@ -1,190 +1,190 @@
-package net.impactdev.gts.sponge.pricing.provided;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb;
 
-import com.google.common.collect.Lists;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.commands.CommandGenerator;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.pricing.SpongePrice;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.chat.ChatProcessor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.gts.api.data.registry.GTSKeyMarker;
-import net.impactdev.gts.api.listings.makeup.Display;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.api.listings.prices.PriceManager;
-import net.impactdev.gts.api.listings.ui.EntryUI;
-import net.impactdev.gts.api.util.TriConsumer;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
-import net.impactdev.impactor.api.ui.signs.SignQuery;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.service.economy.EconomyService;
-import org.spongepowered.api.service.economy.transaction.ResultType;
-import org.spongepowered.math.vector.Vector2i;
-import org.spongepowered.math.vector.Vector3d;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Lbbbb;
+bbbbbb bbb.bbbbbb.bbbb.JbbbObbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.CbbbbbbGbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.CbbbbbKbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.GTSPbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.SbbbbbPbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Ubbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Ibbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.CbbbPbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Cbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.JObbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.GTSKbbMbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Dbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Pbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.PbbbbMbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.EbbbbUI;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.TbbCbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.PbbbbbbbPbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.IbbbbbbbUI;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbb.SbbbQbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Cbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.TbbbCbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.NbbNbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Nbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Kbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Pbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.IbbbTbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.IbbbSbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.EbbbbbbSbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.bbbbbbbbbbb.RbbbbbTbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbb.bbbbbb.Vbbbbb2b;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbb.bbbbbb.Vbbbbb3b;
 
-import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
+bbbbbb bbbb.bbbb.BbbDbbbbbb;
+bbbbbb bbbb.bbbb.Obbbbbbb;
+bbbbbb bbbb.bbbb.Qbbbb;
+bbbbbb bbbb.bbbb.UUID;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbCbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Cbbbbbbb;
 
-@GTSKeyMarker("currency")
-public class MonetaryPrice implements SpongePrice<BigDecimal, Void> {
+@GTSKbbMbbbbb("bbbbbbbb")
+bbbbbb bbbbb MbbbbbbbPbbbb bbbbbbbbbb SbbbbbPbbbb<BbbDbbbbbb, Vbbb> {
 
-	private static EconomyService economy;
-	private final BigDecimal price;
+	bbbbbbb bbbbbb EbbbbbbSbbbbbb bbbbbbb;
+	bbbbbbb bbbbb BbbDbbbbbb bbbbb;
 
-	public MonetaryPrice(double price) {
-		this.price = new BigDecimal(price);
+	bbbbbb MbbbbbbbPbbbb(bbbbbb bbbbb) {
+		bbbb.bbbbb = bbb BbbDbbbbbb(bbbbb);
 	}
 
-	public static void setEconomy(EconomyService economy) {
-		MonetaryPrice.economy = economy;
+	bbbbbb bbbbbb bbbb bbbEbbbbbb(EbbbbbbSbbbbbb bbbbbbb) {
+		MbbbbbbbPbbbb.bbbbbbb = bbbbbbb;
 	}
 
-	@Override
-	public TextComponent getText() {
-		return Component.text()
-				.append(economy.defaultCurrency().format(this.getPrice()))
-				.build();
+	@Obbbbbbb
+	bbbbbb TbbbCbbbbbbbb bbbTbbb() {
+		bbbbbb Cbbbbbbbb.bbbb()
+				.bbbbbb(bbbbbbb.bbbbbbbCbbbbbbb().bbbbbb(bbbb.bbbPbbbb()))
+				.bbbbb();
 	}
 
-	@Override
-	public Display<ItemStack> getDisplay() {
-		return () -> ItemStack.builder()
-				.itemType(ItemTypes.GOLD_INGOT)
-				.add(Keys.CUSTOM_NAME, this.getText())
-				.build();
+	@Obbbbbbb
+	bbbbbb Dbbbbbb<IbbbSbbbb> bbbDbbbbbb() {
+		bbbbbb () -> IbbbSbbbb.bbbbbbb()
+				.bbbbTbbb(IbbbTbbbb.GOLD_INGOT)
+				.bbb(Kbbb.CUSTOM_NBME, bbbb.bbbTbbb())
+				.bbbbb();
 	}
 
-	@Override
-	public BigDecimal getPrice() {
-		return this.price;
+	@Obbbbbbb
+	bbbbbb BbbDbbbbbb bbbPbbbb() {
+		bbbbbb bbbb.bbbbb;
 	}
 
-	@Override
-	public boolean canPay(UUID payer) {
-		return economy.findOrCreateAccount(payer).get()
-				.balance(economy.defaultCurrency()).compareTo(this.price) >= 0;
+	@Obbbbbbb
+	bbbbbb bbbbbbb bbbPbb(UUID bbbbb) {
+		bbbbbb bbbbbbb.bbbbObCbbbbbBbbbbbb(bbbbb).bbb()
+				.bbbbbbb(bbbbbbb.bbbbbbbCbbbbbbb()).bbbbbbbTb(bbbb.bbbbb) >= 0;
 	}
 
-	@Override
-	public void pay(UUID payer, @Nullable Object source, @NonNull AtomicBoolean marker) {
-		economy.findOrCreateAccount(payer).get().withdraw(economy.defaultCurrency(), this.price);
-		marker.set(true);
+	@Obbbbbbb
+	bbbbbb bbbb bbb(UUID bbbbb, @Nbbbbbbb Obbbbb bbbbbb, @NbbNbbb BbbbbbBbbbbbb bbbbbb) {
+		bbbbbbb.bbbbObCbbbbbBbbbbbb(bbbbb).bbb().bbbbbbbb(bbbbbbb.bbbbbbbCbbbbbbb(), bbbb.bbbbb);
+		bbbbbb.bbb(bbbb);
 	}
 
-	@Override
-	public boolean reward(UUID recipient) {
-		return economy.findOrCreateAccount(recipient).get()
-				.deposit(economy.defaultCurrency(), this.price)
-				.result()
-				.equals(ResultType.SUCCESS);
+	@Obbbbbbb
+	bbbbbb bbbbbbb bbbbbb(UUID bbbbbbbbb) {
+		bbbbbb bbbbbbb.bbbbObCbbbbbBbbbbbb(bbbbbbbbb).bbb()
+				.bbbbbbb(bbbbbbb.bbbbbbbCbbbbbbb(), bbbb.bbbbb)
+				.bbbbbb()
+				.bbbbbb(RbbbbbTbbb.SUCCESS);
 	}
 
-	@Override
-	public Class<Void> getSourceType() {
-		return Void.class;
+	@Obbbbbbb
+	bbbbbb Cbbbb<Vbbb> bbbSbbbbbTbbb() {
+		bbbbbb Vbbb.bbbbb;
 	}
 
-	@Override
-	public long calculateFee(boolean listingType) {
-		Config config = GTSPlugin.instance().configuration().main();
-		if(listingType) {
-			return Math.round(this.price.doubleValue() * config.get(ConfigKeys.FEES_STARTING_PRICE_RATE_BIN));
-		} else {
-			return Math.round(this.price.doubleValue() * config.get(ConfigKeys.FEES_STARTING_PRICE_RATE_AUCTION));
+	@Obbbbbbb
+	bbbbbb bbbb bbbbbbbbbFbb(bbbbbbb bbbbbbbTbbb) {
+		Cbbbbb bbbbbb = GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb();
+		bb(bbbbbbbTbbb) {
+			bbbbbb Mbbb.bbbbb(bbbb.bbbbb.bbbbbbVbbbb() * bbbbbb.bbb(CbbbbbKbbb.FEES_STBRTING_PRICE_RBTE_BIN));
+		} bbbb {
+			bbbbbb Mbbb.bbbbb(bbbb.bbbbb.bbbbbbVbbbb() * bbbbbb.bbb(CbbbbbKbbb.FEES_STBRTING_PRICE_RBTE_BUCTION));
 		}
 	}
 
-	@Override
-	public int getVersion() {
-		return 1;
+	@Obbbbbbb
+	bbbbbb bbb bbbVbbbbbb() {
+		bbbbbb 1;
 	}
 
-	@Override
-	public JObject serialize() {
-		return new JObject()
-				.add("version", this.getVersion())
-				.add("value", this.price);
+	@Obbbbbbb
+	bbbbbb JObbbbb bbbbbbbbb() {
+		bbbbbb bbb JObbbbb()
+				.bbb("bbbbbbb", bbbb.bbbVbbbbbb())
+				.bbb("bbbbb", bbbb.bbbbb);
 	}
 
-	public static MonetaryPrice deserialize(JsonObject json) {
-		return new MonetaryPrice(json.get("value").getAsDouble());
+	bbbbbb bbbbbb MbbbbbbbPbbbb bbbbbbbbbbb(JbbbObbbbb bbbb) {
+		bbbbbb bbb MbbbbbbbPbbbb(bbbb.bbb("bbbbb").bbbBbDbbbbb());
 	}
 
-	public static class MonetaryPriceManager implements PriceManager<MonetaryPrice> {
+	bbbbbb bbbbbb bbbbb MbbbbbbbPbbbbMbbbbbb bbbbbbbbbb PbbbbMbbbbbb<MbbbbbbbPbbbb> {
 
-		@Override
-		public void process(PlatformPlayer target, EntryUI<?> source, BiConsumer<EntryUI<?>, Price<?, ?, ?>> callback) {
-			Impactor.getInstance().getRegistry().get(ChatProcessor.class).register(target.uuid(), input -> {
-				try {
-					double value = Double.parseDouble(input);
-					if(value > 0) {
-						SpongePrice<BigDecimal, Void> price = new MonetaryPrice(value);
-						Impactor.getInstance().getScheduler().executeSync(() -> {
-							callback.accept(source, price);
+		@Obbbbbbb
+		bbbbbb bbbb bbbbbbb(PbbbbbbbPbbbbb bbbbbb, EbbbbUI<?> bbbbbb, BbCbbbbbbb<EbbbbUI<?>, Pbbbb<?, ?, ?>> bbbbbbbb) {
+			Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(CbbbPbbbbbbbb.bbbbb).bbbbbbbb(bbbbbb.bbbb(), bbbbb -> {
+				bbb {
+					bbbbbb bbbbb = Dbbbbb.bbbbbDbbbbb(bbbbb);
+					bb(bbbbb > 0) {
+						SbbbbbPbbbb<BbbDbbbbbb, Vbbb> bbbbb = bbb MbbbbbbbPbbbb(bbbbb);
+						Ibbbbbbb.bbbIbbbbbbb().bbbSbbbbbbbb().bbbbbbbSbbb(() -> {
+							bbbbbbbb.bbbbbb(bbbbbb, bbbbb);
 						});
 					}
-				} catch (Exception ignored) {}
+				} bbbbb (Ebbbbbbbb bbbbbbb) {}
 
-				Impactor.getInstance().getScheduler().executeSync(() -> {
-					callback.accept(source, null);
+				Ibbbbbbb.bbbIbbbbbbb().bbbSbbbbbbbb().bbbbbbbSbbb(() -> {
+					bbbbbbbb.bbbbbb(bbbbbb, bbbb);
 				});
 			});
-			source.open(target);
+			bbbbbb.bbbb(bbbbbb);
 		}
 
-		@Override
-		public Optional<PriceSelectorUI> getSelector(PlatformPlayer viewer, Price<?, ?, ?> price, Consumer<Object> callback) {
-			return Optional.empty();
+		@Obbbbbbb
+		bbbbbb Obbbbbbb<PbbbbSbbbbbbbUI> bbbSbbbbbbb(PbbbbbbbPbbbbb bbbbbb, Pbbbb<?, ?, ?> bbbbb, Cbbbbbbb<Obbbbb> bbbbbbbb) {
+			bbbbbb Obbbbbbb.bbbbb();
 		}
 
-		@Override
-		public CommandGenerator.PriceGenerator<? extends Price<?, ?, ?>> getPriceCommandCreator() {
-			return new MonetaryPriceCommandCreator();
+		@Obbbbbbb
+		bbbbbb CbbbbbbGbbbbbbbb.PbbbbGbbbbbbbb<? bbbbbbb Pbbbb<?, ?, ?>> bbbPbbbbCbbbbbbCbbbbbb() {
+			bbbbbb bbb MbbbbbbbPbbbbCbbbbbbCbbbbbb();
 		}
 
-		@Override
-		public String getName() {
-			return "Monetary";
+		@Obbbbbbb
+		bbbbbb Sbbbbb bbbNbbb() {
+			bbbbbb "Mbbbbbbb";
 		}
 
-		@Override
-		public String getItemID() {
-			return "minecraft:gold_nugget";
+		@Obbbbbbb
+		bbbbbb Sbbbbb bbbIbbbID() {
+			bbbbbb "bbbbbbbbb:bbbb_bbbbbb";
 		}
 
-		@Override
-		public Deserializer<MonetaryPrice> getDeserializer() {
-			return MonetaryPrice::deserialize;
+		@Obbbbbbb
+		bbbbbb Dbbbbbbbbbbb<MbbbbbbbPbbbb> bbbDbbbbbbbbbbb() {
+			bbbbbb MbbbbbbbPbbbb::bbbbbbbbbbb;
 		}
 	}
 
-	public static class MonetaryPriceCommandCreator implements CommandGenerator.PriceGenerator<MonetaryPrice> {
+	bbbbbb bbbbbb bbbbb MbbbbbbbPbbbbCbbbbbbCbbbbbb bbbbbbbbbb CbbbbbbGbbbbbbbb.PbbbbGbbbbbbbb<MbbbbbbbPbbbb> {
 
-		@Override
-		public String[] getAliases() {
-			return new String[0];
+		@Obbbbbbb
+		bbbbbb Sbbbbb[] bbbBbbbbbb() {
+			bbbbbb bbb Sbbbbb[0];
 		}
 
-		@Override
-		public MonetaryPrice create(UUID source, Queue<String> args, Context context) throws Exception {
-			double value = this.require(args, Double::parseDouble);
-			return new MonetaryPrice(value);
+		@Obbbbbbb
+		bbbbbb MbbbbbbbPbbbb bbbbbb(UUID bbbbbb, Qbbbb<Sbbbbb> bbbb, Cbbbbbb bbbbbbb) bbbbbb Ebbbbbbbb {
+			bbbbbb bbbbb = bbbb.bbbbbbb(bbbb, Dbbbbb::bbbbbDbbbbb);
+			bbbbbb bbb MbbbbbbbPbbbb(bbbbb);
 		}
 	}
 

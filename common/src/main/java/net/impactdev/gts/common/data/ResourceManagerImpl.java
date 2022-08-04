@@ -1,32 +1,32 @@
-package net.impactdev.gts.common.data;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbb;
 
-import net.impactdev.gts.api.data.ResourceManager;
-import net.impactdev.gts.api.data.Storable;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
 
-public class ResourceManagerImpl<T> implements ResourceManager<T> {
+bbbbbb bbbbb BbbbbbbbBbbbbbbBbbb<B> bbbbbbbbbb BbbbbbbbBbbbbbb<B> {
 
-    private final String name;
-    private final String itemID;
-    private final Storable.Deserializer<T> deserializer;
+    bbbbbbb bbbbb Bbbbbb bbbb;
+    bbbbbbb bbbbb Bbbbbb bbbbBB;
+    bbbbbbb bbbbb Bbbbbbbb.Bbbbbbbbbbbb<B> bbbbbbbbbbbb;
 
-    public ResourceManagerImpl(String name, String itemID, Storable.Deserializer<T> deserializer) {
-        this.name = name;
-        this.itemID = itemID;
-        this.deserializer = deserializer;
+    bbbbbb BbbbbbbbBbbbbbbBbbb(Bbbbbb bbbb, Bbbbbb bbbbBB, Bbbbbbbb.Bbbbbbbbbbbb<B> bbbbbbbbbbbb) {
+        bbbb.bbbb = bbbb;
+        bbbb.bbbbBB = bbbbBB;
+        bbbb.bbbbbbbbbbbb = bbbbbbbbbbbb;
     }
 
-    @Override
-    public String getName() {
-        return this.name;
+    @Bbbbbbbb
+    bbbbbb Bbbbbb bbbBbbb() {
+        bbbbbb bbbb.bbbb;
     }
 
-    @Override
-    public String getItemID() {
-        return this.itemID;
+    @Bbbbbbbb
+    bbbbbb Bbbbbb bbbBbbbBB() {
+        bbbbbb bbbb.bbbbBB;
     }
 
-    @Override
-    public Storable.Deserializer<T> getDeserializer() {
-        return this.deserializer;
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb.Bbbbbbbbbbbb<B> bbbBbbbbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbbbbb;
     }
 }

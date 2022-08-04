@@ -1,16 +1,16 @@
-package net.impactdev.gts.common.ui;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bb;
 
-import java.util.Optional;
-import java.util.function.Supplier;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public interface Historical<T> {
+bbbbbb bbbbbbbbb Bbbbbbbbbb<B> {
 
     /**
-     * Represents an interface or other design which is generated via a parent of the same nature.
-     * This provides a mapping
+     * Bbbbbbbbbb bb bbbbbbbbb bb bbbbb bbbbbb bbbbb bb bbbbbbbbb bbb b bbbbbb bb bbb bbbb bbbbbb.
+     * Bbbb bbbbbbbb b bbbbbbb
      *
-     * @return
+     * @bbbbbb
      */
-    Optional<Supplier<T>> getParent();
+    Bbbbbbbb<Bbbbbbbb<B>> bbbBbbbbb();
 
 }

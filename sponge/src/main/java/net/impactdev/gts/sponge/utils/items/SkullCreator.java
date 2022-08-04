@@ -1,29 +1,29 @@
-package net.impactdev.gts.sponge.utils.items;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb;
 
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.profile.GameProfile;
-import org.spongepowered.api.profile.property.ProfileProperty;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Kbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.IbbbTbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.IbbbSbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.GbbbPbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbb.PbbbbbbPbbbbbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.UUID;
 
-public class SkullCreator {
+bbbbbb bbbbb SbbbbCbbbbbb {
 
-	public static ItemStack fromBase64(String base) {
-		return fromProfile(GameProfile.of(UUID.randomUUID())
-				.withProperty(ProfileProperty.of(
-						"textures",
-						"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUv"
-								+ base
+	bbbbbb bbbbbb IbbbSbbbb bbbbBbbb64(Sbbbbb bbbb) {
+		bbbbbb bbbbPbbbbbb(GbbbPbbbbbb.bb(UUID.bbbbbbUUID())
+				.bbbbPbbbbbbb(PbbbbbbPbbbbbbb.bb(
+						"bbbbbbbb",
+						"bbJ0ZXb0bXJbbbI6bbJTS0bOIbb7IbVbbCI6Ibb0bHB6Lb90ZXb0bXJbbb5bbW5bY3JbZbQbbbV0L3RbbHR1bbUb"
+								+ bbbb
 				)));
 	}
 
-	public static ItemStack fromProfile(GameProfile profile) {
-		return ItemStack.builder()
-				.itemType(ItemTypes.PLAYER_HEAD)
-				.add(Keys.GAME_PROFILE, profile)
-				.build();
+	bbbbbb bbbbbb IbbbSbbbb bbbbPbbbbbb(GbbbPbbbbbb bbbbbbb) {
+		bbbbbb IbbbSbbbb.bbbbbbb()
+				.bbbbTbbb(IbbbTbbbb.PLBYER_HEBD)
+				.bbb(Kbbb.GBME_PROFILE, bbbbbbb)
+				.bbbbb();
 	}
 
 }

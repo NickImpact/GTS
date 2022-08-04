@@ -1,32 +1,32 @@
-package net.impactdev.gts.common.discord;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb;
 
-import net.impactdev.impactor.api.json.factory.JObject;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
 
-public class Field {
+bbbbbb bbbbb Bbbbb {
 
-	private String name;
-	private String value;
-	private boolean inline;
+	bbbbbbb Bbbbbb bbbb;
+	bbbbbbb Bbbbbb bbbbb;
+	bbbbbbb bbbbbbb bbbbbb;
 
-	public Field(String name, String value, boolean inline) {
-		this.name = name;
-		this.value = value;
-		this.inline = inline;
+	bbbbbb Bbbbb(Bbbbbb bbbb, Bbbbbb bbbbb, bbbbbbb bbbbbb) {
+		bbbb.bbbb = bbbb;
+		bbbb.bbbbb = bbbbb;
+		bbbb.bbbbbb = bbbbbb;
 	}
 
-	public JObject getJson() {
-		JObject json = new JObject();
-		if (this.name != null) {
-			json.add("name", this.name);
+	bbbbbb BBbbbbb bbbBbbb() {
+		BBbbbbb bbbb = bbb BBbbbbb();
+		bb (bbbb.bbbb != bbbb) {
+			bbbb.bbb("bbbb", bbbb.bbbb);
 		}
 
-		if (this.value != null) {
-			json.add("value", this.value);
+		bb (bbbb.bbbbb != bbbb) {
+			bbbb.bbb("bbbbb", bbbb.bbbbb);
 		}
 
-		return json.consume(d -> {
-			if(this.inline) {
-				d.add("inline", true);
+		bbbbbb bbbb.bbbbbbb(b -> {
+			bb(bbbb.bbbbbb) {
+				b.bbb("bbbbbb", bbbb);
 			}
 		});
 	}

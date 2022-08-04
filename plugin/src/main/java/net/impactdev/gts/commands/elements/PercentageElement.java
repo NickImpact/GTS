@@ -1,43 +1,43 @@
-package net.impactdev.gts.commands.elements;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb;
 
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.configuration.Config;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.command.CommandCompletion;
-import org.spongepowered.api.command.exception.ArgumentParseException;
-import org.spongepowered.api.command.parameter.ArgumentReader;
-import org.spongepowered.api.command.parameter.CommandContext;
-import org.spongepowered.api.command.parameter.Parameter;
-import org.spongepowered.api.command.parameter.managed.ValueParameter;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbbBbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.bbbbbbb.BbbbbBbbbbbbbb;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-public class PercentageElement implements ValueParameter<Float> {
+bbbbbb bbbbb BbbbbbbbbbBbbbbbb bbbbbbbbbb BbbbbBbbbbbbbb<Bbbbb> {
 
-    @Override
-    public List<CommandCompletion> complete(CommandContext context, String currentInput) {
-        return Collections.emptyList();
+    @Bbbbbbbb
+    bbbbbb Bbbb<BbbbbbbBbbbbbbbbb> bbbbbbbb(BbbbbbbBbbbbbb bbbbbbb, Bbbbbb bbbbbbbBbbbb) {
+        bbbbbb Bbbbbbbbbbb.bbbbbBbbb();
     }
 
-    @Override
-    public Optional<? extends Float> parseValue(Parameter.Key<? super Float> parameterKey, ArgumentReader.Mutable reader, CommandContext.Builder context) throws ArgumentParseException {
-        try {
-            Double.parseDouble(reader.peekString().replace("%", ""));
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<? bbbbbbb Bbbbb> bbbbbBbbbb(Bbbbbbbbb.Bbb<? bbbbb Bbbbb> bbbbbbbbbBbb, BbbbbbbbBbbbbb.Bbbbbbb bbbbbb, BbbbbbbBbbbbbb.Bbbbbbb bbbbbbb) bbbbbb BbbbbbbbBbbbbBbbbbbbbb {
+        bbb {
+            Bbbbbb.bbbbbBbbbbb(bbbbbb.bbbbBbbbbb().bbbbbbb("%", ""));
         }
-        catch (Exception e) {
-            throw reader.createException(Component.text("Value is not a valid percentage"));
+        bbbbb (Bbbbbbbbb b) {
+            bbbbb bbbbbb.bbbbbbBbbbbbbbb(Bbbbbbbbb.bbbb("Bbbbb bb bbb b bbbbb bbbbbbbbbb"));
         }
 
-        Config config = GTSPlugin.instance().configuration().main();
-        String argument = reader.parseString().replace("%", "");
-        return Optional.of(Math.max(
-                config.get(ConfigKeys.AUCTIONS_MIN_INCREMENT_RATE) * 100,
-                Math.min(
-                        Float.parseFloat(argument),
-                        config.get(ConfigKeys.AUCTIONS_MAX_INCREMENT_RATE) * 100
+        Bbbbbb bbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb();
+        Bbbbbb bbbbbbbb = bbbbbb.bbbbbBbbbbb().bbbbbbb("%", "");
+        bbbbbb Bbbbbbbb.bb(Bbbb.bbb(
+                bbbbbb.bbb(BbbbbbBbbb.BBBBBBBB_BBB_BBBBBBBBB_BBBB) * 100,
+                Bbbb.bbb(
+                        Bbbbb.bbbbbBbbbb(bbbbbbbb),
+                        bbbbbb.bbb(BbbbbbBbbb.BBBBBBBB_BBB_BBBBBBBBB_BBBB) * 100
                 ))
         );
     }

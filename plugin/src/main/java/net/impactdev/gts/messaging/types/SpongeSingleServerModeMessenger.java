@@ -1,26 +1,26 @@
-package net.impactdev.gts.messaging.types;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbb;
 
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-public class SpongeSingleServerModeMessenger implements Messenger {
+bbbbbb bbbbb BbbbbbBbbbbbBbbbbbBbbbBbbbbbbbb bbbbbbbbbb Bbbbbbbbb {
 
-    private final IncomingMessageConsumer consumer;
+    bbbbbbb bbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb;
 
-    public SpongeSingleServerModeMessenger(IncomingMessageConsumer consumer) {
-        this.consumer = consumer;
+    bbbbbb BbbbbbBbbbbbBbbbbbBbbbBbbbbbbbb(BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb) {
+        bbbb.bbbbbbbb = bbbbbbbb;
     }
 
-    @Override
-    public IncomingMessageConsumer getMessageConsumer() {
-        return this.consumer;
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbBbbbbbbBbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbb;
     }
 
-    @Override
-    public void sendOutgoingMessage(@NonNull OutgoingMessage outgoingMessage) {
-        this.consumer.consumeIncomingMessage(outgoingMessage);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbBbbbbbbbBbbbbbb(@BbbBbbb BbbbbbbbBbbbbbb bbbbbbbbBbbbbbb) {
+        bbbb.bbbbbbbb.bbbbbbbBbbbbbbbBbbbbbb(bbbbbbbbBbbbbbb);
     }
 
 }

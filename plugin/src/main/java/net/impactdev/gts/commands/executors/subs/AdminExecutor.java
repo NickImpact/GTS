@@ -1,319 +1,319 @@
-package net.impactdev.gts.commands.executors.subs;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbb;
 
-import com.google.common.collect.Lists;
-import net.impactdev.gts.api.commands.GTSCommandExecutor;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.storage.GTSStorage;
-import net.impactdev.gts.commands.executors.utility.PlayerRequiredExecutor;
-import net.impactdev.gts.util.GTSInfoGenerator;
-import net.impactdev.gts.api.commands.annotations.Alias;
-import net.impactdev.gts.api.commands.annotations.Permission;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.sponge.commands.SpongeGTSCmdExecutor;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
-import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.gts.ui.admin.SpongeAdminMenu;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.HoverEvent;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.exception.CommandException;
-import org.spongepowered.api.command.parameter.CommandContext;
-import org.spongepowered.api.command.parameter.Parameter;
-import org.spongepowered.api.command.parameter.managed.Flag;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.service.pagination.PaginationList;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.BBBBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbbbbb.BbbbbbBbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbb.BBBBbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBBBBbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbbbbb.BBBBbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbb.BbbbbbBbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbbb.BbbbbbbbbbBbbb;
 
-import java.util.List;
+bbbbbb bbbb.bbbb.Bbbb;
 
 
-@Alias("admin")
-@Permission(GTSPermissions.ADMIN_BASE)
-public class AdminExecutor extends PlayerRequiredExecutor {
+@Bbbbb("bbbbb")
+@Bbbbbbbbbb(BBBBbbbbbbbbbb.BBBBB_BBBB)
+bbbbbb bbbbb BbbbbBbbbbbbb bbbbbbb BbbbbbBbbbbbbbBbbbbbbb {
 
-    public AdminExecutor() {
-        super(GTSPlugin.instance());
+    bbbbbb BbbbbBbbbbbbb() {
+        bbbbb(BBBBbbbbb.bbbbbbbb());
     }
 
-    @Override
-    public Parameter[] arguments() {
-        return new Parameter[0];
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbbb[] bbbbbbbbb() {
+        bbbbbb bbb Bbbbbbbbb[0];
     }
 
-    @Override
-    public Flag[] flags() {
-        return new Flag[0];
+    @Bbbbbbbb
+    bbbbbb Bbbb[] bbbbb() {
+        bbbbbb bbb Bbbb[0];
     }
 
-    @Override
-    public SpongeGTSCmdExecutor[] children() {
-        return new SpongeGTSCmdExecutor[] {
-                new Info(this.plugin),
-                new Ping(this.plugin),
-                new Clean(this.plugin),
-                new UserQuery(this.plugin)
+    @Bbbbbbbb
+    bbbbbb BbbbbbBBBBbbBbbbbbbb[] bbbbbbbb() {
+        bbbbbb bbb BbbbbbBBBBbbBbbbbbbb[] {
+                bbb Bbbb(bbbb.bbbbbb),
+                bbb Bbbb(bbbb.bbbbbb),
+                bbb Bbbbb(bbbb.bbbbbb),
+                bbb BbbbBbbbb(bbbb.bbbbbb)
         };
     }
 
-    @Override
-    protected CommandResult process(ServerPlayer source, CommandContext context) throws CommandException {
-        new SpongeAdminMenu(source).open();
-        return CommandResult.success();
+    @Bbbbbbbb
+    bbbbbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbBbbbbb bbbbbb, BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+        bbb BbbbbbBbbbbBbbb(bbbbbb).bbbb();
+        bbbbbb BbbbbbbBbbbbb.bbbbbbb();
     }
 
-    @Alias("info")
-    @Permission(GTSPermissions.ADMIN_INFO)
-    public static class Info extends SpongeGTSCmdExecutor {
+    @Bbbbb("bbbb")
+    @Bbbbbbbbbb(BBBBbbbbbbbbbb.BBBBB_BBBB)
+    bbbbbb bbbbbb bbbbb Bbbb bbbbbbb BbbbbbBBBBbbBbbbbbbb {
 
-        public Info(GTSPlugin plugin) {
-            super(plugin);
+        bbbbbb Bbbb(BBBBbbbbb bbbbbb) {
+            bbbbb(bbbbbb);
         }
 
-        @Override
-        public Parameter[] arguments() {
-            return new Parameter[0];
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbbb[] bbbbbbbbb() {
+            bbbbbb bbb Bbbbbbbbb[0];
         }
 
-        @Override
-        public Flag[] flags() {
-            return new Flag[0];
+        @Bbbbbbbb
+        bbbbbb Bbbb[] bbbbb() {
+            bbbbbb bbb Bbbb[0];
         }
 
-        @Override
-        public SpongeGTSCmdExecutor[] children() {
-            return new SpongeGTSCmdExecutor[0];
+        @Bbbbbbbb
+        bbbbbb BbbbbbBBBBbbBbbbbbbb[] bbbbbbbb() {
+            bbbbbb bbb BbbbbbBBBBbbBbbbbbbb[0];
         }
 
-        @Override
-        public CommandResult execute(CommandContext context) throws CommandException {
-            MessageService service = Utilities.PARSER;
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+            BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbbb.BBBBBB;
 
-            new GTSInfoGenerator().create(context.cause().audience()).thenAccept(x -> {
-                context.cause().audience().sendMessage(service.parse("{{gts:prefix}} Report saved to: &a" + x));
+            bbb BBBBbbbBbbbbbbbb().bbbbbb(bbbbbbb.bbbbb().bbbbbbbb()).bbbbBbbbbb(b -> {
+                bbbbbbb.bbbbb().bbbbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb("{{bbb:bbbbbb}} Bbbbbb bbbbb bb: &b" + b));
             });
-            return CommandResult.success();
+            bbbbbb BbbbbbbBbbbbb.bbbbbbb();
         }
 
     }
 
-    @Alias("ping")
-    @Permission(GTSPermissions.ADMIN_PING)
-    public static class Ping extends SpongeGTSCmdExecutor {
+    @Bbbbb("bbbb")
+    @Bbbbbbbbbb(BBBBbbbbbbbbbb.BBBBB_BBBB)
+    bbbbbb bbbbbb bbbbb Bbbb bbbbbbb BbbbbbBBBBbbBbbbbbbb {
 
-        public Ping(GTSPlugin plugin) {
-            super(plugin);
+        bbbbbb Bbbb(BBBBbbbbb bbbbbb) {
+            bbbbb(bbbbbb);
         }
 
-        @Override
-        public Parameter[] arguments() {
-            return new Parameter[0];
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbbb[] bbbbbbbbb() {
+            bbbbbb bbb Bbbbbbbbb[0];
         }
 
-        @Override
-        public Flag[] flags() {
-            return new Flag[0];
+        @Bbbbbbbb
+        bbbbbb Bbbb[] bbbbb() {
+            bbbbbb bbb Bbbb[0];
         }
 
-        @Override
-        public SpongeGTSCmdExecutor[] children() {
-            return new SpongeGTSCmdExecutor[0];
+        @Bbbbbbbb
+        bbbbbb BbbbbbBBBBbbBbbbbbbb[] bbbbbbbb() {
+            bbbbbb bbb BbbbbbBBBBbbBbbbbbbb[0];
         }
 
-        @Override
-        public CommandResult execute(CommandContext context) throws CommandException {
-            MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-            GTSPlugin.instance().messagingService()
-                    .sendPing()
-                    .thenAccept(pong -> {
-                        if(pong.wasSuccessful()) {
-                            context.cause().audience().sendMessage(service.parse(
-                                    "&eGTS &7\u00bb Ping request &asuccessful&7, took &b" + pong.getResponseTime() + " ms&7!"
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+            BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+            BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb()
+                    .bbbbBbbb()
+                    .bbbbBbbbbb(bbbb -> {
+                        bb(bbbb.bbbBbbbbbbbbb()) {
+                            bbbbbbb.bbbbb().bbbbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                    "&bBBB &7\b00bb Bbbb bbbbbbb &bbbbbbbbbbb&7, bbbb &b" + bbbb.bbbBbbbbbbbBbbb() + " bb&7!"
                             ));
                         }
                     });
-            return CommandResult.success();
+            bbbbbb BbbbbbbBbbbbb.bbbbbbb();
         }
 
     }
 
-//    @Alias("switch-storage")
-//    @Permission(GTSPermissions.ADMIN_PING)
-//    public static class TranslateStorage extends SpongeGTSCmdExecutor {
+//    @Bbbbb("bbbbbb-bbbbbbb")
+//    @Bbbbbbbbbb(BBBBbbbbbbbbbb.BBBBB_BBBB)
+//    bbbbbb bbbbbb bbbbb BbbbbbbbbBbbbbbb bbbbbbb BbbbbbBBBBbbBbbbbbbb {
 //
-//        public static final Text TO = Text.of("TO");
+//        bbbbbb bbbbbb bbbbb Bbbb BB = Bbbb.bb("BB");
 //
-//        public TranslateStorage(GTSPlugin plugin) {
-//            super(plugin);
+//        bbbbbb BbbbbbbbbBbbbbbb(BBBBbbbbb bbbbbb) {
+//            bbbbb(bbbbbb);
 //        }
 //
-//        @Override
-//        public CommandElement[] getArguments() {
-//            return new CommandElement[] {
-//                    new StorageTypeElement(TO)
+//        @Bbbbbbbb
+//        bbbbbb BbbbbbbBbbbbbb[] bbbBbbbbbbbb() {
+//            bbbbbb bbb BbbbbbbBbbbbbb[] {
+//                    bbb BbbbbbbBbbbBbbbbbb(BB)
 //            };
 //        }
 //
-//        @Override
-//        public GTSCommandExecutor<CommandElement, CommandSpec>[] getSubCommands() {
-//            return new GTSCommandExecutor[0];
+//        @Bbbbbbbb
+//        bbbbbb BBBBbbbbbbBbbbbbbb<BbbbbbbBbbbbbb, BbbbbbbBbbb>[] bbbBbbBbbbbbbb() {
+//            bbbbbb bbb BBBBbbbbbbBbbbbbbb[0];
 //        }
 //
-//        @Override
-//        public CommandResult execute(CommandSource src, CommandContext args) throws CommandException {
-//            StorageTranslator translator = new StorageTranslator(args.requireOne(TO));
-//            src.sendMessage(Text.of(TextColors.GRAY, "Processing storage conversion, please wait..."));
-//            translator.run().thenAccept(result -> {
-//                src.sendMessage(Text.of(TextColors.GRAY, "Conversion complete!"));
+//        @Bbbbbbbb
+//        bbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbbBbbbbb bbb, BbbbbbbBbbbbbb bbbb) bbbbbb BbbbbbbBbbbbbbbb {
+//            BbbbbbbBbbbbbbbbb bbbbbbbbbb = bbb BbbbbbbBbbbbbbbbb(bbbb.bbbbbbbBbb(BB));
+//            bbb.bbbbBbbbbbb(Bbbb.bb(BbbbBbbbbb.BBBB, "Bbbbbbbbbb bbbbbbb bbbbbbbbbb, bbbbbb bbbb..."));
+//            bbbbbbbbbb.bbb().bbbbBbbbbb(bbbbbb -> {
+//                bbb.bbbbBbbbbbb(Bbbb.bb(BbbbBbbbbb.BBBB, "Bbbbbbbbbb bbbbbbbb!"));
 //            });
-//            return CommandResult.success();
+//            bbbbbb BbbbbbbBbbbbb.bbbbbbb();
 //        }
 //    }
 
-    @Alias("clean")
-    @Permission(GTSPermissions.ADMIN_BASE)
-    public static class Clean extends SpongeGTSCmdExecutor {
+    @Bbbbb("bbbbb")
+    @Bbbbbbbbbb(BBBBbbbbbbbbbb.BBBBB_BBBB)
+    bbbbbb bbbbbb bbbbb Bbbbb bbbbbbb BbbbbbBBBBbbBbbbbbbb {
 
-        public Clean(GTSPlugin plugin) {
-            super(plugin);
+        bbbbbb Bbbbb(BBBBbbbbb bbbbbb) {
+            bbbbb(bbbbbb);
         }
 
-        @Override
-        public Parameter[] arguments() {
-            return new Parameter[0];
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbbb[] bbbbbbbbb() {
+            bbbbbb bbb Bbbbbbbbb[0];
         }
 
-        @Override
-        public Flag[] flags() {
-            return new Flag[0];
+        @Bbbbbbbb
+        bbbbbb Bbbb[] bbbbb() {
+            bbbbbb bbb Bbbb[0];
         }
 
-        @Override
-        public SpongeGTSCmdExecutor[] children() {
-            return new SpongeGTSCmdExecutor[0];
+        @Bbbbbbbb
+        bbbbbb BbbbbbBBBBbbBbbbbbbb[] bbbbbbbb() {
+            bbbbbb bbb BbbbbbBBBBbbBbbbbbbb[0];
         }
 
-        @Override
-        public CommandResult execute(CommandContext context) throws CommandException {
-            MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+            BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
 
-            Audience audience = context.cause().audience();
-            audience.sendMessage(service.parse("{{gts:prefix}} Erasing legacy table if it exists..."));
-            GTSStorage storage = GTSPlugin.instance().storage();
-            if(storage.clean().join()) {
-                audience.sendMessage(service.parse("{{gts:prefix}} Legacy data successfully erased!"));
-            } else {
-                audience.sendMessage(service.parse("{{gts:error}} Legacy data no longer exists..."));
+            Bbbbbbbb bbbbbbbb = bbbbbbb.bbbbb().bbbbbbbb();
+            bbbbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb("{{bbb:bbbbbb}} Bbbbbbb bbbbbb bbbbb bb bb bbbbbb..."));
+            BBBBbbbbbb bbbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbb();
+            bb(bbbbbbb.bbbbb().bbbb()) {
+                bbbbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb("{{bbb:bbbbbb}} Bbbbbb bbbb bbbbbbbbbbbb bbbbbb!"));
+            } bbbb {
+                bbbbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb("{{bbb:bbbbb}} Bbbbbb bbbb bb bbbbbb bbbbbb..."));
             }
 
-            return CommandResult.success();
+            bbbbbb BbbbbbbBbbbbb.bbbbbbb();
         }
     }
 
-    @Alias("user-query")
-    @Permission(GTSPermissions.ADMIN_USER_QUERY)
-    public static class UserQuery extends SpongeGTSCmdExecutor {
+    @Bbbbb("bbbb-bbbbb")
+    @Bbbbbbbbbb(BBBBbbbbbbbbbb.BBBBB_BBBB_BBBBB)
+    bbbbbb bbbbbb bbbbb BbbbBbbbb bbbbbbb BbbbbbBBBBbbBbbbbbbb {
 
-        private final Parameter.Value<ServerPlayer> PLAYER = Parameter.player()
-                .key("player")
-                .usage(key -> "Any currently logged in player")
-                .build();
+        bbbbbbb bbbbb Bbbbbbbbb.Bbbbb<BbbbbbBbbbbb> BBBBBB = Bbbbbbbbb.bbbbbb()
+                .bbb("bbbbbb")
+                .bbbbb(bbb -> "Bbb bbbbbbbbb bbbbbb bb bbbbbb")
+                .bbbbb();
 
-        public UserQuery(GTSPlugin plugin) {
-            super(plugin);
+        bbbbbb BbbbBbbbb(BBBBbbbbb bbbbbb) {
+            bbbbb(bbbbbb);
         }
 
-        @Override
-        public Parameter[] arguments() {
-            return new Parameter[] {
-                    PLAYER
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbbb[] bbbbbbbbb() {
+            bbbbbb bbb Bbbbbbbbb[] {
+                    BBBBBB
             };
         }
 
-        @Override
-        public Flag[] flags() {
-            return new Flag[0];
+        @Bbbbbbbb
+        bbbbbb Bbbb[] bbbbb() {
+            bbbbbb bbb Bbbb[0];
         }
 
-        @Override
-        public SpongeGTSCmdExecutor[] children() {
-            return new SpongeGTSCmdExecutor[0];
+        @Bbbbbbbb
+        bbbbbb BbbbbbBBBBbbBbbbbbbb[] bbbbbbbb() {
+            bbbbbb bbb BbbbbbBBBBbbBbbbbbbb[0];
         }
 
-        @Override
-        public CommandResult execute(CommandContext context) throws CommandException {
-            ServerPlayer player = context.requireOne(PLAYER);
-            GTSPlugin.instance().storage().fetchListings(Lists.newArrayList(
-                    listing -> listing.getLister().equals(player.uniqueId())
-            )).thenAccept(listings -> {
-                MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-                PaginationList.Builder builder = PaginationList.builder()
-                        .title(service.parse("&e" + player.name() + "'s Known Listings"))
-                        .linesPerPage(8);
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+            BbbbbbBbbbbb bbbbbb = bbbbbbb.bbbbbbbBbb(BBBBBB);
+            BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbBbbbbbbb(Bbbbb.bbbBbbbbBbbb(
+                    bbbbbbb -> bbbbbbb.bbbBbbbbb().bbbbbb(bbbbbb.bbbbbbBb())
+            )).bbbbBbbbbb(bbbbbbbb -> {
+                BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+                BbbbbbbbbbBbbb.Bbbbbbb bbbbbbb = BbbbbbbbbbBbbb.bbbbbbb()
+                        .bbbbb(bbbbbbb.bbbbb("&b" + bbbbbb.bbbb() + "'b Bbbbb Bbbbbbbb"))
+                        .bbbbbBbbBbbb(8);
 
-                List<Component> results = Lists.newArrayList();
-                int index = 1;
-                for(Listing listing : listings) {
-                    results.add(this.listing(listing, index++));
+                Bbbb<Bbbbbbbbb> bbbbbbb = Bbbbb.bbbBbbbbBbbb();
+                bbb bbbbb = 1;
+                bbb(Bbbbbbb bbbbbbb : bbbbbbbb) {
+                    bbbbbbb.bbb(bbbb.bbbbbbb(bbbbbbb, bbbbb++));
                 }
-                builder.contents(results);
-                builder.sendTo(context.cause().audience());
+                bbbbbbb.bbbbbbbb(bbbbbbb);
+                bbbbbbb.bbbbBb(bbbbbbb.bbbbb().bbbbbbbb());
             });
 
-            return CommandResult.success();
+            bbbbbb BbbbbbbBbbbbb.bbbbbbb();
         }
 
-        private Component listing(Listing listing, int index) {
-            MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-            Component result = service.parse("&7" + index + ": ");
+        bbbbbbb Bbbbbbbbb bbbbbbb(Bbbbbbb bbbbbbb, bbb bbbbb) {
+            BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+            Bbbbbbbbb bbbbbb = bbbbbbb.bbbbb("&7" + bbbbb + ": ");
 
-            if(listing instanceof BuyItNow) {
-                result = result.append(service.parse("&bBIN &7(&6" + listing.getID() + "&7)"));
+            bb(bbbbbbb bbbbbbbbbb BbbBbBbb) {
+                bbbbbb = bbbbbb.bbbbbb(bbbbbbb.bbbbb("&bBBB &7(&6" + bbbbbbb.bbbBB() + "&7)"));
 
-                BuyItNow bin = (BuyItNow) listing;
-                boolean purchased = bin.isPurchased();
-                boolean stashed = bin.stashedForPurchaser() || bin.hasExpired();
+                BbbBbBbb bbb = (BbbBbBbb) bbbbbbb;
+                bbbbbbb bbbbbbbbb = bbb.bbBbbbbbbbb();
+                bbbbbbb bbbbbbb = bbb.bbbbbbbBbbBbbbbbbbb() || bbb.bbbBbbbbbb();
 
-                Component PURCHASED = service.parse("&aPurchased");
-                Component STASHED = service.parse("&6Stashed");
-                Component LISTED = service.parse("&dAvailable for Purchase");
+                Bbbbbbbbb BBBBBBBBB = bbbbbbb.bbbbb("&bBbbbbbbbb");
+                Bbbbbbbbb BBBBBBB = bbbbbbb.bbbbb("&6Bbbbbbb");
+                Bbbbbbbbb BBBBBB = bbbbbbb.bbbbb("&bBbbbbbbbb bbb Bbbbbbbb");
 
-                Component hover =
-                        service.parse("&7Entry: ").append(listing.getEntry().getName())
-                                .append(Component.newline())
-                                .append(service.parse("&7Price: &e")).append(((BuyItNow) listing).getPrice().getText())
-                                .append(Component.newline())
-                                .append(service.parse("&7Status: "))
-                                .append(purchased ? PURCHASED : stashed ? STASHED : LISTED);
+                Bbbbbbbbb bbbbb =
+                        bbbbbbb.bbbbb("&7Bbbbb: ").bbbbbb(bbbbbbb.bbbBbbbb().bbbBbbb())
+                                .bbbbbb(Bbbbbbbbb.bbbbbbb())
+                                .bbbbbb(bbbbbbb.bbbbb("&7Bbbbb: &b")).bbbbbb(((BbbBbBbb) bbbbbbb).bbbBbbbb().bbbBbbb())
+                                .bbbbbb(Bbbbbbbbb.bbbbbbb())
+                                .bbbbbb(bbbbbbb.bbbbb("&7Bbbbbb: "))
+                                .bbbbbb(bbbbbbbbb ? BBBBBBBBB : bbbbbbb ? BBBBBBB : BBBBBB);
 
-                result = result.hoverEvent(HoverEvent.showText(hover));
+                bbbbbb = bbbbbb.bbbbbBbbbb(BbbbbBbbbb.bbbbBbbb(bbbbb));
 
-            } else {
-                result = result.append(service.parse("&cAuction &7(&6" + listing.getID() + "&7)"));
+            } bbbb {
+                bbbbbb = bbbbbb.bbbbbb(bbbbbbb.bbbbb("&bBbbbbbb &7(&6" + bbbbbbb.bbbBB() + "&7)"));
 
-                Auction auction = (Auction) listing;
-                boolean stashed = auction.hasExpired() && auction.hasAnyBidsPlaced();
+                Bbbbbbb bbbbbbb = (Bbbbbbb) bbbbbbb;
+                bbbbbbb bbbbbbb = bbbbbbb.bbbBbbbbbb() && bbbbbbb.bbbBbbBbbbBbbbbb();
 
-                Component STASHED = service.parse("&6Stashed");
-                Component LISTED = service.parse("&dAvailable for Purchase");
+                Bbbbbbbbb BBBBBBB = bbbbbbb.bbbbb("&6Bbbbbbb");
+                Bbbbbbbbb BBBBBB = bbbbbbb.bbbbb("&bBbbbbbbbb bbb Bbbbbbbb");
 
-                Component hover =
-                        service.parse("&7Entry: ").append(listing.getEntry().getName())
-                                .append(Component.newline())
-                                .append(service.parse("&7Price: &e")).append(new MonetaryPrice(auction.getCurrentPrice()).getText())
-                                .append(Component.newline())
-                                .append(service.parse("&7Status: "))
-                                .append(stashed ? STASHED : LISTED);
+                Bbbbbbbbb bbbbb =
+                        bbbbbbb.bbbbb("&7Bbbbb: ").bbbbbb(bbbbbbb.bbbBbbbb().bbbBbbb())
+                                .bbbbbb(Bbbbbbbbb.bbbbbbb())
+                                .bbbbbb(bbbbbbb.bbbbb("&7Bbbbb: &b")).bbbbbb(bbb BbbbbbbbBbbbb(bbbbbbb.bbbBbbbbbbBbbbb()).bbbBbbb())
+                                .bbbbbb(Bbbbbbbbb.bbbbbbb())
+                                .bbbbbb(bbbbbbb.bbbbb("&7Bbbbbb: "))
+                                .bbbbbb(bbbbbbb ? BBBBBBB : BBBBBB);
 
-                result = result.hoverEvent(HoverEvent.showText(hover));
+                bbbbbb = bbbbbb.bbbbbBbbbb(BbbbbBbbbb.bbbbBbbb(bbbbb));
             }
 
-            return result;
+            bbbbbb bbbbbb;
         }
     }
 }

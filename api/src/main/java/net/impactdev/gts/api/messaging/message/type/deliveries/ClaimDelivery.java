@@ -1,19 +1,19 @@
-package net.impactdev.gts.api.messaging.message.type.deliveries;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbbbb;
 
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
-public interface ClaimDelivery extends OutgoingMessage {
+bbbbbb bbbbbbbbb BbbbbBbbbbbbb bbbbbbb BbbbbbbbBbbbbbb {
 
-    @NonNull UUID getDeliveryID();
+    @BbbBbbb BBBB bbbBbbbbbbbBB();
 
-    @NonNull UUID getActor();
+    @BbbBbbb BBBB bbbBbbbb();
 
-    interface Request extends ClaimDelivery, MessageType.Request<Response> {}
+    bbbbbbbbb Bbbbbbb bbbbbbb BbbbbBbbbbbbb, BbbbbbbBbbb.Bbbbbbb<Bbbbbbbb> {}
 
-    interface Response extends ClaimDelivery, MessageType.Response {}
+    bbbbbbbbb Bbbbbbbb bbbbbbb BbbbbBbbbbbbb, BbbbbbbBbbb.Bbbbbbbb {}
 
 }

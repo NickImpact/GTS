@@ -1,29 +1,29 @@
-package net.impactdev.gts.common.maintenance;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbbb;
 
-import net.impactdev.gts.api.events.maintenance.MaintenanceModeUpdateEvent;
-import net.impactdev.gts.api.maintenance.MaintenanceManager;
-import net.impactdev.gts.api.maintenance.MaintenanceMode;
-import net.impactdev.impactor.api.event.annotations.Subscribe;
-import net.impactdev.impactor.api.event.listener.ImpactorEventListener;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbBbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.bbbbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.bbbbbbbb.BbbbbbbbBbbbbBbbbbbbb;
 
-import java.util.EnumMap;
+bbbbbb bbbb.bbbb.BbbbBbb;
 
-public class MaintenanceManagerImpl implements MaintenanceManager, ImpactorEventListener {
+bbbbbb bbbbb BbbbbbbbbbbBbbbbbbBbbb bbbbbbbbbb BbbbbbbbbbbBbbbbbb, BbbbbbbbBbbbbBbbbbbbb {
 
-    private final EnumMap<MaintenanceMode, Boolean> mapping = new EnumMap<>(MaintenanceMode.class);
+    bbbbbbb bbbbb BbbbBbb<BbbbbbbbbbbBbbb, Bbbbbbb> bbbbbbb = bbb BbbbBbb<>(BbbbbbbbbbbBbbb.bbbbb);
 
-    @Override
-    public boolean getState(MaintenanceMode mode) {
-        return this.mapping.get(mode);
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbBbbbb(BbbbbbbbbbbBbbb bbbb) {
+        bbbbbb bbbb.bbbbbbb.bbb(bbbb);
     }
 
-    @Override
-    public void setState(MaintenanceMode mode, boolean state) {
-        this.mapping.put(mode, state);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbb(BbbbbbbbbbbBbbb bbbb, bbbbbbb bbbbb) {
+        bbbb.bbbbbbb.bbb(bbbb, bbbbb);
     }
 
-    @Subscribe
-    public void onMaintenanceUpdate(MaintenanceModeUpdateEvent event) {
+    @Bbbbbbbbb
+    bbbbbb bbbb bbBbbbbbbbbbbBbbbbb(BbbbbbbbbbbBbbbBbbbbbBbbbb bbbbb) {
 
     }
 

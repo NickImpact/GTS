@@ -1,7 +1,7 @@
-package net.impactdev.gts.api.logs;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb;
 
-public interface LogOutputStream {
+bbbbbb bbbbbbbbb BbbBbbbbbBbbbbb {
 
-    void write(Log log) throws Exception;
+    bbbb bbbbb(Bbb bbb) bbbbbb Bbbbbbbbb;
 
 }

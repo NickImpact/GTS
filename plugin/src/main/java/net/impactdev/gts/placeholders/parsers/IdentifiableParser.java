@@ -1,9 +1,9 @@
-package net.impactdev.gts.placeholders.parsers;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbbbbb.bbbbbbb;
 
-import org.spongepowered.api.placeholder.PlaceholderParser;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public interface IdentifiableParser extends PlaceholderParser {
+bbbbbb bbbbbbbbb BbbbbbbbbbbbBbbbbb bbbbbbb BbbbbbbbbbbBbbbbb {
 
-    String key();
+    Bbbbbb bbb();
 
 }

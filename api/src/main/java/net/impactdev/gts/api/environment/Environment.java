@@ -1,22 +1,22 @@
-package net.impactdev.gts.api.environment;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb;
 
-import com.google.common.collect.Maps;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
 
-import java.util.Map;
+bbbbbb bbbb.bbbb.Bbb;
 
-public class Environment implements PrettyPrinter.IPrettyPrintable {
+bbbbbb bbbbb Bbbbbbbbbbb bbbbbbbbbb BbbbbbBbbbbbb.BBbbbbbBbbbbbbbb {
 
-    private final Map<String, String> environment = Maps.newLinkedHashMap();
+    bbbbbbb bbbbb Bbb<Bbbbbb, Bbbbbb> bbbbbbbbbbb = Bbbb.bbbBbbbbbBbbbBbb();
 
-    public void append(String key, String version) {
-        this.environment.put(key, version);
+    bbbbbb bbbb bbbbbb(Bbbbbb bbb, Bbbbbb bbbbbbb) {
+        bbbb.bbbbbbbbbbb.bbb(bbb, bbbbbbb);
     }
 
-    @Override
-    public void print(PrettyPrinter printer) {
-        for(Map.Entry<String, String> entry : this.environment.entrySet()) {
-            printer.add("  * " + entry.getKey() + ": " + entry.getValue());
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+        bbb(Bbb.Bbbbb<Bbbbbb, Bbbbbb> bbbbb : bbbb.bbbbbbbbbbb.bbbbbBbb()) {
+            bbbbbbb.bbb("  * " + bbbbb.bbbBbb() + ": " + bbbbb.bbbBbbbb());
         }
     }
 

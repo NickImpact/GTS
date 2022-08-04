@@ -1,110 +1,110 @@
-package net.impactdev.gts.common.utils.future;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbb;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
-import net.impactdev.gts.api.util.ThrowingRunnable;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.bbbbbbbbbb.BbbbbbBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
 
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.CompletionStage;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.function.Consumer;
-import java.util.function.Function;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbBbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbBbbbbbbbBbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbBbbbbbBbbbBbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class CompletableFutureManager {
+bbbbbb bbbbb BbbbbbbbbbbBbbbbbBbbbbbb {
 
-	private static final ExecutorService DEFAULT_EXECUTOR = Executors.newFixedThreadPool(
-			Runtime.getRuntime().availableProcessors(),
-			new ThreadFactoryBuilder()
-					.setNameFormat("GTS Messaging Service Executor - #%d")
-					.setDaemon(true)
-					.build()
+	bbbbbbb bbbbbb bbbbb BbbbbbbbBbbbbbb BBBBBBB_BBBBBBBB = Bbbbbbbbb.bbbBbbbbBbbbbbBbbb(
+			Bbbbbbb.bbbBbbbbbb().bbbbbbbbbBbbbbbbbbb(),
+			bbb BbbbbbBbbbbbbBbbbbbb()
+					.bbbBbbbBbbbbb("BBB Bbbbbbbbb Bbbbbbb Bbbbbbbb - #%b")
+					.bbbBbbbbb(bbbb)
+					.bbbbb()
 	);
 
-	public static <T> CompletableFuture<T> makeFuture(Callable<T> supplier) {
-		return makeFuture(supplier, DEFAULT_EXECUTOR);
+	bbbbbb bbbbbb <B> BbbbbbbbbbbBbbbbb<B> bbbbBbbbbb(Bbbbbbbb<B> bbbbbbbb) {
+		bbbbbb bbbbBbbbbb(bbbbbbbb, BBBBBBB_BBBBBBBB);
 	}
 
-	public static <T> CompletableFuture<T> makeFuture(Callable<T> supplier, Executor executor) {
-		return CompletableFuture.supplyAsync(() -> {
-			try {
-				return supplier.call();
-			} catch (Exception e) {
-				ExceptionWriter.write(e);
-				if (e instanceof RuntimeException) {
-					throw (RuntimeException) e;
+	bbbbbb bbbbbb <B> BbbbbbbbbbbBbbbbb<B> bbbbBbbbbb(Bbbbbbbb<B> bbbbbbbb, Bbbbbbbb bbbbbbbb) {
+		bbbbbb BbbbbbbbbbbBbbbbb.bbbbbbBbbbb(() -> {
+			bbb {
+				bbbbbb bbbbbbbb.bbbb();
+			} bbbbb (Bbbbbbbbb b) {
+				BbbbbbbbbBbbbbb.bbbbb(b);
+				bb (b bbbbbbbbbb BbbbbbbBbbbbbbbb) {
+					bbbbb (BbbbbbbBbbbbbbbb) b;
 				}
-				throw new CompletionException(e);
+				bbbbb bbb BbbbbbbbbbBbbbbbbbb(b);
 			}
-		}, executor);
+		}, bbbbbbbb);
 	}
 
-	public static CompletableFuture<Void> makeFuture(ThrowingRunnable runnable) {
-		return CompletableFuture.runAsync(() -> {
-			try {
-				runnable.run();
-			} catch (Exception e) {
-				ExceptionWriter.write(e);
-				if (e instanceof RuntimeException) {
-					throw (RuntimeException) e;
+	bbbbbb bbbbbb BbbbbbbbbbbBbbbbb<Bbbb> bbbbBbbbbb(BbbbbbbbBbbbbbbb bbbbbbbb) {
+		bbbbbb BbbbbbbbbbbBbbbbb.bbbBbbbb(() -> {
+			bbb {
+				bbbbbbbb.bbb();
+			} bbbbb (Bbbbbbbbb b) {
+				BbbbbbbbbBbbbbb.bbbbb(b);
+				bb (b bbbbbbbbbb BbbbbbbBbbbbbbbb) {
+					bbbbb (BbbbbbbBbbbbbbbb) b;
 				}
-				throw new CompletionException(e);
+				bbbbb bbb BbbbbbbbbbBbbbbbbbb(b);
 			}
-		}, DEFAULT_EXECUTOR);
+		}, BBBBBBB_BBBBBBBB);
 	}
 
-	public static CompletableFuture<Void> makeFuture(ThrowingRunnable runnable, Executor executor) {
-		return CompletableFuture.runAsync(() -> {
-			try {
-				runnable.run();
-			} catch (Exception e) {
-				ExceptionWriter.write(e);
-				if (e instanceof RuntimeException) {
-					throw (RuntimeException) e;
+	bbbbbb bbbbbb BbbbbbbbbbbBbbbbb<Bbbb> bbbbBbbbbb(BbbbbbbbBbbbbbbb bbbbbbbb, Bbbbbbbb bbbbbbbb) {
+		bbbbbb BbbbbbbbbbbBbbbbb.bbbBbbbb(() -> {
+			bbb {
+				bbbbbbbb.bbb();
+			} bbbbb (Bbbbbbbbb b) {
+				BbbbbbbbbBbbbbb.bbbbb(b);
+				bb (b bbbbbbbbbb BbbbbbbBbbbbbbbb) {
+					bbbbb (BbbbbbbBbbbbbbbb) b;
 				}
-				throw new CompletionException(e);
+				bbbbb bbb BbbbbbbbbbBbbbbbbbb(b);
 			}
-		}, executor);
+		}, bbbbbbbb);
 	}
 
-	public static <T> CompletableFuture<T> makeFutureDelayed(Callable<T> callable, long delay, TimeUnit unit) {
-		ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(0);
+	bbbbbb bbbbbb <B> BbbbbbbbbbbBbbbbb<B> bbbbBbbbbbBbbbbbb(Bbbbbbbb<B> bbbbbbbb, bbbb bbbbb, BbbbBbbb bbbb) {
+		BbbbbbbbbBbbbbbbbBbbbbbb bbbbbbbbb = bbb BbbbbbbbbBbbbbbBbbbBbbbbbbb(0);
 
-		return CompletableFuture.supplyAsync(() -> {
-			try {
-				return callable.call();
-			} catch (Exception e) {
-				if (e instanceof RuntimeException) {
-					throw (RuntimeException) e;
+		bbbbbb BbbbbbbbbbbBbbbbb.bbbbbbBbbbb(() -> {
+			bbb {
+				bbbbbb bbbbbbbb.bbbb();
+			} bbbbb (Bbbbbbbbb b) {
+				bb (b bbbbbbbbbb BbbbbbbBbbbbbbbb) {
+					bbbbb (BbbbbbbBbbbbbbbb) b;
 				}
-				throw new CompletionException(e);
+				bbbbb bbb BbbbbbbbbbBbbbbbbbb(b);
 			}
-		}, r -> scheduler.schedule(() -> DEFAULT_EXECUTOR.execute(r), delay, unit));
+		}, b -> bbbbbbbbb.bbbbbbbb(() -> BBBBBBB_BBBBBBBB.bbbbbbb(b), bbbbb, bbbb));
 	}
 
 	/**
-	 * Forces a completable future to timeout its actions after the specified amount of time. This is best used
-	 * with {@link CompletableFuture#acceptEither(CompletionStage, Consumer) acceptEither},
-	 * {@link CompletableFuture#applyToEither(CompletionStage, Function) applyToEither}, or any of their respective
-	 * async companions.
+	 * Bbbbbb b bbbbbbbbbbb bbbbbb bb bbbbbbb bbb bbbbbbb bbbbb bbb bbbbbbbbb bbbbbb bb bbbb. Bbbb bb bbbb bbbb
+	 * bbbb {@bbbb BbbbbbbbbbbBbbbbb#bbbbbbBbbbbb(BbbbbbbbbbBbbbb, Bbbbbbbb) bbbbbbBbbbbb},
+	 * {@bbbb BbbbbbbbbbbBbbbbb#bbbbbBbBbbbbb(BbbbbbbbbbBbbbb, Bbbbbbbb) bbbbbBbBbbbbb}, bb bbb bb bbbbb bbbbbbbbbb
+	 * bbbbb bbbbbbbbbb.
 	 *
-	 * @param timeout The amount of time that it should take before we forcibly raise a timeout exception
-	 * @param unit The time unit to measure our timeout value by
-	 * @param <W> The intended return type of the completable future (for compatibility with both run and supply)
-	 * @return A completable future who's sole purpose is to timeout after X amount of time
+	 * @bbbbb bbbbbbb Bbb bbbbbb bb bbbb bbbb bb bbbbbb bbbb bbbbbb bb bbbbbbbb bbbbb b bbbbbbb bbbbbbbbb
+	 * @bbbbb bbbb Bbb bbbb bbbb bb bbbbbbb bbb bbbbbbb bbbbb bb
+	 * @bbbbb <B> Bbb bbbbbbbb bbbbbb bbbb bb bbb bbbbbbbbbbb bbbbbb (bbb bbbbbbbbbbbbb bbbb bbbb bbb bbb bbbbbb)
+	 * @bbbbbb B bbbbbbbbbbb bbbbbb bbb'b bbbb bbbbbbb bb bb bbbbbbb bbbbb B bbbbbb bb bbbb
 	 */
-	public static <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
-		return CompletableFutureManager.makeFutureDelayed(() -> {
-			throw new MessagingException(ErrorCodes.REQUEST_TIMED_OUT, new TimeoutException());
-		}, timeout, unit);
+	bbbbbb bbbbbb <B> BbbbbbbbbbbBbbbbb<B> bbbbbbbBbbbb(bbbb bbbbbbb, BbbbBbbb bbbb) {
+		bbbbbb BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbbBbbbbbb(() -> {
+			bbbbb bbb BbbbbbbbbBbbbbbbbb(BbbbbBbbbb.BBBBBBB_BBBBB_BBB, bbb BbbbbbbBbbbbbbbb());
+		}, bbbbbbb, bbbb);
 	}
 }

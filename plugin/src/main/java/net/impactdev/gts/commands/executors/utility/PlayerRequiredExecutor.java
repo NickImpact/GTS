@@ -1,38 +1,38 @@
-package net.impactdev.gts.commands.executors.utility;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbbbbb;
 
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.commands.SpongeGTSCmdExecutor;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.command.CommandCause;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.exception.CommandException;
-import org.spongepowered.api.command.parameter.CommandContext;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBBBBbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
 
-import java.util.Optional;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-public abstract class PlayerRequiredExecutor extends SpongeGTSCmdExecutor {
+bbbbbb bbbbbbbb bbbbb BbbbbbBbbbbbbbBbbbbbbb bbbbbbb BbbbbbBBBBbbBbbbbbbb {
 
-    public PlayerRequiredExecutor(GTSPlugin plugin) {
-        super(plugin);
+    bbbbbb BbbbbbBbbbbbbbBbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbb(bbbbbb);
     }
 
-    @Override
-    public CommandResult execute(CommandContext context) throws CommandException {
-        CommandCause cause = context.cause();
-        Optional<ServerPlayer> source = cause.first(ServerPlayer.class);
-        if(source.isPresent()) {
-            return this.process(source.get(), context);
+    @Bbbbbbbb
+    bbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+        BbbbbbbBbbbb bbbbb = bbbbbbb.bbbbb();
+        Bbbbbbbb<BbbbbbBbbbbb> bbbbbb = bbbbb.bbbbb(BbbbbbBbbbbb.bbbbb);
+        bb(bbbbbb.bbBbbbbbb()) {
+            bbbbbb bbbb.bbbbbbb(bbbbbb.bbb(), bbbbbbb);
         }
 
-        MessageService service = Utilities.PARSER;
-        Config lang = GTSPlugin.instance().configuration().language();
-        throw new CommandException(service.parse(lang.get(MsgConfigKeys.PLAYER_REQUIRED_COMMAND)));
+        BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbbb.BBBBBB;
+        Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+        bbbbb bbb BbbbbbbBbbbbbbbb(bbbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBB_BBBBBBBB_BBBBBBB)));
     }
 
-    protected abstract CommandResult process(ServerPlayer source, CommandContext context) throws CommandException;
+    bbbbbbbbb bbbbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbBbbbbb bbbbbb, BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb;
 }

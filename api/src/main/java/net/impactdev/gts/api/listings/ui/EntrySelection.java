@@ -1,9 +1,9 @@
-package net.impactdev.gts.api.listings.ui;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb;
 
-import net.impactdev.gts.api.listings.entries.Entry;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
 
-public interface EntrySelection<T extends Entry<?, ?>> {
+bbbbbb bbbbbbbbb BbbbbBbbbbbbbb<B bbbbbbb Bbbbb<?, ?>> {
 
-    T createFromSelection();
+    B bbbbbbBbbbBbbbbbbbb();
 
 }

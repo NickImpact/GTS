@@ -1,126 +1,126 @@
-package net.impactdev.gts.velocity.messaging.processor;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbbbbbbb;
 
-import com.google.common.collect.Maps;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.message.Message;
-import net.impactdev.gts.api.messaging.message.MessageConsumer;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
-import net.impactdev.gts.api.messaging.message.type.UpdateMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.velocity.GTSVelocityPlugin;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.BBBBbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Consumer;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.BbbbBbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-import static net.impactdev.gts.common.messaging.GTSMessagingService.NORMAL;
+bbbbbb bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbbBbbbbbb.BBBBBB;
 
-public class VelocityIncomingMessageConsumer implements IncomingMessageConsumer {
+bbbbbb bbbbb BbbbbbbbBbbbbbbbBbbbbbbBbbbbbbb bbbbbbbbbb BbbbbbbbBbbbbbbBbbbbbbb {
 
-    private final GTSVelocityPlugin plugin;
-    private final Set<UUID> received;
+    bbbbbbb bbbbb BBBBbbbbbbbBbbbbb bbbbbb;
+    bbbbbbb bbbbb Bbb<BBBB> bbbbbbbb;
 
-    private final Map<Class<?>, MessageConsumer<?>> consumers = Maps.newHashMap();
+    bbbbbbb bbbbb Bbb<Bbbbb<?>, BbbbbbbBbbbbbbb<?>> bbbbbbbbb = Bbbb.bbbBbbbBbb();
 
-    public VelocityIncomingMessageConsumer(GTSVelocityPlugin plugin) {
-        this.plugin = plugin;
-        this.received = Collections.synchronizedSet(new HashSet<>());
+    bbbbbb BbbbbbbbBbbbbbbbBbbbbbbBbbbbbbb(BBBBbbbbbbbBbbbbb bbbbbb) {
+        bbbb.bbbbbb = bbbbbb;
+        bbbb.bbbbbbbb = Bbbbbbbbbbb.bbbbbbbbbbbbBbb(bbb BbbbBbb<>());
     }
 
-    @Override
-    public <T extends MessageType.Response> void registerRequest(UUID request, Consumer<T> response) {}
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb BbbbbbbBbbb.Bbbbbbbb> bbbb bbbbbbbbBbbbbbb(BBBB bbbbbbb, Bbbbbbbb<B> bbbbbbbb) {}
 
-    @Override
-    public <T extends MessageType.Response> void processRequest(UUID request, T response) {}
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb BbbbbbbBbbb.Bbbbbbbb> bbbb bbbbbbbBbbbbbb(BBBB bbbbbbb, B bbbbbbbb) {}
 
-    @Override
-    public void cacheReceivedID(UUID id) {
-        this.received.add(id);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbBbbbbbbbBB(BBBB bb) {
+        bbbb.bbbbbbbb.bbb(bb);
     }
 
-    @Override
-    public boolean consumeIncomingMessage(@NonNull Message message) {
-        Objects.requireNonNull(message, "message");
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbbbbBbbbbbbbBbbbbbb(@BbbBbbb Bbbbbbb bbbbbbb) {
+        Bbbbbbb.bbbbbbbBbbBbbb(bbbbbbb, "bbbbbbb");
 
-        if (!this.received.add(message.getID())) {
-            return false;
+        bb (!bbbb.bbbbbbbb.bbb(bbbbbbb.bbbBB())) {
+            bbbbbb bbbbb;
         }
 
-        this.processIncomingMessage(message);
-        return true;
+        bbbb.bbbbbbbBbbbbbbbBbbbbbb(bbbbbbb);
+        bbbbbb bbbb;
     }
 
-    @Override
-    public boolean consumeIncomingMessageAsString(@NonNull String encodedString) {
-        Objects.requireNonNull(encodedString, "encodedString");
-        JsonObject decodedObject = NORMAL.fromJson(encodedString, JsonObject.class).getAsJsonObject();
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbbbbBbbbbbbbBbbbbbbBbBbbbbb(@BbbBbbb Bbbbbb bbbbbbbBbbbbb) {
+        Bbbbbbb.bbbbbbbBbbBbbb(bbbbbbbBbbbbb, "bbbbbbbBbbbbb");
+        BbbbBbbbbb bbbbbbbBbbbbb = BBBBBB.bbbbBbbb(bbbbbbbBbbbbb, BbbbBbbbbb.bbbbb).bbbBbBbbbBbbbbb();
 
-        // extract id
-        JsonElement idElement = decodedObject.get("id");
-        if (idElement == null) {
-            throw new IllegalStateException("Incoming message has no id argument: " + encodedString);
+        // bbbbbbb bb
+        BbbbBbbbbbb bbBbbbbbb = bbbbbbbBbbbbb.bbb("bb");
+        bb (bbBbbbbbb == bbbb) {
+            bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbbbb bbbbbbb bbb bb bb bbbbbbbb: " + bbbbbbbBbbbbb);
         }
-        UUID id = UUID.fromString(idElement.getAsString());
+        BBBB bb = BBBB.bbbbBbbbbb(bbBbbbbbb.bbbBbBbbbbb());
 
-        // ensure the message hasn't been received already
-        if (!this.received.add(id)) {
-            return false;
+        // bbbbbb bbb bbbbbbb bbbb'b bbbb bbbbbbbb bbbbbbb
+        bb (!bbbb.bbbbbbbb.bbb(bb)) {
+            bbbbbb bbbbb;
         }
 
-        // extract type
-        JsonElement typeElement = decodedObject.get("type");
-        if (typeElement == null) {
-            throw new IllegalStateException("Incoming message has no type argument: " + encodedString);
+        // bbbbbbb bbbb
+        BbbbBbbbbbb bbbbBbbbbbb = bbbbbbbBbbbbb.bbb("bbbb");
+        bb (bbbbBbbbbbb == bbbb) {
+            bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbbbb bbbbbbb bbb bb bbbb bbbbbbbb: " + bbbbbbbBbbbbb);
         }
-        String type = typeElement.getAsString();
+        Bbbbbb bbbb = bbbbBbbbbbb.bbbBbBbbbbb();
 
-        // extract content
-        @Nullable JsonElement content = decodedObject.get("content");
+        // bbbbbbb bbbbbbb
+        @Bbbbbbbb BbbbBbbbbbb bbbbbbb = bbbbbbbBbbbbb.bbb("bbbbbbb");
 
-        try {
-            // decode message
-            Message decoded = GTSPlugin.instance().messagingService().getDecoder(type).apply(content, id);
-            if (decoded == null) {
-                return false;
+        bbb {
+            // bbbbbb bbbbbbb
+            Bbbbbbb bbbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbBbbbbbb(bbbb).bbbbb(bbbbbbb, bb);
+            bb (bbbbbbb == bbbb) {
+                bbbbbb bbbbb;
             }
 
-            // consume the message
-            this.processIncomingMessage(decoded);
-            return true;
-        } catch (Exception e) {
-            GTSPlugin.instance().logger().error("Failed to read message of type: " + type);
-            ExceptionWriter.write(e);
-            return false;
+            // bbbbbbb bbb bbbbbbb
+            bbbb.bbbbbbbBbbbbbbbBbbbbbb(bbbbbbb);
+            bbbbbb bbbb;
+        } bbbbb (Bbbbbbbbb b) {
+            BBBBbbbbb.bbbbbbbb().bbbbbb().bbbbb("Bbbbbb bb bbbb bbbbbbb bb bbbb: " + bbbb);
+            BbbbbbbbbBbbbbb.bbbbb(b);
+            bbbbbb bbbbb;
         }
     }
 
-    @Override
-    public <T extends Message, V extends T> void registerInternalConsumer(Class<T> parent, MessageConsumer<V> consumer) {
-        this.consumers.put(parent, consumer);
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb Bbbbbbb, B bbbbbbb B> bbbb bbbbbbbbBbbbbbbbBbbbbbbb(Bbbbb<B> bbbbbb, BbbbbbbBbbbbbbb<B> bbbbbbbb) {
+        bbbb.bbbbbbbbb.bbb(bbbbbb, bbbbbbbb);
     }
 
-    @Override
-    public MessageConsumer getInternalConsumer(Class<?> parent) {
-        return this.consumers.get(parent);
+    @Bbbbbbbb
+    bbbbbb BbbbbbbBbbbbbbb bbbBbbbbbbbBbbbbbbb(Bbbbb<?> bbbbbb) {
+        bbbbbb bbbb.bbbbbbbbb.bbb(bbbbbb);
     }
 
-    @SuppressWarnings("unchecked")
-    private void processIncomingMessage(Message message) {
-        if (message instanceof UpdateMessage) {
-            UpdateMessage msg = (UpdateMessage) message;
-            this.plugin.logger().info("[Messaging] Received message with id: " + msg.getID());
-            this.getInternalConsumer(msg.getClass()).consume(message);
-        } else {
-            throw new IllegalArgumentException("Unknown message type: " + message.getClass().getName());
+    @BbbbbbbbBbbbbbbb("bbbbbbbbb")
+    bbbbbbb bbbb bbbbbbbBbbbbbbbBbbbbbb(Bbbbbbb bbbbbbb) {
+        bb (bbbbbbb bbbbbbbbbb BbbbbbBbbbbbb) {
+            BbbbbbBbbbbbb bbb = (BbbbbbBbbbbbb) bbbbbbb;
+            bbbb.bbbbbb.bbbbbb().bbbb("[Bbbbbbbbb] Bbbbbbbb bbbbbbb bbbb bb: " + bbb.bbbBB());
+            bbbb.bbbBbbbbbbbBbbbbbbb(bbb.bbbBbbbb()).bbbbbbb(bbbbbbb);
+        } bbbb {
+            bbbbb bbb BbbbbbbBbbbbbbbBbbbbbbbb("Bbbbbbb bbbbbbb bbbb: " + bbbbbbb.bbbBbbbb().bbbBbbb());
         }
     }
 }

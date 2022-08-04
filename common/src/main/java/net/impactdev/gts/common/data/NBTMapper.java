@@ -1,420 +1,420 @@
-package net.impactdev.gts.common.data;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbb;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import net.minecraft.nbt.ByteArrayNBT;
-import net.minecraft.nbt.ByteNBT;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.DoubleNBT;
-import net.minecraft.nbt.FloatNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.IntArrayNBT;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.LongArrayNBT;
-import net.minecraft.nbt.LongNBT;
-import net.minecraft.nbt.ShortNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraftforge.common.util.Constants;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbBbbbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbbbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbBbbbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbBbbbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbBBB;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbbBBB;
+bbbbbb bbb.bbbbbbbbbbbbbb.bbbbbb.bbbb.Bbbbbbbbb;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class NBTMapper {
+bbbbbb bbbbb BBBBbbbbb {
 
-    public static JObject from(CompoundNBT nbt) {
-        JsonParser parser = new JsonParser();
-        JsonObject json = parser.parse(nbt.toString()).getAsJsonObject();
-        String result = GTSPlugin.instance().gson().toJson(json);
+    bbbbbb bbbbbb BBbbbbb bbbb(BbbbbbbbBBB bbb) {
+        BbbbBbbbbb bbbbbb = bbb BbbbBbbbbb();
+        BbbbBbbbbb bbbb = bbbbbb.bbbbb(bbb.bbBbbbbb()).bbbBbBbbbBbbbbb();
+        Bbbbbb bbbbbb = BBBBbbbbb.bbbbbbbb().bbbb().bbBbbb(bbbb);
 
-        return from(nbt, true);
+        bbbbbb bbbb(bbb, bbbb);
     }
 
-    public static JObject from(CompoundNBT nbt, boolean print) {
-        JObject result = new JObject();
+    bbbbbb bbbbbb BBbbbbb bbbb(BbbbbbbbBBB bbb, bbbbbbb bbbbb) {
+        BBbbbbb bbbbbb = bbb BBbbbbb();
 
-        PrettyPrinter test = new PrettyPrinter(80);
-        test.add("NBT Mapping Track - Write").center();
-        test.hr();
+        BbbbbbBbbbbbb bbbb = bbb BbbbbbBbbbbbb(80);
+        bbbb.bbb("BBB Bbbbbbb Bbbbb - Bbbbb").bbbbbb();
+        bbbb.bb();
 
-        for(String key : nbt.getAllKeys()) {
-            int id = nbt.get(key).getId();
-            test.kv(key, id);
+        bbb(Bbbbbb bbb : bbb.bbbBbbBbbb()) {
+            bbb bb = bbb.bbb(bbb).bbbBb();
+            bbbb.bb(bbb, bb);
 
-            switch (id) {
-                case Constants.NBT.TAG_BYTE:
-                    append(result, key, nbt.getByte(key));
-                    break;
-                case Constants.NBT.TAG_SHORT:
-                    append(result, key, nbt.getShort(key));
-                    break;
-                case Constants.NBT.TAG_INT:
-                    append(result, key, nbt.getInt(key));
-                    break;
-                case Constants.NBT.TAG_LONG:
-                    append(result, key, nbt.getLong(key));
-                    break;
-                case Constants.NBT.TAG_FLOAT:
-                    append(result, key, nbt.getFloat(key));
-                    break;
-                case Constants.NBT.TAG_DOUBLE:
-                    append(result, key, nbt.getDouble(key));
-                    break;
-                case Constants.NBT.TAG_BYTE_ARRAY:
-                    append(result, key, nbt.getByteArray(key));
-                    break;
-                case Constants.NBT.TAG_STRING:
-                    append(result, key, nbt.getString(key));
-                    break;
-                case Constants.NBT.TAG_LIST:
-                    INBT x = nbt.get(key);
-                    if(nbt.getTagType(key) == 9) {
-                        ListNBT translated = (ListNBT) x;
-                        append(result, key, translated);
+            bbbbbb (bb) {
+                bbbb Bbbbbbbbb.BBB.BBB_BBBB:
+                    bbbbbb(bbbbbb, bbb, bbb.bbbBbbb(bbb));
+                    bbbbb;
+                bbbb Bbbbbbbbb.BBB.BBB_BBBBB:
+                    bbbbbb(bbbbbb, bbb, bbb.bbbBbbbb(bbb));
+                    bbbbb;
+                bbbb Bbbbbbbbb.BBB.BBB_BBB:
+                    bbbbbb(bbbbbb, bbb, bbb.bbbBbb(bbb));
+                    bbbbb;
+                bbbb Bbbbbbbbb.BBB.BBB_BBBB:
+                    bbbbbb(bbbbbb, bbb, bbb.bbbBbbb(bbb));
+                    bbbbb;
+                bbbb Bbbbbbbbb.BBB.BBB_BBBBB:
+                    bbbbbb(bbbbbb, bbb, bbb.bbbBbbbb(bbb));
+                    bbbbb;
+                bbbb Bbbbbbbbb.BBB.BBB_BBBBBB:
+                    bbbbbb(bbbbbb, bbb, bbb.bbbBbbbbb(bbb));
+                    bbbbb;
+                bbbb Bbbbbbbbb.BBB.BBB_BBBB_BBBBB:
+                    bbbbbb(bbbbbb, bbb, bbb.bbbBbbbBbbbb(bbb));
+                    bbbbb;
+                bbbb Bbbbbbbbb.BBB.BBB_BBBBBB:
+                    bbbbbb(bbbbbb, bbb, bbb.bbbBbbbbb(bbb));
+                    bbbbb;
+                bbbb Bbbbbbbbb.BBB.BBB_BBBB:
+                    BBBB b = bbb.bbb(bbb);
+                    bb(bbb.bbbBbbBbbb(bbb) == 9) {
+                        BbbbBBB bbbbbbbbbb = (BbbbBBB) b;
+                        bbbbbb(bbbbbb, bbb, bbbbbbbbbb);
                     }
-                    break;
-                case Constants.NBT.TAG_COMPOUND:
-                    append(result, key, nbt.getCompound(key));
-                    break;
-                case Constants.NBT.TAG_INT_ARRAY:
-                    append(result, key, nbt.getIntArray(key));
-                    break;
-                case Constants.NBT.TAG_LONG_ARRAY:
-                    append(result, key, nbt.getLongArray(key));
-                    break;
+                    bbbbb;
+                bbbb Bbbbbbbbb.BBB.BBB_BBBBBBBB:
+                    bbbbbb(bbbbbb, bbb, bbb.bbbBbbbbbbb(bbb));
+                    bbbbb;
+                bbbb Bbbbbbbbb.BBB.BBB_BBB_BBBBB:
+                    bbbbbb(bbbbbb, bbb, bbb.bbbBbbBbbbb(bbb));
+                    bbbbb;
+                bbbb Bbbbbbbbb.BBB.BBB_BBBB_BBBBB:
+                    bbbbbb(bbbbbb, bbb, bbb.bbbBbbbBbbbb(bbb));
+                    bbbbb;
             }
         }
 
-        if(print) {
-            test.newline();
-            test.add("Result:");
-            test.add(result.toJson());
+        bb(bbbbb) {
+            bbbb.bbbbbbb();
+            bbbb.bbb("Bbbbbb:");
+            bbbb.bbb(bbbbbb.bbBbbb());
 
-            test.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.DEBUG, "NBT Mapping");
+            bbbb.bbb(BBBBbbbbb.bbbbbbbb().bbbbbb(), BbbbbbBbbbbbb.Bbbbb.BBBBB, "BBB Bbbbbbb");
         }
-        return result;
+        bbbbbb bbbbbb;
     }
 
-    private static void append(JObject json, String key, byte value) {
-        getLowestParent(json, key).add(key, Mapper.BYTE.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, bbbb bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    private static void append(JObject json, String key, short value) {
-        getLowestParent(json, key).add(key, Mapper.SHORT.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, bbbbb bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    private static void append(JObject json, String key, int value) {
-        getLowestParent(json, key).add(key, Mapper.INTEGER.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, bbb bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBBBBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    private static void append(JObject json, String key, long value) {
-        getLowestParent(json, key).add(key, Mapper.LONG.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, bbbb bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    private static void append(JObject json, String key, float value) {
-        getLowestParent(json, key).add(key, Mapper.FLOAT.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, bbbbb bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    private static void append(JObject json, String key, double value) {
-        getLowestParent(json, key).add(key, Mapper.DOUBLE.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, bbbbbb bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBBBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    private static void append(JObject json, String key, byte[] value) {
-        getLowestParent(json, key).add(key, Mapper.BYTE_ARRAY.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, bbbb[] bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBBB_BBBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    private static void append(JObject json, String key, String value) {
-        getLowestParent(json, key).add(key, Mapper.STRING.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, Bbbbbb bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBBBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    private static void append(JObject json, String key, ListNBT value) {
-        getLowestParent(json, key).add(key, Mapper.LIST.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, BbbbBBB bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    private static void append(JObject json, String key, CompoundNBT value) {
-        getLowestParent(json, key).add(key, Mapper.COMPOUND.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, BbbbbbbbBBB bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBBBBBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    private static void append(JObject json, String key, int[] value) {
-        getLowestParent(json, key).add(key, Mapper.INT_ARRAY.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, bbb[] bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBB_BBBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    private static void append(JObject json, String key, long[] value) {
-        getLowestParent(json, key).add(key, Mapper.INT_ARRAY.getApplier().apply(value));
+    bbbbbbb bbbbbb bbbb bbbbbb(BBbbbbb bbbb, Bbbbbb bbb, bbbb[] bbbbb) {
+        bbbBbbbbbBbbbbb(bbbb, bbb).bbb(bbb, Bbbbbb.BBB_BBBBB.bbbBbbbbbb().bbbbb(bbbbb));
     }
 
-    public static CompoundNBT read(JsonObject json) {
-        CompoundNBT nbt = new CompoundNBT();
-        for(Map.Entry<String, JsonElement> entry : json.entrySet()) {
-            String key = entry.getKey();
-            JsonObject data = entry.getValue().getAsJsonObject();
+    bbbbbb bbbbbb BbbbbbbbBBB bbbb(BbbbBbbbbb bbbb) {
+        BbbbbbbbBBB bbb = bbb BbbbbbbbBBB();
+        bbb(Bbb.Bbbbb<Bbbbbb, BbbbBbbbbbb> bbbbb : bbbb.bbbbbBbb()) {
+            Bbbbbb bbb = bbbbb.bbbBbb();
+            BbbbBbbbbb bbbb = bbbbb.bbbBbbbb().bbbBbBbbbBbbbbb();
 
-            String type = data.get("type").getAsString();
-            JsonElement value = data.get("value");
+            Bbbbbb bbbb = bbbb.bbb("bbbb").bbbBbBbbbbb();
+            BbbbBbbbbbb bbbbb = bbbb.bbb("bbbbb");
 
-            if(type.equals("compound")) {
-                nbt.put(key, read(value.getAsJsonObject()));
-            } else if(type.equals("list")) {
-                nbt.put(key, read$list(value.getAsJsonArray()));
-            } else {
-                switch (type) {
-                    case "byte":
-                        nbt.putByte(key, value.getAsByte());
-                        break;
-                    case "short":
-                        nbt.putShort(key, value.getAsShort());
-                        break;
-                    case "int":
-                        nbt.putInt(key, value.getAsInt());
-                        break;
-                    case "long":
-                        nbt.putLong(key, value.getAsLong());
-                        break;
-                    case "float":
-                        nbt.putFloat(key, value.getAsFloat());
-                        break;
-                    case "double":
-                        nbt.putDouble(key, value.getAsDouble());
-                        break;
-                    case "byte[]":
-                        JsonArray array = value.getAsJsonArray();
-                        byte[] values = new byte[array.size()];
+            bb(bbbb.bbbbbb("bbbbbbbb")) {
+                bbb.bbb(bbb, bbbb(bbbbb.bbbBbBbbbBbbbbb()));
+            } bbbb bb(bbbb.bbbbbb("bbbb")) {
+                bbb.bbb(bbb, bbbb$bbbb(bbbbb.bbbBbBbbbBbbbb()));
+            } bbbb {
+                bbbbbb (bbbb) {
+                    bbbb "bbbb":
+                        bbb.bbbBbbb(bbb, bbbbb.bbbBbBbbb());
+                        bbbbb;
+                    bbbb "bbbbb":
+                        bbb.bbbBbbbb(bbb, bbbbb.bbbBbBbbbb());
+                        bbbbb;
+                    bbbb "bbb":
+                        bbb.bbbBbb(bbb, bbbbb.bbbBbBbb());
+                        bbbbb;
+                    bbbb "bbbb":
+                        bbb.bbbBbbb(bbb, bbbbb.bbbBbBbbb());
+                        bbbbb;
+                    bbbb "bbbbb":
+                        bbb.bbbBbbbb(bbb, bbbbb.bbbBbBbbbb());
+                        bbbbb;
+                    bbbb "bbbbbb":
+                        bbb.bbbBbbbbb(bbb, bbbbb.bbbBbBbbbbb());
+                        bbbbb;
+                    bbbb "bbbb[]":
+                        BbbbBbbbb bbbbb = bbbbb.bbbBbBbbbBbbbb();
+                        bbbb[] bbbbbb = bbb bbbb[bbbbb.bbbb()];
 
-                        int index = 0;
-                        for(JsonElement element : array) {
-                            values[index++] = element.getAsByte();
+                        bbb bbbbb = 0;
+                        bbb(BbbbBbbbbbb bbbbbbb : bbbbb) {
+                            bbbbbb[bbbbb++] = bbbbbbb.bbbBbBbbb();
                         }
-                        nbt.putByteArray(key, values);
-                        break;
-                    case "string":
-                        nbt.putString(key, value.getAsString());
-                        break;
-                    case "int[]":
-                        JsonArray array2 = value.getAsJsonArray();
-                        int[] values2 = new int[array2.size()];
+                        bbb.bbbBbbbBbbbb(bbb, bbbbbb);
+                        bbbbb;
+                    bbbb "bbbbbb":
+                        bbb.bbbBbbbbb(bbb, bbbbb.bbbBbBbbbbb());
+                        bbbbb;
+                    bbbb "bbb[]":
+                        BbbbBbbbb bbbbb2 = bbbbb.bbbBbBbbbBbbbb();
+                        bbb[] bbbbbb2 = bbb bbb[bbbbb2.bbbb()];
 
-                        int i2 = 0;
-                        for(JsonElement element : array2) {
-                            values2[i2++] = element.getAsInt();
+                        bbb b2 = 0;
+                        bbb(BbbbBbbbbbb bbbbbbb : bbbbb2) {
+                            bbbbbb2[b2++] = bbbbbbb.bbbBbBbb();
                         }
-                        nbt.putIntArray(key, values2);
-                        break;
-                    case "long[]":
-                        JsonArray array3 = value.getAsJsonArray();
-                        long[] values3 = new long[array3.size()];
+                        bbb.bbbBbbBbbbb(bbb, bbbbbb2);
+                        bbbbb;
+                    bbbb "bbbb[]":
+                        BbbbBbbbb bbbbb3 = bbbbb.bbbBbBbbbBbbbb();
+                        bbbb[] bbbbbb3 = bbb bbbb[bbbbb3.bbbb()];
 
-                        int i3 = 0;
-                        for(JsonElement element : array3) {
-                            values3[i3++] = element.getAsLong();
+                        bbb b3 = 0;
+                        bbb(BbbbBbbbbbb bbbbbbb : bbbbb3) {
+                            bbbbbb3[b3++] = bbbbbbb.bbbBbBbbb();
                         }
-                        nbt.putLongArray(key, values3);
-                        break;
+                        bbb.bbbBbbbBbbbb(bbb, bbbbbb3);
+                        bbbbb;
                 }
             }
         }
 
-        return nbt;
+        bbbbbb bbb;
     }
 
-    private static ListNBT read$list(JsonArray array) {
-        ListNBT result = new ListNBT();
-        for(JsonElement element : array) {
-            JsonObject object = element.getAsJsonObject();
+    bbbbbbb bbbbbb BbbbBBB bbbb$bbbb(BbbbBbbbb bbbbb) {
+        BbbbBBB bbbbbb = bbb BbbbBBB();
+        bbb(BbbbBbbbbbb bbbbbbb : bbbbb) {
+            BbbbBbbbbb bbbbbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-            String type = object.get("type").getAsString();
-            JsonElement value = object.get("value");
+            Bbbbbb bbbb = bbbbbb.bbb("bbbb").bbbBbBbbbbb();
+            BbbbBbbbbbb bbbbb = bbbbbb.bbb("bbbbb");
 
-            if(type.equals("compound")) {
-                result.add(read(value.getAsJsonObject()));
-            } else if(type.equals("list")) {
-                result.add(read$list(value.getAsJsonArray()));
-            } else {
-                switch (type) {
-                    case "byte":
-                        result.add(ByteNBT.valueOf(value.getAsByte()));
-                        break;
-                    case "short":
-                        result.add(ShortNBT.valueOf(value.getAsShort()));
-                        break;
-                    case "int":
-                        result.add(IntNBT.valueOf(value.getAsInt()));
-                        break;
-                    case "long":
-                        result.add(LongNBT.valueOf(value.getAsLong()));
-                        break;
-                    case "float":
-                        result.add(FloatNBT.valueOf(value.getAsFloat()));
-                        break;
-                    case "double":
-                        result.add(DoubleNBT.valueOf(value.getAsDouble()));
-                        break;
-                    case "byte[]":
-                        JsonArray a = value.getAsJsonArray();
-                        byte[] values = new byte[a.size()];
+            bb(bbbb.bbbbbb("bbbbbbbb")) {
+                bbbbbb.bbb(bbbb(bbbbb.bbbBbBbbbBbbbbb()));
+            } bbbb bb(bbbb.bbbbbb("bbbb")) {
+                bbbbbb.bbb(bbbb$bbbb(bbbbb.bbbBbBbbbBbbbb()));
+            } bbbb {
+                bbbbbb (bbbb) {
+                    bbbb "bbbb":
+                        bbbbbb.bbb(BbbbBBB.bbbbbBb(bbbbb.bbbBbBbbb()));
+                        bbbbb;
+                    bbbb "bbbbb":
+                        bbbbbb.bbb(BbbbbBBB.bbbbbBb(bbbbb.bbbBbBbbbb()));
+                        bbbbb;
+                    bbbb "bbb":
+                        bbbbbb.bbb(BbbBBB.bbbbbBb(bbbbb.bbbBbBbb()));
+                        bbbbb;
+                    bbbb "bbbb":
+                        bbbbbb.bbb(BbbbBBB.bbbbbBb(bbbbb.bbbBbBbbb()));
+                        bbbbb;
+                    bbbb "bbbbb":
+                        bbbbbb.bbb(BbbbbBBB.bbbbbBb(bbbbb.bbbBbBbbbb()));
+                        bbbbb;
+                    bbbb "bbbbbb":
+                        bbbbbb.bbb(BbbbbbBBB.bbbbbBb(bbbbb.bbbBbBbbbbb()));
+                        bbbbb;
+                    bbbb "bbbb[]":
+                        BbbbBbbbb b = bbbbb.bbbBbBbbbBbbbb();
+                        bbbb[] bbbbbb = bbb bbbb[b.bbbb()];
 
-                        int index = 0;
-                        for(JsonElement e : a) {
-                            values[index++] = e.getAsByte();
+                        bbb bbbbb = 0;
+                        bbb(BbbbBbbbbbb b : b) {
+                            bbbbbb[bbbbb++] = b.bbbBbBbbb();
                         }
-                        result.add(new ByteArrayNBT(values));
-                        break;
-                    case "string":
-                        result.add(StringNBT.valueOf(value.getAsString()));
-                        break;
-                    case "int[]":
-                        JsonArray array2 = value.getAsJsonArray();
-                        int[] values2 = new int[array2.size()];
+                        bbbbbb.bbb(bbb BbbbBbbbbBBB(bbbbbb));
+                        bbbbb;
+                    bbbb "bbbbbb":
+                        bbbbbb.bbb(BbbbbbBBB.bbbbbBb(bbbbb.bbbBbBbbbbb()));
+                        bbbbb;
+                    bbbb "bbb[]":
+                        BbbbBbbbb bbbbb2 = bbbbb.bbbBbBbbbBbbbb();
+                        bbb[] bbbbbb2 = bbb bbb[bbbbb2.bbbb()];
 
-                        int i2 = 0;
-                        for(JsonElement e : array2) {
-                            values2[i2++] = e.getAsInt();
+                        bbb b2 = 0;
+                        bbb(BbbbBbbbbbb b : bbbbb2) {
+                            bbbbbb2[b2++] = b.bbbBbBbb();
                         }
-                        result.add(new IntArrayNBT(values2));
-                        break;
-                    case "long[]":
-                        JsonArray array3 = value.getAsJsonArray();
-                        long[] values3 = new long[array3.size()];
+                        bbbbbb.bbb(bbb BbbBbbbbBBB(bbbbbb2));
+                        bbbbb;
+                    bbbb "bbbb[]":
+                        BbbbBbbbb bbbbb3 = bbbbb.bbbBbBbbbBbbbb();
+                        bbbb[] bbbbbb3 = bbb bbbb[bbbbb3.bbbb()];
 
-                        int i3 = 0;
-                        for(JsonElement e : array3) {
-                            values3[i3++] = e.getAsLong();
+                        bbb b3 = 0;
+                        bbb(BbbbBbbbbbb b : bbbbb3) {
+                            bbbbbb3[b3++] = b.bbbBbBbbb();
                         }
-                        result.add(new LongArrayNBT(values3));
-                        break;
+                        bbbbbb.bbb(bbb BbbbBbbbbBBB(bbbbbb3));
+                        bbbbb;
                 }
             }
         }
 
-        return result;
+        bbbbbb bbbbbb;
     }
 
-    private static JsonObject getLowestParent(JObject json, String key) {
-        JsonObject result = json.toJson();
-        String[] query = key.split("\\.");
+    bbbbbbb bbbbbb BbbbBbbbbb bbbBbbbbbBbbbbb(BBbbbbb bbbb, Bbbbbb bbb) {
+        BbbbBbbbbb bbbbbb = bbbb.bbBbbb();
+        Bbbbbb[] bbbbb = bbb.bbbbb("\\.");
 
-        int index = 0;
-        for(; index < query.length - 2; index++) {
-            if(result.isJsonObject()) {
-                JsonObject object = result.getAsJsonObject();
-                if(object.has(query[index])) {
-                    result = Optional.ofNullable(object.get(query[index]))
-                            .filter(JsonElement::isJsonObject)
-                            .map(JsonElement::getAsJsonObject)
-                            .orElseThrow(() -> new RuntimeException("Unable to find valid parent for key: " + key));
-                } else {
-                    object.add(query[index], result = new JsonObject());
+        bbb bbbbb = 0;
+        bbb(; bbbbb < bbbbb.bbbbbb - 2; bbbbb++) {
+            bb(bbbbbb.bbBbbbBbbbbb()) {
+                BbbbBbbbbb bbbbbb = bbbbbb.bbbBbBbbbBbbbbb();
+                bb(bbbbbb.bbb(bbbbb[bbbbb])) {
+                    bbbbbb = Bbbbbbbb.bbBbbbbbbb(bbbbbb.bbb(bbbbb[bbbbb]))
+                            .bbbbbb(BbbbBbbbbbb::bbBbbbBbbbbb)
+                            .bbb(BbbbBbbbbbb::bbbBbBbbbBbbbbb)
+                            .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbbbbb("Bbbbbb bb bbbb bbbbb bbbbbb bbb bbb: " + bbb));
+                } bbbb {
+                    bbbbbb.bbb(bbbbb[bbbbb], bbbbbb = bbb BbbbBbbbbb());
                 }
             }
         }
 
-        return result;
+        bbbbbb bbbbbb;
     }
 
-    private enum Mapper {
-        BYTE(value -> new JObject().add("type", "byte").add("value", verify(Byte.class, value))),
-        SHORT(value -> new JObject().add("type", "short").add("value", verify(Short.class, value))),
-        INTEGER(value -> new JObject().add("type", "int").add("value", verify(Integer.class, value))),
-        LONG(value -> new JObject().add("type", "long").add("value", verify(Long.class, value))),
-        FLOAT(value -> new JObject().add("type", "float").add("value", verify(Float.class, value))),
-        DOUBLE(value -> new JObject().add("type", "double").add("value", verify(Double.class, value))),
-        BYTE_ARRAY(value -> new JObject().add("type", "byte[]").add("value", byteArray((byte[]) value))),
-        STRING(value -> new JObject().add("type", "string").add("value", verify(String.class, value))),
-        LIST(value -> {
-            JArray array = new JArray();
+    bbbbbbb bbbb Bbbbbb {
+        BBBB(bbbbb -> bbb BBbbbbb().bbb("bbbb", "bbbb").bbb("bbbbb", bbbbbb(Bbbb.bbbbb, bbbbb))),
+        BBBBB(bbbbb -> bbb BBbbbbb().bbb("bbbb", "bbbbb").bbb("bbbbb", bbbbbb(Bbbbb.bbbbb, bbbbb))),
+        BBBBBBB(bbbbb -> bbb BBbbbbb().bbb("bbbb", "bbb").bbb("bbbbb", bbbbbb(Bbbbbbb.bbbbb, bbbbb))),
+        BBBB(bbbbb -> bbb BBbbbbb().bbb("bbbb", "bbbb").bbb("bbbbb", bbbbbb(Bbbb.bbbbb, bbbbb))),
+        BBBBB(bbbbb -> bbb BBbbbbb().bbb("bbbb", "bbbbb").bbb("bbbbb", bbbbbb(Bbbbb.bbbbb, bbbbb))),
+        BBBBBB(bbbbb -> bbb BBbbbbb().bbb("bbbb", "bbbbbb").bbb("bbbbb", bbbbbb(Bbbbbb.bbbbb, bbbbb))),
+        BBBB_BBBBB(bbbbb -> bbb BBbbbbb().bbb("bbbb", "bbbb[]").bbb("bbbbb", bbbbBbbbb((bbbb[]) bbbbb))),
+        BBBBBB(bbbbb -> bbb BBbbbbb().bbb("bbbb", "bbbbbb").bbb("bbbbb", bbbbbb(Bbbbbb.bbbbb, bbbbb))),
+        BBBB(bbbbb -> {
+            BBbbbb bbbbb = bbb BBbbbb();
 
-            ListNBT list = (ListNBT) value;
-            byte listType = list.getElementType();
-            int count = list.size();
-            for (int i = 0; i < count; i++) {
-                array.add(fromINBT(list.get(i), listType));
+            BbbbBBB bbbb = (BbbbBBB) bbbbb;
+            bbbb bbbbBbbb = bbbb.bbbBbbbbbbBbbb();
+            bbb bbbbb = bbbb.bbbb();
+            bbb (bbb b = 0; b < bbbbb; b++) {
+                bbbbb.bbb(bbbbBBBB(bbbb.bbb(b), bbbbBbbb));
             }
 
-            return new JObject().add("type", "list").add("value", array);
+            bbbbbb bbb BBbbbbb().bbb("bbbb", "bbbb").bbb("bbbbb", bbbbb);
         }),
-        COMPOUND(value -> new JObject().add("type", "compound").add("value", NBTMapper.from((CompoundNBT) value, false))),
-        INT_ARRAY(value -> new JObject().add("type", "int[]").add("value", intArray((int[]) value))),
-        LONG_ARRAY(value -> new JObject().add("type", "long[]").add("value", longArray((long[]) value)))
+        BBBBBBBB(bbbbb -> bbb BBbbbbb().bbb("bbbb", "bbbbbbbb").bbb("bbbbb", BBBBbbbbb.bbbb((BbbbbbbbBBB) bbbbb, bbbbb))),
+        BBB_BBBBB(bbbbb -> bbb BBbbbbb().bbb("bbbb", "bbb[]").bbb("bbbbb", bbbBbbbb((bbb[]) bbbbb))),
+        BBBB_BBBBB(bbbbb -> bbb BBbbbbb().bbb("bbbb", "bbbb[]").bbb("bbbbb", bbbbBbbbb((bbbb[]) bbbbb)))
         ;
 
-        private final Function<Object, JObject> applier;
+        bbbbbbb bbbbb Bbbbbbbb<Bbbbbb, BBbbbbb> bbbbbbb;
 
-        Mapper(Function<Object, JObject> applier) {
-            this.applier = applier;
+        Bbbbbb(Bbbbbbbb<Bbbbbb, BBbbbbb> bbbbbbb) {
+            bbbb.bbbbbbb = bbbbbbb;
         }
 
-        public Function<Object, JsonObject> getApplier() {
-            return this.applier.andThen(JObject::toJson);
+        bbbbbb Bbbbbbbb<Bbbbbb, BbbbBbbbbb> bbbBbbbbbb() {
+            bbbbbb bbbb.bbbbbbb.bbbBbbb(BBbbbbb::bbBbbb);
         }
 
-        private static <T> T verify(Class<T> expected, Object value) throws RuntimeException {
-            return Optional.ofNullable(value)
-                    .filter(x -> expected.isAssignableFrom(x.getClass()))
-                    .map(expected::cast)
-                    .orElseThrow(() -> new RuntimeException(String.format("Invalid Typing (%s vs %s)", expected.getName(), value.getClass().getName())));
+        bbbbbbb bbbbbb <B> B bbbbbb(Bbbbb<B> bbbbbbbb, Bbbbbb bbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+            bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbbb)
+                    .bbbbbb(b -> bbbbbbbb.bbBbbbbbbbbbBbbb(b.bbbBbbbb()))
+                    .bbb(bbbbbbbb::bbbb)
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbbbbb(Bbbbbb.bbbbbb("Bbbbbbb Bbbbbb (%b bb %b)", bbbbbbbb.bbbBbbb(), bbbbb.bbbBbbbb().bbbBbbb())));
         }
 
-        private static JArray byteArray(byte[] value) throws RuntimeException {
-            JArray array = new JArray();
-            for(byte b : value) {
-                array.add(b);
+        bbbbbbb bbbbbb BBbbbb bbbbBbbbb(bbbb[] bbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+            BBbbbb bbbbb = bbb BBbbbb();
+            bbb(bbbb b : bbbbb) {
+                bbbbb.bbb(b);
             }
 
-            return array;
+            bbbbbb bbbbb;
         }
 
-        private static JArray intArray(int[] value) throws RuntimeException {
-            JArray array = new JArray();
-            for(int i : value) {
-                array.add(i);
+        bbbbbbb bbbbbb BBbbbb bbbBbbbb(bbb[] bbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+            BBbbbb bbbbb = bbb BBbbbb();
+            bbb(bbb b : bbbbb) {
+                bbbbb.bbb(b);
             }
 
-            return array;
+            bbbbbb bbbbb;
         }
 
-        private static JArray longArray(long[] value) throws RuntimeException {
-            JArray array = new JArray();
-            for(long i : value) {
-                array.add(i);
+        bbbbbbb bbbbbb BBbbbb bbbbBbbbb(bbbb[] bbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+            BBbbbb bbbbb = bbb BBbbbb();
+            bbb(bbbb b : bbbbb) {
+                bbbbb.bbb(b);
             }
 
-            return array;
+            bbbbbb bbbbb;
         }
 
-        private static JObject fromINBT(INBT base, byte type) {
-            switch (type) {
-                case Constants.NBT.TAG_BYTE:
-                    return BYTE.applier.apply(((ByteNBT) base).getAsByte());
-                case Constants.NBT.TAG_SHORT:
-                    return SHORT.applier.apply(((ShortNBT) base).getAsShort());
-                case Constants.NBT.TAG_INT:
-                    return INTEGER.applier.apply(((IntNBT) base).getAsInt());
-                case Constants.NBT.TAG_LONG:
-                    return LONG.applier.apply(((LongNBT) base).getAsLong());
-                case Constants.NBT.TAG_FLOAT:
-                    return FLOAT.applier.apply(((FloatNBT) base).getAsFloat());
-                case Constants.NBT.TAG_DOUBLE:
-                    return DOUBLE.applier.apply(((DoubleNBT) base).getAsDouble());
-                case Constants.NBT.TAG_BYTE_ARRAY:
-                    return BYTE_ARRAY.applier.apply(((ByteArrayNBT) base).getAsByteArray());
-                case Constants.NBT.TAG_STRING:
-                    return STRING.applier.apply(base.getAsString());
-                case Constants.NBT.TAG_LIST:
-                    return LIST.applier.apply(base);
-                case Constants.NBT.TAG_COMPOUND:
-                    return COMPOUND.applier.apply(base);
-                case Constants.NBT.TAG_INT_ARRAY:
-                    return INT_ARRAY.applier.apply(((IntArrayNBT) base).getAsIntArray());
-                case Constants.NBT.TAG_LONG_ARRAY:
-                    return LONG_ARRAY.applier.apply(((LongArrayNBT) base).getAsLongArray());
-                default :
-                    return null;
+        bbbbbbb bbbbbb BBbbbbb bbbbBBBB(BBBB bbbb, bbbb bbbb) {
+            bbbbbb (bbbb) {
+                bbbb Bbbbbbbbb.BBB.BBB_BBBB:
+                    bbbbbb BBBB.bbbbbbb.bbbbb(((BbbbBBB) bbbb).bbbBbBbbb());
+                bbbb Bbbbbbbbb.BBB.BBB_BBBBB:
+                    bbbbbb BBBBB.bbbbbbb.bbbbb(((BbbbbBBB) bbbb).bbbBbBbbbb());
+                bbbb Bbbbbbbbb.BBB.BBB_BBB:
+                    bbbbbb BBBBBBB.bbbbbbb.bbbbb(((BbbBBB) bbbb).bbbBbBbb());
+                bbbb Bbbbbbbbb.BBB.BBB_BBBB:
+                    bbbbbb BBBB.bbbbbbb.bbbbb(((BbbbBBB) bbbb).bbbBbBbbb());
+                bbbb Bbbbbbbbb.BBB.BBB_BBBBB:
+                    bbbbbb BBBBB.bbbbbbb.bbbbb(((BbbbbBBB) bbbb).bbbBbBbbbb());
+                bbbb Bbbbbbbbb.BBB.BBB_BBBBBB:
+                    bbbbbb BBBBBB.bbbbbbb.bbbbb(((BbbbbbBBB) bbbb).bbbBbBbbbbb());
+                bbbb Bbbbbbbbb.BBB.BBB_BBBB_BBBBB:
+                    bbbbbb BBBB_BBBBB.bbbbbbb.bbbbb(((BbbbBbbbbBBB) bbbb).bbbBbBbbbBbbbb());
+                bbbb Bbbbbbbbb.BBB.BBB_BBBBBB:
+                    bbbbbb BBBBBB.bbbbbbb.bbbbb(bbbb.bbbBbBbbbbb());
+                bbbb Bbbbbbbbb.BBB.BBB_BBBB:
+                    bbbbbb BBBB.bbbbbbb.bbbbb(bbbb);
+                bbbb Bbbbbbbbb.BBB.BBB_BBBBBBBB:
+                    bbbbbb BBBBBBBB.bbbbbbb.bbbbb(bbbb);
+                bbbb Bbbbbbbbb.BBB.BBB_BBB_BBBBB:
+                    bbbbbb BBB_BBBBB.bbbbbbb.bbbbb(((BbbBbbbbBBB) bbbb).bbbBbBbbBbbbb());
+                bbbb Bbbbbbbbb.BBB.BBB_BBBB_BBBBB:
+                    bbbbbb BBBB_BBBBB.bbbbbbb.bbbbb(((BbbbBbbbbBBB) bbbb).bbbBbBbbbBbbbb());
+                bbbbbbb :
+                    bbbbbb bbbb;
             }
         }
 

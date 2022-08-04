@@ -1,13 +1,13 @@
-package net.impactdev.gts.common.messaging.interpreters;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb;
 
-import net.impactdev.gts.common.plugin.GTSPlugin;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
 
-public interface Interpreter {
+bbbbbb bbbbbbbbb Bbbbbbbbbbb {
 
-    void register(GTSPlugin plugin);
+    bbbb bbbbbbbb(BBBBbbbbb bbbbbb);
 
-    void getDecoders(GTSPlugin plugin);
+    bbbb bbbBbbbbbbb(BBBBbbbbb bbbbbb);
 
-    void getInterpreters(GTSPlugin plugin);
+    bbbb bbbBbbbbbbbbbbb(BBBBbbbbb bbbbbb);
 
 }

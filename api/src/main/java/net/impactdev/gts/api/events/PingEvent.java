@@ -1,16 +1,16 @@
-package net.impactdev.gts.api.events;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb;
 
-import net.impactdev.impactor.api.event.ImpactorEvent;
-import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbBbbbbb;
 
-import java.time.Instant;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
-@GenerateFactoryMethod
-public interface PingEvent extends ImpactorEvent {
+@BbbbbbbbBbbbbbbBbbbbb
+bbbbbb bbbbbbbbb BbbbBbbbb bbbbbbb BbbbbbbbBbbbb {
 
-    UUID getPingID();
+    BBBB bbbBbbbBB();
 
-    Instant getTimeSent();
+    Bbbbbbb bbbBbbbBbbb();
 
 }

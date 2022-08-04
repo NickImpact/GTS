@@ -1,926 +1,926 @@
 /*
- * This file is part of LuckPerms, licensed under the MIT License.
+ * Bbbb bbbb bb bbbb bb BbbbBbbbb, bbbbbbbb bbbbb bbb BBB Bbbbbbb.
  *
- *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Bbbbbbbbb (b) bbbbb (Bbbb) <bbbb@bbbbb.bb>
+ *  Bbbbbbbbb (b) bbbbbbbbbbbb
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Bbbbbbbbbb bb bbbbbb bbbbbbb, bbbb bb bbbbbb, bb bbb bbbbbb bbbbbbbbb b bbbb
+ *  bb bbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbbbbbbb bbbbb (bbb "Bbbbbbbb"), bb bbbb
+ *  bb bbb Bbbbbbbb bbbbbbb bbbbbbbbbbb, bbbbbbbbb bbbbbbb bbbbbbbbbb bbb bbbbbb
+ *  bb bbb, bbbb, bbbbbb, bbbbb, bbbbbbb, bbbbbbbbbb, bbbbbbbbbb, bbb/bb bbbb
+ *  bbbbbb bb bbb Bbbbbbbb, bbb bb bbbbbb bbbbbbb bb bbbb bbb Bbbbbbbb bb
+ *  bbbbbbbbb bb bb bb, bbbbbbb bb bbb bbbbbbbbb bbbbbbbbbb:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  Bbb bbbbb bbbbbbbbb bbbbbb bbb bbbb bbbbbbbbbb bbbbbb bbbbb bb bbbbbbbb bb bbb
+ *  bbbbbb bb bbbbbbbbbbb bbbbbbbb bb bbb Bbbbbbbb.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
+ *  BBB BBBBBBBB BB BBBBBBBB "BB BB", BBBBBBB BBBBBBBB BB BBB BBBB, BBBBBBB BB
+ *  BBBBBBB, BBBBBBBBB BBB BBB BBBBBBB BB BBB BBBBBBBBBB BB BBBBBBBBBBBBBBB,
+ *  BBBBBBB BBB B BBBBBBBBBB BBBBBBB BBB BBBBBBBBBBBBBBB. BB BB BBBBB BBBBB BBB
+ *  BBBBBBB BB BBBBBBBBB BBBBBBB BB BBBBBB BBB BBB BBBBB, BBBBBBB BB BBBBB
+ *  BBBBBBBBB, BBBBBBB BB BB BBBBBB BB BBBBBBBB, BBBB BB BBBBBBBBB, BBBBBBB BBBB,
+ *  BBB BB BB BB BBBBBBBBBB BBBB BBB BBBBBBBB BB BBB BBB BB BBBBB BBBBBBBB BB BBB
+ *  BBBBBBBB.
  */
 
-package net.impactdev.gts.common.storage.implementation.file;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbbbbbbbb.bbbb;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.TreeMultimap;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import io.leangen.geantyref.TypeToken;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.exceptions.MessagingException;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
-import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.player.NotificationSetting;
-import net.impactdev.gts.api.player.PlayerSettings;
-import net.impactdev.gts.api.stashes.Stash;
-import net.impactdev.gts.api.storage.PurgeType;
-import net.impactdev.gts.api.util.groupings.SimilarPair;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.messaging.messages.deliveries.ClaimDeliveryImpl;
-import net.impactdev.gts.common.messaging.messages.listings.ClaimMessageImpl;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.purchase.BINPurchaseMessage;
-import net.impactdev.gts.common.messaging.messages.listings.buyitnow.removal.BINRemoveMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.storage.implementation.StorageImplementation;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.storage.connection.configurate.ConfigurateLoader;
-import net.kyori.adventure.util.TriState;
-import org.spongepowered.configurate.BasicConfigurationNode;
-import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.serialize.SerializationException;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.BbbbbbbBbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbBbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbbbb;
+bbbbbb bb.bbbbbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb.BbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbbbb.BbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbBbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbbbb.BbbbbBbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbb.BbbbbbbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.BBBBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbb.BBBBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbbbbbbbb.BbbbbbbBbbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.bbbbbbbbbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbbbbbbb.BbbbbBbbbbbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbbbbbbb.BbbbbbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbbbbbbb.bbbbbbbbb.BbbbbbbbbbbbbBbbbbbbbb;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.BiFunction;
-import java.util.stream.Stream;
+bbbbbb bbbb.bb.Bbbb;
+bbbbbb bbbb.bb.BBBbbbbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbbbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.BbbbBbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbb.BbbbbbbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbBbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbb;
 
-public class ConfigurateStorage implements StorageImplementation {
+bbbbbb bbbbb BbbbbbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbBbbbbbbbbbbbbb {
 
-    private final GTSPlugin plugin;
+    bbbbbbb bbbbb BBBBbbbbb bbbbbb;
 
-    // The loader responsible for I/O
-    private final ConfigurateLoader loader;
-    private String dataDirName;
-    private Map<Group, Path> fileGroups;
+    // Bbb bbbbbb bbbbbbbbbbb bbb B/B
+    bbbbbbb bbbbb BbbbbbbbbbbBbbbbb bbbbbb;
+    bbbbbbb Bbbbbb bbbbBbbBbbb;
+    bbbbbbb Bbb<Bbbbb, Bbbb> bbbbBbbbbb;
 
-    private enum Group {
-        USERS,
-        LISTINGS,
-        DELIVERY,
-        CLAIMS,
+    bbbbbbb bbbb Bbbbb {
+        BBBBB,
+        BBBBBBBB,
+        BBBBBBBB,
+        BBBBBB,
     }
 
-    private final LoadingCache<Path, ReentrantLock> ioLocks;
+    bbbbbbb bbbbb BbbbbbbBbbbb<Bbbb, BbbbbbbbbBbbb> bbBbbbb;
 
-    public ConfigurateStorage(GTSPlugin plugin, ConfigurateLoader loader, String dataDirName) {
-        this.plugin = plugin;
-        this.loader = loader;
-        this.dataDirName = dataDirName;
+    bbbbbb BbbbbbbbbbbBbbbbbb(BBBBbbbbb bbbbbb, BbbbbbbbbbbBbbbbb bbbbbb, Bbbbbb bbbbBbbBbbb) {
+        bbbb.bbbbbb = bbbbbb;
+        bbbb.bbbbbb = bbbbbb;
+        bbbb.bbbbBbbBbbb = bbbbBbbBbbb;
 
-        this.ioLocks = Caffeine.newBuilder()
-                .expireAfterAccess(10, TimeUnit.MINUTES)
-                .build(key -> new ReentrantLock());
+        bbbb.bbBbbbb = Bbbbbbbb.bbbBbbbbbb()
+                .bbbbbbBbbbbBbbbbb(10, BbbbBbbb.BBBBBBB)
+                .bbbbb(bbb -> bbb BbbbbbbbbBbbb());
     }
 
-    @Override
-    public GTSPlugin getPlugin() {
-        return this.plugin;
+    @Bbbbbbbb
+    bbbbbb BBBBbbbbb bbbBbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
-    @Override
-    public String getName() {
-        return this.loader.name();
+    @Bbbbbbbb
+    bbbbbb Bbbbbb bbbBbbb() {
+        bbbbbb bbbb.bbbbbb.bbbb();
     }
 
-    @Override
-    public void init() throws Exception {
-        Path dataDir = this.getResourcePath();
-        this.createDirectoriesIfNotExists(dataDir);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbb() bbbbbb Bbbbbbbbb {
+        Bbbb bbbbBbb = bbbb.bbbBbbbbbbbBbbb();
+        bbbb.bbbbbbBbbbbbbbbbbBbBbbBbbbbb(bbbbBbb);
 
-        Path users = dataDir.resolve(this.dataDirName).resolve("users");
-        Path deliveries = dataDir.resolve(this.dataDirName).resolve("deliveries");
-        Path listings = dataDir.resolve(this.dataDirName).resolve("listings");
-        Path claims = dataDir.resolve(this.dataDirName).resolve("claims");
+        Bbbb bbbbb = bbbbBbb.bbbbbbb(bbbb.bbbbBbbBbbb).bbbbbbb("bbbbb");
+        Bbbb bbbbbbbbbb = bbbbBbb.bbbbbbb(bbbb.bbbbBbbBbbb).bbbbbbb("bbbbbbbbbb");
+        Bbbb bbbbbbbb = bbbbBbb.bbbbbbb(bbbb.bbbbBbbBbbb).bbbbbbb("bbbbbbbb");
+        Bbbb bbbbbb = bbbbBbb.bbbbbbb(bbbb.bbbbBbbBbbb).bbbbbbb("bbbbbb");
 
-        EnumMap<Group, Path> fileGroups = new EnumMap<>(Group.class);
-        fileGroups.put(Group.USERS, users);
-        fileGroups.put(Group.LISTINGS, listings);
-        fileGroups.put(Group.DELIVERY, deliveries);
-        fileGroups.put(Group.CLAIMS, claims);
-        this.fileGroups = ImmutableMap.copyOf(fileGroups);
+        BbbbBbb<Bbbbb, Bbbb> bbbbBbbbbb = bbb BbbbBbb<>(Bbbbb.bbbbb);
+        bbbbBbbbbb.bbb(Bbbbb.BBBBB, bbbbb);
+        bbbbBbbbbb.bbb(Bbbbb.BBBBBBBB, bbbbbbbb);
+        bbbbBbbbbb.bbb(Bbbbb.BBBBBBBB, bbbbbbbbbb);
+        bbbbBbbbbb.bbb(Bbbbb.BBBBBB, bbbbbb);
+        bbbb.bbbbBbbbbb = BbbbbbbbbBbb.bbbbBb(bbbbBbbbbb);
     }
 
-    protected Path getResourcePath() {
-        return Paths.get("gts");
+    bbbbbbbbb Bbbb bbbBbbbbbbbBbbb() {
+        bbbbbb Bbbbb.bbb("bbb");
     }
 
-    @Override
-    public void shutdown() throws Exception {}
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb() bbbbbb Bbbbbbbbb {}
 
-    @Override
-    public Map<String, String> getMeta() {
-        // TODO - File statistics
-        return StorageImplementation.super.getMeta();
+    @Bbbbbbbb
+    bbbbbb Bbb<Bbbbbb, Bbbbbb> bbbBbbb() {
+        // BBBB - Bbbb bbbbbbbbbb
+        bbbbbb BbbbbbbBbbbbbbbbbbbbb.bbbbb.bbbBbbb();
     }
 
-    @Override
-    public boolean addListing(Listing listing) throws Exception {
-        ConfigurationNode file = BasicConfigurationNode.root();
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbBbbbbbb(Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        BbbbbbbbbbbbbBbbb bbbb = BbbbbBbbbbbbbbbbbbBbbb.bbbb();
 
-        for(Map.Entry<String, JsonElement> entry : listing.serialize().toJson().entrySet()) {
-            this.writePath(file, entry.getKey(), entry.getValue());
+        bbb(Bbb.Bbbbb<Bbbbbb, BbbbBbbbbbb> bbbbb : bbbbbbb.bbbbbbbbb().bbBbbb().bbbbbBbb()) {
+            bbbb.bbbbbBbbb(bbbb, bbbbb.bbbBbb(), bbbbb.bbbBbbbb());
         }
 
-        this.saveFile(Group.LISTINGS, listing.getID(), file);
-        return true;
+        bbbb.bbbbBbbb(Bbbbb.BBBBBBBB, bbbbbbb.bbbBB(), bbbb);
+        bbbbbb bbbb;
     }
 
-    @Override
-    public boolean deleteListing(UUID uuid) throws Exception {
-        this.saveFile(Group.LISTINGS, uuid, null);
-        return true;
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbbbBbbbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb {
+        bbbb.bbbbBbbb(Bbbbb.BBBBBBBB, bbbb, bbbb);
+        bbbbbb bbbb;
     }
 
-    @Override
-    public Optional<Listing> getListing(UUID id) throws Exception {
-        return Optional.ofNullable(this.from(this.readFile(Group.LISTINGS, id)));
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<Bbbbbbb> bbbBbbbbbb(BBBB bb) bbbbbb Bbbbbbbbb {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbb(bbbb.bbbbBbbb(Bbbbb.BBBBBBBB, bb)));
     }
 
-    @Override
-    public List<Listing> getListings() throws Exception {
-        List<Listing> output = Lists.newArrayList();
+    @Bbbbbbbb
+    bbbbbb Bbbb<Bbbbbbb> bbbBbbbbbbb() bbbbbb Bbbbbbbbb {
+        Bbbb<Bbbbbbb> bbbbbb = Bbbbb.bbbBbbbbBbbb();
 
-        Path parent = this.fileGroups.get(Group.LISTINGS);
-        File[] categories = parent.toFile().listFiles(((dir, name) -> dir.isDirectory()));
-        if(categories == null) {
-            return output;
+        Bbbb bbbbbb = bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBBBBB);
+        Bbbb[] bbbbbbbbbb = bbbbbb.bbBbbb().bbbbBbbbb(((bbb, bbbb) -> bbb.bbBbbbbbbbb()));
+        bb(bbbbbbbbbb == bbbb) {
+            bbbbbb bbbbbb;
         }
 
-        for(File category : categories) {
-            for(File data : category.listFiles(((dir, name) -> name.endsWith(this.loader.extension())))) {
-                output.add(this.from(this.readFile(Group.LISTINGS, UUID.fromString(data.getName().split("[.]")[0]))));
+        bbb(Bbbb bbbbbbbb : bbbbbbbbbb) {
+            bbb(Bbbb bbbb : bbbbbbbb.bbbbBbbbb(((bbb, bbbb) -> bbbb.bbbbBbbb(bbbb.bbbbbb.bbbbbbbbb())))) {
+                bbbbbb.bbb(bbbb.bbbb(bbbb.bbbbBbbb(Bbbbb.BBBBBBBB, BBBB.bbbbBbbbbb(bbbb.bbbBbbb().bbbbb("[.]")[0]))));
             }
         }
 
-        return output;
+        bbbbbb bbbbbb;
     }
 
-    @Override
-    public boolean hasMaxListings(UUID user) throws Exception {
-        return this.getListings().stream()
-                .filter(listing -> listing.getLister().equals(user))
-                .filter(listing -> {
-                    if(listing instanceof BuyItNow) {
-                        return !((BuyItNow) listing).stashedForPurchaser();
-                    } else {
-                        try {
-                            ConfigurationNode file = this.readFile(Group.CLAIMS, listing.getID());
-                            if (file != null) {
-                                return !file.node("lister").getBoolean();
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbBbbBbbbbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb {
+        bbbbbb bbbb.bbbBbbbbbbb().bbbbbb()
+                .bbbbbb(bbbbbbb -> bbbbbbb.bbbBbbbbb().bbbbbb(bbbb))
+                .bbbbbb(bbbbbbb -> {
+                    bb(bbbbbbb bbbbbbbbbb BbbBbBbb) {
+                        bbbbbb !((BbbBbBbb) bbbbbbb).bbbbbbbBbbBbbbbbbbb();
+                    } bbbb {
+                        bbb {
+                            BbbbbbbbbbbbbBbbb bbbb = bbbb.bbbbBbbb(Bbbbb.BBBBBB, bbbbbbb.bbbBB());
+                            bb (bbbb != bbbb) {
+                                bbbbbb !bbbb.bbbb("bbbbbb").bbbBbbbbbb();
                             }
-                        } catch (Exception e) {
-                            ExceptionWriter.write(e);
+                        } bbbbb (Bbbbbbbbb b) {
+                            BbbbbbbbbBbbbbb.bbbbb(b);
                         }
                     }
 
-                    return true;
+                    bbbbbb bbbb;
                 })
-                .count() >= GTSPlugin.instance().configuration().main().get(ConfigKeys.MAX_LISTINGS_PER_USER);
+                .bbbbb() >= BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBB_BBBBBBBB_BBB_BBBB);
     }
 
-    @Override
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public boolean purge(PurgeType type) throws Exception {
-        switch (type) {
-            case ALL:
-                this.delete(this.fileGroups.get(Group.LISTINGS));
-                this.delete(this.fileGroups.get(Group.CLAIMS));
-                this.delete(this.fileGroups.get(Group.DELIVERY));
-                return this.delete(this.fileGroups.get(Group.USERS));
-            case LISTINGS:
-                this.delete(this.fileGroups.get(Group.LISTINGS));
-                this.delete(this.fileGroups.get(Group.CLAIMS));
-                this.delete(this.fileGroups.get(Group.DELIVERY));
-                return true;
-            case SETTINGS:
-                return this.delete(this.fileGroups.get(Group.USERS));
+    @Bbbbbbbb
+    @BbbbbbbbBbbbbbbb("BbbbbbBbBbbbbbBbbbBbbbbbb")
+    bbbbbb bbbbbbb bbbbb(BbbbbBbbb bbbb) bbbbbb Bbbbbbbbb {
+        bbbbbb (bbbb) {
+            bbbb BBB:
+                bbbb.bbbbbb(bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBBBBB));
+                bbbb.bbbbbb(bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBBB));
+                bbbb.bbbbbb(bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBBBBB));
+                bbbbbb bbbb.bbbbbb(bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBB));
+            bbbb BBBBBBBB:
+                bbbb.bbbbbb(bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBBBBB));
+                bbbb.bbbbbb(bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBBB));
+                bbbb.bbbbbb(bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBBBBB));
+                bbbbbb bbbb;
+            bbbb BBBBBBBB:
+                bbbbbb bbbb.bbbbbb(bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBB));
         }
 
-        return true;
+        bbbbbb bbbb;
     }
 
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    private boolean delete(Path path) throws Exception {
-        if(Files.exists(path)) {
-            try (Stream<Path> walker = Files.walk(path)) {
-                walker.sorted(Comparator.reverseOrder())
-                        .map(Path::toFile)
-                        .forEach(File::delete);
+    @BbbbbbbbBbbbbbbb("BbbbbbBbBbbbbbBbbbBbbbbbb")
+    bbbbbbb bbbbbbb bbbbbb(Bbbb bbbb) bbbbbb Bbbbbbbbb {
+        bb(Bbbbb.bbbbbb(bbbb)) {
+            bbb (Bbbbbb<Bbbb> bbbbbb = Bbbbb.bbbb(bbbb)) {
+                bbbbbb.bbbbbb(Bbbbbbbbbb.bbbbbbbBbbbb())
+                        .bbb(Bbbb::bbBbbb)
+                        .bbbBbbb(Bbbb::bbbbbb);
 
             }
-            return true;
+            bbbbbb bbbb;
         }
 
-        return false;
+        bbbbbb bbbbb;
     }
 
-    @Override
-    public boolean clean() throws Exception {
-        return true;
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbb() bbbbbb Bbbbbbbbb {
+        bbbbbb bbbb;
     }
 
-    @Override
-    public boolean sendDelivery(Delivery delivery) throws Exception {
-        ConfigurationNode file = BasicConfigurationNode.root();
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbBbbbbbbb(Bbbbbbbb bbbbbbbb) bbbbbb Bbbbbbbbb {
+        BbbbbbbbbbbbbBbbb bbbb = BbbbbBbbbbbbbbbbbbBbbb.bbbb();
 
-        for(Map.Entry<String, JsonElement> entry : delivery.serialize().toJson().entrySet()) {
-            this.writePath(file, entry.getKey(), entry.getValue());
+        bbb(Bbb.Bbbbb<Bbbbbb, BbbbBbbbbbb> bbbbb : bbbbbbbb.bbbbbbbbb().bbBbbb().bbbbbBbb()) {
+            bbbb.bbbbbBbbb(bbbb, bbbbb.bbbBbb(), bbbbb.bbbBbbbb());
         }
 
-        UUID target = delivery.getRecipient();
-        Path path = this.fileGroups.get(Group.USERS).resolve(target.toString().substring(0, 2)).resolve(target.toString()).resolve("delivery_" + delivery.getID() + this.loader.extension());
-        this.saveFile(path, file);
-        return true;
+        BBBB bbbbbb = bbbbbbbb.bbbBbbbbbbbb();
+        Bbbb bbbb = bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBB).bbbbbbb(bbbbbb.bbBbbbbb().bbbbbbbbb(0, 2)).bbbbbbb(bbbbbb.bbBbbbbb()).bbbbbbb("bbbbbbbb_" + bbbbbbbb.bbbBB() + bbbb.bbbbbb.bbbbbbbbb());
+        bbbb.bbbbBbbb(bbbb, bbbb);
+        bbbbbb bbbb;
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    @Override
-    public Stash getStash(UUID user) throws Exception {
-        Stash.StashBuilder builder = Stash.builder();
+    @BbbbbbbbBbbbbbbb("BbbbbbbbBbbBbbbb")
+    @Bbbbbbbb
+    bbbbbb Bbbbb bbbBbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb {
+        Bbbbb.BbbbbBbbbbbb bbbbbbb = Bbbbb.bbbbbbb();
 
-        List<Listing> listings = this.getListings();
-        for(Listing listing : listings) {
-            if(listing.hasExpired() || (listing instanceof BuyItNow && ((BuyItNow) listing).isPurchased())) {
-                if (listing instanceof Auction) {
-                    Auction auction = (Auction) listing;
-                    if(auction.getLister().equals(user) || auction.getHighBid().map(bid -> bid.getFirst().equals(user)).orElse(false)) {
-                        boolean state = auction.getLister().equals(user);
-                        ConfigurationNode file = this.readFile(Group.CLAIMS, auction.getID());
-                        if(file != null) {
-                            SimilarPair<Boolean> claimed = new SimilarPair<>(
-                                    file.node("lister").getBoolean(),
-                                    file.node("winner").getBoolean()
+        Bbbb<Bbbbbbb> bbbbbbbb = bbbb.bbbBbbbbbbb();
+        bbb(Bbbbbbb bbbbbbb : bbbbbbbb) {
+            bb(bbbbbbb.bbbBbbbbbb() || (bbbbbbb bbbbbbbbbb BbbBbBbb && ((BbbBbBbb) bbbbbbb).bbBbbbbbbbb())) {
+                bb (bbbbbbb bbbbbbbbbb Bbbbbbb) {
+                    Bbbbbbb bbbbbbb = (Bbbbbbb) bbbbbbb;
+                    bb(bbbbbbb.bbbBbbbbb().bbbbbb(bbbb) || bbbbbbb.bbbBbbbBbb().bbb(bbb -> bbb.bbbBbbbb().bbbbbb(bbbb)).bbBbbb(bbbbb)) {
+                        bbbbbbb bbbbb = bbbbbbb.bbbBbbbbb().bbbbbb(bbbb);
+                        BbbbbbbbbbbbbBbbb bbbb = bbbb.bbbbBbbb(Bbbbb.BBBBBB, bbbbbbb.bbbBB());
+                        bb(bbbb != bbbb) {
+                            BbbbbbbBbbb<Bbbbbbb> bbbbbbb = bbb BbbbbbbBbbb<>(
+                                    bbbb.bbbb("bbbbbb").bbbBbbbbbb(),
+                                    bbbb.bbbb("bbbbbb").bbbBbbbbbb()
                             );
 
-                            if(state && !claimed.getFirst()) {
-                                builder.append(auction, TriState.FALSE);
-                            } else if(!state && !claimed.getSecond()) {
-                                builder.append(auction, TriState.TRUE);
+                            bb(bbbbb && !bbbbbbb.bbbBbbbb()) {
+                                bbbbbbb.bbbbbb(bbbbbbb, BbbBbbbb.BBBBB);
+                            } bbbb bb(!bbbbb && !bbbbbbb.bbbBbbbbb()) {
+                                bbbbbbb.bbbbbb(bbbbbbb, BbbBbbbb.BBBB);
                             }
-                        } else {
-                            if(state) {
-                                builder.append(auction, TriState.FALSE);
-                            } else {
-                                builder.append(auction, TriState.TRUE);
+                        } bbbb {
+                            bb(bbbbb) {
+                                bbbbbbb.bbbbbb(bbbbbbb, BbbBbbbb.BBBBB);
+                            } bbbb {
+                                bbbbbbb.bbbbbb(bbbbbbb, BbbBbbbb.BBBB);
                             }
                         }
-                    } else if(auction.getBids().containsKey(user)) {
-                        Optional.ofNullable(this.readFile(Group.CLAIMS, auction.getID()))
-                                .ifPresent(node -> {
-                                    try {
-                                        node.node("others")
-                                                .getList(TypeToken.get(UUID.class))
-                                                .stream()
-                                                .filter(claimer -> claimer.equals(user))
-                                                .findAny()
-                                                .ifPresent(x -> {
-                                                    builder.append(auction, TriState.NOT_SET);
+                    } bbbb bb(bbbbbbb.bbbBbbb().bbbbbbbbBbb(bbbb)) {
+                        Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbBbbb(Bbbbb.BBBBBB, bbbbbbb.bbbBB()))
+                                .bbBbbbbbb(bbbb -> {
+                                    bbb {
+                                        bbbb.bbbb("bbbbbb")
+                                                .bbbBbbb(BbbbBbbbb.bbb(BBBB.bbbbb))
+                                                .bbbbbb()
+                                                .bbbbbb(bbbbbbb -> bbbbbbb.bbbbbb(bbbb))
+                                                .bbbbBbb()
+                                                .bbBbbbbbb(b -> {
+                                                    bbbbbbb.bbbbbb(bbbbbbb, BbbBbbbb.BBB_BBB);
                                                 });
-                                    } catch (SerializationException e) {
-                                        throw new RuntimeException(e);
+                                    } bbbbb (BbbbbbbbbbbbbBbbbbbbbb b) {
+                                        bbbbb bbb BbbbbbbBbbbbbbbb(b);
                                     }
                                 });
                     }
-                } else {
-                    BuyItNow bin = (BuyItNow) listing;
-                    if(bin.getLister().equals(user) && !bin.stashedForPurchaser()) {
-                        builder.append(bin, TriState.FALSE);
-                    } else if(bin.stashedForPurchaser()) {
-                        if(bin.purchaser().equals(user)) {
-                            builder.append(bin, TriState.TRUE);
+                } bbbb {
+                    BbbBbBbb bbb = (BbbBbBbb) bbbbbbb;
+                    bb(bbb.bbbBbbbbb().bbbbbb(bbbb) && !bbb.bbbbbbbBbbBbbbbbbbb()) {
+                        bbbbbbb.bbbbbb(bbb, BbbBbbbb.BBBBB);
+                    } bbbb bb(bbb.bbbbbbbBbbBbbbbbbbb()) {
+                        bb(bbb.bbbbbbbbb().bbbbbb(bbbb)) {
+                            bbbbbbb.bbbbbb(bbb, BbbBbbbb.BBBB);
                         }
                     }
                 }
             }
         }
 
-        File additional = this.fileGroups.get(Group.USERS).resolve(user.toString().substring(0, 2)).resolve(user.toString()).toFile();
-        Storable.Deserializer<Delivery> deserializer = GTSService.getInstance().getGTSComponentManager().getDeliveryDeserializer();
-        this.createDirectoriesIfNotExists(additional.toPath());
-        for(File file : additional.listFiles((d, n) -> n.startsWith("delivery_"))) {
-            ConfigurationNode node = this.readFile(file.toPath());
+        Bbbb bbbbbbbbbb = bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBB).bbbbbbb(bbbb.bbBbbbbb().bbbbbbbbb(0, 2)).bbbbbbb(bbbb.bbBbbbbb()).bbBbbb();
+        Bbbbbbbb.Bbbbbbbbbbbb<Bbbbbbbb> bbbbbbbbbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb().bbbBbbbbbbbBbbbbbbbbbbb();
+        bbbb.bbbbbbBbbbbbbbbbbBbBbbBbbbbb(bbbbbbbbbb.bbBbbb());
+        bbb(Bbbb bbbb : bbbbbbbbbb.bbbbBbbbb((b, b) -> b.bbbbbbBbbb("bbbbbbbb_"))) {
+            BbbbbbbbbbbbbBbbb bbbb = bbbb.bbbbBbbb(bbbb.bbBbbb());
 
-            JObject json = new JObject();
-            this.fill(json, node, true);
-            JsonObject result = json.toJson();
-            builder.append(deserializer.deserialize(result));
+            BBbbbbb bbbb = bbb BBbbbbb();
+            bbbb.bbbb(bbbb, bbbb, bbbb);
+            BbbbBbbbbb bbbbbb = bbbb.bbBbbb();
+            bbbbbbb.bbbbbb(bbbbbbbbbbbb.bbbbbbbbbbb(bbbbbb));
         }
 
-        return builder.build();
+        bbbbbb bbbbbbb.bbbbb();
     }
 
-    @Override
-    public Optional<PlayerSettings> getPlayerSettings(UUID user) throws Exception {
-        Optional<ConfigurationNode> result = Optional.ofNullable(this.readFile(Group.USERS, user));
-        return result.map(node -> {
-            try {
-                JObject json = new JObject();
-                this.fill(json, node, true);
-                return json.toJson();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<BbbbbbBbbbbbbb> bbbBbbbbbBbbbbbbb(BBBB bbbb) bbbbbb Bbbbbbbbb {
+        Bbbbbbbb<BbbbbbbbbbbbbBbbb> bbbbbb = Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbBbbb(Bbbbb.BBBBB, bbbb));
+        bbbbbb bbbbbb.bbb(bbbb -> {
+            bbb {
+                BBbbbbb bbbb = bbb BBbbbbb();
+                bbbb.bbbb(bbbb, bbbb, bbbb);
+                bbbbbb bbbb.bbBbbb();
+            } bbbbb (Bbbbbbbbb b) {
+                bbbbb bbb BbbbbbbBbbbbbbbb(b);
             }
-        }).map(json -> PlayerSettings.builder()
-                .set(NotificationSetting.Bid, json.get("bids").getAsBoolean())
-                .set(NotificationSetting.Publish, json.get("publish").getAsBoolean())
-                .set(NotificationSetting.Sold, json.get("sold").getAsBoolean())
-                .set(NotificationSetting.Outbid, json.get("outbid").getAsBoolean())
-                .build()
+        }).bbb(bbbb -> BbbbbbBbbbbbbb.bbbbbbb()
+                .bbb(BbbbbbbbbbbbBbbbbbb.Bbb, bbbb.bbb("bbbb").bbbBbBbbbbbb())
+                .bbb(BbbbbbbbbbbbBbbbbbb.Bbbbbbb, bbbb.bbb("bbbbbbb").bbbBbBbbbbbb())
+                .bbb(BbbbbbbbbbbbBbbbbbb.Bbbb, bbbb.bbb("bbbb").bbbBbBbbbbbb())
+                .bbb(BbbbbbbbbbbbBbbbbbb.Bbbbbb, bbbb.bbb("bbbbbb").bbbBbBbbbbbb())
+                .bbbbb()
         );
     }
 
-    @Override
-    public boolean applyPlayerSettings(UUID user, PlayerSettings updates) throws Exception {
-        JsonObject json = new JsonObject();
-        json.addProperty("bids", updates.getBidListenState());
-        json.addProperty("publish", updates.getPublishListenState());
-        json.addProperty("sold", updates.getSoldListenState());
-        json.addProperty("output", updates.getOutbidListenState());
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbbBbbbbbBbbbbbbb(BBBB bbbb, BbbbbbBbbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        BbbbBbbbbb bbbb = bbb BbbbBbbbbb();
+        bbbb.bbbBbbbbbbb("bbbb", bbbbbbb.bbbBbbBbbbbbBbbbb());
+        bbbb.bbbBbbbbbbb("bbbbbbb", bbbbbbb.bbbBbbbbbbBbbbbbBbbbb());
+        bbbb.bbbBbbbbbbb("bbbb", bbbbbbb.bbbBbbbBbbbbbBbbbb());
+        bbbb.bbbBbbbbbbb("bbbbbb", bbbbbbb.bbbBbbbbbBbbbbbBbbbb());
 
-        ConfigurationNode node = BasicConfigurationNode.root();
-        for(Map.Entry<String, JsonElement> entry : json.entrySet()) {
-            this.writePath(node, entry.getKey(), entry.getValue());
+        BbbbbbbbbbbbbBbbb bbbb = BbbbbBbbbbbbbbbbbbBbbb.bbbb();
+        bbb(Bbb.Bbbbb<Bbbbbb, BbbbBbbbbbb> bbbbb : bbbb.bbbbbBbb()) {
+            bbbb.bbbbbBbbb(bbbb, bbbbb.bbbBbb(), bbbbb.bbbBbbbb());
         }
-        this.saveFile(Group.USERS, user, node);
-        return false;
+        bbbb.bbbbBbbb(Bbbbb.BBBBB, bbbb, bbbb);
+        bbbbbb bbbbb;
     }
 
-    @Override
-    public BuyItNowMessage.Purchase.Response processPurchase(BuyItNowMessage.Purchase.Request request) throws Exception {
-        return this.getListing(request.getListingID())
-                .map(listing -> {
-                    if(!(listing instanceof BuyItNow)) {
-                        throw new IllegalStateException("Can't purchase a non-purchasable listing!");
+    @Bbbbbbbb
+    bbbbbb BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbbb bbbbbbbBbbbbbbb(BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        bbbbbb bbbb.bbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+                .bbb(bbbbbbb -> {
+                    bb(!(bbbbbbb bbbbbbbbbb BbbBbBbb)) {
+                        bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb'b bbbbbbbb b bbb-bbbbbbbbbbb bbbbbbb!");
                     }
 
-                    BuyItNow bin = (BuyItNow) listing;
-                    UUID seller = bin.getLister();
-                    boolean successful = !bin.isPurchased();
+                    BbbBbBbb bbb = (BbbBbBbb) bbbbbbb;
+                    BBBB bbbbbb = bbb.bbbBbbbbb();
+                    bbbbbbb bbbbbbbbbb = !bbb.bbBbbbbbbbb();
 
-                    if(successful) {
-                        bin.markPurchased();
-                        try {
-                            this.sendListingUpdate(bin);
-                        } catch (Exception e) {
-                            throw new MessagingException(ErrorCodes.FATAL_ERROR, e);
+                    bb(bbbbbbbbbb) {
+                        bbb.bbbbBbbbbbbbb();
+                        bbb {
+                            bbbb.bbbbBbbbbbbBbbbbb(bbb);
+                        } bbbbb (Bbbbbbbbb b) {
+                            bbbbb bbb BbbbbbbbbBbbbbbbbb(BbbbbBbbbb.BBBBB_BBBBB, b);
                         }
                     }
 
-                    return new BINPurchaseMessage.Response(
-                            GTSPlugin.instance().messagingService().generatePingID(),
-                            request.getID(),
-                            request.getListingID(),
-                            request.getActor(),
-                            seller,
-                            successful,
-                            successful ? null : ErrorCodes.ALREADY_PURCHASED
+                    bbbbbb bbb BBBBbbbbbbbBbbbbbb.Bbbbbbbb(
+                            BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB(),
+                            bbbbbbb.bbbBB(),
+                            bbbbbbb.bbbBbbbbbbBB(),
+                            bbbbbbb.bbbBbbbb(),
+                            bbbbbb,
+                            bbbbbbbbbb,
+                            bbbbbbbbbb ? bbbb : BbbbbBbbbb.BBBBBBB_BBBBBBBBB
                     );
                 })
-                .orElseThrow(() -> new MessagingException(ErrorCodes.LISTING_MISSING));
+                .bbBbbbBbbbb(() -> bbb BbbbbbbbbBbbbbbbbb(BbbbbBbbbb.BBBBBBB_BBBBBBB));
     }
 
-    @Override
-    public boolean sendListingUpdate(Listing listing) throws Exception {
-        return this.addListing(listing);
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbBbbbbbbBbbbbb(Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        bbbbbb bbbb.bbbBbbbbbb(bbbbbbb);
     }
 
-    @Override
-    public AuctionMessage.Bid.Response processBid(AuctionMessage.Bid.Request request) throws Exception {
-        return this.getListing(request.getAuctionID())
-                .map(listing -> {
-                    if(!(listing instanceof Auction)) {
-                        throw new IllegalStateException("Can't bid on a non-auction!");
+    @Bbbbbbbb
+    bbbbbb BbbbbbbBbbbbbb.Bbb.Bbbbbbbb bbbbbbbBbb(BbbbbbbBbbbbbb.Bbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        bbbbbb bbbb.bbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+                .bbb(bbbbbbb -> {
+                    bb(!(bbbbbbb bbbbbbbbbb Bbbbbbb)) {
+                        bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb'b bbb bb b bbb-bbbbbbb!");
                     }
 
-                    Auction auction = (Auction) listing;
-                    UUID seller = auction.getLister();
-                    TriState successful = auction.bid(request.getActor(), request.getAmountBid()) ? TriState.TRUE : TriState.NOT_SET;
-                    TreeMultimap<UUID, Auction.Bid> bids = auction.getBids();
+                    Bbbbbbb bbbbbbb = (Bbbbbbb) bbbbbbb;
+                    BBBB bbbbbb = bbbbbbb.bbbBbbbbb();
+                    BbbBbbbb bbbbbbbbbb = bbbbbbb.bbb(bbbbbbb.bbbBbbbb(), bbbbbbb.bbbBbbbbbBbb()) ? BbbBbbbb.BBBB : BbbBbbbb.BBB_BBB;
+                    BbbbBbbbbbbb<BBBB, Bbbbbbb.Bbb> bbbb = bbbbbbb.bbbBbbb();
 
-                    boolean sniped = false;
-                    boolean protect = GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_SNIPING_BIDS_ENABLED);
-                    long snipingTime = GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_MINIMUM_SNIPING_TIME).getTime();
-                    long timeDifference = ChronoUnit.SECONDS.between(LocalDateTime.now(), auction.getExpiration());
-                    if(protect && snipingTime >= timeDifference) {
-                        auction.setExpiration(LocalDateTime.now().plusSeconds(GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_SET_TIME).getTime()));
-                        sniped = true;
+                    bbbbbbb bbbbbb = bbbbb;
+                    bbbbbbb bbbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBBB_BBBBBBB_BBBB_BBBBBBB);
+                    bbbb bbbbbbbBbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBBB_BBBBBBB_BBBBBBB_BBBB).bbbBbbb();
+                    bbbb bbbbBbbbbbbbbb = BbbbbbBbbb.BBBBBBB.bbbbbbb(BbbbbBbbbBbbb.bbb(), bbbbbbb.bbbBbbbbbbbbb());
+                    bb(bbbbbbb && bbbbbbbBbbb >= bbbbBbbbbbbbbb) {
+                        bbbbbbb.bbbBbbbbbbbbb(BbbbbBbbbBbbb.bbb().bbbbBbbbbbb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBBB_BBB_BBBB).bbbBbbb()));
+                        bbbbbb = bbbb;
                     }
 
-                    try {
-                        if(!this.sendListingUpdate(auction)) {
-                            successful = TriState.FALSE;
+                    bbb {
+                        bb(!bbbb.bbbbBbbbbbbBbbbbb(bbbbbbb)) {
+                            bbbbbbbbbb = BbbBbbbb.BBBBB;
                         }
-                    } catch (Exception e) {
-                        throw new MessagingException(ErrorCodes.FATAL_ERROR, e);
+                    } bbbbb (Bbbbbbbbb b) {
+                        bbbbb bbb BbbbbbbbbBbbbbbbbb(BbbbbBbbbb.BBBBB_BBBBB, b);
                     }
 
-                    return new AuctionBidMessage.Response(
-                            GTSPlugin.instance().messagingService().generatePingID(),
-                            request.getID(),
-                            request.getAuctionID(),
-                            request.getActor(),
-                            request.getAmountBid(),
-                            successful.toBooleanOrElse(false),
-                            sniped,
-                            seller,
-                            bids,
-                            successful == TriState.NOT_SET ? ErrorCodes.OUTBID : successful == TriState.FALSE ?
-                                    ErrorCodes.FATAL_ERROR : null
+                    bbbbbb bbb BbbbbbbBbbBbbbbbb.Bbbbbbbb(
+                            BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB(),
+                            bbbbbbb.bbbBB(),
+                            bbbbbbb.bbbBbbbbbbBB(),
+                            bbbbbbb.bbbBbbbb(),
+                            bbbbbbb.bbbBbbbbbBbb(),
+                            bbbbbbbbbb.bbBbbbbbbBbBbbb(bbbbb),
+                            bbbbbb,
+                            bbbbbb,
+                            bbbb,
+                            bbbbbbbbbb == BbbBbbbb.BBB_BBB ? BbbbbBbbbb.BBBBBB : bbbbbbbbbb == BbbBbbbb.BBBBB ?
+                                    BbbbbBbbbb.BBBBB_BBBBB : bbbb
                     );
                 })
-                .orElseThrow(() -> new MessagingException(ErrorCodes.LISTING_MISSING));
+                .bbBbbbBbbbb(() -> bbb BbbbbbbbbBbbbbbbbb(BbbbbBbbbb.BBBBBBB_BBBBBBB));
     }
 
-    @Override
-    public ClaimMessage.Response processClaimRequest(ClaimMessage.Request request) throws Exception {
-        Optional<Listing> listing = this.getListing(request.getListingID());
-        UUID code = GTSPlugin.instance().messagingService().generatePingID();
-        if(!listing.isPresent()) {
-            return ClaimMessageImpl.ClaimResponseImpl.builder()
-                    .id(code)
-                    .request(request.getID())
-                    .listing(request.getListingID())
-                    .actor(request.getActor())
-                    .receiver(request.getReceiver().orElse(null))
-                    .error(ErrorCodes.LISTING_MISSING)
-                    .build();
-        } else {
-            boolean owner = request.getActor().equals(listing.get().getLister());
-            if(listing.map(l -> l instanceof Auction).orElse(false)) {
-                if(!listing.map(l -> (Auction) l).get().hasAnyBidsPlaced()) {
-                    ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
-                            .id(code)
-                            .request(request.getID())
-                            .listing(request.getListingID())
-                            .actor(request.getActor())
-                            .successful()
-                            .auction()
-                            .winner(false)
-                            .lister(false)
-                            .receiver(request.getReceiver().orElse(null));
+    @Bbbbbbbb
+    bbbbbb BbbbbBbbbbbb.Bbbbbbbb bbbbbbbBbbbbBbbbbbb(BbbbbBbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        Bbbbbbbb<Bbbbbbb> bbbbbbb = bbbb.bbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB());
+        BBBB bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB();
+        bb(!bbbbbbb.bbBbbbbbb()) {
+            bbbbbb BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.bbbbbbb()
+                    .bb(bbbb)
+                    .bbbbbbb(bbbbbbb.bbbBB())
+                    .bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+                    .bbbbb(bbbbbbb.bbbBbbbb())
+                    .bbbbbbbb(bbbbbbb.bbbBbbbbbbb().bbBbbb(bbbb))
+                    .bbbbb(BbbbbBbbbb.BBBBBBB_BBBBBBB)
+                    .bbbbb();
+        } bbbb {
+            bbbbbbb bbbbb = bbbbbbb.bbbBbbbb().bbbbbb(bbbbbbb.bbb().bbbBbbbbb());
+            bb(bbbbbbb.bbb(b -> b bbbbbbbbbb Bbbbbbb).bbBbbb(bbbbb)) {
+                bb(!bbbbbbb.bbb(b -> (Bbbbbbb) b).bbb().bbbBbbBbbbBbbbbb()) {
+                    BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbb bbbbbbb = BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.bbbbbbb()
+                            .bb(bbbb)
+                            .bbbbbbb(bbbbbbb.bbbBB())
+                            .bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+                            .bbbbb(bbbbbbb.bbbBbbbb())
+                            .bbbbbbbbbb()
+                            .bbbbbbb()
+                            .bbbbbb(bbbbb)
+                            .bbbbbb(bbbbb)
+                            .bbbbbbbb(bbbbbbb.bbbBbbbbbbb().bbBbbb(bbbb));
 
-                    if(this.deleteListing(request.getListingID())) {
-                        builder.successful();
+                    bb(bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB())) {
+                        bbbbbbb.bbbbbbbbbb();
                     }
 
-                    return builder.build();
+                    bbbbbb bbbbbbb.bbbbb();
                 }
 
-                Auction auction = listing.map(l -> (Auction) l).get();
-                boolean claimer = owner || auction.getHighBid().get().getFirst().equals(request.getActor());
+                Bbbbbbb bbbbbbb = bbbbbbb.bbb(b -> (Bbbbbbb) b).bbb();
+                bbbbbbb bbbbbbb = bbbbb || bbbbbbb.bbbBbbbBbb().bbb().bbbBbbbb().bbbbbb(bbbbbbb.bbbBbbbb());
 
-                ConfigurationNode status = this.readFile(Group.CLAIMS, auction.getID());
-                if(status != null) {
-                    boolean lister = status.node("lister").getBoolean();
-                    boolean winner = status.node("winner").getBoolean();
-                    List<UUID> others = status.node("others").getList(TypeToken.get(UUID.class));
+                BbbbbbbbbbbbbBbbb bbbbbb = bbbb.bbbbBbbb(Bbbbb.BBBBBB, bbbbbbb.bbbBB());
+                bb(bbbbbb != bbbb) {
+                    bbbbbbb bbbbbb = bbbbbb.bbbb("bbbbbb").bbbBbbbbbb();
+                    bbbbbbb bbbbbb = bbbbbb.bbbb("bbbbbb").bbbBbbbbbb();
+                    Bbbb<BBBB> bbbbbb = bbbbbb.bbbb("bbbbbb").bbbBbbb(BbbbBbbbb.bbb(BBBB.bbbbb));
 
-                    if(claimer) {
-                        if(owner) {
-                            lister = true;
-                        } else {
-                            winner = true;
+                    bb(bbbbbbb) {
+                        bb(bbbbb) {
+                            bbbbbb = bbbb;
+                        } bbbb {
+                            bbbbbb = bbbb;
                         }
-                    } else {
-                        others.add(request.getActor());
+                    } bbbb {
+                        bbbbbb.bbb(bbbbbbb.bbbBbbbb());
                     }
 
-                    boolean all = lister && winner && auction.getBids().keySet().stream()
-                            .filter(bidder -> !auction.getHighBid().get().getFirst().equals(bidder))
-                            .allMatch(others::contains);
+                    bbbbbbb bbb = bbbbbb && bbbbbb && bbbbbbb.bbbBbbb().bbbBbb().bbbbbb()
+                            .bbbbbb(bbbbbb -> !bbbbbbb.bbbBbbbBbb().bbb().bbbBbbbb().bbbbbb(bbbbbb))
+                            .bbbBbbbb(bbbbbb::bbbbbbbb);
 
-                    if(all) {
-                        this.deleteListing(auction.getID());
-                        this.saveFile(Group.CLAIMS, auction.getID(), null);
-                    } else {
-                        status.node("lister").set(lister);
-                        status.node("winner").set(winner);
-                        status.node("others").set(new TypeToken<List<UUID>>() {}, others);
-                        this.saveFile(Group.CLAIMS, auction.getID(), status);
+                    bb(bbb) {
+                        bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBB());
+                        bbbb.bbbbBbbb(Bbbbb.BBBBBB, bbbbbbb.bbbBB(), bbbb);
+                    } bbbb {
+                        bbbbbb.bbbb("bbbbbb").bbb(bbbbbb);
+                        bbbbbb.bbbb("bbbbbb").bbb(bbbbbb);
+                        bbbbbb.bbbb("bbbbbb").bbb(bbb BbbbBbbbb<Bbbb<BBBB>>() {}, bbbbbb);
+                        bbbb.bbbbBbbb(Bbbbb.BBBBBB, bbbbbbb.bbbBB(), bbbbbb);
                     }
-                } else {
-                    status = BasicConfigurationNode.root();
-                    List<UUID> others = Lists.newArrayList();
-                    if(!claimer) {
-                        others.add(request.getActor());
+                } bbbb {
+                    bbbbbb = BbbbbBbbbbbbbbbbbbBbbb.bbbb();
+                    Bbbb<BBBB> bbbbbb = Bbbbb.bbbBbbbbBbbb();
+                    bb(!bbbbbbb) {
+                        bbbbbb.bbb(bbbbbbb.bbbBbbbb());
                     }
 
-                    status.node("lister").set(owner);
-                    status.node("winner").set(!owner && claimer);
-                    status.node("others").set(new TypeToken<List<UUID>>() {}, others);
+                    bbbbbb.bbbb("bbbbbb").bbb(bbbbb);
+                    bbbbbb.bbbb("bbbbbb").bbb(!bbbbb && bbbbbbb);
+                    bbbbbb.bbbb("bbbbbb").bbb(bbb BbbbBbbbb<Bbbb<BBBB>>() {}, bbbbbb);
                 }
 
-                ImmutableList<UUID> o = ImmutableList.copyOf(status.node("others").get(new TypeToken<List<UUID>>(){}));
-                Map<UUID, Boolean> claimed = Maps.newHashMap();
-                auction.getBids().keySet().stream()
-                        .filter(bidder -> !auction.getHighBid().get().getFirst().equals(bidder))
-                        .forEach(bidder -> {
-                            claimed.put(bidder, o.contains(bidder));
+                BbbbbbbbbBbbb<BBBB> b = BbbbbbbbbBbbb.bbbbBb(bbbbbb.bbbb("bbbbbb").bbb(bbb BbbbBbbbb<Bbbb<BBBB>>(){}));
+                Bbb<BBBB, Bbbbbbb> bbbbbbb = Bbbb.bbbBbbbBbb();
+                bbbbbbb.bbbBbbb().bbbBbb().bbbbbb()
+                        .bbbbbb(bbbbbb -> !bbbbbbb.bbbBbbbBbb().bbb().bbbBbbbb().bbbbbb(bbbbbb))
+                        .bbbBbbb(bbbbbb -> {
+                            bbbbbbb.bbb(bbbbbb, b.bbbbbbbb(bbbbbb));
                         });
 
-                return ClaimMessageImpl.ClaimResponseImpl.builder()
-                        .id(code)
-                        .request(request.getID())
-                        .listing(request.getListingID())
-                        .actor(request.getActor())
-                        .receiver(request.getReceiver().orElse(null))
-                        .successful()
-                        .auction()
-                        .lister(status.node("lister").getBoolean())
-                        .winner(status.node("winner").getBoolean())
-                        .others(claimed)
-                        .successful()
-                        .build();
-            } else {
-                ClaimMessageImpl.ClaimResponseImpl.ClaimResponseBuilder builder = ClaimMessageImpl.ClaimResponseImpl.builder()
-                        .id(code)
-                        .request(request.getID())
-                        .listing(request.getListingID())
-                        .actor(request.getActor())
-                        .receiver(request.getReceiver().orElse(null));
+                bbbbbb BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.bbbbbbb()
+                        .bb(bbbb)
+                        .bbbbbbb(bbbbbbb.bbbBB())
+                        .bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+                        .bbbbb(bbbbbbb.bbbBbbbb())
+                        .bbbbbbbb(bbbbbbb.bbbBbbbbbbb().bbBbbb(bbbb))
+                        .bbbbbbbbbb()
+                        .bbbbbbb()
+                        .bbbbbb(bbbbbb.bbbb("bbbbbb").bbbBbbbbbb())
+                        .bbbbbb(bbbbbb.bbbb("bbbbbb").bbbBbbbbbb())
+                        .bbbbbb(bbbbbbb)
+                        .bbbbbbbbbb()
+                        .bbbbb();
+            } bbbb {
+                BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbb bbbbbbb = BbbbbBbbbbbbBbbb.BbbbbBbbbbbbbBbbb.bbbbbbb()
+                        .bb(bbbb)
+                        .bbbbbbb(bbbbbbb.bbbBB())
+                        .bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+                        .bbbbb(bbbbbbb.bbbBbbbb())
+                        .bbbbbbbb(bbbbbbb.bbbBbbbbbbb().bbBbbb(bbbb));
 
-                if(this.deleteListing(request.getListingID())) {
-                    builder.successful();
+                bb(bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB())) {
+                    bbbbbbb.bbbbbbbbbb();
                 }
 
-                return builder.build();
+                bbbbbb bbbbbbb.bbbbb();
             }
         }
     }
 
-    @Override
-    public boolean appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) throws Exception {
-        ConfigurationNode node = BasicConfigurationNode.root();
-        node.node("lister").set(lister);
-        node.node("winner").set(winner);
-        node.node("others").set(new TypeToken<List<UUID>>() {}, others);
-        this.saveFile(Group.CLAIMS, auction, node);
-        return true;
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbbbBbbBbbbbBbbbbb(BBBB bbbbbbb, bbbbbbb bbbbbb, bbbbbbb bbbbbb, Bbbb<BBBB> bbbbbb) bbbbbb Bbbbbbbbb {
+        BbbbbbbbbbbbbBbbb bbbb = BbbbbBbbbbbbbbbbbbBbbb.bbbb();
+        bbbb.bbbb("bbbbbb").bbb(bbbbbb);
+        bbbb.bbbb("bbbbbb").bbb(bbbbbb);
+        bbbb.bbbb("bbbbbb").bbb(bbb BbbbBbbbb<Bbbb<BBBB>>() {}, bbbbbb);
+        bbbb.bbbbBbbb(Bbbbb.BBBBBB, bbbbbbb, bbbb);
+        bbbbbb bbbb;
     }
 
-    @Override
-    public AuctionMessage.Cancel.Response processAuctionCancelRequest(AuctionMessage.Cancel.Request request) throws Exception {
-        Optional<Listing> listing = this.getListing(request.getAuctionID());
-        if(listing.isPresent()) {
-            Auction auction = listing.filter(l -> l instanceof Auction).map(l -> (Auction) l).orElseThrow(() -> new MessagingException(ErrorCodes.FATAL_ERROR));
+    @Bbbbbbbb
+    bbbbbb BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbbb bbbbbbbBbbbbbbBbbbbbBbbbbbb(BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        Bbbbbbbb<Bbbbbbb> bbbbbbb = bbbb.bbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB());
+        bb(bbbbbbb.bbBbbbbbb()) {
+            Bbbbbbb bbbbbbb = bbbbbbb.bbbbbb(b -> b bbbbbbbbbb Bbbbbbb).bbb(b -> (Bbbbbbb) b).bbBbbbBbbbb(() -> bbb BbbbbbbbbBbbbbbbbb(BbbbbBbbbb.BBBBB_BBBBB));
 
-            List<UUID> bidders = Lists.newArrayList();
-            boolean result = false;
-            ErrorCode error = null;
-            if(this.plugin.configuration().main().get(ConfigKeys.AUCTIONS_ALLOW_CANCEL_WITH_BIDS)) {
-                auction.getBids().keySet().stream().distinct().forEach(bidders::add);
+            Bbbb<BBBB> bbbbbbb = Bbbbb.bbbBbbbbBbbb();
+            bbbbbbb bbbbbb = bbbbb;
+            BbbbbBbbb bbbbb = bbbb;
+            bb(bbbb.bbbbbb.bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBBB_BBBBB_BBBBBB_BBBB_BBBB)) {
+                bbbbbbb.bbbBbbb().bbbBbb().bbbbbb().bbbbbbbb().bbbBbbb(bbbbbbb::bbb);
 
-                result = this.deleteListing(auction.getID());
+                bbbbbb = bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBB());
 
-            } else {
-                if(auction.hasAnyBidsPlaced()) {
-                    error = ErrorCodes.BIDS_PLACED;
-                } else {
-                    result = this.deleteListing(auction.getID());
+            } bbbb {
+                bb(bbbbbbb.bbbBbbBbbbBbbbbb()) {
+                    bbbbb = BbbbbBbbbb.BBBB_BBBBBB;
+                } bbbb {
+                    bbbbbb = bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBB());
                 }
             }
 
-            return new AuctionCancelMessage.Response(
-                    GTSPlugin.instance().messagingService().generatePingID(),
-                    request.getID(),
-                    auction,
-                    request.getAuctionID(),
-                    request.getActor(),
-                    ImmutableList.copyOf(bidders),
-                    result,
-                    error
+            bbbbbb bbb BbbbbbbBbbbbbBbbbbbb.Bbbbbbbb(
+                    BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB(),
+                    bbbbbbb.bbbBB(),
+                    bbbbbbb,
+                    bbbbbbb.bbbBbbbbbbBB(),
+                    bbbbbbb.bbbBbbbb(),
+                    BbbbbbbbbBbbb.bbbbBb(bbbbbbb),
+                    bbbbbb,
+                    bbbbb
             );
         }
 
-        throw new MessagingException(ErrorCodes.LISTING_MISSING);
+        bbbbb bbb BbbbbbbbbBbbbbbbbb(BbbbbBbbbb.BBBBBBB_BBBBBBB);
     }
 
-    @Override
-    public BuyItNowMessage.Remove.Response processListingRemoveRequest(BuyItNowMessage.Remove.Request request) throws Exception {
-        BiFunction<Boolean, ErrorCode, BINRemoveMessage.Response> processor = (success, error) -> new BINRemoveMessage.Response(
-                GTSPlugin.instance().messagingService().generatePingID(),
-                request.getID(),
-                request.getListingID(),
-                request.getActor(),
-                request.getRecipient().orElse(null),
-                request.shouldReturnListing(),
-                success,
-                success ? null : error
+    @Bbbbbbbb
+    bbbbbb BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbbb bbbbbbbBbbbbbbBbbbbbBbbbbbb(BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        BbBbbbbbbb<Bbbbbbb, BbbbbBbbb, BBBBbbbbbBbbbbbb.Bbbbbbbb> bbbbbbbbb = (bbbbbbb, bbbbb) -> bbb BBBBbbbbbBbbbbbb.Bbbbbbbb(
+                BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB(),
+                bbbbbbb.bbbBB(),
+                bbbbbbb.bbbBbbbbbbBB(),
+                bbbbbbb.bbbBbbbb(),
+                bbbbbbb.bbbBbbbbbbbb().bbBbbb(bbbb),
+                bbbbbbb.bbbbbbBbbbbbBbbbbbb(),
+                bbbbbbb,
+                bbbbbbb ? bbbb : bbbbb
         );
 
-        Optional<Listing> listing = this.getListing(request.getListingID());
-        if(!listing.isPresent()) {
-            return processor.apply(false, ErrorCodes.LISTING_MISSING);
+        Bbbbbbbb<Bbbbbbb> bbbbbbb = bbbb.bbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB());
+        bb(!bbbbbbb.bbBbbbbbb()) {
+            bbbbbb bbbbbbbbb.bbbbb(bbbbb, BbbbbBbbbb.BBBBBBB_BBBBBBB);
 
         }
 
-        Listing result = listing.get();
-        if(((BuyItNow) result).isPurchased()) {
-            return processor.apply(false, ErrorCodes.ALREADY_PURCHASED);
+        Bbbbbbb bbbbbb = bbbbbbb.bbb();
+        bb(((BbbBbBbb) bbbbbb).bbBbbbbbbbb()) {
+            bbbbbb bbbbbbbbb.bbbbb(bbbbb, BbbbbBbbbb.BBBBBBB_BBBBBBBBB);
         }
 
-        return processor.apply(this.deleteListing(request.getListingID()), ErrorCodes.FATAL_ERROR);
+        bbbbbb bbbbbbbbb.bbbbb(bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB()), BbbbbBbbbb.BBBBB_BBBBB);
     }
 
-    @Override
-    public ForceDeleteMessage.Response processForcedDeletion(ForceDeleteMessage.Request request) throws Exception {
-        Optional<Listing> listing = this.getListing(request.getListingID());
-        if(listing.isPresent()) {
-            boolean successful = this.deleteListing(request.getListingID());
-            return ForceDeleteMessage.Response.builder()
-                    .request(request.getID())
-                    .listing(request.getListingID())
-                    .actor(request.getActor())
-                    .data(listing.get())
-                    .give(request.shouldGive())
-                    .successful(successful)
-                    .error(successful ? null : ErrorCodes.FATAL_ERROR)
-                    .build();
-        } else {
-            return ForceDeleteMessage.Response.builder()
-                    .request(request.getID())
-                    .listing(request.getListingID())
-                    .actor(request.getActor())
-                    .successful(false)
-                    .give(request.shouldGive())
-                    .error(ErrorCodes.LISTING_MISSING)
-                    .build();
+    @Bbbbbbbb
+    bbbbbb BbbbbBbbbbbBbbbbbb.Bbbbbbbb bbbbbbbBbbbbbBbbbbbbb(BbbbbBbbbbbBbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        Bbbbbbbb<Bbbbbbb> bbbbbbb = bbbb.bbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB());
+        bb(bbbbbbb.bbBbbbbbb()) {
+            bbbbbbb bbbbbbbbbb = bbbb.bbbbbbBbbbbbb(bbbbbbb.bbbBbbbbbbBB());
+            bbbbbb BbbbbBbbbbbBbbbbbb.Bbbbbbbb.bbbbbbb()
+                    .bbbbbbb(bbbbbbb.bbbBB())
+                    .bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+                    .bbbbb(bbbbbbb.bbbBbbbb())
+                    .bbbb(bbbbbbb.bbb())
+                    .bbbb(bbbbbbb.bbbbbbBbbb())
+                    .bbbbbbbbbb(bbbbbbbbbb)
+                    .bbbbb(bbbbbbbbbb ? bbbb : BbbbbBbbbb.BBBBB_BBBBB)
+                    .bbbbb();
+        } bbbb {
+            bbbbbb BbbbbBbbbbbBbbbbbb.Bbbbbbbb.bbbbbbb()
+                    .bbbbbbb(bbbbbbb.bbbBB())
+                    .bbbbbbb(bbbbbbb.bbbBbbbbbbBB())
+                    .bbbbb(bbbbbbb.bbbBbbbb())
+                    .bbbbbbbbbb(bbbbb)
+                    .bbbb(bbbbbbb.bbbbbbBbbb())
+                    .bbbbb(BbbbbBbbbb.BBBBBBB_BBBBBBB)
+                    .bbbbb();
         }
     }
 
-    @Override
-    public ClaimDelivery.Response claimDelivery(ClaimDelivery.Request request) throws Exception {
-        UUID target = request.getActor();
-        Path path = this.fileGroups.get(Group.USERS).resolve(target.toString().substring(0, 2)).resolve(target.toString()).resolve("delivery_" + request.getDeliveryID() + this.loader.extension());
-        File file = path.toFile();
+    @Bbbbbbbb
+    bbbbbb BbbbbBbbbbbbb.Bbbbbbbb bbbbbBbbbbbbb(BbbbbBbbbbbbb.Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        BBBB bbbbbb = bbbbbbb.bbbBbbbb();
+        Bbbb bbbb = bbbb.bbbbBbbbbb.bbb(Bbbbb.BBBBB).bbbbbbb(bbbbbb.bbBbbbbb().bbbbbbbbb(0, 2)).bbbbbbb(bbbbbb.bbBbbbbb()).bbbbbbb("bbbbbbbb_" + bbbbbbb.bbbBbbbbbbbBB() + bbbb.bbbbbb.bbbbbbbbb());
+        Bbbb bbbb = bbbb.bbBbbb();
 
-        if(file.exists()) {
-            this.saveFile(path, null);
-            boolean successful = file.exists();
+        bb(bbbb.bbbbbb()) {
+            bbbb.bbbbBbbb(bbbb, bbbb);
+            bbbbbbb bbbbbbbbbb = bbbb.bbbbbb();
 
-            ClaimDeliveryImpl.ClaimDeliveryResponseImpl.DeliveryClaimResponseBuilder builder = ClaimDeliveryImpl.ClaimDeliveryResponseImpl.builder()
-                    .request(request.getID())
-                    .delivery(request.getDeliveryID())
-                    .actor(request.getActor());
+            BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbbBbbb.BbbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbb = BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbbBbbb.bbbbbbb()
+                    .bbbbbbb(bbbbbbb.bbbBB())
+                    .bbbbbbbb(bbbbbbb.bbbBbbbbbbbBB())
+                    .bbbbb(bbbbbbb.bbbBbbbb());
 
-            if(successful) {
-                builder.successful();
-            } else {
-                builder.error(ErrorCodes.FATAL_ERROR);
+            bb(bbbbbbbbbb) {
+                bbbbbbb.bbbbbbbbbb();
+            } bbbb {
+                bbbbbbb.bbbbb(BbbbbBbbbb.BBBBB_BBBBB);
             }
 
-            return builder.build();
+            bbbbbb bbbbbbb.bbbbb();
         }
 
-        return ClaimDeliveryImpl.ClaimDeliveryResponseImpl.builder()
-                .request(request.getID())
-                .delivery(request.getDeliveryID())
-                .actor(request.getActor())
-                .error(ErrorCodes.DELIVERY_MISSING)
-                .build();
+        bbbbbb BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbbBbbb.bbbbbbb()
+                .bbbbbbb(bbbbbbb.bbbBB())
+                .bbbbbbbb(bbbbbbb.bbbBbbbbbbbBB())
+                .bbbbb(bbbbbbb.bbbBbbbb())
+                .bbbbb(BbbbbBbbbb.BBBBBBBB_BBBBBBB)
+                .bbbbb();
     }
 
-    private ConfigurationNode readFile(Group group, UUID uuid) throws IOException {
-        Path target = this.fileGroups.get(group).resolve(uuid.toString().substring(0, 2));
-        if(group == Group.USERS) {
-            target = target.resolve(uuid.toString());
+    bbbbbbb BbbbbbbbbbbbbBbbb bbbbBbbb(Bbbbb bbbbb, BBBB bbbb) bbbbbb BBBbbbbbbbb {
+        Bbbb bbbbbb = bbbb.bbbbBbbbbb.bbb(bbbbb).bbbbbbb(bbbb.bbBbbbbb().bbbbbbbbb(0, 2));
+        bb(bbbbb == Bbbbb.BBBBB) {
+            bbbbbb = bbbbbb.bbbbbbb(bbbb.bbBbbbbb());
         }
-        return this.readFile(target.resolve(uuid + this.loader.extension()));
+        bbbbbb bbbb.bbbbBbbb(bbbbbb.bbbbbbb(bbbb + bbbb.bbbbbb.bbbbbbbbb()));
     }
 
-    private ConfigurationNode readFile(Path target) throws IOException  {
-        ReentrantLock lock = Objects.requireNonNull(this.ioLocks.get(target));
-        lock.lock();
-        try {
-            if(!target.toFile().exists()) {
-                return null;
+    bbbbbbb BbbbbbbbbbbbbBbbb bbbbBbbb(Bbbb bbbbbb) bbbbbb BBBbbbbbbbb  {
+        BbbbbbbbbBbbb bbbb = Bbbbbbb.bbbbbbbBbbBbbb(bbbb.bbBbbbb.bbb(bbbbbb));
+        bbbb.bbbb();
+        bbb {
+            bb(!bbbbbb.bbBbbb().bbbbbb()) {
+                bbbbbb bbbb;
             }
 
-            return this.loader.loader(target).load();
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    private void saveFile(Group group, UUID name, ConfigurationNode node) throws IOException {
-        Path target = this.fileGroups.get(group).resolve(name.toString().substring(0, 2));
-        if(group == Group.USERS) {
-            target = target.resolve(name.toString());
-        }
-        this.saveFile(target.resolve(name + this.loader.extension()), node);
-    }
-
-    private void saveFile(Path target, ConfigurationNode node) throws IOException {
-        this.createDirectoriesIfNotExists(target.getParent());
-        ReentrantLock lock = Objects.requireNonNull(this.ioLocks.get(target));
-        lock.lock();
-        try {
-            if(node == null) {
-                Files.deleteIfExists(target);
-                return;
-            }
-
-            this.loader.loader(target).save(node);
-        } finally {
-            lock.unlock();
+            bbbbbb bbbb.bbbbbb.bbbbbb(bbbbbb).bbbb();
+        } bbbbbbb {
+            bbbb.bbbbbb();
         }
     }
 
-    private void createDirectoriesIfNotExists(Path path) throws IOException {
-        if (Files.exists(path) && (Files.isDirectory(path) || Files.isSymbolicLink(path))) {
-            return;
+    bbbbbbb bbbb bbbbBbbb(Bbbbb bbbbb, BBBB bbbb, BbbbbbbbbbbbbBbbb bbbb) bbbbbb BBBbbbbbbbb {
+        Bbbb bbbbbb = bbbb.bbbbBbbbbb.bbb(bbbbb).bbbbbbb(bbbb.bbBbbbbb().bbbbbbbbb(0, 2));
+        bb(bbbbb == Bbbbb.BBBBB) {
+            bbbbbb = bbbbbb.bbbbbbb(bbbb.bbBbbbbb());
         }
-
-        Files.createDirectories(path);
+        bbbb.bbbbBbbb(bbbbbb.bbbbbbb(bbbb + bbbb.bbbbbb.bbbbbbbbb()), bbbb);
     }
 
-    private Listing from(ConfigurationNode node) throws Exception {
-        JObject json = new JObject();
-        this.fill(json, node, true);
-        JsonObject result = json.toJson();
+    bbbbbbb bbbb bbbbBbbb(Bbbb bbbbbb, BbbbbbbbbbbbbBbbb bbbb) bbbbbb BBBbbbbbbbb {
+        bbbb.bbbbbbBbbbbbbbbbbBbBbbBbbbbb(bbbbbb.bbbBbbbbb());
+        BbbbbbbbbBbbb bbbb = Bbbbbbb.bbbbbbbBbbBbbb(bbbb.bbBbbbb.bbb(bbbbbb));
+        bbbb.bbbb();
+        bbb {
+            bb(bbbb == bbbb) {
+                Bbbbb.bbbbbbBbBbbbbb(bbbbbb);
+                bbbbbb;
+            }
 
-        String type = result.get("type").getAsString();
-        if(type.equals("bin")) {
-            return GTSService.getInstance().getGTSComponentManager()
-                    .getListingResourceManager(BuyItNow.class)
-                    .get()
-                    .getDeserializer()
-                    .deserialize(result);
-        } else {
-            return GTSService.getInstance().getGTSComponentManager()
-                    .getListingResourceManager(Auction.class)
-                    .get()
-                    .getDeserializer()
-                    .deserialize(result);
+            bbbb.bbbbbb.bbbbbb(bbbbbb).bbbb(bbbb);
+        } bbbbbbb {
+            bbbb.bbbbbb();
         }
     }
 
-    private void fill(JObject target, ConfigurationNode working, boolean empty) throws Exception {
-        if(!working.childrenList().isEmpty()) {
-            JArray array = new JArray();
-            for(ConfigurationNode child : working.childrenList()) {
-                this.fillArray(array, child);
-            }
-            target.add(working.key().toString(), array);
-        } else if(!working.childrenMap().isEmpty()) {
-            JObject child = new JObject();
-            for(Map.Entry<Object, ? extends ConfigurationNode> entry : working.childrenMap().entrySet()) {
-                this.fill(empty ? target : child, entry.getValue(), false);
-            }
-            if(!empty) {
-                target.add(working.key().toString(), child);
-            }
-        } else {
-            String key = working.key().toString();
-            Class<?> typing = working.get(Object.class).getClass();
-            if(typing.equals(String.class)) {
-                target.add(key, working.getString());
-            } else if(Number.class.isAssignableFrom(typing)) {
-                double value = working.getDouble();
-                target.add(key, value);
-            } else if(typing.equals(Boolean.class)) {
-                target.add(key, working.getBoolean());
-            } else {
-                throw new IllegalStateException("Invalid value for location: " + typing);
-            }
+    bbbbbbb bbbb bbbbbbBbbbbbbbbbbBbBbbBbbbbb(Bbbb bbbb) bbbbbb BBBbbbbbbbb {
+        bb (Bbbbb.bbbbbb(bbbb) && (Bbbbb.bbBbbbbbbbb(bbbb) || Bbbbb.bbBbbbbbbbBbbb(bbbb))) {
+            bbbbbb;
+        }
+
+        Bbbbb.bbbbbbBbbbbbbbbbb(bbbb);
+    }
+
+    bbbbbbb Bbbbbbb bbbb(BbbbbbbbbbbbbBbbb bbbb) bbbbbb Bbbbbbbbb {
+        BBbbbbb bbbb = bbb BBbbbbb();
+        bbbb.bbbb(bbbb, bbbb, bbbb);
+        BbbbBbbbbb bbbbbb = bbbb.bbBbbb();
+
+        Bbbbbb bbbb = bbbbbb.bbb("bbbb").bbbBbBbbbbb();
+        bb(bbbb.bbbbbb("bbb")) {
+            bbbbbb BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+                    .bbbBbbbbbbBbbbbbbbBbbbbbb(BbbBbBbb.bbbbb)
+                    .bbb()
+                    .bbbBbbbbbbbbbbb()
+                    .bbbbbbbbbbb(bbbbbb);
+        } bbbb {
+            bbbbbb BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+                    .bbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbbbb.bbbbb)
+                    .bbb()
+                    .bbbBbbbbbbbbbbb()
+                    .bbbbbbbbbbb(bbbbbb);
         }
     }
 
-    private void fillArray(JArray array, ConfigurationNode working) throws Exception {
-        if(!working.childrenMap().isEmpty()) {
-            JObject child = new JObject();
-            for(Map.Entry<Object, ? extends ConfigurationNode> entry : working.childrenMap().entrySet()) {
-                this.fill(child, entry.getValue(), false);
+    bbbbbbb bbbb bbbb(BBbbbbb bbbbbb, BbbbbbbbbbbbbBbbb bbbbbbb, bbbbbbb bbbbb) bbbbbb Bbbbbbbbb {
+        bb(!bbbbbbb.bbbbbbbbBbbb().bbBbbbb()) {
+            BBbbbb bbbbb = bbb BBbbbb();
+            bbb(BbbbbbbbbbbbbBbbb bbbbb : bbbbbbb.bbbbbbbbBbbb()) {
+                bbbb.bbbbBbbbb(bbbbb, bbbbb);
             }
-            array.add(child);
-        } else if(!working.childrenList().isEmpty()) {
-            JArray aChild = new JArray();
-            for(ConfigurationNode child : working.childrenList()) {
-                this.fillArray(array, child);
+            bbbbbb.bbb(bbbbbbb.bbb().bbBbbbbb(), bbbbb);
+        } bbbb bb(!bbbbbbb.bbbbbbbbBbb().bbBbbbb()) {
+            BBbbbbb bbbbb = bbb BBbbbbb();
+            bbb(Bbb.Bbbbb<Bbbbbb, ? bbbbbbb BbbbbbbbbbbbbBbbb> bbbbb : bbbbbbb.bbbbbbbbBbb().bbbbbBbb()) {
+                bbbb.bbbb(bbbbb ? bbbbbb : bbbbb, bbbbb.bbbBbbbb(), bbbbb);
             }
-            array.add(aChild);
-        } else {
-            Class<?> typing = working.get(Object.class).getClass();
-            if(typing.equals(String.class)) {
-                array.add(working.getString());
-            } else if(Number.class.isAssignableFrom(typing)) {
-                double value = working.getDouble();
-                array.add(value);
-            } else {
-                throw new IllegalStateException("Invalid value for location: " + typing);
+            bb(!bbbbb) {
+                bbbbbb.bbb(bbbbbbb.bbb().bbBbbbbb(), bbbbb);
+            }
+        } bbbb {
+            Bbbbbb bbb = bbbbbbb.bbb().bbBbbbbb();
+            Bbbbb<?> bbbbbb = bbbbbbb.bbb(Bbbbbb.bbbbb).bbbBbbbb();
+            bb(bbbbbb.bbbbbb(Bbbbbb.bbbbb)) {
+                bbbbbb.bbb(bbb, bbbbbbb.bbbBbbbbb());
+            } bbbb bb(Bbbbbb.bbbbb.bbBbbbbbbbbbBbbb(bbbbbb)) {
+                bbbbbb bbbbb = bbbbbbb.bbbBbbbbb();
+                bbbbbb.bbb(bbb, bbbbb);
+            } bbbb bb(bbbbbb.bbbbbb(Bbbbbbb.bbbbb)) {
+                bbbbbb.bbb(bbb, bbbbbbb.bbbBbbbbbb());
+            } bbbb {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbbb bbbbb bbb bbbbbbbb: " + bbbbbb);
             }
         }
     }
 
-    private void writePath(ConfigurationNode parent, String key, JsonElement value) throws Exception {
-        if(value.isJsonObject()) {
-            JsonObject object = value.getAsJsonObject();
-            ConfigurationNode child = BasicConfigurationNode.root();
-            for(Map.Entry<String, JsonElement> path : object.entrySet()) {
-                this.writePath(child, path.getKey(), path.getValue());
+    bbbbbbb bbbb bbbbBbbbb(BBbbbb bbbbb, BbbbbbbbbbbbbBbbb bbbbbbb) bbbbbb Bbbbbbbbb {
+        bb(!bbbbbbb.bbbbbbbbBbb().bbBbbbb()) {
+            BBbbbbb bbbbb = bbb BBbbbbb();
+            bbb(Bbb.Bbbbb<Bbbbbb, ? bbbbbbb BbbbbbbbbbbbbBbbb> bbbbb : bbbbbbb.bbbbbbbbBbb().bbbbbBbb()) {
+                bbbb.bbbb(bbbbb, bbbbb.bbbBbbbb(), bbbbb);
+            }
+            bbbbb.bbb(bbbbb);
+        } bbbb bb(!bbbbbbb.bbbbbbbbBbbb().bbBbbbb()) {
+            BBbbbb bBbbbb = bbb BBbbbb();
+            bbb(BbbbbbbbbbbbbBbbb bbbbb : bbbbbbb.bbbbbbbbBbbb()) {
+                bbbb.bbbbBbbbb(bbbbb, bbbbb);
+            }
+            bbbbb.bbb(bBbbbb);
+        } bbbb {
+            Bbbbb<?> bbbbbb = bbbbbbb.bbb(Bbbbbb.bbbbb).bbbBbbbb();
+            bb(bbbbbb.bbbbbb(Bbbbbb.bbbbb)) {
+                bbbbb.bbb(bbbbbbb.bbbBbbbbb());
+            } bbbb bb(Bbbbbb.bbbbb.bbBbbbbbbbbbBbbb(bbbbbb)) {
+                bbbbbb bbbbb = bbbbbbb.bbbBbbbbb();
+                bbbbb.bbb(bbbbb);
+            } bbbb {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbbb bbbbb bbb bbbbbbbb: " + bbbbbb);
+            }
+        }
+    }
+
+    bbbbbbb bbbb bbbbbBbbb(BbbbbbbbbbbbbBbbb bbbbbb, Bbbbbb bbb, BbbbBbbbbbb bbbbb) bbbbbb Bbbbbbbbb {
+        bb(bbbbb.bbBbbbBbbbbb()) {
+            BbbbBbbbbb bbbbbb = bbbbb.bbbBbBbbbBbbbbb();
+            BbbbbbbbbbbbbBbbb bbbbb = BbbbbBbbbbbbbbbbbbBbbb.bbbb();
+            bbb(Bbb.Bbbbb<Bbbbbb, BbbbBbbbbbb> bbbb : bbbbbb.bbbbbBbb()) {
+                bbbb.bbbbbBbbb(bbbbb, bbbb.bbbBbb(), bbbb.bbbBbbbb());
             }
 
-            if(child.virtual()) {
-                child.set(Maps.newHashMap());
+            bb(bbbbb.bbbbbbb()) {
+                bbbbb.bbb(Bbbb.bbbBbbbBbb());
             }
 
-            parent.node(key).set(child);
-        } else {
-            if(value.isJsonPrimitive()) {
-                JsonPrimitive primitive = value.getAsJsonPrimitive();
-                if(primitive.isNumber()) {
-                    Number number = primitive.getAsNumber();
-                    parent.node(key).set(number);
-                } else if(primitive.isBoolean()) {
-                    parent.node(key).set(primitive.getAsBoolean());
-                } else {
-                    parent.node(key).set(primitive.getAsString());
+            bbbbbb.bbbb(bbb).bbb(bbbbb);
+        } bbbb {
+            bb(bbbbb.bbBbbbBbbbbbbbb()) {
+                BbbbBbbbbbbbb bbbbbbbbb = bbbbb.bbbBbBbbbBbbbbbbbb();
+                bb(bbbbbbbbb.bbBbbbbb()) {
+                    Bbbbbb bbbbbb = bbbbbbbbb.bbbBbBbbbbb();
+                    bbbbbb.bbbb(bbb).bbb(bbbbbb);
+                } bbbb bb(bbbbbbbbb.bbBbbbbbb()) {
+                    bbbbbb.bbbb(bbb).bbb(bbbbbbbbb.bbbBbBbbbbbb());
+                } bbbb {
+                    bbbbbb.bbbb(bbb).bbb(bbbbbbbbb.bbbBbBbbbbb());
                 }
-            } else if(value.isJsonArray()) {
-                this.writeArrayToPath(parent, key, value.getAsJsonArray());
+            } bbbb bb(bbbbb.bbBbbbBbbbb()) {
+                bbbb.bbbbbBbbbbBbBbbb(bbbbbb, bbb, bbbbb.bbbBbBbbbBbbbb());
             }
         }
     }
 
-    private void writeArrayToPath(ConfigurationNode parent, String key, JsonArray array) throws Exception {
-        List<Object> output = Lists.newArrayList();
-        for(JsonElement element : array) {
-            if(element.isJsonObject()) {
-                ConfigurationNode target = BasicConfigurationNode.root();
-                JsonObject json = element.getAsJsonObject();
-                for(Map.Entry<String, JsonElement> child : json.entrySet()) {
-                    this.writePath(target, child.getKey(), child.getValue());
+    bbbbbbb bbbb bbbbbBbbbbBbBbbb(BbbbbbbbbbbbbBbbb bbbbbb, Bbbbbb bbb, BbbbBbbbb bbbbb) bbbbbb Bbbbbbbbb {
+        Bbbb<Bbbbbb> bbbbbb = Bbbbb.bbbBbbbbBbbb();
+        bbb(BbbbBbbbbbb bbbbbbb : bbbbb) {
+            bb(bbbbbbb.bbBbbbBbbbbb()) {
+                BbbbbbbbbbbbbBbbb bbbbbb = BbbbbBbbbbbbbbbbbbBbbb.bbbb();
+                BbbbBbbbbb bbbb = bbbbbbb.bbbBbBbbbBbbbbb();
+                bbb(Bbb.Bbbbb<Bbbbbb, BbbbBbbbbbb> bbbbb : bbbb.bbbbbBbb()) {
+                    bbbb.bbbbbBbbb(bbbbbb, bbbbb.bbbBbb(), bbbbb.bbbBbbbb());
                 }
-                output.add(target);
-            } else if(element.isJsonArray()) {
-                ConfigurationNode target = BasicConfigurationNode.root();
-                this.writeArrayToPath(target, key, element.getAsJsonArray());
-                output.add(target);
-            } else {
-                if(element.isJsonPrimitive()) {
-                    JsonPrimitive primitive = element.getAsJsonPrimitive();
-                    if(primitive.isNumber()) {
-                        Number number = primitive.getAsNumber();
-                        output.add(number);
-                    } else if(primitive.isBoolean()) {
-                        output.add(primitive.getAsBoolean());
-                    } else {
-                        output.add(primitive.getAsString());
+                bbbbbb.bbb(bbbbbb);
+            } bbbb bb(bbbbbbb.bbBbbbBbbbb()) {
+                BbbbbbbbbbbbbBbbb bbbbbb = BbbbbBbbbbbbbbbbbbBbbb.bbbb();
+                bbbb.bbbbbBbbbbBbBbbb(bbbbbb, bbb, bbbbbbb.bbbBbBbbbBbbbb());
+                bbbbbb.bbb(bbbbbb);
+            } bbbb {
+                bb(bbbbbbb.bbBbbbBbbbbbbbb()) {
+                    BbbbBbbbbbbbb bbbbbbbbb = bbbbbbb.bbbBbBbbbBbbbbbbbb();
+                    bb(bbbbbbbbb.bbBbbbbb()) {
+                        Bbbbbb bbbbbb = bbbbbbbbb.bbbBbBbbbbb();
+                        bbbbbb.bbb(bbbbbb);
+                    } bbbb bb(bbbbbbbbb.bbBbbbbbb()) {
+                        bbbbbb.bbb(bbbbbbbbb.bbbBbBbbbbbb());
+                    } bbbb {
+                        bbbbbb.bbb(bbbbbbbbb.bbbBbBbbbbb());
                     }
                 }
             }
         }
 
-        // TODO - Fix this triggering an error for new configuration nodes
-        //parent.node(key).set(output);
+        // BBBB - Bbb bbbb bbbbbbbbbb bb bbbbb bbb bbb bbbbbbbbbbbbb bbbbb
+        //bbbbbb.bbbb(bbb).bbb(bbbbbb);
     }
 }

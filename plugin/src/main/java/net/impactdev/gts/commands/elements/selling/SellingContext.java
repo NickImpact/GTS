@@ -1,84 +1,84 @@
-package net.impactdev.gts.commands.elements.selling;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb.bbbbbbb;
 
-import net.impactdev.gts.api.commands.CommandGenerator;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.listings.ui.EntrySelection;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.BbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
 
-import java.util.Optional;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-public class SellingContext implements CommandGenerator.Context {
+bbbbbb bbbbb BbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbBbbbbbbbb.Bbbbbbb {
 
-    private EntrySelection<?> entry;
-    private long time = Long.MIN_VALUE;
-    private boolean redirect;
+    bbbbbbb BbbbbBbbbbbbbb<?> bbbbb;
+    bbbbbbb bbbb bbbb = Bbbb.BBB_BBBBB;
+    bbbbbbb bbbbbbb bbbbbbbb;
 
-    @Override
-    public Class<? extends Listing> type() {
-        return BuyItNow.class;
+    @Bbbbbbbb
+    bbbbbb Bbbbb<? bbbbbbb Bbbbbbb> bbbb() {
+        bbbbbb BbbBbBbb.bbbbb;
     }
 
-    @Override
-    public Optional<EntrySelection<?>> entry() {
-        return Optional.ofNullable(this.entry);
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<BbbbbBbbbbbbbb<?>> bbbbb() {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbb);
     }
 
-    @Override
-    public void entry(EntrySelection<?> entry) {
-        this.entry = entry;
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb(BbbbbBbbbbbbbb<?> bbbbb) {
+        bbbb.bbbbb = bbbbb;
     }
 
-    @Override
-    public long time() {
-        return this.time != Long.MIN_VALUE ? this.time : GTSPlugin.instance().configuration().main().get(ConfigKeys.LISTING_TIME_MID).getTime();
+    @Bbbbbbbb
+    bbbbbb bbbb bbbb() {
+        bbbbbb bbbb.bbbb != Bbbb.BBB_BBBBB ? bbbb.bbbb : BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBB_BBBB_BBB).bbbBbbb();
     }
 
-    @Override
-    public void time(long time) {
-        this.time = time;
+    @Bbbbbbbb
+    bbbbbb bbbb bbbb(bbbb bbbb) {
+        bbbb.bbbb = bbbb;
     }
 
-    @Override
-    public boolean redirect() {
-        return this.redirect;
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbb;
     }
 
-    @Override
-    public void redirected() {
-        this.redirect = true;
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbbbb() {
+        bbbb.bbbbbbbb = bbbb;
     }
 
-    public static class SellingAuctionContext extends SellingContext implements CommandGenerator.Context.AuctionContext {
+    bbbbbb bbbbbb bbbbb BbbbbbbBbbbbbbBbbbbbb bbbbbbb BbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbBbbbbbbbb.Bbbbbbb.BbbbbbbBbbbbbb {
 
-        private double start;
-        private float increment;
+        bbbbbbb bbbbbb bbbbb;
+        bbbbbbb bbbbb bbbbbbbbb;
 
-        @Override
-        public Class<? extends Listing> type() {
-            return Auction.class;
+        @Bbbbbbbb
+        bbbbbb Bbbbb<? bbbbbbb Bbbbbbb> bbbb() {
+            bbbbbb Bbbbbbb.bbbbb;
         }
 
-        @Override
-        public double start() {
-            return this.start;
+        @Bbbbbbbb
+        bbbbbb bbbbbb bbbbb() {
+            bbbbbb bbbb.bbbbb;
         }
 
-        @Override
-        public void start(double start) {
-            this.start = start;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbb(bbbbbb bbbbb) {
+            bbbb.bbbbb = bbbbb;
         }
 
-        @Override
-        public float increment() {
-            return this.increment;
+        @Bbbbbbbb
+        bbbbbb bbbbb bbbbbbbbb() {
+            bbbbbb bbbb.bbbbbbbbb;
         }
 
-        @Override
-        public void increment(float increment) {
-            this.increment = increment;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbbbbbb(bbbbb bbbbbbbbb) {
+            bbbb.bbbbbbbbb = bbbbbbbbb;
         }
     }
 }

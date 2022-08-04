@@ -1,256 +1,256 @@
-package net.impactdev.gts.api.listings.auctions;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb;
 
-import com.google.common.collect.Multimap;
-import com.google.common.collect.TreeMultimap;
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.builders.Builder;
-import net.impactdev.impactor.api.utilities.mappings.Tuple;
-import net.impactdev.gts.api.listings.Listing;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.BbbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * An auction represents a listing which, instead of being directly purchasable, will be able to fluctuate its price
- * based on any user which desires to place a bid on the listing. These listings will still only have one winner by the
- * end of the expiration period, but it is not limited to just one user making an attempt to purchase the listing.
+ * Bb bbbbbbb bbbbbbbbbb b bbbbbbb bbbbb, bbbbbbb bb bbbbb bbbbbbbb bbbbbbbbbbb, bbbb bb bbbb bb bbbbbbbbb bbb bbbbb
+ * bbbbb bb bbb bbbb bbbbb bbbbbbb bb bbbbb b bbb bb bbb bbbbbbb. Bbbbb bbbbbbbb bbbb bbbbb bbbb bbbb bbb bbbbbb bb bbb
+ * bbb bb bbb bbbbbbbbbb bbbbbb, bbb bb bb bbb bbbbbbb bb bbbb bbb bbbb bbbbbb bb bbbbbbb bb bbbbbbbb bbb bbbbbbb.
  *
- * <p>As a note, these types of listings must have an expiration time set. No auction can be marked permanent, as
- * they cannot be directly purchased.</p>
+ * <b>Bb b bbbb, bbbbb bbbbb bb bbbbbbbb bbbb bbbb bb bbbbbbbbbb bbbb bbb. Bb bbbbbbb bbb bb bbbbbb bbbbbbbbb, bb
+ * bbbb bbbbbb bb bbbbbbbb bbbbbbbbb.</b>
  */
-public interface Auction extends Listing {
+bbbbbb bbbbbbbbb Bbbbbbb bbbbbbb Bbbbbbb {
 
 	/**
-	 * Attempts to locate the highest bid, or any bid at all, placed by the user on this auction. Only the highest
-	 * bid will be returned here. If no bids exist for the user, this will return an empty Optional. Otherwise, this
-	 * call will report the amount of money they placed already on the bid.
+	 * Bbbbbbbb bb bbbbbb bbb bbbbbbb bbb, bb bbb bbb bb bbb, bbbbbb bb bbb bbbb bb bbbb bbbbbbb. Bbbb bbb bbbbbbb
+	 * bbb bbbb bb bbbbbbbb bbbb. Bb bb bbbb bbbbb bbb bbb bbbb, bbbb bbbb bbbbbb bb bbbbb Bbbbbbbb. Bbbbbbbbb, bbbb
+	 * bbbb bbbb bbbbbb bbb bbbbbb bb bbbbb bbbb bbbbbb bbbbbbb bb bbb bbb.
 	 *
-	 * @param uuid The ID of the user placing the bid
-	 * @return An Optional value containing the bid amount placed by the user, or an empty Optional to signify no bid
-	 * has been placed by the user.
+	 * @bbbbb bbbb Bbb BB bb bbb bbbb bbbbbbb bbb bbb
+	 * @bbbbbb Bb Bbbbbbbb bbbbb bbbbbbbbbb bbb bbb bbbbbb bbbbbb bb bbb bbbb, bb bb bbbbb Bbbbbbbb bb bbbbbbb bb bbb
+	 * bbb bbbb bbbbbb bb bbb bbbb.
 	 */
-	Optional<Bid> getCurrentBid(UUID uuid);
+	Bbbbbbbb<Bbb> bbbBbbbbbbBbb(BBBB bbbb);
 
 	/**
-	 * Specifies the number of bids that have been placed on this auction.
+	 * Bbbbbbbbb bbb bbbbbb bb bbbb bbbb bbbb bbbb bbbbbb bb bbbb bbbbbbb.
 	 *
-	 * @return The number of bids placed on the auction
+	 * @bbbbbb Bbb bbbbbb bb bbbb bbbbbb bb bbb bbbbbbb
 	 */
-	default int getNumberOfBidsPlaced() {
-		return this.getBids().size();
+	bbbbbbb bbb bbbBbbbbbBbBbbbBbbbbb() {
+		bbbbbb bbbb.bbbBbbb().bbbb();
 	}
 
 	/**
-	 * Specifies if any bids have been placed on the auction
+	 * Bbbbbbbbb bb bbb bbbb bbbb bbbb bbbbbb bb bbb bbbbbbb
 	 *
-	 * @return True if any have been placed, false otherwise
+	 * @bbbbbb Bbbb bb bbb bbbb bbbb bbbbbb, bbbbb bbbbbbbbb
 	 */
-	default boolean hasAnyBidsPlaced() {
-		return this.getNumberOfBidsPlaced() != 0;
+	bbbbbbb bbbbbbb bbbBbbBbbbBbbbbb() {
+		bbbbbb bbbb.bbbBbbbbbBbBbbbBbbbbb() != 0;
 	}
 
 	/**
-	 * Keeps track of the bids placed on this auction, with the highest bid being the first entry in the sorted map,
-	 * and the lowest being the last entry.
+	 * Bbbbb bbbbb bb bbb bbbb bbbbbb bb bbbb bbbbbbb, bbbb bbb bbbbbbb bbb bbbbb bbb bbbbb bbbbb bb bbb bbbbbb bbb,
+	 * bbb bbb bbbbbb bbbbb bbb bbbb bbbbb.
 	 *
-	 * @return A mapping of bids placed on this auction by a user and for how much they bid
+	 * @bbbbbb B bbbbbbb bb bbbb bbbbbb bb bbbb bbbbbbb bb b bbbb bbb bbb bbb bbbb bbbb bbb
 	 */
-	TreeMultimap<UUID, Bid> getBids();
+	BbbbBbbbbbbb<BBBB, Bbb> bbbBbbb();
 
 	/**
-	 * Returns a list of all users who have bid on this auction, without any information regarding what they have
-	 * bid.
+	 * Bbbbbbb b bbbb bb bbb bbbbb bbb bbbb bbb bb bbbb bbbbbbb, bbbbbbb bbb bbbbbbbbbbb bbbbbbbbb bbbb bbbb bbbb
+	 * bbb.
 	 *
-	 * @return Each unique bidder
+	 * @bbbbbb Bbbb bbbbbb bbbbbb
 	 */
-	default List<UUID> getUniqueBidders() {
-		return new ArrayList<>(this.getBids().keys());
+	bbbbbbb Bbbb<BBBB> bbbBbbbbbBbbbbbb() {
+		bbbbbb bbb BbbbbBbbb<>(bbbb.bbbBbbb().bbbb());
 	}
 
 	/**
-	 * Like {@link #getUniqueBidders()}, this method returns a set of all unique bidders for this auction, as well
-	 * as provides contextual information towards their highest bid.
+	 * Bbbb {@bbbb #bbbBbbbbbBbbbbbb()}, bbbb bbbbbb bbbbbbb b bbb bb bbb bbbbbb bbbbbbb bbb bbbb bbbbbbb, bb bbbb
+	 * bb bbbbbbbb bbbbbbbbbb bbbbbbbbbbb bbbbbbb bbbbb bbbbbbb bbb.
 	 *
-	 * @return Each unique bidder paired with their highest bid
+	 * @bbbbbb Bbbb bbbbbb bbbbbb bbbbbb bbbb bbbbb bbbbbbb bbb
 	 */
-	Map<UUID, Bid> getUniqueBiddersWithHighestBids();
+	Bbb<BBBB, Bbb> bbbBbbbbbBbbbbbbBbbbBbbbbbbBbbb();
 
 	/**
-	 * Returns the highest bid currently placed on this auction. The high bid at time of expiration marks the winner,
-	 * so having an easy call to this allows for simple access later on.
+	 * Bbbbbbb bbb bbbbbbb bbb bbbbbbbbb bbbbbb bb bbbb bbbbbbb. Bbb bbbb bbb bb bbbb bb bbbbbbbbbb bbbbb bbb bbbbbb,
+	 * bb bbbbbb bb bbbb bbbb bb bbbb bbbbbb bbb bbbbbb bbbbbb bbbbb bb.
 	 *
-	 * @return The highest bidder paired with the amount they bid
+	 * @bbbbbb Bbb bbbbbbb bbbbbb bbbbbb bbbb bbb bbbbbb bbbb bbb
 	 */
-	Optional<Tuple<UUID, Bid>> getHighBid();
+	Bbbbbbbb<Bbbbb<BBBB, Bbb>> bbbBbbbBbb();
 
 	/**
-	 * Specifies the starting price of this auction. This is mainly here for tracking, and can be represented
-	 * by {@link #getCurrentPrice()}.
+	 * Bbbbbbbbb bbb bbbbbbbb bbbbb bb bbbb bbbbbbb. Bbbb bb bbbbbb bbbb bbb bbbbbbbb, bbb bbb bb bbbbbbbbbbb
+	 * bb {@bbbb #bbbBbbbbbbBbbbb()}.
 	 *
-	 * @return The price of the auction when initially created
+	 * @bbbbbb Bbb bbbbb bb bbb bbbbbbb bbbb bbbbbbbbb bbbbbbb
 	 */
-	double getStartingPrice();
+	bbbbbb bbbBbbbbbbbBbbbb();
 
 	/**
-	 * Specifies the current price of this auction. If no bids are currently placed, this will return the initial
-	 * starting price set on the auction. Otherwise, this will show the highest bid currently placed on the auction.
+	 * Bbbbbbbbb bbb bbbbbbb bbbbb bb bbbb bbbbbbb. Bb bb bbbb bbb bbbbbbbbb bbbbbb, bbbb bbbb bbbbbb bbb bbbbbbb
+	 * bbbbbbbb bbbbb bbb bb bbb bbbbbbb. Bbbbbbbbb, bbbb bbbb bbbb bbb bbbbbbb bbb bbbbbbbbb bbbbbb bb bbb bbbbbbb.
 	 *
-	 * @return The current price of the auction
+	 * @bbbbbb Bbb bbbbbbb bbbbb bb bbb bbbbbbb
 	 */
-	double getCurrentPrice();
+	bbbbbb bbbBbbbbbbBbbbb();
 
 	/**
-	 * Specifies the rate at which continuous bids will be applied. In other words, this value is a percentage value
-	 * meant to help scale the higher the price of the item gets. This will always round up to the next whole number,
-	 * so, if you start an auction with a price of $1, and have an increment rate of 5%, this will still lead to $2.
+	 * Bbbbbbbbb bbb bbbb bb bbbbb bbbbbbbbbb bbbb bbbb bb bbbbbbb. Bb bbbbb bbbbb, bbbb bbbbb bb b bbbbbbbbbb bbbbb
+	 * bbbbb bb bbbb bbbbb bbb bbbbbb bbb bbbbb bb bbb bbbb bbbb. Bbbb bbbb bbbbbb bbbbb bb bb bbb bbbb bbbbb bbbbbb,
+	 * bb, bb bbb bbbbb bb bbbbbbb bbbb b bbbbb bb $1, bbb bbbb bb bbbbbbbbb bbbb bb 5%, bbbb bbbb bbbbb bbbb bb $2.
 	 *
-	 * @return The increment to apply to the next bid
+	 * @bbbbbb Bbb bbbbbbbbb bb bbbbb bb bbb bbbb bbb
 	 */
-	float getIncrement();
+	bbbbb bbbBbbbbbbbb();
 
 	/**
-	 * A convenience method meant to be able to determine how much a user will be bidding
-	 * on the auction should they decide to place a bid.
+	 * B bbbbbbbbbbb bbbbbb bbbbb bb bb bbbb bb bbbbbbbbb bbb bbbb b bbbb bbbb bb bbbbbbb
+	 * bb bbb bbbbbbb bbbbbb bbbb bbbbbb bb bbbbb b bbb.
 	 *
-	 * @return the next bid requirement to place a bid on this auction
+	 * @bbbbbb bbb bbbb bbb bbbbbbbbbbb bb bbbbb b bbb bb bbbb bbbbbbb
 	 */
-	double getNextBidRequirement();
+	bbbbbb bbbBbbbBbbBbbbbbbbbbb();
 
 	/**
-	 * Allows a user to bid on the listing for the amount specified. As a user could specify a custom amount to bid, this
-	 * call must accept a dynamic value for the amount bid. As such, this call should also verify if the amount bid is
-	 * actually valid.
+	 * Bbbbbb b bbbb bb bbb bb bbb bbbbbbb bbb bbb bbbbbb bbbbbbbbb. Bb b bbbb bbbbb bbbbbbb b bbbbbb bbbbbb bb bbb, bbbb
+	 * bbbb bbbb bbbbbb b bbbbbbb bbbbb bbb bbb bbbbbb bbb. Bb bbbb, bbbb bbbb bbbbbb bbbb bbbbbb bb bbb bbbbbb bbb bb
+	 * bbbbbbbb bbbbb.
 	 *
-	 * @param user The user placing the bid
-	 * @param amount The amount of money they are bidding
-	 * @return True if their bid was applied, false otherwise
+	 * @bbbbb bbbb Bbb bbbb bbbbbbb bbb bbb
+	 * @bbbbb bbbbbb Bbb bbbbbb bb bbbbb bbbb bbb bbbbbbb
+	 * @bbbbbb Bbbb bb bbbbb bbb bbb bbbbbbb, bbbbb bbbbbbbbb
 	 */
-	boolean bid(UUID user, double amount);
+	bbbbbbb bbb(BBBB bbbb, bbbbbb bbbbbb);
 
-	static AuctionBuilder builder() {
-		return Impactor.getInstance().getRegistry().createBuilder(AuctionBuilder.class);
+	bbbbbb BbbbbbbBbbbbbb bbbbbbb() {
+		bbbbbb Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbBbbbbbb(BbbbbbbBbbbbbb.bbbbb);
 	}
 
-    interface AuctionBuilder extends Builder<Auction> {
+    bbbbbbbbb BbbbbbbBbbbbbb bbbbbbb Bbbbbbb<Bbbbbbb> {
 
-		AuctionBuilder id(UUID id);
+		BbbbbbbBbbbbbb bb(BBBB bb);
 
-		AuctionBuilder lister(UUID lister);
+		BbbbbbbBbbbbbb bbbbbb(BBBB bbbbbb);
 
-		AuctionBuilder entry(Entry<?, ?> entry);
+		BbbbbbbBbbbbbb bbbbb(Bbbbb<?, ?> bbbbb);
 
-		AuctionBuilder published(LocalDateTime published);
+		BbbbbbbBbbbbbb bbbbbbbbb(BbbbbBbbbBbbb bbbbbbbbb);
 
-		AuctionBuilder expiration(LocalDateTime expiration);
+		BbbbbbbBbbbbbb bbbbbbbbbb(BbbbbBbbbBbbb bbbbbbbbbb);
 
-		AuctionBuilder start(double amount);
+		BbbbbbbBbbbbbb bbbbb(bbbbbb bbbbbb);
 
-		AuctionBuilder increment(float rate);
+		BbbbbbbBbbbbbb bbbbbbbbb(bbbbb bbbb);
 
-		AuctionBuilder current(double current);
+		BbbbbbbBbbbbbb bbbbbbb(bbbbbb bbbbbbb);
 
-		AuctionBuilder bids(Multimap<UUID, Bid> bids);
+		BbbbbbbBbbbbbb bbbb(Bbbbbbbb<BBBB, Bbb> bbbb);
 
-		AuctionBuilder from(Auction parent);
+		BbbbbbbBbbbbbb bbbb(Bbbbbbb bbbbbb);
 
 	}
 
-	class Bid implements Storable, Comparable<Bid> {
+	bbbbb Bbb bbbbbbbbbb Bbbbbbbb, Bbbbbbbbbb<Bbb> {
 
-		private final double amount;
-		private final LocalDateTime timestamp;
+		bbbbbbb bbbbb bbbbbb bbbbbb;
+		bbbbbbb bbbbb BbbbbBbbbBbbb bbbbbbbbb;
 
-		public Bid(double amount) {
-			this.amount = amount;
-			this.timestamp = LocalDateTime.now();
+		bbbbbb Bbb(bbbbbb bbbbbb) {
+			bbbb.bbbbbb = bbbbbb;
+			bbbb.bbbbbbbbb = BbbbbBbbbBbbb.bbb();
 		}
 
-		private Bid(BidBuilder builder) {
-			this.amount = builder.amount;
-			this.timestamp = builder.timestamp;
+		bbbbbbb Bbb(BbbBbbbbbb bbbbbbb) {
+			bbbb.bbbbbb = bbbbbbb.bbbbbb;
+			bbbb.bbbbbbbbb = bbbbbbb.bbbbbbbbb;
 		}
 
-		public double getAmount() {
-			return this.amount;
+		bbbbbb bbbbbb bbbBbbbbb() {
+			bbbbbb bbbb.bbbbbb;
 		}
 
-		public LocalDateTime getTimestamp() {
-			return this.timestamp;
+		bbbbbb BbbbbBbbbBbbb bbbBbbbbbbbb() {
+			bbbbbb bbbb.bbbbbbbbb;
 		}
 
-		@Override
-		public int getVersion() {
-			return 1;
+		@Bbbbbbbb
+		bbbbbb bbb bbbBbbbbbb() {
+			bbbbbb 1;
 		}
 
-		public static BidBuilder builder() {
-			return new BidBuilder();
+		bbbbbb bbbbbb BbbBbbbbbb bbbbbbb() {
+			bbbbbb bbb BbbBbbbbbb();
 		}
 
-		@Override
-		public JObject serialize() {
-			return new JObject()
-					.add("amount", this.amount)
-					.add("timestamp", this.timestamp.toString());
+		@Bbbbbbbb
+		bbbbbb BBbbbbb bbbbbbbbb() {
+			bbbbbb bbb BBbbbbb()
+					.bbb("bbbbbb", bbbb.bbbbbb)
+					.bbb("bbbbbbbbb", bbbb.bbbbbbbbb.bbBbbbbb());
 		}
 
-		@Override
-		public int compareTo(Bid other) {
-			return Double.compare(this.amount, other.amount);
+		@Bbbbbbbb
+		bbbbbb bbb bbbbbbbBb(Bbb bbbbb) {
+			bbbbbb Bbbbbb.bbbbbbb(bbbb.bbbbbb, bbbbb.bbbbbb);
 		}
 
-		public static class BidBuilder implements Builder<Bid> {
+		bbbbbb bbbbbb bbbbb BbbBbbbbbb bbbbbbbbbb Bbbbbbb<Bbb> {
 
-			private double amount;
-			private LocalDateTime timestamp = LocalDateTime.now();
+			bbbbbbb bbbbbb bbbbbb;
+			bbbbbbb BbbbbBbbbBbbb bbbbbbbbb = BbbbbBbbbBbbb.bbb();
 
-			public BidBuilder amount(double amount) {
-				this.amount = amount;
-				return this;
+			bbbbbb BbbBbbbbbb bbbbbb(bbbbbb bbbbbb) {
+				bbbb.bbbbbb = bbbbbb;
+				bbbbbb bbbb;
 			}
 
-			public BidBuilder timestamp(LocalDateTime timestamp) {
-				this.timestamp = timestamp;
-				return this;
+			bbbbbb BbbBbbbbbb bbbbbbbbb(BbbbbBbbbBbbb bbbbbbbbb) {
+				bbbb.bbbbbbbbb = bbbbbbbbb;
+				bbbbbb bbbb;
 			}
 
-//			@Override
-//			public BidBuilder from(Bid bid) {
-//				this.amount = bid.getAmount();
-//				this.timestamp = bid.getTimestamp();
-//				return this;
+//			@Bbbbbbbb
+//			bbbbbb BbbBbbbbbb bbbb(Bbb bbb) {
+//				bbbb.bbbbbb = bbb.bbbBbbbbb();
+//				bbbb.bbbbbbbbb = bbb.bbbBbbbbbbbb();
+//				bbbbbb bbbb;
 //			}
 
-			@Override
-			public Bid build() {
-				return new Bid(this);
+			@Bbbbbbbb
+			bbbbbb Bbb bbbbb() {
+				bbbbbb bbb Bbb(bbbb);
 			}
 		}
 	}
 
-	class BidContext {
+	bbbbb BbbBbbbbbb {
 
-		private final UUID bidder;
-		private final Bid bid;
+		bbbbbbb bbbbb BBBB bbbbbb;
+		bbbbbbb bbbbb Bbb bbb;
 
-		public BidContext(UUID bidder, Bid bid) {
-			this.bidder = bidder;
-			this.bid = bid;
+		bbbbbb BbbBbbbbbb(BBBB bbbbbb, Bbb bbb) {
+			bbbb.bbbbbb = bbbbbb;
+			bbbb.bbb = bbb;
 		}
 
-		public UUID getBidder() {
-			return this.bidder;
+		bbbbbb BBBB bbbBbbbbb() {
+			bbbbbb bbbb.bbbbbb;
 		}
 
-		public Bid getBid() {
-			return this.bid;
+		bbbbbb Bbb bbbBbb() {
+			bbbbbb bbbb.bbb;
 		}
 	}
 

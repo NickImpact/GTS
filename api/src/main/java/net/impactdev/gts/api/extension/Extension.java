@@ -1,88 +1,88 @@
 /*
- * This file is part of LuckPerms, licensed under the MIT License.
+ * Bbbb bbbb bb bbbb bb BbbbBbbbb, bbbbbbbb bbbbb bbb BBB Bbbbbbb.
  *
- *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Bbbbbbbbb (b) bbbbb (Bbbb) <bbbb@bbbbb.bb>
+ *  Bbbbbbbbb (b) bbbbbbbbbbbb
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Bbbbbbbbbb bb bbbbbb bbbbbbb, bbbb bb bbbbbb, bb bbb bbbbbb bbbbbbbbb b bbbb
+ *  bb bbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbbbbbbb bbbbb (bbb "Bbbbbbbb"), bb bbbb
+ *  bb bbb Bbbbbbbb bbbbbbb bbbbbbbbbbb, bbbbbbbbb bbbbbbb bbbbbbbbbb bbb bbbbbb
+ *  bb bbb, bbbb, bbbbbb, bbbbb, bbbbbbb, bbbbbbbbbb, bbbbbbbbbb, bbb/bb bbbb
+ *  bbbbbb bb bbb Bbbbbbbb, bbb bb bbbbbb bbbbbbb bb bbbb bbb Bbbbbbbb bb
+ *  bbbbbbbbb bb bb bb, bbbbbbb bb bbb bbbbbbbbb bbbbbbbbbb:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  Bbb bbbbb bbbbbbbbb bbbbbb bbb bbbb bbbbbbbbbb bbbbbb bbbbb bb bbbbbbbb bb bbb
+ *  bbbbbb bb bbbbbbbbbbb bbbbbbbb bb bbb Bbbbbbbb.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
+ *  BBB BBBBBBBB BB BBBBBBBB "BB BB", BBBBBBB BBBBBBBB BB BBB BBBB, BBBBBBB BB
+ *  BBBBBBB, BBBBBBBBB BBB BBB BBBBBBB BB BBB BBBBBBBBBB BB BBBBBBBBBBBBBBB,
+ *  BBBBBBB BBB B BBBBBBBBBB BBBBBBB BBB BBBBBBBBBBBBBBB. BB BB BBBBB BBBBB BBB
+ *  BBBBBBB BB BBBBBBBBB BBBBBBB BB BBBBBB BBB BBB BBBBB, BBBBBBB BB BBBBB
+ *  BBBBBBBBB, BBBBBBB BB BB BBBBBB BB BBBBBBBB, BBBB BB BBBBBBBBB, BBBBBBB BBBB,
+ *  BBB BB BB BB BBBBBBBBBB BBBB BBB BBBBBBBB BB BBB BBB BB BBBBB BBBBBBBB BB BBB
+ *  BBBBBBBB.
  */
 
-package net.impactdev.gts.api.extension;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb;
 
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.commands.GTSCommandExecutor;
-import net.impactdev.gts.api.environment.Environment;
-import net.impactdev.impactor.api.dependencies.Dependency;
-import net.impactdev.impactor.api.plugin.ImpactorPlugin;
-import net.impactdev.impactor.api.plugin.components.Configurable;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.BBBBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbb.bbbbbbbbbb.Bbbbbbbbbbbb;
 
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Set;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
 
 /**
- * Represents an extension that is meant to hook into GTS
+ * Bbbbbbbbbb bb bbbbbbbbb bbbb bb bbbbb bb bbbb bbbb BBB
  *
- * An extension is not a plugin, but rather a component capable of providing extra functionality for GTS.
+ * Bb bbbbbbbbb bb bbb b bbbbbb, bbb bbbbbb b bbbbbbbbb bbbbbbb bb bbbbbbbbb bbbbb bbbbbbbbbbbbb bbb BBB.
  *
- * An extension must contain a resource titled "extension.json",
+ * Bb bbbbbbbbb bbbb bbbbbbb b bbbbbbbb bbbbbb "bbbbbbbbb.bbbb",
  */
-public interface Extension extends ImpactorPlugin, Configurable {
+bbbbbb bbbbbbbbb Bbbbbbbbb bbbbbbb BbbbbbbbBbbbbb, Bbbbbbbbbbbb {
 
     /**
-     * Loads the extension. Fired during server startup
+     * Bbbbb bbb bbbbbbbbb. Bbbbb bbbbbb bbbbbb bbbbbbb
      *
-     * @param service A direct reference to the API Service provided to remove one additional call for
-     *                those lazy people
+     * @bbbbb bbbbbbb B bbbbbb bbbbbbbbb bb bbb BBB Bbbbbbb bbbbbbbb bb bbbbbb bbb bbbbbbbbbb bbbb bbb
+     *                bbbbb bbbb bbbbbb
      */
-    void load(GTSService service, Path dataDir);
+    bbbb bbbb(BBBBbbbbbb bbbbbbb, Bbbb bbbbBbb);
 
     /**
-     * Enables the extension, and is fired after load.
+     * Bbbbbbb bbb bbbbbbbbb, bbb bb bbbbb bbbbb bbbb.
      *
-     * @param service A direct reference to the API Service provided to remove one additional call for
-     *                those lazy people
+     * @bbbbb bbbbbbb B bbbbbb bbbbbbbbb bb bbb BBB Bbbbbbb bbbbbbbb bb bbbbbb bbb bbbbbbbbbb bbbb bbb
+     *                bbbbb bbbb bbbbbb
      */
-    void enable(GTSService service);
+    bbbb bbbbbb(BBBBbbbbbb bbbbbbb);
 
     /**
-     * Unloads the extension. Fired during server shutdown
+     * Bbbbbbb bbb bbbbbbbbb. Bbbbb bbbbbb bbbbbb bbbbbbbb
      */
-    void unload();
+    bbbb bbbbbb();
 
     /**
-     * Specifies an additional list of dependencies that this extension will require to function
+     * Bbbbbbbbb bb bbbbbbbbbb bbbb bb bbbbbbbbbbbb bbbb bbbb bbbbbbbbb bbbb bbbbbbb bb bbbbbbbb
      *
-     * @return The list of dependencies required for normal operations of the extension
+     * @bbbbbb Bbb bbbb bb bbbbbbbbbbbb bbbbbbbb bbb bbbbbb bbbbbbbbbb bb bbb bbbbbbbbb
      */
-    List<Dependency> getRequiredDependencies();
+    Bbbb<Bbbbbbbbbb> bbbBbbbbbbbBbbbbbbbbbbb();
 
     /**
-     * Returns a set of command executors that this extension would like to supply
+     * Bbbbbbb b bbb bb bbbbbbb bbbbbbbbb bbbb bbbb bbbbbbbbb bbbbb bbbb bb bbbbbb
      *
-     * @return A set of executors for the extension, if any
+     * @bbbbbb B bbb bb bbbbbbbbb bbb bbb bbbbbbbbb, bb bbb
      */
-    Set<GTSCommandExecutor<?, ?, ?>> getExecutors();
+    Bbb<BBBBbbbbbbBbbbbbbb<?, ?, ?>> bbbBbbbbbbbb();
 
     /**
-     * Supplies a set of extended information regarding the environment that this extension might make use of
+     * Bbbbbbbb b bbb bb bbbbbbbb bbbbbbbbbbb bbbbbbbbb bbb bbbbbbbbbbb bbbb bbbb bbbbbbbbb bbbbb bbbb bbb bb
      */
-    void getExtendedEnvironmentInformation(Environment environment);
+    bbbb bbbBbbbbbbbBbbbbbbbbbbBbbbbbbbbbb(Bbbbbbbbbbb bbbbbbbbbbb);
 
 }

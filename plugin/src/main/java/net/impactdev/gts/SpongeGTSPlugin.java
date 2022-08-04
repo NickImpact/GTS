@@ -1,429 +1,429 @@
-package net.impactdev.gts;
+bbbbbbb bbb.bbbbbbbbb.bbb;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.blacklist.Blacklist;
-import net.impactdev.gts.api.environment.Environment;
-import net.impactdev.gts.api.event.factory.GTSEventFactory;
-import net.impactdev.gts.api.exceptions.LackingServiceException;
-import net.impactdev.gts.api.extension.Extension;
-import net.impactdev.gts.api.extension.ExtensionManager;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.listings.manager.ListingManager;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
-import net.impactdev.gts.api.player.PlayerSettings;
-import net.impactdev.gts.api.stashes.Stash;
-import net.impactdev.gts.api.storage.GTSStorage;
-import net.impactdev.gts.commands.GTSCommandManager;
-import net.impactdev.gts.commands.executors.GlobalExecutor;
-import net.impactdev.gts.common.api.ApiRegistrationUtil;
-import net.impactdev.gts.common.api.GTSAPIProvider;
-import net.impactdev.gts.common.blacklist.BlacklistImpl;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.config.ConfigProvider;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.data.ResourceManagerImpl;
-import net.impactdev.gts.common.dependencies.GTSDependencies;
-import net.impactdev.gts.common.extension.SimpleExtensionManager;
-import net.impactdev.gts.common.listings.GTSComponentManagerImpl;
-import net.impactdev.gts.common.messaging.InternalMessagingService;
-import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
-import net.impactdev.gts.common.player.PlayerSettingsImpl;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.storage.StorageFactory;
-import net.impactdev.gts.common.utils.EconomicFormatter;
-import net.impactdev.gts.api.util.Version;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.listeners.AnvilRenameListener;
-import net.impactdev.gts.listeners.JoinListener;
-import net.impactdev.gts.listings.SpongeItemEntry;
-import net.impactdev.gts.listings.data.SpongeItemManager;
-import net.impactdev.gts.listings.legacy.SpongeLegacyItemStorable;
-import net.impactdev.gts.listings.searcher.SpongeItemSearcher;
-import net.impactdev.gts.listings.searcher.SpongeUserSearcher;
-import net.impactdev.gts.manager.SpongeListingManager;
-import net.impactdev.gts.messaging.SpongeMessagingFactory;
-import net.impactdev.gts.messaging.interpreters.SpongeAdminInterpreters;
-import net.impactdev.gts.messaging.interpreters.SpongeAuctionInterpreters;
-import net.impactdev.gts.messaging.interpreters.SpongeBINInterpreters;
-import net.impactdev.gts.messaging.interpreters.SpongeDeliveryInterpreters;
-import net.impactdev.gts.messaging.interpreters.SpongeListingInterpreters;
-import net.impactdev.gts.messaging.interpreters.SpongePingPongInterpreter;
-import net.impactdev.gts.placeholders.GTSSpongePlaceholderManager;
-import net.impactdev.gts.sponge.deliveries.SpongeDelivery;
-import net.impactdev.gts.sponge.listings.SpongeAuction;
-import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
-import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
-import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
-import net.impactdev.gts.sponge.stash.SpongeStash;
-import net.impactdev.gts.ui.SpongeMainMenu;
-import net.impactdev.gts.util.OreVersionChecker;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.dependencies.Dependency;
-import net.impactdev.impactor.api.dependencies.DependencyManager;
-import net.impactdev.impactor.api.dependencies.relocation.Relocation;
-import net.impactdev.impactor.api.logging.PluginLogger;
-import net.impactdev.impactor.api.plugin.PluginMetadata;
-import net.impactdev.impactor.api.storage.StorageType;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import org.spongepowered.api.Platform;
-import org.spongepowered.api.Server;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.command.Command;
-import org.spongepowered.api.entity.living.player.User;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.lifecycle.LifecycleEvent;
-import org.spongepowered.api.event.lifecycle.RegisterCommandEvent;
-import org.spongepowered.api.event.lifecycle.RegisterRegistryValueEvent;
-import org.spongepowered.api.event.lifecycle.StartedEngineEvent;
-import org.spongepowered.api.event.lifecycle.StartingEngineEvent;
-import org.spongepowered.api.placeholder.PlaceholderParser;
-import org.spongepowered.api.registry.RegistryTypes;
-import org.spongepowered.api.service.economy.EconomyService;
-import org.spongepowered.plugin.PluginContainer;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbb.bbbbbbb.BBBBbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.BbbbbbbBbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb.BbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.BBBBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbb.BbbBbbbbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbb.BBBBBBBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbb.BbbbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbbbb.BBBBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BBBBbbbbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbbbBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbb.BbbbbBbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.BbbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.BbbbbBbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.BbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.BbbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbBbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbb.BbbbbbBbbbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb.BbbbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb.BbbbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbb.BbbbbbBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.BbbbbbBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbbbbb.BbbbbbBbbbbBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbbbbb.BbbbbbBbbbbbbBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbbbbb.BbbbbbBBBBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbbbbb.BbbbbbBbbbbbbbBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbbbbb.BbbbbbBbbbbbbBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbbbbb.BbbbbbBbbbBbbbBbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbbbbb.BBBBbbbbbBbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.BbbbbbBbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.BbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.BbbbbbBbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbb.BbbBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.bbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbbbbbbb.BbbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbbbbbbb.BbbbbbbbBbbbbbbbBbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbbbbbbb.BbbbbbbBbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbbbbbbb.BbbbbbbbBbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
 
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bb.BbbbbBbbbbb;
+bbbbbb bbbb.bbbb.BbbBbbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public class SpongeGTSPlugin implements GTSPlugin {
+bbbbbb bbbbb BbbbbbBBBBbbbbb bbbbbbbbbb BBBBbbbbb {
 
-    private final SpongeGTSBootstrap bootstrap;
+    bbbbbbb bbbbb BbbbbbBBBBbbbbbbbb bbbbbbbbb;
 
-    private final Gson gson = new GsonBuilder().create();
-    private final ExtensionManager extensions = new SimpleExtensionManager(this);
-    private InternalMessagingService messenger;
+    bbbbbbb bbbbb Bbbb bbbb = bbb BbbbBbbbbbb().bbbbbb();
+    bbbbbbb bbbbb BbbbbbbbbBbbbbbb bbbbbbbbbb = bbb BbbbbbBbbbbbbbbBbbbbbb(bbbb);
+    bbbbbbb BbbbbbbbBbbbbbbbbBbbbbbb bbbbbbbbb;
 
-    private GTSStorage storage;
-    private ConfigProvider provider;
-    private Environment environment;
+    bbbbbbb BBBBbbbbbb bbbbbbb;
+    bbbbbbb BbbbbbBbbbbbbb bbbbbbbb;
+    bbbbbbb Bbbbbbbbbbb bbbbbbbbbbb;
 
-    private String lastLifecycleEvent = "Construct";
+    bbbbbbb Bbbbbb bbbbBbbbbbbbbBbbbb = "Bbbbbbbbb";
 
-    public SpongeGTSPlugin(SpongeGTSBootstrap bootstrap) {
-        this.bootstrap = bootstrap;
-        Impactor.getInstance().getRegistry().register(GTSPlugin.class, this);
-        this.register();
+    bbbbbb BbbbbbBBBBbbbbb(BbbbbbBBBBbbbbbbbb bbbbbbbbb) {
+        bbbb.bbbbbbbbb = bbbbbbbbb;
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbb(BBBBbbbbb.bbbbb, bbbb);
+        bbbb.bbbbbbbb();
     }
 
-    @Override
-    public <T extends GTSPlugin> T as(Class<T> type) {
-        if(!type.isAssignableFrom(this.getClass())) {
-            throw new RuntimeException("Invalid plugin typing");
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb BBBBbbbbb> B bb(Bbbbb<B> bbbb) {
+        bb(!bbbb.bbBbbbbbbbbbBbbb(bbbb.bbbBbbbb())) {
+            bbbbb bbb BbbbbbbBbbbbbbbb("Bbbbbbb bbbbbb bbbbbb");
         }
-        return (T) this;
+        bbbbbb (B) bbbb;
     }
 
-    @Override
-    public void construct() throws Exception {
-        ApiRegistrationUtil.register(new GTSAPIProvider());
-        Impactor.getInstance().getRegistry().register(Blacklist.class, new BlacklistImpl());
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbbb() bbbbbb Bbbbbbbbb {
+        BbbBbbbbbbbbbbbBbbb.bbbbbbbb(bbb BBBBBBBbbbbbbb());
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbb(Bbbbbbbbb.bbbbb, bbb BbbbbbbbbBbbb());
 
-        Path configDirectory = this.bootstrap.configDirectory();
-        this.copy(Paths.get("gts.conf"), configDirectory);
-        Config main = Config.builder()
-                .path(configDirectory.resolve("gts.conf"))
-                .provider(ConfigKeys.class)
-                .build();
+        Bbbb bbbbbbBbbbbbbbb = bbbb.bbbbbbbbb.bbbbbbBbbbbbbbb();
+        bbbb.bbbb(Bbbbb.bbb("bbb.bbbb"), bbbbbbBbbbbbbbb);
+        Bbbbbb bbbb = Bbbbbb.bbbbbbb()
+                .bbbb(bbbbbbBbbbbbbbb.bbbbbbb("bbb.bbbb"))
+                .bbbbbbbb(BbbbbbBbbb.bbbbb)
+                .bbbbb();
 
-        String langKey = main.get(ConfigKeys.LANGUAGE).toLowerCase();
-        this.copy(Paths.get("lang").resolve(langKey + ".conf"), configDirectory);
-        Config lang = Config.builder()
-                .path(configDirectory.resolve("lang").resolve(langKey + ".conf"))
-                .provider(MsgConfigKeys.class)
-                .build();
+        Bbbbbb bbbbBbb = bbbb.bbb(BbbbbbBbbb.BBBBBBBB).bbBbbbbBbbb();
+        bbbb.bbbb(Bbbbb.bbb("bbbb").bbbbbbb(bbbbBbb + ".bbbb"), bbbbbbBbbbbbbbb);
+        Bbbbbb bbbb = Bbbbbb.bbbbbbb()
+                .bbbb(bbbbbbBbbbbbbbb.bbbbbbb("bbbb").bbbbbbb(bbbbBbb + ".bbbb"))
+                .bbbbbbbb(BbbBbbbbbBbbb.bbbbb)
+                .bbbbb();
 
-        this.provider = new ConfigProvider(main, lang);
-        Impactor.getInstance().getRegistry().register(ListingManager.class, new SpongeListingManager());
-        Impactor.getInstance().getRegistry().register(
-                EconomicFormatter.class,
-                amount -> Sponge.server().serviceProvider().economyService()
-                        .orElseThrow(IllegalStateException::new)
-                        .defaultCurrency()
-                        .format(new BigDecimal(amount))
+        bbbb.bbbbbbbb = bbb BbbbbbBbbbbbbb(bbbb, bbbb);
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbb(BbbbbbbBbbbbbb.bbbbb, bbb BbbbbbBbbbbbbBbbbbbb());
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbb(
+                BbbbbbbbBbbbbbbbb.bbbbb,
+                bbbbbb -> Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb().bbbbbbbBbbbbbb()
+                        .bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb)
+                        .bbbbbbbBbbbbbbb()
+                        .bbbbbb(bbb BbbBbbbbbb(bbbbbb))
         );
 
-        GTSService service = GTSService.getInstance();
+        BBBBbbbbbb bbbbbbb = BBBBbbbbbb.bbbBbbbbbbb();
 
-        service.getGTSComponentManager().registerListingResourceManager(BuyItNow.class, new ResourceManagerImpl<>("BIN", "minecraft:emerald", SpongeBuyItNow::deserialize));
-        service.getGTSComponentManager().registerListingResourceManager(Auction.class, new ResourceManagerImpl<>("Auctions", "minecraft:gold_ingot", SpongeAuction::deserialize));
-        service.getGTSComponentManager().registerPriceManager(MonetaryPrice.class, new MonetaryPrice.MonetaryPriceManager());
-        service.addSearcher(new SpongeItemSearcher());
-        service.addSearcher(new SpongeUserSearcher());
-        this.builders();
+        bbbbbbb.bbbBBBBbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbbBbbbbbbbBbbbbbb(BbbBbBbb.bbbbb, bbb BbbbbbbbBbbbbbbBbbb<>("BBB", "bbbbbbbbb:bbbbbbb", BbbbbbBbbBbBbb::bbbbbbbbbbb));
+        bbbbbbb.bbbBBBBbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbbbb.bbbbb, bbb BbbbbbbbBbbbbbbBbbb<>("Bbbbbbbb", "bbbbbbbbb:bbbb_bbbbb", BbbbbbBbbbbbb::bbbbbbbbbbb));
+        bbbbbbb.bbbBBBBbbbbbbbbBbbbbbb().bbbbbbbbBbbbbBbbbbbb(BbbbbbbbBbbbb.bbbbb, bbb BbbbbbbbBbbbb.BbbbbbbbBbbbbBbbbbbb());
+        bbbbbbb.bbbBbbbbbbb(bbb BbbbbbBbbbBbbbbbbb());
+        bbbbbbb.bbbBbbbbbbb(bbb BbbbbbBbbbBbbbbbbb());
+        bbbb.bbbbbbbb();
 
-        this.messenger = new SpongeMessagingFactory(this).getInstance();
-        new SpongePingPongInterpreter().register(this);
-        new SpongeBINInterpreters().register(this);
-        new SpongeAuctionInterpreters().register(this);
-        new SpongeListingInterpreters().register(this);
-        new SpongeAdminInterpreters().register(this);
-        new SpongeDeliveryInterpreters().register(this);
+        bbbb.bbbbbbbbb = bbb BbbbbbBbbbbbbbbBbbbbbb(bbbb).bbbBbbbbbbb();
+        bbb BbbbbbBbbbBbbbBbbbbbbbbbb().bbbbbbbb(bbbb);
+        bbb BbbbbbBBBBbbbbbbbbbbb().bbbbbbbb(bbbb);
+        bbb BbbbbbBbbbbbbBbbbbbbbbbbb().bbbbbbbb(bbbb);
+        bbb BbbbbbBbbbbbbBbbbbbbbbbbb().bbbbbbbb(bbbb);
+        bbb BbbbbbBbbbbBbbbbbbbbbbb().bbbbbbbb(bbbb);
+        bbb BbbbbbBbbbbbbbBbbbbbbbbbbb().bbbbbbbb(bbbb);
 
-        this.storage = new StorageFactory(this).getInstance(StorageType.JSON);
+        bbbb.bbbbbbb = bbb BbbbbbbBbbbbbb(bbbb).bbbBbbbbbbb(BbbbbbbBbbb.BBBB);
 
-        if(main.get(ConfigKeys.REDIS_ENABLED)) {
-            this.logger().info("Setting up Redis Client...");
-            Impactor.getInstance().getRegistry().get(DependencyManager.class).loadDependencies(Lists.newArrayList(
-                    Dependency.builder()
-                            .name("Jedis - Redis Client")
-                            .group("redis{}clients")
-                            .artifact("jedis")
-                            .version("3.3.0")
-                            .checksum("HuTfz9xW/mi1fwVQ3xgPmd6qwTRMF/3fyMzw2LmOgy4=")
-                            .relocation(Relocation.of("redis{}clients{}jedis", "jedis"))
-                            .relocation(Relocation.of("org{}apache{}commons{}pool2", "commonspool2"))
-                            .with(Dependency.builder()
-                                    .name("Apache Commons Pool 2")
-                                    .group("org{}apache{}commons")
-                                    .artifact("commons-pool2")
-                                    .version("2.8.0")
-                                    .checksum("Xvqfu1SlixoSIFpfrFZfaYKr/rD/Rb28MYdI71/To/8=")
-                                    .relocation(Relocation.of("org{}apache{}commons{}pool2", "commonspool2"))
-                                    .build()
+        bb(bbbb.bbb(BbbbbbBbbb.BBBBB_BBBBBBB)) {
+            bbbb.bbbbbb().bbbb("Bbbbbbb bb Bbbbb Bbbbbb...");
+            Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbbbBbbbbbb.bbbbb).bbbbBbbbbbbbbbbb(Bbbbb.bbbBbbbbBbbb(
+                    Bbbbbbbbbb.bbbbbbb()
+                            .bbbb("Bbbbb - Bbbbb Bbbbbb")
+                            .bbbbb("bbbbb{}bbbbbbb")
+                            .bbbbbbbb("bbbbb")
+                            .bbbbbbb("3.3.0")
+                            .bbbbbbbb("BbBbb9bB/bb1bbBB3bbBbb6bbBBBB/3bbBbb2BbBbb4=")
+                            .bbbbbbbbbb(Bbbbbbbbbb.bb("bbbbb{}bbbbbbb{}bbbbb", "bbbbb"))
+                            .bbbbbbbbbb(Bbbbbbbbbb.bb("bbb{}bbbbbb{}bbbbbbb{}bbbb2", "bbbbbbbbbbb2"))
+                            .bbbb(Bbbbbbbbbb.bbbbbbb()
+                                    .bbbb("Bbbbbb Bbbbbbb Bbbb 2")
+                                    .bbbbb("bbb{}bbbbbb{}bbbbbbb")
+                                    .bbbbbbbb("bbbbbbb-bbbb2")
+                                    .bbbbbbb("2.8.0")
+                                    .bbbbbbbb("Bbbbb1BbbbbBBBbbbBBbbBBb/bB/Bb28BBbB71/Bb/8=")
+                                    .bbbbbbbbbb(Bbbbbbbbbb.bb("bbb{}bbbbbb{}bbbbbbb{}bbbb2", "bbbbbbbbbbb2"))
+                                    .bbbbb()
                             )
-                            .build()
+                            .bbbbb()
             ));
         }
 
-        if(main.get(ConfigKeys.ENABLE_ITEMS)) {
-            GTSService.getInstance().getGTSComponentManager().registerEntryManager(SpongeItemEntry.class, new SpongeItemManager());
-            GTSService.getInstance().getGTSComponentManager().registerLegacyEntryDeserializer("item", new SpongeLegacyItemStorable());
+        bb(bbbb.bbb(BbbbbbBbbb.BBBBBB_BBBBB)) {
+            BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb().bbbbbbbbBbbbbBbbbbbb(BbbbbbBbbbBbbbb.bbbbb, bbb BbbbbbBbbbBbbbbbb());
+            BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbBbbbbBbbbbbbbbbbb("bbbb", bbb BbbbbbBbbbbbBbbbBbbbbbbb());
         }
 
-        Sponge.eventManager().registerListeners(this.container(), new SpongeGTSPlugin.ListenerRegistrar(this, this.container()));
-        this.extensions.loadExtensions(this.bootstrap.configDirectory().resolve("extensions"));
+        Bbbbbb.bbbbbBbbbbbb().bbbbbbbbBbbbbbbbb(bbbb.bbbbbbbbb(), bbb BbbbbbBBBBbbbbb.BbbbbbbbBbbbbbbbb(bbbb, bbbb.bbbbbbbbb()));
+        bbbb.bbbbbbbbbb.bbbbBbbbbbbbbb(bbbb.bbbbbbbbb.bbbbbbBbbbbbbbb().bbbbbbb("bbbbbbbbbb"));
 
-        if(!main.get(ConfigKeys.ENABLE_ITEMS)
-                && this.extensions.getLoadedExtensions().isEmpty()
-                && GTSService.getInstance().getGTSComponentManager().getAllEntryManagers().isEmpty()) {
-            new PrettyPrinter(80)
-                    .add("No Entry Types Available").center()
-                    .hr('-')
-                    .add("It seems you've disabled the ability to list items on the market,")
-                    .add("but do not have any compatible extensions installed that provide")
-                    .add("other types of entries. GTS is not setup to handle this, and has")
-                    .add("enforced safe mode to avoid runtime errors!")
-                    .newline()
-                    .add("Please re-enable the items capability of GTS, or install an extension")
-                    .add("that provides other entry types to proceed with plugin usage. If you truly")
-                    .add("wish to turn off all entry types, please consult maintenance mode, where you")
-                    .add("can effectively disable features of the plugin without hurting performance.")
-                    .log(GTSPlugin.instance().logger(), PrettyPrinter.Level.ERROR);
-            ((GTSAPIProvider) GTSService.getInstance()).setSafeMode(ErrorCodes.FATAL_ERROR);
-            throw new IllegalStateException("No entry types available");
+        bb(!bbbb.bbb(BbbbbbBbbb.BBBBBB_BBBBB)
+                && bbbb.bbbbbbbbbb.bbbBbbbbbBbbbbbbbbb().bbBbbbb()
+                && BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb().bbbBbbBbbbbBbbbbbbb().bbBbbbb()) {
+            bbb BbbbbbBbbbbbb(80)
+                    .bbb("Bb Bbbbb Bbbbb Bbbbbbbbb").bbbbbb()
+                    .bb('-')
+                    .bbb("Bb bbbbb bbb'bb bbbbbbbb bbb bbbbbbb bb bbbb bbbbb bb bbb bbbbbb,")
+                    .bbb("bbb bb bbb bbbb bbb bbbbbbbbbb bbbbbbbbbb bbbbbbbbb bbbb bbbbbbb")
+                    .bbb("bbbbb bbbbb bb bbbbbbb. BBB bb bbb bbbbb bb bbbbbb bbbb, bbb bbb")
+                    .bbb("bbbbbbbb bbbb bbbb bb bbbbb bbbbbbb bbbbbb!")
+                    .bbbbbbb()
+                    .bbb("Bbbbbb bb-bbbbbb bbb bbbbb bbbbbbbbbb bb BBB, bb bbbbbbb bb bbbbbbbbb")
+                    .bbb("bbbb bbbbbbbb bbbbb bbbbb bbbbb bb bbbbbbb bbbb bbbbbb bbbbb. Bb bbb bbbbb")
+                    .bbb("bbbb bb bbbb bbb bbb bbbbb bbbbb, bbbbbb bbbbbbb bbbbbbbbbbb bbbb, bbbbb bbb")
+                    .bbb("bbb bbbbbbbbbbb bbbbbbb bbbbbbbb bb bbb bbbbbb bbbbbbb bbbbbbb bbbbbbbbbbb.")
+                    .bbb(BBBBbbbbb.bbbbbbbb().bbbbbb(), BbbbbbBbbbbbb.Bbbbb.BBBBB);
+            ((BBBBBBBbbbbbbb) BBBBbbbbbb.bbbBbbbbbbb()).bbbBbbbBbbb(BbbbbBbbbb.BBBBB_BBBBB);
+            bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bb bbbbb bbbbb bbbbbbbbb");
         }
 
-        main.get(ConfigKeys.BLACKLIST).read();
+        bbbb.bbb(BbbbbbBbbb.BBBBBBBBB).bbbb();
 
-        ((GTSComponentManagerImpl) GTSService.getInstance().getGTSComponentManager())
-                .setDeliveryDeserializer(SpongeDelivery::deserialize);
+        ((BBBBbbbbbbbbBbbbbbbBbbb) BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb())
+                .bbbBbbbbbbbBbbbbbbbbbbb(BbbbbbBbbbbbbb::bbbbbbbbbbb);
     }
 
-    @Override
-    public void shutdown() {
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb() {
 
     }
 
-    @Override
-    public SpongeGTSBootstrap bootstrap() {
-        return this.bootstrap;
+    @Bbbbbbbb
+    bbbbbb BbbbbbBBBBbbbbbbbb bbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb;
     }
 
-    @Override
-    public final ConfigProvider configuration() {
-        return this.provider;
+    @Bbbbbbbb
+    bbbbbb bbbbb BbbbbbBbbbbbbb bbbbbbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbb;
     }
 
-    @Override
-    public Optional<Path> configDirectory() {
-        return Optional.ofNullable(this.bootstrap.configDirectory());
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<Bbbb> bbbbbbBbbbbbbbb() {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbbbbb.bbbbbbBbbbbbbbb());
     }
 
-    @Override
-    public Optional<Config> config() {
-        return Optional.ofNullable(this.configuration().main());
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<Bbbbbb> bbbbbb() {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbbbbbbbbb().bbbb());
     }
 
-    @Override
-    public Environment environment() {
-        return Optional.ofNullable(this.environment)
-                .orElseGet(() -> {
-                    this.environment = new Environment();
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbbbbb bbbbbbbbbbb() {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbbbbbbb)
+                .bbBbbbBbb(() -> {
+                    bbbb.bbbbbbbbbbb = bbb Bbbbbbbbbbb();
 
-                    environment.append("LifeCycle Phase", this.lastLifecycleEvent);
+                    bbbbbbbbbbb.bbbbbb("BbbbBbbbb Bbbbb", bbbb.bbbbBbbbbbbbbBbbbb);
 
-                    environment.append("Sponge", Sponge.game().platform().container(Platform.Component.IMPLEMENTATION).metadata().name().get() + " " + Sponge.game().platform().container(Platform.Component.IMPLEMENTATION).metadata().version());
-                    environment.append("Impactor", Sponge.pluginManager().plugin("impactor").get().metadata().version().toString());
-                    environment.append("GTS", this.metadata().version());
+                    bbbbbbbbbbb.bbbbbb("Bbbbbb", Bbbbbb.bbbb().bbbbbbbb().bbbbbbbbb(Bbbbbbbb.Bbbbbbbbb.BBBBBBBBBBBBBB).bbbbbbbb().bbbb().bbb() + " " + Bbbbbb.bbbb().bbbbbbbb().bbbbbbbbb(Bbbbbbbb.Bbbbbbbbb.BBBBBBBBBBBBBB).bbbbbbbb().bbbbbbb());
+                    bbbbbbbbbbb.bbbbbb("Bbbbbbbb", Bbbbbb.bbbbbbBbbbbbb().bbbbbb("bbbbbbbb").bbb().bbbbbbbb().bbbbbbb().bbBbbbbb());
+                    bbbbbbbbbbb.bbbbbb("BBB", bbbb.bbbbbbbb().bbbbbbb());
 
-                    if(Sponge.isServerAvailable()) {
-                        boolean economy = Sponge.server().serviceProvider().economyService().isPresent();
-                        this.environment.append("Economy Available", String.valueOf(economy));
+                    bb(Bbbbbb.bbBbbbbbBbbbbbbbb()) {
+                        bbbbbbb bbbbbbb = Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb().bbbbbbbBbbbbbb().bbBbbbbbb();
+                        bbbb.bbbbbbbbbbb.bbbbbb("Bbbbbbb Bbbbbbbbb", Bbbbbb.bbbbbBb(bbbbbbb));
                     }
 
-//                    Sponge.getServiceManager().getRegistration(ProtocolService.class).ifPresent(provider -> {
-//                        environment.append(provider.getPlugin().getName(), provider.getPlugin().getVersion().orElse("Unknown"));
+//                    Bbbbbb.bbbBbbbbbbBbbbbbb().bbbBbbbbbbbbbbb(BbbbbbbbBbbbbbb.bbbbb).bbBbbbbbb(bbbbbbbb -> {
+//                        bbbbbbbbbbb.bbbbbb(bbbbbbbb.bbbBbbbbb().bbbBbbb(), bbbbbbbb.bbbBbbbbb().bbbBbbbbbb().bbBbbb("Bbbbbbb"));
 //                    });
 
-                    for(Extension extension : GTSService.getInstance().getAllExtensions()) {
-                        environment.append(extension.metadata().name(), extension.metadata().version());
-                        extension.getExtendedEnvironmentInformation(environment);
+                    bbb(Bbbbbbbbb bbbbbbbbb : BBBBbbbbbb.bbbBbbbbbbb().bbbBbbBbbbbbbbbb()) {
+                        bbbbbbbbbbb.bbbbbb(bbbbbbbbb.bbbbbbbb().bbbb(), bbbbbbbbb.bbbbbbbb().bbbbbbb());
+                        bbbbbbbbb.bbbBbbbbbbbBbbbbbbbbbbBbbbbbbbbbb(bbbbbbbbbbb);
                     }
 
-                    return environment;
+                    bbbbbb bbbbbbbbbbb;
                 });
     }
 
-    public PluginContainer container() {
-        return this.bootstrap().container();
+    bbbbbb BbbbbbBbbbbbbbb bbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb().bbbbbbbbb();
     }
 
-    @Override
-    public Gson gson() {
-        return this.gson;
+    @Bbbbbbbb
+    bbbbbb Bbbb bbbb() {
+        bbbbbb bbbb.bbbb;
     }
 
-    @Override
-    public GTSStorage storage() {
-        return this.storage;
+    @Bbbbbbbb
+    bbbbbb BBBBbbbbbb bbbbbbb() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    @Override
-    public ExtensionManager extensionManager() {
-        return this.extensions;
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbBbbbbbb bbbbbbbbbBbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbbb;
     }
 
-    @Override
-    public InternalMessagingService messagingService() {
-        return this.messenger;
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbBbbbbbbbbBbbbbbb bbbbbbbbbBbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb;
     }
 
-    @Override
-    public CompletableFuture<String> playerDisplayName(UUID id) {
-        return Sponge.server().userManager().load(id)
-                .thenApply(user -> {
-                    if(!user.isPresent()) {
-                        throw new IllegalArgumentException("Could not find user with that ID");
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbb> bbbbbbBbbbbbbBbbb(BBBB bb) {
+        bbbbbb Bbbbbb.bbbbbb().bbbbBbbbbbb().bbbb(bb)
+                .bbbbBbbbb(bbbb -> {
+                    bb(!bbbb.bbBbbbbbb()) {
+                        bbbbb bbb BbbbbbbBbbbbbbbBbbbbbbbb("Bbbbb bbb bbbb bbbb bbbb bbbb BB");
                     }
 
-                    User u = user.get();
-                    return u.name();
+                    Bbbb b = bbbb.bbb();
+                    bbbbbb b.bbbb();
                 })
-                .exceptionally(exception -> {
-                    ExceptionWriter.write(exception);
-                    return "Unknown";
+                .bbbbbbbbbbbbb(bbbbbbbbb -> {
+                    BbbbbbbbbBbbbbb.bbbbb(bbbbbbbbb);
+                    bbbbbb "Bbbbbbb";
                 });
     }
 
-    @Override
-    public PluginMetadata metadata() {
-        return PluginMetadata.builder()
-                .id("gts")
-                .name("GTS")
-                .version("@version@")
-                .build();
+    @Bbbbbbbb
+    bbbbbb BbbbbbBbbbbbbb bbbbbbbb() {
+        bbbbbb BbbbbbBbbbbbbb.bbbbbbb()
+                .bb("bbb")
+                .bbbb("BBB")
+                .bbbbbbb("@bbbbbbb@")
+                .bbbbb();
     }
 
-    @Override
-    public PluginLogger logger() {
-        return this.bootstrap.logger();
+    @Bbbbbbbb
+    bbbbbb BbbbbbBbbbbb bbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb.bbbbbb();
     }
 
-    @Override
-    public Set<Dependency> dependencies() {
-        return Sets.newHashSet(
-                Dependency.builder()
-                        .name("Caffeine")
-                        .group("com{}github{}ben-manes{}caffeine")
-                        .artifact("caffeine")
-                        .version("2.8.4")
-                        .checksum("KV9YN5gQj6b507VJApJpPF5PkCon0DZqAi0T7Ln0lag=")
-                        .relocation(Relocation.of("com{}github{}benmanes{}caffeine", "caffeine"))
-                        .build(),
-                GTSDependencies.MXPARSER
+    @Bbbbbbbb
+    bbbbbb Bbb<Bbbbbbbbbb> bbbbbbbbbbbb() {
+        bbbbbb Bbbb.bbbBbbbBbb(
+                Bbbbbbbbbb.bbbbbbb()
+                        .bbbb("Bbbbbbbb")
+                        .bbbbb("bbb{}bbbbbb{}bbb-bbbbb{}bbbbbbbb")
+                        .bbbbbbbb("bbbbbbbb")
+                        .bbbbbbb("2.8.4")
+                        .bbbbbbbb("BB9BB5bBb6b507BBBbBbBB5BbBbb0BBbBb0B7Bb0bbb=")
+                        .bbbbbbbbbb(Bbbbbbbbbb.bb("bbb{}bbbbbb{}bbbbbbbb{}bbbbbbbb", "bbbbbbbb"))
+                        .bbbbb(),
+                BBBBbbbbbbbbbbb.BBBBBBBB
         );
     }
 
-    public static final class ListenerRegistrar {
+    bbbbbb bbbbbb bbbbb bbbbb BbbbbbbbBbbbbbbbb {
 
-        private final SpongeGTSPlugin parent;
-        private final PluginContainer container;
+        bbbbbbb bbbbb BbbbbbBBBBbbbbb bbbbbb;
+        bbbbbbb bbbbb BbbbbbBbbbbbbbb bbbbbbbbb;
 
-        public ListenerRegistrar(SpongeGTSPlugin parent, PluginContainer container) {
-            this.parent = parent;
-            this.container = container;
+        bbbbbb BbbbbbbbBbbbbbbbb(BbbbbbBBBBbbbbb bbbbbb, BbbbbbBbbbbbbbb bbbbbbbbb) {
+            bbbb.bbbbbb = bbbbbb;
+            bbbb.bbbbbbbbb = bbbbbbbbb;
         }
 
-        @Listener
-        public void onLifecycleEvent(final LifecycleEvent event) {
-            this.parent.lastLifecycleEvent = event.getClass().getSimpleName();
+        @Bbbbbbbb
+        bbbbbb bbbb bbBbbbbbbbbBbbbb(bbbbb BbbbbbbbbBbbbb bbbbb) {
+            bbbb.bbbbbb.bbbbBbbbbbbbbBbbbb = bbbbb.bbbBbbbb().bbbBbbbbbBbbb();
         }
 
-        @Listener
-        public void whenCommandRegistration(RegisterCommandEvent<Command.Parameterized> event) {
-            try {
-                this.parent.logger().info("Registering commands");
-                new GTSCommandManager(this.container, event).register(new GlobalExecutor(GTSPlugin.instance()));
-            } catch (Exception e) {
-                ExceptionWriter.write(e);
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbBbbbbbbBbbbbbbbbbbb(BbbbbbbbBbbbbbbBbbbb<Bbbbbbb.Bbbbbbbbbbbbb> bbbbb) {
+            bbb {
+                bbbb.bbbbbb.bbbbbb().bbbb("Bbbbbbbbbbb bbbbbbbb");
+                bbb BBBBbbbbbbBbbbbbb(bbbb.bbbbbbbbb, bbbbb).bbbbbbbb(bbb BbbbbbBbbbbbbb(BBBBbbbbb.bbbbbbbb()));
+            } bbbbb (Bbbbbbbbb b) {
+                BbbbbbbbbBbbbbb.bbbbb(b);
             }
         }
 
-        @Listener
-        public void onGlobalRegistryValueRegistrationEvent(final RegisterRegistryValueEvent.GameScoped event) {
-            try {
-                this.parent.logger().info("Registering placeholders");
+        @Bbbbbbbb
+        bbbbbb bbbb bbBbbbbbBbbbbbbbBbbbbBbbbbbbbbbbbBbbbb(bbbbb BbbbbbbbBbbbbbbbBbbbbBbbbb.BbbbBbbbbb bbbbb) {
+            bbb {
+                bbbb.bbbbbb.bbbbbb().bbbb("Bbbbbbbbbbb bbbbbbbbbbbb");
 
-                final RegisterRegistryValueEvent.RegistryStep<PlaceholderParser> placeholderParserRegistryStep =
-                        event.registry(RegistryTypes.PLACEHOLDER_PARSER);
-                new GTSSpongePlaceholderManager().getAllParsers().forEach(metadata -> {
-                    placeholderParserRegistryStep.register(metadata.getKey(), metadata.getParser());
+                bbbbb BbbbbbbbBbbbbbbbBbbbbBbbbb.BbbbbbbbBbbb<BbbbbbbbbbbBbbbbb> bbbbbbbbbbbBbbbbbBbbbbbbbBbbb =
+                        bbbbb.bbbbbbbb(BbbbbbbbBbbbb.BBBBBBBBBBB_BBBBBB);
+                bbb BBBBbbbbbBbbbbbbbbbbBbbbbbb().bbbBbbBbbbbbb().bbbBbbb(bbbbbbbb -> {
+                    bbbbbbbbbbbBbbbbbBbbbbbbbBbbb.bbbbbbbb(bbbbbbbb.bbbBbb(), bbbbbbbb.bbbBbbbbb());
                 });
 
-                Impactor.getInstance().getEventBus().post(GTSEventFactory.createPlaceholderRegistryEvent(placeholderParserRegistryStep));
-            } catch (Exception e) {
-                ExceptionWriter.write(e);
+                Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbBbb().bbbb(BBBBbbbbBbbbbbb.bbbbbbBbbbbbbbbbbBbbbbbbbBbbbb(bbbbbbbbbbbBbbbbbBbbbbbbbBbbb));
+            } bbbbb (Bbbbbbbbb b) {
+                BbbbbbbbbBbbbbb.bbbbb(b);
             }
         }
 
-        @Listener
-        public void onServerEngineStart(final StartingEngineEvent<Server> event) {
-            this.parent.extensions.enableExtensions();
+        @Bbbbbbbb
+        bbbbbb bbbb bbBbbbbbBbbbbbBbbbb(bbbbb BbbbbbbbBbbbbbBbbbb<Bbbbbb> bbbbb) {
+            bbbb.bbbbbb.bbbbbbbbbb.bbbbbbBbbbbbbbbb();
 
-            Sponge.eventManager().registerListeners(this.container, new JoinListener(this.container));
+            Bbbbbb.bbbbbBbbbbbb().bbbbbbbbBbbbbbbbb(bbbb.bbbbbbbbb, bbb BbbbBbbbbbbb(bbbb.bbbbbbbbb));
 
-            if(!this.parent.configuration().main().get(ConfigKeys.ITEMS_ALLOW_ANVIL_NAMES)) {
-                Sponge.eventManager().registerListeners(this.container, new AnvilRenameListener());
+            bb(!bbbb.bbbbbb.bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBB_BBBBB_BBBBB_BBBBB)) {
+                Bbbbbb.bbbbbBbbbbbb().bbbbbbbbBbbbbbbbb(bbbb.bbbbbbbbb, bbb BbbbbBbbbbbBbbbbbbb());
             }
         }
 
-        @Listener
-        public void onServerEngineStarted(final StartedEngineEvent<Server> event) {
-            Optional<EconomyService> economy = Sponge.server().serviceProvider().economyService();
-            if(!economy.isPresent()) {
-                throw new LackingServiceException(EconomyService.class);
+        @Bbbbbbbb
+        bbbbbb bbbb bbBbbbbbBbbbbbBbbbbbb(bbbbb BbbbbbbBbbbbbBbbbb<Bbbbbb> bbbbb) {
+            Bbbbbbbb<BbbbbbbBbbbbbb> bbbbbbb = Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb().bbbbbbbBbbbbbb();
+            bb(!bbbbbbb.bbBbbbbbb()) {
+                bbbbb bbb BbbbbbbBbbbbbbBbbbbbbbb(BbbbbbbBbbbbbb.bbbbb);
             }
 
-            MonetaryPrice.setEconomy(economy.get());
-            final Version current = new Version(this.parent.metadata().version());
-            OreVersionChecker.query().thenAccept(response -> {
-                if(current.compareTo(response) < 0) {
-                    Impactor.getInstance().getScheduler().executeSync(() -> {
-                        GTSPlugin.instance().logger().warn("A new version of GTS is available on Ore!");
-                        GTSPlugin.instance().logger().warn("You can download it from here: https://ore.spongepowered.org/api/v1/projects/gts/versions/recommended/download");
+            BbbbbbbbBbbbb.bbbBbbbbbb(bbbbbbb.bbb());
+            bbbbb Bbbbbbb bbbbbbb = bbb Bbbbbbb(bbbb.bbbbbb.bbbbbbbb().bbbbbbb());
+            BbbBbbbbbbBbbbbbb.bbbbb().bbbbBbbbbb(bbbbbbbb -> {
+                bb(bbbbbbb.bbbbbbbBb(bbbbbbbb) < 0) {
+                    Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                        BBBBbbbbb.bbbbbbbb().bbbbbb().bbbb("B bbb bbbbbbb bb BBB bb bbbbbbbbb bb Bbb!");
+                        BBBBbbbbb.bbbbbbbb().bbbbbb().bbbb("Bbb bbb bbbbbbbb bb bbbb bbbb: bbbbb://bbb.bbbbbbbbbbbbb.bbb/bbb/b1/bbbbbbbb/bbb/bbbbbbbb/bbbbbbbbbbb/bbbbbbbb");
                     });
                 }
             });
@@ -431,23 +431,23 @@ public class SpongeGTSPlugin implements GTSPlugin {
 
     }
 
-    private void builders() {
-        Impactor.getInstance().getRegistry().registerBuilderSupplier(Auction.AuctionBuilder.class, SpongeAuction.SpongeAuctionBuilder::new);
-        Impactor.getInstance().getRegistry().registerBuilderSupplier(BuyItNow.BuyItNowBuilder.class, SpongeBuyItNow.SpongeBuyItNowBuilder::new);
-        Impactor.getInstance().getRegistry().registerBuilderSupplier(Stash.StashBuilder.class, SpongeStash.SpongeStashBuilder::new);
-        Impactor.getInstance().getRegistry().registerBuilderSupplier(SpongeMainPageProvider.Creator.class, SpongeMainMenu.MainMenuCreator::new);
-        Impactor.getInstance().getRegistry().registerBuilderSupplier(PlayerSettings.PlayerSettingsBuilder.class, PlayerSettingsImpl.PlayerSettingsImplBuilder::new);
-        Impactor.getInstance().getRegistry().registerBuilderSupplier(ForceDeleteMessage.Response.ResponseBuilder.class, ForceDeleteMessageImpl.ForceDeleteResponse.ForcedDeleteResponseBuilder::new);
+    bbbbbbb bbbb bbbbbbbb() {
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbbBbbbbbbBbbbbbbb(Bbbbbbb.BbbbbbbBbbbbbb.bbbbb, BbbbbbBbbbbbb.BbbbbbBbbbbbbBbbbbbb::bbb);
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbbBbbbbbbBbbbbbbb(BbbBbBbb.BbbBbBbbBbbbbbb.bbbbb, BbbbbbBbbBbBbb.BbbbbbBbbBbBbbBbbbbbb::bbb);
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbbBbbbbbbBbbbbbbb(Bbbbb.BbbbbBbbbbbb.bbbbb, BbbbbbBbbbb.BbbbbbBbbbbBbbbbbb::bbb);
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbbBbbbbbbBbbbbbbb(BbbbbbBbbbBbbbBbbbbbbb.Bbbbbbb.bbbbb, BbbbbbBbbbBbbb.BbbbBbbbBbbbbbb::bbb);
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbbBbbbbbbBbbbbbbb(BbbbbbBbbbbbbb.BbbbbbBbbbbbbbBbbbbbb.bbbbb, BbbbbbBbbbbbbbBbbb.BbbbbbBbbbbbbbBbbbBbbbbbb::bbb);
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbbbBbbbbbbBbbbbbbb(BbbbbBbbbbbBbbbbbb.Bbbbbbbb.BbbbbbbbBbbbbbb.bbbbb, BbbbbBbbbbbBbbbbbbBbbb.BbbbbBbbbbbBbbbbbbb.BbbbbbBbbbbbBbbbbbbbBbbbbbb::bbb);
     }
 
-    private void copy(Path target, Path destination) {
-        Path base = Paths.get("assets", "gts");
-        if(!Files.exists(destination.resolve(target))) {
-            try(InputStream resource = this.bootstrap.resource(base.resolve(target)).orElseThrow(() -> new IllegalStateException("Could not locate target resource: " + base.resolve(target)))) {
-                Files.createDirectories(destination.resolve(target).getParent());
-                Files.copy(resource, destination.resolve(target));
-            } catch (Exception e) {
-                ExceptionWriter.write(e);
+    bbbbbbb bbbb bbbb(Bbbb bbbbbb, Bbbb bbbbbbbbbbb) {
+        Bbbb bbbb = Bbbbb.bbb("bbbbbb", "bbb");
+        bb(!Bbbbb.bbbbbb(bbbbbbbbbbb.bbbbbbb(bbbbbb))) {
+            bbb(BbbbbBbbbbb bbbbbbbb = bbbb.bbbbbbbbb.bbbbbbbb(bbbb.bbbbbbb(bbbbbb)).bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbb bbb bbbbbb bbbbbb bbbbbbbb: " + bbbb.bbbbbbb(bbbbbb)))) {
+                Bbbbb.bbbbbbBbbbbbbbbbb(bbbbbbbbbbb.bbbbbbb(bbbbbb).bbbBbbbbb());
+                Bbbbb.bbbb(bbbbbbbb, bbbbbbbbbbb.bbbbbbb(bbbbbb));
+            } bbbbb (Bbbbbbbbb b) {
+                BbbbbbbbbBbbbbb.bbbbb(b);
             }
         }
     }

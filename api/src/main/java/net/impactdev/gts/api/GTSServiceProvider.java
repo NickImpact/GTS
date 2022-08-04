@@ -1,28 +1,28 @@
-package net.impactdev.gts.api;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-public final class GTSServiceProvider {
+bbbbbb bbbbb bbbbb BBBBbbbbbbBbbbbbbb {
 
-	private static GTSService instance;
+	bbbbbbb bbbbbb BBBBbbbbbb bbbbbbbb;
 
-	public static @NonNull GTSService get() {
-		if(instance == null) {
-			throw new IllegalStateException("The GTS API is not loaded");
+	bbbbbb bbbbbb @BbbBbbb BBBBbbbbbb bbb() {
+		bb(bbbbbbbb == bbbb) {
+			bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBB BBB bb bbb bbbbbb");
 		}
 
-		return instance;
+		bbbbbb bbbbbbbb;
 	}
 
-	static void register(GTSService service) {
-		instance = service;
+	bbbbbb bbbb bbbbbbbb(BBBBbbbbbb bbbbbbb) {
+		bbbbbbbb = bbbbbbb;
 	}
 
-	static void unregister() {
-		instance = null;
+	bbbbbb bbbb bbbbbbbbbb() {
+		bbbbbbbb = bbbb;
 	}
 
-	private GTSServiceProvider() {
-		throw new UnsupportedOperationException("This class cannot be instantiated");
+	bbbbbbb BBBBbbbbbbBbbbbbbb() {
+		bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb("Bbbb bbbbb bbbbbb bb bbbbbbbbbbbb");
 	}
 }

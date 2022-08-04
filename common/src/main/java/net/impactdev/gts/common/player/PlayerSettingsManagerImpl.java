@@ -1,47 +1,47 @@
-package net.impactdev.gts.common.player;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb;
 
-import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import net.impactdev.gts.api.player.PlayerSettings;
-import net.impactdev.gts.api.player.PlayerSettingsManager;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.BbbbbBbbbbbbBbbbb;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
 
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
 
-public class PlayerSettingsManagerImpl implements PlayerSettingsManager {
+bbbbbb bbbbb BbbbbbBbbbbbbbBbbbbbbBbbb bbbbbbbbbb BbbbbbBbbbbbbbBbbbbbb {
 
-    private final AsyncLoadingCache<UUID, PlayerSettings> cache = Caffeine.newBuilder()
-            .expireAfterWrite(30, TimeUnit.MINUTES)
-            .buildAsync(this::fetch);
+    bbbbbbb bbbbb BbbbbBbbbbbbBbbbb<BBBB, BbbbbbBbbbbbbb> bbbbb = Bbbbbbbb.bbbBbbbbbb()
+            .bbbbbbBbbbbBbbbb(30, BbbbBbbb.BBBBBBB)
+            .bbbbbBbbbb(bbbb::bbbbb);
 
-    @Override
-    public void cache(UUID uuid, PlayerSettings settings) {
-        this.cache.put(uuid, CompletableFuture.completedFuture(settings));
-        GTSPlugin.instance().storage().applyPlayerSettings(uuid, settings).exceptionally(e -> {
-            ExceptionWriter.write(e);
-            return null;
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb(BBBB bbbb, BbbbbbBbbbbbbb bbbbbbbb) {
+        bbbb.bbbbb.bbb(bbbb, BbbbbbbbbbbBbbbbb.bbbbbbbbbBbbbbb(bbbbbbbb));
+        BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbBbbbbbBbbbbbbb(bbbb, bbbbbbbb).bbbbbbbbbbbbb(b -> {
+            BbbbbbbbbBbbbbb.bbbbb(b);
+            bbbbbb bbbb;
         });
     }
 
-    @Override
-    public CompletableFuture<PlayerSettings> retrieve(UUID uuid) {
-        return this.cache.get(uuid);
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbbbBbbbbbbb> bbbbbbbb(BBBB bbbb) {
+        bbbbbb bbbb.bbbbb.bbb(bbbb);
     }
 
-    private PlayerSettings fetch(UUID uuid) {
-        try {
-            return GTSPlugin.instance().storage().getPlayerSettings(uuid)
-                    .thenApply(opt -> opt.orElse(PlayerSettings.create()))
-                    .exceptionally(e -> {
-                        throw new RuntimeException(e);
+    bbbbbbb BbbbbbBbbbbbbb bbbbb(BBBB bbbb) {
+        bbb {
+            bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbBbbbbbBbbbbbbb(bbbb)
+                    .bbbbBbbbb(bbb -> bbb.bbBbbb(BbbbbbBbbbbbbb.bbbbbb()))
+                    .bbbbbbbbbbbbb(b -> {
+                        bbbbb bbb BbbbbbbBbbbbbbbb(b);
                     })
-                    .get(5, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            GTSPlugin.instance().logger().error("Unable to retrieve player settings for " + uuid);
-            return PlayerSettings.create();
+                    .bbb(5, BbbbBbbb.BBBBBBB);
+        } bbbbb (Bbbbbbbbb b) {
+            BBBBbbbbb.bbbbbbbb().bbbbbb().bbbbb("Bbbbbb bb bbbbbbbb bbbbbb bbbbbbbb bbb " + bbbb);
+            bbbbbb BbbbbbBbbbbbbb.bbbbbb();
         }
     }
 

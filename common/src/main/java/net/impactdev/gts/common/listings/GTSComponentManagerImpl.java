@@ -1,133 +1,133 @@
-package net.impactdev.gts.common.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
-import com.google.gson.internal.LinkedHashTreeMap;
-import net.impactdev.gts.api.data.ResourceManager;
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.data.registry.DeserializerRegistry;
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.data.registry.GTSKeyMarker;
-import net.impactdev.gts.api.listings.entries.EntryManager;
-import net.impactdev.gts.api.data.registry.GTSComponentManager;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.api.listings.prices.PriceManager;
-import net.impactdev.gts.common.data.DeserializerRegistryImpl;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.Bbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbb.bbbbbbbb.BbbbbbBbbbBbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.BbbbbbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.BBBBbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbb.BbbbbbbbbbbbBbbbbbbbBbbb;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+bbbbbb bbbb.bbbb.BbbbbbBbbbBbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-@SuppressWarnings("unchecked")
-public class GTSComponentManagerImpl implements GTSComponentManager {
+@BbbbbbbbBbbbbbbb("bbbbbbbbb")
+bbbbbb bbbbb BBBBbbbbbbbbBbbbbbbBbbb bbbbbbbbbb BBBBbbbbbbbbBbbbbbb {
 
-    private final Map<Class<? extends Listing>, ResourceManager<? extends Listing>> listings = Maps.newHashMap();
-    private final Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>>> managers = new LinkedHashMap<>();
-    private final Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>>> prices = Maps.newHashMap();
+    bbbbbbb bbbbb Bbb<Bbbbb<? bbbbbbb Bbbbbbb>, BbbbbbbbBbbbbbb<? bbbbbbb Bbbbbbb>> bbbbbbbb = Bbbb.bbbBbbbBbb();
+    bbbbbbb bbbbb Bbb<BBBBbbBbbbbb, BbbbbBbbbbbb<? bbbbbbb Bbbbb<?, ?>>> bbbbbbbb = bbb BbbbbbBbbbBbb<>();
+    bbbbbbb bbbbb Bbb<BBBBbbBbbbbb, BbbbbBbbbbbb<? bbbbbbb Bbbbb<?, ?, ?>>> bbbbbb = Bbbb.bbbBbbbBbb();
 
-    private final Map<String, Storable.Deserializer<?>> legacy = Maps.newHashMap();
+    bbbbbbb bbbbb Bbb<Bbbbbb, Bbbbbbbb.Bbbbbbbbbbbb<?>> bbbbbb = Bbbb.bbbBbbbBbb();
 
-    private final DeserializerRegistry deserializer = new DeserializerRegistryImpl();
-    private Storable.Deserializer<Delivery> deliveryDeserializer;
+    bbbbbbb bbbbb BbbbbbbbbbbbBbbbbbbb bbbbbbbbbbbb = bbb BbbbbbbbbbbbBbbbbbbbBbbb();
+    bbbbbbb Bbbbbbbb.Bbbbbbbbbbbb<Bbbbbbbb> bbbbbbbbBbbbbbbbbbbb;
 
-    @Override
-    public <T extends Listing> void registerListingResourceManager(Class<T> type, ResourceManager<T> deserializer) {
-        this.listings.put(type, deserializer);
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb Bbbbbbb> bbbb bbbbbbbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbb<B> bbbb, BbbbbbbbBbbbbbb<B> bbbbbbbbbbbb) {
+        bbbb.bbbbbbbb.bbb(bbbb, bbbbbbbbbbbb);
     }
 
-    @Override
-    public <T extends Listing> Optional<ResourceManager<T>> getListingResourceManager(Class<T> type) {
-        return Optional.ofNullable((ResourceManager<T>) this.listings.get(type));
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb Bbbbbbb> Bbbbbbbb<BbbbbbbbBbbbbbb<B>> bbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbb<B> bbbb) {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb((BbbbbbbbBbbbbbb<B>) bbbb.bbbbbbbb.bbb(bbbb));
     }
 
-    @Override
-    public Map<Class<? extends Listing>, ResourceManager<? extends Listing>> getAllListingResourceManagers() {
-        return this.listings;
+    @Bbbbbbbb
+    bbbbbb Bbb<Bbbbb<? bbbbbbb Bbbbbbb>, BbbbbbbbBbbbbbb<? bbbbbbb Bbbbbbb>> bbbBbbBbbbbbbBbbbbbbbBbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbb;
     }
 
-    @Override
-    public Storable.Deserializer<Delivery> getDeliveryDeserializer() {
-        return this.deliveryDeserializer;
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb.Bbbbbbbbbbbb<Bbbbbbbb> bbbBbbbbbbbBbbbbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbBbbbbbbbbbbb;
     }
 
-    public void setDeliveryDeserializer(Storable.Deserializer<Delivery> deserializer) {
-        this.deliveryDeserializer = deserializer;
+    bbbbbb bbbb bbbBbbbbbbbBbbbbbbbbbbb(Bbbbbbbb.Bbbbbbbbbbbb<Bbbbbbbb> bbbbbbbbbbbb) {
+        bbbb.bbbbbbbbBbbbbbbbbbbb = bbbbbbbbbbbb;
     }
 
-    @Override
-    public <T extends Entry<?, ?>> void registerEntryManager(Class<T> type, EntryManager<T> manager) {
-        Preconditions.checkArgument(type.isAnnotationPresent(GTSKeyMarker.class), "An Entry type must be annotated with GTSKeyMarker");
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb Bbbbb<?, ?>> bbbb bbbbbbbbBbbbbBbbbbbb(Bbbbb<B> bbbb, BbbbbBbbbbbb<B> bbbbbbb) {
+        Bbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbb.bbBbbbbbbbbbBbbbbbb(BBBBbbBbbbbb.bbbbb), "Bb Bbbbb bbbb bbbb bb bbbbbbbbb bbbb BBBBbbBbbbbb");
 
-        this.managers.put(type.getAnnotation(GTSKeyMarker.class), manager);
-        manager.supplyDeserializers();
+        bbbb.bbbbbbbb.bbb(bbbb.bbbBbbbbbbbbb(BBBBbbBbbbbb.bbbbb), bbbbbbb);
+        bbbbbbb.bbbbbbBbbbbbbbbbbbb();
     }
 
-    @Override
-    public <T extends Entry<?, ?>> Optional<EntryManager<T>> getEntryManager(String key) {
-        return this.managers.keySet().stream()
-                .filter(marker -> {
-                    for (String id : marker.value()) {
-                        if (id.equals(key)) {
-                            return true;
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb Bbbbb<?, ?>> Bbbbbbbb<BbbbbBbbbbbb<B>> bbbBbbbbBbbbbbb(Bbbbbb bbb) {
+        bbbbbb bbbb.bbbbbbbb.bbbBbb().bbbbbb()
+                .bbbbbb(bbbbbb -> {
+                    bbb (Bbbbbb bb : bbbbbb.bbbbb()) {
+                        bb (bb.bbbbbb(bbb)) {
+                            bbbbbb bbbb;
                         }
                     }
 
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .map(this.managers::get)
-                .findAny()
-                .map(x -> (EntryManager<T>) x);
+                .bbb(bbbb.bbbbbbbb::bbb)
+                .bbbbBbb()
+                .bbb(b -> (BbbbbBbbbbbb<B>) b);
     }
 
-    @Override
-    public Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>>> getAllEntryManagers() {
-        return this.managers;
+    @Bbbbbbbb
+    bbbbbb Bbb<BBBBbbBbbbbb, BbbbbBbbbbbb<? bbbbbbb Bbbbb<?, ?>>> bbbBbbBbbbbBbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbb;
     }
 
-    @Override
-    public <T extends Price<?, ?, ?>> void registerPriceManager(Class<T> type, PriceManager<T> resource) {
-        Preconditions.checkArgument(type.isAnnotationPresent(GTSKeyMarker.class), "A Price type must be annotated with GTSKeyMarker");
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb Bbbbb<?, ?, ?>> bbbb bbbbbbbbBbbbbBbbbbbb(Bbbbb<B> bbbb, BbbbbBbbbbbb<B> bbbbbbbb) {
+        Bbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbb.bbBbbbbbbbbbBbbbbbb(BBBBbbBbbbbb.bbbbb), "B Bbbbb bbbb bbbb bb bbbbbbbbb bbbb BBBBbbBbbbbb");
 
-        this.prices.put(type.getAnnotation(GTSKeyMarker.class), resource);
+        bbbb.bbbbbb.bbb(bbbb.bbbBbbbbbbbbb(BBBBbbBbbbbb.bbbbb), bbbbbbbb);
     }
 
-    @Override
-    public <T extends Price<?, ?, ?>> Optional<PriceManager<? extends T>> getPriceManager(String key) {
-        return this.prices.keySet().stream()
-                .filter(marker -> {
-                    for (String id : marker.value()) {
-                        if (id.equals(key)) {
-                            return true;
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb Bbbbb<?, ?, ?>> Bbbbbbbb<BbbbbBbbbbbb<? bbbbbbb B>> bbbBbbbbBbbbbbb(Bbbbbb bbb) {
+        bbbbbb bbbb.bbbbbb.bbbBbb().bbbbbb()
+                .bbbbbb(bbbbbb -> {
+                    bbb (Bbbbbb bb : bbbbbb.bbbbb()) {
+                        bb (bb.bbbbbb(bbb)) {
+                            bbbbbb bbbb;
                         }
                     }
 
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .map(this.prices::get)
-                .findAny()
-                .map(x -> (PriceManager<T>) x);
+                .bbb(bbbb.bbbbbb::bbb)
+                .bbbbBbb()
+                .bbb(b -> (BbbbbBbbbbbb<B>) b);
     }
 
-    @Override
-    public Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>>> getAllPriceManagers() {
-        return this.prices;
+    @Bbbbbbbb
+    bbbbbb Bbb<BBBBbbBbbbbb, BbbbbBbbbbbb<? bbbbbbb Bbbbb<?, ?, ?>>> bbbBbbBbbbbBbbbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
-    @Override
-    public DeserializerRegistry getDeserializerRegistry() {
-        return this.deserializer;
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbbBbbbbbbb bbbBbbbbbbbbbbbBbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbbbbb;
     }
 
-    @Override
-    public <T extends Entry<?, ?>> void registerLegacyEntryDeserializer(String key, Storable.Deserializer<T> deserializer) {
-        this.legacy.put("legacy_" + key, deserializer);
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb Bbbbb<?, ?>> bbbb bbbbbbbbBbbbbbBbbbbBbbbbbbbbbbb(Bbbbbb bbb, Bbbbbbbb.Bbbbbbbbbbbb<B> bbbbbbbbbbbb) {
+        bbbb.bbbbbb.bbb("bbbbbb_" + bbb, bbbbbbbbbbbb);
     }
 
-    @Override
-    public <T extends Entry<?, ?>> Optional<Storable.Deserializer<T>> getLegacyEntryDeserializer(String key) {
-        return Optional.ofNullable((Storable.Deserializer<T>) this.legacy.get("legacy_" + key));
+    @Bbbbbbbb
+    bbbbbb <B bbbbbbb Bbbbb<?, ?>> Bbbbbbbb<Bbbbbbbb.Bbbbbbbbbbbb<B>> bbbBbbbbbBbbbbBbbbbbbbbbbb(Bbbbbb bbb) {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb((Bbbbbbbb.Bbbbbbbbbbbb<B>) bbbb.bbbbbb.bbb("bbbbbb_" + bbb));
     }
 
 

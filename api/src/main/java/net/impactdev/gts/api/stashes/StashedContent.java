@@ -1,53 +1,53 @@
-package net.impactdev.gts.api.stashes;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb;
 
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.Listing;
-import net.kyori.adventure.util.TriState;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbBbbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
-public abstract class StashedContent<T> {
+bbbbbb bbbbbbbb bbbbb BbbbbbbBbbbbbb<B> {
 
-    private final T content;
-    private final TriState context;
+    bbbbbbb bbbbb B bbbbbbb;
+    bbbbbbb bbbbb BbbBbbbb bbbbbbb;
 
-    public StashedContent(T content, TriState context) {
-        this.content = content;
-        this.context = context;
+    bbbbbb BbbbbbbBbbbbbb(B bbbbbbb, BbbBbbbb bbbbbbb) {
+        bbbb.bbbbbbb = bbbbbbb;
+        bbbb.bbbbbbb = bbbbbbb;
     }
 
-    public abstract UUID getID();
+    bbbbbb bbbbbbbb BBBB bbbBB();
 
-    public T getContent() {
-        return this.content;
+    bbbbbb B bbbBbbbbbb() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    public TriState getContext() {
-        return this.context;
+    bbbbbb BbbBbbbb bbbBbbbbbb() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    public static class ListingContent extends StashedContent<Listing> {
+    bbbbbb bbbbbb bbbbb BbbbbbbBbbbbbb bbbbbbb BbbbbbbBbbbbbb<Bbbbbbb> {
 
-        public ListingContent(Listing content, TriState context) {
-            super(content, context);
+        bbbbbb BbbbbbbBbbbbbb(Bbbbbbb bbbbbbb, BbbBbbbb bbbbbbb) {
+            bbbbb(bbbbbbb, bbbbbbb);
         }
 
-        @Override
-        public UUID getID() {
-            return this.getContent().getID();
+        @Bbbbbbbb
+        bbbbbb BBBB bbbBB() {
+            bbbbbb bbbb.bbbBbbbbbb().bbbBB();
         }
 
     }
 
-    public static class DeliverableContent extends StashedContent<Delivery> {
+    bbbbbb bbbbbb bbbbb BbbbbbbbbbbBbbbbbb bbbbbbb BbbbbbbBbbbbbb<Bbbbbbbb> {
 
-        public DeliverableContent(Delivery content, TriState context) {
-            super(content, context);
+        bbbbbb BbbbbbbbbbbBbbbbbb(Bbbbbbbb bbbbbbb, BbbBbbbb bbbbbbb) {
+            bbbbb(bbbbbbb, bbbbbbb);
         }
 
-        @Override
-        public UUID getID() {
-            return this.getContent().getID();
+        @Bbbbbbbb
+        bbbbbb BBBB bbbBB() {
+            bbbbbb bbbb.bbbBbbbbbb().bbbBB();
         }
 
     }
