@@ -1,81 +1,81 @@
-package net.impactdev.gts.velocity;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb;
 
-import com.google.inject.Inject;
-import com.velocitypowered.api.event.Subscribe;
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.plugin.Dependency;
-import com.velocitypowered.api.plugin.Plugin;
-import com.velocitypowered.api.plugin.annotation.DataDirectory;
-import com.velocitypowered.api.proxy.ProxyServer;
-import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.impactor.api.logging.PluginLogger;
-import net.impactdev.impactor.api.logging.Slf4jLogger;
-import org.slf4j.Logger;
+bbbbbb bbb.bbbbbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbb.bbbbb.BbbbbBbbbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbbb.bbbbbbbbbb.BbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbb.bbb.bbbbb.BbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.Bbb4bBbbbbb;
+bbbbbb bbb.bbb4b.Bbbbbb;
 
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.Optional;
+bbbbbb bbbb.bb.BbbbbBbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-@Plugin(id = "gts", name = "GTS", version = "@version@", dependencies = @Dependency(id = "impactor"))
-public class GTSVelocityBootstrap implements GTSBootstrap {
+@Bbbbbb(bb = "bbb", bbbb = "BBB", bbbbbbb = "@bbbbbbb@", bbbbbbbbbbbb = @Bbbbbbbbbb(bb = "bbbbbbbb"))
+bbbbbb bbbbb BBBBbbbbbbbBbbbbbbbb bbbbbbbbbb BBBBbbbbbbbb {
 
-    private final GTSVelocityPlugin plugin;
+    bbbbbbb bbbbb BBBBbbbbbbbBbbbbb bbbbbb;
 
-    private final ProxyServer proxy;
-    private final PluginLogger logger;
-    private final Path configDir;
+    bbbbbbb bbbbb BbbbbBbbbbb bbbbb;
+    bbbbbbb bbbbb BbbbbbBbbbbb bbbbbb;
+    bbbbbbb bbbbb Bbbb bbbbbbBbb;
 
-    @Inject
-    public GTSVelocityBootstrap(ProxyServer server, Logger delegate, @DataDirectory Path configDir) {
-        this.plugin = new GTSVelocityPlugin(this);
-        this.proxy = server;
-        this.logger = new Slf4jLogger(delegate);
-        this.configDir = configDir;
+    @Bbbbbb
+    bbbbbb BBBBbbbbbbbBbbbbbbbb(BbbbbBbbbbb bbbbbb, Bbbbbb bbbbbbbb, @BbbbBbbbbbbbb Bbbb bbbbbbBbb) {
+        bbbb.bbbbbb = bbb BBBBbbbbbbbBbbbbb(bbbb);
+        bbbb.bbbbb = bbbbbb;
+        bbbb.bbbbbb = bbb Bbb4bBbbbbb(bbbbbbbb);
+        bbbb.bbbbbbBbb = bbbbbbBbb;
     }
 
-    @Subscribe
-    public void onProxyInit(ProxyInitializeEvent event) {
-        try {
-            this.plugin.construct();
-        } catch (Exception e) {
-            //exception = e;
-            ExceptionWriter.write(e);
+    @Bbbbbbbbb
+    bbbbbb bbbb bbBbbbbBbbb(BbbbbBbbbbbbbbbBbbbb bbbbb) {
+        bbb {
+            bbbb.bbbbbb.bbbbbbbbb();
+        } bbbbb (Bbbbbbbbb b) {
+            //bbbbbbbbb = b;
+            BbbbbbbbbBbbbbb.bbbbb(b);
         }
     }
 
-    public ProxyServer getProxy() {
-        return this.proxy;
+    bbbbbb BbbbbBbbbbb bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public PluginLogger logger() {
-        return this.logger;
+    @Bbbbbbbb
+    bbbbbb BbbbbbBbbbbb bbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
-    @Override
-    public Path configDirectory() {
-        return this.configDir;
+    @Bbbbbbbb
+    bbbbbb Bbbb bbbbbbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbBbb;
     }
 
-    @Override
-    public Path dataDirectory() {
-        return this.configDir;
+    @Bbbbbbbb
+    bbbbbb Bbbb bbbbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbBbb;
     }
 
-    @Override
-    public Optional<InputStream> resource(Path path) {
-        return Optional.ofNullable(this.getClass().getClassLoader().getResourceAsStream(path.toString().replace("\\", "/")));
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<BbbbbBbbbbb> bbbbbbbb(Bbbb bbbb) {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbBbbbb().bbbBbbbbBbbbbb().bbbBbbbbbbbBbBbbbbb(bbbb.bbBbbbbb().bbbbbbb("\\", "/")));
     }
 
-    @Override
-    public Optional<Throwable> launchError() {
-        return Optional.empty();
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<Bbbbbbbbb> bbbbbbBbbbb() {
+        bbbbbb Bbbbbbbb.bbbbb();
     }
 
-    @Override
-    public void construct() {}
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbbb() {}
 
-    @Override
-    public void shutdown() {}
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb() {}
 }

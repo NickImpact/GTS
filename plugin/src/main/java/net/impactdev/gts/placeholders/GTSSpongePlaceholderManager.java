@@ -1,506 +1,506 @@
-package net.impactdev.gts.placeholders;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbbbbb;
 
-import com.github.benmanes.caffeine.cache.AsyncCacheLoader;
-import com.github.benmanes.caffeine.cache.AsyncLoadingCache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import io.leangen.geantyref.TypeToken;
-import net.impactdev.gts.api.listings.makeup.Fees;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.util.groupings.SimilarPair;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.utils.EconomicFormatter;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.gts.placeholders.parsers.IdentifiableParser;
-import net.impactdev.gts.placeholders.parsers.concurrent.AsyncUserSourcedPlaceholder;
-import net.impactdev.gts.SpongeGTSPlugin;
-import net.impactdev.gts.ui.submenu.SpongeListingMenu;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.utilities.Time;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.placeholders.parsers.SourceSpecificPlaceholderParser;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.utilities.mappings.Tuple;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.ComponentLike;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.mariuszgromada.math.mxparser.Argument;
-import org.mariuszgromada.math.mxparser.Expression;
-import org.spongepowered.api.ResourceKey;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.item.enchantment.Enchantment;
-import org.spongepowered.api.item.inventory.ItemStackSnapshot;
-import org.spongepowered.api.placeholder.PlaceholderContext;
-import org.spongepowered.api.placeholder.PlaceholderParser;
-import org.spongepowered.api.service.permission.Subject;
-import org.spongepowered.plugin.PluginContainer;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.BbbbbBbbbbBbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.BbbbbBbbbbbbBbbbb;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bb.bbbbbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.BbbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbb.BbbbbbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbbbbb.bbbbbbb.BbbbbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbbbbb.bbbbbbb.bbbbbbbbbb.BbbbbBbbbBbbbbbbBbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbbBBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbbbb.BbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.BbbbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbbbbb.bbbbbbb.BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbbBbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.BbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbb.bbbb.bbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.BbbbbbbbBbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bbbb.BbbBbbbbbb;
+bbbbbb bbbb.bbbb.BbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
 
-public class GTSSpongePlaceholderManager {
+bbbbbb bbbbb BBBBbbbbbBbbbbbbbbbbBbbbbbb {
 
-    private final List<PlaceholderMetadata> parsers = Lists.newArrayList();
-    private final ResourceKey.Builder key = ResourceKey.builder()
-            .namespace("gts");
+    bbbbbbb bbbbb Bbbb<BbbbbbbbbbbBbbbbbbb> bbbbbbb = Bbbbb.bbbBbbbbBbbb();
+    bbbbbbb bbbbb BbbbbbbbBbb.Bbbbbbb bbb = BbbbbbbbBbb.bbbbbbb()
+            .bbbbbbbbb("bbb");
 
-    public GTSSpongePlaceholderManager() {
-        this.populate();
+    bbbbbb BBBBbbbbbBbbbbbbbbbbBbbbbbb() {
+        bbbb.bbbbbbbb();
     }
 
-    public void register(PlaceholderMetadata parser) {
-        this.parsers.add(parser);
+    bbbbbb bbbb bbbbbbbb(BbbbbbbbbbbBbbbbbbb bbbbbb) {
+        bbbb.bbbbbbb.bbb(bbbbbb);
     }
 
-    private void register(IdentifiableParser parser) {
-        this.parsers.add(PlaceholderMetadata.of(
-                this.key.value(parser.key()).build(),
-                parser
+    bbbbbbb bbbb bbbbbbbb(BbbbbbbbbbbbBbbbbb bbbbbb) {
+        bbbb.bbbbbbb.bbb(BbbbbbbbbbbBbbbbbbb.bb(
+                bbbb.bbb.bbbbb(bbbbbb.bbb()).bbbbb(),
+                bbbbbb
         ));
     }
 
-    public ImmutableList<PlaceholderMetadata> getAllParsers() {
-        return ImmutableList.copyOf(this.parsers);
+    bbbbbb BbbbbbbbbBbbb<BbbbbbbbbbbBbbbbbbb> bbbBbbBbbbbbb() {
+        bbbbbb BbbbbbbbbBbbb.bbbbBb(bbbb.bbbbbbb);
     }
 
-    public void populate() {
-        Config msgConf = GTSPlugin.instance().configuration().language();
-        MessageService processor = Impactor.getInstance().getRegistry().get(MessageService.class);
-        PluginContainer container = GTSPlugin.instance().as(SpongeGTSPlugin.class).container();
+    bbbbbb bbbb bbbbbbbb() {
+        Bbbbbb bbbBbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+        BbbbbbbBbbbbbb bbbbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+        BbbbbbBbbbbbbbb bbbbbbbbb = BBBBbbbbb.bbbbbbbb().bb(BbbbbbBBBBbbbbb.bbbbb).bbbbbbbbb();
 
-        this.register(this.create("prefix", context -> processor.parse(msgConf.get(MsgConfigKeys.PREFIX))));
-        this.register(this.create("error", context -> processor.parse(msgConf.get(MsgConfigKeys.ERROR_PREFIX))));
-        this.register(new SourceSpecificPlaceholderParser.Decorative<>(
-                Listing.class,
-                "seller",
-                listing -> this.userCache.get(listing.getLister()).getNow(Component.text("Pooling..."))
+        bbbb.bbbbbbbb(bbbb.bbbbbb("bbbbbb", bbbbbbb -> bbbbbbbbb.bbbbb(bbbBbbb.bbb(BbbBbbbbbBbbb.BBBBBB))));
+        bbbb.bbbbbbbb(bbbb.bbbbbb("bbbbb", bbbbbbb -> bbbbbbbbb.bbbbb(bbbBbbb.bbb(BbbBbbbbbBbbb.BBBBB_BBBBBB))));
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb.Bbbbbbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbbb",
+                bbbbbbb -> bbbb.bbbbBbbbb.bbb(bbbbbbb.bbbBbbbbb()).bbbBbb(Bbbbbbbbb.bbbb("Bbbbbbb..."))
         ));
-        this.register(new SourceSpecificPlaceholderParser.Decorative<>(
-                UUID.class,
-                "purchaser",
-                id -> this.userCache.get(id).getNow(Component.text("Pooling..."))
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb.Bbbbbbbbbb<>(
+                BBBB.bbbbb,
+                "bbbbbbbbb",
+                bb -> bbbb.bbbbBbbbb.bbb(bb).bbbBbb(Bbbbbbbbb.bbbb("Bbbbbbb..."))
         ));
 
-        // Listing Related Placeholders
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Listing.class,
-                "listing_id",
-                listing -> Component.text(listing.getID().toString())
+        // Bbbbbbb Bbbbbbb Bbbbbbbbbbbb
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbbbb_bb",
+                bbbbbbb -> Bbbbbbbbb.bbbb(bbbbbbb.bbbBB().bbBbbbbb())
         ));
-        this.register(new SourceSpecificPlaceholderParser.Decorative<>(
-                Listing.class,
-                "listing_name",
-                listing -> listing.getEntry().getName()
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb.Bbbbbbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbbbb_bbbb",
+                bbbbbbb -> bbbbbbb.bbbBbbbb().bbbBbbb()
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Listing.class,
-                "listing_details",
-                listing -> listing.getEntry().getDescription()
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbbbb_bbbbbbb",
+                bbbbbbb -> bbbbbbb.bbbBbbbb().bbbBbbbbbbbbbb()
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Listing.class,
-                "listing_status",
-                listing -> {
-                    final MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbbbb_bbbbbb",
+                bbbbbbb -> {
+                    bbbbb BbbbbbbBbbbbbb bbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
 
-                    if(listing instanceof BuyItNow && ((BuyItNow) listing).isPurchased()) {
-                        return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STATUS_PURCHASED));
+                    bb(bbbbbbb bbbbbbbbbb BbbBbBbb && ((BbbBbBbb) bbbbbbb).bbBbbbbbbbb()) {
+                        bbbbbb bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBB_BBBBBBBBB));
                     }
 
-                    LocalDateTime expiration = listing.getExpiration();
-                    LocalDateTime now = LocalDateTime.now();
-                    Time time = new Time(Duration.between(now, expiration).getSeconds());
-                    if(time.getTime() <= 0) {
-                        return parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.STATUS_TIME_EXPIRED));
+                    BbbbbBbbbBbbb bbbbbbbbbb = bbbbbbb.bbbBbbbbbbbbb();
+                    BbbbbBbbbBbbb bbb = BbbbbBbbbBbbb.bbb();
+                    Bbbb bbbb = bbb Bbbb(Bbbbbbbb.bbbbbbb(bbb, bbbbbbbbbb).bbbBbbbbbb());
+                    bb(bbbb.bbbBbbb() <= 0) {
+                        bbbbbb bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBB_BBBB_BBBBBBB));
                     }
 
-                    PlaceholderSources sources = PlaceholderSources.builder()
-                            .append(Time.class, () -> time)
-                            .build();
-                    return parser.parse(
-                            Utilities.readMessageConfigOption(MsgConfigKeys.TIME_REMAINING_TRANSLATION),
-                            sources
+                    BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                            .bbbbbb(Bbbb.bbbbb, () -> bbbb)
+                            .bbbbb();
+                    bbbbbb bbbbbb.bbbbb(
+                            Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBB_BBBBBBBBB_BBBBBBBBBBB),
+                            bbbbbbb
                     );
                 }
         ));
 
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Price.class,
-                "price_selection",
-                Price::getText
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbb.bbbbb,
+                "bbbbb_bbbbbbbbb",
+                Bbbbb::bbbBbbb
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Tuple.class,
-                "price_fee",
-                wrapper -> {
-                    if(wrapper.getFirst() instanceof Price && wrapper.getSecond() instanceof Boolean) {
-                        Price<?, ?, ?> price = (Price<?, ?, ?>) wrapper.getFirst();
-                        boolean listingType = (Boolean) wrapper.getSecond();
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbb.bbbbb,
+                "bbbbb_bbb",
+                bbbbbbb -> {
+                    bb(bbbbbbb.bbbBbbbb() bbbbbbbbbb Bbbbb && bbbbbbb.bbbBbbbbb() bbbbbbbbbb Bbbbbbb) {
+                        Bbbbb<?, ?, ?> bbbbb = (Bbbbb<?, ?, ?>) bbbbbbb.bbbBbbbb();
+                        bbbbbbb bbbbbbbBbbb = (Bbbbbbb) bbbbbbb.bbbBbbbbb();
 
-                        return Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(price.calculateFee(listingType));
+                        bbbbbb Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbBbbbbbbbb.bbbbb).bbbbbb(bbbbb.bbbbbbbbbBbb(bbbbbbbBbbb));
                     }
 
-                    return Component.empty();
+                    bbbbbb Bbbbbbbbb.bbbbb();
                 }
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Boolean.class,
-                "price_fee_rate",
-                state -> {
-                    ConfigKey<Float> key = state ? ConfigKeys.FEES_STARTING_PRICE_RATE_BIN : ConfigKeys.FEES_STARTING_PRICE_RATE_AUCTION;
-                    float rate = GTSPlugin.instance().configuration().main().get(key);
-                    DecimalFormat df = new DecimalFormat("#0.##");
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbb_bbb_bbbb",
+                bbbbb -> {
+                    BbbbbbBbb<Bbbbb> bbb = bbbbb ? BbbbbbBbbb.BBBB_BBBBBBBB_BBBBB_BBBB_BBB : BbbbbbBbbb.BBBB_BBBBBBBB_BBBBB_BBBB_BBBBBBB;
+                    bbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(bbb);
+                    BbbbbbbBbbbbb bb = bbb BbbbbbbBbbbbb("#0.##");
 
-                    return Component.text(df.format(rate * 100) + "%");
-                }
-        ));
-
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Time.class,
-                "time",
-                Utilities::translateTime
-        ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Time.class,
-                "time_short",
-                time -> Component.text(time.asPatternized())
-        ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Time.class,
-                "time_fee",
-                time -> {
-                    org.mariuszgromada.math.mxparser.Function function = GTSPlugin.instance().configuration().main().get(ConfigKeys.FEE_TIME_EQUATION);
-                    SimilarPair<Argument> arguments = Utilities.calculateTimeFee(time);
-                    Expression expression = new Expression("f(hours,minutes)", function, arguments.getFirst(), arguments.getSecond());
-                    return Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(expression.calculate());
+                    bbbbbb Bbbbbbbbb.bbbb(bb.bbbbbb(bbbb * 100) + "%");
                 }
         ));
 
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Fees.class,
-                "fees",
-                fees -> {
-                    Component result = Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(fees.getTotal());
-
-                    final MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-
-                    PlaceholderSources sources = PlaceholderSources.builder()
-                            .append(new TypeToken<Tuple<Price<?, ?, ?>, Boolean>>() {}, fees::getPrice)
-                            .append(Time.class, () -> fees.getTime().getFirst())
-                            .build();
-
-                    TextComponent hover = Component.text()
-                            .append(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.FEE_PRICE_FORMAT), sources))
-                            .append(Component.newline())
-                            .append(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.FEE_TIME_FORMAT), sources))
-                            .build();
-                    return result.hoverEvent(HoverEvent.showText(hover));
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbb.bbbbb,
+                "bbbb",
+                Bbbbbbbbb::bbbbbbbbbBbbb
+        ));
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbb.bbbbb,
+                "bbbb_bbbbb",
+                bbbb -> Bbbbbbbbb.bbbb(bbbb.bbBbbbbbbbbbb())
+        ));
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbb.bbbbb,
+                "bbbb_bbb",
+                bbbb -> {
+                    bbb.bbbbbbbbbbbbbb.bbbb.bbbbbbbb.Bbbbbbbb bbbbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBB_BBBB_BBBBBBBB);
+                    BbbbbbbBbbb<Bbbbbbbb> bbbbbbbbb = Bbbbbbbbb.bbbbbbbbbBbbbBbb(bbbb);
+                    Bbbbbbbbbb bbbbbbbbbb = bbb Bbbbbbbbbb("b(bbbbb,bbbbbbb)", bbbbbbbb, bbbbbbbbb.bbbBbbbb(), bbbbbbbbb.bbbBbbbbb());
+                    bbbbbb Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbBbbbbbbbb.bbbbb).bbbbbb(bbbbbbbbbb.bbbbbbbbb());
                 }
         ));
 
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Double.class,
-                "min_price",
-                value -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value))
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbb.bbbbb,
+                "bbbb",
+                bbbb -> {
+                    Bbbbbbbbb bbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbBbbbbbbbb.bbbbb).bbbbbb(bbbb.bbbBbbbb());
+
+                    bbbbb BbbbbbbBbbbbbb bbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+
+                    BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                            .bbbbbb(bbb BbbbBbbbb<Bbbbb<Bbbbb<?, ?, ?>, Bbbbbbb>>() {}, bbbb::bbbBbbbb)
+                            .bbbbbb(Bbbb.bbbbb, () -> bbbb.bbbBbbb().bbbBbbbb())
+                            .bbbbb();
+
+                    BbbbBbbbbbbbb bbbbb = Bbbbbbbbb.bbbb()
+                            .bbbbbb(bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBB_BBBBB_BBBBBB), bbbbbbb))
+                            .bbbbbb(Bbbbbbbbb.bbbbbbb())
+                            .bbbbbb(bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBB_BBBB_BBBBBB), bbbbbbb))
+                            .bbbbb();
+                    bbbbbb bbbbbb.bbbbbBbbbb(BbbbbBbbbb.bbbbBbbb(bbbbb));
+                }
+        ));
+
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbb.bbbbb,
+                "bbb_bbbbb",
+                bbbbb -> Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbBbbbbbbbb.bbbbb).bbbbbb(bbbbb))
         );
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Double.class,
-                "max_price",
-                value -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value))
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbb.bbbbb,
+                "bbb_bbbbb",
+                bbbbb -> Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbBbbbbbbbb.bbbbb).bbbbbb(bbbbb))
         );
 
-        // Buy It Now
-        this.register(new SourceSpecificPlaceholderParser<>(
-                BuyItNow.class,
-                "bin_price",
-                bin -> bin.getPrice().getText()
+        // Bbb Bb Bbb
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                BbbBbBbb.bbbbb,
+                "bbb_bbbbb",
+                bbb -> bbb.bbbBbbbb().bbbBbbb()
         ));
 
-        // Auction Related Placeholders
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Auction.class,
-                "auction_bids",
-                auction -> Component.text(auction.getBids().size())
+        // Bbbbbbb Bbbbbbb Bbbbbbbbbbbb
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbbbb_bbbb",
+                bbbbbbb -> Bbbbbbbbb.bbbb(bbbbbbb.bbbBbbb().bbbb())
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Auction.class,
-                "auction_start_price",
-                auction -> Sponge.server().serviceProvider()
-                        .economyService()
-                        .orElseThrow(IllegalStateException::new)
-                        .defaultCurrency()
-                        .format(BigDecimal.valueOf(auction.getStartingPrice()))
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbbbb_bbbbb_bbbbb",
+                bbbbbbb -> Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb()
+                        .bbbbbbbBbbbbbb()
+                        .bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb)
+                        .bbbbbbbBbbbbbbb()
+                        .bbbbbb(BbbBbbbbbb.bbbbbBb(bbbbbbb.bbbBbbbbbbbBbbbb()))
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Auction.class,
-                "auction_current_price",
-                auction -> Sponge.server().serviceProvider()
-                        .economyService()
-                        .orElseThrow(IllegalStateException::new)
-                        .defaultCurrency()
-                        .format(BigDecimal.valueOf(auction.getCurrentPrice()))
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbbbb_bbbbbbb_bbbbb",
+                bbbbbbb -> Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb()
+                        .bbbbbbbBbbbbbb()
+                        .bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb)
+                        .bbbbbbbBbbbbbbb()
+                        .bbbbbb(BbbBbbbbbb.bbbbbBb(bbbbbbb.bbbBbbbbbbBbbbb()))
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Auction.class,
-                "auction_high_bid",
-                auction -> Sponge.server().serviceProvider()
-                        .economyService()
-                        .orElseThrow(IllegalStateException::new)
-                        .defaultCurrency()
-                        .format(BigDecimal.valueOf(auction.getHighBid().map(Tuple::getSecond).map(Auction.Bid::getAmount).orElseThrow(() -> new IllegalStateException("Unable to locate bid amount"))))
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbbbb_bbbb_bbb",
+                bbbbbbb -> Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb()
+                        .bbbbbbbBbbbbbb()
+                        .bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb)
+                        .bbbbbbbBbbbbbbb()
+                        .bbbbbb(BbbBbbbbbb.bbbbbBb(bbbbbbb.bbbBbbbBbb().bbb(Bbbbb::bbbBbbbbb).bbb(Bbbbbbb.Bbb::bbbBbbbbb).bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbb bbbbbb"))))
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Auction.class,
-                "auction_high_bidder",
-                auction -> {
-                    if(auction.getHighBid().isPresent()) {
-                        return this.userCache.get(auction.getLister())
-                                .getNow(Component.text("Pooling..."));
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbbbb_bbbb_bbbbbb",
+                bbbbbbb -> {
+                    bb(bbbbbbb.bbbBbbbBbb().bbBbbbbbb()) {
+                        bbbbbb bbbb.bbbbBbbbb.bbb(bbbbbbb.bbbBbbbbb())
+                                .bbbBbb(Bbbbbbbbb.bbbb("Bbbbbbb..."));
                     }
 
-                    return Component.empty();
+                    bbbbbb Bbbbbbbbb.bbbbb();
                 }
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                UUID.class,
-                "auction_bidder",
-                id -> this.userCache.get(id).getNow(Component.text("Pooling..."))
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                BBBB.bbbbb,
+                "bbbbbbb_bbbbbb",
+                bb -> bbbb.bbbbBbbbb.bbb(bb).bbbBbb(Bbbbbbbbb.bbbb("Bbbbbbb..."))
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Auction.class,
-                "auction_next_required_bid",
-                auction -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(auction.getNextBidRequirement())
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbbbb_bbbb_bbbbbbbb_bbb",
+                bbbbbbb -> Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbBbbbbbbbb.bbbbb).bbbbbb(bbbbbbb.bbbBbbbBbbBbbbbbbbbbb())
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Double.class,
-                "auction_previous_user_bid",
-                value -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(value)
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbb.bbbbb,
+                "bbbbbbb_bbbbbbbb_bbbb_bbb",
+                bbbbb -> Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbBbbbbbbbb.bbbbb).bbbbbb(bbbbb)
         ));
 
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Auction.BidContext.class,
-                "auction_bid_amount",
-                bid -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(bid.getBid().getAmount())
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.BbbBbbbbbb.bbbbb,
+                "bbbbbbb_bbb_bbbbbb",
+                bbb -> Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbBbbbbbbbb.bbbbb).bbbbbb(bbb.bbbBbb().bbbBbbbbb())
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Auction.BidContext.class,
-                "auction_bid_actor",
-                bid -> this.userCache.get(bid.getBidder()).getNow(Component.text("Pooling..."))
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.BbbBbbbbbb.bbbbb,
+                "bbbbbbb_bbb_bbbbb",
+                bbb -> bbbb.bbbbBbbbb.bbb(bbb.bbbBbbbbb()).bbbBbb(Bbbbbbbbb.bbbb("Bbbbbbb..."))
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Auction.BidContext.class,
-                "auction_bid_since_placed",
-                bid -> {
-                    Duration duration = Duration.between(bid.getBid().getTimestamp(), LocalDateTime.now());
-                    Time time = new Time(duration.getSeconds());
-                    if(time.getTime() < 60) {
-                        return Component.text(GTSPlugin.instance().configuration().language().get(MsgConfigKeys.TIME_MOMENTS_TRANSLATION));
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.BbbBbbbbbb.bbbbb,
+                "bbbbbbb_bbb_bbbbb_bbbbbb",
+                bbb -> {
+                    Bbbbbbbb bbbbbbbb = Bbbbbbbb.bbbbbbb(bbb.bbbBbb().bbbBbbbbbbbb(), BbbbbBbbbBbbb.bbb());
+                    Bbbb bbbb = bbb Bbbb(bbbbbbbb.bbbBbbbbbb());
+                    bb(bbbb.bbbBbbb() < 60) {
+                        bbbbbb Bbbbbbbbb.bbbb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb().bbb(BbbBbbbbbBbbb.BBBB_BBBBBBB_BBBBBBBBBBB));
                     }
 
-                    return Utilities.translateTimeHighest(time);
+                    bbbbbb Bbbbbbbbb.bbbbbbbbbBbbbBbbbbbb(bbbb);
                 }
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Double.class,
-                "auction_outbid_amount",
-                difference -> Impactor.getInstance().getRegistry().get(EconomicFormatter.class).format(difference)
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbb.bbbbb,
+                "bbbbbbb_bbbbbb_bbbbbb",
+                bbbbbbbbbb -> Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbBbbbbbbbb.bbbbb).bbbbbb(bbbbbbbbbb)
         ));
 
-        this.register(new SourceSpecificPlaceholderParser<>(
-                Integer.class,
-                "stash_returned",
-                Component::text
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                Bbbbbbb.bbbbb,
+                "bbbbb_bbbbbbbb",
+                Bbbbbbbbb::bbbb
         ));
 
-        this.register(new SourceSpecificPlaceholderParser<>(
-                SpongeListingMenu.Searching.class,
-                "search_query",
-                query -> Component.text(query.getQuery())
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                BbbbbbBbbbbbbBbbb.Bbbbbbbbb.bbbbb,
+                "bbbbbb_bbbbb",
+                bbbbb -> Bbbbbbbbb.bbbb(bbbbb.bbbBbbbb())
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                ErrorCode.class,
-                "error_code",
-                error -> Component.text(error.getKey())
-                        .hoverEvent(HoverEvent.showText(Component.text(error.getDescription())))
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                BbbbbBbbb.bbbbb,
+                "bbbbb_bbbb",
+                bbbbb -> Bbbbbbbbb.bbbb(bbbbb.bbbBbb())
+                        .bbbbbBbbbb(BbbbbBbbbb.bbbbBbbb(Bbbbbbbbb.bbbb(bbbbb.bbbBbbbbbbbbbb())))
         ));
-        this.register(this.create(
-                "max_listings",
-                context -> Component.text(GTSPlugin.instance().configuration().main().get(ConfigKeys.MAX_LISTINGS_PER_USER))
+        bbbb.bbbbbbbb(bbbb.bbbbbb(
+                "bbb_bbbbbbbb",
+                bbbbbbb -> Bbbbbbbbb.bbbb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBB_BBBBBBBB_BBB_BBBB))
         ));
-        this.register(AsyncUserSourcedPlaceholder.builder()
-                .type(Integer.class)
-                .id("active_bids")
-                .parser(Component::text)
-                .loader((uuid, executor) -> GTSPlugin.instance().storage()
-                        .fetchListings(Lists.newArrayList(
-                                listing -> listing instanceof Auction,
-                                listing -> !listing.hasExpired()
+        bbbb.bbbbbbbb(BbbbbBbbbBbbbbbbBbbbbbbbbbb.bbbbbbb()
+                .bbbb(Bbbbbbb.bbbbb)
+                .bb("bbbbbb_bbbb")
+                .bbbbbb(Bbbbbbbbb::bbbb)
+                .bbbbbb((bbbb, bbbbbbbb) -> BBBBbbbbb.bbbbbbbb().bbbbbbb()
+                        .bbbbbBbbbbbbb(Bbbbb.bbbBbbbbBbbb(
+                                bbbbbbb -> bbbbbbb bbbbbbbbbb Bbbbbbb,
+                                bbbbbbb -> !bbbbbbb.bbbBbbbbbb()
                         ))
-                        .thenApply(listings -> listings.stream().map(listing -> (Auction) listing).collect(Collectors.toList()))
-                        .thenApply(auctions -> {
-                            int bids = 0;
-                            for (Auction auction : auctions) {
-                                if (auction.getBids().containsKey(uuid)) {
-                                    ++bids;
+                        .bbbbBbbbb(bbbbbbbb -> bbbbbbbb.bbbbbb().bbb(bbbbbbb -> (Bbbbbbb) bbbbbbb).bbbbbbb(Bbbbbbbbbb.bbBbbb()))
+                        .bbbbBbbbb(bbbbbbbb -> {
+                            bbb bbbb = 0;
+                            bbb (Bbbbbbb bbbbbbb : bbbbbbbb) {
+                                bb (bbbbbbb.bbbBbbb().bbbbbbbbBbb(bbbb)) {
+                                    ++bbbb;
                                 }
                             }
 
-                            return bids;
+                            bbbbbb bbbb;
                         })
                 )
-                .def(0)
-                .build()
+                .bbb(0)
+                .bbbbb()
         );
-        this.register(new SourceSpecificPlaceholderParser<>(
-                TextComponent.class,
-                "claim_item",
-                result -> result
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                BbbbBbbbbbbbb.bbbbb,
+                "bbbbb_bbbb",
+                bbbbbb -> bbbbbb
         ));
 
-        // Item Based Placeholders
-        this.register(new SourceSpecificPlaceholderParser<>(
-                ItemStackSnapshot.class,
-                "item_lore",
-                snapshot -> {
-                    TextComponent.Builder result = Component.text();
-                    List<Component> lines = snapshot.get(Keys.LORE).orElse(Lists.newArrayList());
+        // Bbbb Bbbbb Bbbbbbbbbbbb
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                BbbbBbbbbBbbbbbbb.bbbbb,
+                "bbbb_bbbb",
+                bbbbbbbb -> {
+                    BbbbBbbbbbbbb.Bbbbbbb bbbbbb = Bbbbbbbbb.bbbb();
+                    Bbbb<Bbbbbbbbb> bbbbb = bbbbbbbb.bbb(Bbbb.BBBB).bbBbbb(Bbbbb.bbbBbbbbBbbb());
 
-                    if(lines.size() > 0) {
-                        for (int i = 0; i < lines.size() - 1; i++) {
-                            result.append(lines.get(i)).append(Component.newline());
+                    bb(bbbbb.bbbb() > 0) {
+                        bbb (bbb b = 0; b < bbbbb.bbbb() - 1; b++) {
+                            bbbbbb.bbbbbb(bbbbb.bbb(b)).bbbbbb(Bbbbbbbbb.bbbbbbb());
                         }
 
-                        result.append(lines.get(lines.size() - 1));
+                        bbbbbb.bbbbbb(bbbbb.bbb(bbbbb.bbbb() - 1));
                     }
 
-                    return result.build();
+                    bbbbbb bbbbbb.bbbbb();
                 }
         ));
-        this.register(new SourceSpecificPlaceholderParser<>(
-                ItemStackSnapshot.class,
-                "item_enchantments",
-                snapshot -> {
-                    TextComponent.Builder result = Component.text();
-                    List<ComponentLike> lines = snapshot.get(Keys.APPLIED_ENCHANTMENTS)
-                            .map(enchantments -> {
-                                List<ComponentLike> data = Lists.newArrayList();
-                                for(Enchantment enchantment : enchantments) {
-                                    data.add(enchantment.type());
+        bbbb.bbbbbbbb(bbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<>(
+                BbbbBbbbbBbbbbbbb.bbbbb,
+                "bbbb_bbbbbbbbbbbb",
+                bbbbbbbb -> {
+                    BbbbBbbbbbbbb.Bbbbbbb bbbbbb = Bbbbbbbbb.bbbb();
+                    Bbbb<BbbbbbbbbBbbb> bbbbb = bbbbbbbb.bbb(Bbbb.BBBBBBB_BBBBBBBBBBBB)
+                            .bbb(bbbbbbbbbbbb -> {
+                                Bbbb<BbbbbbbbbBbbb> bbbb = Bbbbb.bbbBbbbbBbbb();
+                                bbb(Bbbbbbbbbbb bbbbbbbbbbb : bbbbbbbbbbbb) {
+                                    bbbb.bbb(bbbbbbbbbbb.bbbb());
                                 }
 
-                                return data;
+                                bbbbbb bbbb;
                             })
-                            .orElse(Lists.newArrayList());
+                            .bbBbbb(Bbbbb.bbbBbbbbBbbb());
 
-                    if(lines.size() > 0) {
-                        for (int i = 0; i < lines.size() - 1; i++) {
-                            result.append(lines.get(i)).append(Component.newline());
+                    bb(bbbbb.bbbb() > 0) {
+                        bbb (bbb b = 0; b < bbbbb.bbbb() - 1; b++) {
+                            bbbbbb.bbbbbb(bbbbb.bbb(b)).bbbbbb(Bbbbbbbbb.bbbbbbb());
                         }
 
-                        result.append(lines.get(lines.size() - 1));
+                        bbbbbb.bbbbbb(bbbbb.bbb(bbbbb.bbbb() - 1));
                     }
 
-                    return result.build();
+                    bbbbbb bbbbbb.bbbbb();
                 }
         ));
     }
 
-    private PlaceholderMetadata create(String key, Function<PlaceholderContext, Component> parser) {
-        return PlaceholderMetadata.of(
-                this.key.value(key).build(),
-                PlaceholderParser.builder()
-                        .parser(parser)
-                        .build()
+    bbbbbbb BbbbbbbbbbbBbbbbbbb bbbbbb(Bbbbbb bbb, Bbbbbbbb<BbbbbbbbbbbBbbbbbb, Bbbbbbbbb> bbbbbb) {
+        bbbbbb BbbbbbbbbbbBbbbbbbb.bb(
+                bbbb.bbb.bbbbb(bbb).bbbbb(),
+                BbbbbbbbbbbBbbbbb.bbbbbbb()
+                        .bbbbbb(bbbbbb)
+                        .bbbbb()
         );
     }
 
-    private Optional<String> getOptionFromSubject(Subject subject, String... options) {
-        for (String option : options) {
-            String o = option.toLowerCase();
+    bbbbbbb Bbbbbbbb<Bbbbbb> bbbBbbbbbBbbbBbbbbbb(Bbbbbbb bbbbbbb, Bbbbbb... bbbbbbb) {
+        bbb (Bbbbbb bbbbbb : bbbbbbb) {
+            Bbbbbb b = bbbbbb.bbBbbbbBbbb();
 
-            Optional<String> os = subject.option(o);
-            if (os.isPresent()) {
-                return os.map(r -> r.isEmpty() ? null : r);
+            Bbbbbbbb<Bbbbbb> bb = bbbbbbb.bbbbbb(b);
+            bb (bb.bbBbbbbbb()) {
+                bbbbbb bb.bbb(b -> b.bbBbbbb() ? bbbb : b);
             }
         }
 
-        return Optional.empty();
+        bbbbbb Bbbbbbbb.bbbbb();
     }
 
-    private AsyncLoadingCache<UUID, Component> userCache = Caffeine.newBuilder()
-            .expireAfterAccess(5, TimeUnit.MINUTES)
-            .buildAsync(new AsyncCacheLoader<UUID, Component>() {
-                @Override
-                public @NonNull CompletableFuture<Component> asyncLoad(@NonNull UUID key, @NonNull Executor executor) {
-                    return calculateDisplayName(key);
+    bbbbbbb BbbbbBbbbbbbBbbbb<BBBB, Bbbbbbbbb> bbbbBbbbb = Bbbbbbbb.bbbBbbbbbb()
+            .bbbbbbBbbbbBbbbbb(5, BbbbBbbb.BBBBBBB)
+            .bbbbbBbbbb(bbb BbbbbBbbbbBbbbbb<BBBB, Bbbbbbbbb>() {
+                @Bbbbbbbb
+                bbbbbb @BbbBbbb BbbbbbbbbbbBbbbbb<Bbbbbbbbb> bbbbbBbbb(@BbbBbbb BBBB bbb, @BbbBbbb Bbbbbbbb bbbbbbbb) {
+                    bbbbbb bbbbbbbbbBbbbbbbBbbb(bbb);
                 }
             });
 
-    private CompletableFuture<Component> calculateDisplayName(UUID id) {
-        return Sponge.server().userManager().loadOrCreate(id)
-                .thenApply(user -> {
-                    if(user == null || user.name() == null) {
-                        return Component.text("Unknown User");
+    bbbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbbbb> bbbbbbbbbBbbbbbbBbbb(BBBB bb) {
+        bbbbbb Bbbbbb.bbbbbb().bbbbBbbbbbb().bbbbBbBbbbbb(bb)
+                .bbbbBbbbb(bbbb -> {
+                    bb(bbbb == bbbb || bbbb.bbbb() == bbbb) {
+                        bbbbbb Bbbbbbbbb.bbbb("Bbbbbbb Bbbb");
                     }
 
-                    TextComponent.Builder component = Component.text();
+                    BbbbBbbbbbbbb.Bbbbbbb bbbbbbbbb = Bbbbbbbbb.bbbb();
 
-                    if(GTSPlugin.instance().configuration().main().get(ConfigKeys.SHOULD_SHOW_USER_PREFIX)) {
-                        Optional<String> prefix = this.getOptionFromSubject(user, "prefix");
-                        prefix.ifPresent(pre -> component.append(LegacyComponentSerializer.legacyAmpersand().deserialize(prefix.get())));
+                    bb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBB_BBBB_BBBB_BBBBBB)) {
+                        Bbbbbbbb<Bbbbbb> bbbbbb = bbbb.bbbBbbbbbBbbbBbbbbbb(bbbb, "bbbbbb");
+                        bbbbbb.bbBbbbbbb(bbb -> bbbbbbbbb.bbbbbb(BbbbbbBbbbbbbbbBbbbbbbbbb.bbbbbbBbbbbbbbb().bbbbbbbbbbb(bbbbbb.bbb())));
                     }
 
-                    Optional<String> color = this.getOptionFromSubject(user, "color");
-                    NamedTextColor translated = color.map(NamedTextColor.NAMES::value).orElse(null);
+                    Bbbbbbbb<Bbbbbb> bbbbb = bbbb.bbbBbbbbbBbbbBbbbbbb(bbbb, "bbbbb");
+                    BbbbbBbbbBbbbb bbbbbbbbbb = bbbbb.bbb(BbbbbBbbbBbbbb.BBBBB::bbbbb).bbBbbb(bbbb);
 
-                    Component name = Component.text(user.name());
-                    if(translated != null) {
-                        name = name.color(translated);
-                    } else {
-                        Style style = this.getDeepestStyle(component.build());
-                        name = name.style(style);
+                    Bbbbbbbbb bbbb = Bbbbbbbbb.bbbb(bbbb.bbbb());
+                    bb(bbbbbbbbbb != bbbb) {
+                        bbbb = bbbb.bbbbb(bbbbbbbbbb);
+                    } bbbb {
+                        Bbbbb bbbbb = bbbb.bbbBbbbbbbBbbbb(bbbbbbbbb.bbbbb());
+                        bbbb = bbbb.bbbbb(bbbbb);
                     }
 
-                    return component.append(Component.space()).append(name).build();
-                }).applyToEither(
-                        CompletableFutureManager.timeoutAfter(5, TimeUnit.SECONDS),
-                        Component::compact
+                    bbbbbb bbbbbbbbb.bbbbbb(Bbbbbbbbb.bbbbb()).bbbbbb(bbbb).bbbbb();
+                }).bbbbbBbBbbbbb(
+                        BbbbbbbbbbbBbbbbbBbbbbbb.bbbbbbbBbbbb(5, BbbbBbbb.BBBBBBB),
+                        Bbbbbbbbb::bbbbbbb
                 );
     }
 
-    private Style getDeepestStyle(Component component) {
-        if(component.children().isEmpty()) {
-            return component.style();
+    bbbbbbb Bbbbb bbbBbbbbbbBbbbb(Bbbbbbbbb bbbbbbbbb) {
+        bb(bbbbbbbbb.bbbbbbbb().bbBbbbb()) {
+            bbbbbb bbbbbbbbb.bbbbb();
         }
 
-        int size = component.children().size();
-        return this.getDeepestStyle(component.children().get(size - 1));
+        bbb bbbb = bbbbbbbbb.bbbbbbbb().bbbb();
+        bbbbbb bbbb.bbbBbbbbbbBbbbb(bbbbbbbbb.bbbbbbbb().bbb(bbbb - 1));
     }
 
 }

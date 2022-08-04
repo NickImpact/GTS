@@ -1,19 +1,19 @@
-package net.impactdev.gts.common.utils.lists;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb;
 
-public class Node<E> {
+bbbbbb bbbbb Bbbb<B> {
 
-	private E value;
-	Node<E> next;
+	bbbbbbb B bbbbb;
+	Bbbb<B> bbbb;
 
-	Node(E value) {
-		this.value = value;
+	Bbbb(B bbbbb) {
+		bbbb.bbbbb = bbbbb;
 	}
 
-	public E getValue() {
-		return this.value;
+	bbbbbb B bbbBbbbb() {
+		bbbbbb bbbb.bbbbb;
 	}
 
-	public void setValue(E value) {
-		this.value = value;
+	bbbbbb bbbb bbbBbbbb(B bbbbb) {
+		bbbb.bbbbb = bbbbb;
 	}
 }

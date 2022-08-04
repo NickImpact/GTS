@@ -1,39 +1,39 @@
-package net.impactdev.gts.launcher;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb;
 
-import net.impactdev.impactor.launcher.ImpactorPluginLauncher;
-import net.impactdev.impactor.launcher.JarInJarClassLoader;
-import net.impactdev.impactor.launcher.LaunchablePlugin;
-import net.impactdev.impactor.launcher.LauncherBootstrap;
-import net.md_5.bungee.api.plugin.Plugin;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbBbBbbBbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbbb;
+bbbbbb bbb.bb_5.bbbbbb.bbb.bbbbbb.Bbbbbb;
 
-public class BungeeLauncher extends Plugin implements LaunchablePlugin {
+bbbbbb bbbbb BbbbbbBbbbbbbb bbbbbbb Bbbbbb bbbbbbbbbb BbbbbbbbbbBbbbbb {
 
-    private static final String INTERNAL_JAR = "gts-bungee.jarinjar";
-    private static final String BOOTSTRAP_CLASS = "net.impactdev.gts.bungee.GTSBungeeBootstrap";
+    bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBBBB_BBB = "bbb-bbbbbb.bbbbbbbb";
+    bbbbbbb bbbbbb bbbbb Bbbbbb BBBBBBBBB_BBBBB = "bbb.bbbbbbbbb.bbb.bbbbbb.BBBBbbbbbBbbbbbbbb";
 
-    private final LauncherBootstrap plugin;
+    bbbbbbb bbbbb BbbbbbbbBbbbbbbbb bbbbbb;
 
-    public BungeeLauncher() {
-        this.plugin = ImpactorPluginLauncher.get().bootstrap(this.getClass().getClassLoader(), this);
+    bbbbbb BbbbbbBbbbbbbb() {
+        bbbb.bbbbbb = BbbbbbbbBbbbbbBbbbbbbb.bbb().bbbbbbbbb(bbbb.bbbBbbbb().bbbBbbbbBbbbbb(), bbbb);
     }
 
-    @Override
-    public void onEnable() {
-        this.plugin.construct();
+    @Bbbbbbbb
+    bbbbbb bbbb bbBbbbbb() {
+        bbbb.bbbbbb.bbbbbbbbb();
     }
 
-    @Override
-    public String path() {
-        return INTERNAL_JAR;
+    @Bbbbbbbb
+    bbbbbb Bbbbbb bbbb() {
+        bbbbbb BBBBBBBB_BBB;
     }
 
-    @Override
-    public String bootstrapper() {
-        return BOOTSTRAP_CLASS;
+    @Bbbbbbbb
+    bbbbbb Bbbbbb bbbbbbbbbbbb() {
+        bbbbbb BBBBBBBBB_BBBBB;
     }
 
-    @Override
-    public LauncherBootstrap create(JarInJarClassLoader loader) {
-        return loader.instantiatePlugin(this.bootstrapper(), Plugin.class, this);
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbBbbbbbbbb bbbbbb(BbbBbBbbBbbbbBbbbbb bbbbbb) {
+        bbbbbb bbbbbb.bbbbbbbbbbbBbbbbb(bbbb.bbbbbbbbbbbb(), Bbbbbb.bbbbb, bbbb);
     }
 }

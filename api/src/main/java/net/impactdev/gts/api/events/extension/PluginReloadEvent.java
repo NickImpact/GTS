@@ -1,7 +1,7 @@
-package net.impactdev.gts.api.events.extension;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.bbbbbbbbb;
 
-import net.impactdev.impactor.api.event.ImpactorEvent;
-import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbBbbbbb;
 
-@GenerateFactoryMethod
-public interface PluginReloadEvent extends ImpactorEvent {}
+@BbbbbbbbBbbbbbbBbbbbb
+bbbbbb bbbbbbbbb BbbbbbBbbbbbBbbbb bbbbbbb BbbbbbbbBbbbb {}

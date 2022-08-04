@@ -1,16 +1,16 @@
-package net.impactdev.gts.api.messaging.message.type.admin;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb;
 
-import net.impactdev.gts.api.maintenance.MaintenanceMode;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
 /**
- * Indicates the plugin is going into maintenance mode, wherein
+ * Bbbbbbbbb bbb bbbbbb bb bbbbb bbbb bbbbbbbbbbb bbbb, bbbbbbb
  */
-public interface MaintenanceUpdateMessage extends OutgoingMessage {
+bbbbbb bbbbbbbbb BbbbbbbbbbbBbbbbbBbbbbbb bbbbbbb BbbbbbbbBbbbbbb {
 
-    @NonNull MaintenanceMode mode();
+    @BbbBbbb BbbbbbbbbbbBbbb bbbb();
 
-    boolean state();
+    bbbbbbb bbbbb();
 
 }

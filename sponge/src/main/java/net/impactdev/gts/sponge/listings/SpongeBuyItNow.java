@@ -1,206 +1,206 @@
-package net.impactdev.gts.sponge.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb;
 
-import com.google.common.base.Preconditions;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.common.exceptions.DataContentException;
-import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
-import net.impactdev.gts.sponge.pricing.SpongePrice;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.data.ResourceManager;
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.data.registry.GTSKeyMarker;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.entries.EntryManager;
-import net.impactdev.gts.api.listings.prices.Price;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.Pbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.JbbbObbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbb.DbbbCbbbbbbEbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb.SbbbbbEbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.SbbbbbPbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.JObbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.GTSSbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.RbbbbbbbMbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Sbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.GTSKbbMbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbIbNbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Ebbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.EbbbbMbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Pbbbb;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.LbbbbDbbbTbbb;
+bbbbbb bbbb.bbbb.UUID;
 
-public class SpongeBuyItNow extends SpongeListing implements BuyItNow {
+bbbbbb bbbbb SbbbbbBbbIbNbb bbbbbbb SbbbbbLbbbbbb bbbbbbbbbb BbbIbNbb {
 
-	private final SpongePrice<?, ?> price;
+	bbbbbbb bbbbb SbbbbbPbbbb<?, ?> bbbbb;
 
-	private boolean purchased;
+	bbbbbbb bbbbbbb bbbbbbbbb;
 
-	private final UUID purchaser;
-	private final boolean stashed;
+	bbbbbbb bbbbb UUID bbbbbbbbb;
+	bbbbbbb bbbbb bbbbbbb bbbbbbb;
 
-	private SpongeBuyItNow(SpongeBuyItNowBuilder builder) {
-		super(builder.id, builder.lister, builder.entry, builder.expiration);
-		this.price = builder.price;
-		this.purchased = builder.purchased;
-		this.stashed = builder.stashed;
-		this.purchaser = builder.purchaser;
+	bbbbbbb SbbbbbBbbIbNbb(SbbbbbBbbIbNbbBbbbbbb bbbbbbb) {
+		bbbbb(bbbbbbb.bb, bbbbbbb.bbbbbb, bbbbbbb.bbbbb, bbbbbbb.bbbbbbbbbb);
+		bbbb.bbbbb = bbbbbbb.bbbbb;
+		bbbb.bbbbbbbbb = bbbbbbb.bbbbbbbbb;
+		bbbb.bbbbbbb = bbbbbbb.bbbbbbb;
+		bbbb.bbbbbbbbb = bbbbbbb.bbbbbbbbb;
 	}
 
-	@Override
-	public Price<?, ?, ?> getPrice() {
-		return this.price;
+	@Obbbbbbb
+	bbbbbb Pbbbb<?, ?, ?> bbbPbbbb() {
+		bbbbbb bbbb.bbbbb;
 	}
 
-	@Override
-	public UUID purchaser() {
-		return this.purchaser;
+	@Obbbbbbb
+	bbbbbb UUID bbbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbbb;
 	}
 
-	@Override
-	public boolean stashedForPurchaser() {
-		return this.stashed;
+	@Obbbbbbb
+	bbbbbb bbbbbbb bbbbbbbFbbPbbbbbbbb() {
+		bbbbbb bbbb.bbbbbbb;
 	}
 
-	@Override
-	public boolean isPurchased() {
-		return this.purchased;
+	@Obbbbbbb
+	bbbbbb bbbbbbb bbPbbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbbb;
 	}
 
-	@Override
-	public void markPurchased() {
-		this.purchased = true;
+	@Obbbbbbb
+	bbbbbb bbbb bbbbPbbbbbbbb() {
+		bbbb.bbbbbbbbb = bbbb;
 	}
 
-	@Override
-	public JObject serialize() {
-		Preconditions.checkArgument(this.getPrice().getClass().isAnnotationPresent(GTSKeyMarker.class), "A Price type must be annotated with GTSKeyMarker");
+	@Obbbbbbb
+	bbbbbb JObbbbb bbbbbbbbb() {
+		Pbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbb.bbbPbbbb().bbbCbbbb().bbBbbbbbbbbbPbbbbbb(GTSKbbMbbbbb.bbbbb), "B Pbbbb bbbb bbbb bb bbbbbbbbb bbbb GTSKbbMbbbbb");
 
-		JObject json = super.serialize();
-		JObject price = new JObject()
-				.add("key", this.getPrice().getClass().getAnnotation(GTSKeyMarker.class).value()[0])
-				.add("content", this.getPrice().serialize())
-				.add("purchased", this.purchased);
-		json.add("price", price);
-		json.add("type", "bin");
+		JObbbbb bbbb = bbbbb.bbbbbbbbb();
+		JObbbbb bbbbb = bbb JObbbbb()
+				.bbb("bbb", bbbb.bbbPbbbb().bbbCbbbb().bbbBbbbbbbbbb(GTSKbbMbbbbb.bbbbb).bbbbb()[0])
+				.bbb("bbbbbbb", bbbb.bbbPbbbb().bbbbbbbbb())
+				.bbb("bbbbbbbbb", bbbb.bbbbbbbbb);
+		bbbb.bbb("bbbbb", bbbbb);
+		bbbb.bbb("bbbb", "bbb");
 
-		json.add("stashed", this.stashed);
-		if(this.stashed) {
-			json.add("purchaser", this.purchaser.toString());
+		bbbb.bbb("bbbbbbb", bbbb.bbbbbbb);
+		bb(bbbb.bbbbbbb) {
+			bbbb.bbb("bbbbbbbbb", bbbb.bbbbbbbbb.bbSbbbbb());
 		}
 
-		return json;
+		bbbbbb bbbb;
 	}
 
-	public static SpongeBuyItNow deserialize(JsonObject json) {
-		SpongeBuyItNowBuilder builder = (SpongeBuyItNowBuilder) BuyItNow.builder()
-				.id(UUID.fromString(json.get("id").getAsString()))
-				.lister(UUID.fromString(json.get("lister").getAsString()))
-				.expiration(LocalDateTime.parse(json.getAsJsonObject("timings").get("expiration").getAsString()));
+	bbbbbb bbbbbb SbbbbbBbbIbNbb bbbbbbbbbbb(JbbbObbbbb bbbb) {
+		SbbbbbBbbIbNbbBbbbbbb bbbbbbb = (SbbbbbBbbIbNbbBbbbbbb) BbbIbNbb.bbbbbbb()
+				.bb(UUID.bbbbSbbbbb(bbbb.bbb("bb").bbbBbSbbbbb()))
+				.bbbbbb(UUID.bbbbSbbbbb(bbbb.bbb("bbbbbb").bbbBbSbbbbb()))
+				.bbbbbbbbbb(LbbbbDbbbTbbb.bbbbb(bbbb.bbbBbJbbbObbbbb("bbbbbbb").bbb("bbbbbbbbbb").bbbBbSbbbbb()));
 
-		JsonObject element = json.getAsJsonObject("entry");
-		try {
-			EntryManager<?> entryManager = GTSService.getInstance().getGTSComponentManager()
-					.getEntryManager(element.get("key").getAsString())
-					.orElseThrow(() -> new RuntimeException("No Entry Manager found for key: " + element.get("key")
-							.getAsString()));
-			builder.entry((SpongeEntry<?>) entryManager.getDeserializer()
-					.deserialize(element.getAsJsonObject("content")));
-		} catch (DataContentException e) {
+		JbbbObbbbb bbbbbbb = bbbb.bbbBbJbbbObbbbb("bbbbb");
+		bbb {
+			EbbbbMbbbbbb<?> bbbbbMbbbbbb = GTSSbbbbbb.bbbIbbbbbbb().bbbGTSCbbbbbbbbMbbbbbb()
+					.bbbEbbbbMbbbbbb(bbbbbbb.bbb("bbb").bbbBbSbbbbb())
+					.bbEbbbTbbbb(() -> bbb RbbbbbbEbbbbbbbb("Nb Ebbbb Mbbbbbb bbbbb bbb bbb: " + bbbbbbb.bbb("bbb")
+							.bbbBbSbbbbb()));
+			bbbbbbb.bbbbb((SbbbbbEbbbb<?>) bbbbbMbbbbbb.bbbDbbbbbbbbbbb()
+					.bbbbbbbbbbb(bbbbbbb.bbbBbJbbbObbbbb("bbbbbbb")));
+		} bbbbb (DbbbCbbbbbbEbbbbbbbb b) {
 
 		}
 
-		JsonObject price = json.getAsJsonObject("price");
-		Storable.Deserializer<? extends Price<?, ?, ?>> deserializer = GTSService.getInstance().getGTSComponentManager()
-				.getPriceManager(price.get("key").getAsString())
-				.map(ResourceManager::getDeserializer)
-				.orElseThrow(() -> new RuntimeException("JSON Data for price is missing mapping key"));
-		builder.price(deserializer.deserialize(price.getAsJsonObject("content")));
-		if(price.has("purchased") && price.get("purchased").getAsBoolean()) {
-			builder.purchased();
+		JbbbObbbbb bbbbb = bbbb.bbbBbJbbbObbbbb("bbbbb");
+		Sbbbbbbb.Dbbbbbbbbbbb<? bbbbbbb Pbbbb<?, ?, ?>> bbbbbbbbbbbb = GTSSbbbbbb.bbbIbbbbbbb().bbbGTSCbbbbbbbbMbbbbbb()
+				.bbbPbbbbMbbbbbb(bbbbb.bbb("bbb").bbbBbSbbbbb())
+				.bbb(RbbbbbbbMbbbbbb::bbbDbbbbbbbbbbb)
+				.bbEbbbTbbbb(() -> bbb RbbbbbbEbbbbbbbb("JSON Dbbb bbb bbbbb bb bbbbbbb bbbbbbb bbb"));
+		bbbbbbb.bbbbb(bbbbbbbbbbbb.bbbbbbbbbbb(bbbbb.bbbBbJbbbObbbbb("bbbbbbb")));
+		bb(bbbbb.bbb("bbbbbbbbb") && bbbbb.bbb("bbbbbbbbb").bbbBbBbbbbbb()) {
+			bbbbbbb.bbbbbbbbb();
 		}
 
-		if(json.has("stashed") && json.get("stashed").getAsBoolean()) {
-			builder.stashedForPurchaser();
-			builder.purchaser(UUID.fromString(json.get("purchaser").getAsString()));
+		bb(bbbb.bbb("bbbbbbb") && bbbb.bbb("bbbbbbb").bbbBbBbbbbbb()) {
+			bbbbbbb.bbbbbbbFbbPbbbbbbbb();
+			bbbbbbb.bbbbbbbbb(UUID.bbbbSbbbbb(bbbb.bbb("bbbbbbbbb").bbbBbSbbbbb()));
 		}
 
-		return builder.build();
+		bbbbbb bbbbbbb.bbbbb();
 	}
 
-	public static class SpongeBuyItNowBuilder implements BuyItNowBuilder {
+	bbbbbb bbbbbb bbbbb SbbbbbBbbIbNbbBbbbbbb bbbbbbbbbb BbbIbNbbBbbbbbb {
 
-		private UUID id = UUID.randomUUID();
-		private UUID lister;
-		private SpongeEntry<?> entry;
-		private SpongePrice<?, ?> price;
-		private boolean purchased;
-		private LocalDateTime expiration;
+		bbbbbbb UUID bb = UUID.bbbbbbUUID();
+		bbbbbbb UUID bbbbbb;
+		bbbbbbb SbbbbbEbbbb<?> bbbbb;
+		bbbbbbb SbbbbbPbbbb<?, ?> bbbbb;
+		bbbbbbb bbbbbbb bbbbbbbbb;
+		bbbbbbb LbbbbDbbbTbbb bbbbbbbbbb;
 
-		private UUID purchaser;
-		private boolean stashed;
+		bbbbbbb UUID bbbbbbbbb;
+		bbbbbbb bbbbbbb bbbbbbb;
 
-		@Override
-		public BuyItNowBuilder id(UUID id) {
-			this.id = id;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbIbNbbBbbbbbb bb(UUID bb) {
+			bbbb.bb = bb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public BuyItNowBuilder lister(UUID lister) {
-			this.lister = lister;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbIbNbbBbbbbbb bbbbbb(UUID bbbbbb) {
+			bbbb.bbbbbb = bbbbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public BuyItNowBuilder entry(Entry<?, ?> entry) {
-			Preconditions.checkArgument(entry instanceof SpongeEntry, "Mixing of incompatible platform types");
-			this.entry = (SpongeEntry<?>) entry;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbIbNbbBbbbbbb bbbbb(Ebbbb<?, ?> bbbbb) {
+			Pbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbbb bbbbbbbbbb SbbbbbEbbbb, "Mbbbbb bb bbbbbbbbbbbb bbbbbbbb bbbbb");
+			bbbb.bbbbb = (SbbbbbEbbbb<?>) bbbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public BuyItNowBuilder price(Price<?, ?, ?> price) {
-			Preconditions.checkArgument(price instanceof SpongePrice, "Mixing of incompatible platform types");
-			this.price = (SpongePrice<?, ?>) price;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbIbNbbBbbbbbb bbbbb(Pbbbb<?, ?, ?> bbbbb) {
+			Pbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbbb bbbbbbbbbb SbbbbbPbbbb, "Mbbbbb bb bbbbbbbbbbbb bbbbbbbb bbbbb");
+			bbbb.bbbbb = (SbbbbbPbbbb<?, ?>) bbbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public BuyItNowBuilder purchased() {
-			this.purchased = true;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbIbNbbBbbbbbb bbbbbbbbb() {
+			bbbb.bbbbbbbbb = bbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public BuyItNowBuilder purchaser(UUID purchaser) {
-			this.purchaser = purchaser;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbIbNbbBbbbbbb bbbbbbbbb(UUID bbbbbbbbb) {
+			bbbb.bbbbbbbbb = bbbbbbbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public BuyItNowBuilder stashedForPurchaser() {
-			this.stashed = true;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbIbNbbBbbbbbb bbbbbbbFbbPbbbbbbbb() {
+			bbbb.bbbbbbb = bbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public BuyItNowBuilder expiration(LocalDateTime expiration) {
-			this.expiration = expiration;
-			return this;
+		@Obbbbbbb
+		bbbbbb BbbIbNbbBbbbbbb bbbbbbbbbb(LbbbbDbbbTbbb bbbbbbbbbb) {
+			bbbb.bbbbbbbbbb = bbbbbbbbbb;
+			bbbbbb bbbb;
 		}
 
-		@Override
-		public BuyItNowBuilder from(BuyItNow input) {
-			BuyItNowBuilder builder = this.id(input.getID())
-					.lister(input.getLister())
-					.entry(input.getEntry())
-					.price(input.getPrice())
-					.expiration(input.getExpiration())
-					.purchaser(input.purchaser());
+		@Obbbbbbb
+		bbbbbb BbbIbNbbBbbbbbb bbbb(BbbIbNbb bbbbb) {
+			BbbIbNbbBbbbbbb bbbbbbb = bbbb.bb(bbbbb.bbbID())
+					.bbbbbb(bbbbb.bbbLbbbbb())
+					.bbbbb(bbbbb.bbbEbbbb())
+					.bbbbb(bbbbb.bbbPbbbb())
+					.bbbbbbbbbb(bbbbb.bbbEbbbbbbbbb())
+					.bbbbbbbbb(bbbbb.bbbbbbbbb());
 
-			if(input.isPurchased()) {
-				builder.purchased();
+			bb(bbbbb.bbPbbbbbbbb()) {
+				bbbbbbb.bbbbbbbbb();
 			}
 
-			if(input.stashedForPurchaser()) {
-				builder.stashedForPurchaser();
+			bb(bbbbb.bbbbbbbFbbPbbbbbbbb()) {
+				bbbbbbb.bbbbbbbFbbPbbbbbbbb();
 			}
 
-			return builder;
+			bbbbbb bbbbbbb;
 		}
 
-		@Override
-		public SpongeBuyItNow build() {
-			return new SpongeBuyItNow(this);
+		@Obbbbbbb
+		bbbbbb SbbbbbBbbIbNbb bbbbb() {
+			bbbbbb bbb SbbbbbBbbIbNbb(bbbb);
 		}
 	}
 }

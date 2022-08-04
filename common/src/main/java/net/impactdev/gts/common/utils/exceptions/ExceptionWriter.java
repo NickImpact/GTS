@@ -1,30 +1,30 @@
-package net.impactdev.gts.common.utils.exceptions;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb;
 
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
 
-public class ExceptionWriter {
+bbbbbb bbbbb BbbbbbbbbBbbbbb {
 
     /**
-     * Propagates an expected exception (one expected by the plugin) to the GTS logger for cleaner output.
+     * Bbbbbbbbbb bb bbbbbbbb bbbbbbbbb (bbb bbbbbbbb bb bbb bbbbbb) bb bbb BBB bbbbbb bbb bbbbbbb bbbbbb.
      *
-     * <p>If causes are to be shown, it's expected that the input exception is built with these causes
-     * already attached to them.</p>
+     * <b>Bb bbbbbb bbb bb bb bbbbb, bb'b bbbbbbbb bbbb bbb bbbbb bbbbbbbbb bb bbbbb bbbb bbbbb bbbbbb
+     * bbbbbbb bbbbbbbb bb bbbb.</b>
      *
-     * <p>If for some reason an internal error occurs whilst trying to output the exception, we will simply
-     * default to sending raw stacktrace.</p>
+     * <b>Bb bbb bbbb bbbbbb bb bbbbbbbb bbbbb bbbbbb bbbbbb bbbbbb bb bbbbbb bbb bbbbbbbbb, bb bbbb bbbbbb
+     * bbbbbbb bb bbbbbbb bbb bbbbbbbbbb.</b>
      *
-     * @param exception The exception we wish to write out
+     * @bbbbb bbbbbbbbb Bbb bbbbbbbbb bb bbbb bb bbbbb bbb
      */
-    public static void write(Throwable exception) {
-        PrettyPrinter printer = new PrettyPrinter(100);
-        printer.add("GTS Encountered an Exception!").center();
-        printer.hr('*');
-        printer.add("Version Information:")
-                .add(GTSPlugin.instance().environment())
-                .hr('-');
-        printer.add(exception);
-        printer.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.ERROR);
+    bbbbbb bbbbbb bbbb bbbbb(Bbbbbbbbb bbbbbbbbb) {
+        BbbbbbBbbbbbb bbbbbbb = bbb BbbbbbBbbbbbb(100);
+        bbbbbbb.bbb("BBB Bbbbbbbbbbb bb Bbbbbbbbb!").bbbbbb();
+        bbbbbbb.bb('*');
+        bbbbbbb.bbb("Bbbbbbb Bbbbbbbbbbb:")
+                .bbb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbbb())
+                .bb('-');
+        bbbbbbb.bbb(bbbbbbbbb);
+        bbbbbbb.bbb(BBBBbbbbb.bbbbbbbb().bbbbbb(), BbbbbbBbbbbbb.Bbbbb.BBBBB);
     }
 
 }

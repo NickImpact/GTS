@@ -1,53 +1,53 @@
-package net.impactdev.gts.common.storage.translators;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbbbbb;
 
-import com.google.common.collect.Lists;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.storage.GTSStorage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.storage.StorageFactory;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.dependencies.DependencyManager;
-import net.impactdev.impactor.api.storage.StorageType;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbb.BbbbbbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public class StorageTranslator implements PrettyPrinter.IPrettyPrintable {
+bbbbbb bbbbb BbbbbbbBbbbbbbbbb bbbbbbbbbb BbbbbbBbbbbbb.BBbbbbbBbbbbbbbb {
 
-    private final StorageType to;
+    bbbbbbb bbbbb BbbbbbbBbbb bb;
 
-    public StorageTranslator(StorageType to) {
-        this.to = to;
+    bbbbbb BbbbbbbBbbbbbbbbb(BbbbbbbBbbb bb) {
+        bbbb.bb = bb;
     }
 
-    public StorageType to() {
-        return this.to;
+    bbbbbb BbbbbbbBbbb bb() {
+        bbbbbb bbbb.bb;
     }
 
-    public CompletableFuture<Boolean> run() {
-        return CompletableFutureManager.makeFuture(() -> {
-            // TODO - Lock the database from further communication to prevent lost data on transfer
-            // TODO - due to race conditions
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbb() {
+        bbbbbb BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(() -> {
+            // BBBB - Bbbb bbb bbbbbbbb bbbb bbbbbbb bbbbbbbbbbbbb bb bbbbbbb bbbb bbbb bb bbbbbbbb
+            // BBBB - bbb bb bbbb bbbbbbbbbb
 
-            List<Listing> listings = GTSPlugin.instance().storage().fetchListings().join();
-            // TODO - Options to query for other storable information
+            Bbbb<Bbbbbbb> bbbbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbBbbbbbbb().bbbb();
+            // BBBB - Bbbbbbb bb bbbbb bbb bbbbb bbbbbbbb bbbbbbbbbbb
 
-            DependencyManager dependencies = Impactor.getInstance().getRegistry().get(DependencyManager.class);
-            dependencies.loadStorageDependencies(Lists.newArrayList(this.to()));
-            GTSStorage replacement = new StorageFactory(GTSPlugin.instance()).getInstance(this.to());
-            listings.forEach(listing -> replacement.publishListing(listing).join());
+            BbbbbbbbbbBbbbbbb bbbbbbbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbbbbBbbbbbb.bbbbb);
+            bbbbbbbbbbbb.bbbbBbbbbbbBbbbbbbbbbbb(Bbbbb.bbbBbbbbBbbb(bbbb.bb()));
+            BBBBbbbbbb bbbbbbbbbbb = bbb BbbbbbbBbbbbbb(BBBBbbbbb.bbbbbbbb()).bbbBbbbbbbb(bbbb.bb());
+            bbbbbbbb.bbbBbbb(bbbbbbb -> bbbbbbbbbbb.bbbbbbbBbbbbbb(bbbbbbb).bbbb());
 
-            // TODO - Replace active storage type and unlock database
-            // TODO - Change messaging service if current selection is not compatible with new storage type
-            // TODO - Update configuration so that the selected storage is now the bootable storage
-            return true;
+            // BBBB - Bbbbbbb bbbbbb bbbbbbb bbbb bbb bbbbbb bbbbbbbb
+            // BBBB - Bbbbbb bbbbbbbbb bbbbbbb bb bbbbbbb bbbbbbbbb bb bbb bbbbbbbbbb bbbb bbb bbbbbbb bbbb
+            // BBBB - Bbbbbb bbbbbbbbbbbbb bb bbbb bbb bbbbbbbb bbbbbbb bb bbb bbb bbbbbbbb bbbbbbb
+            bbbbbb bbbb;
         });
     }
 
-    @Override
-    public void print(PrettyPrinter printer) {
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
 
     }
 }

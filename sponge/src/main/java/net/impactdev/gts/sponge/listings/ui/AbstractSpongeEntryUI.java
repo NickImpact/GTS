@@ -1,443 +1,443 @@
-package net.impactdev.gts.sponge.listings.ui;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
-import net.impactdev.gts.api.listings.manager.ListingManager;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.api.listings.ui.AbstractEntryUI;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.sponge.listings.ui.creator.SpongePriceTypeSelectionMenu;
-import net.impactdev.gts.sponge.listings.ui.creator.TimeSelectMenu;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import net.impactdev.impactor.api.utilities.Time;
-import net.impactdev.impactor.api.utilities.mappings.Tuple;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.listings.ui.EntrySelection;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.listings.SpongeAuction;
-import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
-import net.impactdev.gts.sponge.listings.SpongeListing;
-import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
-import net.impactdev.gts.sponge.pricing.SpongePrice;
-import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.gts.sponge.utils.items.SkullCreator;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.menu.ClickType;
-import org.spongepowered.api.item.inventory.menu.ClickTypes;
-import org.spongepowered.math.vector.Vector2i;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.Pbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Lbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.LbbbbbbMbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Pbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.BbbbbbbbEbbbbUI;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.EbbbbbbbbWbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.bbbbbbb.SbbbbbPbbbbTbbbSbbbbbbbbMbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.bbbbbbb.TbbbSbbbbbMbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Ibbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Cbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.PbbbbbbbbbbSbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.PbbbbbbbPbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.MbbbbbbSbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.IbbbbbbbUI;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.DbbbbbbPbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Ibbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Lbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Tbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.Tbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbIbNbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.EbbbbSbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.MbbCbbbbbKbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.CbbbbbKbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.GTSPbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.SbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.SbbbbbBbbIbNbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.SbbbbbLbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb.SbbbbbEbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.SbbbbbPbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb.MbbbbbbbPbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Ubbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.SbbbbCbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbb.Kbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Cbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.NbbbbTbbbCbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Kbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Pbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.SbbbbbPbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.IbbbTbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.IbbbTbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.IbbbSbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.bbbb.CbbbbTbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.bbbb.CbbbbTbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbb.bbbbbb.Vbbbbb2b;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.function.BiFunction;
+bbbbbb bbbb.bbbb.LbbbbDbbbTbbb;
+bbbbbb bbbb.bbbb.Lbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbFbbbbbbb;
 
-public abstract class AbstractSpongeEntryUI<E extends EntrySelection<?>> extends AbstractEntryUI<E> {
+bbbbbb bbbbbbbb bbbbb BbbbbbbbSbbbbbEbbbbUI<E bbbbbbb EbbbbSbbbbbbbb<?>> bbbbbbb BbbbbbbbEbbbbUI<E> {
 
-    private final ImpactorUI display;
+    bbbbbbb bbbbb IbbbbbbbUI bbbbbbb;
 
-    private boolean auction;
-    private Time duration = GTSPlugin.instance().configuration().main().get(ConfigKeys.LISTING_TIME_LOW);
+    bbbbbbb bbbbbbb bbbbbbb;
+    bbbbbbb Tbbb bbbbbbbb = GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(CbbbbbKbbb.LISTING_TIME_LOW);
 
-    protected SpongePrice<?, ?> price = new MonetaryPrice(GTSPlugin.instance().configuration().main().get(ConfigKeys.LISTINGS_MIN_PRICE));
+    bbbbbbbbb SbbbbbPbbbb<?, ?> bbbbb = bbb MbbbbbbbPbbbb(GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(CbbbbbKbbb.LISTINGS_MIN_PRICE));
 
-    public AbstractSpongeEntryUI(PlatformPlayer viewer) {
-        super(viewer);
+    bbbbbb BbbbbbbbSbbbbbEbbbbUI(PbbbbbbbPbbbbb bbbbbb) {
+        bbbbb(bbbbbb);
 
-        this.auction = this.getTargetMode();
-        ImpactorUI.UIBuilder builder= ImpactorUI.builder()
-                .title(this.getTitle())
-                .provider(Key.key("gts:entry-ui"))
-                .layout(this.getDesign());
+        bbbb.bbbbbbb = bbbb.bbbTbbbbbMbbb();
+        IbbbbbbbUI.UIBbbbbbb bbbbbbb= IbbbbbbbUI.bbbbbbb()
+                .bbbbb(bbbb.bbbTbbbb())
+                .bbbbbbbb(Kbb.bbb("bbb:bbbbb-bb"))
+                .bbbbbb(bbbb.bbbDbbbbb());
 
-        this.display = this.modifyDisplayBuilder(builder).build();
+        bbbb.bbbbbbb = bbbb.bbbbbbDbbbbbbBbbbbbb(bbbbbbb).bbbbb();
     }
 
-    private boolean getTargetMode() {
-        Config config = GTSPlugin.instance().configuration().main();
-        if(config.get(ConfigKeys.BINS_ENABLED)) {
-            return false;
-        } else return config.get(ConfigKeys.AUCTIONS_ENABLED);
+    bbbbbbb bbbbbbb bbbTbbbbbMbbb() {
+        Cbbbbb bbbbbb = GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb();
+        bb(bbbbbb.bbb(CbbbbbKbbb.BINS_ENBBLED)) {
+            bbbbbb bbbbb;
+        } bbbb bbbbbb bbbbbb.bbb(CbbbbbKbbb.BUCTIONS_ENBBLED);
     }
 
-    protected abstract ImpactorUI.UIBuilder modifyDisplayBuilder(ImpactorUI.UIBuilder builder);
-    protected abstract Component getTitle();
-    protected abstract Vector2i getDimensions();
-    protected abstract Layout getDesign();
+    bbbbbbbbb bbbbbbbb IbbbbbbbUI.UIBbbbbbb bbbbbbDbbbbbbBbbbbbb(IbbbbbbbUI.UIBbbbbbb bbbbbbb);
+    bbbbbbbbb bbbbbbbb Cbbbbbbbb bbbTbbbb();
+    bbbbbbbbb bbbbbbbb Vbbbbb2b bbbDbbbbbbbbb();
+    bbbbbbbbb bbbbbbbb Lbbbbb bbbDbbbbb();
 
-    protected abstract EntrySelection<? extends SpongeEntry<?>> getSelection();
+    bbbbbbbbb bbbbbbbb EbbbbSbbbbbbbb<? bbbbbbb SbbbbbEbbbb<?>> bbbSbbbbbbbb();
 
-    protected abstract int getChosenSlot();
-    protected abstract int getPriceSlot();
-    protected abstract int getSelectionTypeSlot();
-    protected abstract int getTimeSlot();
-    protected abstract int getConfirmSlot();
+    bbbbbbbbb bbbbbbbb bbb bbbCbbbbbSbbb();
+    bbbbbbbbb bbbbbbbb bbb bbbPbbbbSbbb();
+    bbbbbbbbb bbbbbbbb bbb bbbSbbbbbbbbTbbbSbbb();
+    bbbbbbbbb bbbbbbbb bbb bbbTbbbSbbb();
+    bbbbbbbbb bbbbbbbb bbb bbbCbbbbbbSbbb();
 
-    protected abstract double getMinimumMonetaryPrice(E chosen);
+    bbbbbbbbb bbbbbbbb bbbbbb bbbMbbbbbbMbbbbbbbPbbbb(E bbbbbb);
 
-    protected ImpactorUI getDisplay() {
-        return this.display;
+    bbbbbbbbb IbbbbbbbUI bbbDbbbbbb() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    @Override
-    public void open(PlatformPlayer user) {
-        this.display.open(user);
+    @Obbbbbbb
+    bbbbbb bbbb bbbb(PbbbbbbbPbbbbb bbbb) {
+        bbbb.bbbbbbb.bbbb(bbbb);
     }
 
-    public void open(PlatformPlayer user, boolean auction) {
-        if(auction) {
-            this.auction = true;
-            this.getDisplay().set(this.createPriceIcon(), this.getPriceSlot());
-            this.getDisplay().set(this.createAuctionIcon(), this.getSelectionTypeSlot());
+    bbbbbb bbbb bbbb(PbbbbbbbPbbbbb bbbb, bbbbbbb bbbbbbb) {
+        bb(bbbbbbb) {
+            bbbb.bbbbbbb = bbbb;
+            bbbb.bbbDbbbbbb().bbb(bbbb.bbbbbbPbbbbIbbb(), bbbb.bbbPbbbbSbbb());
+            bbbb.bbbDbbbbbb().bbb(bbbb.bbbbbbBbbbbbbIbbb(), bbbb.bbbSbbbbbbbbTbbbSbbb());
         }
-        this.display.open(user);
+        bbbb.bbbbbbb.bbbb(bbbb);
     }
 
-    public void open(PlatformPlayer user, E entry, boolean auction, long duration) {
-        this.setChosen(entry);
-        if(duration != -1) {
-            this.duration = new Time(duration);
+    bbbbbb bbbb bbbb(PbbbbbbbPbbbbb bbbb, E bbbbb, bbbbbbb bbbbbbb, bbbb bbbbbbbb) {
+        bbbb.bbbCbbbbb(bbbbb);
+        bb(bbbbbbbb != -1) {
+            bbbb.bbbbbbbb = bbb Tbbb(bbbbbbbb);
         }
-        this.getDisplay().set(this.createChosenIcon(), this.getChosenSlot());
-        this.getDisplay().set(this.createTimeIcon(), this.getTimeSlot());
-        this.style(true);
-        this.getDisplay().set(this.generateConfirmIcon(), this.getConfirmSlot());
-        if(auction) {
-            this.auction = true;
-            this.getDisplay().set(this.createPriceIcon(), this.getPriceSlot());
-            this.getDisplay().set(this.createAuctionIcon(), this.getSelectionTypeSlot());
+        bbbb.bbbDbbbbbb().bbb(bbbb.bbbbbbCbbbbbIbbb(), bbbb.bbbCbbbbbSbbb());
+        bbbb.bbbDbbbbbb().bbb(bbbb.bbbbbbTbbbIbbb(), bbbb.bbbTbbbSbbb());
+        bbbb.bbbbb(bbbb);
+        bbbb.bbbDbbbbbb().bbb(bbbb.bbbbbbbbCbbbbbbIbbb(), bbbb.bbbCbbbbbbSbbb());
+        bb(bbbbbbb) {
+            bbbb.bbbbbbb = bbbb;
+            bbbb.bbbDbbbbbb().bbb(bbbb.bbbbbbPbbbbIbbb(), bbbb.bbbPbbbbSbbb());
+            bbbb.bbbDbbbbbb().bbb(bbbb.bbbbbbBbbbbbbIbbb(), bbbb.bbbSbbbbbbbbTbbbSbbb());
         }
-        this.display.open(user);
+        bbbb.bbbbbbb.bbbb(bbbb);
     }
 
-    protected SpongePrice<?, ?> getPrice() {
-        return this.price;
+    bbbbbbbbb SbbbbbPbbbb<?, ?> bbbPbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    public void setPrice(SpongePrice<?, ?> price) {
-        this.price = price;
+    bbbbbb bbbb bbbPbbbb(SbbbbbPbbbb<?, ?> bbbbb) {
+        bbbb.bbbbb = bbbbb;
     }
 
-    @Override
-    public void setChosen(E chosen) {
-        this.chosen = chosen;
-        if(this.price instanceof MonetaryPrice) {
-            this.price = new MonetaryPrice(Math.max(
-                    GTSPlugin.instance().configuration().main().get(ConfigKeys.LISTINGS_MIN_PRICE),
-                    this.getMinimumMonetaryPrice(chosen)
+    @Obbbbbbb
+    bbbbbb bbbb bbbCbbbbb(E bbbbbb) {
+        bbbb.bbbbbb = bbbbbb;
+        bb(bbbb.bbbbb bbbbbbbbbb MbbbbbbbPbbbb) {
+            bbbb.bbbbb = bbb MbbbbbbbPbbbb(Mbbb.bbb(
+                    GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(CbbbbbKbbb.LISTINGS_MIN_PRICE),
+                    bbbb.bbbMbbbbbbMbbbbbbbPbbbb(bbbbbb)
             ));
         }
     }
 
-    @Override
-    public Icon<ItemStack> generateWaitingIcon(boolean auction) {
-        MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+    @Obbbbbbb
+    bbbbbb Ibbb<IbbbSbbbb> bbbbbbbbWbbbbbbIbbb(bbbbbbb bbbbbbb) {
+        MbbbbbbSbbbbbb bbbbbb = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(MbbbbbbSbbbbbb.bbbbb);
 
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.RED_CONCRETE)
-                        .add(Keys.CUSTOM_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.AWAITING_CREATE_LISTING_TITLE)))
-                        .add(Keys.LORE, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.AWAITING_CREATE_LISTING_LORE)))
-                        .build()
+        bbbbbb Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(IbbbSbbbb.bbbbbbb()
+                        .bbbbTbbb(IbbbTbbbb.RED_CONCRETE)
+                        .bbb(Kbbb.CUSTOM_NBME, bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.BWBITING_CREBTE_LISTING_TITLE)))
+                        .bbb(Kbbb.LORE, bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.BWBITING_CREBTE_LISTING_LORE)))
+                        .bbbbb()
                 ))
-                .build();
+                .bbbbb();
     }
 
-    public Icon<ItemStack> createBINIcon() {
-        MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+    bbbbbb Ibbb<IbbbSbbbb> bbbbbbBINIbbb() {
+        MbbbbbbSbbbbbb bbbbbb = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(MbbbbbbSbbbbbb.bbbbb);
 
-        ItemStack bin = ItemStack.builder()
-                .itemType(ItemTypes.EMERALD)
-                .add(Keys.CUSTOM_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_BIN_CREATE_TITLE)))
-                .add(Keys.LORE, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_BIN_CREATE_LORE)))
-                .build();
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(bin))
-                .listener(context -> {
-                    if(GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_ENABLED)) {
-                        this.auction = true;
-                        if (!(this.price instanceof MonetaryPrice)) {
-                            if (this.chosen != null) {
-                                this.price = new MonetaryPrice(this.getMinimumMonetaryPrice(this.chosen));
-                            } else {
-                                this.price = new MonetaryPrice(GTSPlugin.instance().configuration().main().get(ConfigKeys.LISTINGS_MIN_PRICE));
+        IbbbSbbbb bbb = IbbbSbbbb.bbbbbbb()
+                .bbbbTbbb(IbbbTbbbb.EMERBLD)
+                .bbb(Kbbb.CUSTOM_NBME, bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_ICON_BIN_CREBTE_TITLE)))
+                .bbb(Kbbb.LORE, bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_ICON_BIN_CREBTE_LORE)))
+                .bbbbb();
+        bbbbbb Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(bbb))
+                .bbbbbbbb(bbbbbbb -> {
+                    bb(GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(CbbbbbKbbb.BUCTIONS_ENBBLED)) {
+                        bbbb.bbbbbbb = bbbb;
+                        bb (!(bbbb.bbbbb bbbbbbbbbb MbbbbbbbPbbbb)) {
+                            bb (bbbb.bbbbbb != bbbb) {
+                                bbbb.bbbbb = bbb MbbbbbbbPbbbb(bbbb.bbbMbbbbbbMbbbbbbbPbbbb(bbbb.bbbbbb));
+                            } bbbb {
+                                bbbb.bbbbb = bbb MbbbbbbbPbbbb(GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(CbbbbbKbbb.LISTINGS_MIN_PRICE));
                             }
                         }
-                        this.display.set(this.createPriceIcon(), this.getPriceSlot());
-                        this.display.set(this.createAuctionIcon(), this.getSelectionTypeSlot());
+                        bbbb.bbbbbbb.bbb(bbbb.bbbbbbPbbbbIbbb(), bbbb.bbbPbbbbSbbb());
+                        bbbb.bbbbbbb.bbb(bbbb.bbbbbbBbbbbbbIbbb(), bbbb.bbbSbbbbbbbbTbbbSbbb());
                     }
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
     }
 
-    public Icon<ItemStack> createAuctionIcon() {
-        MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+    bbbbbb Ibbb<IbbbSbbbb> bbbbbbBbbbbbbIbbb() {
+        MbbbbbbSbbbbbb bbbbbb = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(MbbbbbbSbbbbbb.bbbbb);
 
-        ItemStack bin = ItemStack.builder()
-                .itemType(ItemTypes.GOLD_INGOT)
-                .add(Keys.CUSTOM_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_AUCTION_CREATE_TITLE)))
-                .add(Keys.LORE, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_AUCTION_CREATE_LORE)))
-                .build();
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(bin))
-                .listener(context -> {
-                    if(GTSPlugin.instance().configuration().main().get(ConfigKeys.BINS_ENABLED)) {
-                        this.auction = false;
-                        this.display.set(this.createPriceIcon(), this.getPriceSlot());
-                        this.display.set(this.createBINIcon(), this.getSelectionTypeSlot());
+        IbbbSbbbb bbb = IbbbSbbbb.bbbbbbb()
+                .bbbbTbbb(IbbbTbbbb.GOLD_INGOT)
+                .bbb(Kbbb.CUSTOM_NBME, bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_ICON_BUCTION_CREBTE_TITLE)))
+                .bbb(Kbbb.LORE, bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_ICON_BUCTION_CREBTE_LORE)))
+                .bbbbb();
+        bbbbbb Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(bbb))
+                .bbbbbbbb(bbbbbbb -> {
+                    bb(GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(CbbbbbKbbb.BINS_ENBBLED)) {
+                        bbbb.bbbbbbb = bbbbb;
+                        bbbb.bbbbbbb.bbb(bbbb.bbbbbbPbbbbIbbb(), bbbb.bbbPbbbbSbbb());
+                        bbbb.bbbbbbb.bbb(bbbb.bbbbbbBINIbbb(), bbbb.bbbSbbbbbbbbTbbbSbbb());
                     }
 
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
     }
 
-    @Override
-    public Icon<ItemStack> generateConfirmIcon() {
-        MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
+    @Obbbbbbb
+    bbbbbb Ibbb<IbbbSbbbb> bbbbbbbbCbbbbbbIbbb() {
+        MbbbbbbSbbbbbb bbbbbb = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(MbbbbbbSbbbbbb.bbbbb);
 
-        ItemStack rep = ItemStack.builder()
-                .itemType(ItemTypes.LIME_CONCRETE)
-                .add(Keys.CUSTOM_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.CONFIRM_CREATE_LISTING_TITLE)))
-                .add(Keys.LORE, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.CONFIRM_CREATE_LISTING_LORE)))
-                .build();
+        IbbbSbbbb bbb = IbbbSbbbb.bbbbbbb()
+                .bbbbTbbb(IbbbTbbbb.LIME_CONCRETE)
+                .bbb(Kbbb.CUSTOM_NBME, bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.CONFIRM_CREBTE_LISTING_TITLE)))
+                .bbb(Kbbb.LORE, bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.CONFIRM_CREBTE_LISTING_LORE)))
+                .bbbbb();
 
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(rep))
-                .listener(context -> {
-                    ClickType<?> type = context.require(ClickType.class);
-                    if(type.equals(ClickTypes.KEY_THROW_ALL.get()) || type.equals(ClickTypes.KEY_THROW_ONE.get())) {
-                        return false;
+        bbbbbb Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(bbb))
+                .bbbbbbbb(bbbbbbb -> {
+                    CbbbbTbbb<?> bbbb = bbbbbbb.bbbbbbb(CbbbbTbbb.bbbbb);
+                    bb(bbbb.bbbbbb(CbbbbTbbbb.KEY_THROW_BLL.bbb()) || bbbb.bbbbbb(CbbbbTbbbb.KEY_THROW_ONE.bbb())) {
+                        bbbbbb bbbbb;
                     }
 
-                    SpongeEntry<?> entry = this.getSelection().createFromSelection();
-                    SpongeListing listing;
-                    if(this.auction) {
-                        Preconditions.checkArgument((this.price instanceof MonetaryPrice), "Auctions must have monetary prices");
-                        listing = (SpongeAuction) Auction.builder()
-                                .lister(this.viewer.uuid())
-                                .entry(entry)
-                                .start(((MonetaryPrice) this.price).getPrice().doubleValue())
-                                .increment(GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_INCREMENT_RATE))
-                                .expiration(LocalDateTime.now().plusSeconds(this.duration.getTime()))
-                                .build();
-                    } else {
-                        listing = (SpongeBuyItNow) BuyItNow.builder()
-                                .lister(this.viewer.uuid())
-                                .entry(entry)
-                                .price(this.getPrice())
-                                .expiration(LocalDateTime.now().plusSeconds(this.duration.getTime()))
-                                .build();
+                    SbbbbbEbbbb<?> bbbbb = bbbb.bbbSbbbbbbbb().bbbbbbFbbbSbbbbbbbb();
+                    SbbbbbLbbbbbb bbbbbbb;
+                    bb(bbbb.bbbbbbb) {
+                        Pbbbbbbbbbbbb.bbbbbBbbbbbbb((bbbb.bbbbb bbbbbbbbbb MbbbbbbbPbbbb), "Bbbbbbbb bbbb bbbb bbbbbbbb bbbbbb");
+                        bbbbbbb = (SbbbbbBbbbbbb) Bbbbbbb.bbbbbbb()
+                                .bbbbbb(bbbb.bbbbbb.bbbb())
+                                .bbbbb(bbbbb)
+                                .bbbbb(((MbbbbbbbPbbbb) bbbb.bbbbb).bbbPbbbb().bbbbbbVbbbb())
+                                .bbbbbbbbb(GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(CbbbbbKbbb.BUCTIONS_INCREMENT_RBTE))
+                                .bbbbbbbbbb(LbbbbDbbbTbbb.bbb().bbbbSbbbbbb(bbbb.bbbbbbbb.bbbTbbb()))
+                                .bbbbb();
+                    } bbbb {
+                        bbbbbbb = (SbbbbbBbbIbNbb) BbbIbNbb.bbbbbbb()
+                                .bbbbbb(bbbb.bbbbbb.bbbb())
+                                .bbbbb(bbbbb)
+                                .bbbbb(bbbb.bbbPbbbb())
+                                .bbbbbbbbbb(LbbbbDbbbTbbb.bbb().bbbbSbbbbbb(bbbb.bbbbbbbb.bbbTbbb()))
+                                .bbbbb();
                     }
 
-                    this.display.close(this.viewer);
-                    ListingManager<SpongeListing, SpongeAuction, SpongeBuyItNow> manager = Impactor.getInstance().getRegistry().get(ListingManager.class);
-                    manager.list(this.viewer.uuid(), listing).exceptionally(error -> {
-                        ExceptionWriter.write(error);
-                        return false;
+                    bbbb.bbbbbbb.bbbbb(bbbb.bbbbbb);
+                    LbbbbbbMbbbbbb<SbbbbbLbbbbbb, SbbbbbBbbbbbb, SbbbbbBbbIbNbb> bbbbbbb = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(LbbbbbbMbbbbbb.bbbbb);
+                    bbbbbbb.bbbb(bbbb.bbbbbb.bbbb(), bbbbbbb).bbbbbbbbbbbbb(bbbbb -> {
+                        EbbbbbbbbWbbbbb.bbbbb(bbbbb);
+                        bbbbbb bbbbb;
                     });
 
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
     }
 
-    @Override
-    public Icon<ItemStack> createNoneChosenIcon() {
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.STONE_BUTTON)
-                        .add(Keys.CUSTOM_NAME, Component.text("Click an item in you inventory").color(NamedTextColor.YELLOW))
-                        .add(Keys.LORE, Lists.newArrayList(
-                                Component.text("Clicking on an item will").color(NamedTextColor.GRAY),
-                                Component.text("select it for your listing!").color(NamedTextColor.GRAY)
+    @Obbbbbbb
+    bbbbbb Ibbb<IbbbSbbbb> bbbbbbNbbbCbbbbbIbbb() {
+        bbbbbb Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(IbbbSbbbb.bbbbbbb()
+                        .bbbbTbbb(IbbbTbbbb.STONE_BUTTON)
+                        .bbb(Kbbb.CUSTOM_NBME, Cbbbbbbbb.bbbb("Cbbbb bb bbbb bb bbb bbbbbbbbb").bbbbb(NbbbbTbbbCbbbb.YELLOW))
+                        .bbb(Kbbb.LORE, Lbbbb.bbbBbbbbLbbb(
+                                Cbbbbbbbb.bbbb("Cbbbbbbb bb bb bbbb bbbb").bbbbb(NbbbbTbbbCbbbb.GRBY),
+                                Cbbbbbbbb.bbbb("bbbbbb bb bbb bbbb bbbbbbb!").bbbbb(NbbbbTbbbCbbbb.GRBY)
                         ))
-                        .build()
+                        .bbbbb()
                 ))
-                .build();
+                .bbbbb();
     }
 
-    @Override
-    public Icon<ItemStack> createTimeIcon() {
-        MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-        PlaceholderSources sources = PlaceholderSources.builder()
-                .append(Time.class, () -> this.duration)
-                .build();
+    @Obbbbbbb
+    bbbbbb Ibbb<IbbbSbbbb> bbbbbbTbbbIbbb() {
+        MbbbbbbSbbbbbb bbbbbb = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(MbbbbbbSbbbbbb.bbbbb);
+        PbbbbbbbbbbSbbbbbb bbbbbbb = PbbbbbbbbbbSbbbbbb.bbbbbbb()
+                .bbbbbb(Tbbb.bbbbb, () -> bbbb.bbbbbbbb)
+                .bbbbb();
 
-        List<Component> result = Lists.newArrayList();
-        result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_DISPLAY_LORE), sources));
+        Lbbb<Cbbbbbbbb> bbbbbb = Lbbbb.bbbBbbbbLbbb();
+        bbbbbb.bbbBbb(bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_TIME_DISPLBY_LORE), bbbbbbb));
 
-        if(GTSPlugin.instance().configuration().main().get(ConfigKeys.FEES_ENABLED)) {
-            result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_DISPLAY_FEES), sources));
+        bb(GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(CbbbbbKbbb.FEES_ENBBLED)) {
+            bbbbbb.bbbBbb(bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_TIME_DISPLBY_FEES), bbbbbbb));
         }
 
-        result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_COMPONENT_EDIT_LORE), sources));
+        bbbbbb.bbbBbb(bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_COMPONENT_EDIT_LORE), bbbbbbb));
 
-        ItemStack duration = ItemStack.builder()
-                .itemType(ItemTypes.CLOCK)
-                .add(Keys.CUSTOM_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_DISPLAY_TITLE), sources))
-                .add(Keys.LORE, result)
-                .build();
+        IbbbSbbbb bbbbbbbb = IbbbSbbbb.bbbbbbb()
+                .bbbbTbbb(IbbbTbbbb.CLOCK)
+                .bbb(Kbbb.CUSTOM_NBME, bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_TIME_DISPLBY_TITLE), bbbbbbb))
+                .bbb(Kbbb.LORE, bbbbbb)
+                .bbbbb();
 
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(duration))
-                .listener(context -> {
-                    new TimeSelectMenu(this.viewer, this, (ui, t) -> {
-                        if (t != null && t.getTime() != 0) {
-                            this.duration = t;
-                            ui.getDisplay().set(this.createTimeIcon(), this.getTimeSlot());
+        bbbbbb Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(bbbbbbbb))
+                .bbbbbbbb(bbbbbbb -> {
+                    bbb TbbbSbbbbbMbbb(bbbb.bbbbbb, bbbb, (bb, b) -> {
+                        bb (b != bbbb && b.bbbTbbb() != 0) {
+                            bbbb.bbbbbbbb = b;
+                            bb.bbbDbbbbbb().bbb(bbbb.bbbbbbTbbbIbbb(), bbbb.bbbTbbbSbbb());
                         }
-                        ui.open(this.viewer);
-                    }).open();
+                        bb.bbbb(bbbb.bbbbbb);
+                    }).bbbb();
 
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
     }
 
-    @Override
-    public Icon<ItemStack> createPriceIcon() {
-        MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-        PlaceholderSources sources = PlaceholderSources.builder()
-                .append(Price.class, () -> this.price)
-                .append(Tuple.class, () -> new Tuple<>(this.price, !this.auction))
-                .append(Boolean.class, () -> !this.auction)
-                .build();
+    @Obbbbbbb
+    bbbbbb Ibbb<IbbbSbbbb> bbbbbbPbbbbIbbb() {
+        MbbbbbbSbbbbbb bbbbbb = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(MbbbbbbSbbbbbb.bbbbb);
+        PbbbbbbbbbbSbbbbbb bbbbbbb = PbbbbbbbbbbSbbbbbb.bbbbbbb()
+                .bbbbbb(Pbbbb.bbbbb, () -> bbbb.bbbbb)
+                .bbbbbb(Tbbbb.bbbbb, () -> bbb Tbbbb<>(bbbb.bbbbb, !bbbb.bbbbbbb))
+                .bbbbbb(Bbbbbbb.bbbbb, () -> !bbbb.bbbbbbb)
+                .bbbbb();
 
-        List<Component> result = Lists.newArrayList();
-        result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_LORE), sources));
+        Lbbb<Cbbbbbbbb> bbbbbb = Lbbbb.bbbBbbbbLbbb();
+        bbbbbb.bbbBbb(bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_PRICE_DISPLBY_LORE), bbbbbbb));
 
-        if(GTSPlugin.instance().configuration().main().get(ConfigKeys.FEES_ENABLED)) {
-            result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_FEES), sources));
+        bb(GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(CbbbbbKbbb.FEES_ENBBLED)) {
+            bbbbbb.bbbBbb(bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_PRICE_DISPLBY_FEES), bbbbbbb));
         }
 
-        result.addAll(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_COMPONENT_EDIT_LORE), sources));
+        bbbbbb.bbbBbb(bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_COMPONENT_EDIT_LORE), bbbbbbb));
 
-        if(this.auction) {
-            ItemStack rep = ItemStack.builder()
-                    .itemType(ItemTypes.GOLD_NUGGET)
-                    .add(Keys.CUSTOM_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_TITLE), sources))
-                    .add(Keys.LORE, result)
-                    .build();
+        bb(bbbb.bbbbbbb) {
+            IbbbSbbbb bbb = IbbbSbbbb.bbbbbbb()
+                    .bbbbTbbb(IbbbTbbbb.GOLD_NUGGET)
+                    .bbb(Kbbb.CUSTOM_NBME, bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_PRICE_DISPLBY_TITLE), bbbbbbb))
+                    .bbb(Kbbb.LORE, bbbbbb)
+                    .bbbbb();
 
-            return Icon.builder(ItemStack.class)
-                    .display(new DisplayProvider.Constant<>(rep))
-                    .listener(context -> {
-                        // TODO - Come up with solution to replace
-//                        SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
-//                                .position(new Vector3d(0, 1, 0))
-//                                .text(Lists.newArrayList(
-//                                        Text.of(""),
-//                                        Text.of("----------------"),
-//                                        Text.of("Enter a Price"),
-//                                        Text.of("for this Listing")
+            bbbbbb Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                    .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(bbb))
+                    .bbbbbbbb(bbbbbbb -> {
+                        // TODO - Cbbb bb bbbb bbbbbbbb bb bbbbbbb
+//                        SbbbQbbbb<Tbbb, Pbbbbb> bbbbb = SbbbQbbbb.<Tbbb, Pbbbbb>bbbbbbb()
+//                                .bbbbbbbb(bbb Vbbbbb3b(0, 1, 0))
+//                                .bbbb(Lbbbb.bbbBbbbbLbbb(
+//                                        Tbbb.bb(""),
+//                                        Tbbb.bb("----------------"),
+//                                        Tbbb.bb("Ebbbb b Pbbbb"),
+//                                        Tbbb.bb("bbb bbbb Lbbbbbb")
 //                                ))
-//                                .response(submission -> {
-//                                    try {
-//                                        double value = Double.parseDouble(submission.get(0));
-//                                        if(value > 0) {
-//                                            this.price = new MonetaryPrice(value);
-//                                            SpongeIcon updated = this.createPriceIcon();
-//                                            this.getDisplay().setSlot(this.getPriceSlot(), updated);
+//                                .bbbbbbbb(bbbbbbbbbb -> {
+//                                    bbb {
+//                                        bbbbbb bbbbb = Dbbbbb.bbbbbDbbbbb(bbbbbbbbbb.bbb(0));
+//                                        bb(bbbbb > 0) {
+//                                            bbbb.bbbbb = bbb MbbbbbbbPbbbb(bbbbb);
+//                                            SbbbbbIbbb bbbbbbb = bbbb.bbbbbbPbbbbIbbb();
+//                                            bbbb.bbbDbbbbbb().bbbSbbb(bbbb.bbbPbbbbSbbb(), bbbbbbb);
 //
-//                                            Impactor.getInstance().getScheduler().executeSync(() -> {
-//                                                this.open(this.viewer);
+//                                            Ibbbbbbb.bbbIbbbbbbb().bbbSbbbbbbbb().bbbbbbbSbbb(() -> {
+//                                                bbbb.bbbb(bbbb.bbbbbb);
 //                                            });
-//                                            return true;
+//                                            bbbbbb bbbb;
 //                                        }
-//                                        return false;
-//                                    } catch (Exception e) {
-//                                        return false;
+//                                        bbbbbb bbbbb;
+//                                    } bbbbb (Ebbbbbbbb b) {
+//                                        bbbbbb bbbbb;
 //                                    }
 //                                })
-//                                .reopenOnFailure(true)
-//                                .build();
-//                        this.viewer.closeInventory();
-//                        query.sendTo(this.viewer);
+//                                .bbbbbbObFbbbbbb(bbbb)
+//                                .bbbbb();
+//                        bbbb.bbbbbb.bbbbbIbbbbbbbb();
+//                        bbbbb.bbbbTb(bbbb.bbbbbb);
 
-                        return false;
+                        bbbbbb bbbbb;
                     })
-                    .build();
-        } else {
-            ItemStack selector = ItemStack.builder()
-                    .from(SkullCreator.fromBase64("Mzk2Y2UxM2ZmNjE1NWZkZjMyMzVkOGQyMjE3NGM1ZGU0YmY1NTEyZjFhZGVkYTFhZmEzZmMyODE4MGYzZjcifX19"))
-                    .add(Keys.CUSTOM_NAME, parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PRICE_DISPLAY_TITLE), sources))
-                    .add(Keys.LORE, result)
-                    .build();
+                    .bbbbb();
+        } bbbb {
+            IbbbSbbbb bbbbbbbb = IbbbSbbbb.bbbbbbb()
+                    .bbbb(SbbbbCbbbbbb.bbbbBbbb64("Mbb2Y2UbM2ZbNbE1NWZbZbMbMbVbOGQbMbE3NGM1ZGU0YbY1NTEbZbFbZGVbYTFbZbEbZbMbODE4MGYbZbbbbX19"))
+                    .bbb(Kbbb.CUSTOM_NBME, bbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_PRICE_DISPLBY_TITLE), bbbbbbb))
+                    .bbb(Kbbb.LORE, bbbbbb)
+                    .bbbbb();
 
-            return Icon.builder(ItemStack.class)
-                    .display(new DisplayProvider.Constant<>(selector))
-                    .listener(context -> {
-                        new SpongePriceTypeSelectionMenu(this.viewer, this, (ui, price) -> {
-                            if(price != null) {
-                                ((AbstractSpongeEntryUI<E>) ui).setPrice((SpongePrice<?, ?>) price);
-                                ((AbstractSpongeEntryUI<E>) ui).display.set(this.createPriceIcon(), this.getPriceSlot());
+            bbbbbb Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                    .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(bbbbbbbb))
+                    .bbbbbbbb(bbbbbbb -> {
+                        bbb SbbbbbPbbbbTbbbSbbbbbbbbMbbb(bbbb.bbbbbb, bbbb, (bb, bbbbb) -> {
+                            bb(bbbbb != bbbb) {
+                                ((BbbbbbbbSbbbbbEbbbbUI<E>) bb).bbbPbbbb((SbbbbbPbbbb<?, ?>) bbbbb);
+                                ((BbbbbbbbSbbbbbEbbbbUI<E>) bb).bbbbbbb.bbb(bbbb.bbbbbbPbbbbIbbb(), bbbb.bbbPbbbbSbbb());
                             }
-                            ((AbstractSpongeEntryUI<E>)ui).open(this.viewer);
-                        }).open();
+                            ((BbbbbbbbSbbbbbEbbbbUI<E>)bb).bbbb(bbbb.bbbbbb);
+                        }).bbbb();
 
-                        return false;
+                        bbbbbb bbbbb;
                     })
-                    .build();
+                    .bbbbb();
         }
     }
 
-    private final Icon<ItemStack> red = this.border(ItemTypes.BLACK_STAINED_GLASS_PANE.get());
-    private final Icon<ItemStack> darkGreen = this.border(ItemTypes.GREEN_STAINED_GLASS_PANE.get());
-    private final Icon<ItemStack> green = this.border(ItemTypes.LIME_STAINED_GLASS_PANE.get());
+    bbbbbbb bbbbb Ibbb<IbbbSbbbb> bbb = bbbb.bbbbbb(IbbbTbbbb.BLBCK_STBINED_GLBSS_PBNE.bbb());
+    bbbbbbb bbbbb Ibbb<IbbbSbbbb> bbbbGbbbb = bbbb.bbbbbb(IbbbTbbbb.GREEN_STBINED_GLBSS_PBNE.bbb());
+    bbbbbbb bbbbb Ibbb<IbbbSbbbb> bbbbb = bbbb.bbbbbb(IbbbTbbbb.LIME_STBINED_GLBSS_PBNE.bbb());
 
-    @Override
-    public void style(boolean selected) {
-        BiFunction<Boolean, Icon<ItemStack>, Icon<ItemStack>> applier = (state, color) -> {
-            if(state) {
-                return color;
+    @Obbbbbbb
+    bbbbbb bbbb bbbbb(bbbbbbb bbbbbbbb) {
+        BbFbbbbbbb<Bbbbbbb, Ibbb<IbbbSbbbb>, Ibbb<IbbbSbbbb>> bbbbbbb = (bbbbb, bbbbb) -> {
+            bb(bbbbb) {
+                bbbbbb bbbbb;
             }
 
-            return this.red;
+            bbbbbb bbbb.bbb;
         };
 
-        this.display.set(applier.apply(selected, this.darkGreen), 10);
-        this.display.set(applier.apply(selected, this.darkGreen), 11);
-        this.display.set(applier.apply(selected, this.darkGreen), 15);
-        this.display.set(applier.apply(selected, this.darkGreen), 16);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbGbbbb), 10);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbGbbbb), 11);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbGbbbb), 15);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbGbbbb), 16);
 
-        this.display.set(applier.apply(selected, this.green), 3);
-        this.display.set(applier.apply(selected, this.green), 4);
-        this.display.set(applier.apply(selected, this.green), 5);
-        this.display.set(applier.apply(selected, this.green), 12);
-        this.display.set(applier.apply(selected, this.green), 14);
-        this.display.set(applier.apply(selected, this.green), 21);
-        this.display.set(applier.apply(selected, this.green), 22);
-        this.display.set(applier.apply(selected, this.green), 23);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbb), 3);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbb), 4);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbb), 5);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbb), 12);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbb), 14);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbb), 21);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbb), 22);
+        bbbb.bbbbbbb.bbb(bbbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbb), 23);
     }
 
-    protected Icon<ItemStack> border(ItemType type) {
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                    .itemType(type)
-                    .add(Keys.CUSTOM_NAME, Component.empty())
-                    .build())
+    bbbbbbbbb Ibbb<IbbbSbbbb> bbbbbb(IbbbTbbb bbbb) {
+        bbbbbb Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(IbbbSbbbb.bbbbbbb()
+                    .bbbbTbbb(bbbb)
+                    .bbb(Kbbb.CUSTOM_NBME, Cbbbbbbbb.bbbbb())
+                    .bbbbb())
                 )
-                .build();
+                .bbbbb();
     }
 
 }

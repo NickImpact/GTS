@@ -1,87 +1,87 @@
-package net.impactdev.gts.common.messaging.messages.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.messaging.message.type.listings.PublishListingMessage;
-import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbbbBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
-public class PublishListingMessageImpl extends AbstractMessage implements PublishListingMessage {
+bbbbbb bbbbb BbbbbbbBbbbbbbBbbbbbbBbbb bbbbbbb BbbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbBbbbbbbBbbbbbb {
 
-    public static final String TYPE = "Listings/Publish";
+    bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "Bbbbbbbb/Bbbbbbb";
 
-    public static PublishListingMessageImpl decode(@Nullable JsonElement content, UUID id) {
-        if(content == null) {
-            throw new IllegalStateException("Raw JSON data was null");
+    bbbbbb bbbbbb BbbbbbbBbbbbbbBbbbbbbBbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+        bb(bbbbbbb == bbbb) {
+            bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBBB bbbb bbb bbbb");
         }
 
-        JsonObject raw = content.getAsJsonObject();
+        BbbbBbbbbb bbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-        UUID listing = Optional.ofNullable(raw.get("listing"))
-                .map(x -> UUID.fromString(x.getAsString()))
-                .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-        UUID actor = Optional.ofNullable(raw.get("actor"))
-                .map(x -> UUID.fromString(x.getAsString()))
-                .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-        boolean auction = Optional.ofNullable(raw.get("auction"))
-                .map(JsonElement::getAsBoolean)
-                .orElseThrow(() -> new IllegalStateException("Unable to locate auction status marker"));
+        BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb BB"));
+        BBBB bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbb BB"));
+        bbbbbbb bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb bbbbbb bbbbbb"));
 
-        return new PublishListingMessageImpl(id, listing, actor, auction);
+        bbbbbb bbb BbbbbbbBbbbbbbBbbbbbbBbbb(bb, bbbbbbb, bbbbb, bbbbbbb);
     }
 
-    private final UUID listing;
-    private final UUID actor;
-    private final boolean auction;
+    bbbbbbb bbbbb BBBB bbbbbbb;
+    bbbbbbb bbbbb BBBB bbbbb;
+    bbbbbbb bbbbb bbbbbbb bbbbbbb;
 
-    public PublishListingMessageImpl(UUID id, UUID listing, UUID actor, boolean auction) {
-        super(id);
-        this.listing = listing;
-        this.actor = actor;
-        this.auction = auction;
+    bbbbbb BbbbbbbBbbbbbbBbbbbbbBbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbb, bbbbbbb bbbbbbb) {
+        bbbbb(bb);
+        bbbb.bbbbbbb = bbbbbbb;
+        bbbb.bbbbb = bbbbb;
+        bbbb.bbbbbbb = bbbbbbb;
     }
 
-    @Override
-    public UUID getListingID() {
-        return this.listing;
+    @Bbbbbbbb
+    bbbbbb BBBB bbbBbbbbbbBB() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    @Override
-    public UUID getActor() {
-        return this.actor;
+    @Bbbbbbbb
+    bbbbbb BBBB bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public boolean isAuction() {
-        return this.auction;
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbBbbbbbb() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    @Override
-    public @NonNull String asEncodedString() {
-        return GTSMessagingService.encodeMessageAsString(
-                TYPE,
-                this.getID(),
-                new JObject()
-                        .add("listing", this.listing.toString())
-                        .add("actor", this.actor.toString())
-                        .add("auction", this.auction)
-                        .toJson()
+    @Bbbbbbbb
+    bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+        bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                BBBB,
+                bbbb.bbbBB(),
+                bbb BBbbbbb()
+                        .bbb("bbbbbbb", bbbb.bbbbbbb.bbBbbbbb())
+                        .bbb("bbbbb", bbbb.bbbbb.bbBbbbbb())
+                        .bbb("bbbbbbb", bbbb.bbbbbbb)
+                        .bbBbbb()
         );
     }
 
-    @Override
-    public void print(PrettyPrinter printer) {
-        printer.kv("Request ID", this.getID())
-                .kv("Listing ID", this.getListingID())
-                .kv("Actor", this.getActor())
-                .kv("Is Auction", this.isAuction());
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+        bbbbbbb.bb("Bbbbbbb BB", bbbb.bbbBB())
+                .bb("Bbbbbbb BB", bbbb.bbbBbbbbbbBB())
+                .bb("Bbbbb", bbbb.bbbBbbbb())
+                .bb("Bb Bbbbbbb", bbbb.bbBbbbbbb());
     }
 
 }

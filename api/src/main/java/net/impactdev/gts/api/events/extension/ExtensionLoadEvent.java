@@ -1,12 +1,12 @@
-package net.impactdev.gts.api.events.extension;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.bbbbbbbbb;
 
-import net.impactdev.impactor.api.event.ImpactorEvent;
-import net.impactdev.gts.api.extension.Extension;
-import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbBbbbbb;
 
-@GenerateFactoryMethod
-public interface ExtensionLoadEvent extends ImpactorEvent {
+@BbbbbbbbBbbbbbbBbbbbb
+bbbbbb bbbbbbbbb BbbbbbbbbBbbbBbbbb bbbbbbb BbbbbbbbBbbbb {
 
-    Extension getExtension();
+    Bbbbbbbbb bbbBbbbbbbbb();
 
 }

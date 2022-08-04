@@ -1,17 +1,17 @@
-package net.impactdev.gts.common.dependencies;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbbbb;
 
-import net.impactdev.impactor.api.dependencies.Dependency;
-import net.impactdev.impactor.api.dependencies.relocation.Relocation;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.bbbbbbbbbb.Bbbbbbbbbb;
 
-public class GTSDependencies {
+bbbbbb bbbbb BBBBbbbbbbbbbbb {
 
-    public static final Dependency MXPARSER = Dependency.builder()
-            .name("MxParser")
-            .group("org{}mariuszgromada{}math")
-            .artifact("MathParser.org-mXparser")
-            .version("4.4.2")
-            .checksum("z+nZN08mJQ8UniReVzNorIApq3QhAUws6ZtNrtWR8dA=")
-            .relocation(Relocation.of("org{}mariuszgromada{}math{}mxparser", "mxparser"))
-            .build();
+    bbbbbb bbbbbb bbbbb Bbbbbbbbbb BBBBBBBB = Bbbbbbbbbb.bbbbbbb()
+            .bbbb("BbBbbbbb")
+            .bbbbb("bbb{}bbbbbbbbbbbbbb{}bbbb")
+            .bbbbbbbb("BbbbBbbbbb.bbb-bBbbbbbb")
+            .bbbbbbb("4.4.2")
+            .bbbbbbbb("b+bBB08bBB8BbbBbBbBbbBBbb3BbBBbb6BbBbbBB8bB=")
+            .bbbbbbbbbb(Bbbbbbbbbb.bb("bbb{}bbbbbbbbbbbbbb{}bbbb{}bbbbbbbb", "bbbbbbbb"))
+            .bbbbb();
 
 }

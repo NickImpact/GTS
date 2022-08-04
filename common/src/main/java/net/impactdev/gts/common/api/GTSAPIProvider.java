@@ -1,84 +1,84 @@
-package net.impactdev.gts.common.api;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbb;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.data.registry.GTSComponentManager;
-import net.impactdev.gts.api.data.translators.DataTranslatorManager;
-import net.impactdev.gts.api.extension.Extension;
-import net.impactdev.gts.api.maintenance.MaintenanceManager;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.player.PlayerSettingsManager;
-import net.impactdev.gts.api.searching.Searcher;
-import net.impactdev.gts.common.data.DataTranslatorManagerImpl;
-import net.impactdev.gts.common.listings.GTSComponentManagerImpl;
-import net.impactdev.gts.common.player.PlayerSettingsManagerImpl;
-import net.impactdev.gts.common.plugin.GTSPlugin;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbb.BbbbBbbbbbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BBBBbbbbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
 
-import java.util.List;
+bbbbbb bbbb.bbbb.Bbbb;
 
-public class GTSAPIProvider implements GTSService {
+bbbbbb bbbbb BBBBBBBbbbbbbb bbbbbbbbbb BBBBbbbbbb {
 
-	private final GTSComponentManager entryManagerRegistry = new GTSComponentManagerImpl();
-	private final PlayerSettingsManager playerSettingsManager = new PlayerSettingsManagerImpl();
-	private final List<Searcher> searchers = Lists.newArrayList();
-	private final DataTranslatorManager dataTranslatorManager = new DataTranslatorManagerImpl();
+	bbbbbbb bbbbb BBBBbbbbbbbbBbbbbbb bbbbbBbbbbbbBbbbbbbb = bbb BBBBbbbbbbbbBbbbbbbBbbb();
+	bbbbbbb bbbbb BbbbbbBbbbbbbbBbbbbbb bbbbbbBbbbbbbbBbbbbbb = bbb BbbbbbBbbbbbbbBbbbbbbBbbb();
+	bbbbbbb bbbbb Bbbb<Bbbbbbbb> bbbbbbbbb = Bbbbb.bbbBbbbbBbbb();
+	bbbbbbb bbbbb BbbbBbbbbbbbbbBbbbbbb bbbbBbbbbbbbbbBbbbbbb = bbb BbbbBbbbbbbbbbBbbbbbbBbbb();
 
-	private boolean safe = false;
-	private ErrorCode reason;
+	bbbbbbb bbbbbbb bbbb = bbbbb;
+	bbbbbbb BbbbbBbbb bbbbbb;
 
-	@Override
-	public ImmutableList<Extension> getAllExtensions() {
-		if(GTSPlugin.instance().extensionManager() != null) {
-			return ImmutableList.copyOf(GTSPlugin.instance().extensionManager().getLoadedExtensions());
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbbBbbb<Bbbbbbbbb> bbbBbbBbbbbbbbbb() {
+		bb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb() != bbbb) {
+			bbbbbb BbbbbbbbbBbbb.bbbbBb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbBbbbbbBbbbbbbbbb());
 		}
 
-		return ImmutableList.of();
+		bbbbbb BbbbbbbbbBbbb.bb();
 	}
 
-	@Override
-	public GTSComponentManager getGTSComponentManager() {
-		return this.entryManagerRegistry;
+	@Bbbbbbbb
+	bbbbbb BBBBbbbbbbbbBbbbbbb bbbBBBBbbbbbbbbBbbbbbb() {
+		bbbbbb bbbb.bbbbbBbbbbbbBbbbbbbb;
 	}
 
-	@Override
-	public PlayerSettingsManager getPlayerSettingsManager() {
-		return this.playerSettingsManager;
+	@Bbbbbbbb
+	bbbbbb BbbbbbBbbbbbbbBbbbbbb bbbBbbbbbBbbbbbbbBbbbbbb() {
+		bbbbbb bbbb.bbbbbbBbbbbbbbBbbbbbb;
 	}
 
-	@Override
-	public MaintenanceManager getMaintenanceManager() {
-		return null;
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbbbbBbbbbbb bbbBbbbbbbbbbbBbbbbbb() {
+		bbbbbb bbbb;
 	}
 
-	@Override
-	public DataTranslatorManager getDataTranslatorManager() {
-		return this.dataTranslatorManager;
+	@Bbbbbbbb
+	bbbbbb BbbbBbbbbbbbbbBbbbbbb bbbBbbbBbbbbbbbbbBbbbbbb() {
+		bbbbbb bbbb.bbbbBbbbbbbbbbBbbbbbb;
 	}
 
-	@Override
-	public void addSearcher(Searcher searcher) {
-		this.searchers.add(searcher);
+	@Bbbbbbbb
+	bbbbbb bbbb bbbBbbbbbbb(Bbbbbbbb bbbbbbbb) {
+		bbbb.bbbbbbbbb.bbb(bbbbbbbb);
 	}
 
-	@Override
-	public List<Searcher> getSearchers() {
-		return this.searchers;
+	@Bbbbbbbb
+	bbbbbb Bbbb<Bbbbbbbb> bbbBbbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbbb;
 	}
 
-	@Override
-	public boolean isInSafeMode() {
-		return this.safe;
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbBbBbbbBbbb() {
+		bbbbbb bbbb.bbbb;
 	}
 
-	@Override
-	public ErrorCode getSafeModeReason() {
-		return this.reason;
+	@Bbbbbbbb
+	bbbbbb BbbbbBbbb bbbBbbbBbbbBbbbbb() {
+		bbbbbb bbbb.bbbbbb;
 	}
 
-	public void setSafeMode(ErrorCode reason) {
-		this.safe = true;
-		this.reason = reason;
+	bbbbbb bbbb bbbBbbbBbbb(BbbbbBbbb bbbbbb) {
+		bbbb.bbbb = bbbb;
+		bbbb.bbbbbb = bbbbbb;
 	}
 
 }

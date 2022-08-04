@@ -1,16 +1,16 @@
-package net.impactdev.gts.listings.searcher;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb;
 
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.searching.Searcher;
-import org.spongepowered.api.Sponge;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
 
-public class SpongeUserSearcher implements Searcher {
+bbbbbb bbbbb BbbbbbBbbbBbbbbbbb bbbbbbbbbb Bbbbbbbb {
 
-    @Override
-    public boolean parse(Listing listing, String input) {
-        return Sponge.server().player(listing.getLister())
-                .map(user -> user.name().toLowerCase().startsWith(input.toLowerCase()))
-                .orElse(false);
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbb(Bbbbbbb bbbbbbb, Bbbbbb bbbbb) {
+        bbbbbb Bbbbbb.bbbbbb().bbbbbb(bbbbbbb.bbbBbbbbb())
+                .bbb(bbbb -> bbbb.bbbb().bbBbbbbBbbb().bbbbbbBbbb(bbbbb.bbBbbbbBbbb()))
+                .bbBbbb(bbbbb);
     }
 
 }

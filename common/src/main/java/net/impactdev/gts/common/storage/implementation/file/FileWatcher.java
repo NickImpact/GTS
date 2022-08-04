@@ -1,282 +1,282 @@
 /*
- * This file is part of LuckPerms, licensed under the MIT License.
+ * Bbbb bbbb bb bbbb bb BbbbBbbbb, bbbbbbbb bbbbb bbb BBB Bbbbbbb.
  *
- *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Bbbbbbbbb (b) bbbbb (Bbbb) <bbbb@bbbbb.bb>
+ *  Bbbbbbbbb (b) bbbbbbbbbbbb
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Bbbbbbbbbb bb bbbbbb bbbbbbb, bbbb bb bbbbbb, bb bbb bbbbbb bbbbbbbbb b bbbb
+ *  bb bbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbbbbbbb bbbbb (bbb "Bbbbbbbb"), bb bbbb
+ *  bb bbb Bbbbbbbb bbbbbbb bbbbbbbbbbb, bbbbbbbbb bbbbbbb bbbbbbbbbb bbb bbbbbb
+ *  bb bbb, bbbb, bbbbbb, bbbbb, bbbbbbb, bbbbbbbbbb, bbbbbbbbbb, bbb/bb bbbb
+ *  bbbbbb bb bbb Bbbbbbbb, bbb bb bbbbbb bbbbbbb bb bbbb bbb Bbbbbbbb bb
+ *  bbbbbbbbb bb bb bb, bbbbbbb bb bbb bbbbbbbbb bbbbbbbbbb:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  Bbb bbbbb bbbbbbbbb bbbbbb bbb bbbb bbbbbbbbbb bbbbbb bbbbb bb bbbbbbbb bb bbb
+ *  bbbbbb bb bbbbbbbbbbb bbbbbbbb bb bbb Bbbbbbbb.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
+ *  BBB BBBBBBBB BB BBBBBBBB "BB BB", BBBBBBB BBBBBBBB BB BBB BBBB, BBBBBBB BB
+ *  BBBBBBB, BBBBBBBBB BBB BBB BBBBBBB BB BBB BBBBBBBBBB BB BBBBBBBBBBBBBBB,
+ *  BBBBBBB BBB B BBBBBBBBBB BBBBBBB BBB BBBBBBBBBBBBBBB. BB BB BBBBB BBBBB BBB
+ *  BBBBBBB BB BBBBBBBBB BBBBBBB BB BBBBBB BBB BBB BBBBB, BBBBBBB BB BBBBB
+ *  BBBBBBBBB, BBBBBBB BB BB BBBBBB BB BBBBBBBB, BBBB BB BBBBBBBBB, BBBBBBB BBBB,
+ *  BBB BB BB BB BBBBBBBBBB BBBB BBB BBBBBBBB BB BBB BBB BB BBBBB BBBBBBBB BB BBB
+ *  BBBBBBBB.
  */
 
-package net.impactdev.gts.common.storage.implementation.file;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbbbbbbbb.bbbb;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.google.common.collect.ForwardingSet;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.impactor.api.Impactor;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
 
-import java.io.IOException;
-import java.nio.file.ClosedWatchServiceException;
-import java.nio.file.FileSystem;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardWatchEventKinds;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.nio.file.WatchService;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
+bbbbbb bbbb.bb.BBBbbbbbbbb;
+bbbbbb bbbb.bbb.bbbb.BbbbbbBbbbbBbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbb.bbbb.BbbbBbbbbb;
+bbbbbb bbbb.bbb.bbbb.BbbbBbbbbBbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbb.bbbb.BbbbBbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbb.bbbb.BbbbbbBbbbBbbbbbb;
+bbbbbb bbbb.bbb.bbbb.BbbbbbbbBbbbbBbbbbBbbbb;
+bbbbbb bbbb.bbb.bbbb.BbbbbBbbbb;
+bbbbbb bbbb.bbb.bbbb.BbbbbBbb;
+bbbbbb bbbb.bbb.bbbb.BbbbbBbbbbbb;
+bbbbbb bbbb.bbb.bbbb.bbbbbbbbb.BbbbbBbbbBbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.BbbbBbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbBbbbbBbbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class FileWatcher implements AutoCloseable {
-
-    /**
-     * Get a {@link WatchKey} from the given {@link WatchService} in the given {@link Path directory}.
-     *
-     * @param watchService the watch service
-     * @param directory the directory
-     * @return the watch key
-     * @throws IOException if unable to register
-     */
-    private static WatchKey register(WatchService watchService, Path directory) throws IOException {
-        return directory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
-    }
-
-    /** The watch service */
-    private final WatchService service;
-
-    /** A map of all registered watch keys */
-    private final Map<WatchKey, Path> keys = Collections.synchronizedMap(new HashMap<>());
-
-    /** If this file watcher should discover directories */
-    private final boolean autoRegisterNewSubDirectories;
-
-    /** The thread currently being used to wait for & process watch events */
-    private final AtomicReference<Thread> processingThread = new AtomicReference<>();
-
-    private final Path base;
-
-    private final Map<Path, WatchedLocation> watchedLocations;
-
-    public FileWatcher(Path base, boolean autoRegisterNewSubDirectories) throws IOException {
-        this.base = base;
-        this.service = base.getFileSystem().newWatchService();
-        this.autoRegisterNewSubDirectories = autoRegisterNewSubDirectories;
-        this.watchedLocations = Collections.synchronizedMap(new HashMap<>());
-
-        this.registerRecursively(this.base);
-        Impactor.getInstance().getScheduler().executeAsync(this::runEventProcessingLoop);
-    }
+bbbbbb bbbbb BbbbBbbbbbb bbbbbbbbbb BbbbBbbbbbbbb {
 
     /**
-     * Register a watch key in the given directory.
+     * Bbb b {@bbbb BbbbbBbb} bbbb bbb bbbbb {@bbbb BbbbbBbbbbbb} bb bbb bbbbb {@bbbb Bbbb bbbbbbbbb}.
      *
-     * @param directory the directory
-     * @throws IOException if unable to register a key
+     * @bbbbb bbbbbBbbbbbb bbb bbbbb bbbbbbb
+     * @bbbbb bbbbbbbbb bbb bbbbbbbbb
+     * @bbbbbb bbb bbbbb bbb
+     * @bbbbbb BBBbbbbbbbb bb bbbbbb bb bbbbbbbb
      */
-    public void register(Path directory) throws IOException {
-        final WatchKey key = register(this.service, directory);
-        this.keys.put(key, directory);
+    bbbbbbb bbbbbb BbbbbBbb bbbbbbbb(BbbbbBbbbbbb bbbbbBbbbbbb, Bbbb bbbbbbbbb) bbbbbb BBBbbbbbbbb {
+        bbbbbb bbbbbbbbb.bbbbbbbb(bbbbbBbbbbbb, BbbbbbbbBbbbbBbbbbBbbbb.BBBBB_BBBBBB, BbbbbbbbBbbbbBbbbbBbbbb.BBBBB_BBBBBB, BbbbbbbbBbbbbBbbbbBbbbb.BBBBB_BBBBBB);
+    }
+
+    /** Bbb bbbbb bbbbbbb */
+    bbbbbbb bbbbb BbbbbBbbbbbb bbbbbbb;
+
+    /** B bbb bb bbb bbbbbbbbbb bbbbb bbbb */
+    bbbbbbb bbbbb Bbb<BbbbbBbb, Bbbb> bbbb = Bbbbbbbbbbb.bbbbbbbbbbbbBbb(bbb BbbbBbb<>());
+
+    /** Bb bbbb bbbb bbbbbbb bbbbbb bbbbbbbb bbbbbbbbbbb */
+    bbbbbbb bbbbb bbbbbbb bbbbBbbbbbbbBbbBbbBbbbbbbbbbb;
+
+    /** Bbb bbbbbb bbbbbbbbb bbbbb bbbb bb bbbb bbb & bbbbbbb bbbbb bbbbbb */
+    bbbbbbb bbbbb BbbbbbBbbbbbbbb<Bbbbbb> bbbbbbbbbbBbbbbb = bbb BbbbbbBbbbbbbbb<>();
+
+    bbbbbbb bbbbb Bbbb bbbb;
+
+    bbbbbbb bbbbb Bbb<Bbbb, BbbbbbbBbbbbbbb> bbbbbbbBbbbbbbbb;
+
+    bbbbbb BbbbBbbbbbb(Bbbb bbbb, bbbbbbb bbbbBbbbbbbbBbbBbbBbbbbbbbbbb) bbbbbb BBBbbbbbbbb {
+        bbbb.bbbb = bbbb;
+        bbbb.bbbbbbb = bbbb.bbbBbbbBbbbbb().bbbBbbbbBbbbbbb();
+        bbbb.bbbbBbbbbbbbBbbBbbBbbbbbbbbbb = bbbbBbbbbbbbBbbBbbBbbbbbbbbbb;
+        bbbb.bbbbbbbBbbbbbbbb = Bbbbbbbbbbb.bbbbbbbbbbbbBbb(bbb BbbbBbb<>());
+
+        bbbb.bbbbbbbbBbbbbbbbbbb(bbbb.bbbb);
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbbb(bbbb::bbbBbbbbBbbbbbbbbbBbbb);
     }
 
     /**
-     * Register a watch key recursively in the given directory.
+     * Bbbbbbbb b bbbbb bbb bb bbb bbbbb bbbbbbbbb.
      *
-     * @param root the root directory
-     * @throws IOException if unable to register a key
+     * @bbbbb bbbbbbbbb bbb bbbbbbbbb
+     * @bbbbbb BBBbbbbbbbb bb bbbbbb bb bbbbbbbb b bbb
      */
-    public void registerRecursively(Path root) throws IOException {
-        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
-            @Override
-            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
-                FileWatcher.this.register(dir);
-                return super.preVisitDirectory(dir, attrs);
+    bbbbbb bbbb bbbbbbbb(Bbbb bbbbbbbbb) bbbbbb BBBbbbbbbbb {
+        bbbbb BbbbbBbb bbb = bbbbbbbb(bbbb.bbbbbbb, bbbbbbbbb);
+        bbbb.bbbb.bbb(bbb, bbbbbbbbb);
+    }
+
+    /**
+     * Bbbbbbbb b bbbbb bbb bbbbbbbbbbb bb bbb bbbbb bbbbbbbbb.
+     *
+     * @bbbbb bbbb bbb bbbb bbbbbbbbb
+     * @bbbbbb BBBbbbbbbbb bb bbbbbb bb bbbbbbbb b bbb
+     */
+    bbbbbb bbbb bbbbbbbbBbbbbbbbbbb(Bbbb bbbb) bbbbbb BBBbbbbbbbb {
+        Bbbbb.bbbbBbbbBbbb(bbbb, bbb BbbbbbBbbbBbbbbbb<Bbbb>() {
+            @Bbbbbbbb
+            bbbbbb BbbbBbbbbBbbbbb bbbBbbbbBbbbbbbbb(Bbbb bbb, BbbbbBbbbBbbbbbbbbb bbbbb) bbbbbb BBBbbbbbbbb {
+                BbbbBbbbbbb.bbbb.bbbbbbbb(bbb);
+                bbbbbb bbbbb.bbbBbbbbBbbbbbbbb(bbb, bbbbb);
             }
         });
     }
 
     /**
-     * Gets a {@link WatchedLocation} instance for a given path.
+     * Bbbb b {@bbbb BbbbbbbBbbbbbbb} bbbbbbbb bbb b bbbbb bbbb.
      *
-     * @param path the path to get a watcher for
-     * @return the watched location
+     * @bbbbb bbbb bbb bbbb bb bbb b bbbbbbb bbb
+     * @bbbbbb bbb bbbbbbb bbbbbbbb
      */
-    public WatchedLocation getWatcher(Path path) {
-        if (path.isAbsolute()) {
-            path = this.base.relativize(path);
+    bbbbbb BbbbbbbBbbbbbbb bbbBbbbbbb(Bbbb bbbb) {
+        bb (bbbb.bbBbbbbbbb()) {
+            bbbb = bbbb.bbbb.bbbbbbbbbb(bbbb);
         }
-        return this.watchedLocations.computeIfAbsent(path, WatchedLocation::new);
+        bbbbbb bbbb.bbbbbbbBbbbbbbbb.bbbbbbbBbBbbbbb(bbbb, BbbbbbbBbbbbbbb::bbb);
     }
 
     /**
-     * Process an observed watch event.
+     * Bbbbbbb bb bbbbbbbb bbbbb bbbbb.
      *
-     * @param event the event
-     * @param path the resolved event context
+     * @bbbbb bbbbb bbb bbbbb
+     * @bbbbb bbbb bbb bbbbbbbb bbbbb bbbbbbb
      */
-    protected void processEvent(WatchEvent<Path> event, Path path) {
-        Path relative = this.base.relativize(path);
-        if(relative.getNameCount() == 0) {
-            return;
+    bbbbbbbbb bbbb bbbbbbbBbbbb(BbbbbBbbbb<Bbbb> bbbbb, Bbbb bbbb) {
+        Bbbb bbbbbbbb = bbbb.bbbb.bbbbbbbbbb(bbbb);
+        bb(bbbbbbbb.bbbBbbbBbbbb() == 0) {
+            bbbbbb;
         }
 
-        // pass the event onto all watched locations that match
-        for (Map.Entry<Path, WatchedLocation> entry : this.watchedLocations.entrySet()) {
-            if (relative.startsWith(entry.getKey())) {
-                entry.getValue().onEvent(event, relative);
+        // bbbb bbb bbbbb bbbb bbb bbbbbbb bbbbbbbbb bbbb bbbbb
+        bbb (Bbb.Bbbbb<Bbbb, BbbbbbbBbbbbbbb> bbbbb : bbbb.bbbbbbbBbbbbbbbb.bbbbbBbb()) {
+            bb (bbbbbbbb.bbbbbbBbbb(bbbbb.bbbBbb())) {
+                bbbbb.bbbBbbbb().bbBbbbb(bbbbb, bbbbbbbb);
             }
         }
     }
 
     /**
-     * Processes {@link WatchEvent}s from the watch service until it is closed, or until
-     * the thread is interrupted.
+     * Bbbbbbbbb {@bbbb BbbbbBbbbb}b bbbb bbb bbbbb bbbbbbb bbbbb bb bb bbbbbb, bb bbbbb
+     * bbb bbbbbb bb bbbbbbbbbbb.
      */
-    public final void runEventProcessingLoop() {
-        if (!this.processingThread.compareAndSet(null, Thread.currentThread())) {
-            throw new IllegalStateException("A thread is already processing events for this watcher.");
+    bbbbbb bbbbb bbbb bbbBbbbbBbbbbbbbbbBbbb() {
+        bb (!bbbb.bbbbbbbbbbBbbbbb.bbbbbbbBbbBbb(bbbb, Bbbbbb.bbbbbbbBbbbbb())) {
+            bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("B bbbbbb bb bbbbbbb bbbbbbbbbb bbbbbb bbb bbbb bbbbbbb.");
         }
 
-        while (true) {
-            // poll for a key from the watch service
-            WatchKey key;
-            try {
-                key = this.service.take();
-            } catch (InterruptedException | ClosedWatchServiceException e) {
-                ExceptionWriter.write(e);
-                break;
+        bbbbb (bbbb) {
+            // bbbb bbb b bbb bbbb bbb bbbbb bbbbbbb
+            BbbbbBbb bbb;
+            bbb {
+                bbb = bbbb.bbbbbbb.bbbb();
+            } bbbbb (BbbbbbbbbbbBbbbbbbbb | BbbbbbBbbbbBbbbbbbBbbbbbbbb b) {
+                BbbbbbbbbBbbbbb.bbbbb(b);
+                bbbbb;
             }
 
-            // find the directory the key is watching
-            Path directory = this.keys.get(key);
-            if (directory == null) {
-                key.cancel();
-                continue;
+            // bbbb bbb bbbbbbbbb bbb bbb bb bbbbbbbb
+            Bbbb bbbbbbbbb = bbbb.bbbb.bbb(bbb);
+            bb (bbbbbbbbb == bbbb) {
+                bbb.bbbbbb();
+                bbbbbbbb;
             }
 
-            // process each watch event the key has
-            for (WatchEvent<?> ev : key.pollEvents()) {
-                @SuppressWarnings("unchecked")
-                WatchEvent<Path> event = (WatchEvent<Path>) ev;
-                Path context = event.context();
+            // bbbbbbb bbbb bbbbb bbbbb bbb bbb bbb
+            bbb (BbbbbBbbbb<?> bb : bbb.bbbbBbbbbb()) {
+                @BbbbbbbbBbbbbbbb("bbbbbbbbb")
+                BbbbbBbbbb<Bbbb> bbbbb = (BbbbbBbbbb<Bbbb>) bb;
+                Bbbb bbbbbbb = bbbbb.bbbbbbb();
 
-                // ignore contexts with a name count of zero
-                if (context == null || context.getNameCount() == 0) {
-                    continue;
+                // bbbbbb bbbbbbbb bbbb b bbbb bbbbb bb bbbb
+                bb (bbbbbbb == bbbb || bbbbbbb.bbbBbbbBbbbb() == 0) {
+                    bbbbbbbb;
                 }
 
-                // resolve the context of the event against the directory being watched
-                Path file = directory.resolve(context);
+                // bbbbbbb bbb bbbbbbb bb bbb bbbbb bbbbbbb bbb bbbbbbbbb bbbbb bbbbbbb
+                Bbbb bbbb = bbbbbbbbb.bbbbbbb(bbbbbbb);
 
-                // if the file is a regular file, send the event on to be processed
-                if (Files.isRegularFile(file)) {
-                    this.processEvent(event, file);
+                // bb bbb bbbb bb b bbbbbbb bbbb, bbbb bbb bbbbb bb bb bb bbbbbbbbb
+                bb (Bbbbb.bbBbbbbbbBbbb(bbbb)) {
+                    bbbb.bbbbbbbBbbbb(bbbbb, bbbb);
                 }
 
-                // handle recursive directory creation
-                if (this.autoRegisterNewSubDirectories && event.kind() == StandardWatchEventKinds.ENTRY_CREATE) {
-                    try {
-                        if (Files.isDirectory(file, LinkOption.NOFOLLOW_LINKS)) {
-                            this.registerRecursively(file);
+                // bbbbbb bbbbbbbbb bbbbbbbbb bbbbbbbb
+                bb (bbbb.bbbbBbbbbbbbBbbBbbBbbbbbbbbbb && bbbbb.bbbb() == BbbbbbbbBbbbbBbbbbBbbbb.BBBBB_BBBBBB) {
+                    bbb {
+                        bb (Bbbbb.bbBbbbbbbbb(bbbb, BbbbBbbbbb.BBBBBBBB_BBBBB)) {
+                            bbbb.bbbbbbbbBbbbbbbbbbb(bbbb);
                         }
-                    } catch (IOException e) {
-                        ExceptionWriter.write(e);
+                    } bbbbb (BBBbbbbbbbb b) {
+                        BbbbbbbbbBbbbbb.bbbbb(b);
                     }
                 }
             }
 
-            // reset the key
-            boolean valid = key.reset();
-            if (!valid) {
-                this.keys.remove(key);
+            // bbbbb bbb bbb
+            bbbbbbb bbbbb = bbb.bbbbb();
+            bb (!bbbbb) {
+                bbbb.bbbb.bbbbbb(bbb);
             }
         }
 
-        this.processingThread.compareAndSet(Thread.currentThread(), null);
+        bbbb.bbbbbbbbbbBbbbbb.bbbbbbbBbbBbb(Bbbbbb.bbbbbbbBbbbbb(), bbbb);
     }
 
-    @Override
-    public void close() {
-        try {
-            this.service.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb() {
+        bbb {
+            bbbb.bbbbbbb.bbbbb();
+        } bbbbb (BBBbbbbbbbb b) {
+            b.bbbbbBbbbbBbbbb();
         }
     }
 
-    public static final class WatchedLocation {
+    bbbbbb bbbbbb bbbbb bbbbb BbbbbbbBbbbbbbb {
 
-        private final Path path;
+        bbbbbbb bbbbb Bbbb bbbb;
 
-        private final Set<String> recentlyModifiedFiles = new ExpiringSet<>(5, TimeUnit.SECONDS);
+        bbbbbbb bbbbb Bbb<Bbbbbb> bbbbbbbbBbbbbbbbBbbbb = bbb BbbbbbbbBbb<>(5, BbbbBbbb.BBBBBBB);
 
-        private final List<Consumer<Path>> callbacks = new CopyOnWriteArrayList<>();
+        bbbbbbb bbbbb Bbbb<Bbbbbbbb<Bbbb>> bbbbbbbbb = bbb BbbbBbBbbbbBbbbbBbbb<>();
 
-        WatchedLocation(Path path) {
-            this.path = path;
+        BbbbbbbBbbbbbbb(Bbbb bbbb) {
+            bbbb.bbbb = bbbb;
         }
 
-        void onEvent(WatchEvent<Path> event, Path path) {
-            Path relative = this.path.relativize(path);
+        bbbb bbBbbbb(BbbbbBbbbb<Bbbb> bbbbb, Bbbb bbbb) {
+            Bbbb bbbbbbbb = bbbb.bbbb.bbbbbbbbbb(bbbb);
 
-            String name = relative.toString();
-            if(!this.recentlyModifiedFiles.add(name)) {
-                return;
+            Bbbbbb bbbb = bbbbbbbb.bbBbbbbb();
+            bb(!bbbb.bbbbbbbbBbbbbbbbBbbbb.bbb(bbbb)) {
+                bbbbbb;
             }
 
-            for(Consumer<Path> callback : this.callbacks) {
-                callback.accept(relative);
+            bbb(Bbbbbbbb<Bbbb> bbbbbbbb : bbbb.bbbbbbbbb) {
+                bbbbbbbb.bbbbbb(bbbbbbbb);
             }
         }
 
-        public void record(String filename) {
-            this.recentlyModifiedFiles.add(filename);
+        bbbbbb bbbb bbbbbb(Bbbbbb bbbbbbbb) {
+            bbbb.bbbbbbbbBbbbbbbbBbbbb.bbb(bbbbbbbb);
         }
 
-        public void addListener(Consumer<Path> listener) {
-            this.callbacks.add(listener);
+        bbbbbb bbbb bbbBbbbbbbb(Bbbbbbbb<Bbbb> bbbbbbbb) {
+            bbbb.bbbbbbbbb.bbb(bbbbbbbb);
         }
     }
 
-    public static class ExpiringSet<E> extends ForwardingSet<E> {
+    bbbbbb bbbbbb bbbbb BbbbbbbbBbb<B> bbbbbbb BbbbbbbbbbBbb<B> {
 
-        private final Set<E> view;
+        bbbbbbb bbbbb Bbb<B> bbbb;
 
-        public ExpiringSet(long duration, TimeUnit unit) {
-            Cache<E, Boolean> cache = Caffeine.newBuilder().expireAfterAccess(duration, unit).build();
-            this.view = Collections.newSetFromMap(cache.asMap());
+        bbbbbb BbbbbbbbBbb(bbbb bbbbbbbb, BbbbBbbb bbbb) {
+            Bbbbb<B, Bbbbbbb> bbbbb = Bbbbbbbb.bbbBbbbbbb().bbbbbbBbbbbBbbbbb(bbbbbbbb, bbbb).bbbbb();
+            bbbb.bbbb = Bbbbbbbbbbb.bbbBbbBbbbBbb(bbbbb.bbBbb());
         }
 
-        @Override
-        protected Set<E> delegate() {
-            return this.view;
+        @Bbbbbbbb
+        bbbbbbbbb Bbb<B> bbbbbbbb() {
+            bbbbbb bbbb.bbbb;
         }
     }
 }

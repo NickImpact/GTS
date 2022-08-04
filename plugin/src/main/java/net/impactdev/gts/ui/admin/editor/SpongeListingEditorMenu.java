@@ -1,176 +1,176 @@
-package net.impactdev.gts.ui.admin.editor;
+bbbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbb.bbbbbb;
 
-import com.google.common.collect.Lists;
-import net.impactdev.gts.SpongeGTSPlugin;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
-import net.impactdev.gts.ui.submenu.SpongeListingMenu;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.data.type.DyeColors;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.scheduler.Task;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbbBBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbbbb.BbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.BbbbbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbb.Bbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbb.BbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbb.Bbbb;
 
-import java.util.function.Supplier;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
 /**
- * Allows for editing a specific listing. Such actions allow for forced return to a user's stash, deleting a listing,
- * or taking the listing's entry and forcing delete following. This menu effectively resembles the selected listing menu but with different
- * possible actions.
+ * Bbbbbb bbb bbbbbbb b bbbbbbbb bbbbbbb. Bbbb bbbbbbb bbbbb bbb bbbbbb bbbbbb bb b bbbb'b bbbbb, bbbbbbbb b bbbbbbb,
+ * bb bbbbbb bbb bbbbbbb'b bbbbb bbb bbbbbbb bbbbbb bbbbbbbbb. Bbbb bbbb bbbbbbbbbbb bbbbbbbbb bbb bbbbbbbb bbbbbbb bbbb bbb bbbb bbbbbbbbb
+ * bbbbbbbb bbbbbbb.
  */
-public class SpongeListingEditorMenu {
+bbbbbb bbbbb BbbbbbBbbbbbbBbbbbbBbbb {
 
-    private final ImpactorUI display;
-    private final PlatformPlayer viewer;
+    bbbbbbb bbbbb BbbbbbbbBB bbbbbbb;
+    bbbbbbb bbbbb BbbbbbbbBbbbbb bbbbbb;
 
-    private final Listing focus;
-    private final Supplier<SpongeListingMenu> parent;
+    bbbbbbb bbbbb Bbbbbbb bbbbb;
+    bbbbbbb bbbbb Bbbbbbbb<BbbbbbBbbbbbbBbbb> bbbbbb;
 
-    private final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+    bbbbbbb bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
 
-    public SpongeListingEditorMenu(PlatformPlayer viewer, Listing focus, Supplier<SpongeListingMenu> parent) {
-        this.viewer = viewer;
-        this.focus = focus;
-        this.parent = parent;
+    bbbbbb BbbbbbBbbbbbbBbbbbbBbbb(BbbbbbbbBbbbbb bbbbbb, Bbbbbbb bbbbb, Bbbbbbbb<BbbbbbBbbbbbbBbbb> bbbbbb) {
+        bbbb.bbbbbb = bbbbbb;
+        bbbb.bbbbb = bbbbb;
+        bbbb.bbbbbb = bbbbbb;
 
-        this.display = ImpactorUI.builder()
-                .provider(Key.key("gts", "admin-listing-editor"))
-                .title(this.service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_TITLE)))
-                .layout(this.layout())
-                .build();
+        bbbb.bbbbbbb = BbbbbbbbBB.bbbbbbb()
+                .bbbbbbbb(Bbb.bbb("bbb", "bbbbb-bbbbbbb-bbbbbb"))
+                .bbbbb(bbbb.bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBB)))
+                .bbbbbb(bbbb.bbbbbb())
+                .bbbbb();
     }
 
-    public void open() {
-        this.display.open(this.viewer);
+    bbbbbb bbbb bbbb() {
+        bbbb.bbbbbbb.bbbb(bbbb.bbbbbb);
     }
 
-    private Layout layout() {
-        Layout.LayoutBuilder builder = Layout.builder();
-        Icon<ItemStack> colored = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.LIGHT_BLUE_STAINED_GLASS_PANE)
-                        .add(Keys.CUSTOM_NAME, Component.empty())
-                        .build()
+    bbbbbbb Bbbbbb bbbbbb() {
+        Bbbbbb.BbbbbbBbbbbbb bbbbbbb = Bbbbbb.bbbbbbb();
+        Bbbb<BbbbBbbbb> bbbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                        .bbbbBbbb(BbbbBbbbb.BBBBB_BBBB_BBBBBBB_BBBBB_BBBB)
+                        .bbb(Bbbb.BBBBBB_BBBB, Bbbbbbbbb.bbbbb())
+                        .bbbbb()
                 ))
-                .build();
+                .bbbbb();
 
-        builder.border(ProvidedIcons.BORDER);
-        builder.slots(colored, 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
-        builder.slots(ProvidedIcons.BORDER, 19, 20, 24, 25);
-        builder.row(ProvidedIcons.BORDER, 3);
+        bbbbbbb.bbbbbb(BbbbbbbbBbbbb.BBBBBB);
+        bbbbbbb.bbbbb(bbbbbbb, 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
+        bbbbbbb.bbbbb(BbbbbbbbBbbbb.BBBBBB, 19, 20, 24, 25);
+        bbbbbbb.bbb(BbbbbbbbBbbbb.BBBBBB, 3);
 
-        builder.slot(this.delete(), 36);
-        builder.slot(this.deleteAndReturn(), 38);
-        builder.slot(this.copy(), 40);
-        builder.slot(this.edit(), 42);
-        builder.slot(this.end(), 44);
+        bbbbbbb.bbbb(bbbb.bbbbbb(), 36);
+        bbbbbbb.bbbb(bbbb.bbbbbbBbbBbbbbb(), 38);
+        bbbbbbb.bbbb(bbbb.bbbb(), 40);
+        bbbbbbb.bbbb(bbbb.bbbb(), 42);
+        bbbbbbb.bbbb(bbbb.bbb(), 44);
 
-        return builder.build();
+        bbbbbb bbbbbbb.bbbbb();
     }
 
-    private ServerPlayer player() {
-        return Sponge.server().player(this.viewer.uuid()).orElseThrow(IllegalStateException::new);
+    bbbbbbb BbbbbbBbbbbb bbbbbb() {
+        bbbbbb Bbbbbb.bbbbbb().bbbbbb(bbbb.bbbbbb.bbbb()).bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb);
     }
 
-    private Icon<ItemStack> delete() {
-        ItemStack display = ItemStack.builder()
-                .itemType(ItemTypes.HOPPER_MINECART)
-                .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_TITLE)))
-                .add(Keys.LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_LORE)))
-                .build();
+    bbbbbbb Bbbb<BbbbBbbbb> bbbbbb() {
+        BbbbBbbbb bbbbbbb = BbbbBbbbb.bbbbbbb()
+                .bbbbBbbb(BbbbBbbbb.BBBBBB_BBBBBBBB)
+                .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB)))
+                .bbb(Bbbb.BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBB)))
+                .bbbbb();
 
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(display))
-                .listener(context -> {
-                    GTSPlugin.instance().messagingService()
-                            .requestForcedDeletion(this.focus.getID(), this.viewer.uuid(), false)
-                            .thenAccept(response -> {
-                                if(response.wasSuccessful()) {
-                                    this.player().sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS)));
-                                } else {
-                                    PlaceholderSources sources = PlaceholderSources.builder()
-                                            .append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
-                                            .build();
-                                    this.player().sendMessage(service.parse(
-                                            Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_FAILURE),
-                                            sources
+        bbbbbb Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbbbbbb))
+                .bbbbbbbb(bbbbbbb -> {
+                    BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb()
+                            .bbbbbbbBbbbbbBbbbbbbb(bbbb.bbbbb.bbbBB(), bbbb.bbbbbb.bbbb(), bbbbb)
+                            .bbbbBbbbbb(bbbbbbbb -> {
+                                bb(bbbbbbbb.bbbBbbbbbbbbb()) {
+                                    bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBBBBB)));
+                                } bbbb {
+                                    BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                            .bbbbbb(BbbbbBbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbBbbb().bbBbbb(BbbbbBbbbb.BBBBBBB))
+                                            .bbbbb();
+                                    bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                            Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBBBBB),
+                                            bbbbbbb
                                     ));
                                 }
                             });
-                    Sponge.server().scheduler().submit(Task.builder()
-                            .execute(() -> this.display.close(this.viewer))
-                            .plugin(GTSPlugin.instance().as(SpongeGTSPlugin.class).container())
-                            .build()
+                    Bbbbbb.bbbbbb().bbbbbbbbb().bbbbbb(Bbbb.bbbbbbb()
+                            .bbbbbbb(() -> bbbb.bbbbbbb.bbbbb(bbbb.bbbbbb))
+                            .bbbbbb(BBBBbbbbb.bbbbbbbb().bb(BbbbbbBBBBbbbbb.bbbbb).bbbbbbbbb())
+                            .bbbbb()
                     );
 
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
     }
 
-    private Icon<ItemStack> deleteAndReturn() {
-        ItemStack display = ItemStack.builder()
-                .itemType(ItemTypes.CHEST_MINECART)
-                .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_RETURN_TITLE)))
-                .add(Keys.LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_RETURN_LORE)))
-                .build();
+    bbbbbbb Bbbb<BbbbBbbbb> bbbbbbBbbBbbbbb() {
+        BbbbBbbbb bbbbbbb = BbbbBbbbb.bbbbbbb()
+                .bbbbBbbb(BbbbBbbbb.BBBBB_BBBBBBBB)
+                .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBBB_BBBBB)))
+                .bbb(Bbbb.BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBBB_BBBB)))
+                .bbbbb();
 
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(display))
-                .listener(context -> {
-                    GTSPlugin.instance().messagingService()
-                            .requestForcedDeletion(this.focus.getID(), this.viewer.uuid(), true)
-                            .thenAccept(response -> {
-                                if(response.wasSuccessful()) {
-                                    this.player().sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_SUCCESS)));
-                                } else {
-                                    PlaceholderSources sources = PlaceholderSources.builder()
-                                            .append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
-                                            .build();
-                                    this.player().sendMessage(service.parse(
-                                            Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_FAILURE),
-                                            sources
+        bbbbbb Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbbbbbb))
+                .bbbbbbbb(bbbbbbb -> {
+                    BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb()
+                            .bbbbbbbBbbbbbBbbbbbbb(bbbb.bbbbb.bbbBB(), bbbb.bbbbbb.bbbb(), bbbb)
+                            .bbbbBbbbbb(bbbbbbbb -> {
+                                bb(bbbbbbbb.bbbBbbbbbbbbb()) {
+                                    bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBBBBB)));
+                                } bbbb {
+                                    BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                            .bbbbbb(BbbbbBbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbBbbb().bbBbbb(BbbbbBbbbb.BBBBBBB))
+                                            .bbbbb();
+                                    bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                            Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBBBBB),
+                                            bbbbbbb
                                     ));
                                 }
                             });
 
-                    Sponge.server().scheduler().submit(Task.builder()
-                            .execute(() -> this.display.close(this.viewer))
-                            .plugin(GTSPlugin.instance().as(SpongeGTSPlugin.class).container())
-                            .build()
+                    Bbbbbb.bbbbbb().bbbbbbbbb().bbbbbb(Bbbb.bbbbbbb()
+                            .bbbbbbb(() -> bbbb.bbbbbbb.bbbbb(bbbb.bbbbbb))
+                            .bbbbbb(BBBBbbbbb.bbbbbbbb().bb(BbbbbbBBBBbbbbb.bbbbb).bbbbbbbbb())
+                            .bbbbb()
                     );
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
     }
 
-    private Icon<ItemStack> copy() {
-        return ProvidedIcons.BORDER;
+    bbbbbbb Bbbb<BbbbBbbbb> bbbb() {
+        bbbbbb BbbbbbbbBbbbb.BBBBBB;
     }
 
-    private Icon<ItemStack> edit() {
-        return ProvidedIcons.BORDER;
+    bbbbbbb Bbbb<BbbbBbbbb> bbbb() {
+        bbbbbb BbbbbbbbBbbbb.BBBBBB;
     }
 
-    private Icon<ItemStack> end() {
-        return ProvidedIcons.BORDER;
+    bbbbbbb Bbbb<BbbbBbbbb> bbb() {
+        bbbbbb BbbbbbbbBbbbb.BBBBBB;
     }
 }

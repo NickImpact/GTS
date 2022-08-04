@@ -1,14 +1,14 @@
-package net.impactdev.gts.api.data.registry;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb;
 
-import com.google.gson.JsonObject;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
 
-import java.util.Optional;
-import java.util.function.Function;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public interface DeserializerRegistry {
+bbbbbb bbbbbbbbb BbbbbbbbbbbbBbbbbbbb {
 
-    <T> void registerDeserializer(Class<T> type, int version, Function<JsonObject, T> deserializer);
+    <B> bbbb bbbbbbbbBbbbbbbbbbbb(Bbbbb<B> bbbb, bbb bbbbbbb, Bbbbbbbb<BbbbBbbbbb, B> bbbbbbbbbbbb);
 
-    <T> Optional<Function<JsonObject, T>> getDeserializer(Class<T> type, int version);
+    <B> Bbbbbbbb<Bbbbbbbb<BbbbBbbbbb, B>> bbbBbbbbbbbbbbb(Bbbbb<B> bbbb, bbb bbbbbbb);
 
 }

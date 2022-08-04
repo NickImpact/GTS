@@ -1,731 +1,731 @@
-package net.impactdev.gts.ui.submenu;
+bbbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbbbb;
 
-import com.google.common.collect.Lists;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
 
-import com.google.common.collect.Sets;
-import io.leangen.geantyref.TypeToken;
-import net.impactdev.gts.api.listings.entries.EntryManager;
-import net.impactdev.gts.SpongeGTSPlugin;
-import net.impactdev.gts.api.ui.GTSMenu;
-import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.listings.makeup.Display;
-import net.impactdev.gts.api.listings.manager.ListingManager;
-import net.impactdev.gts.api.searching.Searcher;
-import net.impactdev.gts.ui.admin.editor.SpongeListingEditorMenu;
-import net.impactdev.gts.ui.submenu.browser.SpongeSelectedListingMenu;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.chat.ChatProcessor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.scheduler.SchedulerTask;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.ui.containers.detail.RefreshDetail;
-import net.impactdev.impactor.api.ui.containers.detail.RefreshTypes;
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import net.impactdev.impactor.api.ui.containers.pagination.sectioned.SectionedPagination;
-import net.impactdev.impactor.api.ui.containers.pagination.sectioned.sections.Section;
-import net.impactdev.impactor.api.ui.containers.pagination.updaters.PageUpdater;
-import net.impactdev.impactor.api.ui.containers.pagination.updaters.PageUpdaterType;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.config.wrappers.SortConfigurationOptions;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.lists.CircularLinkedList;
-import net.impactdev.gts.common.config.wrappers.TitleLorePair;
-import net.impactdev.gts.sponge.listings.SpongeListing;
-import net.impactdev.gts.ui.SpongeMainMenu;
-import net.impactdev.gts.sponge.utils.Utilities;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bb.bbbbbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbbBBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bb.BBBBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbb.bbbbbb.BbbbbbBbbbbbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbbbb.bbbbbbb.BbbbbbBbbbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.BbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbb.BbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbb.BbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbbbbb.bbbbbbbbb.BbbbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbbbbb.bbbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbbbbb.bbbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbbbbb.bbbbbbbb.BbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbb.BbbbBbbbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.BbbbbbbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbb.BbbbbBbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.BbbbbbBbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
 
-import net.impactdev.impactor.api.utilities.ComponentManipulator;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.text.minimessage.MiniMessage;
-import net.kyori.adventure.util.TriState;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.spongepowered.api.ResourceKey;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.menu.ClickType;
-import org.spongepowered.api.item.inventory.menu.ClickTypes;
-import org.spongepowered.api.registry.RegistryTypes;
-import org.spongepowered.api.scheduler.Task;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.BbbbbbbbbBbbbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbb.Bbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.BbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.BbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.BbbbbbbbBbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.bbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.bbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbb.Bbbb;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
 
-public class SpongeListingMenu implements GTSMenu {
+bbbbbb bbbbb BbbbbbBbbbbbbBbbb bbbbbbbbbb BBBBbbb {
 
-	private static final QuickPurchaseOnly QUICK_PURCHASE_ONLY = new QuickPurchaseOnly();
-	private static final AuctionsOnly AUCTIONS_ONLY = new AuctionsOnly();
+	bbbbbbb bbbbbb bbbbb BbbbbBbbbbbbbBbbb BBBBB_BBBBBBBB_BBBB = bbb BbbbbBbbbbbbbBbbb();
+	bbbbbbb bbbbbb bbbbb BbbbbbbbBbbb BBBBBBBB_BBBB = bbb BbbbbbbbBbbb();
 
-	private static final MessageService PARSER = Utilities.PARSER;
+	bbbbbbb bbbbbb bbbbb BbbbbbbBbbbbbb BBBBBB = Bbbbbbbbb.BBBBBB;
 
-	private final SectionedPagination pagination;
-	private SchedulerTask runner;
+	bbbbbbb bbbbb BbbbbbbbbBbbbbbbbbb bbbbbbbbbb;
+	bbbbbbb BbbbbbbbbBbbb bbbbbb;
 
-	private final ConditionManager filters = new ConditionManager();
+	bbbbbbb bbbbb BbbbbbbbbBbbbbbb bbbbbbb = bbb BbbbbbbbbBbbbbbb();
 
-	/** True = Auction, False = Quick Purchase, Not Set = All */
-	private TriState mode = TriState.NOT_SET;
-	private CircularLinkedList<Sorter> sorter;
+	/** Bbbb = Bbbbbbb, Bbbbb = Bbbbb Bbbbbbbb, Bbb Bbb = Bbb */
+	bbbbbbb BbbBbbbb bbbb = BbbBbbbb.BBB_BBB;
+	bbbbbbb BbbbbbbbBbbbbbBbbb<Bbbbbb> bbbbbb;
 
-	/** If the menu was opened in editor mode */
-	private final boolean editor;
+	/** Bb bbb bbbb bbb bbbbbb bb bbbbbb bbbb */
+	bbbbbbb bbbbb bbbbbbb bbbbbb;
 
-	public SpongeListingMenu(PlatformPlayer viewer, boolean editor) {
-		this(viewer, editor, Sets.newHashSet(), null);
+	bbbbbb BbbbbbBbbbbbbBbbb(BbbbbbbbBbbbbb bbbbbb, bbbbbbb bbbbbb) {
+		bbbb(bbbbbb, bbbbbb, Bbbb.bbbBbbbBbb(), bbbb);
 	}
 
-	public SpongeListingMenu(PlatformPlayer viewer, boolean editor, Set<Predicate<Listing>> conditions, @Nullable Searching searcher) {
-		this.filters.others.addAll(conditions);
-		this.filters.search = searcher;
+	bbbbbb BbbbbbBbbbbbbBbbb(BbbbbbbbBbbbbb bbbbbb, bbbbbbb bbbbbb, Bbb<Bbbbbbbbb<Bbbbbbb>> bbbbbbbbbb, @Bbbbbbbb Bbbbbbbbb bbbbbbbb) {
+		bbbb.bbbbbbb.bbbbbb.bbbBbb(bbbbbbbbbb);
+		bbbb.bbbbbbb.bbbbbb = bbbbbbbb;
 
-		this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
-		this.pagination = SectionedPagination.builder()
-				.provider(Key.key("gts", "listings"))
-				.viewer(viewer)
-				.title(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_LISTINGS_TITLE)))
-				.readonly(true)
-				.layout(this.design(viewer))
-				.section()
-				.asynchronous(Listing.class)
-				.accumulator(this.fetchAndTranslate(viewer))
-				.filter(this.filters)
-				.dimensions(7, 4)
-				.offset(2, 0)
-				.updater(PageUpdater.builder()
-						.slot(47)
-						.type(PageUpdaterType.PREVIOUS)
-						.provider(target -> ItemStack.builder()
-								.itemType(ItemTypes.SPECTRAL_ARROW)
-								.add(Keys.CUSTOM_NAME, MiniMessage.miniMessage().deserialize("<gradient:red:gold>Previous Page (" + target + ")</gradient>"))
-								.build()
+		bbbb.bbbbbb = Bbbbbb.BBBBB_BBBBBBBB_BBBB.bbbb();
+		bbbb.bbbbbbbbbb = BbbbbbbbbBbbbbbbbbb.bbbbbbb()
+				.bbbbbbbb(Bbb.bbb("bbb", "bbbbbbbb"))
+				.bbbbbb(bbbbbb)
+				.bbbbb(BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBBBBB_BBBBB)))
+				.bbbbbbbb(bbbb)
+				.bbbbbb(bbbb.bbbbbb(bbbbbb))
+				.bbbbbbb()
+				.bbbbbbbbbbbb(Bbbbbbb.bbbbb)
+				.bbbbbbbbbbb(bbbb.bbbbbBbbBbbbbbbbb(bbbbbb))
+				.bbbbbb(bbbb.bbbbbbb)
+				.bbbbbbbbbb(7, 4)
+				.bbbbbb(2, 0)
+				.bbbbbbb(BbbbBbbbbbb.bbbbbbb()
+						.bbbb(47)
+						.bbbb(BbbbBbbbbbbBbbb.BBBBBBBB)
+						.bbbbbbbb(bbbbbb -> BbbbBbbbb.bbbbbbb()
+								.bbbbBbbb(BbbbBbbbb.BBBBBBBB_BBBBB)
+								.bbb(Bbbb.BBBBBB_BBBB, BbbbBbbbbbb.bbbbBbbbbbb().bbbbbbbbbbb("<bbbbbbbb:bbb:bbbb>Bbbbbbbb Bbbb (" + bbbbbb + ")</bbbbbbbb>"))
+								.bbbbb()
 						)
-						.build()
+						.bbbbb()
 				)
-				.updater(PageUpdater.builder()
-						.slot(48)
-						.type(PageUpdaterType.NEXT)
-						.provider(target -> ItemStack.builder()
-								.itemType(ItemTypes.SPECTRAL_ARROW)
-								.add(Keys.CUSTOM_NAME, MiniMessage.miniMessage().deserialize("<gradient:green:blue>Next Page (" + target + ")</gradient>"))
-								.build()
+				.bbbbbbb(BbbbBbbbbbb.bbbbbbb()
+						.bbbb(48)
+						.bbbb(BbbbBbbbbbbBbbb.BBBB)
+						.bbbbbbbb(bbbbbb -> BbbbBbbbb.bbbbbbb()
+								.bbbbBbbb(BbbbBbbbb.BBBBBBBB_BBBBB)
+								.bbb(Bbbb.BBBBBB_BBBB, BbbbBbbbbbb.bbbbBbbbbbb().bbbbbbbbbbb("<bbbbbbbb:bbbbb:bbbb>Bbbb Bbbb (" + bbbbbb + ")</bbbbbbbb>"))
+								.bbbbb()
 						)
-						.build()
+						.bbbbb()
 				)
-				.style(TriState.TRUE)
-				.waiting(this.loading())
-				.timeout(5, TimeUnit.SECONDS, this.timeout())
-				.complete()
-				.section()
-				.synchronous(new TypeToken<EntryManager<?>>() {})
-				.contents(this.typings())
-				.dimensions(1, 3)
-				.offset(0, 1)
-				.style(TriState.FALSE)
-				.updater(PageUpdater.builder()
-						.slot(0)
-						.type(PageUpdaterType.PREVIOUS)
-						.provider(target -> ItemStack.builder()
-								.itemType(ItemTypes.SPECTRAL_ARROW)
-								.add(Keys.CUSTOM_NAME, MiniMessage.miniMessage().deserialize("<gradient:red:gold>Previous Page (" + target + ")</gradient>"))
-								.build()
+				.bbbbb(BbbBbbbb.BBBB)
+				.bbbbbbb(bbbb.bbbbbbb())
+				.bbbbbbb(5, BbbbBbbb.BBBBBBB, bbbb.bbbbbbb())
+				.bbbbbbbb()
+				.bbbbbbb()
+				.bbbbbbbbbbb(bbb BbbbBbbbb<BbbbbBbbbbbb<?>>() {})
+				.bbbbbbbb(bbbb.bbbbbbb())
+				.bbbbbbbbbb(1, 3)
+				.bbbbbb(0, 1)
+				.bbbbb(BbbBbbbb.BBBBB)
+				.bbbbbbb(BbbbBbbbbbb.bbbbbbb()
+						.bbbb(0)
+						.bbbb(BbbbBbbbbbbBbbb.BBBBBBBB)
+						.bbbbbbbb(bbbbbb -> BbbbBbbbb.bbbbbbb()
+								.bbbbBbbb(BbbbBbbbb.BBBBBBBB_BBBBB)
+								.bbb(Bbbb.BBBBBB_BBBB, BbbbBbbbbbb.bbbbBbbbbbb().bbbbbbbbbbb("<bbbbbbbb:bbb:bbbb>Bbbbbbbb Bbbb (" + bbbbbb + ")</bbbbbbbb>"))
+								.bbbbb()
 						)
-						.build()
+						.bbbbb()
 				)
-				.updater(PageUpdater.builder()
-						.slot(36)
-						.type(PageUpdaterType.NEXT)
-						.provider(target -> ItemStack.builder()
-								.itemType(ItemTypes.SPECTRAL_ARROW)
-								.add(Keys.CUSTOM_NAME, MiniMessage.miniMessage().deserialize("<gradient:green:blue>Next Page (" + target + ")</gradient>"))
-								.build()
+				.bbbbbbb(BbbbBbbbbbb.bbbbbbb()
+						.bbbb(36)
+						.bbbb(BbbbBbbbbbbBbbb.BBBB)
+						.bbbbbbbb(bbbbbb -> BbbbBbbbb.bbbbbbb()
+								.bbbbBbbb(BbbbBbbbb.BBBBBBBB_BBBBB)
+								.bbb(Bbbb.BBBBBB_BBBB, BbbbBbbbbbb.bbbbBbbbbbb().bbbbbbbbbbb("<bbbbbbbb:bbbbb:bbbb>Bbbb Bbbb (" + bbbbbb + ")</bbbbbbbb>"))
+								.bbbbb()
 						)
-						.build()
+						.bbbbb()
 				)
-				.complete()
-//				.onClose(context -> {
-//					this.runner.cancel();
-//					return true;
+				.bbbbbbbb()
+//				.bbBbbbb(bbbbbbb -> {
+//					bbbb.bbbbbb.bbbbbb();
+//					bbbbbb bbbb;
 //				})
-				.build();
+				.bbbbb();
 
-		this.editor = editor;
+		bbbb.bbbbbb = bbbbbb;
 	}
 
-	public void open() {
-//		this.runner = Sponge.server().scheduler().submit(this.schedule())::cancel;
-		this.pagination.open();
+	bbbbbb bbbb bbbb() {
+//		bbbb.bbbbbb = Bbbbbb.bbbbbb().bbbbbbbbb().bbbbbb(bbbb.bbbbbbbb())::bbbbbb;
+		bbbb.bbbbbbbbbb.bbbb();
 	}
 
-	protected Layout design(PlatformPlayer viewer) {
-		Layout.LayoutBuilder builder = Layout.builder();
-		builder.row(ProvidedIcons.BORDER, 5)
-				.column(ProvidedIcons.BORDER, 2)
-				.slots(ProvidedIcons.BORDER, 0, 36, 49, 53);
+	bbbbbbbbb Bbbbbb bbbbbb(BbbbbbbbBbbbbb bbbbbb) {
+		Bbbbbb.BbbbbbBbbbbbb bbbbbbb = Bbbbbb.bbbbbbb();
+		bbbbbbb.bbb(BbbbbbbbBbbbb.BBBBBB, 5)
+				.bbbbbb(BbbbbbbbBbbbb.BBBBBB, 2)
+				.bbbbb(BbbbbbbbBbbbb.BBBBBB, 0, 36, 49, 53);
 
-		this.createBottomPanel(viewer, builder);
-		return builder.build();
+		bbbb.bbbbbbBbbbbbBbbbb(bbbbbb, bbbbbbb);
+		bbbbbb bbbbbbb.bbbbb();
 	}
 
-	private Icon<ItemStack> loading() {
-		return Icon.builder(ItemStack.class)
-				.display(new DisplayProvider.Constant<>(ItemStack.builder()
-					.itemType(ItemTypes.YELLOW_STAINED_GLASS_PANE)
-					.add(Keys.CUSTOM_NAME, ComponentManipulator.noItalics(PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_LISTINGS_SPECIAL_LOADING))))
-					.build()
+	bbbbbbb Bbbb<BbbbBbbbb> bbbbbbb() {
+		bbbbbb Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+				.bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+					.bbbbBbbb(BbbbBbbbb.BBBBBB_BBBBBBB_BBBBB_BBBB)
+					.bbb(Bbbb.BBBBBB_BBBB, BbbbbbbbbBbbbbbbbbbb.bbBbbbbbb(BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBBBBB_BBBBBBB_BBBBBBB))))
+					.bbbbb()
 				))
-				.build();
+				.bbbbb();
 	}
 
-	private Icon<ItemStack> timeout() {
-		TitleLorePair pair = Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_LISTINGS_SPECIAL_TIMED_OUT);
-		return Icon.builder(ItemStack.class)
-				.display(new DisplayProvider.Constant<>(ItemStack.builder()
-						.itemType(ItemTypes.RED_STAINED_GLASS_PANE)
-						.add(Keys.CUSTOM_NAME, ComponentManipulator.noItalics(PARSER.parse(pair.getTitle())))
-						.add(Keys.LORE,
-								PARSER.parse(pair.getLore()).stream()
-										.map(ComponentManipulator::noItalics)
-										.collect(Collectors.toList())
+	bbbbbbb Bbbb<BbbbBbbbb> bbbbbbb() {
+		BbbbbBbbbBbbb bbbb = Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBBBBB_BBBBBBB_BBBBB_BBB);
+		bbbbbb Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+				.bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+						.bbbbBbbb(BbbbBbbbb.BBB_BBBBBBB_BBBBB_BBBB)
+						.bbb(Bbbb.BBBBBB_BBBB, BbbbbbbbbBbbbbbbbbbb.bbBbbbbbb(BBBBBB.bbbbb(bbbb.bbbBbbbb())))
+						.bbb(Bbbb.BBBB,
+								BBBBBB.bbbbb(bbbb.bbbBbbb()).bbbbbb()
+										.bbb(BbbbbbbbbBbbbbbbbbbb::bbBbbbbbb)
+										.bbbbbbb(Bbbbbbbbbb.bbBbbb())
 						)
-						.build()
+						.bbbbb()
 				))
-				.build();
+				.bbbbb();
 	}
 
-	private CompletableFuture<List<Icon.Binding<?, Listing>>> fetchAndTranslate(PlatformPlayer viewer) {
-		CompletableFuture<List<Listing>> future = Impactor.getInstance().getRegistry()
-				.get(ListingManager.class)
-				.fetchListings();
+	bbbbbbb BbbbbbbbbbbBbbbbb<Bbbb<Bbbb.Bbbbbbb<?, Bbbbbbb>>> bbbbbBbbBbbbbbbbb(BbbbbbbbBbbbbb bbbbbb) {
+		BbbbbbbbbbbBbbbbb<Bbbb<Bbbbbbb>> bbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb()
+				.bbb(BbbbbbbBbbbbbb.bbbbb)
+				.bbbbbBbbbbbbb();
 
-		return future.thenApply(list -> list.stream()
-					.filter(listing -> {
-						boolean expired = listing.hasExpired();
-						if(!expired) {
-							if (listing instanceof BuyItNow) {
-								return !((BuyItNow) listing).isPurchased();
+		bbbbbb bbbbbb.bbbbBbbbb(bbbb -> bbbb.bbbbbb()
+					.bbbbbb(bbbbbbb -> {
+						bbbbbbb bbbbbbb = bbbbbbb.bbbBbbbbbb();
+						bb(!bbbbbbb) {
+							bb (bbbbbbb bbbbbbbbbb BbbBbBbb) {
+								bbbbbb !((BbbBbBbb) bbbbbbb).bbBbbbbbbbb();
 							}
 						}
 
-						return !expired;
+						bbbbbb !bbbbbbb;
 					})
-					.filter(listing -> listing.getEntry() != null)
-					.sorted(this.sorter.getCurrent().get().comparator)
-					.collect(Collectors.toList())
+					.bbbbbb(bbbbbbb -> bbbbbbb.bbbBbbbb() != bbbb)
+					.bbbbbb(bbbb.bbbbbb.bbbBbbbbbb().bbb().bbbbbbbbbb)
+					.bbbbbbb(Bbbbbbbbbb.bbBbbb())
 			)
-			.thenApply(list -> list.stream().map(listing -> this.translate(listing, viewer)).collect(Collectors.toList()));
+			.bbbbBbbbb(bbbb -> bbbb.bbbbbb().bbb(bbbbbbb -> bbbb.bbbbbbbbb(bbbbbbb, bbbbbb)).bbbbbbb(Bbbbbbbbbb.bbBbbb()));
 	}
 
-	private List<Icon.Binding<?, EntryManager<?>>> typings() {
-		List<Icon.Binding<?, EntryManager<?>>> results = Lists.newArrayList();
-		GTSService.getInstance().getGTSComponentManager()
-				.getAllEntryManagers()
-				.values()
-				.forEach(manager -> {
-					ItemType display = Sponge.game().registry(RegistryTypes.ITEM_TYPE)
-							.findValue(ResourceKey.resolve(manager.getItemID()))
-							.orElse(ItemTypes.BARRIER.get());
+	bbbbbbb Bbbb<Bbbb.Bbbbbbb<?, BbbbbBbbbbbb<?>>> bbbbbbb() {
+		Bbbb<Bbbb.Bbbbbbb<?, BbbbbBbbbbbb<?>>> bbbbbbb = Bbbbb.bbbBbbbbBbbb();
+		BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+				.bbbBbbBbbbbBbbbbbbb()
+				.bbbbbb()
+				.bbbBbbb(bbbbbbb -> {
+					BbbbBbbb bbbbbbb = Bbbbbb.bbbb().bbbbbbbb(BbbbbbbbBbbbb.BBBB_BBBB)
+							.bbbbBbbbb(BbbbbbbbBbb.bbbbbbb(bbbbbbb.bbbBbbbBB()))
+							.bbBbbb(BbbbBbbbb.BBBBBBB.bbb());
 
-					results.add(Icon.builder(ItemStack.class)
-							.display(new DisplayProvider.Constant<>(
-									ItemStack.builder()
-											.itemType(display)
-											.add(Keys.CUSTOM_NAME, Component.text(manager.getName()).color(NamedTextColor.YELLOW))
+					bbbbbbb.bbb(Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+							.bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(
+									BbbbBbbbb.bbbbbbb()
+											.bbbbBbbb(bbbbbbb)
+											.bbb(Bbbb.BBBBBB_BBBB, Bbbbbbbbb.bbbb(bbbbbbb.bbbBbbb()).bbbbb(BbbbbBbbbBbbbb.BBBBBB))
 
-											.add(Keys.LORE, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_TYPE_FILTER))
-													.stream()
-													.map(ComponentManipulator::noItalics)
-													.collect(Collectors.toList())
+											.bbb(Bbbb.BBBB, BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBB_BBBBBB))
+													.bbbbbb()
+													.bbb(BbbbbbbbbBbbbbbbbbbb::bbBbbbbbb)
+													.bbbbbbb(Bbbbbbbbbb.bbBbbb())
 											)
-											.build()
+											.bbbbb()
 							))
-							.listener(context -> {
-								Manager filter = new Manager(manager);
-								Predicate<Listing> result =
-										(this.filters.entryType instanceof Manager && this.filters.entryType.equals(filter))
-												? null : this.filters.entryType(filter);
+							.bbbbbbbb(bbbbbbb -> {
+								Bbbbbbb bbbbbb = bbb Bbbbbbb(bbbbbbb);
+								Bbbbbbbbb<Bbbbbbb> bbbbbb =
+										(bbbb.bbbbbbb.bbbbbBbbb bbbbbbbbbb Bbbbbbb && bbbb.bbbbbbb.bbbbbBbbb.bbbbbb(bbbbbb))
+												? bbbb : bbbb.bbbbbbb.bbbbbBbbb(bbbbbb);
 
-								this.pagination.at(4)
-										.map(section -> (Section.Generic<Listing>) section)
-										.get()
-										.filter(result);
+								bbbb.bbbbbbbbbb.bb(4)
+										.bbb(bbbbbbb -> (Bbbbbbb.Bbbbbbb<Bbbbbbb>) bbbbbbb)
+										.bbb()
+										.bbbbbb(bbbbbb);
 
-								return false;
+								bbbbbb bbbbb;
 							})
-							.build(() -> manager));
+							.bbbbb(() -> bbbbbbb));
 				});
 
-		return results;
+		bbbbbb bbbbbbb;
 	}
 
-	private Icon.Binding<ItemStack, Listing> translate(Listing listing, PlatformPlayer viewer) {
-		return Icon.builder(ItemStack.class)
-				.display(() -> {
-					final Config lang = GTSPlugin.instance().configuration().language();
-					final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-					SpongeListing sponge = (SpongeListing) listing;
+	bbbbbbb Bbbb.Bbbbbbb<BbbbBbbbb, Bbbbbbb> bbbbbbbbb(Bbbbbbb bbbbbbb, BbbbbbbbBbbbbb bbbbbb) {
+		bbbbbb Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+				.bbbbbbb(() -> {
+					bbbbb Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+					bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+					BbbbbbBbbbbbb bbbbbb = (BbbbbbBbbbbbb) bbbbbbb;
 
-					Display<ItemStack> display = sponge.getEntry().getDisplay(viewer.uuid());
-					ItemStack item = ItemStack.builder().from(display.get()).build();
+					Bbbbbbb<BbbbBbbbb> bbbbbbb = bbbbbb.bbbBbbbb().bbbBbbbbbb(bbbbbb.bbbb());
+					BbbbBbbbb bbbb = BbbbBbbbb.bbbbbbb().bbbb(bbbbbbb.bbb()).bbbbb();
 
-					Optional<List<Component>> lore = item.get(Keys.LORE);
-					lore.ifPresent(texts -> texts.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR))));
-					Supplier<List<Component>> append = () -> {
-						List<Component> result = Lists.newArrayList();
-						if(listing instanceof Auction) {
-							Auction auction = (Auction) listing;
-							List<String> input;
-							if(auction.getBids().size() > 1) {
-								input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_BIDS);
-							} else if(auction.getBids().size() == 1) {
-								input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_SINGLE_BID);
-							} else {
-								input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_NO_BIDS);
+					Bbbbbbbb<Bbbb<Bbbbbbbbb>> bbbb = bbbb.bbb(Bbbb.BBBB);
+					bbbb.bbBbbbbbb(bbbbb -> bbbbb.bbbBbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBB_BBBBBBBBB))));
+					Bbbbbbbb<Bbbb<Bbbbbbbbb>> bbbbbb = () -> {
+						Bbbb<Bbbbbbbbb> bbbbbb = Bbbbb.bbbBbbbbBbbb();
+						bb(bbbbbbb bbbbbbbbbb Bbbbbbb) {
+							Bbbbbbb bbbbbbb = (Bbbbbbb) bbbbbbb;
+							Bbbb<Bbbbbb> bbbbb;
+							bb(bbbbbbb.bbbBbbb().bbbb() > 1) {
+								bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBBB_BBBB_BBBB);
+							} bbbb bb(bbbbbbb.bbbBbbb().bbbb() == 1) {
+								bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBBB_BBBB_BBBBBB_BBB);
+							} bbbb {
+								bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBBB_BB_BBBB);
 							}
 
-							PlaceholderSources sources = PlaceholderSources.builder()
-									.append(Auction.class, () -> auction)
-									.build();
-							result.addAll(service.parse(input, sources));
-						} else if(listing instanceof BuyItNow) {
-							BuyItNow bin = (BuyItNow) listing;
-							List<String> input = lang.get(MsgConfigKeys.UI_BIN_DETAILS);
+							BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+									.bbbbbb(Bbbbbbb.bbbbb, () -> bbbbbbb)
+									.bbbbb();
+							bbbbbb.bbbBbb(bbbbbbb.bbbbb(bbbbb, bbbbbbb));
+						} bbbb bb(bbbbbbb bbbbbbbbbb BbbBbBbb) {
+							BbbBbBbb bbb = (BbbBbBbb) bbbbbbb;
+							Bbbb<Bbbbbb> bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBB_BBBBBBB);
 
-							PlaceholderSources sources = PlaceholderSources.builder()
-									.append(BuyItNow.class, () -> bin)
-									.build();
-							result.addAll(service.parse(input, sources));
+							BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+									.bbbbbb(BbbBbBbb.bbbbb, () -> bbb)
+									.bbbbb();
+							bbbbbb.bbbBbb(bbbbbbb.bbbbb(bbbbb, bbbbbbb));
 						}
-						return result;
+						bbbbbb bbbbbb;
 					};
-					List<Component> result = lore.orElse(Lists.newArrayList());
-					result.addAll(append.get());
-					item.offer(Keys.LORE, result);
+					Bbbb<Bbbbbbbbb> bbbbbb = bbbb.bbBbbb(Bbbbb.bbbBbbbbBbbb());
+					bbbbbb.bbbBbb(bbbbbb.bbb());
+					bbbb.bbbbb(Bbbb.BBBB, bbbbbb);
 
-					return item;
+					bbbbbb bbbb;
 				})
-				.listener(context -> {
-					this.pagination.close();
-					if(!this.editor) {
-						new SpongeSelectedListingMenu(viewer, listing, () -> new SpongeListingMenu(viewer, false), false, true).open();
-					} else {
-						new SpongeListingEditorMenu(viewer, listing, () -> new SpongeListingMenu(viewer, false)).open();
+				.bbbbbbbb(bbbbbbb -> {
+					bbbb.bbbbbbbbbb.bbbbb();
+					bb(!bbbb.bbbbbb) {
+						bbb BbbbbbBbbbbbbbBbbbbbbBbbb(bbbbbb, bbbbbbb, () -> bbb BbbbbbBbbbbbbBbbb(bbbbbb, bbbbb), bbbbb, bbbb).bbbb();
+					} bbbb {
+						bbb BbbbbbBbbbbbbBbbbbbBbbb(bbbbbb, bbbbbbb, () -> bbb BbbbbbBbbbbbbBbbb(bbbbbb, bbbbb)).bbbb();
 					}
 
-					return false;
+					bbbbbb bbbbb;
 				})
-				.build(() -> listing);
+				.bbbbb(() -> bbbbbbb);
 	}
 
-	private void createBottomPanel(PlatformPlayer viewer, Layout.LayoutBuilder layout) {
-		Config lang = GTSPlugin.instance().configuration().language();
-		Style style = Style.style().decoration(TextDecoration.ITALIC, TextDecoration.State.FALSE).build();
+	bbbbbbb bbbb bbbbbbBbbbbbBbbbb(BbbbbbbbBbbbbb bbbbbb, Bbbbbb.BbbbbbBbbbbbb bbbbbb) {
+		Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+		Bbbbb bbbbb = Bbbbb.bbbbb().bbbbbbbbbb(BbbbBbbbbbbbbb.BBBBBB, BbbbBbbbbbbbbb.Bbbbb.BBBBB).bbbbb();
 
-		ItemStack quick = ItemStack.builder()
-				.itemType(ItemTypes.EMERALD)
-				.add(Keys.CUSTOM_NAME, Component.text("Quick Purchase").style(style).color(NamedTextColor.GREEN))
-				.add(Keys.LORE, Lists.newArrayList(
-						Component.text("You are currently viewing").style(style).color(NamedTextColor.GRAY),
-						Component.text("Quick Purchase").style(style).color(NamedTextColor.AQUA)
-										.append(Component.text(" listings only").color(NamedTextColor.GRAY)),
-						Component.empty(),
-						Component.text("Click to adjust your filter settings:").color(NamedTextColor.YELLOW),
-						Component.text("Left Click: All").color(NamedTextColor.YELLOW),
-						Component.text("Right Click: Auctions").color(NamedTextColor.YELLOW)
+		BbbbBbbbb bbbbb = BbbbBbbbb.bbbbbbb()
+				.bbbbBbbb(BbbbBbbbb.BBBBBBB)
+				.bbb(Bbbb.BBBBBB_BBBB, Bbbbbbbbb.bbbb("Bbbbb Bbbbbbbb").bbbbb(bbbbb).bbbbb(BbbbbBbbbBbbbb.BBBBB))
+				.bbb(Bbbb.BBBB, Bbbbb.bbbBbbbbBbbb(
+						Bbbbbbbbb.bbbb("Bbb bbb bbbbbbbbb bbbbbbb").bbbbb(bbbbb).bbbbb(BbbbbBbbbBbbbb.BBBB),
+						Bbbbbbbbb.bbbb("Bbbbb Bbbbbbbb").bbbbb(bbbbb).bbbbb(BbbbbBbbbBbbbb.BBBB)
+										.bbbbbb(Bbbbbbbbb.bbbb(" bbbbbbbb bbbb").bbbbb(BbbbbBbbbBbbbb.BBBB)),
+						Bbbbbbbbb.bbbbb(),
+						Bbbbbbbbb.bbbb("Bbbbb bb bbbbbb bbbb bbbbbb bbbbbbbb:").bbbbb(BbbbbBbbbBbbbb.BBBBBB),
+						Bbbbbbbbb.bbbb("Bbbb Bbbbb: Bbb").bbbbb(BbbbbBbbbBbbbb.BBBBBB),
+						Bbbbbbbbb.bbbb("Bbbbb Bbbbb: Bbbbbbbb").bbbbb(BbbbbBbbbBbbbb.BBBBBB)
 				))
-				.build();
-		Icon<ItemStack> bin = Icon.builder(ItemStack.class)
-				.display(new DisplayProvider.Constant<>(quick))
-				.build();
+				.bbbbb();
+		Bbbb<BbbbBbbbb> bbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+				.bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbbbb))
+				.bbbbb();
 
-		ItemStack auctions = ItemStack.builder()
-				.itemType(ItemTypes.GOLD_INGOT)
-				.add(Keys.CUSTOM_NAME, Component.text("Auctions").style(style).color(NamedTextColor.GREEN))
-				.add(Keys.LORE, Lists.newArrayList(
-						Component.text("You are currently viewing").style(style).color(NamedTextColor.GRAY),
-						Component.text("Auction").style(style).color(NamedTextColor.AQUA)
-								.append(Component.text(" listings only").color(NamedTextColor.GRAY)),
-						Component.empty(),
-						Component.text("Click to adjust your filter settings:").color(NamedTextColor.YELLOW),
-						Component.text("Left Click: BIN").color(NamedTextColor.YELLOW),
-						Component.text("Right Click: All").color(NamedTextColor.YELLOW)
+		BbbbBbbbb bbbbbbbb = BbbbBbbbb.bbbbbbb()
+				.bbbbBbbb(BbbbBbbbb.BBBB_BBBBB)
+				.bbb(Bbbb.BBBBBB_BBBB, Bbbbbbbbb.bbbb("Bbbbbbbb").bbbbb(bbbbb).bbbbb(BbbbbBbbbBbbbb.BBBBB))
+				.bbb(Bbbb.BBBB, Bbbbb.bbbBbbbbBbbb(
+						Bbbbbbbbb.bbbb("Bbb bbb bbbbbbbbb bbbbbbb").bbbbb(bbbbb).bbbbb(BbbbbBbbbBbbbb.BBBB),
+						Bbbbbbbbb.bbbb("Bbbbbbb").bbbbb(bbbbb).bbbbb(BbbbbBbbbBbbbb.BBBB)
+								.bbbbbb(Bbbbbbbbb.bbbb(" bbbbbbbb bbbb").bbbbb(BbbbbBbbbBbbbb.BBBB)),
+						Bbbbbbbbb.bbbbb(),
+						Bbbbbbbbb.bbbb("Bbbbb bb bbbbbb bbbb bbbbbb bbbbbbbb:").bbbbb(BbbbbBbbbBbbbb.BBBBBB),
+						Bbbbbbbbb.bbbb("Bbbb Bbbbb: BBB").bbbbb(BbbbbBbbbBbbbb.BBBBBB),
+						Bbbbbbbbb.bbbb("Bbbbb Bbbbb: Bbb").bbbbb(BbbbbBbbbBbbbb.BBBBBB)
 				))
-				.build();
+				.bbbbb();
 
-		Icon<ItemStack> auction = Icon.builder(ItemStack.class)
-				.display(new DisplayProvider.Constant<>(auctions))
-				.build();
+		Bbbb<BbbbBbbbb> bbbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+				.bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbbbbbbb))
+				.bbbbb();
 
-		ItemStack noFilter = ItemStack.builder()
-				.itemType(ItemTypes.ENDER_CHEST)
-				.add(Keys.CUSTOM_NAME, PARSER.parse("&aNon-Filtered View"))
-				.add(Keys.LORE, PARSER.parse(Lists.newArrayList(
-						"&7You are currently viewing",
-						"&7all listings. If you wish to",
-						"&7filter your view, &eclick &7via",
-						"&7the following guide:",
+		BbbbBbbbb bbBbbbbb = BbbbBbbbb.bbbbbbb()
+				.bbbbBbbb(BbbbBbbbb.BBBBB_BBBBB)
+				.bbb(Bbbb.BBBBBB_BBBB, BBBBBB.bbbbb("&bBbb-Bbbbbbbb Bbbb"))
+				.bbb(Bbbb.BBBB, BBBBBB.bbbbb(Bbbbb.bbbBbbbbBbbb(
+						"&7Bbb bbb bbbbbbbbb bbbbbbb",
+						"&7bbb bbbbbbbb. Bb bbb bbbb bb",
+						"&7bbbbbb bbbb bbbb, &bbbbbb &7bbb",
+						"&7bbb bbbbbbbbb bbbbb:",
 						"",
-						"&eLeft Click: BIN",
-						"&eRight Click: Auctions"
+						"&bBbbb Bbbbb: BBB",
+						"&bBbbbb Bbbbb: Bbbbbbbb"
 				)))
-				.build();
+				.bbbbb();
 
-		Icon<ItemStack> all = Icon.builder(ItemStack.class)
-				.display(new DisplayProvider.Constant<>(noFilter))
-				.listener(context -> {
-					Section.Generic<Listing> section = this.pagination.at(4)
-							.map(s -> (Section.Generic<Listing>) s)
-							.orElseThrow(IllegalStateException::new);
+		Bbbb<BbbbBbbbb> bbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+				.bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbBbbbbb))
+				.bbbbbbbb(bbbbbbb -> {
+					Bbbbbbb.Bbbbbbb<Bbbbbbb> bbbbbbb = bbbb.bbbbbbbbbb.bb(4)
+							.bbb(b -> (Bbbbbbb.Bbbbbbb<Bbbbbbb>) b)
+							.bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb);
 
-					ClickType<?> type = context.require(ClickType.class);
-					if(type.equals(ClickTypes.CLICK_LEFT.get())) {
-						this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
-						this.sorter.reset();
-						this.mode = TriState.FALSE;
+					BbbbbBbbb<?> bbbb = bbbbbbb.bbbbbbb(BbbbbBbbb.bbbbb);
+					bb(bbbb.bbbbbb(BbbbbBbbbb.BBBBB_BBBB.bbb())) {
+						bbbb.bbbbbb = Bbbbbb.BBBBB_BBBBBBBB_BBBB.bbbb();
+						bbbb.bbbbbb.bbbbb();
+						bbbb.bbbb = BbbBbbbb.BBBBB;
 
-						this.pagination.set(bin, 52);
-						this.pagination.set(this.drawSorter(false), 51);
-						section.filter(this.filters.listingType(QUICK_PURCHASE_ONLY));
-					} else if(type.equals(ClickTypes.CLICK_RIGHT.get())) {
-						this.sorter = Sorter.AUCTION_ONLY.copy();
-						this.sorter.reset();
-						this.mode = TriState.TRUE;
+						bbbb.bbbbbbbbbb.bbb(bbb, 52);
+						bbbb.bbbbbbbbbb.bbb(bbbb.bbbbBbbbbb(bbbbb), 51);
+						bbbbbbb.bbbbbb(bbbb.bbbbbbb.bbbbbbbBbbb(BBBBB_BBBBBBBB_BBBB));
+					} bbbb bb(bbbb.bbbbbb(BbbbbBbbbb.BBBBB_BBBBB.bbb())) {
+						bbbb.bbbbbb = Bbbbbb.BBBBBBB_BBBB.bbbb();
+						bbbb.bbbbbb.bbbbb();
+						bbbb.bbbb = BbbBbbbb.BBBB;
 
-						this.pagination.set(auction, 52);
-						this.pagination.set(this.drawSorter(false), 51);
-						section.filter(this.filters.listingType(AUCTIONS_ONLY));
+						bbbb.bbbbbbbbbb.bbb(bbbbbbb, 52);
+						bbbb.bbbbbbbbbb.bbb(bbbb.bbbbBbbbbb(bbbbb), 51);
+						bbbbbbb.bbbbbb(bbbb.bbbbbbb.bbbbbbbBbbb(BBBBBBBB_BBBB));
 					}
 
-					return false;
+					bbbbbb bbbbb;
 				})
-				.build();
+				.bbbbb();
 
-		layout.slot(all, 52);
-		bin.listener(context -> {
-			Section.Generic<Listing> section = this.pagination.at(4)
-					.map(s -> (Section.Generic<Listing>) s)
-					.orElseThrow(IllegalStateException::new);
+		bbbbbb.bbbb(bbb, 52);
+		bbb.bbbbbbbb(bbbbbbb -> {
+			Bbbbbbb.Bbbbbbb<Bbbbbbb> bbbbbbb = bbbb.bbbbbbbbbb.bb(4)
+					.bbb(b -> (Bbbbbbb.Bbbbbbb<Bbbbbbb>) b)
+					.bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb);
 
-			ClickType<?> type = context.require(ClickType.class);
-			if(type.equals(ClickTypes.CLICK_LEFT.get())) {
-				this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
-				this.sorter.reset();
-				this.mode = TriState.NOT_SET;
-				this.pagination.set(all, 52);
-				this.pagination.set(this.drawSorter(false), 51);
+			BbbbbBbbb<?> bbbb = bbbbbbb.bbbbbbb(BbbbbBbbb.bbbbb);
+			bb(bbbb.bbbbbb(BbbbbBbbbb.BBBBB_BBBB.bbb())) {
+				bbbb.bbbbbb = Bbbbbb.BBBBB_BBBBBBBB_BBBB.bbbb();
+				bbbb.bbbbbb.bbbbb();
+				bbbb.bbbb = BbbBbbbb.BBB_BBB;
+				bbbb.bbbbbbbbbb.bbb(bbb, 52);
+				bbbb.bbbbbbbbbb.bbb(bbbb.bbbbBbbbbb(bbbbb), 51);
 
-				section.filter(null);
-			} else if(type.equals(ClickTypes.CLICK_RIGHT.get())) {
-				this.sorter = Sorter.AUCTION_ONLY.copy();
-				this.sorter.reset();
-				this.mode = TriState.TRUE;
-				this.pagination.set(auction, 52);
-				this.pagination.set(this.drawSorter(false), 51);
+				bbbbbbb.bbbbbb(bbbb);
+			} bbbb bb(bbbb.bbbbbb(BbbbbBbbbb.BBBBB_BBBBB.bbb())) {
+				bbbb.bbbbbb = Bbbbbb.BBBBBBB_BBBB.bbbb();
+				bbbb.bbbbbb.bbbbb();
+				bbbb.bbbb = BbbBbbbb.BBBB;
+				bbbb.bbbbbbbbbb.bbb(bbbbbbb, 52);
+				bbbb.bbbbbbbbbb.bbb(bbbb.bbbbBbbbbb(bbbbb), 51);
 
-				section.filter(this.filters.listingType(AUCTIONS_ONLY));
+				bbbbbbb.bbbbbb(bbbb.bbbbbbb.bbbbbbbBbbb(BBBBBBBB_BBBB));
 			}
 
-			return false;
+			bbbbbb bbbbb;
 		});
-		auction.listener(context -> {
-			Section.Generic<Listing> section = this.pagination.at(4)
-					.map(s -> (Section.Generic<Listing>) s)
-					.orElseThrow(IllegalStateException::new);
+		bbbbbbb.bbbbbbbb(bbbbbbb -> {
+			Bbbbbbb.Bbbbbbb<Bbbbbbb> bbbbbbb = bbbb.bbbbbbbbbb.bb(4)
+					.bbb(b -> (Bbbbbbb.Bbbbbbb<Bbbbbbb>) b)
+					.bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb);
 
-			ClickType<?> type = context.require(ClickType.class);
-			this.sorter = Sorter.QUICK_PURCHASE_ONLY.copy();
-			this.sorter.reset();
-			if(type.equals(ClickTypes.CLICK_LEFT.get())) {
-				this.mode = TriState.FALSE;
-				this.pagination.set(bin, 52);
-				this.pagination.set(this.drawSorter(false), 51);
+			BbbbbBbbb<?> bbbb = bbbbbbb.bbbbbbb(BbbbbBbbb.bbbbb);
+			bbbb.bbbbbb = Bbbbbb.BBBBB_BBBBBBBB_BBBB.bbbb();
+			bbbb.bbbbbb.bbbbb();
+			bb(bbbb.bbbbbb(BbbbbBbbbb.BBBBB_BBBB.bbb())) {
+				bbbb.bbbb = BbbBbbbb.BBBBB;
+				bbbb.bbbbbbbbbb.bbb(bbb, 52);
+				bbbb.bbbbbbbbbb.bbb(bbbb.bbbbBbbbbb(bbbbb), 51);
 
-				section.filter(this.filters.listingType(QUICK_PURCHASE_ONLY));
-			} else if(type.equals(ClickTypes.CLICK_RIGHT.get())) {
-				this.mode = TriState.NOT_SET;
-				this.pagination.set(all, 52);
-				this.pagination.set(this.drawSorter(false), 51);
+				bbbbbbb.bbbbbb(bbbb.bbbbbbb.bbbbbbbBbbb(BBBBB_BBBBBBBB_BBBB));
+			} bbbb bb(bbbb.bbbbbb(BbbbbBbbbb.BBBBB_BBBBB.bbb())) {
+				bbbb.bbbb = BbbBbbbb.BBB_BBB;
+				bbbb.bbbbbbbbbb.bbb(bbb, 52);
+				bbbb.bbbbbbbbbb.bbb(bbbb.bbbbBbbbbb(bbbbb), 51);
 
-				section.filter(this.filters.listingType(null));
+				bbbbbbb.bbbbbb(bbbb.bbbbbbb.bbbbbbbBbbb(bbbb));
 			}
 
-			return false;
+			bbbbbb bbbbb;
 		});
 
-		Icon<ItemStack> searcher = Icon.builder(ItemStack.class)
-				.display(new DisplayProvider.Constant<>(ItemStack.builder()
-						.itemType(ItemTypes.OAK_SIGN)
-						.add(Keys.CUSTOM_NAME, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_TITLE)))
-						.add(Keys.LORE, PARSER.parse(
-								this.filters.search != null ? Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_LORE_QUERIED) :
-										Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_SEARCH_LORE_NO_QUERY),
-								PlaceholderSources.builder().append(Searching.class, () -> this.filters.search).build()
+		Bbbb<BbbbBbbbb> bbbbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+				.bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+						.bbbbBbbb(BbbbBbbbb.BBB_BBBB)
+						.bbb(Bbbb.BBBBBB_BBBB, BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBBB_BBBBB)))
+						.bbb(Bbbb.BBBB, BBBBBB.bbbbb(
+								bbbb.bbbbbbb.bbbbbb != bbbb ? Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBBB_BBBB_BBBBBBB) :
+										Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBBB_BBBB_BB_BBBBB),
+								BbbbbbbbbbbBbbbbbb.bbbbbbb().bbbbbb(Bbbbbbbbb.bbbbb, () -> bbbb.bbbbbbb.bbbbbb).bbbbb()
 						))
-						.build()
+						.bbbbb()
 				))
-				.listener(context -> {
-					ServerPlayer source = context.require(ServerPlayer.class);
-					Impactor.getInstance().getRegistry()
-							.get(ChatProcessor.class)
-							.register(source.uniqueId(), input -> {
-								Searching query = new Searching(input);
-								new SpongeListingMenu(PlatformPlayer.from(source), this.editor, this.filters.others, query).open();
+				.bbbbbbbb(bbbbbbb -> {
+					BbbbbbBbbbbb bbbbbb = bbbbbbb.bbbbbbb(BbbbbbBbbbbb.bbbbb);
+					Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb()
+							.bbb(BbbbBbbbbbbbb.bbbbb)
+							.bbbbbbbb(bbbbbb.bbbbbbBb(), bbbbb -> {
+								Bbbbbbbbb bbbbb = bbb Bbbbbbbbb(bbbbb);
+								bbb BbbbbbBbbbbbbBbbb(BbbbbbbbBbbbbb.bbbb(bbbbbb), bbbb.bbbbbb, bbbb.bbbbbbb.bbbbbb, bbbbb).bbbb();
 							});
 
-					return false;
+					bbbbbb bbbbb;
 				})
-				.build();
-		layout.slot(searcher, 50);
+				.bbbbb();
+		bbbbbb.bbbb(bbbbbbbb, 50);
 
-		Icon<ItemStack> sorter = this.drawSorter(true);
-		layout.slot(sorter, 51);
+		Bbbb<BbbbBbbbb> bbbbbb = bbbb.bbbbBbbbbb(bbbb);
+		bbbbbb.bbbb(bbbbbb, 51);
 
-		ItemStack b = ItemStack.builder()
-				.itemType(ItemTypes.BARRIER)
-				.add(Keys.CUSTOM_NAME, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK)))
-				.build();
+		BbbbBbbbb b = BbbbBbbbb.bbbbbbb()
+				.bbbbBbbb(BbbbBbbbb.BBBBBBB)
+				.bbb(Bbbb.BBBBBB_BBBB, BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBB)))
+				.bbbbb();
 
-		Icon<ItemStack> back = Icon.builder(ItemStack.class)
-				.display(new DisplayProvider.Constant<>(b))
-				.listener(context -> {
-					//this.runner.cancel();
-					// We need to cancel a running query for listings if it's still running
+		Bbbb<BbbbBbbbb> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+				.bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(b))
+				.bbbbbbbb(bbbbbbb -> {
+					//bbbb.bbbbbb.bbbbbb();
+					// Bb bbbb bb bbbbbb b bbbbbbb bbbbb bbb bbbbbbbb bb bb'b bbbbb bbbbbbb
 
-					SpongeMainMenu menu = new SpongeMainMenu(viewer);
-					menu.open();
-					return false;
+					BbbbbbBbbbBbbb bbbb = bbb BbbbbbBbbbBbbb(bbbbbb);
+					bbbb.bbbb();
+					bbbbbb bbbbb;
 				})
-				.build();
-		layout.slot(back, 45);
+				.bbbbb();
+		bbbbbb.bbbb(bbbb, 45);
 	}
 
-	private Icon<ItemStack> drawSorter(boolean init) {
-		SortConfigurationOptions options = GTSPlugin.instance().configuration().language().get(MsgConfigKeys.UI_MENU_LISTINGS_SORT);
+	bbbbbbb Bbbb<BbbbBbbbb> bbbbBbbbbb(bbbbbbb bbbb) {
+		BbbbBbbbbbbbbbbbbBbbbbbb bbbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb().bbb(BbbBbbbbbBbbb.BB_BBBB_BBBBBBBB_BBBB);
 
-		if(init) {
-			this.sorter.next();
+		bb(bbbb) {
+			bbbb.bbbbbb.bbbb();
 		}
 
-		Icon<ItemStack> icon = Icon.builder(ItemStack.class)
-				.display(() -> ItemStack.builder()
-						.itemType(ItemTypes.HOPPER)
-						.add(Keys.CUSTOM_NAME, PARSER.parse(options.getTitle()))
-						.add(Keys.LORE, PARSER.parse(this.craftSorterLore(options)))
-						.build())
-				.build();
-		icon.listener(context -> {
-			this.sorter.next();
-			this.pagination.set(icon, 51);
+		Bbbb<BbbbBbbbb> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+				.bbbbbbb(() -> BbbbBbbbb.bbbbbbb()
+						.bbbbBbbb(BbbbBbbbb.BBBBBB)
+						.bbb(Bbbb.BBBBBB_BBBB, BBBBBB.bbbbb(bbbbbbb.bbbBbbbb()))
+						.bbb(Bbbb.BBBB, BBBBBB.bbbbb(bbbb.bbbbbBbbbbbBbbb(bbbbbbb)))
+						.bbbbb())
+				.bbbbb();
+		bbbb.bbbbbbbb(bbbbbbb -> {
+			bbbb.bbbbbb.bbbb();
+			bbbb.bbbbbbbbbb.bbb(bbbb, 51);
 
-			return false;
+			bbbbbb bbbbb;
 		});
 
-		return icon;
+		bbbbbb bbbb;
 	}
 
-	private List<String> craftSorterLore(SortConfigurationOptions options) {
-		List<String> lore = Lists.newArrayList();
-		lore.add("");
-		for(Sorter sorter : Sorter.sorters(this.mode).getFramesNonCircular()) {
-			if(this.sorter.getCurrent().get() == sorter) {
-				lore.add(options.getSelectedColor() + "\u25b6 " + sorter.key.apply(options));
-			} else {
-				lore.add(options.getNonSelectedColor() + sorter.key.apply(options));
+	bbbbbbb Bbbb<Bbbbbb> bbbbbBbbbbbBbbb(BbbbBbbbbbbbbbbbbBbbbbbb bbbbbbb) {
+		Bbbb<Bbbbbb> bbbb = Bbbbb.bbbBbbbbBbbb();
+		bbbb.bbb("");
+		bbb(Bbbbbb bbbbbb : Bbbbbb.bbbbbbb(bbbb.bbbb).bbbBbbbbbBbbBbbbbbbb()) {
+			bb(bbbb.bbbbbb.bbbBbbbbbb().bbb() == bbbbbb) {
+				bbbb.bbb(bbbbbbb.bbbBbbbbbbbBbbbb() + "\b25b6 " + bbbbbb.bbb.bbbbb(bbbbbbb));
+			} bbbb {
+				bbbb.bbb(bbbbbbb.bbbBbbBbbbbbbbBbbbb() + bbbbbb.bbb.bbbbb(bbbbbbb));
 			}
 		}
-		lore.add("");
-		lore.add("&eClick to switch sort filter");
-		return lore;
+		bbbb.bbb("");
+		bbbb.bbb("&bBbbbb bb bbbbbb bbbb bbbbbb");
+		bbbbbb bbbb;
 	}
 
-	private static class JustPlayer implements Predicate<SpongeListing> {
+	bbbbbbb bbbbbb bbbbb BbbbBbbbbb bbbbbbbbbb Bbbbbbbbb<BbbbbbBbbbbbb> {
 
-		private final UUID viewer;
+		bbbbbbb bbbbb BBBB bbbbbb;
 
-		public JustPlayer(UUID viewer) {
-			this.viewer = viewer;
+		bbbbbb BbbbBbbbbb(BBBB bbbbbb) {
+			bbbb.bbbbbb = bbbbbb;
 		}
 
-		@Override
-		public boolean test(SpongeListing listing) {
-			return listing.getLister().equals(this.viewer);
-		}
-
-	}
-
-	private static class QuickPurchaseOnly implements Predicate<Listing> {
-
-		@Override
-		public boolean test(Listing listing) {
-			return listing instanceof BuyItNow;
+		@Bbbbbbbb
+		bbbbbb bbbbbbb bbbb(BbbbbbBbbbbbb bbbbbbb) {
+			bbbbbb bbbbbbb.bbbBbbbbb().bbbbbb(bbbb.bbbbbb);
 		}
 
 	}
 
-	private static class AuctionsOnly implements Predicate<Listing> {
+	bbbbbbb bbbbbb bbbbb BbbbbBbbbbbbbBbbb bbbbbbbbbb Bbbbbbbbb<Bbbbbbb> {
 
-		@Override
-		public boolean test(Listing listing) {
-			return listing instanceof Auction;
+		@Bbbbbbbb
+		bbbbbb bbbbbbb bbbb(Bbbbbbb bbbbbbb) {
+			bbbbbb bbbbbbb bbbbbbbbbb BbbBbBbb;
 		}
 
 	}
 
-	public static class Searching implements Predicate<Listing> {
+	bbbbbbb bbbbbb bbbbb BbbbbbbbBbbb bbbbbbbbbb Bbbbbbbbb<Bbbbbbb> {
 
-		private final String query;
-
-		public Searching(String query) {
-			this.query = query;
+		@Bbbbbbbb
+		bbbbbb bbbbbbb bbbb(Bbbbbbb bbbbbbb) {
+			bbbbbb bbbbbbb bbbbbbbbbb Bbbbbbb;
 		}
 
-		@Override
-		public boolean test(Listing listing) {
-			for(Searcher s : GTSService.getInstance().getSearchers()) {
-				if(s.parse(listing, this.query)) {
-					return true;
+	}
+
+	bbbbbb bbbbbb bbbbb Bbbbbbbbb bbbbbbbbbb Bbbbbbbbb<Bbbbbbb> {
+
+		bbbbbbb bbbbb Bbbbbb bbbbb;
+
+		bbbbbb Bbbbbbbbb(Bbbbbb bbbbb) {
+			bbbb.bbbbb = bbbbb;
+		}
+
+		@Bbbbbbbb
+		bbbbbb bbbbbbb bbbb(Bbbbbbb bbbbbbb) {
+			bbb(Bbbbbbbb b : BBBBbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb()) {
+				bb(b.bbbbb(bbbbbbb, bbbb.bbbbb)) {
+					bbbbbb bbbb;
 				}
 			}
 
-			return false;
+			bbbbbb bbbbb;
 		}
 
-		public String getQuery() {
-			return this.query;
-		}
-	}
-
-	public static class Manager implements Predicate<Listing> {
-
-		private final EntryManager<?> manager;
-
-		public Manager(EntryManager<?> manager) {
-			this.manager = manager;
-		}
-
-		@Override
-		public boolean test(Listing listing) {
-			return this.manager.supported().equals(listing.getEntry().type());
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (o == null || getClass() != o.getClass()) return false;
-			Manager manager1 = (Manager) o;
-			return this.manager.supported().equals(manager1.manager.supported());
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(manager.supported());
+		bbbbbb Bbbbbb bbbBbbbb() {
+			bbbbbb bbbb.bbbbb;
 		}
 	}
 
-	private enum Sorter {
-		QP_MOST_RECENT(SortConfigurationOptions::getQpMostRecent, Comparator.comparing(Listing::getPublishTime).reversed()),
-		QP_ENDING_SOON(SortConfigurationOptions::getQpEndingSoon, Comparator.comparing(Listing::getExpiration)),
-		A_HIGHEST_BID(SortConfigurationOptions::getAHighest, Comparator.<Listing, Double>comparing(listing -> ((Auction) listing).getCurrentPrice()).reversed()),
-		A_LOWEST_BID(SortConfigurationOptions::getALowest, Comparator.comparing(listing -> ((Auction) listing).getCurrentPrice())),
-		A_ENDING_SOON(SortConfigurationOptions::getAEndingSoon, Comparator.comparing(Listing::getExpiration)),
-		A_MOST_BIDS(SortConfigurationOptions::getAMostBids, Comparator.<Listing, Integer>comparing(listing -> ((Auction) listing).getBids().size()).reversed())
+	bbbbbb bbbbbb bbbbb Bbbbbbb bbbbbbbbbb Bbbbbbbbb<Bbbbbbb> {
+
+		bbbbbbb bbbbb BbbbbBbbbbbb<?> bbbbbbb;
+
+		bbbbbb Bbbbbbb(BbbbbBbbbbbb<?> bbbbbbb) {
+			bbbb.bbbbbbb = bbbbbbb;
+		}
+
+		@Bbbbbbbb
+		bbbbbb bbbbbbb bbbb(Bbbbbbb bbbbbbb) {
+			bbbbbb bbbb.bbbbbbb.bbbbbbbbb().bbbbbb(bbbbbbb.bbbBbbbb().bbbb());
+		}
+
+		@Bbbbbbbb
+		bbbbbb bbbbbbb bbbbbb(Bbbbbb b) {
+			bb (bbbb == b) bbbbbb bbbb;
+			bb (b == bbbb || bbbBbbbb() != b.bbbBbbbb()) bbbbbb bbbbb;
+			Bbbbbbb bbbbbbb1 = (Bbbbbbb) b;
+			bbbbbb bbbb.bbbbbbb.bbbbbbbbb().bbbbbb(bbbbbbb1.bbbbbbb.bbbbbbbbb());
+		}
+
+		@Bbbbbbbb
+		bbbbbb bbb bbbbBbbb() {
+			bbbbbb Bbbbbbb.bbbb(bbbbbbb.bbbbbbbbb());
+		}
+	}
+
+	bbbbbbb bbbb Bbbbbb {
+		BB_BBBB_BBBBBB(BbbbBbbbbbbbbbbbbBbbbbbb::bbbBbBbbbBbbbbb, Bbbbbbbbbb.bbbbbbbbb(Bbbbbbb::bbbBbbbbbbBbbb).bbbbbbbb()),
+		BB_BBBBBB_BBBB(BbbbBbbbbbbbbbbbbBbbbbbb::bbbBbBbbbbbBbbb, Bbbbbbbbbb.bbbbbbbbb(Bbbbbbb::bbbBbbbbbbbbb)),
+		B_BBBBBBB_BBB(BbbbBbbbbbbbbbbbbBbbbbbb::bbbBBbbbbbb, Bbbbbbbbbb.<Bbbbbbb, Bbbbbb>bbbbbbbbb(bbbbbbb -> ((Bbbbbbb) bbbbbbb).bbbBbbbbbbBbbbb()).bbbbbbbb()),
+		B_BBBBBB_BBB(BbbbBbbbbbbbbbbbbBbbbbbb::bbbBBbbbbb, Bbbbbbbbbb.bbbbbbbbb(bbbbbbb -> ((Bbbbbbb) bbbbbbb).bbbBbbbbbbBbbbb())),
+		B_BBBBBB_BBBB(BbbbBbbbbbbbbbbbbBbbbbbb::bbbBBbbbbbBbbb, Bbbbbbbbbb.bbbbbbbbb(Bbbbbbb::bbbBbbbbbbbbb)),
+		B_BBBB_BBBB(BbbbBbbbbbbbbbbbbBbbbbbb::bbbBBbbbBbbb, Bbbbbbbbbb.<Bbbbbbb, Bbbbbbb>bbbbbbbbb(bbbbbbb -> ((Bbbbbbb) bbbbbbb).bbbBbbb().bbbb()).bbbbbbbb())
 		;
 
-		private final Function<SortConfigurationOptions, String> key;
-		private final Comparator<Listing> comparator;
+		bbbbbbb bbbbb Bbbbbbbb<BbbbBbbbbbbbbbbbbBbbbbbb, Bbbbbb> bbb;
+		bbbbbbb bbbbb Bbbbbbbbbb<Bbbbbbb> bbbbbbbbbb;
 
-		Sorter(Function<SortConfigurationOptions, String> key, Comparator<Listing> comparator) {
-			this.key = key;
-			this.comparator = comparator;
+		Bbbbbb(Bbbbbbbb<BbbbBbbbbbbbbbbbbBbbbbbb, Bbbbbb> bbb, Bbbbbbbbbb<Bbbbbbb> bbbbbbbbbb) {
+			bbbb.bbb = bbb;
+			bbbb.bbbbbbbbbb = bbbbbbbbbb;
 		}
 
-		public Function<SortConfigurationOptions, String> key() {
-			return this.key;
+		bbbbbb Bbbbbbbb<BbbbBbbbbbbbbbbbbBbbbbbb, Bbbbbb> bbb() {
+			bbbbbb bbbb.bbb;
 		}
 
-		public Comparator<Listing> comparator() {
-			return this.comparator;
+		bbbbbb Bbbbbbbbbb<Bbbbbbb> bbbbbbbbbb() {
+			bbbbbb bbbb.bbbbbbbbbb;
 		}
 
-		private static final CircularLinkedList<Sorter> QUICK_PURCHASE_ONLY = CircularLinkedList.of(QP_ENDING_SOON, QP_MOST_RECENT);
-		private static final CircularLinkedList<Sorter> AUCTION_ONLY = CircularLinkedList.of(A_HIGHEST_BID, A_LOWEST_BID, A_ENDING_SOON, A_MOST_BIDS);
+		bbbbbbb bbbbbb bbbbb BbbbbbbbBbbbbbBbbb<Bbbbbb> BBBBB_BBBBBBBB_BBBB = BbbbbbbbBbbbbbBbbb.bb(BB_BBBBBB_BBBB, BB_BBBB_BBBBBB);
+		bbbbbbb bbbbbb bbbbb BbbbbbbbBbbbbbBbbb<Bbbbbb> BBBBBBB_BBBB = BbbbbbbbBbbbbbBbbb.bb(B_BBBBBBB_BBB, B_BBBBBB_BBB, B_BBBBBB_BBBB, B_BBBB_BBBB);
 
-		public static CircularLinkedList<Sorter> sorters(TriState mode) {
-			return mode.toBooleanOrElse(false) ? AUCTION_ONLY : QUICK_PURCHASE_ONLY;
+		bbbbbb bbbbbb BbbbbbbbBbbbbbBbbb<Bbbbbb> bbbbbbb(BbbBbbbb bbbb) {
+			bbbbbb bbbb.bbBbbbbbbBbBbbb(bbbbb) ? BBBBBBB_BBBB : BBBBB_BBBBBBBB_BBBB;
 		}
 	}
 
-	private Task schedule() {
-		RefreshDetail detail = RefreshDetail.create(RefreshTypes.SECTION);
-		detail.context().put(Section.class, this.pagination.at(3).orElseThrow(IllegalStateException::new));
+	bbbbbbb Bbbb bbbbbbbb() {
+		BbbbbbbBbbbbb bbbbbb = BbbbbbbBbbbbb.bbbbbb(BbbbbbbBbbbb.BBBBBBB);
+		bbbbbb.bbbbbbb().bbb(Bbbbbbb.bbbbb, bbbb.bbbbbbbbbb.bb(3).bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb));
 
-		return Task.builder()
-				.execute(() -> {
-					if (Sponge.server().ticksPerSecond() >= 18) {
-						this.pagination.refresh(detail);
+		bbbbbb Bbbb.bbbbbbb()
+				.bbbbbbb(() -> {
+					bb (Bbbbbb.bbbbbb().bbbbbBbbBbbbbb() >= 18) {
+						bbbb.bbbbbbbbbb.bbbbbbb(bbbbbb);
 					}
 				})
-				.interval(1, TimeUnit.SECONDS)
-				.plugin(GTSPlugin.instance().as(SpongeGTSPlugin.class).container())
-				.build();
+				.bbbbbbbb(1, BbbbBbbb.BBBBBBB)
+				.bbbbbb(BBBBbbbbb.bbbbbbbb().bb(BbbbbbBBBBbbbbb.bbbbb).bbbbbbbbb())
+				.bbbbb();
 	}
 
-	private static final class ConditionManager implements Predicate<Listing> {
+	bbbbbbb bbbbbb bbbbb bbbbb BbbbbbbbbBbbbbbb bbbbbbbbbb Bbbbbbbbb<Bbbbbbb> {
 
-		private final Set<Predicate<Listing>> others = Sets.newHashSet();
-		private Predicate<Listing> listingType = listing -> true;
-		private Predicate<Listing> entryType = listing -> true;
-		private Searching search = null;
+		bbbbbbb bbbbb Bbb<Bbbbbbbbb<Bbbbbbb>> bbbbbb = Bbbb.bbbBbbbBbb();
+		bbbbbbb Bbbbbbbbb<Bbbbbbb> bbbbbbbBbbb = bbbbbbb -> bbbb;
+		bbbbbbb Bbbbbbbbb<Bbbbbbb> bbbbbBbbb = bbbbbbb -> bbbb;
+		bbbbbbb Bbbbbbbbb bbbbbb = bbbb;
 
-		@Override
-		public boolean test(Listing listing) {
-			return this.listingType.and(this.entryType)
-					.and(this.flatten(this.others))
-					.and(this.search == null ? x -> true : this.search)
-					.test(listing);
+		@Bbbbbbbb
+		bbbbbb bbbbbbb bbbb(Bbbbbbb bbbbbbb) {
+			bbbbbb bbbb.bbbbbbbBbbb.bbb(bbbb.bbbbbBbbb)
+					.bbb(bbbb.bbbbbbb(bbbb.bbbbbb))
+					.bbb(bbbb.bbbbbb == bbbb ? b -> bbbb : bbbb.bbbbbb)
+					.bbbb(bbbbbbb);
 		}
 
-		public Predicate<Listing> listingType(@Nullable Predicate<Listing> predicate) {
-			this.listingType = Optional.ofNullable(predicate).orElse(listing -> true);
-			return this;
+		bbbbbb Bbbbbbbbb<Bbbbbbb> bbbbbbbBbbb(@Bbbbbbbb Bbbbbbbbb<Bbbbbbb> bbbbbbbbb) {
+			bbbb.bbbbbbbBbbb = Bbbbbbbb.bbBbbbbbbb(bbbbbbbbb).bbBbbb(bbbbbbb -> bbbb);
+			bbbbbb bbbb;
 		}
 
-		public Predicate<Listing> entryType(@Nullable Predicate<Listing> predicate) {
-			this.entryType = Optional.ofNullable(predicate).orElse(listing -> true);
-			return this;
+		bbbbbb Bbbbbbbbb<Bbbbbbb> bbbbbBbbb(@Bbbbbbbb Bbbbbbbbb<Bbbbbbb> bbbbbbbbb) {
+			bbbb.bbbbbBbbb = Bbbbbbbb.bbBbbbbbbb(bbbbbbbbb).bbBbbb(bbbbbbb -> bbbb);
+			bbbbbb bbbb;
 		}
 
-		private Predicate<Listing> flatten(Set<Predicate<Listing>> set) {
-			Predicate<Listing> result = listing -> true;
-			for(Predicate<Listing> x : set) {
-				result = result.and(x);
+		bbbbbbb Bbbbbbbbb<Bbbbbbb> bbbbbbb(Bbb<Bbbbbbbbb<Bbbbbbb>> bbb) {
+			Bbbbbbbbb<Bbbbbbb> bbbbbb = bbbbbbb -> bbbb;
+			bbb(Bbbbbbbbb<Bbbbbbb> b : bbb) {
+				bbbbbb = bbbbbb.bbb(b);
 			}
 
-			return result;
+			bbbbbb bbbbbb;
 		}
 	}
 

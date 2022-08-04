@@ -1,87 +1,87 @@
-package net.impactdev.gts.sponge.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb;
 
-import com.google.common.base.Preconditions;
-import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.data.registry.GTSKeyMarker;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.Pbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb.SbbbbbEbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.JObbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Lbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.GTSKbbMbbbbb;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.LbbbbDbbbTbbb;
+bbbbbb bbbb.bbbb.UUID;
 
-public abstract class SpongeListing implements Listing {
+bbbbbb bbbbbbbb bbbbb SbbbbbLbbbbbb bbbbbbbbbb Lbbbbbb {
 
-	private final UUID id;
-	private final UUID lister;
-	private final SpongeEntry<?> entry;
-	private final LocalDateTime published;
-	private LocalDateTime expiration;
+	bbbbbbb bbbbb UUID bb;
+	bbbbbbb bbbbb UUID bbbbbb;
+	bbbbbbb bbbbb SbbbbbEbbbb<?> bbbbb;
+	bbbbbbb bbbbb LbbbbDbbbTbbb bbbbbbbbb;
+	bbbbbbb LbbbbDbbbTbbb bbbbbbbbbb;
 
-	public SpongeListing(UUID id, UUID lister, SpongeEntry<?> entry, LocalDateTime expiration) {
-		this(id, lister, entry, LocalDateTime.now(), expiration);
+	bbbbbb SbbbbbLbbbbbb(UUID bb, UUID bbbbbb, SbbbbbEbbbb<?> bbbbb, LbbbbDbbbTbbb bbbbbbbbbb) {
+		bbbb(bb, bbbbbb, bbbbb, LbbbbDbbbTbbb.bbb(), bbbbbbbbbb);
 	}
 
-	public SpongeListing(UUID id, UUID lister, SpongeEntry<?> entry, LocalDateTime published, LocalDateTime expiration) {
-		this.id = id;
-		this.lister = lister;
-		this.entry = entry;
-		this.published = published;
-		this.expiration = expiration;
+	bbbbbb SbbbbbLbbbbbb(UUID bb, UUID bbbbbb, SbbbbbEbbbb<?> bbbbb, LbbbbDbbbTbbb bbbbbbbbb, LbbbbDbbbTbbb bbbbbbbbbb) {
+		bbbb.bb = bb;
+		bbbb.bbbbbb = bbbbbb;
+		bbbb.bbbbb = bbbbb;
+		bbbb.bbbbbbbbb = bbbbbbbbb;
+		bbbb.bbbbbbbbbb = bbbbbbbbbb;
 	}
 
-	@Override
-	public UUID getID() {
-		return this.id;
+	@Obbbbbbb
+	bbbbbb UUID bbbID() {
+		bbbbbb bbbb.bb;
 	}
 
-	@Override
-	public UUID getLister() {
-		return this.lister;
+	@Obbbbbbb
+	bbbbbb UUID bbbLbbbbb() {
+		bbbbbb bbbb.bbbbbb;
 	}
 
-	@Override
-	public SpongeEntry<?> getEntry() {
-		return this.entry;
+	@Obbbbbbb
+	bbbbbb SbbbbbEbbbb<?> bbbEbbbb() {
+		bbbbbb bbbb.bbbbb;
 	}
 
-	@Override
-	public LocalDateTime getPublishTime() {
-		return this.published;
+	@Obbbbbbb
+	bbbbbb LbbbbDbbbTbbb bbbPbbbbbbTbbb() {
+		bbbbbb bbbb.bbbbbbbbb;
 	}
 
-	@Override
-	public LocalDateTime getExpiration() {
-		return this.expiration;
+	@Obbbbbbb
+	bbbbbb LbbbbDbbbTbbb bbbEbbbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbbbb;
 	}
 
-	@Override
-	public void setExpiration(LocalDateTime expiration) {
-		this.expiration = expiration;
+	@Obbbbbbb
+	bbbbbb bbbb bbbEbbbbbbbbb(LbbbbDbbbTbbb bbbbbbbbbb) {
+		bbbb.bbbbbbbbbb = bbbbbbbbbb;
 	}
 
-	@Override
-	public int getVersion() {
-		return 1;
+	@Obbbbbbb
+	bbbbbb bbb bbbVbbbbbb() {
+		bbbbbb 1;
 	}
 
-	@Override
-	public JObject serialize() {
-		Preconditions.checkArgument(this.getEntry().getClass().isAnnotationPresent(GTSKeyMarker.class), "An Entry type must be annotated with GTSKeyMarker");
+	@Obbbbbbb
+	bbbbbb JObbbbb bbbbbbbbb() {
+		Pbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbb.bbbEbbbb().bbbCbbbb().bbBbbbbbbbbbPbbbbbb(GTSKbbMbbbbb.bbbbb), "Bb Ebbbb bbbb bbbb bb bbbbbbbbb bbbb GTSKbbMbbbbb");
 
-		JObject timings = new JObject()
-				.add("published", this.getPublishTime().toString())
-				.add("expiration", this.getExpiration().toString());
+		JObbbbb bbbbbbb = bbb JObbbbb()
+				.bbb("bbbbbbbbb", bbbb.bbbPbbbbbbTbbb().bbSbbbbb())
+				.bbb("bbbbbbbbbb", bbbb.bbbEbbbbbbbbb().bbSbbbbb());
 
-		JObject entry = new JObject()
-				.add("key", this.getEntry().getClass().getAnnotation(GTSKeyMarker.class).value()[0])
-				.add("content", this.getEntry().serialize());
+		JObbbbb bbbbb = bbb JObbbbb()
+				.bbb("bbb", bbbb.bbbEbbbb().bbbCbbbb().bbbBbbbbbbbbb(GTSKbbMbbbbb.bbbbb).bbbbb()[0])
+				.bbb("bbbbbbb", bbbb.bbbEbbbb().bbbbbbbbb());
 
-		return new JObject()
-				.add("id", this.getID().toString())
-				.add("lister", this.getLister().toString())
-				.add("version", this.getVersion())
-				.add("timings", timings)
-				.add("entry", entry)
+		bbbbbb bbb JObbbbb()
+				.bbb("bb", bbbb.bbbID().bbSbbbbb())
+				.bbb("bbbbbb", bbbb.bbbLbbbbb().bbSbbbbb())
+				.bbb("bbbbbbb", bbbb.bbbVbbbbbb())
+				.bbb("bbbbbbb", bbbbbbb)
+				.bbb("bbbbb", bbbbb)
 				;
 	}
 

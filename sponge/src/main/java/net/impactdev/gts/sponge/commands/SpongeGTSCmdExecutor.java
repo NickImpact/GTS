@@ -1,70 +1,70 @@
-package net.impactdev.gts.sponge.commands;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb;
 
-import com.google.common.collect.Lists;
-import net.impactdev.gts.api.commands.GTSCommandExecutor;
-import net.impactdev.gts.api.commands.annotations.Alias;
-import net.impactdev.gts.api.commands.annotations.Permission;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import org.spongepowered.api.command.Command;
-import org.spongepowered.api.command.CommandExecutor;
-import org.spongepowered.api.command.parameter.Parameter;
-import org.spongepowered.api.command.parameter.managed.Flag;
-import org.spongepowered.api.event.lifecycle.RegisterCommandEvent;
-import org.spongepowered.plugin.PluginContainer;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Lbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.GTSCbbbbbbEbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Pbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.GTSPbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.EbbbbbbbbWbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.Cbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.CbbbbbbEbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.Pbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.bbbbbbb.Fbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbbbbbbb.RbbbbbbbCbbbbbbEbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbb.PbbbbbCbbbbbbbb;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+bbbbbb bbbb.bbbb.HbbbMbb;
+bbbbbb bbbb.bbbb.Lbbb;
+bbbbbb bbbb.bbbb.Mbb;
 
-public abstract class SpongeGTSCmdExecutor implements CommandExecutor, GTSCommandExecutor<Parameter, Flag, Command.Parameterized> {
+bbbbbb bbbbbbbb bbbbb SbbbbbGTSCbbEbbbbbbb bbbbbbbbbb CbbbbbbEbbbbbbb, GTSCbbbbbbEbbbbbbb<Pbbbbbbbb, Fbbb, Cbbbbbb.Pbbbbbbbbbbbb> {
 
-    protected final GTSPlugin plugin;
-    private final String permission;
+    bbbbbbbbb bbbbb GTSPbbbbb bbbbbb;
+    bbbbbbb bbbbb Sbbbbb bbbbbbbbbb;
 
-    public SpongeGTSCmdExecutor(GTSPlugin plugin) {
-        this.plugin = plugin;
-        if(!this.hasNeededAnnotations()) {
-            plugin.logger().error("Attempted to create executor with missing information: " + this.getClass().getSimpleName());
+    bbbbbb SbbbbbGTSCbbEbbbbbbb(GTSPbbbbb bbbbbb) {
+        bbbb.bbbbbb = bbbbbb;
+        bb(!bbbb.bbbNbbbbbBbbbbbbbbbb()) {
+            bbbbbb.bbbbbb().bbbbb("Bbbbbbbbb bb bbbbbb bbbbbbbb bbbb bbbbbbb bbbbbbbbbbb: " + bbbb.bbbCbbbb().bbbSbbbbbNbbb());
         }
-        this.permission = this.getClass().getAnnotation(Permission.class).value();
+        bbbb.bbbbbbbbbb = bbbb.bbbCbbbb().bbbBbbbbbbbbb(Pbbbbbbbbb.bbbbb).bbbbb();
     }
 
-    public Command.Parameterized build() {
-        if(!this.hasNeededAnnotations()) {
-            throw new IllegalStateException("Missing required annotations for command class: " + this.getClass().getSimpleName());
+    bbbbbb Cbbbbbb.Pbbbbbbbbbbbb bbbbb() {
+        bb(!bbbb.bbbNbbbbbBbbbbbbbbbb()) {
+            bbbbb bbb IbbbbbbSbbbbEbbbbbbbb("Mbbbbbb bbbbbbbb bbbbbbbbbbb bbb bbbbbbb bbbbb: " + bbbb.bbbCbbbb().bbbSbbbbbNbbb());
         }
 
-        GTSCommandExecutor<Parameter, Flag, Command.Parameterized>[] subcommands = this.children();
-        Map<List<String>, Command.Parameterized> children = new HashMap<>();
-        if(subcommands != null) {
-            for(GTSCommandExecutor<Parameter, Flag, Command.Parameterized> child : subcommands) {
-                children.put(child.aliases(), child.build());
+        GTSCbbbbbbEbbbbbbb<Pbbbbbbbb, Fbbb, Cbbbbbb.Pbbbbbbbbbbbb>[] bbbbbbbbbbb = bbbb.bbbbbbbb();
+        Mbb<Lbbb<Sbbbbb>, Cbbbbbb.Pbbbbbbbbbbbb> bbbbbbbb = bbb HbbbMbb<>();
+        bb(bbbbbbbbbbb != bbbb) {
+            bbb(GTSCbbbbbbEbbbbbbb<Pbbbbbbbb, Fbbb, Cbbbbbb.Pbbbbbbbbbbbb> bbbbb : bbbbbbbbbbb) {
+                bbbbbbbb.bbb(bbbbb.bbbbbbb(), bbbbb.bbbbb());
             }
         }
 
-        Parameter[] arguments = this.arguments();
-        if(arguments == null || arguments.length == 0) {
-            arguments = new Parameter[]{};
+        Pbbbbbbbb[] bbbbbbbbb = bbbb.bbbbbbbbb();
+        bb(bbbbbbbbb == bbbb || bbbbbbbbb.bbbbbb == 0) {
+            bbbbbbbbb = bbb Pbbbbbbbb[]{};
         }
 
-        Command.Builder builder = Command.builder();
-        builder.addParameters(arguments);
+        Cbbbbbb.Bbbbbbb bbbbbbb = Cbbbbbb.bbbbbbb();
+        bbbbbbb.bbbPbbbbbbbbb(bbbbbbbbb);
 
-        Flag[] flags = this.flags();
-        if(flags == null || flags.length == 0) {
-            flags = new Flag[]{};
+        Fbbb[] bbbbb = bbbb.bbbbb();
+        bb(bbbbb == bbbb || bbbbb.bbbbbb == 0) {
+            bbbbb = bbb Fbbb[]{};
         }
 
-        builder.addFlags(flags);
+        bbbbbbb.bbbFbbbb(bbbbb);
 
-        for(Map.Entry<List<String>, Command.Parameterized> entry : children.entrySet()) {
-            builder.addChild(entry.getValue(), entry.getKey());
+        bbb(Mbb.Ebbbb<Lbbb<Sbbbbb>, Cbbbbbb.Pbbbbbbbbbbbb> bbbbb : bbbbbbbb.bbbbbSbb()) {
+            bbbbbbb.bbbCbbbb(bbbbb.bbbVbbbb(), bbbbb.bbbKbb());
         }
 
-        return builder.permission(this.permission)
-                .executor(this)
-                .build();
+        bbbbbb bbbbbbb.bbbbbbbbbb(bbbb.bbbbbbbbbb)
+                .bbbbbbbb(bbbb)
+                .bbbbb();
     }
 
 }

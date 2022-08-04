@@ -1,32 +1,32 @@
-package net.impactdev.gts.api.commands;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb;
 
-import com.google.common.collect.Lists;
-import net.impactdev.gts.api.commands.annotations.Alias;
-import net.impactdev.gts.api.commands.annotations.Permission;
-import net.impactdev.impactor.api.Impactor;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
 
-import java.util.List;
+bbbbbb bbbb.bbbb.Bbbb;
 
-public interface GTSCommandExecutor<E, F, S> {
+bbbbbb bbbbbbbbb BBBBbbbbbbBbbbbbbb<B, B, B> {
 
-    default S register() {
-        return this.build();
+    bbbbbbb B bbbbbbbb() {
+        bbbbbb bbbb.bbbbb();
     }
 
-    default List<String> aliases() {
-        return Lists.newArrayList(this.getClass().getAnnotation(Alias.class).value());
+    bbbbbbb Bbbb<Bbbbbb> bbbbbbb() {
+        bbbbbb Bbbbb.bbbBbbbbBbbb(bbbb.bbbBbbbb().bbbBbbbbbbbbb(Bbbbb.bbbbb).bbbbb());
     }
 
-    E[] arguments();
+    B[] bbbbbbbbb();
 
-    F[] flags();
+    B[] bbbbb();
 
-    GTSCommandExecutor<E, F, S>[] children();
+    BBBBbbbbbbBbbbbbbb<B, B, B>[] bbbbbbbb();
 
-    S build();
+    B bbbbb();
 
-    default boolean hasNeededAnnotations() {
-        return this.getClass().isAnnotationPresent(Alias.class) && this.getClass().isAnnotationPresent(Permission.class);
+    bbbbbbb bbbbbbb bbbBbbbbbBbbbbbbbbbb() {
+        bbbbbb bbbb.bbbBbbbb().bbBbbbbbbbbbBbbbbbb(Bbbbb.bbbbb) && bbbb.bbbBbbbb().bbBbbbbbbbbbBbbbbbb(Bbbbbbbbbb.bbbbb);
     }
 
 }

@@ -1,10 +1,10 @@
-package net.impactdev.gts.api.player;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb;
 
-public enum NotificationSetting {
+bbbbbb bbbb BbbbbbbbbbbbBbbbbbb {
 
-    Publish,
-    Sold,
-    Bid,
-    Outbid,
+    Bbbbbbb,
+    Bbbb,
+    Bbb,
+    Bbbbbb,
 
 }

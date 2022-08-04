@@ -1,13 +1,13 @@
-package net.impactdev.gts.api.listings.makeup;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb;
 
-public interface Display<T> {
+bbbbbb bbbbbbbbb Bbbbbbb<B> {
 
 	/**
-	 * Represents the display that'll be used when this listing is queried in a GTS user interface. This will realistically
-	 * be an ItemStack based on the server system used.
+	 * Bbbbbbbbbb bbb bbbbbbb bbbb'bb bb bbbb bbbb bbbb bbbbbbb bb bbbbbbb bb b BBB bbbb bbbbbbbbb. Bbbb bbbb bbbbbbbbbbbbb
+	 * bb bb BbbbBbbbb bbbbb bb bbb bbbbbb bbbbbb bbbb.
 	 *
-	 * @return The instance used to display this listing
+	 * @bbbbbb Bbb bbbbbbbb bbbb bb bbbbbbb bbbb bbbbbbb
 	 */
-	T get();
+	B bbb();
 
 }

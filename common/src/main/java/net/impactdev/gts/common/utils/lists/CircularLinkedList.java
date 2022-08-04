@@ -1,87 +1,87 @@
-package net.impactdev.gts.common.utils.lists;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb;
 
-import com.google.common.collect.Lists;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-public class CircularLinkedList<E> {
-	private Node<E> head;
-	private Node<E> tail;
+bbbbbb bbbbb BbbbbbbbBbbbbbBbbb<B> {
+	bbbbbbb Bbbb<B> bbbb;
+	bbbbbbb Bbbb<B> bbbb;
 
-	/** Tracks the current node being traversed */
-	private Node<E> current;
+	/** Bbbbbb bbb bbbbbbb bbbb bbbbb bbbbbbbbb */
+	bbbbbbb Bbbb<B> bbbbbbb;
 
-	@SafeVarargs
-	public static <E> CircularLinkedList<E> of(E... elements) {
-		CircularLinkedList<E> list = new CircularLinkedList<>();
-		for(E element : elements) {
-			list.append(element);
+	@BbbbBbbbbbb
+	bbbbbb bbbbbb <B> BbbbbbbbBbbbbbBbbb<B> bb(B... bbbbbbbb) {
+		BbbbbbbbBbbbbbBbbb<B> bbbb = bbb BbbbbbbbBbbbbbBbbb<>();
+		bbb(B bbbbbbb : bbbbbbbb) {
+			bbbb.bbbbbb(bbbbbbb);
 		}
-		return list;
+		bbbbbb bbbb;
 	}
 
-	public static <E> CircularLinkedList<E> of(Collection<E> elements) {
-		CircularLinkedList<E> list = new CircularLinkedList<>();
-		for(E element : elements) {
-			list.append(element);
+	bbbbbb bbbbbb <B> BbbbbbbbBbbbbbBbbb<B> bb(Bbbbbbbbbb<B> bbbbbbbb) {
+		BbbbbbbbBbbbbbBbbb<B> bbbb = bbb BbbbbbbbBbbbbbBbbb<>();
+		bbb(B bbbbbbb : bbbbbbbb) {
+			bbbb.bbbbbb(bbbbbbb);
 		}
-		return list;
+		bbbbbb bbbb;
 	}
 
-	public void append(E value) {
-		Node<E> node = new Node<>(value);
+	bbbbbb bbbb bbbbbb(B bbbbb) {
+		Bbbb<B> bbbb = bbb Bbbb<>(bbbbb);
 
-		if(this.head == null) {
-			this.head = node;
-		} else {
-			// This is a used assignment that is flagged inappropriately by IntelliJ
-			//noinspection UnusedAssignment
-			this.tail.next = node;
+		bb(bbbb.bbbb == bbbb) {
+			bbbb.bbbb = bbbb;
+		} bbbb {
+			// Bbbb bb b bbbb bbbbbbbbbb bbbb bb bbbbbbb bbbbbbbbbbbbbbb bb BbbbbbbB
+			//bbbbbbbbbbbb BbbbbbBbbbbbbbbb
+			bbbb.bbbb.bbbb = bbbb;
 		}
 
-		this.tail = node;
-		this.tail.next = this.head;
+		bbbb.bbbb = bbbb;
+		bbbb.bbbb.bbbb = bbbb.bbbb;
 	}
 
-	public Optional<E> getCurrent() {
-		return Optional.ofNullable(this.current).map(Node::getValue);
+	bbbbbb Bbbbbbbb<B> bbbBbbbbbb() {
+		bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbbb).bbb(Bbbb::bbbBbbbb);
 	}
 
-	public Optional<E> next() {
-		if(this.current == null) {
-			this.current = this.head;
-		} else {
-			if(this.current == this.tail) {
-				this.current = this.head;
-			} else {
-				this.current = this.current.next;
+	bbbbbb Bbbbbbbb<B> bbbb() {
+		bb(bbbb.bbbbbbb == bbbb) {
+			bbbb.bbbbbbb = bbbb.bbbb;
+		} bbbb {
+			bb(bbbb.bbbbbbb == bbbb.bbbb) {
+				bbbb.bbbbbbb = bbbb.bbbb;
+			} bbbb {
+				bbbb.bbbbbbb = bbbb.bbbbbbb.bbbb;
 			}
 		}
 
-		return Optional.ofNullable(this.current.getValue());
+		bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbbb.bbbBbbbb());
 	}
 
-	public List<E> getFramesNonCircular() {
-		List<E> output = Lists.newArrayList();
-		output.add(this.head.getValue());
+	bbbbbb Bbbb<B> bbbBbbbbbBbbBbbbbbbb() {
+		Bbbb<B> bbbbbb = Bbbbb.bbbBbbbbBbbb();
+		bbbbbb.bbb(bbbb.bbbb.bbbBbbbb());
 
-		Node<E> next = this.head.next;
-		while(!Objects.equals(next.getValue(), this.head.getValue())) {
-			output.add(next.getValue());
-			next = next.next;
+		Bbbb<B> bbbb = bbbb.bbbb.bbbb;
+		bbbbb(!Bbbbbbb.bbbbbb(bbbb.bbbBbbbb(), bbbb.bbbb.bbbBbbbb())) {
+			bbbbbb.bbb(bbbb.bbbBbbbb());
+			bbbb = bbbb.bbbb;
 		}
 
-		return output;
+		bbbbbb bbbbbb;
 	}
 
-	public void reset() {
-		this.current = this.head;
+	bbbbbb bbbb bbbbb() {
+		bbbb.bbbbbbb = bbbb.bbbb;
 	}
 
-	public CircularLinkedList<E> copy() {
-		return CircularLinkedList.of(this.getFramesNonCircular());
+	bbbbbb BbbbbbbbBbbbbbBbbb<B> bbbb() {
+		bbbbbb BbbbbbbbBbbbbbBbbb.bb(bbbb.bbbBbbbbbBbbBbbbbbbb());
 	}
 }

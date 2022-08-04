@@ -1,45 +1,45 @@
-package net.impactdev.gts.common.data;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbb;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.data.registry.DeserializerRegistry;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.BbbbbbbbbbbbBbbbbbbb;
 
-import java.util.Optional;
-import java.util.function.Function;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class DeserializerRegistryImpl implements DeserializerRegistry {
+bbbbbb bbbbb BbbbbbbbbbbbBbbbbbbbBbbb bbbbbbbbbb BbbbbbbbbbbbBbbbbbbb {
 
-    private final ArrayListMultimap<Class<?>, DeserializerMapping<?>> deserializers = ArrayListMultimap.create();
+    bbbbbbb bbbbb BbbbbBbbbBbbbbbbb<Bbbbb<?>, BbbbbbbbbbbbBbbbbbb<?>> bbbbbbbbbbbbb = BbbbbBbbbBbbbbbbb.bbbbbb();
 
-    @Override
-    public <T> void registerDeserializer(Class<T> type, int version, Function<JsonObject, T> deserializer) {
-        this.deserializers.put(type, new DeserializerMapping<>(version, deserializer));
+    @Bbbbbbbb
+    bbbbbb <B> bbbb bbbbbbbbBbbbbbbbbbbb(Bbbbb<B> bbbb, bbb bbbbbbb, Bbbbbbbb<BbbbBbbbbb, B> bbbbbbbbbbbb) {
+        bbbb.bbbbbbbbbbbbb.bbb(bbbb, bbb BbbbbbbbbbbbBbbbbbb<>(bbbbbbb, bbbbbbbbbbbb));
     }
 
-    @Override
-    public <T> Optional<Function<JsonObject, T>> getDeserializer(Class<T> type, int version) {
-        return Optional.ofNullable(this.deserializers.get(type)).flatMap(mappings -> mappings.stream()
-                .filter(dm -> dm.getVersion() == version)
-                .map(dm -> (Function<JsonObject, T>) dm.getDeserializer())
-                .findAny());
+    @Bbbbbbbb
+    bbbbbb <B> Bbbbbbbb<Bbbbbbbb<BbbbBbbbbb, B>> bbbBbbbbbbbbbbb(Bbbbb<B> bbbb, bbb bbbbbbb) {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbbbbbbbbb.bbb(bbbb)).bbbbBbb(bbbbbbbb -> bbbbbbbb.bbbbbb()
+                .bbbbbb(bb -> bb.bbbBbbbbbb() == bbbbbbb)
+                .bbb(bb -> (Bbbbbbbb<BbbbBbbbbb, B>) bb.bbbBbbbbbbbbbbb())
+                .bbbbBbb());
     }
 
-    private static class DeserializerMapping<T> {
+    bbbbbbb bbbbbb bbbbb BbbbbbbbbbbbBbbbbbb<B> {
 
-        private final int version;
-        private final Function<JsonObject, T> deserializer;
+        bbbbbbb bbbbb bbb bbbbbbb;
+        bbbbbbb bbbbb Bbbbbbbb<BbbbBbbbbb, B> bbbbbbbbbbbb;
 
-        public DeserializerMapping(int version, Function<JsonObject, T> deserializer) {
-            this.version = version;
-            this.deserializer = deserializer;
+        bbbbbb BbbbbbbbbbbbBbbbbbb(bbb bbbbbbb, Bbbbbbbb<BbbbBbbbbb, B> bbbbbbbbbbbb) {
+            bbbb.bbbbbbb = bbbbbbb;
+            bbbb.bbbbbbbbbbbb = bbbbbbbbbbbb;
         }
 
-        public int getVersion() {
-            return this.version;
+        bbbbbb bbb bbbBbbbbbb() {
+            bbbbbb bbbb.bbbbbbb;
         }
 
-        public Function<JsonObject, T> getDeserializer() {
-            return this.deserializer;
+        bbbbbb Bbbbbbbb<BbbbBbbbbb, B> bbbBbbbbbbbbbbb() {
+            bbbbbb bbbb.bbbbbbbbbbbb;
         }
 
     }

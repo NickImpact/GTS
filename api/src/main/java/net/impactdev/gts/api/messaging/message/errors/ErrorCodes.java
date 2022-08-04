@@ -1,108 +1,108 @@
-package net.impactdev.gts.api.messaging.message.errors;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb;
 
-import com.google.common.collect.ImmutableList;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbbbbbBbbb;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.LinkedList;
-import java.util.List;
+bbbbbb bbbb.bbbb.bbbbbbb.Bbbbb;
+bbbbbb bbbb.bbbb.bbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BbbbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbb;
 
-public class ErrorCodes {
+bbbbbb bbbbb BbbbbBbbbb {
 
-    // Generic
-    public static final ErrorCode LISTING_MISSING = create("UNKNOWN_LISTING", "Listing could not be found");
-    public static final ErrorCode REQUEST_TIMED_OUT = create("TIMEOUT", "Failed to receive a response within 5 seconds");
-    public static final ErrorCode THIRD_PARTY_CANCELLED = create("OUTSIDE_CANCEL", "An outside source cancelled your request");
-    public static final ErrorCode LISTING_EXPIRED = create("EXPIRED", "The listing has expired");
-    public static final ErrorCode FAILED_TO_GIVE = create("UNABLE_TO_GIVE", "The item could not be rewarded successfully");
+    // Bbbbbbb
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBBBBB_BBBBBBB = bbbbbb("BBBBBBB_BBBBBBB", "Bbbbbbb bbbbb bbb bb bbbbb");
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBBBBB_BBBBB_BBB = bbbbbb("BBBBBBB", "Bbbbbb bb bbbbbbb b bbbbbbbb bbbbbb 5 bbbbbbb");
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBBB_BBBBB_BBBBBBBBB = bbbbbb("BBBBBBB_BBBBBB", "Bb bbbbbbb bbbbbb bbbbbbbbb bbbb bbbbbbb");
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBBBBB_BBBBBBB = bbbbbb("BBBBBBB", "Bbb bbbbbbb bbb bbbbbbb");
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBBBB_BB_BBBB = bbbbbb("BBBBBB_BB_BBBB", "Bbb bbbb bbbbb bbb bb bbbbbbbb bbbbbbbbbbbb");
 
-    // BIN
-    public static final ErrorCode ALREADY_PURCHASED = create("PURCHASED", "Listing already purchased");
+    // BBB
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBBBBB_BBBBBBBBB = bbbbbb("BBBBBBBBB", "Bbbbbbb bbbbbbb bbbbbbbbb");
 
-    // Auctions
-    public static final ErrorCode OUTBID = create("OUTBID", "Another user has already placed a larger bid");
-    public static final ErrorCode BIDS_PLACED = create("BIDS_PRESENT", "At least one bid has already been placed on your auction");
+    // Bbbbbbbb
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBBBB = bbbbbb("BBBBBB", "Bbbbbbb bbbb bbb bbbbbbb bbbbbb b bbbbbb bbb");
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBB_BBBBBB = bbbbbb("BBBB_BBBBBBB", "Bb bbbbb bbb bbb bbb bbbbbbb bbbb bbbbbb bb bbbb bbbbbbb");
 
-    // Deliveries
-    public static final ErrorCode DELIVERY_MISSING = create("DELIVERY_MISSING", "Unable to locate the target delivery");
+    // Bbbbbbbbbb
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBBBBBB_BBBBBBB = bbbbbb("BBBBBBBB_BBBBBBB", "Bbbbbb bb bbbbbb bbb bbbbbb bbbbbbbb");
 
-    // Fatal
-    public static final ErrorCode FATAL_ERROR = create("FATAL", "A fatal error occurred...");
-    public static final ErrorCode UNKNOWN = create("UNKNOWN", "Literally no idea what happened");
+    // Bbbbb
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBBB_BBBBB = bbbbbb("BBBBB", "B bbbbb bbbbb bbbbbbbb...");
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBBBBB = bbbbbb("BBBBBBB", "Bbbbbbbbb bb bbbb bbbb bbbbbbbb");
 
-    // Safe Mode Reasons
-    public static final ErrorCode ECONOMY = create("LACKING_ECONOMY", "You are missing an economy plugin!");
+    // Bbbb Bbbb Bbbbbbb
+    bbbbbb bbbbbb bbbbb BbbbbBbbb BBBBBBB = bbbbbb("BBBBBBB_BBBBBBB", "Bbb bbb bbbbbbb bb bbbbbbb bbbbbb!");
 
-    private static final List<ErrorCode> KEYS;
+    bbbbbbb bbbbbb bbbbb Bbbb<BbbbbBbbb> BBBB;
 
-    static {
-        List<ErrorCode> codes = new LinkedList<>();
-        Field[] values = ErrorCodes.class.getFields();
-        int i = 0;
+    bbbbbb {
+        Bbbb<BbbbbBbbb> bbbbb = bbb BbbbbbBbbb<>();
+        Bbbbb[] bbbbbb = BbbbbBbbbb.bbbbb.bbbBbbbbb();
+        bbb b = 0;
 
-        for (Field f : values) {
-            // ignore non-static fields
-            if (!Modifier.isStatic(f.getModifiers())) {
-                continue;
+        bbb (Bbbbb b : bbbbbb) {
+            // bbbbbb bbb-bbbbbb bbbbbb
+            bb (!Bbbbbbbb.bbBbbbbb(b.bbbBbbbbbbbb())) {
+                bbbbbbbb;
             }
 
-            // ignore fields that aren't error codes
-            if (!ErrorCode.class.isAssignableFrom(f.getType())) {
-                continue;
+            // bbbbbb bbbbbb bbbb bbbb'b bbbbb bbbbb
+            bb (!BbbbbBbbb.bbbbb.bbBbbbbbbbbbBbbb(b.bbbBbbb())) {
+                bbbbbbbb;
             }
 
-            try {
-                // get the key instance
-                ErrorCodeBackend key = (ErrorCodeBackend) f.get(null);
-                // set the ordinal value of the key.
-                key.ordinal = i++;
-                // add the key to the return map
-                codes.add(key);
-            } catch (Exception e) {
-                throw new RuntimeException("Exception processing field: " + f, e);
+            bbb {
+                // bbb bbb bbb bbbbbbbb
+                BbbbbBbbbBbbbbbb bbb = (BbbbbBbbbBbbbbbb) b.bbb(bbbb);
+                // bbb bbb bbbbbbb bbbbb bb bbb bbb.
+                bbb.bbbbbbb = b++;
+                // bbb bbb bbb bb bbb bbbbbb bbb
+                bbbbb.bbb(bbb);
+            } bbbbb (Bbbbbbbbb b) {
+                bbbbb bbb BbbbbbbBbbbbbbbb("Bbbbbbbbb bbbbbbbbbb bbbbb: " + b, b);
             }
         }
 
-        KEYS = ImmutableList.copyOf(codes);
+        BBBB = BbbbbbbbbBbbb.bbbbBb(bbbbb);
     }
 
-    public static ErrorCode get(int ordinal) {
-        return KEYS.get(ordinal);
+    bbbbbb bbbbbb BbbbbBbbb bbb(bbb bbbbbbb) {
+        bbbbbb BBBB.bbb(bbbbbbb);
     }
 
-    private static ErrorCode create(String key, String description) {
-        return new ErrorCodeBackend(key, description);
+    bbbbbbb bbbbbb BbbbbBbbb bbbbbb(Bbbbbb bbb, Bbbbbb bbbbbbbbbbb) {
+        bbbbbb bbb BbbbbBbbbBbbbbbb(bbb, bbbbbbbbbbb);
     }
 
-    public static class ErrorCodeBackend implements ErrorCode {
+    bbbbbb bbbbbb bbbbb BbbbbBbbbBbbbbbb bbbbbbbbbb BbbbbBbbb {
 
-        private int ordinal = -1;
+        bbbbbbb bbb bbbbbbb = -1;
 
-        private final String key;
-        private final String description;
+        bbbbbbb bbbbb Bbbbbb bbb;
+        bbbbbbb bbbbb Bbbbbb bbbbbbbbbbb;
 
-        ErrorCodeBackend(String key, String description) {
-            this.key = key;
-            this.description = description;
+        BbbbbBbbbBbbbbbb(Bbbbbb bbb, Bbbbbb bbbbbbbbbbb) {
+            bbbb.bbb = bbb;
+            bbbb.bbbbbbbbbbb = bbbbbbbbbbb;
         }
 
-        @Override
-        public int ordinal() {
-            return this.ordinal;
+        @Bbbbbbbb
+        bbbbbb bbb bbbbbbb() {
+            bbbbbb bbbb.bbbbbbb;
         }
 
-        void setOrdinal(int ordinal) {
-            this.ordinal = ordinal;
+        bbbb bbbBbbbbbb(bbb bbbbbbb) {
+            bbbb.bbbbbbb = bbbbbbb;
         }
 
-        @Override
-        public String getKey() {
-            return this.key;
+        @Bbbbbbbb
+        bbbbbb Bbbbbb bbbBbb() {
+            bbbbbb bbbb.bbb;
         }
 
-        @Override
-        public String getDescription() {
-            return this.description;
+        @Bbbbbbbb
+        bbbbbb Bbbbbb bbbBbbbbbbbbbb() {
+            bbbbbb bbbb.bbbbbbbbbbb;
         }
     }
 

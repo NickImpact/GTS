@@ -1,105 +1,105 @@
-package net.impactdev.gts.messaging.interpreters;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbbbbb;
 
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.player.PlayerSettingsManager;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.messaging.interpreters.Interpreter;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionBidMessage;
-import net.impactdev.gts.common.messaging.messages.listings.auctions.impl.AuctionCancelMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.utilities.Time;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.service.economy.EconomyService;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbb.BbbbbbbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.BbbbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
 
-import java.math.BigDecimal;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BbbBbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
-public class SpongeAuctionInterpreters implements Interpreter {
+bbbbbb bbbbb BbbbbbBbbbbbbBbbbbbbbbbbb bbbbbbbbbb Bbbbbbbbbbb {
 
-    @Override
-    public void register(GTSPlugin plugin) {
-        this.getDecoders(plugin);
-        this.getInterpreters(plugin);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbb.bbbBbbbbbbb(bbbbbb);
+        bbbb.bbbBbbbbbbbbbbb(bbbbbb);
     }
 
-    @Override
-    public void getDecoders(GTSPlugin plugin) {
-        plugin.messagingService().registerDecoder(
-                AuctionBidMessage.Request.TYPE, AuctionBidMessage.Request::decode
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BbbbbbbBbbBbbbbbb.Bbbbbbb.BBBB, BbbbbbbBbbBbbbbbb.Bbbbbbb::bbbbbb
         );
-        plugin.messagingService().registerDecoder(
-                AuctionBidMessage.Response.TYPE, AuctionBidMessage.Response::decode
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BbbbbbbBbbBbbbbbb.Bbbbbbbb.BBBB, BbbbbbbBbbBbbbbbb.Bbbbbbbb::bbbbbb
         );
-        plugin.messagingService().registerDecoder(
-                AuctionCancelMessage.Request.TYPE, AuctionCancelMessage.Request::decode
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BbbbbbbBbbbbbBbbbbbb.Bbbbbbb.BBBB, BbbbbbbBbbbbbBbbbbbb.Bbbbbbb::bbbbbb
         );
-        plugin.messagingService().registerDecoder(
-                AuctionCancelMessage.Response.TYPE, AuctionCancelMessage.Response::decode
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BbbbbbbBbbbbbBbbbbbb.Bbbbbbbb.BBBB, BbbbbbbBbbbbbBbbbbbb.Bbbbbbbb::bbbbbb
         );
     }
 
-    @Override
-    public void getInterpreters(GTSPlugin plugin) {
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        final IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+        bbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb = bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbBbbbbbbBbbbbbbb();
 
-        consumer.registerInternalConsumer(
-                AuctionBidMessage.Request.class, request -> {
-                    request.respond()
-                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BbbbbbbBbbBbbbbbb.Bbbbbbb.bbbbb, bbbbbbb -> {
+                    bbbbbbb.bbbbbbb()
+                            .bbbbBbbbbb(bbbbbbbb -> bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbbb));
                 }
         );
-        consumer.registerInternalConsumer(
-                AuctionBidMessage.Response.class, response -> {
-                    consumer.processRequest(response.getRequestID(), response);
-                    if(response.wasSuccessful()) {
-                        GTSPlugin.instance().storage().getListing(response.getAuctionID()).thenAccept(listing -> {
-                            PlayerSettingsManager manager = GTSService.getInstance().getPlayerSettingsManager();
-                            listing.map(l -> l.as(Auction.class)).ifPresent(info -> {
-                                info.getUniqueBiddersWithHighestBids().forEach((user, bid) -> {
-                                    if(!response.getActor().equals(user)) {
-                                        Sponge.server().player(user).ifPresent(player -> {
-                                            manager.retrieve(user).thenAccept(settings -> {
-                                                if (settings.getOutbidListenState()) {
-                                                    double difference = response.getAmountBid() - bid.getAmount();
-                                                    ConfigKey<String> key = response.wasSniped() ? MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_OUTBIDSNIPED : MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_OUTBID;
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BbbbbbbBbbBbbbbbb.Bbbbbbbb.bbbbb, bbbbbbbb -> {
+                    bbbbbbbb.bbbbbbbBbbbbbb(bbbbbbbb.bbbBbbbbbbBB(), bbbbbbbb);
+                    bb(bbbbbbbb.bbbBbbbbbbbbb()) {
+                        BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbBbbbbbb(bbbbbbbb.bbbBbbbbbbBB()).bbbbBbbbbb(bbbbbbb -> {
+                            BbbbbbBbbbbbbbBbbbbbb bbbbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBbbbbbBbbbbbbbBbbbbbb();
+                            bbbbbbb.bbb(b -> b.bb(Bbbbbbb.bbbbb)).bbBbbbbbb(bbbb -> {
+                                bbbb.bbbBbbbbbBbbbbbbBbbbBbbbbbbBbbb().bbbBbbb((bbbb, bbb) -> {
+                                    bb(!bbbbbbbb.bbbBbbbb().bbbbbb(bbbb)) {
+                                        Bbbbbb.bbbbbb().bbbbbb(bbbb).bbBbbbbbb(bbbbbb -> {
+                                            bbbbbbb.bbbbbbbb(bbbb).bbbbBbbbbb(bbbbbbbb -> {
+                                                bb (bbbbbbbb.bbbBbbbbbBbbbbbBbbbb()) {
+                                                    bbbbbb bbbbbbbbbb = bbbbbbbb.bbbBbbbbbBbb() - bbb.bbbBbbbbb();
+                                                    BbbbbbBbb<Bbbbbb> bbb = bbbbbbbb.bbbBbbbbb() ? BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBBBBBBBB : BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBB;
 
-                                                    PlaceholderSources sources = PlaceholderSources.builder()
-                                                            .append(Auction.class, () -> info)
-                                                            .append(UUID.class, response::getActor)
-                                                            .append(Double.class, () -> difference)
-                                                            .append(Time.class, () -> GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_SET_TIME))
-                                                            .build();
+                                                    BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                            .bbbbbb(Bbbbbbb.bbbbb, () -> bbbb)
+                                                            .bbbbbb(BBBB.bbbbb, bbbbbbbb::bbbBbbbb)
+                                                            .bbbbbb(Bbbbbb.bbbbb, () -> bbbbbbbbbb)
+                                                            .bbbbbb(Bbbb.bbbbb, () -> BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBBB_BBB_BBBB))
+                                                            .bbbbb();
 
-                                                    player.sendMessage(service.parse(Utilities.readMessageConfigOption(key), sources));
+                                                    bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(bbb), bbbbbbb));
                                                 }
                                             });
                                         });
                                     }
                                 });
 
-                                Sponge.server().player(info.getLister()).ifPresent(player -> {
-                                    manager.retrieve(info.getLister()).thenAccept(settings -> {
-                                        if(settings.getBidListenState()) {
-                                            ConfigKey<String> key = response.wasSniped() ? MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_NEWBIDSNIPED : MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_NEWBID;
+                                Bbbbbb.bbbbbb().bbbbbb(bbbb.bbbBbbbbb()).bbBbbbbbb(bbbbbb -> {
+                                    bbbbbbb.bbbbbbbb(bbbb.bbbBbbbbb()).bbbbBbbbbb(bbbbbbbb -> {
+                                        bb(bbbbbbbb.bbbBbbBbbbbbBbbbb()) {
+                                            BbbbbbBbb<Bbbbbb> bbb = bbbbbbbb.bbbBbbbbb() ? BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBBBBBBBB : BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBB;
 
-                                            PlaceholderSources sources = PlaceholderSources.builder()
-                                                    .append(Auction.class, () -> info)
-                                                    .append(UUID.class, response::getActor)
-                                                    .append(Auction.BidContext.class, () -> new Auction.BidContext(response.getActor(), new Auction.Bid(response.getAmountBid())))
-                                                    .append(Time.class, () -> GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_SET_TIME))
-                                                    .build();
+                                            BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                    .bbbbbb(Bbbbbbb.bbbbb, () -> bbbb)
+                                                    .bbbbbb(BBBB.bbbbb, bbbbbbbb::bbbBbbbb)
+                                                    .bbbbbb(Bbbbbbb.BbbBbbbbbb.bbbbb, () -> bbb Bbbbbbb.BbbBbbbbbb(bbbbbbbb.bbbBbbbb(), bbb Bbbbbbb.Bbb(bbbbbbbb.bbbBbbbbbBbb())))
+                                                    .bbbbbb(Bbbb.bbbbb, () -> BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBBB_BBB_BBBB))
+                                                    .bbbbb();
 
-                                            player.sendMessage(service.parse(Utilities.readMessageConfigOption(key), sources));
+                                            bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(bbb), bbbbbbb));
 
                                         }
                                     });
@@ -110,34 +110,34 @@ public class SpongeAuctionInterpreters implements Interpreter {
                 }
         );
 
-        consumer.registerInternalConsumer(
-                AuctionCancelMessage.Request.class, request -> {
-                    request.respond()
-                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BbbbbbbBbbbbbBbbbbbb.Bbbbbbb.bbbbb, bbbbbbb -> {
+                    bbbbbbb.bbbbbbb()
+                            .bbbbBbbbbb(bbbbbbbb -> bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbbb));
                 }
         );
-        consumer.registerInternalConsumer(
-                AuctionCancelMessage.Response.class, response -> {
-                    consumer.processRequest(response.getRequestID(), response);
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BbbbbbbBbbbbbBbbbbbb.Bbbbbbbb.bbbbb, bbbbbbbb -> {
+                    bbbbbbbb.bbbbbbbBbbbbbb(bbbbbbbb.bbbBbbbbbbBB(), bbbbbbbb);
 
-                    if(response.wasSuccessful()) {
-                        PlaceholderSources sources = PlaceholderSources.builder()
-                                .append(Auction.class, response::getData)
-                                .build();
+                    bb(bbbbbbbb.bbbBbbbbbbbbb()) {
+                        BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                .bbbbbb(Bbbbbbb.bbbbb, bbbbbbbb::bbbBbbb)
+                                .bbbbb();
 
-                        EconomyService economy = Sponge.server().serviceProvider().economyService().orElseThrow(IllegalStateException::new);
+                        BbbbbbbBbbbbbb bbbbbbb = Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb().bbbbbbbBbbbbbb().bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb);
 
-                        for(UUID bidder : response.getBidders()) {
-                            Sponge.server().player(bidder).ifPresent(player -> {
-                                player.sendMessage(service.parse(
-                                        Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANCELLED),
-                                        sources
+                        bbb(BBBB bbbbbb : bbbbbbbb.bbbBbbbbbb()) {
+                            Bbbbbb.bbbbbb().bbbbbb(bbbbbb).bbBbbbbbb(bbbbbb -> {
+                                bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                        Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBBBBB),
+                                        bbbbbbb
                                 ));
 
-                                economy.findOrCreateAccount(bidder).ifPresent(account -> {
-                                    account.deposit(
-                                            economy.defaultCurrency(),
-                                            BigDecimal.valueOf(response.getData().getCurrentBid(bidder).map(Auction.Bid::getAmount).orElseThrow(() -> new IllegalStateException("Unable to find highest bid for player marked as a bidder")))
+                                bbbbbbb.bbbbBbBbbbbbBbbbbbb(bbbbbb).bbBbbbbbb(bbbbbbb -> {
+                                    bbbbbbb.bbbbbbb(
+                                            bbbbbbb.bbbbbbbBbbbbbbb(),
+                                            BbbBbbbbbb.bbbbbBb(bbbbbbbb.bbbBbbb().bbbBbbbbbbBbb(bbbbbb).bbb(Bbbbbbb.Bbb::bbbBbbbbb).bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbb bbbbbbb bbb bbb bbbbbb bbbbbb bb b bbbbbb")))
                                     );
                                 });
                             });

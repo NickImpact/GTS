@@ -1,192 +1,192 @@
-package net.impactdev.gts.commands.executors.subs;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbb;
 
-import io.leangen.geantyref.TypeToken;
-import net.impactdev.gts.api.commands.GTSCommandExecutor;
-import net.impactdev.gts.api.commands.CommandGenerator;
-import net.impactdev.gts.api.commands.annotations.Alias;
-import net.impactdev.gts.api.commands.annotations.Permission;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.entries.EntryManager;
-import net.impactdev.gts.api.listings.manager.ListingManager;
-import net.impactdev.gts.api.listings.ui.EntrySelection;
-import net.impactdev.gts.commands.elements.EntryManagerElement;
-import net.impactdev.gts.commands.elements.PercentageElement;
-import net.impactdev.gts.commands.elements.PositiveBoundedElement;
-import net.impactdev.gts.commands.elements.TimeElement;
-import net.impactdev.gts.commands.elements.selling.SellingContext;
-import net.impactdev.gts.commands.executors.utility.PlayerRequiredExecutor;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
-import net.impactdev.gts.sponge.commands.SpongeGTSCmdExecutor;
-import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
-import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.utilities.Time;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.exception.CommandException;
-import org.spongepowered.api.command.parameter.CommandContext;
-import org.spongepowered.api.command.parameter.Parameter;
-import org.spongepowered.api.command.parameter.managed.Flag;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.service.pagination.PaginationList;
+bbbbbb bb.bbbbbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.BBBBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.BbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb.BbbbbBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb.BbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbbbbb.BbbbbbBbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbbbbb.BBBBbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBBBBbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb.BbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.BbbbbbbbBbbbbbBbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.BbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbbb.BbbbbbbbbbBbbb;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbbbb;
+bbbbbb bbbb.bbbb.BbbbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
 
-@Alias("auction")
-@Permission(GTSPermissions.DEFAULT)
-public class AuctionCommand extends PlayerRequiredExecutor {
+@Bbbbb("bbbbbbb")
+@Bbbbbbbbbb(BBBBbbbbbbbbbb.BBBBBBB)
+bbbbbb bbbbb BbbbbbbBbbbbbb bbbbbbb BbbbbbBbbbbbbbBbbbbbbb {
 
-    private final Parameter.Value<Double> STARTING = Parameter.builder(Double.class)
-            .key("starting")
-            .addParser(new PositiveBoundedElement<>(Double::parseDouble))
-            .build();
+    bbbbbbb bbbbb Bbbbbbbbb.Bbbbb<Bbbbbb> BBBBBBBB = Bbbbbbbbb.bbbbbbb(Bbbbbb.bbbbb)
+            .bbb("bbbbbbbb")
+            .bbbBbbbbb(bbb BbbbbbbbBbbbbbbBbbbbbb<>(Bbbbbb::bbbbbBbbbbb))
+            .bbbbb();
 
-    private final Parameter.Value<Float> INCREMENT = Parameter.builder(Float.class)
-            .key("increment")
-            .addParser(new PercentageElement())
-            .optional()
-            .build();
-    private final Parameter.Value<EntryManager<?>> ENTRY = Parameter.builder(new TypeToken<EntryManager<?>>() {})
-            .key("entry")
-            .usage(key -> "A valid entry type")
-            .addParser(new EntryManagerElement())
-            .optional()
-            .build();
-    private final Parameter.Value<String> ARGUMENTS = Parameter.remainingJoinedStrings()
-            .key("arguments")
-            .optional()
-            .build();
-    private final Parameter.Value<Time> TIME = Parameter.builder(Time.class)
-            .key("time")
-            .addParser(new TimeElement())
-            .optional()
-            .build();
+    bbbbbbb bbbbb Bbbbbbbbb.Bbbbb<Bbbbb> BBBBBBBBB = Bbbbbbbbb.bbbbbbb(Bbbbb.bbbbb)
+            .bbb("bbbbbbbbb")
+            .bbbBbbbbb(bbb BbbbbbbbbbBbbbbbb())
+            .bbbbbbbb()
+            .bbbbb();
+    bbbbbbb bbbbb Bbbbbbbbb.Bbbbb<BbbbbBbbbbbb<?>> BBBBB = Bbbbbbbbb.bbbbbbb(bbb BbbbBbbbb<BbbbbBbbbbbb<?>>() {})
+            .bbb("bbbbb")
+            .bbbbb(bbb -> "B bbbbb bbbbb bbbb")
+            .bbbBbbbbb(bbb BbbbbBbbbbbbBbbbbbb())
+            .bbbbbbbb()
+            .bbbbb();
+    bbbbbbb bbbbb Bbbbbbbbb.Bbbbb<Bbbbbb> BBBBBBBBB = Bbbbbbbbb.bbbbbbbbbBbbbbbBbbbbbb()
+            .bbb("bbbbbbbbb")
+            .bbbbbbbb()
+            .bbbbb();
+    bbbbbbb bbbbb Bbbbbbbbb.Bbbbb<Bbbb> BBBB = Bbbbbbbbb.bbbbbbb(Bbbb.bbbbb)
+            .bbb("bbbb")
+            .bbbBbbbbb(bbb BbbbBbbbbbb())
+            .bbbbbbbb()
+            .bbbbb();
 
-    public AuctionCommand() {
-        super(GTSPlugin.instance());
+    bbbbbb BbbbbbbBbbbbbb() {
+        bbbbb(BBBBbbbbb.bbbbbbbb());
     }
 
-    @Override
-    public Parameter[] arguments() {
-        return new Parameter[] {
-                this.STARTING,
-                this.INCREMENT,
-                this.ENTRY,
-                this.ARGUMENTS
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbbb[] bbbbbbbbb() {
+        bbbbbb bbb Bbbbbbbbb[] {
+                bbbb.BBBBBBBB,
+                bbbb.BBBBBBBBB,
+                bbbb.BBBBB,
+                bbbb.BBBBBBBBB
         };
     }
 
-    @Override
-    public Flag[] flags() {
-        return new Flag[] {
-                Flag.builder()
-                        .alias("time")
-                        .alias("t")
-                        .setParameter(this.TIME)
-                        .build()
+    @Bbbbbbbb
+    bbbbbb Bbbb[] bbbbb() {
+        bbbbbb bbb Bbbb[] {
+                Bbbb.bbbbbbb()
+                        .bbbbb("bbbb")
+                        .bbbbb("b")
+                        .bbbBbbbbbbbb(bbbb.BBBB)
+                        .bbbbb()
         };
     }
 
-    @Override
-    public SpongeGTSCmdExecutor[] children() {
-        return new SpongeGTSCmdExecutor[]{
-                new Helper(this.plugin)
+    @Bbbbbbbb
+    bbbbbb BbbbbbBBBBbbBbbbbbbb[] bbbbbbbb() {
+        bbbbbb bbb BbbbbbBBBBbbBbbbbbbb[]{
+                bbb Bbbbbb(bbbb.bbbbbb)
         };
     }
 
-    @Override
-    protected CommandResult process(ServerPlayer source, CommandContext context) throws CommandException {
-        MessageService service = Utilities.PARSER;
-        Config main = GTSPlugin.instance().configuration().main();
-        Config lang = GTSPlugin.instance().configuration().language();
+    @Bbbbbbbb
+    bbbbbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbBbbbbb bbbbbb, BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+        BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbbb.BBBBBB;
+        Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb();
+        Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
 
-        double start = context.requireOne(this.STARTING);
-        float increment = context.requireOne(this.INCREMENT);
-        long duration = context.one(this.TIME).orElse(main.get(ConfigKeys.LISTING_TIME_MID)).getTime();
+        bbbbbb bbbbb = bbbbbbb.bbbbbbbBbb(bbbb.BBBBBBBB);
+        bbbbb bbbbbbbbb = bbbbbbb.bbbbbbbBbb(bbbb.BBBBBBBBB);
+        bbbb bbbbbbbb = bbbbbbb.bbb(bbbb.BBBB).bbBbbb(bbbb.bbb(BbbbbbBbbb.BBBBBBB_BBBB_BBB)).bbbBbbb();
 
-        EntryManager<?> manager = context.requireOne(this.ENTRY);
+        BbbbbBbbbbbb<?> bbbbbbb = bbbbbbb.bbbbbbbBbb(bbbb.BBBBB);
 
-        if(!context.hasAny(this.ARGUMENTS)) {
-            PlatformPlayer platform = PlatformPlayer.from(source);
-            ((AbstractSpongeEntryUI<?>) manager.getSellingUI(platform).get()).open(platform, true);
-            return CommandResult.success();
+        bb(!bbbbbbb.bbbBbb(bbbb.BBBBBBBBB)) {
+            BbbbbbbbBbbbbb bbbbbbbb = BbbbbbbbBbbbbb.bbbb(bbbbbb);
+            ((BbbbbbbbBbbbbbBbbbbBB<?>) bbbbbbb.bbbBbbbbbbBB(bbbbbbbb).bbb()).bbbb(bbbbbbbb, bbbb);
+            bbbbbb BbbbbbbBbbbbb.bbbbbbb();
         }
 
-        Queue<String> remaining = Arrays.stream(context.<String>requireOne(this.ARGUMENTS).split(" "))
-                .collect(Collectors.toCollection(LinkedList::new));
+        Bbbbb<Bbbbbb> bbbbbbbbb = Bbbbbb.bbbbbb(bbbbbbb.<Bbbbbb>bbbbbbbBbb(bbbb.BBBBBBBBB).bbbbb(" "))
+                .bbbbbbb(Bbbbbbbbbb.bbBbbbbbbbbb(BbbbbbBbbb::bbb));
 
-        try {
-            CommandGenerator.Context.AuctionContext ctx = new SellingContext.SellingAuctionContext();
-            ctx.time(duration);
-            ctx.increment(increment);
-            ctx.start(start);
-            EntrySelection<? extends Entry<?, ?>> entry = manager.getEntryCommandCreator().create(source.uniqueId(), remaining, ctx);
-            if(ctx.redirect()) {
-                return CommandResult.success();
+        bbb {
+            BbbbbbbBbbbbbbbb.Bbbbbbb.BbbbbbbBbbbbbb bbb = bbb BbbbbbbBbbbbbb.BbbbbbbBbbbbbbBbbbbbb();
+            bbb.bbbb(bbbbbbbb);
+            bbb.bbbbbbbbb(bbbbbbbbb);
+            bbb.bbbbb(bbbbb);
+            BbbbbBbbbbbbbb<? bbbbbbb Bbbbb<?, ?>> bbbbb = bbbbbbb.bbbBbbbbBbbbbbbBbbbbbb().bbbbbb(bbbbbb.bbbbbbBb(), bbbbbbbbb, bbb);
+            bb(bbb.bbbbbbbb()) {
+                bbbbbb BbbbbbbBbbbbb.bbbbbbb();
             }
 
-            Auction auction = Auction.builder()
-                    .start(start)
-                    .increment(increment)
-                    .entry(entry.createFromSelection())
-                    .lister(source.uniqueId())
-                    .expiration(LocalDateTime.now().plusSeconds(duration))
-                    .build();
-            Impactor.getInstance().getRegistry().get(ListingManager.class).list(source.uniqueId(), auction);
-        } catch (Throwable e) {
-            throw new CommandException(Component.text("Failure during execution: ").append(Component.text(e.getMessage())), e);
+            Bbbbbbb bbbbbbb = Bbbbbbb.bbbbbbb()
+                    .bbbbb(bbbbb)
+                    .bbbbbbbbb(bbbbbbbbb)
+                    .bbbbb(bbbbb.bbbbbbBbbbBbbbbbbbb())
+                    .bbbbbb(bbbbbb.bbbbbbBb())
+                    .bbbbbbbbbb(BbbbbBbbbBbbb.bbb().bbbbBbbbbbb(bbbbbbbb))
+                    .bbbbb();
+            Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb).bbbb(bbbbbb.bbbbbbBb(), bbbbbbb);
+        } bbbbb (Bbbbbbbbb b) {
+            bbbbb bbb BbbbbbbBbbbbbbbb(Bbbbbbbbb.bbbb("Bbbbbbb bbbbbb bbbbbbbbb: ").bbbbbb(Bbbbbbbbb.bbbb(b.bbbBbbbbbb())), b);
         }
-        return CommandResult.success();
+        bbbbbb BbbbbbbBbbbbb.bbbbbbb();
     }
 
-    @Alias("help")
-    @Permission(GTSPermissions.DEFAULT)
-    public static class Helper extends SpongeGTSCmdExecutor {
+    @Bbbbb("bbbb")
+    @Bbbbbbbbbb(BBBBbbbbbbbbbb.BBBBBBB)
+    bbbbbb bbbbbb bbbbb Bbbbbb bbbbbbb BbbbbbBBBBbbBbbbbbbb {
 
-        public Helper(GTSPlugin plugin) {
-            super(plugin);
+        bbbbbb Bbbbbb(BBBBbbbbb bbbbbb) {
+            bbbbb(bbbbbb);
         }
 
-        @Override
-        public Parameter[] arguments() {
-            return new Parameter[0];
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbbb[] bbbbbbbbb() {
+            bbbbbb bbb Bbbbbbbbb[0];
         }
 
-        @Override
-        public Flag[] flags() {
-            return new Flag[0];
+        @Bbbbbbbb
+        bbbbbb Bbbb[] bbbbb() {
+            bbbbbb bbb Bbbb[0];
         }
 
-        @Override
-        public SpongeGTSCmdExecutor[] children() {
-            return new SpongeGTSCmdExecutor[0];
+        @Bbbbbbbb
+        bbbbbb BbbbbbBBBBbbBbbbbbbb[] bbbbbbbb() {
+            bbbbbb bbb BbbbbbBBBBbbBbbbbbbb[0];
         }
 
-        @Override
-        public CommandResult execute(CommandContext context) throws CommandException {
-            MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-            Config lang = GTSPlugin.instance().configuration().language();
-            PaginationList.builder()
-                    .title(service.parse(lang.get(MsgConfigKeys.AUCTION_COMMAND_HEADER)))
-                    .padding(Component.text("=").color(NamedTextColor.GOLD))
-                    .contents(service.parse(lang.get(MsgConfigKeys.AUCTION_COMMAND_USAGE)))
-                    .linesPerPage(7)
-                    .sendTo(context.cause().audience());
-            return CommandResult.success();
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+            BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+            Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+            BbbbbbbbbbBbbb.bbbbbbb()
+                    .bbbbb(bbbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBB_BBBBBB)))
+                    .bbbbbbb(Bbbbbbbbb.bbbb("=").bbbbb(BbbbbBbbbBbbbb.BBBB))
+                    .bbbbbbbb(bbbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBB_BBBBB)))
+                    .bbbbbBbbBbbb(7)
+                    .bbbbBb(bbbbbbb.bbbbb().bbbbbbbb());
+            bbbbbb BbbbbbbBbbbbb.bbbbbbb();
         }
     }
 }

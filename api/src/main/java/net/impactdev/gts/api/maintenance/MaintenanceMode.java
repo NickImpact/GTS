@@ -1,13 +1,13 @@
-package net.impactdev.gts.api.maintenance;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb;
 
-public enum MaintenanceMode {
+bbbbbb bbbb BbbbbbbbbbbBbbb {
 
-    ALL,
-    BROWSER,
-    PUBLISH_LISTING,
-    BIN_PURCHASE,
-    AUCTION_BID,
-    STASH_CLAIM,
-    STASH_CLAIM_ALL,
+    BBB,
+    BBBBBBB,
+    BBBBBBB_BBBBBBB,
+    BBB_BBBBBBBB,
+    BBBBBBB_BBB,
+    BBBBB_BBBBB,
+    BBBBB_BBBBB_BBB,
 
 }

@@ -1,115 +1,115 @@
 /*
- * This file is part of Impactor, licensed under the MIT License (MIT).
+ * Bbbb bbbb bb bbbb bb Bbbbbbbb, bbbbbbbb bbbbb bbb BBB Bbbbbbb (BBB).
  *
- * Copyright (c) 2018-2022 NickImpact
+ * Bbbbbbbbb (b) 2018-2022 BbbbBbbbbb
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * Bbbbbbbbbb bb bbbbbb bbbbbbb, bbbb bb bbbbbb, bb bbb bbbbbb bbbbbbbbb b bbbb
+ * bb bbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbbbbbbb bbbbb (bbb "Bbbbbbbb"), bb bbbb
+ * bb bbb Bbbbbbbb bbbbbbb bbbbbbbbbbb, bbbbbbbbb bbbbbbb bbbbbbbbbb bbb bbbbbb
+ * bb bbb, bbbb, bbbbbb, bbbbb, bbbbbbb, bbbbbbbbbb, bbbbbbbbbb, bbb/bb bbbb
+ * bbbbbb bb bbb Bbbbbbbb, bbb bb bbbbbb bbbbbbb bb bbbb bbb Bbbbbbbb bb
+ * bbbbbbbbb bb bb bb, bbbbbbb bb bbb bbbbbbbbb bbbbbbbbbb:
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * Bbb bbbbb bbbbbbbbb bbbbbb bbb bbbb bbbbbbbbbb bbbbbb bbbbb bb bbbbbbbb bb
+ * bbb bbbbbb bb bbbbbbbbbbb bbbbbbbb bb bbb Bbbbbbbb.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * BBB BBBBBBBB BB BBBBBBBB "BB BB", BBBBBBB BBBBBBBB BB BBB BBBB, BBBBBBB BB
+ * BBBBBBB, BBBBBBBBB BBB BBB BBBBBBB BB BBB BBBBBBBBBB BB BBBBBBBBBBBBBBB,
+ * BBBBBBB BBB B BBBBBBBBBB BBBBBBB BBB BBBBBBBBBBBBBBB. BB BB BBBBB BBBBB BBB
+ * BBBBBBB BB BBBBBBBBB BBBBBBB BB BBBBBB BBB BBB BBBBB, BBBBBBB BB BBBBB
+ * BBBBBBBBB, BBBBBBB BB BB BBBBBB BB BBBBBBBB, BBBB BB BBBBBBBBB, BBBBBBB BBBB,
+ * BBB BB BB BB BBBBBBBBBB BBBB BBB BBBBBBBB BB BBB BBB BB BBBBB BBBBBBBB BB
+ * BBB BBBBBBBB.
  *
  */
 
-package net.impactdev.gts.common.adventure.processors.gradients;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbb.bbbbbbbbb;
 
-import com.google.gson.reflect.TypeToken;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
+bbbbbb bbb.bbbbbb.bbbb.bbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.BbbbBbbbb;
 
-import java.util.function.Function;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class NumberBasedGradientProcessor<T extends Number> extends GradientProcessor<T> {
+bbbbbb bbbbb BbbbbbBbbbbBbbbbbbbBbbbbbbbb<B bbbbbbb Bbbbbb> bbbbbbb BbbbbbbbBbbbbbbbb<B> {
 
-    private final Function<T, Component> translator;
-    private final Function<T, Float> factor;
-    private final int min;
-    private final int max;
+    bbbbbbb bbbbb Bbbbbbbb<B, Bbbbbbbbb> bbbbbbbbbb;
+    bbbbbbb bbbbb Bbbbbbbb<B, Bbbbb> bbbbbb;
+    bbbbbbb bbbbb bbb bbb;
+    bbbbbbb bbbbb bbb bbb;
 
-    private NumberBasedGradientProcessor(NumberBasedGradientProcessorBuilder<T> builder) {
-        super(builder);
-        this.translator = builder.translator;
-        this.factor = builder.factor;
-        this.min = builder.min;
-        this.max = builder.max;
+    bbbbbbb BbbbbbBbbbbBbbbbbbbBbbbbbbbb(BbbbbbBbbbbBbbbbbbbBbbbbbbbbBbbbbbb<B> bbbbbbb) {
+        bbbbb(bbbbbbb);
+        bbbb.bbbbbbbbbb = bbbbbbb.bbbbbbbbbb;
+        bbbb.bbbbbb = bbbbbbb.bbbbbb;
+        bbbb.bbb = bbbbbbb.bbb;
+        bbbb.bbb = bbbbbbb.bbb;
     }
 
-    public static <T extends Number> NumberBasedGradientProcessorBuilder<T> builder() {
-        return new NumberBasedGradientProcessorBuilder<>();
+    bbbbbb bbbbbb <B bbbbbbb Bbbbbb> BbbbbbBbbbbBbbbbbbbBbbbbbbbbBbbbbbb<B> bbbbbbb() {
+        bbbbbb bbb BbbbbbBbbbbBbbbbbbbBbbbbbbbbBbbbbbb<>();
     }
 
-    @Override
-    public Component process(T input) {
-        double value = input.doubleValue();
-        Component working = translator.apply(input);
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbbb bbbbbbb(B bbbbb) {
+        bbbbbb bbbbb = bbbbb.bbbbbbBbbbb();
+        Bbbbbbbbb bbbbbbb = bbbbbbbbbb.bbbbb(bbbbb);
 
-        if(value <= this.min) {
-            working = working.color(this.colors.getFirst());
-        } else if(value >= this.max) {
-            working = working.color(this.colors.getLast());
-        } else {
-            float factor = this.factor.apply(input);
+        bb(bbbbb <= bbbb.bbb) {
+            bbbbbbb = bbbbbbb.bbbbb(bbbb.bbbbbb.bbbBbbbb());
+        } bbbb bb(bbbbb >= bbbb.bbb) {
+            bbbbbbb = bbbbbbb.bbbbb(bbbb.bbbbbb.bbbBbbb());
+        } bbbb {
+            bbbbb bbbbbb = bbbb.bbbbbb.bbbbb(bbbbb);
 
-            TextColor first = this.colors.getFirst();
-            TextColor last = this.colors.getLast();
+            BbbbBbbbb bbbbb = bbbb.bbbbbb.bbbBbbbb();
+            BbbbBbbbb bbbb = bbbb.bbbbbb.bbbBbbb();
 
-            TextColor color = TextColor.color(
-                    Math.round(first.red() + factor * (last.red() - first.red())),
-                    Math.round(first.green() + factor * (last.green() - first.green())),
-                    Math.round(first.blue() + factor * (last.blue() - first.blue()))
+            BbbbBbbbb bbbbb = BbbbBbbbb.bbbbb(
+                    Bbbb.bbbbb(bbbbb.bbb() + bbbbbb * (bbbb.bbb() - bbbbb.bbb())),
+                    Bbbb.bbbbb(bbbbb.bbbbb() + bbbbbb * (bbbb.bbbbb() - bbbbb.bbbbb())),
+                    Bbbb.bbbbb(bbbbb.bbbb() + bbbbbb * (bbbb.bbbb() - bbbbb.bbbb()))
             );
-            working = working.color(color);
+            bbbbbbb = bbbbbbb.bbbbb(bbbbb);
         }
 
-        return working;
+        bbbbbb bbbbbbb;
     }
 
-    public static class NumberBasedGradientProcessorBuilder<T extends Number> extends GradientProcessorBuilder<NumberBasedGradientProcessor<T>> {
+    bbbbbb bbbbbb bbbbb BbbbbbBbbbbBbbbbbbbBbbbbbbbbBbbbbbb<B bbbbbbb Bbbbbb> bbbbbbb BbbbbbbbBbbbbbbbbBbbbbbb<BbbbbbBbbbbBbbbbbbbBbbbbbbbb<B>> {
 
-        private Function<T, Component> translator;
-        private Function<T, Float> factor;
-        private int min;
-        private int max;
+        bbbbbbb Bbbbbbbb<B, Bbbbbbbbb> bbbbbbbbbb;
+        bbbbbbb Bbbbbbbb<B, Bbbbb> bbbbbb;
+        bbbbbbb bbb bbb;
+        bbbbbbb bbb bbb;
 
-        public <B extends Number> NumberBasedGradientProcessorBuilder<B> type(TypeToken<B> type) {
-            return new NumberBasedGradientProcessorBuilder<>();
+        bbbbbb <B bbbbbbb Bbbbbb> BbbbbbBbbbbBbbbbbbbBbbbbbbbbBbbbbbb<B> bbbb(BbbbBbbbb<B> bbbb) {
+            bbbbbb bbb BbbbbbBbbbbBbbbbbbbBbbbbbbbbBbbbbbb<>();
         }
 
-        public NumberBasedGradientProcessorBuilder<T> translator(Function<T, Component> translator) {
-            this.translator = translator;
-            return this;
+        bbbbbb BbbbbbBbbbbBbbbbbbbBbbbbbbbbBbbbbbb<B> bbbbbbbbbb(Bbbbbbbb<B, Bbbbbbbbb> bbbbbbbbbb) {
+            bbbb.bbbbbbbbbb = bbbbbbbbbb;
+            bbbbbb bbbb;
         }
 
-        public NumberBasedGradientProcessorBuilder<T> factor(Function<T, Float> factor) {
-            this.factor = factor;
-            return this;
+        bbbbbb BbbbbbBbbbbBbbbbbbbBbbbbbbbbBbbbbbb<B> bbbbbb(Bbbbbbbb<B, Bbbbb> bbbbbb) {
+            bbbb.bbbbbb = bbbbbb;
+            bbbbbb bbbb;
         }
 
-        public NumberBasedGradientProcessorBuilder<T> min(int min) {
-            this.min = min;
-            return this;
+        bbbbbb BbbbbbBbbbbBbbbbbbbBbbbbbbbbBbbbbbb<B> bbb(bbb bbb) {
+            bbbb.bbb = bbb;
+            bbbbbb bbbb;
         }
 
-        public NumberBasedGradientProcessorBuilder<T> max(int max) {
-            this.max = max;
-            return this;
+        bbbbbb BbbbbbBbbbbBbbbbbbbBbbbbbbbbBbbbbbb<B> bbb(bbb bbb) {
+            bbbb.bbb = bbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public NumberBasedGradientProcessor<T> build() {
-            return new NumberBasedGradientProcessor<>(this);
+        @Bbbbbbbb
+        bbbbbb BbbbbbBbbbbBbbbbbbbBbbbbbbbb<B> bbbbb() {
+            bbbbbb bbb BbbbbbBbbbbBbbbbbbbBbbbbbbbb<>(bbbb);
         }
 
     }

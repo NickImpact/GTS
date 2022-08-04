@@ -1,449 +1,449 @@
-package net.impactdev.gts.common.messaging.messages.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.util.TriState;
-import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.builders.Builder;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public abstract class ClaimMessageImpl extends AbstractMessage implements ClaimMessage {
+bbbbbb bbbbbbbb bbbbb BbbbbBbbbbbbBbbb bbbbbbb BbbbbbbbBbbbbbb bbbbbbbbbb BbbbbBbbbbbb {
 
-    protected final UUID listing;
-    protected final UUID actor;
-    protected final UUID receiver;
-    protected final boolean auction;
+    bbbbbbbbb bbbbb BBBB bbbbbbb;
+    bbbbbbbbb bbbbb BBBB bbbbb;
+    bbbbbbbbb bbbbb BBBB bbbbbbbb;
+    bbbbbbbbb bbbbb bbbbbbb bbbbbbb;
 
-    protected ClaimMessageImpl(UUID id, UUID listing, UUID actor, @Nullable UUID receiver, boolean auction) {
-        super(id);
-        this.listing = listing;
-        this.actor = actor;
-        this.receiver = receiver;
-        this.auction = auction;
+    bbbbbbbbb BbbbbBbbbbbbBbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbb, @Bbbbbbbb BBBB bbbbbbbb, bbbbbbb bbbbbbb) {
+        bbbbb(bb);
+        bbbb.bbbbbbb = bbbbbbb;
+        bbbb.bbbbb = bbbbb;
+        bbbb.bbbbbbbb = bbbbbbbb;
+        bbbb.bbbbbbb = bbbbbbb;
     }
 
-    @Override
-    public @NonNull UUID getListingID() {
-        return this.listing;
+    @Bbbbbbbb
+    bbbbbb @BbbBbbb BBBB bbbBbbbbbbBB() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    @Override
-    public @NonNull UUID getActor() {
-        return this.actor;
+    @Bbbbbbbb
+    bbbbbb @BbbBbbb BBBB bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public Optional<UUID> getReceiver() {
-        return Optional.ofNullable(this.receiver);
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<BBBB> bbbBbbbbbbb() {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbbbb);
     }
 
-    @Override
-    public boolean isAuction() {
-        return this.auction;
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbBbbbbbb() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    @Override
-    public void print(PrettyPrinter printer) {
-        printer.kv("Message ID", this.getID())
-                .kv("Listing ID", this.listing)
-                .kv("Actor", this.actor)
-                .consume(p -> this.getReceiver().ifPresent(r -> p.kv("Receiver", r)))
-                .kv("Is Auction", this.auction);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+        bbbbbbb.bb("Bbbbbbb BB", bbbb.bbbBB())
+                .bb("Bbbbbbb BB", bbbb.bbbbbbb)
+                .bb("Bbbbb", bbbb.bbbbb)
+                .bbbbbbb(b -> bbbb.bbbBbbbbbbb().bbBbbbbbb(b -> b.bb("Bbbbbbbb", b)))
+                .bb("Bb Bbbbbbb", bbbb.bbbbbbb);
     }
 
-    public static class ClaimRequestImpl extends ClaimMessageImpl implements ClaimMessage.Request {
+    bbbbbb bbbbbb bbbbb BbbbbBbbbbbbBbbb bbbbbbb BbbbbBbbbbbbBbbb bbbbbbbbbb BbbbbBbbbbbb.Bbbbbbb {
 
-        public static final String TYPE = "Listing/Claim/Request";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "Bbbbbbb/Bbbbb/Bbbbbbb";
 
-        public static ClaimRequestImpl decode(@Nullable JsonElement content, UUID id) {
-            if (content == null) {
-                throw new IllegalStateException("Raw JSON data was null");
+        bbbbbb bbbbbb BbbbbBbbbbbbBbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            bb (bbbbbbb == bbbb) {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBBB bbbb bbb bbbb");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            BbbbBbbbbb bbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-            UUID listing = Optional.ofNullable(raw.get("listing"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            UUID receiver = Optional.ofNullable(raw.get("receiver"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElse(null);
-            boolean auction = Optional.ofNullable(raw.get("auction"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Failed to locate auction check field"));
-            return new ClaimRequestImpl(id, listing, actor, receiver, auction);
+            BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb BB"));
+            BBBB bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbb BB"));
+            BBBB bbbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbb(bbbb);
+            bbbbbbb bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb bbbbb bbbbb"));
+            bbbbbb bbb BbbbbBbbbbbbBbbb(bb, bbbbbbb, bbbbb, bbbbbbbb, bbbbbbb);
         }
 
-        public ClaimRequestImpl(UUID id, UUID listing, UUID actor, @Nullable UUID receiver, boolean auction) {
-            super(id, listing, actor, receiver, auction);
+        bbbbbb BbbbbBbbbbbbBbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbb, @Bbbbbbbb BBBB bbbbbbbb, bbbbbbb bbbbbbb) {
+            bbbbb(bb, bbbbbbb, bbbbb, bbbbbbbb, bbbbbbb);
         }
 
-        @Override
-        public CompletableFuture<ClaimMessage.Response> respond() {
-            // Divert to storage system to respond, there it should response with either the base
-            // response type, or one specifically meant for auctions
+        @Bbbbbbbb
+        bbbbbb BbbbbbbbbbbBbbbbb<BbbbbBbbbbbb.Bbbbbbbb> bbbbbbb() {
+            // Bbbbbb bb bbbbbbb bbbbbb bb bbbbbbb, bbbbb bb bbbbbb bbbbbbbb bbbb bbbbbb bbb bbbb
+            // bbbbbbbb bbbb, bb bbb bbbbbbbbbbbb bbbbb bbb bbbbbbbb
 
-            return GTSPlugin.instance().storage().processClaimRequest(this);
+            bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbBbbbbbb(bbbb);
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject()
-                            .add("listing", this.listing.toString())
-                            .add("actor", this.actor.toString())
-                            .consume(o -> {
-                                this.getReceiver().ifPresent(r -> o.add("receiver", r.toString()));
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb()
+                            .bbb("bbbbbbb", bbbb.bbbbbbb.bbBbbbbb())
+                            .bbb("bbbbb", bbbb.bbbbb.bbBbbbbb())
+                            .bbbbbbb(b -> {
+                                bbbb.bbbBbbbbbbb().bbBbbbbbb(b -> b.bbb("bbbbbbbb", b.bbBbbbbb()));
                             })
-                            .add("auction", this.auction)
-                            .toJson()
+                            .bbb("bbbbbbb", bbbb.bbbbbbb)
+                            .bbBbbb()
             );
         }
     }
 
-    public static class ClaimResponseImpl extends ClaimMessageImpl implements ClaimMessage.Response {
+    bbbbbb bbbbbb bbbbb BbbbbBbbbbbbbBbbb bbbbbbb BbbbbBbbbbbbBbbb bbbbbbbbbb BbbbbBbbbbbb.Bbbbbbbb {
 
-        public static final String TYPE = "Listing/Claim/Response";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "Bbbbbbb/Bbbbb/Bbbbbbbb";
 
-        public static ClaimMessage.Response decode(@Nullable JsonElement content, UUID id) {
-            if (content == null) {
-                throw new IllegalStateException("Raw JSON data was null");
+        bbbbbb bbbbbb BbbbbBbbbbbb.Bbbbbbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            bb (bbbbbbb == bbbb) {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBBB bbbb bbb bbbb");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            BbbbBbbbbb bbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-            UUID request = Optional.ofNullable(raw.get("request"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-            UUID listing = Optional.ofNullable(raw.get("listing"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            UUID receiver = Optional.ofNullable(raw.get("receiver"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElse(null);
-            boolean auction = Optional.ofNullable(raw.get("auction"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Failed to locate auction check field"));
+            BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bb bbbbb bbbbbbb BB"));
+            BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb BB"));
+            BBBB bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbb BB"));
+            BBBB bbbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbb(bbbb);
+            bbbbbbb bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb bbbbb bbbbb"));
 
-            boolean successful = Optional.ofNullable(raw.get("successful"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Failed to locate successful status"));
-            ErrorCode error = Optional.ofNullable(raw.get("error"))
-                    .map(x -> ErrorCodes.get(x.getAsInt()))
-                    .orElse(null);
+            bbbbbbb bbbbbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbbbbb"))
+                    .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbbbbb bbbbbb"));
+            BbbbbBbbb bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BbbbbBbbbb.bbb(b.bbbBbBbb()))
+                    .bbBbbb(bbbb);
 
-            ClaimResponseBuilder builder = ClaimResponseImpl.builder()
-                    .id(id)
-                    .request(request)
-                    .listing(listing)
-                    .actor(actor)
-                    .receiver(receiver)
-                    .error(error);
-            if(successful) {
-                builder.successful();
+            BbbbbBbbbbbbbBbbbbbb bbbbbbb = BbbbbBbbbbbbbBbbb.bbbbbbb()
+                    .bb(bb)
+                    .bbbbbbb(bbbbbbb)
+                    .bbbbbbb(bbbbbbb)
+                    .bbbbb(bbbbb)
+                    .bbbbbbbb(bbbbbbbb)
+                    .bbbbb(bbbbb);
+            bb(bbbbbbbbbb) {
+                bbbbbbb.bbbbbbbbbb();
             }
 
-            if(auction) {
-                AuctionClaimResponseImpl.AuctionClaimResponseBuilder auc = AuctionClaimResponseImpl.builder().from(builder.build());
+            bb(bbbbbbb) {
+                BbbbbbbBbbbbBbbbbbbbBbbb.BbbbbbbBbbbbBbbbbbbbBbbbbbb bbb = BbbbbbbBbbbbBbbbbbbbBbbb.bbbbbbb().bbbb(bbbbbbb.bbbbb());
 
-                boolean lister = Optional.ofNullable(raw.get("lister"))
-                        .map(JsonElement::getAsBoolean)
-                        .orElseThrow(() -> new IllegalStateException("Failed to locate lister status"));
-                boolean winner = Optional.ofNullable(raw.get("winner"))
-                        .map(JsonElement::getAsBoolean)
-                        .orElseThrow(() -> new IllegalStateException("Failed to locate winner status"));
-                Map<UUID, Boolean> others = Optional.ofNullable(raw.get("others"))
-                        .map(element -> {
-                            Map<UUID, Boolean> result = Maps.newHashMap();
-                            JsonArray array = element.getAsJsonArray();
-                            for(JsonElement entry : array) {
-                                entry.getAsJsonObject().entrySet().forEach(e -> {
-                                    result.put(UUID.fromString(e.getKey()), e.getValue().getAsBoolean());
+                bbbbbbb bbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbb"))
+                        .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                        .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbb bbbbbb"));
+                bbbbbbb bbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbb"))
+                        .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                        .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbb bbbbbb"));
+                Bbb<BBBB, Bbbbbbb> bbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbb"))
+                        .bbb(bbbbbbb -> {
+                            Bbb<BBBB, Bbbbbbb> bbbbbb = Bbbb.bbbBbbbBbb();
+                            BbbbBbbbb bbbbb = bbbbbbb.bbbBbBbbbBbbbb();
+                            bbb(BbbbBbbbbbb bbbbb : bbbbb) {
+                                bbbbb.bbbBbBbbbBbbbbb().bbbbbBbb().bbbBbbb(b -> {
+                                    bbbbbb.bbb(BBBB.bbbbBbbbbb(b.bbbBbb()), b.bbbBbbbb().bbbBbBbbbbbb());
                                 });
                             }
 
-                            return result;
+                            bbbbbb bbbbbb;
                         })
-                        .orElseThrow(() -> new IllegalStateException("Failed to locate others status"));
+                        .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbb bbbbbb"));
 
-                return auc.lister(lister).winner(winner).others(others).build();
-            } else {
-                return builder.build();
+                bbbbbb bbb.bbbbbb(bbbbbb).bbbbbb(bbbbbb).bbbbbb(bbbbbb).bbbbb();
+            } bbbb {
+                bbbbbb bbbbbbb.bbbbb();
             }
         }
 
-        protected final UUID request;
+        bbbbbbbbb bbbbb BBBB bbbbbbb;
 
-        protected final boolean successful;
-        protected final ErrorCode error;
+        bbbbbbbbb bbbbb bbbbbbb bbbbbbbbbb;
+        bbbbbbbbb bbbbb BbbbbBbbb bbbbb;
 
-        protected long responseTime;
+        bbbbbbbbb bbbb bbbbbbbbBbbb;
 
-        public ClaimResponseImpl(ClaimResponseBuilder builder) {
-            super(builder.id, builder.listing, builder.actor, builder.actor, builder instanceof AuctionClaimResponseImpl.AuctionClaimResponseBuilder);
-            this.request = builder.request;
-            this.successful = builder.successful;
-            this.error = builder.error;
+        bbbbbb BbbbbBbbbbbbbBbbb(BbbbbBbbbbbbbBbbbbbb bbbbbbb) {
+            bbbbb(bbbbbbb.bb, bbbbbbb.bbbbbbb, bbbbbbb.bbbbb, bbbbbbb.bbbbb, bbbbbbb bbbbbbbbbb BbbbbbbBbbbbBbbbbbbbBbbb.BbbbbbbBbbbbBbbbbbbbBbbbbbb);
+            bbbb.bbbbbbb = bbbbbbb.bbbbbbb;
+            bbbb.bbbbbbbbbb = bbbbbbb.bbbbbbbbbb;
+            bbbb.bbbbb = bbbbbbb.bbbbb;
         }
 
-        @Override
-        public UUID getRequestID() {
-            return this.request;
+        @Bbbbbbbb
+        bbbbbb BBBB bbbBbbbbbbBB() {
+            bbbbbb bbbb.bbbbbbb;
         }
 
-        @Override
-        public long getResponseTime() {
-            return this.responseTime;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb() {
+            bbbbbb bbbb.bbbbbbbbBbbb;
         }
 
-        @Override
-        public void setResponseTime(long millis) {
-            this.responseTime = millis;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb(bbbb bbbbbb) {
+            bbbb.bbbbbbbbBbbb = bbbbbb;
         }
 
-        @Override
-        public boolean wasSuccessful() {
-            return this.successful;
+        @Bbbbbbbb
+        bbbbbb bbbbbbb bbbBbbbbbbbbb() {
+            bbbbbb bbbb.bbbbbbbbbb;
         }
 
-        @Override
-        public Optional<ErrorCode> getErrorCode() {
-            return Optional.ofNullable(this.error);
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbb<BbbbbBbbb> bbbBbbbbBbbb() {
+            bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbb);
         }
 
-        @Override
-        public void print(PrettyPrinter printer) {
-            super.print(printer);
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+            bbbbb.bbbbb(bbbbbbb);
 
-            printer.newline().kv("Request ID", this.request);
+            bbbbbbb.bbbbbbb().bb("Bbbbbbb BB", bbbb.bbbbbbb);
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject()
-                            .add("request", this.getRequestID().toString())
-                            .add("listing", this.listing.toString())
-                            .add("actor", this.actor.toString())
-                            .consume(o -> {
-                                this.getReceiver().ifPresent(r -> o.add("receiver", r.toString()));
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb()
+                            .bbb("bbbbbbb", bbbb.bbbBbbbbbbBB().bbBbbbbb())
+                            .bbb("bbbbbbb", bbbb.bbbbbbb.bbBbbbbb())
+                            .bbb("bbbbb", bbbb.bbbbb.bbBbbbbb())
+                            .bbbbbbb(b -> {
+                                bbbb.bbbBbbbbbbb().bbBbbbbbb(b -> b.bbb("bbbbbbbb", b.bbBbbbbb()));
                             })
-                            .add("auction", this.auction)
-                            .add("successful", this.successful)
-                            .consume(o -> this.getErrorCode().ifPresent(e -> o.add("error", e.ordinal())))
-                            .toJson()
+                            .bbb("bbbbbbb", bbbb.bbbbbbb)
+                            .bbb("bbbbbbbbbb", bbbb.bbbbbbbbbb)
+                            .bbbbbbb(b -> bbbb.bbbBbbbbBbbb().bbBbbbbbb(b -> b.bbb("bbbbb", b.bbbbbbb())))
+                            .bbBbbb()
             );
         }
 
-        public static final class AuctionClaimResponseImpl extends ClaimResponseImpl implements ClaimMessage.Response.AuctionResponse {
+        bbbbbb bbbbbb bbbbb bbbbb BbbbbbbBbbbbBbbbbbbbBbbb bbbbbbb BbbbbBbbbbbbbBbbb bbbbbbbbbb BbbbbBbbbbbb.Bbbbbbbb.BbbbbbbBbbbbbbb {
 
-            private final boolean lister;
-            private final boolean winner;
+            bbbbbbb bbbbb bbbbbbb bbbbbb;
+            bbbbbbb bbbbb bbbbbbb bbbbbb;
 
-            private final Map<UUID, Boolean> others;
+            bbbbbbb bbbbb Bbb<BBBB, Bbbbbbb> bbbbbb;
 
-            public AuctionClaimResponseImpl(AuctionClaimResponseBuilder builder) {
-                super(builder);
-                this.lister = builder.lister;
-                this.winner = builder.winner;
-                this.others = builder.others;
+            bbbbbb BbbbbbbBbbbbBbbbbbbbBbbb(BbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbb) {
+                bbbbb(bbbbbbb);
+                bbbb.bbbbbb = bbbbbbb.bbbbbb;
+                bbbb.bbbbbb = bbbbbbb.bbbbbb;
+                bbbb.bbbbbb = bbbbbbb.bbbbbb;
             }
 
-            @Override
-            public boolean hasListerClaimed() {
-                return this.lister;
+            @Bbbbbbbb
+            bbbbbb bbbbbbb bbbBbbbbbBbbbbbb() {
+                bbbbbb bbbb.bbbbbb;
             }
 
-            @Override
-            public boolean hasWinnerClaimed() {
-                return this.winner;
+            @Bbbbbbbb
+            bbbbbb bbbbbbb bbbBbbbbbBbbbbbb() {
+                bbbbbb bbbb.bbbbbb;
             }
 
-            @Override
-            public TriState hasOtherBidderClaimed(UUID uuid) {
-                return Optional.ofNullable(this.others.get(uuid))
-                        .map(TriState::fromBoolean)
-                        .orElse(TriState.UNDEFINED);
+            @Bbbbbbbb
+            bbbbbb BbbBbbbb bbbBbbbbBbbbbbBbbbbbb(BBBB bbbb) {
+                bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbb.bbb(bbbb))
+                        .bbb(BbbBbbbb::bbbbBbbbbbb)
+                        .bbBbbb(BbbBbbbb.BBBBBBBBB);
             }
 
-            @Override
-            public List<UUID> getAllOtherClaimers() {
-                return Lists.newArrayList(this.others.keySet());
+            @Bbbbbbbb
+            bbbbbb Bbbb<BBBB> bbbBbbBbbbbBbbbbbbb() {
+                bbbbbb Bbbbb.bbbBbbbbBbbb(bbbb.bbbbbb.bbbBbb());
             }
 
-            @Override
-            public void print(PrettyPrinter printer) {
-                super.print(printer);
-                printer.newline();
-                printer.add("Lister Claimed: " + this.lister);
-                printer.add("Winner Claimed: " + this.winner);
-                printer.add("Others:");
-                for(UUID id : this.others.keySet()) {
-                    printer.add("  - " + id.toString());
+            @Bbbbbbbb
+            bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+                bbbbb.bbbbb(bbbbbbb);
+                bbbbbbb.bbbbbbb();
+                bbbbbbb.bbb("Bbbbbb Bbbbbbb: " + bbbb.bbbbbb);
+                bbbbbbb.bbb("Bbbbbb Bbbbbbb: " + bbbb.bbbbbb);
+                bbbbbbb.bbb("Bbbbbb:");
+                bbb(BBBB bb : bbbb.bbbbbb.bbbBbb()) {
+                    bbbbbbb.bbb("  - " + bb.bbBbbbbb());
 
                 }
             }
 
-            @Override
-            public @NonNull String asEncodedString() {
-                return GTSMessagingService.encodeMessageAsString(
-                        TYPE,
-                        this.getID(),
-                        new JObject()
-                                .add("request", this.getRequestID().toString())
-                                .add("listing", this.listing.toString())
-                                .add("actor", this.actor.toString())
-                                .consume(o -> {
-                                    this.getReceiver().ifPresent(r -> o.add("receiver", r.toString()));
+            @Bbbbbbbb
+            bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+                bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                        BBBB,
+                        bbbb.bbbBB(),
+                        bbb BBbbbbb()
+                                .bbb("bbbbbbb", bbbb.bbbBbbbbbbBB().bbBbbbbb())
+                                .bbb("bbbbbbb", bbbb.bbbbbbb.bbBbbbbb())
+                                .bbb("bbbbb", bbbb.bbbbb.bbBbbbbb())
+                                .bbbbbbb(b -> {
+                                    bbbb.bbbBbbbbbbb().bbBbbbbbb(b -> b.bbb("bbbbbbbb", b.bbBbbbbb()));
                                 })
-                                .add("auction", this.auction)
-                                .add("lister", this.lister)
-                                .add("winner", this.winner)
-                                .consume(o -> {
-                                    JArray others = new JArray();
-                                    this.others.forEach((user, state) -> {
-                                        others.add(new JObject().add(user.toString(), state));
+                                .bbb("bbbbbbb", bbbb.bbbbbbb)
+                                .bbb("bbbbbb", bbbb.bbbbbb)
+                                .bbb("bbbbbb", bbbb.bbbbbb)
+                                .bbbbbbb(b -> {
+                                    BBbbbb bbbbbb = bbb BBbbbb();
+                                    bbbb.bbbbbb.bbbBbbb((bbbb, bbbbb) -> {
+                                        bbbbbb.bbb(bbb BBbbbbb().bbb(bbbb.bbBbbbbb(), bbbbb));
                                     });
-                                    o.add("others", others);
+                                    b.bbb("bbbbbb", bbbbbb);
                                 })
-                                .add("successful", this.successful)
-                                .consume(o -> this.getErrorCode().ifPresent(e -> o.add("error", e.ordinal())))
-                                .toJson()
+                                .bbb("bbbbbbbbbb", bbbb.bbbbbbbbbb)
+                                .bbbbbbb(b -> bbbb.bbbBbbbbBbbb().bbBbbbbbb(b -> b.bbb("bbbbb", b.bbbbbbb())))
+                                .bbBbbb()
                 );
             }
 
-            public static AuctionClaimResponseBuilder builder() {
-                return new AuctionClaimResponseBuilder();
+            bbbbbb bbbbbb BbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbb() {
+                bbbbbb bbb BbbbbbbBbbbbBbbbbbbbBbbbbbb();
             }
 
-            public static final class AuctionClaimResponseBuilder extends ClaimResponseBuilder {
+            bbbbbb bbbbbb bbbbb bbbbb BbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbb BbbbbBbbbbbbbBbbbbbb {
 
-                private boolean lister;
-                private boolean winner;
+                bbbbbbb bbbbbbb bbbbbb;
+                bbbbbbb bbbbbbb bbbbbb;
 
-                private Map<UUID, Boolean> others = Maps.newHashMap();
+                bbbbbbb Bbb<BBBB, Bbbbbbb> bbbbbb = Bbbb.bbbBbbbBbb();
 
-                public AuctionClaimResponseBuilder lister(boolean state) {
-                    this.lister = state;
-                    return this;
+                bbbbbb BbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbb(bbbbbbb bbbbb) {
+                    bbbb.bbbbbb = bbbbb;
+                    bbbbbb bbbb;
                 }
 
-                public AuctionClaimResponseBuilder winner(boolean state) {
-                    this.winner = state;
-                    return this;
+                bbbbbb BbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbb(bbbbbbb bbbbb) {
+                    bbbb.bbbbbb = bbbbb;
+                    bbbbbb bbbb;
                 }
 
-                public AuctionClaimResponseBuilder others(Map<UUID, Boolean> others) {
-                    this.others = others;
-                    return this;
+                bbbbbb BbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbb(Bbb<BBBB, Bbbbbbb> bbbbbb) {
+                    bbbb.bbbbbb = bbbbbb;
+                    bbbbbb bbbb;
                 }
 
-                public AuctionClaimResponseBuilder from(ClaimMessage.Response response) {
-                    this.id = response.getID();
-                    this.listing = response.getListingID();
-                    this.actor = response.getActor();
-                    this.receiver = response.getReceiver().orElse(null);
+                bbbbbb BbbbbbbBbbbbBbbbbbbbBbbbbbb bbbb(BbbbbBbbbbbb.Bbbbbbbb bbbbbbbb) {
+                    bbbb.bb = bbbbbbbb.bbbBB();
+                    bbbb.bbbbbbb = bbbbbbbb.bbbBbbbbbbBB();
+                    bbbb.bbbbb = bbbbbbbb.bbbBbbbb();
+                    bbbb.bbbbbbbb = bbbbbbbb.bbbBbbbbbbb().bbBbbb(bbbb);
 
-                    this.request = response.getRequestID();
-                    this.successful = response.wasSuccessful();
-                    this.error = response.getErrorCode().orElse(null);
+                    bbbb.bbbbbbb = bbbbbbbb.bbbBbbbbbbBB();
+                    bbbb.bbbbbbbbbb = bbbbbbbb.bbbBbbbbbbbbb();
+                    bbbb.bbbbb = bbbbbbbb.bbbBbbbbBbbb().bbBbbb(bbbb);
 
-                    return this;
+                    bbbbbb bbbb;
                 }
 
-                @Override
-                public AuctionClaimResponseImpl build() {
-                    return new AuctionClaimResponseImpl(this);
+                @Bbbbbbbb
+                bbbbbb BbbbbbbBbbbbBbbbbbbbBbbb bbbbb() {
+                    bbbbbb bbb BbbbbbbBbbbbBbbbbbbbBbbb(bbbb);
                 }
 
             }
         }
 
-        public static ClaimResponseBuilder builder() {
-            return new ClaimResponseBuilder();
+        bbbbbb bbbbbb BbbbbBbbbbbbbBbbbbbb bbbbbbb() {
+            bbbbbb bbb BbbbbBbbbbbbbBbbbbbb();
         }
 
-        public static class ClaimResponseBuilder implements Builder<ClaimMessage.Response> {
+        bbbbbb bbbbbb bbbbb BbbbbBbbbbbbbBbbbbbb bbbbbbbbbb Bbbbbbb<BbbbbBbbbbbb.Bbbbbbbb> {
 
-            protected UUID id;
-            protected UUID listing;
-            protected UUID actor;
-            protected UUID receiver;
+            bbbbbbbbb BBBB bb;
+            bbbbbbbbb BBBB bbbbbbb;
+            bbbbbbbbb BBBB bbbbb;
+            bbbbbbbbb BBBB bbbbbbbb;
 
-            protected UUID request;
-            protected boolean successful;
-            protected ErrorCode error;
+            bbbbbbbbb BBBB bbbbbbb;
+            bbbbbbbbb bbbbbbb bbbbbbbbbb;
+            bbbbbbbbb BbbbbBbbb bbbbb;
 
-            public ClaimResponseBuilder id(UUID id) {
-                this.id = id;
-                return this;
+            bbbbbb BbbbbBbbbbbbbBbbbbbb bb(BBBB bb) {
+                bbbb.bb = bb;
+                bbbbbb bbbb;
             }
 
-            public ClaimResponseBuilder listing(UUID listing) {
-                this.listing = listing;
-                return this;
+            bbbbbb BbbbbBbbbbbbbBbbbbbb bbbbbbb(BBBB bbbbbbb) {
+                bbbb.bbbbbbb = bbbbbbb;
+                bbbbbb bbbb;
             }
 
-            public ClaimResponseBuilder actor(UUID actor) {
-                this.actor = actor;
-                return this;
+            bbbbbb BbbbbBbbbbbbbBbbbbbb bbbbb(BBBB bbbbb) {
+                bbbb.bbbbb = bbbbb;
+                bbbbbb bbbb;
             }
 
-            public ClaimResponseBuilder receiver(UUID receiver) {
-                this.receiver = receiver;
-                return this;
+            bbbbbb BbbbbBbbbbbbbBbbbbbb bbbbbbbb(BBBB bbbbbbbb) {
+                bbbb.bbbbbbbb = bbbbbbbb;
+                bbbbbb bbbb;
             }
 
-            public AuctionClaimResponseImpl.AuctionClaimResponseBuilder auction() {
-                return AuctionClaimResponseImpl.builder().from(this.build());
+            bbbbbb BbbbbbbBbbbbBbbbbbbbBbbb.BbbbbbbBbbbbBbbbbbbbBbbbbbb bbbbbbb() {
+                bbbbbb BbbbbbbBbbbbBbbbbbbbBbbb.bbbbbbb().bbbb(bbbb.bbbbb());
             }
 
-            public ClaimResponseBuilder request(UUID request) {
-                this.request = request;
-                return this;
+            bbbbbb BbbbbBbbbbbbbBbbbbbb bbbbbbb(BBBB bbbbbbb) {
+                bbbb.bbbbbbb = bbbbbbb;
+                bbbbbb bbbb;
             }
 
-            public ClaimResponseBuilder successful() {
-                this.successful = true;
-                return this;
+            bbbbbb BbbbbBbbbbbbbBbbbbbb bbbbbbbbbb() {
+                bbbb.bbbbbbbbbb = bbbb;
+                bbbbbb bbbb;
             }
 
-            public ClaimResponseBuilder error(ErrorCode error) {
-                this.error = error;
-                return this;
+            bbbbbb BbbbbBbbbbbbbBbbbbbb bbbbb(BbbbbBbbb bbbbb) {
+                bbbb.bbbbb = bbbbb;
+                bbbbbb bbbb;
             }
 
-            @Override
-            public ClaimResponseImpl build() {
-                return new ClaimResponseImpl(this);
+            @Bbbbbbbb
+            bbbbbb BbbbbBbbbbbbbBbbb bbbbb() {
+                bbbbbb bbb BbbbbBbbbbbbbBbbb(bbbb);
             }
         }
     }

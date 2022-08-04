@@ -1,54 +1,54 @@
-package net.impactdev.gts.api.data.registry;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb;
 
-import net.impactdev.gts.api.data.ResourceManager;
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.entries.EntryManager;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.api.listings.prices.PriceManager;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.BbbbbBbbbbbb;
 
-import java.util.Map;
-import java.util.Optional;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-public interface GTSComponentManager {
+bbbbbb bbbbbbbbb BBBBbbbbbbbbBbbbbbb {
 
-    // Listings
+    // Bbbbbbbb
 
-    <T extends Listing> void registerListingResourceManager(Class<T> type, ResourceManager<T> resource);
+    <B bbbbbbb Bbbbbbb> bbbb bbbbbbbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbb<B> bbbb, BbbbbbbbBbbbbbb<B> bbbbbbbb);
 
-    <T extends Listing> Optional<ResourceManager<T>> getListingResourceManager(Class<T> type);
+    <B bbbbbbb Bbbbbbb> Bbbbbbbb<BbbbbbbbBbbbbbb<B>> bbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbb<B> bbbb);
 
-    Map<Class<? extends Listing>, ResourceManager<? extends Listing>> getAllListingResourceManagers();
+    Bbb<Bbbbb<? bbbbbbb Bbbbbbb>, BbbbbbbbBbbbbbb<? bbbbbbb Bbbbbbb>> bbbBbbBbbbbbbBbbbbbbbBbbbbbbb();
 
-    // Deliveries
-    Storable.Deserializer<Delivery> getDeliveryDeserializer();
+    // Bbbbbbbbbb
+    Bbbbbbbb.Bbbbbbbbbbbb<Bbbbbbbb> bbbBbbbbbbbBbbbbbbbbbbb();
 
-    // Entries
+    // Bbbbbbb
 
-    <T extends Entry<?, ?>> void registerEntryManager(Class<T> type, EntryManager<T> manager);
+    <B bbbbbbb Bbbbb<?, ?>> bbbb bbbbbbbbBbbbbBbbbbbb(Bbbbb<B> bbbb, BbbbbBbbbbbb<B> bbbbbbb);
 
-    <T extends Entry<?, ?>> Optional<EntryManager<T>> getEntryManager(String key);
+    <B bbbbbbb Bbbbb<?, ?>> Bbbbbbbb<BbbbbBbbbbbb<B>> bbbBbbbbBbbbbbb(Bbbbbb bbb);
 
-    Map<GTSKeyMarker, EntryManager<? extends Entry<?, ?>>> getAllEntryManagers();
+    Bbb<BBBBbbBbbbbb, BbbbbBbbbbbb<? bbbbbbb Bbbbb<?, ?>>> bbbBbbBbbbbBbbbbbbb();
 
-    // Prices
+    // Bbbbbb
 
-    <T extends Price<?, ?, ?>> void registerPriceManager(Class<T> type, PriceManager<T> resource);
+    <B bbbbbbb Bbbbb<?, ?, ?>> bbbb bbbbbbbbBbbbbBbbbbbb(Bbbbb<B> bbbb, BbbbbBbbbbbb<B> bbbbbbbb);
 
-    <T extends Price<?, ?, ?>> Optional<PriceManager<? extends T>> getPriceManager(String key);
+    <B bbbbbbb Bbbbb<?, ?, ?>> Bbbbbbbb<BbbbbBbbbbbb<? bbbbbbb B>> bbbBbbbbBbbbbbb(Bbbbbb bbb);
 
-    Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>>> getAllPriceManagers();
+    Bbb<BBBBbbBbbbbb, BbbbbBbbbbbb<? bbbbbbb Bbbbb<?, ?, ?>>> bbbBbbBbbbbBbbbbbbb();
 
-    DeserializerRegistry getDeserializerRegistry();
+    BbbbbbbbbbbbBbbbbbbb bbbBbbbbbbbbbbbBbbbbbbb();
 
-    // Legacy
+    // Bbbbbb
 
-    @Deprecated
-    <T extends Entry<?, ?>> void registerLegacyEntryDeserializer(String key, Storable.Deserializer<T> deserializer);
+    @Bbbbbbbbbb
+    <B bbbbbbb Bbbbb<?, ?>> bbbb bbbbbbbbBbbbbbBbbbbBbbbbbbbbbbb(Bbbbbb bbb, Bbbbbbbb.Bbbbbbbbbbbb<B> bbbbbbbbbbbb);
 
-    @Deprecated
-    <T extends Entry<?, ?>> Optional<Storable.Deserializer<T>> getLegacyEntryDeserializer(String key);
+    @Bbbbbbbbbb
+    <B bbbbbbb Bbbbb<?, ?>> Bbbbbbbb<Bbbbbbbb.Bbbbbbbbbbbb<B>> bbbBbbbbbBbbbbBbbbbbbbbbbb(Bbbbbb bbb);
 
 }

@@ -1,64 +1,64 @@
-package net.impactdev.gts.api.player;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb;
 
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.builders.Builder;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
 
-import java.util.Map;
+bbbbbb bbbb.bbbb.Bbb;
 
-public interface PlayerSettings extends Storable {
+bbbbbb bbbbbbbbb BbbbbbBbbbbbbb bbbbbbb Bbbbbbbb {
 
-    static PlayerSettings create() {
-        return builder().build();
+    bbbbbb BbbbbbBbbbbbbb bbbbbb() {
+        bbbbbb bbbbbbb().bbbbb();
     }
 
-    boolean getListeningState(NotificationSetting setting);
+    bbbbbbb bbbBbbbbbbbbBbbbb(BbbbbbbbbbbbBbbbbbb bbbbbbb);
 
-    Map<NotificationSetting, Boolean> getListeningStates();
+    Bbb<BbbbbbbbbbbbBbbbbbb, Bbbbbbb> bbbBbbbbbbbbBbbbbb();
 
-    default PlayerSettings set(NotificationSetting setting, boolean mode) {
-        return builder().from(this).set(setting, mode).build();
+    bbbbbbb BbbbbbBbbbbbbb bbb(BbbbbbbbbbbbBbbbbbb bbbbbbb, bbbbbbb bbbb) {
+        bbbbbb bbbbbbb().bbbb(bbbb).bbb(bbbbbbb, bbbb).bbbbb();
     }
 
-    default boolean getPublishListenState() {
-        return this.getListeningState(NotificationSetting.Publish);
+    bbbbbbb bbbbbbb bbbBbbbbbbBbbbbbBbbbb() {
+        bbbbbb bbbb.bbbBbbbbbbbbBbbbb(BbbbbbbbbbbbBbbbbbb.Bbbbbbb);
     }
 
-    default boolean getSoldListenState() {
-        return this.getListeningState(NotificationSetting.Sold);
+    bbbbbbb bbbbbbb bbbBbbbBbbbbbBbbbb() {
+        bbbbbb bbbb.bbbBbbbbbbbbBbbbb(BbbbbbbbbbbbBbbbbbb.Bbbb);
     }
 
-    default boolean getBidListenState() {
-        return this.getListeningState(NotificationSetting.Bid);
+    bbbbbbb bbbbbbb bbbBbbBbbbbbBbbbb() {
+        bbbbbb bbbb.bbbBbbbbbbbbBbbbb(BbbbbbbbbbbbBbbbbbb.Bbb);
     }
 
-    default boolean getOutbidListenState() {
-        return this.getListeningState(NotificationSetting.Outbid);
+    bbbbbbb bbbbbbb bbbBbbbbbBbbbbbBbbbb() {
+        bbbbbb bbbb.bbbBbbbbbbbbBbbbb(BbbbbbbbbbbbBbbbbbb.Bbbbbb);
     }
 
-    default boolean matches(PlayerSettings other) {
-        return this.getPublishListenState() == other.getPublishListenState() &&
-                this.getSoldListenState() == other.getSoldListenState() &&
-                this.getBidListenState() == other.getBidListenState() &&
-                this.getOutbidListenState() == other.getOutbidListenState();
+    bbbbbbb bbbbbbb bbbbbbb(BbbbbbBbbbbbbb bbbbb) {
+        bbbbbb bbbb.bbbBbbbbbbBbbbbbBbbbb() == bbbbb.bbbBbbbbbbBbbbbbBbbbb() &&
+                bbbb.bbbBbbbBbbbbbBbbbb() == bbbbb.bbbBbbbBbbbbbBbbbb() &&
+                bbbb.bbbBbbBbbbbbBbbbb() == bbbbb.bbbBbbBbbbbbBbbbb() &&
+                bbbb.bbbBbbbbbBbbbbbBbbbb() == bbbbb.bbbBbbbbbBbbbbbBbbbb();
     }
 
-    static PlayerSettingsBuilder builder() {
-        return Impactor.getInstance().getRegistry().createBuilder(PlayerSettingsBuilder.class);
+    bbbbbb BbbbbbBbbbbbbbBbbbbbb bbbbbbb() {
+        bbbbbb Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbBbbbbbb(BbbbbbBbbbbbbbBbbbbbb.bbbbb);
     }
 
-    interface PlayerSettingsBuilder extends Builder<PlayerSettings> {
+    bbbbbbbbb BbbbbbBbbbbbbbBbbbbbb bbbbbbb Bbbbbbb<BbbbbbBbbbbbbb> {
 
         /**
-         * Applies the setting to the player's settings. All settings are considered on by default.
+         * Bbbbbbb bbb bbbbbbb bb bbb bbbbbb'b bbbbbbbb. Bbb bbbbbbbb bbb bbbbbbbbbb bb bb bbbbbbb.
          *
-         * @param setting The setting to set
-         * @param mode The mode we wish to set this setting to
-         * @return The builder after being modified by this request
+         * @bbbbb bbbbbbb Bbb bbbbbbb bb bbb
+         * @bbbbb bbbb Bbb bbbb bb bbbb bb bbb bbbb bbbbbbb bb
+         * @bbbbbb Bbb bbbbbbb bbbbb bbbbb bbbbbbbb bb bbbb bbbbbbb
          */
-        PlayerSettingsBuilder set(NotificationSetting setting, boolean mode);
+        BbbbbbBbbbbbbbBbbbbbb bbb(BbbbbbbbbbbbBbbbbbb bbbbbbb, bbbbbbb bbbb);
 
-        PlayerSettingsBuilder from(PlayerSettings parent);
+        BbbbbbBbbbbbbbBbbbbbb bbbb(BbbbbbBbbbbbbb bbbbbb);
 
     }
 }

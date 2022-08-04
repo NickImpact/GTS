@@ -1,52 +1,52 @@
-package net.impactdev.gts.ui.admin;
+bbbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbb;
 
-import net.impactdev.gts.api.maintenance.MaintenanceMode;
-import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.BbbbbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbbb;
 
-import java.util.function.Supplier;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class SpongeMaintenanceMenu {
+bbbbbb bbbbb BbbbbbBbbbbbbbbbbBbbb {
 
-    private PlatformPlayer viewer;
-    private ImpactorUI display;
+    bbbbbbb BbbbbbbbBbbbbb bbbbbb;
+    bbbbbbb BbbbbbbbBB bbbbbbb;
 
-    public SpongeMaintenanceMenu(ServerPlayer viewer) {
+    bbbbbb BbbbbbBbbbbbbbbbbBbbb(BbbbbbBbbbbb bbbbbb) {
 
     }
 
-    private Layout design() {
-        Layout.LayoutBuilder builder = Layout.builder().size(5);
-        builder.slots(ProvidedIcons.BORDER, 37, 38, 42, 43).columns(ProvidedIcons.BORDER, 0, 8);
+    bbbbbbb Bbbbbb bbbbbb() {
+        Bbbbbb.BbbbbbBbbbbbb bbbbbbb = Bbbbbb.bbbbbbb().bbbb(5);
+        bbbbbbb.bbbbb(BbbbbbbbBbbbb.BBBBBB, 37, 38, 42, 43).bbbbbbb(BbbbbbbbBbbbb.BBBBBB, 0, 8);
 
-        return builder.build();
+        bbbbbb bbbbbbb.bbbbb();
     }
 
-    private enum ItemTypeMapping {
+    bbbbbbb bbbb BbbbBbbbBbbbbbb {
 
-        ALL(MaintenanceMode.ALL, ItemTypes.ANVIL),
+        BBB(BbbbbbbbbbbBbbb.BBB, BbbbBbbbb.BBBBB),
 
         ;
 
-        private MaintenanceMode mode;
-        private Supplier<ItemType> type;
+        bbbbbbb BbbbbbbbbbbBbbb bbbb;
+        bbbbbbb Bbbbbbbb<BbbbBbbb> bbbb;
 
-        ItemTypeMapping(MaintenanceMode mode, Supplier<ItemType> type) {
-            this.mode = mode;
-            this.type = type;
+        BbbbBbbbBbbbbbb(BbbbbbbbbbbBbbb bbbb, Bbbbbbbb<BbbbBbbb> bbbb) {
+            bbbb.bbbb = bbbb;
+            bbbb.bbbb = bbbb;
         }
 
-        public MaintenanceMode getMode() {
-            return this.mode;
+        bbbbbb BbbbbbbbbbbBbbb bbbBbbb() {
+            bbbbbb bbbb.bbbb;
         }
 
-        public ItemType getType() {
-            return this.type.get();
+        bbbbbb BbbbBbbb bbbBbbb() {
+            bbbbbb bbbb.bbbb.bbb();
         }
     }
 }

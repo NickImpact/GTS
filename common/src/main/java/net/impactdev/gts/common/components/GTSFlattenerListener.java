@@ -1,19 +1,19 @@
-package net.impactdev.gts.common.components;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbbb;
 
-import net.kyori.adventure.text.flattener.FlattenerListener;
-import org.jetbrains.annotations.NotNull;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbbbbb.BbbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbbbbb.BbbBbbb;
 
-public class GTSFlattenerListener implements FlattenerListener {
+bbbbbb bbbbb BBBBbbbbbbbbBbbbbbbb bbbbbbbbbb BbbbbbbbbBbbbbbbb {
 
-    private final StringBuilder result = new StringBuilder();
+    bbbbbbb bbbbb BbbbbbBbbbbbb bbbbbb = bbb BbbbbbBbbbbbb();
 
-    @Override
-    public void component(@NotNull String text) {
-        this.result.append(text);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbbb(@BbbBbbb Bbbbbb bbbb) {
+        bbbb.bbbbbb.bbbbbb(bbbb);
     }
 
-    public String result() {
-        return result.toString();
+    bbbbbb Bbbbbb bbbbbb() {
+        bbbbbb bbbbbb.bbBbbbbb();
     }
 
 }

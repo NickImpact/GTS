@@ -1,24 +1,24 @@
-package net.impactdev.gts.api.listings.ui;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb;
 
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
 
-import java.util.Optional;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-@SuppressWarnings({"FieldCanBeLocal", "FieldMayBeFinal"})
-public abstract class AbstractEntryUI<E> implements EntryUI<E> {
+@BbbbbbbbBbbbbbbb({"BbbbbBbbBbBbbbb", "BbbbbBbbBbBbbbb"})
+bbbbbb bbbbbbbb bbbbb BbbbbbbbBbbbbBB<B> bbbbbbbbbb BbbbbBB<B> {
 
-    protected final PlatformPlayer viewer;
-    protected E chosen;
+    bbbbbbbbb bbbbb BbbbbbbbBbbbbb bbbbbb;
+    bbbbbbbbb B bbbbbb;
 
-    public AbstractEntryUI(PlatformPlayer viewer) {
-        this.viewer = viewer;
+    bbbbbb BbbbbbbbBbbbbBB(BbbbbbbbBbbbbb bbbbbb) {
+        bbbb.bbbbbb = bbbbbb;
     }
 
-    @Override
-    public Optional<E> getChosenOption() {
-        return Optional.ofNullable(this.chosen);
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<B> bbbBbbbbbBbbbbb() {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbb);
     }
 
-    public abstract void setChosen(E chosen);
+    bbbbbb bbbbbbbb bbbb bbbBbbbbb(B bbbbbb);
 
 }

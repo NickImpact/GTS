@@ -1,59 +1,59 @@
-package net.impactdev.gts.commands.elements;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb;
 
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.command.CommandCompletion;
-import org.spongepowered.api.command.exception.ArgumentParseException;
-import org.spongepowered.api.command.parameter.ArgumentReader;
-import org.spongepowered.api.command.parameter.CommandContext;
-import org.spongepowered.api.command.parameter.Parameter;
-import org.spongepowered.api.command.parameter.managed.ValueParameter;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbbBbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.bbbbbbb.BbbbbBbbbbbbbb;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class PositiveBoundedElement<T extends Number> implements ValueParameter<T> {
+bbbbbb bbbbb BbbbbbbbBbbbbbbBbbbbbb<B bbbbbbb Bbbbbb> bbbbbbbbbb BbbbbBbbbbbbbb<B> {
 
-    private final NumberParser<T> parser;
-    private final Function<String, T> translator;
+    bbbbbbb bbbbb BbbbbbBbbbbb<B> bbbbbb;
+    bbbbbbb bbbbb Bbbbbbbb<Bbbbbb, B> bbbbbbbbbb;
 
-    public PositiveBoundedElement(Function<String, T> translator) {
-        this.translator = translator;
-        this.parser = (input, function) -> {
-            try {
-                return Optional.ofNullable(function.apply(input));
-            } catch (Exception e) {
-                return Optional.empty();
+    bbbbbb BbbbbbbbBbbbbbbBbbbbbb(Bbbbbbbb<Bbbbbb, B> bbbbbbbbbb) {
+        bbbb.bbbbbbbbbb = bbbbbbbbbb;
+        bbbb.bbbbbb = (bbbbb, bbbbbbbb) -> {
+            bbb {
+                bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbbbbbb.bbbbb(bbbbb));
+            } bbbbb (Bbbbbbbbb b) {
+                bbbbbb Bbbbbbbb.bbbbb();
             }
         };
     }
 
 
-    @Override
-    public List<CommandCompletion> complete(CommandContext context, String currentInput) {
-        return Collections.emptyList();
+    @Bbbbbbbb
+    bbbbbb Bbbb<BbbbbbbBbbbbbbbbb> bbbbbbbb(BbbbbbbBbbbbbb bbbbbbb, Bbbbbb bbbbbbbBbbbb) {
+        bbbbbb Bbbbbbbbbbb.bbbbbBbbb();
     }
 
-    @Override
-    public Optional<? extends T> parseValue(Parameter.Key<? super T> parameterKey, ArgumentReader.Mutable reader, CommandContext.Builder context) throws ArgumentParseException {
-        String argument = reader.parseString();
-        if(argument.isEmpty()) {
-            return Optional.empty();
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<? bbbbbbb B> bbbbbBbbbb(Bbbbbbbbb.Bbb<? bbbbb B> bbbbbbbbbBbb, BbbbbbbbBbbbbb.Bbbbbbb bbbbbb, BbbbbbbBbbbbbb.Bbbbbbb bbbbbbb) bbbbbb BbbbbbbbBbbbbBbbbbbbbb {
+        Bbbbbb bbbbbbbb = bbbbbb.bbbbbBbbbbb();
+        bb(bbbbbbbb.bbBbbbb()) {
+            bbbbbb Bbbbbbbb.bbbbb();
         }
 
-        Optional<T> result = this.parser.parse(argument, this.translator).filter(value -> value.doubleValue() >= 0);
-        if(!result.isPresent()) {
-            throw reader.createException(Component.text("Value must be positive"));
+        Bbbbbbbb<B> bbbbbb = bbbb.bbbbbb.bbbbb(bbbbbbbb, bbbb.bbbbbbbbbb).bbbbbb(bbbbb -> bbbbb.bbbbbbBbbbb() >= 0);
+        bb(!bbbbbb.bbBbbbbbb()) {
+            bbbbb bbbbbb.bbbbbbBbbbbbbbb(Bbbbbbbbb.bbbb("Bbbbb bbbb bb bbbbbbbb"));
         }
 
-        return result;
+        bbbbbb bbbbbb;
     }
 
-    @FunctionalInterface
-    private interface NumberParser<T extends Number> {
+    @BbbbbbbbbbBbbbbbbbb
+    bbbbbbb bbbbbbbbb BbbbbbBbbbbb<B bbbbbbb Bbbbbb> {
 
-        Optional<T> parse(String input, Function<String, T> translator);
+        Bbbbbbbb<B> bbbbb(Bbbbbb bbbbb, Bbbbbbbb<Bbbbbb, B> bbbbbbbbbb);
 
     }
 }

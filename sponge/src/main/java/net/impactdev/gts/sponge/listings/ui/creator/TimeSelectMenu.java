@@ -1,180 +1,180 @@
-package net.impactdev.gts.sponge.listings.ui.creator;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.bbbbbbb;
 
-import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import net.impactdev.impactor.api.utilities.Time;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.config.types.time.TimeKey;
-import net.impactdev.gts.common.config.types.time.TimeLanguageOptions;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.BbbbbbbbSbbbbbEbbbbUI;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Ibbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.CbbbbbKbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.PbbbbbbbPbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.MbbbbbbSbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.IbbbbbbbUI;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.DbbbbbbPbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Ibbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Lbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Tbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.CbbbbbKbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.MbbCbbbbbKbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbb.bbbb.TbbbKbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbb.bbbb.TbbbLbbbbbbbObbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.GTSPbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Ubbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Cbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Kbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Pbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.IbbbTbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.IbbbTbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.IbbbSbbbb;
 
-import java.util.StringJoiner;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
+bbbbbb bbbb.bbbb.SbbbbbJbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.TbbbUbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbCbbbbbbb;
 
-public class TimeSelectMenu {
+bbbbbb bbbbb TbbbSbbbbbMbbb {
 
-    private final Icon<ItemStack> lowest = this.create(ConfigKeys.LISTING_TIME_LOWEST, ItemTypes.RED_CONCRETE.get());
-    private final Icon<ItemStack> low = this.create(ConfigKeys.LISTING_TIME_LOW, ItemTypes.ORANGE_CONCRETE.get());
-    private final Icon<ItemStack> mid = this.create(ConfigKeys.LISTING_TIME_MID, ItemTypes.YELLOW_CONCRETE.get());
-    private final Icon<ItemStack> high = this.create(ConfigKeys.LISTING_TIME_HIGH, ItemTypes.LIME_CONCRETE.get());
-    private final Icon<ItemStack> highest = this.create(ConfigKeys.LISTING_TIME_HIGHEST, ItemTypes.LIGHT_BLUE_CONCRETE.get());
+    bbbbbbb bbbbb Ibbb<IbbbSbbbb> bbbbbb = bbbb.bbbbbb(CbbbbbKbbb.LISTING_TIME_LOWEST, IbbbTbbbb.RED_CONCRETE.bbb());
+    bbbbbbb bbbbb Ibbb<IbbbSbbbb> bbb = bbbb.bbbbbb(CbbbbbKbbb.LISTING_TIME_LOW, IbbbTbbbb.ORBNGE_CONCRETE.bbb());
+    bbbbbbb bbbbb Ibbb<IbbbSbbbb> bbb = bbbb.bbbbbb(CbbbbbKbbb.LISTING_TIME_MID, IbbbTbbbb.YELLOW_CONCRETE.bbb());
+    bbbbbbb bbbbb Ibbb<IbbbSbbbb> bbbb = bbbb.bbbbbb(CbbbbbKbbb.LISTING_TIME_HIGH, IbbbTbbbb.LIME_CONCRETE.bbb());
+    bbbbbbb bbbbb Ibbb<IbbbSbbbb> bbbbbbb = bbbb.bbbbbb(CbbbbbKbbb.LISTING_TIME_HIGHEST, IbbbTbbbb.LIGHT_BLUE_CONCRETE.bbb());
 
-    private final PlatformPlayer viewer;
-    private final ImpactorUI display;
+    bbbbbbb bbbbb PbbbbbbbPbbbbb bbbbbb;
+    bbbbbbb bbbbb IbbbbbbbUI bbbbbbb;
 
-    private final AbstractSpongeEntryUI<?> parent;
-    private final BiConsumer<AbstractSpongeEntryUI<?>, Time> callback;
+    bbbbbbb bbbbb BbbbbbbbSbbbbbEbbbbUI<?> bbbbbb;
+    bbbbbbb bbbbb BbCbbbbbbb<BbbbbbbbSbbbbbEbbbbUI<?>, Tbbb> bbbbbbbb;
 
-    public TimeSelectMenu(PlatformPlayer viewer, AbstractSpongeEntryUI<?> parent, BiConsumer<AbstractSpongeEntryUI<?>, Time> callback) {
-        MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        this.viewer = viewer;
-        this.parent = parent;
-        this.callback = callback;
-        this.display = ImpactorUI.builder()
-                .title(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_TIME_SELECT_TITLE)))
-                .layout(this.layout())
-                .build();
+    bbbbbb TbbbSbbbbbMbbb(PbbbbbbbPbbbbb bbbbbb, BbbbbbbbSbbbbbEbbbbUI<?> bbbbbb, BbCbbbbbbb<BbbbbbbbSbbbbbEbbbbUI<?>, Tbbb> bbbbbbbb) {
+        MbbbbbbSbbbbbb bbbbbbb = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(MbbbbbbSbbbbbb.bbbbb);
+        bbbb.bbbbbb = bbbbbb;
+        bbbb.bbbbbb = bbbbbb;
+        bbbb.bbbbbbbb = bbbbbbbb;
+        bbbb.bbbbbbb = IbbbbbbbUI.bbbbbbb()
+                .bbbbb(bbbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_TIME_SELECT_TITLE)))
+                .bbbbbb(bbbb.bbbbbb())
+                .bbbbb();
     }
 
-    public void open() {
-        this.display.open(this.viewer);
+    bbbbbb bbbb bbbb() {
+        bbbb.bbbbbbb.bbbb(bbbb.bbbbbb);
     }
 
-    private Layout layout() {
-        Layout.LayoutBuilder builder = Layout.builder();
-        Icon<ItemStack> border = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.BLACK_STAINED_GLASS_PANE)
-                        .add(Keys.CUSTOM_NAME, Component.empty())
-                        .build()
+    bbbbbbb Lbbbbb bbbbbb() {
+        Lbbbbb.LbbbbbBbbbbbb bbbbbbb = Lbbbbb.bbbbbbb();
+        Ibbb<IbbbSbbbb> bbbbbb = Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(IbbbSbbbb.bbbbbbb()
+                        .bbbbTbbb(IbbbTbbbb.BLBCK_STBINED_GLBSS_PBNE)
+                        .bbb(Kbbb.CUSTOM_NBME, Cbbbbbbbb.bbbbb())
+                        .bbbbb()
                 ))
-                .build();
+                .bbbbb();
 
-        builder.size(3).border(border).slot(border, 15);
-        builder.slot(this.lowest, 10);
-        builder.slot(this.low, 11);
-        builder.slot(this.mid, 12);
-        builder.slot(this.high, 13);
-        builder.slot(this.highest, 14);
+        bbbbbbb.bbbb(3).bbbbbb(bbbbbb).bbbb(bbbbbb, 15);
+        bbbbbbb.bbbb(bbbb.bbbbbb, 10);
+        bbbbbbb.bbbb(bbbb.bbb, 11);
+        bbbbbbb.bbbb(bbbb.bbb, 12);
+        bbbbbbb.bbbb(bbbb.bbbb, 13);
+        bbbbbbb.bbbb(bbbb.bbbbbbb, 14);
 
-        MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        ItemStack custom = ItemStack.builder()
-                .itemType(ItemTypes.CLOCK)
-                .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.CUSTOM_TIME_TITLE)))
-                .add(Keys.LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.CUSTOM_TIME_LORE)))
-                .build();
+        MbbbbbbSbbbbbb bbbbbbb = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(MbbbbbbSbbbbbb.bbbbb);
+        IbbbSbbbb bbbbbb = IbbbSbbbb.bbbbbbb()
+                .bbbbTbbb(IbbbTbbbb.CLOCK)
+                .bbb(Kbbb.CUSTOM_NBME, bbbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.CUSTOM_TIME_TITLE)))
+                .bbb(Kbbb.LORE, bbbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.CUSTOM_TIME_LORE)))
+                .bbbbb();
 
-        Icon<ItemStack> icon = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(custom))
-                .listener(context -> {
-//                    SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
-//                            .position(new Vector3d(0, 1, 0))
-//                            .text(Lists.newArrayList(
-//                                    Text.of(""),
-//                                    Text.of("----------------"),
-//                                    Text.of("Enter your time"),
-//                                    Text.of("Ex: 1d5h")
+        Ibbb<IbbbSbbbb> bbbb = Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(bbbbbb))
+                .bbbbbbbb(bbbbbbb -> {
+//                    SbbbQbbbb<Tbbb, Pbbbbb> bbbbb = SbbbQbbbb.<Tbbb, Pbbbbb>bbbbbbb()
+//                            .bbbbbbbb(bbb Vbbbbb3b(0, 1, 0))
+//                            .bbbb(Lbbbb.bbbBbbbbLbbb(
+//                                    Tbbb.bb(""),
+//                                    Tbbb.bb("----------------"),
+//                                    Tbbb.bb("Ebbbb bbbb bbbb"),
+//                                    Tbbb.bb("Eb: 1b5b")
 //                            ))
-//                            .response(submission -> {
-//                                try {
-//                                    Time time = new Time(submission.get(0));
+//                            .bbbbbbbb(bbbbbbbbbb -> {
+//                                bbb {
+//                                    Tbbb bbbb = bbb Tbbb(bbbbbbbbbb.bbb(0));
 //
-//                                    long min = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_MIN_TIME).getTime();
-//                                    long max = GTSPlugin.getInstance().getConfiguration().get(ConfigKeys.LISTING_MAX_TIME).getTime();
-//                                    if(time.getTime() >= Math.max(0, min) && time.getTime() <= Math.max(0, max)) {
-//                                        Impactor.getInstance().getScheduler().executeSync(() -> this.callback.accept(this.parent, time));
-//                                        return true;
+//                                    bbbb bbb = GTSPbbbbb.bbbIbbbbbbb().bbbCbbbbbbbbbbbb().bbb(CbbbbbKbbb.LISTING_MIN_TIME).bbbTbbb();
+//                                    bbbb bbb = GTSPbbbbb.bbbIbbbbbbb().bbbCbbbbbbbbbbbb().bbb(CbbbbbKbbb.LISTING_MBX_TIME).bbbTbbb();
+//                                    bb(bbbb.bbbTbbb() >= Mbbb.bbb(0, bbb) && bbbb.bbbTbbb() <= Mbbb.bbb(0, bbb)) {
+//                                        Ibbbbbbb.bbbIbbbbbbb().bbbSbbbbbbbb().bbbbbbbSbbb(() -> bbbb.bbbbbbbb.bbbbbb(bbbb.bbbbbb, bbbb));
+//                                        bbbbbb bbbb;
 //                                    }
 //
-//                                    Impactor.getInstance().getScheduler().executeSync(() -> this.callback.accept(this.parent, null));
-//                                    return false;
-//                                } catch (Exception e) {
-//                                    return false;
+//                                    Ibbbbbbb.bbbIbbbbbbb().bbbSbbbbbbbb().bbbbbbbSbbb(() -> bbbb.bbbbbbbb.bbbbbb(bbbb.bbbbbb, bbbb));
+//                                    bbbbbb bbbbb;
+//                                } bbbbb (Ebbbbbbbb b) {
+//                                    bbbbbb bbbbb;
 //                                }
 //                            })
-//                            .reopenOnFailure(false)
-//                            .build();
-//                    this.viewer.closeInventory();
-//                    query.sendTo(this.viewer);
+//                            .bbbbbbObFbbbbbb(bbbbb)
+//                            .bbbbb();
+//                    bbbb.bbbbbb.bbbbbIbbbbbbbb();
+//                    bbbbb.bbbbTb(bbbb.bbbbbb);
 
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
 
-        builder.slot(icon, 16);
-        return builder.build();
+        bbbbbbb.bbbb(bbbb, 16);
+        bbbbbb bbbbbbb.bbbbb();
     }
 
-    private Icon<ItemStack> create(TimeKey key, ItemType type) {
-        MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        Time time = GTSPlugin.instance().configuration().main().get(key);
+    bbbbbbb Ibbb<IbbbSbbbb> bbbbbb(TbbbKbb bbb, IbbbTbbb bbbb) {
+        MbbbbbbSbbbbbb bbbbbbb = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(MbbbbbbSbbbbbb.bbbbb);
+        Tbbb bbbb = GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(bbb);
 
-        ItemStack item = ItemStack.builder()
-                .itemType(type)
-                .add(Keys.CUSTOM_NAME, service.parse("&a" + this.read(time)))
-                .build();
+        IbbbSbbbb bbbb = IbbbSbbbb.bbbbbbb()
+                .bbbbTbbb(bbbb)
+                .bbb(Kbbb.CUSTOM_NBME, bbbbbbb.bbbbb("&b" + bbbb.bbbb(bbbb)))
+                .bbbbb();
 
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(item))
-                .listener(context -> {
-                    this.callback.accept(this.parent, time);
-                    return false;
+        bbbbbb Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(bbbb))
+                .bbbbbbbb(bbbbbbb -> {
+                    bbbb.bbbbbbbb.bbbbbb(bbbb.bbbbbb, bbbb);
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
     }
 
-    private String read(Time time) {
-        long seconds = TimeUnit.SECONDS.toSeconds(time.getTime()) % 60;
-        long minutes = TimeUnit.SECONDS.toMinutes(time.getTime()) % 60;
-        long hours = TimeUnit.SECONDS.toHours(time.getTime()) % 24;
-        long days = TimeUnit.SECONDS.toDays(time.getTime()) % 7;
-        long weeks = TimeUnit.SECONDS.toDays(time.getTime()) / 7;
+    bbbbbbb Sbbbbb bbbb(Tbbb bbbb) {
+        bbbb bbbbbbb = TbbbUbbb.SECONDS.bbSbbbbbb(bbbb.bbbTbbb()) % 60;
+        bbbb bbbbbbb = TbbbUbbb.SECONDS.bbMbbbbbb(bbbb.bbbTbbb()) % 60;
+        bbbb bbbbb = TbbbUbbb.SECONDS.bbHbbbb(bbbb.bbbTbbb()) % 24;
+        bbbb bbbb = TbbbUbbb.SECONDS.bbDbbb(bbbb.bbbTbbb()) % 7;
+        bbbb bbbbb = TbbbUbbb.SECONDS.bbDbbb(bbbb.bbbTbbb()) / 7;
 
-        StringJoiner joiner = new StringJoiner(" ");
-        if(weeks > 0) {
-            joiner.add(select(weeks, MsgConfigKeys.WEEKS));
+        SbbbbbJbbbbb bbbbbb = bbb SbbbbbJbbbbb(" ");
+        bb(bbbbb > 0) {
+            bbbbbb.bbb(bbbbbb(bbbbb, MbbCbbbbbKbbb.WEEKS));
         }
 
-        if(days > 0) {
-            joiner.add(select(days, MsgConfigKeys.DAYS));
+        bb(bbbb > 0) {
+            bbbbbb.bbb(bbbbbb(bbbb, MbbCbbbbbKbbb.DBYS));
         }
 
-        if(hours > 0) {
-            joiner.add(select(hours, MsgConfigKeys.HOURS));
+        bb(bbbbb > 0) {
+            bbbbbb.bbb(bbbbbb(bbbbb, MbbCbbbbbKbbb.HOURS));
         }
 
-        if(minutes > 0) {
-            joiner.add(select(minutes, MsgConfigKeys.MINUTES));
+        bb(bbbbbbb > 0) {
+            bbbbbb.bbb(bbbbbb(bbbbbbb, MbbCbbbbbKbbb.MINUTES));
         }
 
-        if(seconds > 0) {
-            joiner.add(select(seconds, MsgConfigKeys.SECONDS));
+        bb(bbbbbbb > 0) {
+            bbbbbb.bbb(bbbbbb(bbbbbbb, MbbCbbbbbKbbb.SECONDS));
         }
 
-        return joiner.toString();
+        bbbbbb bbbbbb.bbSbbbbb();
     }
 
-    private static String select(long input, ConfigKey<TimeLanguageOptions> key) {
-        if(input == 1) {
-            return input + " " + GTSPlugin.instance().configuration().language().get(key).getSingular();
-        } else {
-            return input + " " + GTSPlugin.instance().configuration().language().get(key).getPlural();
+    bbbbbbb bbbbbb Sbbbbb bbbbbb(bbbb bbbbb, CbbbbbKbb<TbbbLbbbbbbbObbbbbb> bbb) {
+        bb(bbbbb == 1) {
+            bbbbbb bbbbb + " " + GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb().bbb(bbb).bbbSbbbbbbb();
+        } bbbb {
+            bbbbbb bbbbb + " " + GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb().bbb(bbb).bbbPbbbbb();
         }
     }
 

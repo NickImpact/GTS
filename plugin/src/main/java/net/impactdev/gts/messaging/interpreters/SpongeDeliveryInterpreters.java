@@ -1,42 +1,42 @@
-package net.impactdev.gts.messaging.interpreters;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbbbbb;
 
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.common.messaging.interpreters.Interpreter;
-import net.impactdev.gts.common.messaging.messages.deliveries.ClaimDeliveryImpl;
-import net.impactdev.gts.common.plugin.GTSPlugin;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbbbbb.BbbbbBbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
 
-public class SpongeDeliveryInterpreters implements Interpreter {
+bbbbbb bbbbb BbbbbbBbbbbbbbBbbbbbbbbbbb bbbbbbbbbb Bbbbbbbbbbb {
 
-    @Override
-    public void register(GTSPlugin plugin) {
-        this.getDecoders(plugin);
-        this.getInterpreters(plugin);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbb.bbbBbbbbbbb(bbbbbb);
+        bbbb.bbbBbbbbbbbbbbb(bbbbbb);
     }
 
-    @Override
-    public void getDecoders(GTSPlugin plugin) {
-        plugin.messagingService().registerDecoder(
-                ClaimDeliveryImpl.ClaimDeliveryRequestImpl.TYPE, ClaimDeliveryImpl.ClaimDeliveryRequestImpl::decode
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbBbbb.BBBB, BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbBbbb::bbbbbb
         );
-        plugin.messagingService().registerDecoder(
-                ClaimDeliveryImpl.ClaimDeliveryResponseImpl.TYPE, ClaimDeliveryImpl.ClaimDeliveryResponseImpl::decode
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbbBbbb.BBBB, BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbbBbbb::bbbbbb
         );
     }
 
-    @Override
-    public void getInterpreters(GTSPlugin plugin) {
-        final IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb = bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbBbbbbbbBbbbbbbb();
 
-        consumer.registerInternalConsumer(
-                ClaimDeliveryImpl.ClaimDeliveryRequestImpl.class, request -> {
-                    GTSPlugin.instance().storage()
-                            .claimDelivery(request)
-                            .thenAccept(response -> plugin.messagingService().getMessenger().sendOutgoingMessage(response));
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbBbbb.bbbbb, bbbbbbb -> {
+                    BBBBbbbbb.bbbbbbbb().bbbbbbb()
+                            .bbbbbBbbbbbbb(bbbbbbb)
+                            .bbbbBbbbbb(bbbbbbbb -> bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbbb));
                 }
         );
-        consumer.registerInternalConsumer(
-                ClaimDeliveryImpl.ClaimDeliveryResponseImpl.class, response -> {
-                    consumer.processRequest(response.getRequestID(), response);
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BbbbbBbbbbbbbBbbb.BbbbbBbbbbbbbBbbbbbbbBbbb.bbbbb, bbbbbbbb -> {
+                    bbbbbbbb.bbbbbbbBbbbbbb(bbbbbbbb.bbbBbbbbbbBB(), bbbbbbbb);
                 }
         );
     }

@@ -1,8 +1,8 @@
-package net.impactdev.gts.api.messaging.message;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb;
 
-@FunctionalInterface
-public interface MessageConsumer<V extends Message> {
+@BbbbbbbbbbBbbbbbbbb
+bbbbbb bbbbbbbbb BbbbbbbBbbbbbbb<B bbbbbbb Bbbbbbb> {
 
-	void consume(V message);
+	bbbb bbbbbbb(B bbbbbbb);
 
 }

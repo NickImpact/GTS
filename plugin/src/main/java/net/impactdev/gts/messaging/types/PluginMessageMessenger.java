@@ -1,78 +1,78 @@
-package net.impactdev.gts.messaging.types;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbb;
 
-import com.google.common.collect.Iterables;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.spongepowered.api.ResourceKey;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.network.EngineConnectionSide;
-import org.spongepowered.api.network.ServerSideConnection;
-import org.spongepowered.api.network.channel.ChannelBuf;
-import org.spongepowered.api.network.channel.raw.RawDataChannel;
-import org.spongepowered.api.network.channel.raw.play.RawPlayDataHandler;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.BbbbbbbbBbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbBbbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbBbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.BbbbbbbBbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.bbb.BbbBbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.bbb.bbbb.BbbBbbbBbbbBbbbbbb;
 
-import java.util.Collection;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
 
 /**
- * An implementation of {@link Messenger} using the plugin messaging channels.
+ * Bb bbbbbbbbbbbbbb bb {@bbbb Bbbbbbbbb} bbbbb bbb bbbbbb bbbbbbbbb bbbbbbbb.
  */
-public class PluginMessageMessenger implements Messenger, RawPlayDataHandler<ServerSideConnection> {
+bbbbbb bbbbb BbbbbbBbbbbbbBbbbbbbbb bbbbbbbbbb Bbbbbbbbb, BbbBbbbBbbbBbbbbbb<BbbbbbBbbbBbbbbbbbbb> {
 
-	private static final ResourceKey CHANNEL = ResourceKey.builder()
-			.namespace("gts")
-			.value("update")
-			.build();
+	bbbbbbb bbbbbb bbbbb BbbbbbbbBbb BBBBBBB = BbbbbbbbBbb.bbbbbbb()
+			.bbbbbbbbb("bbb")
+			.bbbbb("bbbbbb")
+			.bbbbb();
 
-	private final GTSPlugin plugin;
-	private final IncomingMessageConsumer consumer;
+	bbbbbbb bbbbb BBBBbbbbb bbbbbb;
+	bbbbbbb bbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb;
 
-	private RawDataChannel channel = null;
+	bbbbbbb BbbBbbbBbbbbbb bbbbbbb = bbbb;
 
-	public PluginMessageMessenger(GTSPlugin plugin, IncomingMessageConsumer consumer) {
-		this.plugin = plugin;
-		this.consumer = consumer;
+	bbbbbb BbbbbbBbbbbbbBbbbbbbbb(BBBBbbbbb bbbbbb, BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb) {
+		bbbb.bbbbbb = bbbbbb;
+		bbbb.bbbbbbbb = bbbbbbbb;
 	}
 
-	public void init() {
-		this.channel = Sponge.channelManager().ofType(CHANNEL, RawDataChannel.class);
-		this.channel.play().addHandler(EngineConnectionSide.SERVER, this);
+	bbbbbb bbbb bbbb() {
+		bbbb.bbbbbbb = Bbbbbb.bbbbbbbBbbbbbb().bbBbbb(BBBBBBB, BbbBbbbBbbbbbb.bbbbb);
+		bbbb.bbbbbbb.bbbb().bbbBbbbbbb(BbbbbbBbbbbbbbbbBbbb.BBBBBB, bbbb);
 	}
 
-	@Override
-	public void close() {
-		if (this.channel != null) {
-			this.channel.play().removeHandler(this);
+	@Bbbbbbbb
+	bbbbbb bbbb bbbbb() {
+		bb (bbbb.bbbbbbb != bbbb) {
+			bbbb.bbbbbbb.bbbb().bbbbbbBbbbbbb(bbbb);
 		}
 	}
 
-	@Override
-	public IncomingMessageConsumer getMessageConsumer() {
-		return this.consumer;
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbBbbbbbbBbbbbbbb() {
+		bbbbbb bbbb.bbbbbbbb;
 	}
 
-	@Override
-	public void sendOutgoingMessage(@NonNull OutgoingMessage outgoingMessage) {
-		if (!Sponge.isServerAvailable()) {
-			return;
+	@Bbbbbbbb
+	bbbbbb bbbb bbbbBbbbbbbbBbbbbbb(@BbbBbbb BbbbbbbbBbbbbbb bbbbbbbbBbbbbbb) {
+		bb (!Bbbbbb.bbBbbbbbBbbbbbbbb()) {
+			bbbbbb;
 		}
 
-		Collection<ServerPlayer> players = Sponge.server().onlinePlayers();
-		ServerPlayer p = Iterables.getFirst(players, null);
-		if (p == null) {
-			return;
+		Bbbbbbbbbb<BbbbbbBbbbbb> bbbbbbb = Bbbbbb.bbbbbb().bbbbbbBbbbbbb();
+		BbbbbbBbbbbb b = Bbbbbbbbb.bbbBbbbb(bbbbbbb, bbbb);
+		bb (b == bbbb) {
+			bbbbbb;
 		}
 
-		this.channel.play().sendTo(p, buf -> buf.writeUTF(outgoingMessage.asEncodedString()));
+		bbbb.bbbbbbb.bbbb().bbbbBb(b, bbb -> bbb.bbbbbBBB(bbbbbbbbBbbbbbb.bbBbbbbbbBbbbbb()));
 	}
 
-	@Override
-	public void handlePayload(@NonNull ChannelBuf buf, ServerSideConnection connection) {
-		String msg = buf.readUTF();
-		this.consumer.consumeIncomingMessageAsString(msg);
+	@Bbbbbbbb
+	bbbbbb bbbb bbbbbbBbbbbbb(@BbbBbbb BbbbbbbBbb bbb, BbbbbbBbbbBbbbbbbbbb bbbbbbbbbb) {
+		Bbbbbb bbb = bbb.bbbbBBB();
+		bbbb.bbbbbbbb.bbbbbbbBbbbbbbbBbbbbbbBbBbbbbb(bbb);
 	}
 
 }

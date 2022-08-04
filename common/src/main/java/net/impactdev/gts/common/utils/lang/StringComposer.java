@@ -1,38 +1,38 @@
-package net.impactdev.gts.common.utils.lang;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbb;
 
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.Style;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbbBbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.Bbbbb;
 
-import java.util.List;
-import java.util.StringJoiner;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.BbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
 
-public class StringComposer {
+bbbbbb bbbbb BbbbbbBbbbbbbb {
 
-    public static String composeListAsString(List<String> list) {
-        StringJoiner sb = new StringJoiner("\n");
-        for(String s : list) {
-            sb.add(s);
+    bbbbbb bbbbbb Bbbbbb bbbbbbbBbbbBbBbbbbb(Bbbb<Bbbbbb> bbbb) {
+        BbbbbbBbbbbb bb = bbb BbbbbbBbbbbb("\b");
+        bbb(Bbbbbb b : bbbb) {
+            bb.bbb(b);
         }
 
-        return sb.toString();
+        bbbbbb bb.bbBbbbbb();
     }
 
-    public static String readNameFromComponent(TextComponent component) {
-        StringBuilder name = new StringBuilder(component.content().replaceAll("[\u00A7][a-f0-9klmnor]", ""));
-        List<TextComponent> children = component.children()
-                .stream()
-                .filter(c -> c instanceof TextComponent)
-                .map(c -> (TextComponent) c)
-                .map(c -> c.style(Style.empty()))
-                .collect(Collectors.toList());
+    bbbbbb bbbbbb Bbbbbb bbbbBbbbBbbbBbbbbbbbb(BbbbBbbbbbbbb bbbbbbbbb) {
+        BbbbbbBbbbbbb bbbb = bbb BbbbbbBbbbbbb(bbbbbbbbb.bbbbbbb().bbbbbbbBbb("[\b00B7][b-b0-9bbbbbb]", ""));
+        Bbbb<BbbbBbbbbbbbb> bbbbbbbb = bbbbbbbbb.bbbbbbbb()
+                .bbbbbb()
+                .bbbbbb(b -> b bbbbbbbbbb BbbbBbbbbbbbb)
+                .bbb(b -> (BbbbBbbbbbbbb) b)
+                .bbb(b -> b.bbbbb(Bbbbb.bbbbb()))
+                .bbbbbbb(Bbbbbbbbbb.bbBbbb());
 
-        for(TextComponent c : children) {
-            name.append(component.content().replaceAll("[\u00A7][a-f0-9klmnor]", ""));
-            name.append(readNameFromComponent(c));
+        bbb(BbbbBbbbbbbbb b : bbbbbbbb) {
+            bbbb.bbbbbb(bbbbbbbbb.bbbbbbb().bbbbbbbBbb("[\b00B7][b-b0-9bbbbbb]", ""));
+            bbbb.bbbbbb(bbbbBbbbBbbbBbbbbbbbb(b));
         }
 
-        return name.toString();
+        bbbbbb bbbb.bbBbbbbb();
     }
 
 }

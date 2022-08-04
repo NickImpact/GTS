@@ -1,107 +1,107 @@
-package net.impactdev.gts.messaging.interpreters;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbbbbb;
 
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.messaging.interpreters.Interpreter;
-import net.impactdev.gts.common.messaging.messages.admin.ForceDeleteMessageImpl;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.pricing.provided.MonetaryEntry;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbb.BbbbbBbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
 
-import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
-public class SpongeAdminInterpreters implements Interpreter {
+bbbbbb bbbbb BbbbbbBbbbbBbbbbbbbbbbb bbbbbbbbbb Bbbbbbbbbbb {
 
-    @Override
-    public void register(GTSPlugin plugin) {
-        this.getDecoders(plugin);
-        this.getInterpreters(plugin);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbb.bbbBbbbbbbb(bbbbbb);
+        bbbb.bbbBbbbbbbbbbbb(bbbbbb);
     }
 
-    @Override
-    public void getDecoders(GTSPlugin plugin) {
-        plugin.messagingService().registerDecoder(
-                ForceDeleteMessageImpl.ForceDeleteRequest.TYPE, ForceDeleteMessageImpl.ForceDeleteRequest::decode
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BbbbbBbbbbbBbbbbbbBbbb.BbbbbBbbbbbBbbbbbb.BBBB, BbbbbBbbbbbBbbbbbbBbbb.BbbbbBbbbbbBbbbbbb::bbbbbb
         );
-        plugin.messagingService().registerDecoder(
-                ForceDeleteMessageImpl.ForceDeleteResponse.TYPE, ForceDeleteMessageImpl.ForceDeleteResponse::decode
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(
+                BbbbbBbbbbbBbbbbbbBbbb.BbbbbBbbbbbBbbbbbbb.BBBB, BbbbbBbbbbbBbbbbbbBbbb.BbbbbBbbbbbBbbbbbbb::bbbbbb
         );
     }
 
-    @Override
-    public void getInterpreters(GTSPlugin plugin) {
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        final IncomingMessageConsumer consumer = plugin.messagingService().getMessenger().getMessageConsumer();
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+        bbbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbb = bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbBbbbbbbBbbbbbbb();
 
-        consumer.registerInternalConsumer(
-                ForceDeleteMessageImpl.ForceDeleteRequest.class, request -> {
-                    request.respond().thenAccept(response -> GTSPlugin.instance().messagingService().getMessenger().sendOutgoingMessage(response));
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BbbbbBbbbbbBbbbbbbBbbb.BbbbbBbbbbbBbbbbbb.bbbbb, bbbbbbb -> {
+                    bbbbbbb.bbbbbbb().bbbbBbbbbb(bbbbbbbb -> BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbbbbbb));
                 }
         );
-        consumer.registerInternalConsumer(
-                ForceDeleteMessageImpl.ForceDeleteResponse.class, response -> {
-                    consumer.processRequest(response.getRequestID(), response);
+        bbbbbbbb.bbbbbbbbBbbbbbbbBbbbbbbb(
+                BbbbbBbbbbbBbbbbbbBbbb.BbbbbBbbbbbBbbbbbbb.bbbbb, bbbbbbbb -> {
+                    bbbbbbbb.bbbbbbbBbbbbbb(bbbbbbbb.bbbBbbbbbbBB(), bbbbbbbb);
 
-                    if(response.wasSuccessful()) {
-                        Listing listing = response.getDeletedListing().orElse(null);
-                        Optional<ServerPlayer> player = Sponge.server().player(listing.getLister());
+                    bb(bbbbbbbb.bbbBbbbbbbbbb()) {
+                        Bbbbbbb bbbbbbb = bbbbbbbb.bbbBbbbbbbBbbbbbb().bbBbbb(bbbb);
+                        Bbbbbbbb<BbbbbbBbbbbb> bbbbbb = Bbbbbb.bbbbbb().bbbbbb(bbbbbbb.bbbBbbbbb());
 
-                        if(response.shouldGive()) {
-                            if(this.attemptReturn(listing)) {
-                                player.ifPresent(source -> source.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN))));
-                            } else {
-                                if(listing instanceof BuyItNow) {
-                                    Listing stash = BuyItNow.builder()
-                                            .id(listing.getID())
-                                            .lister(listing.getLister())
-                                            .entry(listing.getEntry())
-                                            .price(((BuyItNow) listing).getPrice())
-                                            .expiration(LocalDateTime.now())
-                                            .build();
-                                    GTSPlugin.instance().storage().publishListing(stash);
-                                } else {
-                                    Auction auction = (Auction) listing;
-                                    Delivery delivery = Delivery.builder()
-                                            .source(response.getActor())
-                                            .recipient(auction.getLister())
-                                            .content(auction.getEntry())
-                                            .build();
-                                    GTSPlugin.instance().storage().sendDelivery(delivery);
+                        bb(bbbbbbbb.bbbbbbBbbb()) {
+                            bb(bbbb.bbbbbbbBbbbbb(bbbbbbb)) {
+                                bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBB_BBBBBB))));
+                            } bbbb {
+                                bb(bbbbbbb bbbbbbbbbb BbbBbBbb) {
+                                    Bbbbbbb bbbbb = BbbBbBbb.bbbbbbb()
+                                            .bb(bbbbbbb.bbbBB())
+                                            .bbbbbb(bbbbbbb.bbbBbbbbb())
+                                            .bbbbb(bbbbbbb.bbbBbbbb())
+                                            .bbbbb(((BbbBbBbb) bbbbbbb).bbbBbbbb())
+                                            .bbbbbbbbbb(BbbbbBbbbBbbb.bbb())
+                                            .bbbbb();
+                                    BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbb(bbbbb);
+                                } bbbb {
+                                    Bbbbbbb bbbbbbb = (Bbbbbbb) bbbbbbb;
+                                    Bbbbbbbb bbbbbbbb = Bbbbbbbb.bbbbbbb()
+                                            .bbbbbb(bbbbbbbb.bbbBbbbb())
+                                            .bbbbbbbbb(bbbbbbb.bbbBbbbbb())
+                                            .bbbbbbb(bbbbbbb.bbbBbbbb())
+                                            .bbbbb();
+                                    BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbBbbbbbbb(bbbbbbbb);
 
-                                    for(Map.Entry<UUID, Auction.Bid> bid : auction.getUniqueBiddersWithHighestBids().entrySet()) {
-                                        Delivery bidder = Delivery.builder()
-                                                .source(response.getActor())
-                                                .recipient(bid.getKey())
-                                                .content(new MonetaryEntry(bid.getValue().getAmount()))
-                                                .build();
-                                        GTSPlugin.instance().storage().sendDelivery(bidder);
+                                    bbb(Bbb.Bbbbb<BBBB, Bbbbbbb.Bbb> bbb : bbbbbbb.bbbBbbbbbBbbbbbbBbbbBbbbbbbBbbb().bbbbbBbb()) {
+                                        Bbbbbbbb bbbbbb = Bbbbbbbb.bbbbbbb()
+                                                .bbbbbb(bbbbbbbb.bbbBbbbb())
+                                                .bbbbbbbbb(bbb.bbbBbb())
+                                                .bbbbbbb(bbb BbbbbbbbBbbbb(bbb.bbbBbbbb().bbbBbbbbb()))
+                                                .bbbbb();
+                                        BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbBbbbbbbb(bbbbbb);
                                     }
                                 }
-                                player.ifPresent(source -> source.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER_RETURN_STASH))));
+                                bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBB_BBBBBB_BBBBB))));
                             }
-                        } else {
-                            player.ifPresent(source -> source.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.ADMIN_LISTING_EDITOR_DELETE_ACTOR_RESPONSE_USER))));
+                        } bbbb {
+                            bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB_BBBBBB_BBBBBB_BBBBB_BBBBBBBB_BBBB))));
                         }
                     }
                 }
         );
     }
 
-    private boolean attemptReturn(Listing listing) {
-        UUID target = listing.getLister();
-        return listing.getEntry().give(target);
+    bbbbbbb bbbbbbb bbbbbbbBbbbbb(Bbbbbbb bbbbbbb) {
+        BBBB bbbbbb = bbbbbbb.bbbBbbbbb();
+        bbbbbb bbbbbbb.bbbBbbbb().bbbb(bbbbbb);
     }
 
 }

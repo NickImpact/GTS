@@ -1,19 +1,19 @@
-package net.impactdev.gts.api.messaging.message.type.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb;
 
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * This message indicates that a listing has recently been published, and we should attempt
- * to notify all servers of the listing.
+ * Bbbb bbbbbbb bbbbbbbbb bbbb b bbbbbbb bbb bbbbbbbb bbbb bbbbbbbbb, bbb bb bbbbbb bbbbbbb
+ * bb bbbbbb bbb bbbbbbb bb bbb bbbbbbb.
  */
-public interface PublishListingMessage extends OutgoingMessage {
+bbbbbb bbbbbbbbb BbbbbbbBbbbbbbBbbbbbb bbbbbbb BbbbbbbbBbbbbbb {
 
-    UUID getListingID();
+    BBBB bbbBbbbbbbBB();
 
-    UUID getActor();
+    BBBB bbbBbbbb();
 
-    boolean isAuction();
+    bbbbbbb bbBbbbbbb();
 
 }

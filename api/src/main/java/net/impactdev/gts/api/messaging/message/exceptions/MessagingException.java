@@ -1,22 +1,22 @@
-package net.impactdev.gts.api.messaging.message.exceptions;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbbbbbb;
 
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
 
-public class MessagingException extends RuntimeException {
+bbbbbb bbbbb BbbbbbbbbBbbbbbbbb bbbbbbb BbbbbbbBbbbbbbbb {
 
-    private ErrorCode error;
+    bbbbbbb BbbbbBbbb bbbbb;
 
-    public MessagingException(ErrorCode error) {
-        this.error = error;
+    bbbbbb BbbbbbbbbBbbbbbbbb(BbbbbBbbb bbbbb) {
+        bbbb.bbbbb = bbbbb;
     }
 
-    public MessagingException(ErrorCode error, Throwable cause) {
-        super(cause);
-        this.error = error;
+    bbbbbb BbbbbbbbbBbbbbbbbb(BbbbbBbbb bbbbb, Bbbbbbbbb bbbbb) {
+        bbbbb(bbbbb);
+        bbbb.bbbbb = bbbbb;
     }
 
-    public ErrorCode getError() {
-        return this.error;
+    bbbbbb BbbbbBbbb bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
 }

@@ -1,8 +1,8 @@
-package net.impactdev.gts.api.util;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb;
 
-@FunctionalInterface
-public interface TriConsumer<A, B, C> {
+@BbbbbbbbbbBbbbbbbbb
+bbbbbb bbbbbbbbb BbbBbbbbbbb<B, B, B> {
 
-    void accept(A a, B b, C c);
+    bbbb bbbbbb(B b, B b, B b);
 
 }

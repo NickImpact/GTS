@@ -1,6 +1,6 @@
-package net.impactdev.gts.sponge.pricing;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb;
 
-import net.impactdev.gts.api.listings.prices.Price;
-import org.spongepowered.api.item.inventory.ItemStack;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Pbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.IbbbSbbbb;
 
-public interface SpongePrice<E, S> extends Price<E, S, ItemStack> {}
+bbbbbb bbbbbbbbb SbbbbbPbbbb<E, S> bbbbbbb Pbbbb<E, S, IbbbSbbbb> {}

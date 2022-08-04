@@ -1,11 +1,11 @@
-package net.impactdev.gts.api.data.translators;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbbbb;
 
-import java.util.Collection;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
 
-public interface DataTranslatorManager {
+bbbbbb bbbbbbbbb BbbbBbbbbbbbbbBbbbbbb {
 
-    <T> Collection<DataTranslator<T>> get(Class<T> type);
+    <B> Bbbbbbbbbb<BbbbBbbbbbbbbb<B>> bbb(Bbbbb<B> bbbb);
 
-    <T> void register(Class<T> type, DataTranslator<T> translator);
+    <B> bbbb bbbbbbbb(Bbbbb<B> bbbb, BbbbBbbbbbbbbb<B> bbbbbbbbbb);
 
 }

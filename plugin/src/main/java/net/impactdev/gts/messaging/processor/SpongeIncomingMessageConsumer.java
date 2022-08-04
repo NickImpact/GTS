@@ -1,135 +1,135 @@
-package net.impactdev.gts.messaging.processor;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbb.bbbbbbbbb;
 
-import com.google.common.collect.Maps;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.message.Message;
-import net.impactdev.gts.api.messaging.message.MessageConsumer;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
-import net.impactdev.gts.api.messaging.message.type.UpdateMessage;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.function.Consumer;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.BbbbBbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class SpongeIncomingMessageConsumer implements IncomingMessageConsumer {
+bbbbbb bbbbb BbbbbbBbbbbbbbBbbbbbbBbbbbbbb bbbbbbbbbb BbbbbbbbBbbbbbbBbbbbbbb {
 
-	private final GTSPlugin plugin;
-	private final Set<UUID> receivedMessages;
+	bbbbbbb bbbbb BBBBbbbbb bbbbbb;
+	bbbbbbb bbbbb Bbb<BBBB> bbbbbbbbBbbbbbbb;
 
-	private final Map<Class<?>, MessageConsumer<?>> consumers = Maps.newHashMap();
-	private final Map<UUID, Consumer<?>> requests = Maps.newHashMap();
+	bbbbbbb bbbbb Bbb<Bbbbb<?>, BbbbbbbBbbbbbbb<?>> bbbbbbbbb = Bbbb.bbbBbbbBbb();
+	bbbbbbb bbbbb Bbb<BBBB, Bbbbbbbb<?>> bbbbbbbb = Bbbb.bbbBbbbBbb();
 
-	public SpongeIncomingMessageConsumer(GTSPlugin plugin) {
-		this.plugin = plugin;
-		this.receivedMessages = Collections.synchronizedSet(new HashSet<>());
+	bbbbbb BbbbbbBbbbbbbbBbbbbbbBbbbbbbb(BBBBbbbbb bbbbbb) {
+		bbbb.bbbbbb = bbbbbb;
+		bbbb.bbbbbbbbBbbbbbbb = Bbbbbbbbbbb.bbbbbbbbbbbbBbb(bbb BbbbBbb<>());
 	}
 
-	@Override
-	public <T extends MessageType.Response> void registerRequest(UUID request, Consumer<T> response) {
-		this.requests.put(request, response);
+	@Bbbbbbbb
+	bbbbbb <B bbbbbbb BbbbbbbBbbb.Bbbbbbbb> bbbb bbbbbbbbBbbbbbb(BBBB bbbbbbb, Bbbbbbbb<B> bbbbbbbb) {
+		bbbb.bbbbbbbb.bbb(bbbbbbb, bbbbbbbb);
 	}
 
-	@Override
-	public <T extends MessageType.Response> void processRequest(UUID request, T response) {
-		if(this.requests.get(request) == null) {
-			return;
+	@Bbbbbbbb
+	bbbbbb <B bbbbbbb BbbbbbbBbbb.Bbbbbbbb> bbbb bbbbbbbBbbbbbb(BBBB bbbbbbb, B bbbbbbbb) {
+		bb(bbbb.bbbbbbbb.bbb(bbbbbbb) == bbbb) {
+			bbbbbb;
 		}
 
-		((Consumer<T>) this.requests.get(request)).accept(response);
-		this.requests.remove(request);
+		((Bbbbbbbb<B>) bbbb.bbbbbbbb.bbb(bbbbbbb)).bbbbbb(bbbbbbbb);
+		bbbb.bbbbbbbb.bbbbbb(bbbbbbb);
 	}
 
-	@Override
-	public void cacheReceivedID(UUID id) {
-		this.receivedMessages.add(id);
+	@Bbbbbbbb
+	bbbbbb bbbb bbbbbBbbbbbbbBB(BBBB bb) {
+		bbbb.bbbbbbbbBbbbbbbb.bbb(bb);
 	}
 
-	@Override
-	public boolean consumeIncomingMessage(@NonNull Message message) {
-		Objects.requireNonNull(message, "message");
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbbbbbBbbbbbbbBbbbbbb(@BbbBbbb Bbbbbbb bbbbbbb) {
+		Bbbbbbb.bbbbbbbBbbBbbb(bbbbbbb, "bbbbbbb");
 
-		if (!this.receivedMessages.add(message.getID())) {
-			if(this.plugin.configuration().main().get(ConfigKeys.USE_MULTI_SERVER)) {
-				return false;
+		bb (!bbbb.bbbbbbbbBbbbbbbb.bbb(bbbbbbb.bbbBB())) {
+			bb(bbbb.bbbbbb.bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBB_BBBBB_BBBBBB)) {
+				bbbbbb bbbbb;
 			}
 		}
 
-		this.processIncomingMessage(message);
-		return true;
+		bbbb.bbbbbbbBbbbbbbbBbbbbbb(bbbbbbb);
+		bbbbbb bbbb;
 	}
 
-	@Override
-	public boolean consumeIncomingMessageAsString(@NonNull String encodedString) {
-		Objects.requireNonNull(encodedString, "encodedString");
-		JsonObject decodedObject = GTSMessagingService.NORMAL.fromJson(encodedString, JsonObject.class).getAsJsonObject();
+	@Bbbbbbbb
+	bbbbbb bbbbbbb bbbbbbbBbbbbbbbBbbbbbbBbBbbbbb(@BbbBbbb Bbbbbb bbbbbbbBbbbbb) {
+		Bbbbbbb.bbbbbbbBbbBbbb(bbbbbbbBbbbbb, "bbbbbbbBbbbbb");
+		BbbbBbbbbb bbbbbbbBbbbbb = BBBBbbbbbbbbBbbbbbb.BBBBBB.bbbbBbbb(bbbbbbbBbbbbb, BbbbBbbbbb.bbbbb).bbbBbBbbbBbbbbb();
 
-		// extract id
-		JsonElement idElement = decodedObject.get("id");
-		if (idElement == null) {
-			throw new IllegalStateException("Incoming message has no id argument: " + encodedString);
+		// bbbbbbb bb
+		BbbbBbbbbbb bbBbbbbbb = bbbbbbbBbbbbb.bbb("bb");
+		bb (bbBbbbbbb == bbbb) {
+			bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbbbb bbbbbbb bbb bb bb bbbbbbbb: " + bbbbbbbBbbbbb);
 		}
-		UUID id = UUID.fromString(idElement.getAsString());
+		BBBB bb = BBBB.bbbbBbbbbb(bbBbbbbbb.bbbBbBbbbbb());
 
-		// ensure the message hasn't been received already
-		if (!this.receivedMessages.add(id)) {
-			return false;
-		}
-
-		// extract type
-		JsonElement typeElement = decodedObject.get("type");
-		if (typeElement == null) {
-			throw new IllegalStateException("Incoming message has no type argument: " + encodedString);
-		}
-		String type = typeElement.getAsString();
-
-		// extract content
-		@Nullable JsonElement content = decodedObject.get("content");
-
-		// decode message
-		Message decoded = GTSPlugin.instance().messagingService().getDecoder(type).apply(content, id);
-		if(decoded == null) {
-			GTSPlugin.instance().logger().info("No decoder found for incoming message");
-			return false;
+		// bbbbbb bbb bbbbbbb bbbb'b bbbb bbbbbbbb bbbbbbb
+		bb (!bbbb.bbbbbbbbBbbbbbbb.bbb(bb)) {
+			bbbbbb bbbbb;
 		}
 
-		// consume the message
-		this.processIncomingMessage(decoded);
-		return true;
+		// bbbbbbb bbbb
+		BbbbBbbbbbb bbbbBbbbbbb = bbbbbbbBbbbbb.bbb("bbbb");
+		bb (bbbbBbbbbbb == bbbb) {
+			bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbbbb bbbbbbb bbb bb bbbb bbbbbbbb: " + bbbbbbbBbbbbb);
+		}
+		Bbbbbb bbbb = bbbbBbbbbbb.bbbBbBbbbbb();
+
+		// bbbbbbb bbbbbbb
+		@Bbbbbbbb BbbbBbbbbbb bbbbbbb = bbbbbbbBbbbbb.bbb("bbbbbbb");
+
+		// bbbbbb bbbbbbb
+		Bbbbbbb bbbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbBbbbbbb(bbbb).bbbbb(bbbbbbb, bb);
+		bb(bbbbbbb == bbbb) {
+			BBBBbbbbb.bbbbbbbb().bbbbbb().bbbb("Bb bbbbbbb bbbbb bbb bbbbbbbb bbbbbbb");
+			bbbbbb bbbbb;
+		}
+
+		// bbbbbbb bbb bbbbbbb
+		bbbb.bbbbbbbBbbbbbbbBbbbbbb(bbbbbbb);
+		bbbbbb bbbb;
 	}
 
-	@Override
-	public <T extends Message, V extends T> void registerInternalConsumer(Class<T> parent, MessageConsumer<V> consumer) {
-		this.consumers.put(parent, consumer);
+	@Bbbbbbbb
+	bbbbbb <B bbbbbbb Bbbbbbb, B bbbbbbb B> bbbb bbbbbbbbBbbbbbbbBbbbbbbb(Bbbbb<B> bbbbbb, BbbbbbbBbbbbbbb<B> bbbbbbbb) {
+		bbbb.bbbbbbbbb.bbb(bbbbbb, bbbbbbbb);
 	}
 
-	@Override
-	@SuppressWarnings("rawtypes")
-	public MessageConsumer getInternalConsumer(Class<?> parent) {
-		return this.consumers.get(parent);
+	@Bbbbbbbb
+	@BbbbbbbbBbbbbbbb("bbbbbbbb")
+	bbbbbb BbbbbbbBbbbbbbb bbbBbbbbbbbBbbbbbbb(Bbbbb<?> bbbbbb) {
+		bbbbbb bbbb.bbbbbbbbb.bbb(bbbbbb);
 	}
 
-	private void processIncomingMessage(Message message) {
-		if (message instanceof UpdateMessage) {
-			UpdateMessage msg = (UpdateMessage) message;
+	bbbbbbb bbbb bbbbbbbBbbbbbbbBbbbbbb(Bbbbbbb bbbbbbb) {
+		bb (bbbbbbb bbbbbbbbbb BbbbbbBbbbbbb) {
+			BbbbbbBbbbbbb bbb = (BbbbbbBbbbbbb) bbbbbbb;
 
-			GTSPlugin.instance().logger().info("Received message with ID: " + message.getID());
-			Optional.ofNullable(this.getInternalConsumer(msg.getClass()))
-					.orElseThrow(() -> new IllegalStateException("No consumer available for " + msg.getClass().getName()))
-					.consume(message);
-		} else {
-			throw new IllegalArgumentException("Unknown message type: " + message.getClass().getName());
+			BBBBbbbbb.bbbbbbbb().bbbbbb().bbbb("Bbbbbbbb bbbbbbb bbbb BB: " + bbbbbbb.bbbBB());
+			Bbbbbbbb.bbBbbbbbbb(bbbb.bbbBbbbbbbbBbbbbbbb(bbb.bbbBbbbb()))
+					.bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bb bbbbbbbb bbbbbbbbb bbb " + bbb.bbbBbbbb().bbbBbbb()))
+					.bbbbbbb(bbbbbbb);
+		} bbbb {
+			bbbbb bbb BbbbbbbBbbbbbbbBbbbbbbbb("Bbbbbbb bbbbbbb bbbb: " + bbbbbbb.bbbBbbbb().bbbBbbb());
 		}
 	}
 

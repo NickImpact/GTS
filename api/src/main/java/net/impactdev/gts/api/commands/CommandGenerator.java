@@ -1,182 +1,182 @@
-package net.impactdev.gts.api.commands;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb;
 
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.api.listings.ui.EntrySelection;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.BbbbbBbbbbbbbb;
 
-import java.util.Optional;
-import java.util.Queue;
-import java.util.UUID;
-import java.util.function.Function;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
 /**
- * This is a special executor, to be attached to the commands of sell and auction, where the components
- * don't return a command result, but rather an entry or a price. This is determined by the sub-interface
- * of this executor.
+ * Bbbb bb b bbbbbbb bbbbbbbb, bb bb bbbbbbbb bb bbb bbbbbbbb bb bbbb bbb bbbbbbb, bbbbb bbb bbbbbbbbbb
+ * bbb'b bbbbbb b bbbbbbb bbbbbb, bbb bbbbbb bb bbbbb bb b bbbbb. Bbbb bb bbbbbbbbbb bb bbb bbb-bbbbbbbbb
+ * bb bbbb bbbbbbbb.
  */
-public interface CommandGenerator<T> {
+bbbbbb bbbbbbbbb BbbbbbbBbbbbbbbb<B> {
 
     /**
-     * Represents the access codes for the generator. These are what a user must type on the command
-     * line in order to access the generator.
+     * Bbbbbbbbbb bbb bbbbbb bbbbb bbb bbb bbbbbbbbb. Bbbbb bbb bbbb b bbbb bbbb bbbb bb bbb bbbbbbb
+     * bbbb bb bbbbb bb bbbbbb bbb bbbbbbbbb.
      *
-     * @return An array of string aliases
+     * @bbbbbb Bb bbbbb bb bbbbbb bbbbbbb
      */
-    String[] getAliases();
+    Bbbbbb[] bbbBbbbbbb();
 
     /**
-     * Parses the command line to create the type represented by this generator. The system provides
-     * the source casting the command through their UUID, the argument string represented by a queue,
-     * and additional context that might be needed for a redirection if necessary. Redirection
-     * should only be necessary if the argument string cannot supply the argument correctly. Typical
-     * design would have it such that redirection only occurs if the arguments are empty at the time of
-     * invoking.
+     * Bbbbbb bbb bbbbbbb bbbb bb bbbbbb bbb bbbb bbbbbbbbbbb bb bbbb bbbbbbbbb. Bbb bbbbbb bbbbbbbb
+     * bbb bbbbbb bbbbbbb bbb bbbbbbb bbbbbbb bbbbb BBBB, bbb bbbbbbbb bbbbbb bbbbbbbbbbb bb b bbbbb,
+     * bbb bbbbbbbbbb bbbbbbb bbbb bbbbb bb bbbbbb bbb b bbbbbbbbbbb bb bbbbbbbbb. Bbbbbbbbbbb
+     * bbbbbb bbbb bb bbbbbbbbb bb bbb bbbbbbbb bbbbbb bbbbbb bbbbbb bbb bbbbbbbb bbbbbbbbb. Bbbbbbb
+     * bbbbbb bbbbb bbbb bb bbbb bbbb bbbbbbbbbbb bbbb bbbbbb bb bbb bbbbbbbbb bbb bbbbb bb bbb bbbb bb
+     * bbbbbbbb.
      *
-     * If redirection is necessary, you need to invoke {@link Context#redirected()} to allow the command
-     * executor to understand that redirection has occurred.
+     * Bb bbbbbbbbbbb bb bbbbbbbbb, bbb bbbb bb bbbbbb {@bbbb Bbbbbbb#bbbbbbbbbb()} bb bbbbb bbb bbbbbbb
+     * bbbbbbbb bb bbbbbbbbbb bbbb bbbbbbbbbbb bbb bbbbbbbb.
      *
-     * @param source The source that is casting the command
-     * @param args The arguments still remaining on the argument queue
-     * @param context Contextual information already filled by other components of the command
-     * @return The object created by parsing the command line, or null if redirected.
-     * @throws Exception If any component of the argument string should result in a command parsing exception
+     * @bbbbb bbbbbb Bbb bbbbbb bbbb bb bbbbbbb bbb bbbbbbb
+     * @bbbbb bbbb Bbb bbbbbbbbb bbbbb bbbbbbbbb bb bbb bbbbbbbb bbbbb
+     * @bbbbb bbbbbbb Bbbbbbbbbb bbbbbbbbbbb bbbbbbb bbbbbb bb bbbbb bbbbbbbbbb bb bbb bbbbbbb
+     * @bbbbbb Bbb bbbbbb bbbbbbb bb bbbbbbb bbb bbbbbbb bbbb, bb bbbb bb bbbbbbbbbb.
+     * @bbbbbb Bbbbbbbbb Bb bbb bbbbbbbbb bb bbb bbbbbbbb bbbbbb bbbbbb bbbbbb bb b bbbbbbb bbbbbbb bbbbbbbbb
      */
-    T create(UUID source, Queue<String> args, Context context) throws Exception;
+    B bbbbbb(BBBB bbbbbb, Bbbbb<Bbbbbb> bbbb, Bbbbbbb bbbbbbb) bbbbbb Bbbbbbbbb;
 
     /**
-     * Attempts to locate the next argument on the queue, and attempts to parse it using the translator
-     * if available. Otherwise, if no argument is available, returns an empty optional.
+     * Bbbbbbbb bb bbbbbb bbb bbbb bbbbbbbb bb bbb bbbbb, bbb bbbbbbbb bb bbbbb bb bbbbb bbb bbbbbbbbbb
+     * bb bbbbbbbbb. Bbbbbbbbb, bb bb bbbbbbbb bb bbbbbbbbb, bbbbbbb bb bbbbb bbbbbbbb.
      *
-     * @param args The queue of arguments remaining on the command tree
-     * @param translator The translator that will be used to parse the next argument if available
-     * @param <E> The type the translator will attempt to decode the argument into
-     * @return An optional wrapping the translated argument, or empty
+     * @bbbbb bbbb Bbb bbbbb bb bbbbbbbbb bbbbbbbbb bb bbb bbbbbbb bbbb
+     * @bbbbb bbbbbbbbbb Bbb bbbbbbbbbb bbbb bbbb bb bbbb bb bbbbb bbb bbbb bbbbbbbb bb bbbbbbbbb
+     * @bbbbb <B> Bbb bbbb bbb bbbbbbbbbb bbbb bbbbbbb bb bbbbbb bbb bbbbbbbb bbbb
+     * @bbbbbb Bb bbbbbbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbb, bb bbbbb
      */
-    default <E> Optional<E> next(Queue<String> args, Function<String, E> translator) {
-        if(!args.isEmpty()) {
-            return Optional.of(translator.apply(args.poll()));
+    bbbbbbb <B> Bbbbbbbb<B> bbbb(Bbbbb<Bbbbbb> bbbb, Bbbbbbbb<Bbbbbb, B> bbbbbbbbbb) {
+        bb(!bbbb.bbBbbbb()) {
+            bbbbbb Bbbbbbbb.bb(bbbbbbbbbb.bbbbb(bbbb.bbbb()));
         }
 
-        return Optional.empty();
+        bbbbbb Bbbbbbbb.bbbbb();
     }
 
     /**
-     * Attempts to construct a translated argument, with the condition that an argument should be available
-     * in the queue to translate from. If none are available, an exception will be raised to indicate the
-     * failure of the requirement.
+     * Bbbbbbbb bb bbbbbbbbb b bbbbbbbbbb bbbbbbbb, bbbb bbb bbbbbbbbb bbbb bb bbbbbbbb bbbbbb bb bbbbbbbbb
+     * bb bbb bbbbb bb bbbbbbbbb bbbb. Bb bbbb bbb bbbbbbbbb, bb bbbbbbbbb bbbb bb bbbbbb bb bbbbbbbb bbb
+     * bbbbbbb bb bbb bbbbbbbbbbb.
      *
-     * @param args The queue of arguments remaining on the command context
-     * @param translator The translator to convert from raw input to the desired type
-     * @param <E> The type to create
-     * @return A type representing the translation via the argument requirement
-     * @throws IllegalStateException If no arguments are available in the queue
+     * @bbbbb bbbb Bbb bbbbb bb bbbbbbbbb bbbbbbbbb bb bbb bbbbbbb bbbbbbb
+     * @bbbbb bbbbbbbbbb Bbb bbbbbbbbbb bb bbbbbbb bbbb bbb bbbbb bb bbb bbbbbbb bbbb
+     * @bbbbb <B> Bbb bbbb bb bbbbbb
+     * @bbbbbb B bbbb bbbbbbbbbbbb bbb bbbbbbbbbbb bbb bbb bbbbbbbb bbbbbbbbbbb
+     * @bbbbbb BbbbbbbBbbbbBbbbbbbbb Bb bb bbbbbbbbb bbb bbbbbbbbb bb bbb bbbbb
      */
-    default <E> E require(Queue<String> args, Function<String, E> translator) throws IllegalStateException {
-        return this.next(args, translator).orElseThrow(() -> new IllegalStateException("No available arguments"));
+    bbbbbbb <B> B bbbbbbb(Bbbbb<Bbbbbb> bbbb, Bbbbbbbb<Bbbbbb, B> bbbbbbbbbb) bbbbbb BbbbbbbBbbbbBbbbbbbbb {
+        bbbbbb bbbb.bbbb(bbbb, bbbbbbbbbb).bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bb bbbbbbbbb bbbbbbbbb"));
     }
 
-    interface EntryGenerator<V extends EntrySelection<? extends Entry<?, ?>>> extends CommandGenerator<V> { }
+    bbbbbbbbb BbbbbBbbbbbbbb<B bbbbbbb BbbbbBbbbbbbbb<? bbbbbbb Bbbbb<?, ?>>> bbbbbbb BbbbbbbBbbbbbbbb<B> { }
 
-    interface PriceGenerator<P extends Price<?, ?, ?>> extends CommandGenerator<P> { }
+    bbbbbbbbb BbbbbBbbbbbbbb<B bbbbbbb Bbbbb<?, ?, ?>> bbbbbbb BbbbbbbBbbbbbbbb<B> { }
 
     /**
-     * Indicates context regarding the current command processing for /gts sell or /gts auction.
+     * Bbbbbbbbb bbbbbbb bbbbbbbbb bbb bbbbbbb bbbbbbb bbbbbbbbbb bbb /bbb bbbb bb /bbb bbbbbbb.
      */
-    interface Context {
+    bbbbbbbbb Bbbbbbb {
 
         /**
-         * Indicates the type of listing being created via this context.
+         * Bbbbbbbbb bbb bbbb bb bbbbbbb bbbbb bbbbbbb bbb bbbb bbbbbbb.
          *
-         * @return The type of listing being created, and how to apply it
+         * @bbbbbb Bbb bbbb bb bbbbbbb bbbbb bbbbbbb, bbb bbb bb bbbbb bb
          */
-        Class<? extends Listing> type();
+        Bbbbb<? bbbbbbb Bbbbbbb> bbbb();
 
         /**
-         * Represents the entry currently assigned to the command context, if set. This will only
-         * be set if the command correctly parses an entry from the command line, and is not
-         * redirected beforehand.
+         * Bbbbbbbbbb bbb bbbbb bbbbbbbbb bbbbbbbb bb bbb bbbbbbb bbbbbbb, bb bbb. Bbbb bbbb bbbb
+         * bb bbb bb bbb bbbbbbb bbbbbbbbb bbbbbb bb bbbbb bbbb bbb bbbbbbb bbbb, bbb bb bbb
+         * bbbbbbbbbb bbbbbbbbbb.
          *
-         * This will never be set during entry processing of these commands.
+         * Bbbb bbbb bbbbb bb bbb bbbbbb bbbbb bbbbbbbbbb bb bbbbb bbbbbbbb.
          *
-         * @return The entry selection for the command context
+         * @bbbbbb Bbb bbbbb bbbbbbbbb bbb bbb bbbbbbb bbbbbbb
          */
-        Optional<EntrySelection<?>> entry();
+        Bbbbbbbb<BbbbbBbbbbbbbb<?>> bbbbb();
 
         /**
-         * Sets the entry selection for the given context.
+         * Bbbb bbb bbbbb bbbbbbbbb bbb bbb bbbbb bbbbbbb.
          *
-         * @param entry The entry to set for the context
+         * @bbbbb bbbbb Bbb bbbbb bb bbb bbb bbb bbbbbbb
          */
-        void entry(EntrySelection<?> entry);
+        bbbb bbbbb(BbbbbBbbbbbbbb<?> bbbbb);
 
         /**
-         * Specifies how long the listing will be applied for. If not set, this will default to the
-         * mid-range config time value.
+         * Bbbbbbbbb bbb bbbb bbb bbbbbbb bbbb bb bbbbbbb bbb. Bb bbb bbb, bbbb bbbb bbbbbbb bb bbb
+         * bbb-bbbbb bbbbbb bbbb bbbbb.
          *
-         * @return The amount of time the listing will be placed on the market for.
+         * @bbbbbb Bbb bbbbbb bb bbbb bbb bbbbbbb bbbb bb bbbbbb bb bbb bbbbbb bbb.
          */
-        long time();
+        bbbb bbbb();
 
         /**
-         * Sets the time indicating how long the listing will stay on the market for before expiring.
+         * Bbbb bbb bbbb bbbbbbbbbb bbb bbbb bbb bbbbbbb bbbb bbbb bb bbb bbbbbb bbb bbbbbb bbbbbbbb.
          *
-         * @param time The time to list the listing for
+         * @bbbbb bbbb Bbb bbbb bb bbbb bbb bbbbbbb bbb
          */
-        void time(long time);
+        bbbb bbbb(bbbb bbbb);
 
 
         /**
-         * Checks if the command has been redirected to a UI prompt for the player. This will
-         * happen if the user supplies a typing, but does not provide additional arguments.
+         * Bbbbbb bb bbb bbbbbbb bbb bbbb bbbbbbbbbb bb b BB bbbbbb bbb bbb bbbbbb. Bbbb bbbb
+         * bbbbbb bb bbb bbbb bbbbbbbb b bbbbbb, bbb bbbb bbb bbbbbbb bbbbbbbbbb bbbbbbbbb.
          *
-         * @return <code>true</code> if a prompt has been activated, <code>false</code> otherwise
+         * @bbbbbb <bbbb>bbbb</bbbb> bb b bbbbbb bbb bbbb bbbbbbbbb, <bbbb>bbbbb</bbbb> bbbbbbbbb
          */
-        boolean redirect();
+        bbbbbbb bbbbbbbb();
 
         /**
-         * Sets the context to a redirected state. This allows the command processor to know of the
-         * redirection to avoid further processing on the command stack, and rather provide the context
-         * to create the necessary components for the UI.
+         * Bbbb bbb bbbbbbb bb b bbbbbbbbbb bbbbb. Bbbb bbbbbb bbb bbbbbbb bbbbbbbbb bb bbbb bb bbb
+         * bbbbbbbbbbb bb bbbbb bbbbbbb bbbbbbbbbb bb bbb bbbbbbb bbbbb, bbb bbbbbb bbbbbbb bbb bbbbbbb
+         * bb bbbbbb bbb bbbbbbbbb bbbbbbbbbb bbb bbb BB.
          */
-        void redirected();
+        bbbb bbbbbbbbbb();
 
         /**
-         * Represents additional context for an auction based listing.
+         * Bbbbbbbbbb bbbbbbbbbb bbbbbbb bbb bb bbbbbbb bbbbb bbbbbbb.
          */
-        interface AuctionContext extends Context {
+        bbbbbbbbb BbbbbbbBbbbbbb bbbbbbb Bbbbbbb {
 
             /**
-             * Indicates the starting price set for an auction via the command line.
+             * Bbbbbbbbb bbb bbbbbbbb bbbbb bbb bbb bb bbbbbbb bbb bbb bbbbbbb bbbb.
              *
-             * @return The starting price for an auction
+             * @bbbbbb Bbb bbbbbbbb bbbbb bbb bb bbbbbbb
              */
-            double start();
+            bbbbbb bbbbb();
 
             /**
-             * Sets the price an auction should start at when the auction is processed entirely off the
-             * command line.
+             * Bbbb bbb bbbbb bb bbbbbbb bbbbbb bbbbb bb bbbb bbb bbbbbbb bb bbbbbbbbb bbbbbbbb bbb bbb
+             * bbbbbbb bbbb.
              *
-             * @param start The price to start an auction at
+             * @bbbbb bbbbb Bbb bbbbb bb bbbbb bb bbbbbbb bb
              */
-            void start(double start);
+            bbbb bbbbb(bbbbbb bbbbb);
 
             /**
-             * Indicates the percentage increment subsequent bids will need to abide by in order
-             * to be placed. This simply acts as a minimum input and ensures the price rises in a steady
-             * manner, rather than outbidding by a penny.
+             * Bbbbbbbbb bbb bbbbbbbbbb bbbbbbbbb bbbbbbbbbb bbbb bbbb bbbb bb bbbbb bb bb bbbbb
+             * bb bb bbbbbb. Bbbb bbbbbb bbbb bb b bbbbbbb bbbbb bbb bbbbbbb bbb bbbbb bbbbb bb b bbbbbb
+             * bbbbbb, bbbbbb bbbb bbbbbbbbbb bb b bbbbb.
              *
-             * @return The percentage increment for the auction
+             * @bbbbbb Bbb bbbbbbbbbb bbbbbbbbb bbb bbb bbbbbbb
              */
-            float increment();
+            bbbbb bbbbbbbbb();
 
             /**
-             * Sets the percentage increment that an auction will adjust following bid requirements
-             * by.
+             * Bbbb bbb bbbbbbbbbb bbbbbbbbb bbbb bb bbbbbbb bbbb bbbbbb bbbbbbbbb bbb bbbbbbbbbbbb
+             * bb.
              *
-             * @param increment The increment for the auction
+             * @bbbbb bbbbbbbbb Bbb bbbbbbbbb bbb bbb bbbbbbb
              */
-            void increment(float increment);
+            bbbb bbbbbbbbb(bbbbb bbbbbbbbb);
 
         }
 

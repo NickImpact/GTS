@@ -1,55 +1,55 @@
-package net.impactdev.gts.listings.legacy;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbb;
 
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.data.translators.DataTranslator;
-import net.impactdev.gts.sponge.data.NBTTranslator;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.listings.SpongeItemEntry;
-import net.minecraft.nbt.CompoundNBT;
-import org.spongepowered.api.data.persistence.DataContainer;
-import org.spongepowered.api.data.persistence.DataFormats;
-import org.spongepowered.api.item.inventory.ItemStack;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbb.BBBBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.BbbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbbbbBBB;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbb;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicReference;
+bbbbbb bbbb.bb.BBBbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
 
-public class SpongeLegacyItemStorable implements Storable, Storable.Deserializer<SpongeItemEntry> {
+bbbbbb bbbbb BbbbbbBbbbbbBbbbBbbbbbbb bbbbbbbbbb Bbbbbbbb, Bbbbbbbb.Bbbbbbbbbbbb<BbbbbbBbbbBbbbb> {
 
-    @Override
-    public int getVersion() {
-        throw new UnsupportedOperationException("Legacy Storable does not use a version marker");
+    @Bbbbbbbb
+    bbbbbb bbb bbbBbbbbbb() {
+        bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb("Bbbbbb Bbbbbbbb bbbb bbb bbb b bbbbbbb bbbbbb");
     }
 
-    @Override
-    public JObject serialize() {
-        throw new UnsupportedOperationException("Legacy Storable instances don't attempt to serialize");
+    @Bbbbbbbb
+    bbbbbb BBbbbbb bbbbbbbbb() {
+        bbbbb bbb BbbbbbbbbbbBbbbbbbbbBbbbbbbbb("Bbbbbb Bbbbbbbb bbbbbbbbb bbb'b bbbbbbb bb bbbbbbbbb");
     }
 
-    @Override
-    public SpongeItemEntry deserialize(JsonObject json) {
-        try {
-            DataContainer container = DataFormats.JSON.get().read(json.get("element").getAsString());
-            CompoundNBT nbt = NBTTranslator.getInstance().translate(container);
+    @Bbbbbbbb
+    bbbbbb BbbbbbBbbbBbbbb bbbbbbbbbbb(BbbbBbbbbb bbbb) {
+        bbb {
+            BbbbBbbbbbbbb bbbbbbbbb = BbbbBbbbbbb.BBBB.bbb().bbbb(bbbb.bbb("bbbbbbb").bbbBbBbbbbb());
+            BbbbbbbbBBB bbb = BBBBbbbbbbbbb.bbbBbbbbbbb().bbbbbbbbb(bbbbbbbbb);
 
-            GTSService service = GTSService.getInstance();
-            Collection<DataTranslator<CompoundNBT>> translators = service.getDataTranslatorManager().get(CompoundNBT.class);
-            if(!translators.isEmpty()) {
-                AtomicReference<CompoundNBT> reference = new AtomicReference<>(nbt);
-                translators.forEach(translator -> translator.translate(reference.get()).ifPresent(reference::set));
-                nbt = reference.get();
+            BBBBbbbbbb bbbbbbb = BBBBbbbbbb.bbbBbbbbbbb();
+            Bbbbbbbbbb<BbbbBbbbbbbbbb<BbbbbbbbBBB>> bbbbbbbbbbb = bbbbbbb.bbbBbbbBbbbbbbbbbBbbbbbb().bbb(BbbbbbbbBBB.bbbbb);
+            bb(!bbbbbbbbbbb.bbBbbbb()) {
+                BbbbbbBbbbbbbbb<BbbbbbbbBBB> bbbbbbbbb = bbb BbbbbbBbbbbbbbb<>(bbb);
+                bbbbbbbbbbb.bbbBbbb(bbbbbbbbbb -> bbbbbbbbbb.bbbbbbbbb(bbbbbbbbb.bbb()).bbBbbbbbb(bbbbbbbbb::bbb));
+                bbb = bbbbbbbbb.bbb();
             }
 
-            return new SpongeItemEntry(ItemStack.builder()
-                    .fromContainer(NBTTranslator.getInstance().translateFrom(nbt))
-                    .build()
-                    .createSnapshot(),
-                    null
+            bbbbbb bbb BbbbbbBbbbBbbbb(BbbbBbbbb.bbbbbbb()
+                    .bbbbBbbbbbbbb(BBBBbbbbbbbbb.bbbBbbbbbbb().bbbbbbbbbBbbb(bbb))
+                    .bbbbb()
+                    .bbbbbbBbbbbbbb(),
+                    bbbb
             );
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to deserialize a legacy item entry", e);
+        } bbbbb (BBBbbbbbbbb b) {
+            bbbbb bbb BbbbbbbBbbbbbbbb("Bbbbbb bb bbbbbbbbbbb b bbbbbb bbbb bbbbb", b);
         }
     }
 }

@@ -1,25 +1,25 @@
-package net.impactdev.gts.listings.searcher;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb;
 
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.searching.Searcher;
-import net.impactdev.gts.listings.SpongeItemEntry;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.spongepowered.api.data.Keys;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.BbbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
 
-public class SpongeItemSearcher implements Searcher {
+bbbbbb bbbbb BbbbbbBbbbBbbbbbbb bbbbbbbbbb Bbbbbbbb {
 
-    @Override
-    public boolean parse(Listing listing, String input) {
-        if(listing.getEntry() instanceof SpongeItemEntry) {
-            SpongeItemEntry entry = (SpongeItemEntry) listing.getEntry();
-            Component name = entry.getOrCreateElement().get(Keys.CUSTOM_NAME)
-                    .orElse(entry.getOrCreateElement().type().asComponent());
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbb(Bbbbbbb bbbbbbb, Bbbbbb bbbbb) {
+        bb(bbbbbbb.bbbBbbbb() bbbbbbbbbb BbbbbbBbbbBbbbb) {
+            BbbbbbBbbbBbbbb bbbbb = (BbbbbbBbbbBbbbb) bbbbbbb.bbbBbbbb();
+            Bbbbbbbbb bbbb = bbbbb.bbbBbBbbbbbBbbbbbb().bbb(Bbbb.BBBBBB_BBBB)
+                    .bbBbbb(bbbbb.bbbBbBbbbbbBbbbbbb().bbbb().bbBbbbbbbbb());
 
-            return LegacyComponentSerializer.legacyAmpersand().serialize(name).toLowerCase().contains(input.toLowerCase());
+            bbbbbb BbbbbbBbbbbbbbbBbbbbbbbbb.bbbbbbBbbbbbbbb().bbbbbbbbb(bbbb).bbBbbbbBbbb().bbbbbbbb(bbbbb.bbBbbbbBbbb());
         }
 
-        return false;
+        bbbbbb bbbbb;
     }
 
 }

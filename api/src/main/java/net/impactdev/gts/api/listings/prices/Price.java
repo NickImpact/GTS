@@ -1,90 +1,90 @@
-package net.impactdev.gts.api.listings.prices;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb;
 
-import net.impactdev.gts.api.data.Storable;
-import net.impactdev.gts.api.listings.makeup.Display;
-import net.kyori.adventure.text.TextComponent;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbb;
 
 /**
- * Represents a value which a player will pay to purchase (or bid) on a listing.
+ * Bbbbbbbbbb b bbbbb bbbbb b bbbbbb bbbb bbb bb bbbbbbbb (bb bbb) bb b bbbbbbb.
  *
- * @param <P> The element that is controlled by this interface
- * @param <S> A potentially populated field indicating payment source from the player
- * @param <I> The display output type for this price
+ * @bbbbb <B> Bbb bbbbbbb bbbb bb bbbbbbbbbb bb bbbb bbbbbbbbb
+ * @bbbbb <B> B bbbbbbbbbbb bbbbbbbbb bbbbb bbbbbbbbbb bbbbbbb bbbbbb bbbb bbb bbbbbb
+ * @bbbbb <B> Bbb bbbbbbb bbbbbb bbbb bbb bbbb bbbbb
  */
-public interface Price<P, S, I> extends Storable {
+bbbbbb bbbbbbbbb Bbbbb<B, B, B> bbbbbbb Bbbbbbbb {
 
 	/**
-	 * The instance being setup as the price. So this might be a double or BigDecimal to represent some form of monetary
-	 * value, or another instance to represent something more.
+	 * Bbb bbbbbbbb bbbbb bbbbb bb bbb bbbbb. Bb bbbb bbbbb bb b bbbbbb bb BbbBbbbbbb bb bbbbbbbbb bbbb bbbb bb bbbbbbbb
+	 * bbbbb, bb bbbbbbb bbbbbbbb bb bbbbbbbbb bbbbbbbbb bbbb.
 	 *
-	 * @return The instance being used as the mark for the price
+	 * @bbbbbb Bbb bbbbbbbb bbbbb bbbb bb bbb bbbb bbb bbb bbbbb
 	 */
-	P getPrice();
+	B bbbBbbbb();
 
 	/**
-	 * Represents the output of the price as it is to be displayed to the user querying the listing. In more general terms,
-	 * this would represent the value, so for a dollar based currency, this would be something like "$500"
+	 * Bbbbbbbbbb bbb bbbbbb bb bbb bbbbb bb bb bb bb bb bbbbbbbbb bb bbb bbbb bbbbbbbb bbb bbbbbbb. Bb bbbb bbbbbbb bbbbb,
+	 * bbbb bbbbb bbbbbbbbb bbb bbbbb, bb bbb b bbbbbb bbbbb bbbbbbbb, bbbb bbbbb bb bbbbbbbbb bbbb "$500"
 	 *
-	 * @return The textual representation of the price
+	 * @bbbbbb Bbb bbbbbbb bbbbbbbbbbbbbb bb bbb bbbbb
 	 */
-	TextComponent getText();
+	BbbbBbbbbbbbb bbbBbbb();
 
 	/**
-	 * Represents the look of a price should it be held in reserve for a player to accept or log back in, depending
-	 * on the mode selected by the server configuration.
+	 * Bbbbbbbbbb bbb bbbb bb b bbbbb bbbbbb bb bb bbbb bb bbbbbbb bbb b bbbbbb bb bbbbbb bb bbb bbbb bb, bbbbbbbbb
+	 * bb bbb bbbb bbbbbbbb bb bbb bbbbbb bbbbbbbbbbbbb.
 	 *
-	 * @return The displayable representation of a price
+	 * @bbbbbb Bbb bbbbbbbbbbb bbbbbbbbbbbbbb bb b bbbbb
 	 */
-	Display<I> getDisplay();
+	Bbbbbbb<B> bbbBbbbbbb();
 
 	/**
-	 * Determines whether or not the user paying for the listing can actually pay the price. If they can, this call will
-	 * return true. Otherwise, this call will return false to mark that any further action should be cancelled.
+	 * Bbbbbbbbbb bbbbbbb bb bbb bbb bbbb bbbbbb bbb bbb bbbbbbb bbb bbbbbbbb bbb bbb bbbbb. Bb bbbb bbb, bbbb bbbb bbbb
+	 * bbbbbb bbbb. Bbbbbbbbb, bbbb bbbb bbbb bbbbbb bbbbb bb bbbb bbbb bbb bbbbbbb bbbbbb bbbbbb bb bbbbbbbbb.
 	 *
-	 * @param payer The user paying for the listing
-	 * @return True if the user can pay, false otherwise
+	 * @bbbbb bbbbb Bbb bbbb bbbbbb bbb bbb bbbbbbb
+	 * @bbbbbb Bbbb bb bbb bbbb bbb bbb, bbbbb bbbbbbbbb
 	 */
-	boolean canPay(UUID payer);
+	bbbbbbb bbbBbb(BBBB bbbbb);
 
 	/**
-	 * Processes the payment for the user paying for the listing. This call should be made after verifying the user
-	 * can actually complete the payment, via {@link #canPay(UUID)}.
+	 * Bbbbbbbbb bbb bbbbbbb bbb bbb bbbb bbbbbb bbb bbb bbbbbbb. Bbbb bbbb bbbbbb bb bbbb bbbbb bbbbbbbbb bbb bbbb
+	 * bbb bbbbbbbb bbbbbbbb bbb bbbbbbb, bbb {@bbbb #bbbBbb(BBBB)}.
 	 *
-	 * @param payer The user paying for the listing
-	 * @param source Source data that might need to be written to the price
-	 * @param marker A reference to the caller that will inform it that the data has been processed and is
-	 *               ready for updating. This field MUST be updated per implementation. Failure to set it
-	 *               accordingly will result in loss of data
+	 * @bbbbb bbbbb Bbb bbbb bbbbbb bbb bbb bbbbbbb
+	 * @bbbbb bbbbbb Bbbbbb bbbb bbbb bbbbb bbbb bb bb bbbbbbb bb bbb bbbbb
+	 * @bbbbb bbbbbb B bbbbbbbbb bb bbb bbbbbb bbbb bbbb bbbbbb bb bbbb bbb bbbb bbb bbbb bbbbbbbbb bbb bb
+	 *               bbbbb bbb bbbbbbbb. Bbbb bbbbb BBBB bb bbbbbbb bbb bbbbbbbbbbbbbb. Bbbbbbb bb bbb bb
+	 *               bbbbbbbbbbb bbbb bbbbbb bb bbbb bb bbbb
 	 */
-	void pay(UUID payer, @Nullable Object source, @NonNull AtomicBoolean marker);
+	bbbb bbb(BBBB bbbbb, @Bbbbbbbb Bbbbbb bbbbbb, @BbbBbbb BbbbbbBbbbbbb bbbbbb);
 
 	/**
-	 * Processes the receiving end of a payment. Sometimes, a price may be unable to be completed due to offline
-	 * restrictions, so this call may temporarily store the payment as a later receivable for the user intended
-	 * to receive the payment.
+	 * Bbbbbbbbb bbb bbbbbbbbb bbb bb b bbbbbbb. Bbbbbbbbb, b bbbbb bbb bb bbbbbb bb bb bbbbbbbbb bbb bb bbbbbbb
+	 * bbbbbbbbbbbb, bb bbbb bbbb bbb bbbbbbbbbbb bbbbb bbb bbbbbbb bb b bbbbb bbbbbbbbbb bbb bbb bbbb bbbbbbbb
+	 * bb bbbbbbb bbb bbbbbbb.
 	 *
-	 * @param recipient The user receiving the payment
+	 * @bbbbb bbbbbbbbb Bbb bbbb bbbbbbbbb bbb bbbbbbb
 	 */
-	boolean reward(UUID recipient);
+	bbbbbbb bbbbbb(BBBB bbbbbbbbb);
 
 	/**
-	 * Represents the typing of the source that should be applied to a listings price
+	 * Bbbbbbbbbb bbb bbbbbb bb bbb bbbbbb bbbb bbbbbb bb bbbbbbb bb b bbbbbbbb bbbbb
 	 *
-	 * @return A type token wrapping the source type
+	 * @bbbbbb B bbbb bbbbb bbbbbbbb bbb bbbbbb bbbb
 	 */
-	Class<S> getSourceType();
+	Bbbbb<B> bbbBbbbbbBbbb();
 
 	/**
-	 * Calculates and returns the fee a user should pay for selecting this price
+	 * Bbbbbbbbbb bbb bbbbbbb bbb bbb b bbbb bbbbbb bbb bbb bbbbbbbbb bbbb bbbbb
 	 *
-	 * @param listingType <code>true</code> if BIN, <code>false</code> if Auction
-	 * @return The fee a user is to pay for this price
+	 * @bbbbb bbbbbbbBbbb <bbbb>bbbb</bbbb> bb BBB, <bbbb>bbbbb</bbbb> bb Bbbbbbb
+	 * @bbbbbb Bbb bbb b bbbb bb bb bbb bbb bbbb bbbbb
 	 */
-	long calculateFee(boolean listingType);
+	bbbb bbbbbbbbbBbb(bbbbbbb bbbbbbbBbbb);
 
 }

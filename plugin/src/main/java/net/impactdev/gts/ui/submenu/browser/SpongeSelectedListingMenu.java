@@ -1,720 +1,720 @@
-package net.impactdev.gts.ui.submenu.browser;
+bbbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbbbb.bbbbbbb;
 
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.AtomicDouble;
-import net.impactdev.gts.SpongeGTSPlugin;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.ui.GTSMenu;
-import net.impactdev.gts.manager.SpongeListingManager;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.data.registry.GTSKeyMarker;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.listings.makeup.Display;
-import net.impactdev.gts.api.listings.manager.ListingManager;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.api.listings.prices.PriceManager;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.common.discord.DiscordOption;
-import net.impactdev.gts.common.discord.Message;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.sponge.listings.SpongeAuction;
-import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
-import net.impactdev.gts.sponge.listings.SpongeListing;
-import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
-import net.impactdev.gts.ui.SpongeMainMenu;
-import net.impactdev.gts.ui.submenu.SpongeListingMenu;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
-import net.impactdev.impactor.api.ui.containers.detail.RefreshDetail;
-import net.impactdev.impactor.api.ui.containers.detail.RefreshTypes;
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import net.impactdev.impactor.api.utilities.mappings.Tuple;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.data.type.DyeColors;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.scheduler.ScheduledTask;
-import org.spongepowered.api.scheduler.Task;
-import org.spongepowered.api.service.economy.Currency;
-import org.spongepowered.api.service.economy.EconomyService;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.bbbbbbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbbBBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bb.BBBBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbb.BbbbbbBbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.BBBBbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.BbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.BbbbbbBbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbbbb.BbbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.BbbbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.BbbbbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbb.BbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbb.BbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbb.Bbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbb.BbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbb.BbbbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Supplier;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class SpongeSelectedListingMenu {
+bbbbbb bbbbb BbbbbbBbbbbbbbBbbbbbbBbbb {
 
-    private static final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+    bbbbbbb bbbbbb bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
 
-    private final ImpactorUI display;
-    private final PlatformPlayer viewer;
+    bbbbbbb bbbbb BbbbbbbbBB bbbbbbb;
+    bbbbbbb bbbbb BbbbbbbbBbbbbb bbbbbb;
 
-    private final Listing listing;
+    bbbbbbb bbbbb Bbbbbbb bbbbbbb;
 
-    private final Supplier<GTSMenu> parent;
-    private final boolean claim;
+    bbbbbbb bbbbb Bbbbbbbb<BBBBbbb> bbbbbb;
+    bbbbbbb bbbbb bbbbbbb bbbbb;
 
-    public SpongeSelectedListingMenu(PlatformPlayer viewer, Listing listing, Supplier<GTSMenu> parent, boolean claim, boolean update) {
-        this.viewer = viewer;
-        this.listing = listing;
-        this.parent = parent;
-        this.claim = claim;
+    bbbbbb BbbbbbBbbbbbbbBbbbbbbBbbb(BbbbbbbbBbbbbb bbbbbb, Bbbbbbb bbbbbbb, Bbbbbbbb<BBBBbbb> bbbbbb, bbbbbbb bbbbb, bbbbbbb bbbbbb) {
+        bbbb.bbbbbb = bbbbbb;
+        bbbb.bbbbbbb = bbbbbbb;
+        bbbb.bbbbbb = bbbbbb;
+        bbbb.bbbbb = bbbbb;
 
-        boolean isLister = viewer.uuid().equals(listing.getLister());
+        bbbbbbb bbBbbbbb = bbbbbb.bbbb().bbbbbb(bbbbbbb.bbbBbbbbb());
 
-//        Optional<ScheduledTask> task = Optional.of(update)
-//                .filter(t -> t)
-//                .map(ignore -> Task.builder()
-//                        .execute(() -> {
-//                            if(Sponge.server().ticksPerSecond() >= 18) {
-//                                this.update();
+//        Bbbbbbbb<BbbbbbbbbBbbb> bbbb = Bbbbbbbb.bb(bbbbbb)
+//                .bbbbbb(b -> b)
+//                .bbb(bbbbbb -> Bbbb.bbbbbbb()
+//                        .bbbbbbb(() -> {
+//                            bb(Bbbbbb.bbbbbb().bbbbbBbbBbbbbb() >= 18) {
+//                                bbbb.bbbbbb();
 //                            }
 //                        })
-//                        .interval(1, TimeUnit.SECONDS)
-//                        .plugin(GTSPlugin.instance().as(SpongeGTSPlugin.class).container())
-//                        .build()
+//                        .bbbbbbbb(1, BbbbBbbb.BBBBBBB)
+//                        .bbbbbb(BBBBbbbbb.bbbbbbbb().bb(BbbbbbBBBBbbbbb.bbbbb).bbbbbbbbb())
+//                        .bbbbb()
 //                )
-//                .map(t -> Sponge.server().scheduler().submit(t));
+//                .bbb(b -> Bbbbbb.bbbbbb().bbbbbbbbb().bbbbbb(b));
 
-        this.display = ImpactorUI.builder()
-                .provider(Key.key("gts", "selected-listing"))
-                .title(service.parse(Utilities.readMessageConfigOption(
-                        this.claim ? MsgConfigKeys.UI_MENU_LISTING_SELECTED_CLAIM :
-                                isLister ? MsgConfigKeys.UI_MENU_LISTING_SELECTED_LISTER :
-                                this.listing instanceof BuyItNow ? MsgConfigKeys.UI_MENU_LISTING_SELECTED_OTHER :
-                                        MsgConfigKeys.UI_MENU_LISTING_SELECTED_OTHER_AUCTION
+        bbbb.bbbbbbb = BbbbbbbbBB.bbbbbbb()
+                .bbbbbbbb(Bbb.bbb("bbb", "bbbbbbbb-bbbbbbb"))
+                .bbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(
+                        bbbb.bbbbb ? BbbBbbbbbBbbb.BB_BBBB_BBBBBBB_BBBBBBBB_BBBBB :
+                                bbBbbbbb ? BbbBbbbbbBbbb.BB_BBBB_BBBBBBB_BBBBBBBB_BBBBBB :
+                                bbbb.bbbbbbb bbbbbbbbbb BbbBbBbb ? BbbBbbbbbBbbb.BB_BBBB_BBBBBBB_BBBBBBBB_BBBBB :
+                                        BbbBbbbbbBbbb.BB_BBBB_BBBBBBB_BBBBBBBB_BBBBB_BBBBBBB
                 )))
-                .layout(this.design())
-//                .onClose(context -> {
-//                    task.ifPresent(ScheduledTask::cancel);
-//                    return true;
+                .bbbbbb(bbbb.bbbbbb())
+//                .bbBbbbb(bbbbbbb -> {
+//                    bbbb.bbBbbbbbb(BbbbbbbbbBbbb::bbbbbb);
+//                    bbbbbb bbbb;
 //                })
-                .build();
+                .bbbbb();
     }
 
-    public void open() {
-        this.display.open(this.viewer);
+    bbbbbb bbbb bbbb() {
+        bbbb.bbbbbbb.bbbb(bbbb.bbbbbb);
     }
 
-    private void update() {
-        RefreshDetail detail = RefreshDetail.create(RefreshTypes.SLOT_INDEX);
-        detail.context().put(Integer.class, 13);
-        this.display.refresh(detail);
+    bbbbbbb bbbb bbbbbb() {
+        BbbbbbbBbbbbb bbbbbb = BbbbbbbBbbbbb.bbbbbb(BbbbbbbBbbbb.BBBB_BBBBB);
+        bbbbbb.bbbbbbb().bbb(Bbbbbbb.bbbbb, 13);
+        bbbb.bbbbbbb.bbbbbbb(bbbbbb);
     }
 
-    private Layout design() {
-        Layout.LayoutBuilder builder = Layout.builder();
-        Icon<ItemStack> colored = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.LIGHT_BLUE_STAINED_GLASS_PANE)
-                        .add(Keys.CUSTOM_NAME, Component.empty())
-                        .build()
+    bbbbbbb Bbbbbb bbbbbb() {
+        Bbbbbb.BbbbbbBbbbbbb bbbbbbb = Bbbbbb.bbbbbbb();
+        Bbbb<BbbbBbbbb> bbbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                        .bbbbBbbb(BbbbBbbbb.BBBBB_BBBB_BBBBBBB_BBBBB_BBBB)
+                        .bbb(Bbbb.BBBBBB_BBBB, Bbbbbbbbb.bbbbb())
+                        .bbbbb()
                 ))
-                .build();
+                .bbbbb();
 
-        builder.border(ProvidedIcons.BORDER);
-        builder.slots(colored, 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
-        builder.slots(ProvidedIcons.BORDER, 19, 20, 24, 25, 40);
-        builder.row(ProvidedIcons.BORDER, 4);
+        bbbbbbb.bbbbbb(BbbbbbbbBbbbb.BBBBBB);
+        bbbbbbb.bbbbb(bbbbbbb, 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
+        bbbbbbb.bbbbb(BbbbbbbbBbbbb.BBBBBB, 19, 20, 24, 25, 40);
+        bbbbbbb.bbb(BbbbbbbbBbbbb.BBBBBB, 4);
 
-        Icon<ItemStack> icon = Icon.builder(ItemStack.class)
-                .display(() -> {
-                    final Config lang = GTSPlugin.instance().configuration().language();
-                    final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-                    Display<ItemStack> display = ((SpongeListing)this.listing).getEntry().getDisplay(this.viewer.uuid());
-                    ItemStack item = ItemStack.builder().from(display.get()).build();
+        Bbbb<BbbbBbbbb> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(() -> {
+                    bbbbb Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+                    bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+                    Bbbbbbb<BbbbBbbbb> bbbbbbb = ((BbbbbbBbbbbbb)bbbb.bbbbbbb).bbbBbbbb().bbbBbbbbbb(bbbb.bbbbbb.bbbb());
+                    BbbbBbbbb bbbb = BbbbBbbbb.bbbbbbb().bbbb(bbbbbbb.bbb()).bbbbb();
 
-                    Optional<List<Component>> lore = item.get(Keys.LORE);
-                    lore.ifPresent(texts -> texts.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_LISTING_DETAIL_SEPARATOR))));
+                    Bbbbbbbb<Bbbb<Bbbbbbbbb>> bbbb = bbbb.bbb(Bbbb.BBBB);
+                    bbbb.bbBbbbbbb(bbbbb -> bbbbb.bbbBbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBB_BBBBBBBBB))));
 
-                    Supplier<List<Component>> append = () -> {
-                        List<Component> result = Lists.newArrayList();
-                        if (this.listing instanceof Auction) {
-                            Auction auction = (Auction) listing;
-                            List<String> input;
-                            if (auction.getBids().size() > 1) {
-                                input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_BIDS);
-                            } else if (auction.getBids().size() == 1) {
-                                input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_WITH_SINGLE_BID);
-                            } else {
-                                input = lang.get(MsgConfigKeys.UI_AUCTION_DETAILS_NO_BIDS);
+                    Bbbbbbbb<Bbbb<Bbbbbbbbb>> bbbbbb = () -> {
+                        Bbbb<Bbbbbbbbb> bbbbbb = Bbbbb.bbbBbbbbBbbb();
+                        bb (bbbb.bbbbbbb bbbbbbbbbb Bbbbbbb) {
+                            Bbbbbbb bbbbbbb = (Bbbbbbb) bbbbbbb;
+                            Bbbb<Bbbbbb> bbbbb;
+                            bb (bbbbbbb.bbbBbbb().bbbb() > 1) {
+                                bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBBB_BBBB_BBBB);
+                            } bbbb bb (bbbbbbb.bbbBbbb().bbbb() == 1) {
+                                bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBBB_BBBB_BBBBBB_BBB);
+                            } bbbb {
+                                bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBBBBB_BB_BBBB);
                             }
 
-                            PlaceholderSources sources = PlaceholderSources.builder()
-                                    .append(Auction.class, () -> auction)
-                                    .build();
+                            BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                    .bbbbbb(Bbbbbbb.bbbbb, () -> bbbbbbb)
+                                    .bbbbb();
 
-                            result.addAll(service.parse(input, sources));
-                        } else if (listing instanceof BuyItNow) {
-                            BuyItNow bin = (BuyItNow) listing;
+                            bbbbbb.bbbBbb(bbbbbbb.bbbbb(bbbbb, bbbbbbb));
+                        } bbbb bb (bbbbbbb bbbbbbbbbb BbbBbBbb) {
+                            BbbBbBbb bbb = (BbbBbBbb) bbbbbbb;
 
-                            List<String> input = lang.get(MsgConfigKeys.UI_BIN_DETAILS);
-                            PlaceholderSources sources = PlaceholderSources.builder()
-                                    .append(BuyItNow.class, () -> bin)
-                                    .build();
-                            result.addAll(service.parse(input, sources));
+                            Bbbb<Bbbbbb> bbbbb = bbbb.bbb(BbbBbbbbbBbbb.BB_BBB_BBBBBBB);
+                            BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                    .bbbbbb(BbbBbBbb.bbbbb, () -> bbb)
+                                    .bbbbb();
+                            bbbbbb.bbbBbb(bbbbbbb.bbbbb(bbbbb, bbbbbbb));
                         }
-                        return result;
+                        bbbbbb bbbbbb;
                     };
-                    List<Component> result = lore.orElse(Lists.newArrayList());
-                    result.addAll(append.get());
-                    item.offer(Keys.LORE, result);
+                    Bbbb<Bbbbbbbbb> bbbbbb = bbbb.bbBbbb(Bbbbb.bbbBbbbbBbbb());
+                    bbbbbb.bbbBbb(bbbbbb.bbb());
+                    bbbb.bbbbb(Bbbb.BBBB, bbbbbb);
 
-                    return item;
+                    bbbbbb bbbb;
                 })
-                .build();
-        builder.slot(icon, 13);
+                .bbbbb();
+        bbbbbbb.bbbb(bbbb, 13);
 
-        ItemStack b = ItemStack.builder()
-                .itemType(ItemTypes.BARRIER)
-                .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK)))
-                .build();
+        BbbbBbbbb b = BbbbBbbbb.bbbbbbb()
+                .bbbbBbbb(BbbbBbbbb.BBBBBBB)
+                .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBB)))
+                .bbbbb();
 
-        Icon<ItemStack> back = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(b))
-                .listener(context -> {
-                    this.parent.get().open();
-                    return false;
+        Bbbb<BbbbBbbbb> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(b))
+                .bbbbbbbb(bbbbbbb -> {
+                    bbbb.bbbbbb.bbb().bbbb();
+                    bbbbbb bbbbb;
                 })
-                .build();
-        builder.slot(back, 38);
+                .bbbbb();
+        bbbbbbb.bbbb(bbbb, 38);
 
-        if(this.claim) {
-            this.createClaimerSection(builder);
-        } else {
-            if(this.listing.getLister().equals(this.viewer.uuid())) {
-                this.createRemoverSection(builder);
-            } else {
-                this.createSubmittersSection(builder);
+        bb(bbbb.bbbbb) {
+            bbbb.bbbbbbBbbbbbbBbbbbbb(bbbbbbb);
+        } bbbb {
+            bb(bbbb.bbbbbbb.bbbBbbbbb().bbbbbb(bbbb.bbbbbb.bbbb())) {
+                bbbb.bbbbbbBbbbbbbBbbbbbb(bbbbbbb);
+            } bbbb {
+                bbbb.bbbbbbBbbbbbbbbbBbbbbbb(bbbbbbb);
             }
         }
 
-        return builder.build();
+        bbbbbb bbbbbbb.bbbbb();
     }
 
-    private void createSubmittersSection(Layout.LayoutBuilder builder) {
-        if(this.listing instanceof Auction) {
-            Auction auction = (Auction) this.listing;
-            double current = auction.hasAnyBidsPlaced() ? auction.getCurrentPrice() : auction.getStartingPrice();
-            final double newBid = auction.getNextBidRequirement();
+    bbbbbbb bbbb bbbbbbBbbbbbbbbbBbbbbbb(Bbbbbb.BbbbbbBbbbbbb bbbbbbb) {
+        bb(bbbb.bbbbbbb bbbbbbbbbb Bbbbbbb) {
+            Bbbbbbb bbbbbbb = (Bbbbbbb) bbbb.bbbbbbb;
+            bbbbbb bbbbbbb = bbbbbbb.bbbBbbBbbbBbbbbb() ? bbbbbbb.bbbBbbbbbbBbbbb() : bbbbbbb.bbbBbbbbbbbBbbbb();
+            bbbbb bbbbbb bbbBbb = bbbbbbb.bbbBbbbBbbBbbbbbbbbbb();
 
-            Currency currency = Sponge.server().serviceProvider().economyService()
-                    .orElseThrow(IllegalStateException::new)
-                    .defaultCurrency();
-            Tuple<Boolean, Boolean> affordability = this.getBalanceAbilities(currency, auction.hasAnyBidsPlaced() ? current : newBid);
+            Bbbbbbbb bbbbbbbb = Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb().bbbbbbbBbbbbbb()
+                    .bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb)
+                    .bbbbbbbBbbbbbbb();
+            Bbbbb<Bbbbbbb, Bbbbbbb> bbbbbbbbbbbbb = bbbb.bbbBbbbbbbBbbbbbbbb(bbbbbbbb, bbbbbbb.bbbBbbBbbbBbbbbb() ? bbbbbbb : bbbBbb);
 
-            Icon<ItemStack> normal = Icon.builder(ItemStack.class)
-                    .display(new DisplayProvider.Constant<>(this.buildBidIcon()))
-                    .listener(context -> {
-                        if(auction.getHighBid().map(bid -> bid.getFirst().equals(this.viewer.uuid())).orElse(false)) {
-                            this.player().sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER)));
-                        } else {
-                            if (affordability.getFirst()) {
-                                this.display.close(this.viewer);
-                                SpongeListingManager manager = (SpongeListingManager) Impactor.getInstance().getRegistry().get(ListingManager.class);
-                                manager.bid(this.viewer.uuid(), (SpongeAuction) auction, newBid);
-                            } else {
-                                this.player().sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID)));
+            Bbbb<BbbbBbbbb> bbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                    .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbbb.bbbbbBbbBbbb()))
+                    .bbbbbbbb(bbbbbbb -> {
+                        bb(bbbbbbb.bbbBbbbBbb().bbb(bbb -> bbb.bbbBbbbb().bbbbbb(bbbb.bbbbbb.bbbb())).bbBbbb(bbbbb)) {
+                            bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBBB_BBB_BBBBBB)));
+                        } bbbb {
+                            bb (bbbbbbbbbbbbb.bbbBbbbb()) {
+                                bbbb.bbbbbbb.bbbbb(bbbb.bbbbbb);
+                                BbbbbbBbbbbbbBbbbbbb bbbbbbb = (BbbbbbBbbbbbbBbbbbbb) Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+                                bbbbbbb.bbb(bbbb.bbbbbb.bbbb(), (BbbbbbBbbbbbb) bbbbbbb, bbbBbb);
+                            } bbbb {
+                                bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBBB_BBBBBB_BBB)));
                             }
                         }
 
-                        return false;
+                        bbbbbb bbbbb;
                     })
-                    .build();
-            builder.slot(normal, 41);
-            builder.slot(this.getBidHistory(), 42);
+                    .bbbbb();
+            bbbbbbb.bbbb(bbbbbb, 41);
+            bbbbbbb.bbbb(bbbb.bbbBbbBbbbbbb(), 42);
 
-            if(affordability.getSecond()) {
-                List<Component> lore = Lists.newArrayList();
-                lore.addAll(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_PLACE_CUSTOM_BID_LORE_BASE)));
+            bb(bbbbbbbbbbbbb.bbbBbbbbb()) {
+                Bbbb<Bbbbbbbbb> bbbb = Bbbbb.bbbBbbbbBbbb();
+                bbbb.bbbBbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBB_BBBBBB_BBB_BBBB_BBBB)));
 
-                Icon<ItemStack> custom = Icon.builder(ItemStack.class)
-                        .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                                .itemType(ItemTypes.GOLD_INGOT)
-                                .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_PLACE_CUSTOM_BID_TITLE)))
-                                .add(Keys.LORE, lore)
-                                .build()
+                Bbbb<BbbbBbbbb> bbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                        .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                                .bbbbBbbb(BbbbBbbbb.BBBB_BBBBB)
+                                .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBB_BBBBBB_BBB_BBBBB)))
+                                .bbb(Bbbb.BBBB, bbbb)
+                                .bbbbb()
                         ))
-                        .listener(context -> {
-                            if(auction.getHighBid().map(bid -> bid.getFirst().equals(this.viewer.uuid())).orElse(false)) {
-                                this.player().sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_ALREADY_TOP_BIDDER)));
-                            } else {
-//                                SignQuery<Text, Player> query = SignQuery.<Text, Player>builder()
-//                                        .position(new Vector3d(0, 1, 0))
-//                                        .response(submission -> {
-//                                            try {
-//                                                double bid = Double.parseDouble(submission.get(0));
-//                                                if (bid < newBid) {
-//                                                    Sponge.getServer().getPlayer(this.viewer.getUniqueId()).ifPresent(player -> {
-//                                                        player.sendMessage(service.parse(
-//                                                                Utilities.readMessageConfigOption(MsgConfigKeys.CUSTOM_BID_INVALID),
-//                                                                Lists.newArrayList(() -> this.listing)
+                        .bbbbbbbb(bbbbbbb -> {
+                            bb(bbbbbbb.bbbBbbbBbb().bbb(bbb -> bbb.bbbBbbbb().bbbbbb(bbbb.bbbbbb.bbbb())).bbBbbb(bbbbb)) {
+                                bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBBBBBB_BBB_BBBBBB)));
+                            } bbbb {
+//                                BbbbBbbbb<Bbbb, Bbbbbb> bbbbb = BbbbBbbbb.<Bbbb, Bbbbbb>bbbbbbb()
+//                                        .bbbbbbbb(bbb Bbbbbb3b(0, 1, 0))
+//                                        .bbbbbbbb(bbbbbbbbbb -> {
+//                                            bbb {
+//                                                bbbbbb bbb = Bbbbbb.bbbbbBbbbbb(bbbbbbbbbb.bbb(0));
+//                                                bb (bbb < bbbBbb) {
+//                                                    Bbbbbb.bbbBbbbbb().bbbBbbbbb(bbbb.bbbbbb.bbbBbbbbbBb()).bbBbbbbbb(bbbbbb -> {
+//                                                        bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(
+//                                                                Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBB_BBB_BBBBBBB),
+//                                                                Bbbbb.bbbBbbbbBbbb(() -> bbbb.bbbbbbb)
 //                                                        ));
 //                                                    });
-//                                                    return false;
+//                                                    bbbbbb bbbbb;
 //                                                }
 //
-//                                                EconomyService economy = GTSPlugin.getInstance()
-//                                                        .as(GTSSpongePlugin.class)
-//                                                        .getEconomy();
-//                                                boolean canAfford = economy.getOrCreateAccount(this.viewer.getUniqueId())
-//                                                        .map(account -> account.getBalance(currency).doubleValue() >= bid)
-//                                                        .orElse(false);
+//                                                BbbbbbbBbbbbbb bbbbbbb = BBBBbbbbb.bbbBbbbbbbb()
+//                                                        .bb(BBBBbbbbbBbbbbb.bbbbb)
+//                                                        .bbbBbbbbbb();
+//                                                bbbbbbb bbbBbbbbb = bbbbbbb.bbbBbBbbbbbBbbbbbb(bbbb.bbbbbb.bbbBbbbbbBb())
+//                                                        .bbb(bbbbbbb -> bbbbbbb.bbbBbbbbbb(bbbbbbbb).bbbbbbBbbbb() >= bbb)
+//                                                        .bbBbbb(bbbbb);
 //
-//                                                if(!canAfford) {
-//                                                    this.viewer.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID)));
-//                                                    return false;
+//                                                bb(!bbbBbbbbb) {
+//                                                    bbbb.bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBBB_BBBBBB_BBB)));
+//                                                    bbbbbb bbbbb;
 //                                                }
 //
-//                                                SpongeListingManager manager = (SpongeListingManager) Impactor.getInstance().getRegistry().get(ListingManager.class);
-//                                                manager.bid(this.viewer.getUniqueId(), (SpongeAuction) auction, bid);
-//                                                return true;
-//                                            } catch (NumberFormatException e) {
-//                                                // TODO - Inform of invalid format
-//                                                return false;
-//                                            } catch (Exception fatal) {
-//                                                ExceptionWriter.write(fatal);
-//                                                // TODO - Inform user of the fatal error
-//                                                return false;
+//                                                BbbbbbBbbbbbbBbbbbbb bbbbbbb = (BbbbbbBbbbbbbBbbbbbb) Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+//                                                bbbbbbb.bbb(bbbb.bbbbbb.bbbBbbbbbBb(), (BbbbbbBbbbbbb) bbbbbbb, bbb);
+//                                                bbbbbb bbbb;
+//                                            } bbbbb (BbbbbbBbbbbbBbbbbbbbb b) {
+//                                                // BBBB - Bbbbbb bb bbbbbbb bbbbbb
+//                                                bbbbbb bbbbb;
+//                                            } bbbbb (Bbbbbbbbb bbbbb) {
+//                                                BbbbbbbbbBbbbbb.bbbbb(bbbbb);
+//                                                // BBBB - Bbbbbb bbbb bb bbb bbbbb bbbbb
+//                                                bbbbbb bbbbb;
 //                                            }
 //                                        })
-//                                        .reopenOnFailure(false)
-//                                        .text(Lists.newArrayList(
-//                                                Text.EMPTY,
-//                                                Text.of("----------------"),
-//                                                Text.of("Enter your bid"),
-//                                                Text.of("above")
+//                                        .bbbbbbBbBbbbbbb(bbbbb)
+//                                        .bbbb(Bbbbb.bbbBbbbbBbbb(
+//                                                Bbbb.BBBBB,
+//                                                Bbbb.bb("----------------"),
+//                                                Bbbb.bb("Bbbbb bbbb bbb"),
+//                                                Bbbb.bb("bbbbb")
 //                                        ))
-//                                        .build();
-//                                this.display.close(this.viewer);
-//                                query.sendTo(this.viewer);
+//                                        .bbbbb();
+//                                bbbb.bbbbbbb.bbbbb(bbbb.bbbbbb);
+//                                bbbbb.bbbbBb(bbbb.bbbbbb);
                             }
 
-                            return false;
+                            bbbbbb bbbbb;
                         })
-                        .build();
-                builder.slot(custom, 43);
+                        .bbbbb();
+                bbbbbbb.bbbb(bbbbbb, 43);
             }
-        } else {
-            ItemStack display = ItemStack.builder()
-                    .itemType(ItemTypes.LIME_CONCRETE)
-                    .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.CONFIRM_PURCHASE)))
-                    .build();
-            Icon<ItemStack> icon = Icon.builder(ItemStack.class)
-                            .display(new DisplayProvider.Constant<>(display))
-                            .listener(context -> {
-                                BuyItNow bin = (BuyItNow) this.listing;
+        } bbbb {
+            BbbbBbbbb bbbbbbb = BbbbBbbbb.bbbbbbb()
+                    .bbbbBbbb(BbbbBbbbb.BBBB_BBBBBBBB)
+                    .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB)))
+                    .bbbbb();
+            Bbbb<BbbbBbbbb> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                            .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbbbbbb))
+                            .bbbbbbbb(bbbbbbb -> {
+                                BbbBbBbb bbb = (BbbBbBbb) bbbb.bbbbbbb;
 
-                                Price<?, ?, ?> price = bin.getPrice();
-                                Optional<PriceManager.PriceSelectorUI> selector = GTSService.getInstance().getGTSComponentManager()
-                                        .getPriceManager(price.getClass().getAnnotation(GTSKeyMarker.class).value()[0])
-                                        .map(ui -> (PriceManager<?>) ui)
-                                        .orElseThrow(() -> new IllegalStateException("Unable to find price manager for " + price.getClass().getAnnotation(GTSKeyMarker.class).value()[0]))
-                                        .getSelector(this.viewer, price, source -> {
-                                            SpongeListingManager manager = (SpongeListingManager) Impactor.getInstance().getRegistry().get(ListingManager.class);
-                                            manager.purchase(this.viewer.uuid(), (SpongeBuyItNow) bin, source);
+                                Bbbbb<?, ?, ?> bbbbb = bbb.bbbBbbbb();
+                                Bbbbbbbb<BbbbbBbbbbbb.BbbbbBbbbbbbbBB> bbbbbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+                                        .bbbBbbbbBbbbbbb(bbbbb.bbbBbbbb().bbbBbbbbbbbbb(BBBBbbBbbbbb.bbbbb).bbbbb()[0])
+                                        .bbb(bb -> (BbbbbBbbbbbb<?>) bb)
+                                        .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbb bbbbb bbbbbbb bbb " + bbbbb.bbbBbbbb().bbbBbbbbbbbbb(BBBBbbBbbbbb.bbbbb).bbbbb()[0]))
+                                        .bbbBbbbbbbb(bbbb.bbbbbb, bbbbb, bbbbbb -> {
+                                            BbbbbbBbbbbbbBbbbbbb bbbbbbb = (BbbbbbBbbbbbbBbbbbbb) Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+                                            bbbbbbb.bbbbbbbb(bbbb.bbbbbb.bbbb(), (BbbbbbBbbBbBbb) bbb, bbbbbb);
                                         });
-                                if(selector.isPresent()) {
-                                    selector.get().getDisplay().open(this.viewer);
-                                } else {
-                                    // For prices that have no need for a source
-                                    SpongeListingManager manager = (SpongeListingManager) Impactor.getInstance().getRegistry().get(ListingManager.class);
-                                    manager.purchase(this.viewer.uuid(), (SpongeBuyItNow) bin, null);
-                                    this.display.close(this.viewer);
+                                bb(bbbbbbbb.bbBbbbbbb()) {
+                                    bbbbbbbb.bbb().bbbBbbbbbb().bbbb(bbbb.bbbbbb);
+                                } bbbb {
+                                    // Bbb bbbbbb bbbb bbbb bb bbbb bbb b bbbbbb
+                                    BbbbbbBbbbbbbBbbbbbb bbbbbbb = (BbbbbbBbbbbbbBbbbbbb) Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+                                    bbbbbbb.bbbbbbbb(bbbb.bbbbbb.bbbb(), (BbbbbbBbbBbBbb) bbb, bbbb);
+                                    bbbb.bbbbbbb.bbbbb(bbbb.bbbbbb);
                                 }
 
-                                return false;
+                                bbbbbb bbbbb;
                             })
-                            .build();
+                            .bbbbb();
 
-            builder.slot(icon, 42);
+            bbbbbbb.bbbb(bbbb, 42);
         }
     }
 
-    private void createRemoverSection(Layout.LayoutBuilder builder) {
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+    bbbbbbb bbbb bbbbbbBbbbbbbBbbbbbb(Bbbbbb.BbbbbbBbbbbbb bbbbbbb) {
+        bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
 
-        ItemStack display = ItemStack.builder()
-                .itemType(ItemTypes.ANVIL)
-                .add(Keys.CUSTOM_NAME, Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_SELECTED_REMOVE_TITLE)))
-                .add(Keys.LORE, Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_SELECTED_REMOVE_LORE)))
-                .build();
+        BbbbBbbbb bbbbbbb = BbbbBbbbb.bbbbbbb()
+                .bbbbBbbb(BbbbBbbbb.BBBBB)
+                .bbb(Bbbb.BBBBBB_BBBB, Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBBBBB_BBBBBB_BBBBB)))
+                .bbb(Bbbb.BBBB, Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBBBBB_BBBBBB_BBBB)))
+                .bbbbb();
 
-        Icon<ItemStack> icon = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(display))
-                .listener(context -> {
-                    this.display.close(this.viewer);
-                    this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST)));
+        Bbbb<BbbbBbbbb> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbbbbbb))
+                .bbbbbbbb(bbbbbbb -> {
+                    bbbb.bbbbbbb.bbbbb(bbbb.bbbbbb);
+                    bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBB_BBBBBBBBBB_BBBBBBB)));
 
-                    if(this.listing instanceof BuyItNow) {
-                        GTSPlugin.instance().messagingService()
-                                .requestBINRemoveRequest(this.listing.getID(), this.viewer.uuid())
-                                .thenAccept(response -> {
-                                    if (response.wasSuccessful()) {
-                                        Impactor.getInstance().getScheduler().executeSync(() -> {
-                                            if(this.claim) {
-                                                if(((BuyItNow) this.listing).getPrice().reward(this.viewer.uuid())) {
-                                                    PlaceholderSources sources = PlaceholderSources.builder()
-                                                            .append(Component.class, () -> ((BuyItNow) this.listing).getPrice().getText())
-                                                            .build();
-                                                    service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED), sources);
+                    bb(bbbb.bbbbbbb bbbbbbbbbb BbbBbBbb) {
+                        BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb()
+                                .bbbbbbbBBBBbbbbbBbbbbbb(bbbb.bbbbbbb.bbbBB(), bbbb.bbbbbb.bbbb())
+                                .bbbbBbbbbb(bbbbbbbb -> {
+                                    bb (bbbbbbbb.bbbBbbbbbbbbb()) {
+                                        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                                            bb(bbbb.bbbbb) {
+                                                bb(((BbbBbBbb) bbbb.bbbbbbb).bbbBbbbb().bbbbbb(bbbb.bbbbbb.bbbb())) {
+                                                    BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                            .bbbbbb(Bbbbbbbbb.bbbbb, () -> ((BbbBbBbb) bbbb.bbbbbbb).bbbBbbbb().bbbBbbb())
+                                                            .bbbbb();
+                                                    bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBB_BBBBBBB), bbbbbbb);
 
-                                                    SpongeListingManager.notifier.forgeAndSend(
-                                                            DiscordOption.fetch(DiscordOption.Options.Remove),
-                                                            MsgConfigKeys.DISCORD_REMOVAL_TEMPLATE,
-                                                            this.listing,
-                                                            PlaceholderSources.builder()
-                                                                    .append(Listing.class, () -> listing)
-                                                                    .build()
+                                                    BbbbbbBbbbbbbBbbbbbb.bbbbbbbb.bbbbbBbbBbbb(
+                                                            BbbbbbbBbbbbb.bbbbb(BbbbbbbBbbbbb.Bbbbbbb.Bbbbbb),
+                                                            BbbBbbbbbBbbb.BBBBBBB_BBBBBBB_BBBBBBBB,
+                                                            bbbb.bbbbbbb,
+                                                            BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                                    .bbbbbb(Bbbbbbb.bbbbb, () -> bbbbbbb)
+                                                                    .bbbbb()
                                                     );
                                                 }
-                                            } else {
-                                                if (this.listing.getEntry().give(this.viewer.uuid())) {
-                                                    this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_RETURNED)));
+                                            } bbbb {
+                                                bb (bbbb.bbbbbbb.bbbBbbbb().bbbb(bbbb.bbbbbb.bbbb())) {
+                                                    bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBB_BBBBBBBB)));
 
-                                                    SpongeListingManager.notifier.forgeAndSend(
-                                                            DiscordOption.fetch(DiscordOption.Options.Remove),
-                                                            MsgConfigKeys.DISCORD_REMOVAL_TEMPLATE,
-                                                            this.listing,
-                                                            PlaceholderSources.builder()
-                                                                    .append(Listing.class, () -> listing)
-                                                                    .build()
+                                                    BbbbbbBbbbbbbBbbbbbb.bbbbbbbb.bbbbbBbbBbbb(
+                                                            BbbbbbbBbbbbb.bbbbb(BbbbbbbBbbbbb.Bbbbbbb.Bbbbbb),
+                                                            BbbBbbbbbBbbb.BBBBBBB_BBBBBBB_BBBBBBBB,
+                                                            bbbb.bbbbbbb,
+                                                            BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                                    .bbbbbb(Bbbbbbb.bbbbb, () -> bbbbbbb)
+                                                                    .bbbbb()
                                                     );
-                                                } else {
-                                                    this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+                                                } bbbb {
+                                                    bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBB_BBBB_BB_BBBBBB)));
 
-                                                    BuyItNow bin = BuyItNow.builder()
-                                                            .from((BuyItNow) this.listing)
-                                                            .expiration(LocalDateTime.now())
-                                                            .build();
+                                                    BbbBbBbb bbb = BbbBbBbb.bbbbbbb()
+                                                            .bbbb((BbbBbBbb) bbbb.bbbbbbb)
+                                                            .bbbbbbbbbb(BbbbbBbbbBbbb.bbb())
+                                                            .bbbbb();
 
-                                                    // Place BIN back in storage, in a state such that it'll only be
-                                                    // accessible via the lister's stash
-                                                    GTSPlugin.instance().storage().publishListing(bin);
+                                                    // Bbbbb BBB bbbb bb bbbbbbb, bb b bbbbb bbbb bbbb bb'bb bbbb bb
+                                                    // bbbbbbbbbb bbb bbb bbbbbb'b bbbbb
+                                                    BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbb(bbb);
                                                 }
                                             }
                                         });
-                                    } else {
-                                        PlaceholderSources sources = PlaceholderSources.builder()
-                                                .append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
-                                                .build();
-                                        this.player().sendMessage(service.parse(
-                                                Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-                                                sources
+                                    } bbbb {
+                                        BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                .bbbbbb(BbbbbBbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbBbbb().bbBbbb(BbbbbBbbbb.BBBBBBB))
+                                                .bbbbb();
+                                        bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                                Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBB),
+                                                bbbbbbb
                                         ));
                                     }
                                 });
-                    } else {
-                        GTSPlugin.instance().messagingService()
-                                .requestAuctionCancellation(this.listing.getID(), this.viewer.uuid())
-                                .thenAccept(response -> {
-                                    if (response.wasSuccessful()) {
-                                        Impactor.getInstance().getScheduler().executeSync(() -> {
-                                            if (this.listing.getEntry().give(this.viewer.uuid())) {
-                                                this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_RETURNED)));
+                    } bbbb {
+                        BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb()
+                                .bbbbbbbBbbbbbbBbbbbbbbbbbb(bbbb.bbbbbbb.bbbBB(), bbbb.bbbbbb.bbbb())
+                                .bbbbBbbbbb(bbbbbbbb -> {
+                                    bb (bbbbbbbb.bbbBbbbbbbbbb()) {
+                                        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                                            bb (bbbb.bbbbbbb.bbbBbbbb().bbbb(bbbb.bbbbbb.bbbb())) {
+                                                bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBB_BBBBBBBB)));
 
-                                                SpongeListingManager.notifier.forgeAndSend(
-                                                        DiscordOption.fetch(DiscordOption.Options.Remove),
-                                                        MsgConfigKeys.DISCORD_REMOVAL_TEMPLATE,
-                                                        this.listing,
-                                                        PlaceholderSources.builder()
-                                                                .append(Listing.class, () -> listing)
-                                                                .build()
+                                                BbbbbbBbbbbbbBbbbbbb.bbbbbbbb.bbbbbBbbBbbb(
+                                                        BbbbbbbBbbbbb.bbbbb(BbbbbbbBbbbbb.Bbbbbbb.Bbbbbb),
+                                                        BbbBbbbbbBbbb.BBBBBBB_BBBBBBB_BBBBBBBB,
+                                                        bbbb.bbbbbbb,
+                                                        BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                                .bbbbbb(Bbbbbbb.bbbbb, () -> bbbbbbb)
+                                                                .bbbbb()
                                                 );
-                                            } else {
-                                                this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+                                            } bbbb {
+                                                bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBB_BBBB_BB_BBBBBB)));
 
-                                                // Set auction as expired, with no bids
-                                                Auction fallback = Auction.builder()
-                                                        .from((Auction) this.listing)
-                                                        .expiration(LocalDateTime.now())
-                                                        .bids(ArrayListMultimap.create())
-                                                        .build();
+                                                // Bbb bbbbbbb bb bbbbbbb, bbbb bb bbbb
+                                                Bbbbbbb bbbbbbbb = Bbbbbbb.bbbbbbb()
+                                                        .bbbb((Bbbbbbb) bbbb.bbbbbbb)
+                                                        .bbbbbbbbbb(BbbbbBbbbBbbb.bbb())
+                                                        .bbbb(BbbbbBbbbBbbbbbbb.bbbbbb())
+                                                        .bbbbb();
 
-                                                // Place auction back in storage, in a state such that it'll only be
-                                                // accessible via the lister's stash
-                                                GTSPlugin.instance().storage().publishListing(fallback);
+                                                // Bbbbb bbbbbbb bbbb bb bbbbbbb, bb b bbbbb bbbb bbbb bb'bb bbbb bb
+                                                // bbbbbbbbbb bbb bbb bbbbbb'b bbbbb
+                                                BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbb(bbbbbbbb);
                                             }
                                         });
-                                    } else {
-                                        PlaceholderSources sources = PlaceholderSources.builder()
-                                                .append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
-                                                .build();
-                                        this.player().sendMessage(service.parse(
-                                                Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-                                                sources
+                                    } bbbb {
+                                        BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                                                .bbbbbb(BbbbbBbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbBbbb().bbBbbb(BbbbbBbbbb.BBBBBBB))
+                                                .bbbbb();
+                                        bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                                Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBB),
+                                                bbbbbbb
                                         ));
                                     }
                                 });
                     }
 
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
 
-        if(this.listing instanceof BuyItNow) {
-            builder.slot(icon, 42);
-        } else {
-            builder.slot(icon, 41);
-            builder.slot(this.getBidHistory(), 43);
+        bb(bbbb.bbbbbbb bbbbbbbbbb BbbBbBbb) {
+            bbbbbbb.bbbb(bbbb, 42);
+        } bbbb {
+            bbbbbbb.bbbb(bbbb, 41);
+            bbbbbbb.bbbb(bbbb.bbbBbbBbbbbbb(), 43);
         }
     }
 
-    private void createClaimerSection(Layout.LayoutBuilder builder) {
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        PlaceholderSources sources = PlaceholderSources.empty();
+    bbbbbbb bbbb bbbbbbBbbbbbbBbbbbbb(Bbbbbb.BbbbbbBbbbbbb bbbbbbb) {
+        bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+        BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbb();
 
-        boolean lister = this.listing.getLister().equals(this.viewer.uuid());
-        if(lister) {
-            if(this.listing instanceof BuyItNow) {
-                if(((BuyItNow) this.listing).isPurchased()) {
-                    sources.append(Component.class, () -> ((BuyItNow) this.listing).getPrice().getText());
-                } else {
-                    sources.append(Component.class, () -> this.listing.getEntry().getName());
+        bbbbbbb bbbbbb = bbbb.bbbbbbb.bbbBbbbbb().bbbbbb(bbbb.bbbbbb.bbbb());
+        bb(bbbbbb) {
+            bb(bbbb.bbbbbbb bbbbbbbbbb BbbBbBbb) {
+                bb(((BbbBbBbb) bbbb.bbbbbbb).bbBbbbbbbbb()) {
+                    bbbbbbb.bbbbbb(Bbbbbbbbb.bbbbb, () -> ((BbbBbBbb) bbbb.bbbbbbb).bbbBbbbb().bbbBbbb());
+                } bbbb {
+                    bbbbbbb.bbbbbb(Bbbbbbbbb.bbbbb, () -> bbbb.bbbbbbb.bbbBbbbb().bbbBbbb());
                 }
-            } else {
-                if(((Auction) this.listing).hasAnyBidsPlaced()) {
-                    sources.append(Component.class, () -> new MonetaryPrice(((Auction) this.listing).getHighBid().get().getSecond().getAmount()).getText());
-                } else {
-                    sources.append(Component.class, () -> this.listing.getEntry().getName());
+            } bbbb {
+                bb(((Bbbbbbb) bbbb.bbbbbbb).bbbBbbBbbbBbbbbb()) {
+                    bbbbbbb.bbbbbb(Bbbbbbbbb.bbbbb, () -> bbb BbbbbbbbBbbbb(((Bbbbbbb) bbbb.bbbbbbb).bbbBbbbBbb().bbb().bbbBbbbbb().bbbBbbbbb()).bbbBbbb());
+                } bbbb {
+                    bbbbbbb.bbbbbb(Bbbbbbbbb.bbbbb, () -> bbbb.bbbbbbb.bbbBbbbb().bbbBbbb());
                 }
             }
-        } else {
-            if(this.listing instanceof Auction) {
-                Auction auction = (Auction) this.listing;
-                if(auction.getHighBid().get().getFirst().equals(this.viewer.uuid())) {
-                    sources.append(Component.class, () -> this.listing.getEntry().getName());
-                } else {
-                    double amount = auction.getCurrentBid(this.viewer.uuid()).get().getAmount();
-                    sources.append(Component.class, () -> new MonetaryPrice(amount).getText());
+        } bbbb {
+            bb(bbbb.bbbbbbb bbbbbbbbbb Bbbbbbb) {
+                Bbbbbbb bbbbbbb = (Bbbbbbb) bbbb.bbbbbbb;
+                bb(bbbbbbb.bbbBbbbBbb().bbb().bbbBbbbb().bbbbbb(bbbb.bbbbbb.bbbb())) {
+                    bbbbbbb.bbbbbb(Bbbbbbbbb.bbbbb, () -> bbbb.bbbbbbb.bbbBbbbb().bbbBbbb());
+                } bbbb {
+                    bbbbbb bbbbbb = bbbbbbb.bbbBbbbbbbBbb(bbbb.bbbbbb.bbbb()).bbb().bbbBbbbbb();
+                    bbbbbbb.bbbbbb(Bbbbbbbbb.bbbbb, () -> bbb BbbbbbbbBbbbb(bbbbbb).bbbBbbb());
                 }
-            } else {
-                BuyItNow bin = (BuyItNow) this.listing;
-                if(bin.stashedForPurchaser()) {
-                    sources.append(Component.class, () -> this.listing.getEntry().getName());
+            } bbbb {
+                BbbBbBbb bbb = (BbbBbBbb) bbbb.bbbbbbb;
+                bb(bbb.bbbbbbbBbbBbbbbbbbb()) {
+                    bbbbbbb.bbbbbb(Bbbbbbbbb.bbbbb, () -> bbbb.bbbbbbb.bbbBbbbb().bbbBbbb());
                 }
             }
         }
 
-        Icon<ItemStack> collect = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.CHEST_MINECART)
-                        .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_SELECTED_CLAIM_TITLE), sources))
-                        .add(Keys.LORE, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_ICON_SELECTED_CLAIM_LORE)))
-                        .build()
+        Bbbb<BbbbBbbbb> bbbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                        .bbbbBbbb(BbbbBbbbb.BBBBB_BBBBBBBB)
+                        .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBBBBB_BBBBB_BBBBB), bbbbbbb))
+                        .bbb(Bbbb.BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBB_BBBBBBBB_BBBBB_BBBB)))
+                        .bbbbb()
                 ))
-                .listener(context -> {
-                    this.display.close(this.viewer);
+                .bbbbbbbb(bbbbbbb -> {
+                    bbbb.bbbbbbb.bbbbb(bbbb.bbbbbb);
 
-                    if(lister) {
-                        if(this.listing instanceof BuyItNow) {
-                            GTSPlugin.instance().messagingService()
-                                    .requestClaim(this.listing.getID(), this.viewer.uuid(), null, false)
-                                    .thenAccept(response -> {
-                                        if(response.wasSuccessful()) {
-                                            Impactor.getInstance().getScheduler().executeSync(() -> {
-                                                boolean result;
-                                                if(((BuyItNow) this.listing).isPurchased()) {
-                                                    result = ((BuyItNow) this.listing).getPrice().reward(this.viewer.uuid());
-                                                } else {
-                                                    result = this.listing.getEntry().give(this.viewer.uuid());
+                    bb(bbbbbb) {
+                        bb(bbbb.bbbbbbb bbbbbbbbbb BbbBbBbb) {
+                            BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb()
+                                    .bbbbbbbBbbbb(bbbb.bbbbbbb.bbbBB(), bbbb.bbbbbb.bbbb(), bbbb, bbbbb)
+                                    .bbbbBbbbbb(bbbbbbbb -> {
+                                        bb(bbbbbbbb.bbbBbbbbbbbbb()) {
+                                            Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                                                bbbbbbb bbbbbb;
+                                                bb(((BbbBbBbb) bbbb.bbbbbbb).bbBbbbbbbbb()) {
+                                                    bbbbbb = ((BbbBbBbb) bbbb.bbbbbbb).bbbBbbbb().bbbbbb(bbbb.bbbbbb.bbbb());
+                                                } bbbb {
+                                                    bbbbbb = bbbb.bbbbbbb.bbbBbbbb().bbbb(bbbb.bbbbbb.bbbb());
                                                 }
 
-                                                if (result) {
-                                                    this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED), sources));
-                                                } else {
-                                                    this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+                                                bb (bbbbbb) {
+                                                    bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBB_BBBBBBB), bbbbbbb));
+                                                } bbbb {
+                                                    bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBB_BBBB_BB_BBBBBB)));
 
-                                                    BuyItNow.BuyItNowBuilder b = BuyItNow.builder()
-                                                            .from((BuyItNow) this.listing)
-                                                            .expiration(LocalDateTime.now());
+                                                    BbbBbBbb.BbbBbBbbBbbbbbb b = BbbBbBbb.bbbbbbb()
+                                                            .bbbb((BbbBbBbb) bbbb.bbbbbbb)
+                                                            .bbbbbbbbbb(BbbbbBbbbBbbb.bbb());
 
-                                                    BuyItNow bin = b.build();
+                                                    BbbBbBbb bbb = b.bbbbb();
 
-                                                    // Place BIN back in storage, in a state such that it'll only be
-                                                    // accessible via the lister's stash
-                                                    GTSPlugin.instance().storage().publishListing(bin);
+                                                    // Bbbbb BBB bbbb bb bbbbbbb, bb b bbbbb bbbb bbbb bb'bb bbbb bb
+                                                    // bbbbbbbbbb bbb bbb bbbbbb'b bbbbb
+                                                    BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbb(bbb);
                                                 }
                                             });
-                                        } else {
-                                            this.player().sendMessage(service.parse(
-                                                    Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-                                                    sources.append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                        } bbbb {
+                                            bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                                    Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBB),
+                                                    bbbbbbb.bbbbbb(BbbbbBbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbBbbb().bbBbbb(BbbbbBbbbb.BBBBBBB))
                                             ));
                                         }
                                     });
-                        } else {
-                            Auction auction = (Auction) this.listing;
-                            if(auction.hasAnyBidsPlaced()) {
-                                GTSPlugin.instance().messagingService()
-                                        .requestClaim(this.listing.getID(), this.viewer.uuid(), null, true)
-                                        .thenAccept(r -> {
-                                            ClaimMessage.Response.AuctionResponse response = (ClaimMessage.Response.AuctionResponse) r;
+                        } bbbb {
+                            Bbbbbbb bbbbbbb = (Bbbbbbb) bbbb.bbbbbbb;
+                            bb(bbbbbbb.bbbBbbBbbbBbbbbb()) {
+                                BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb()
+                                        .bbbbbbbBbbbb(bbbb.bbbbbbb.bbbBB(), bbbb.bbbbbb.bbbb(), bbbb, bbbb)
+                                        .bbbbBbbbbb(b -> {
+                                            BbbbbBbbbbbb.Bbbbbbbb.BbbbbbbBbbbbbbb bbbbbbbb = (BbbbbBbbbbbb.Bbbbbbbb.BbbbbbbBbbbbbbb) b;
 
-                                            if (response.wasSuccessful()) {
-                                                Impactor.getInstance().getScheduler().executeSync(() -> {
-                                                    // This is the user attempting to receive the money for the auction
+                                            bb (bbbbbbbb.bbbBbbbbbbbbb()) {
+                                                Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                                                    // Bbbb bb bbb bbbb bbbbbbbbbb bb bbbbbbb bbb bbbbb bbb bbb bbbbbbb
 
-                                                    MonetaryPrice wrapper = new MonetaryPrice(auction.getHighBid().get().getSecond().getAmount());
-                                                    if (wrapper.reward(this.viewer.uuid())) {
-                                                        this.player().sendMessage(service.parse(
-                                                                Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
-                                                                sources
+                                                    BbbbbbbbBbbbb bbbbbbb = bbb BbbbbbbbBbbbb(bbbbbbb.bbbBbbbBbb().bbb().bbbBbbbbb().bbbBbbbbb());
+                                                    bb (bbbbbbb.bbbbbb(bbbb.bbbbbb.bbbb())) {
+                                                        bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                                                Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBB_BBBBBBB),
+                                                                bbbbbbb
                                                         ));
-                                                    } else {
-                                                        this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+                                                    } bbbb {
+                                                        bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBB_BBBB_BB_BBBBBB)));
 
-                                                        GTSPlugin.instance().storage().appendOldClaimStatus(
-                                                                auction.getID(),
-                                                                response.hasListerClaimed(),
-                                                                response.hasWinnerClaimed(),
-                                                                response.getAllOtherClaimers()
+                                                        BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbBbbBbbbbBbbbbb(
+                                                                bbbbbbb.bbbBB(),
+                                                                bbbbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                bbbbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                bbbbbbbb.bbbBbbBbbbbBbbbbbbb()
                                                         );
                                                     }
                                                 });
-                                            } else {
-                                                this.player().sendMessage(service.parse(
-                                                        Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-                                                        sources.append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                            } bbbb {
+                                                bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                                        Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBB),
+                                                        bbbbbbb.bbbbbb(BbbbbBbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbBbbb().bbBbbb(BbbbbBbbbb.BBBBBBB))
                                                 ));
                                             }
                                         });
-                            } else {
-                                GTSPlugin.instance().messagingService()
-                                        .requestAuctionCancellation(this.listing.getID(), this.viewer.uuid())
-                                        .thenAccept(response -> {
-                                            if (response.wasSuccessful()) {
-                                                Impactor.getInstance().getScheduler().executeSync(() -> {
-                                                    if (this.listing.getEntry().give(this.viewer.uuid())) {
-                                                        this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED), sources));
-                                                    } else {
-                                                        this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+                            } bbbb {
+                                BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb()
+                                        .bbbbbbbBbbbbbbBbbbbbbbbbbb(bbbb.bbbbbbb.bbbBB(), bbbb.bbbbbb.bbbb())
+                                        .bbbbBbbbbb(bbbbbbbb -> {
+                                            bb (bbbbbbbb.bbbBbbbbbbbbb()) {
+                                                Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                                                    bb (bbbb.bbbbbbb.bbbBbbbb().bbbb(bbbb.bbbbbb.bbbb())) {
+                                                        bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBB_BBBBBBB), bbbbbbb));
+                                                    } bbbb {
+                                                        bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBB_BBBB_BB_BBBBBB)));
 
-                                                        // Set auction as expired, with no bids
-                                                        Auction fallback = Auction.builder()
-                                                                .from((Auction) this.listing)
-                                                                .expiration(LocalDateTime.now())
-                                                                .bids(ArrayListMultimap.create())
-                                                                .build();
+                                                        // Bbb bbbbbbb bb bbbbbbb, bbbb bb bbbb
+                                                        Bbbbbbb bbbbbbbb = Bbbbbbb.bbbbbbb()
+                                                                .bbbb((Bbbbbbb) bbbb.bbbbbbb)
+                                                                .bbbbbbbbbb(BbbbbBbbbBbbb.bbb())
+                                                                .bbbb(BbbbbBbbbBbbbbbbb.bbbbbb())
+                                                                .bbbbb();
 
-                                                        // Place auction back in storage, in a state such that it'll only be
-                                                        // accessible via the lister's stash
-                                                        GTSPlugin.instance().storage().publishListing(fallback);
+                                                        // Bbbbb bbbbbbb bbbb bb bbbbbbb, bb b bbbbb bbbb bbbb bb'bb bbbb bb
+                                                        // bbbbbbbbbb bbb bbb bbbbbb'b bbbbb
+                                                        BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbb(bbbbbbbb);
                                                     }
                                                 });
-                                            } else {
-                                                this.player().sendMessage(service.parse(
-                                                        Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-                                                        sources.append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                            } bbbb {
+                                                bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                                        Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBB),
+                                                        bbbbbbb.bbbbbb(BbbbbBbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbBbbb().bbBbbb(BbbbbBbbbb.BBBBBBB))
                                                 ));
                                             }
                                         });
                             }
                         }
-                    } else {
-                        if(this.listing instanceof Auction) {
-                            GTSPlugin.instance().messagingService()
-                                    .requestClaim(this.listing.getID(), this.viewer.uuid(), null, true)
-                                    .thenAccept(r -> {
-                                        ClaimMessage.Response.AuctionResponse response = (ClaimMessage.Response.AuctionResponse) r;
+                    } bbbb {
+                        bb(bbbb.bbbbbbb bbbbbbbbbb Bbbbbbb) {
+                            BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb()
+                                    .bbbbbbbBbbbb(bbbb.bbbbbbb.bbbBB(), bbbb.bbbbbb.bbbb(), bbbb, bbbb)
+                                    .bbbbBbbbbb(b -> {
+                                        BbbbbBbbbbbb.Bbbbbbbb.BbbbbbbBbbbbbbb bbbbbbbb = (BbbbbBbbbbbb.Bbbbbbbb.BbbbbbbBbbbbbbb) b;
 
-                                        if (response.wasSuccessful()) {
-                                            Impactor.getInstance().getScheduler().executeSync(() -> {
-                                                // This is the user attempting to receive the money for the auction
+                                        bb (bbbbbbbb.bbbBbbbbbbbbb()) {
+                                            Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                                                // Bbbb bb bbb bbbb bbbbbbbbbb bb bbbbbbb bbb bbbbb bbb bbb bbbbbbb
 
-                                                Auction auction = (Auction) this.listing;
+                                                Bbbbbbb bbbbbbb = (Bbbbbbb) bbbb.bbbbbbb;
 
-                                                if (auction.getHighBid().get().getFirst().equals(this.viewer.uuid())) {
-                                                    if (auction.getEntry().give(this.viewer.uuid())) {
-                                                        this.player().sendMessage(service.parse(
-                                                                Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
-                                                                sources
+                                                bb (bbbbbbb.bbbBbbbBbb().bbb().bbbBbbbb().bbbbbb(bbbb.bbbbbb.bbbb())) {
+                                                    bb (bbbbbbb.bbbBbbbb().bbbb(bbbb.bbbbbb.bbbb())) {
+                                                        bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                                                Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBB_BBBBBBB),
+                                                                bbbbbbb
                                                         ));
-                                                    } else {
-                                                        this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+                                                    } bbbb {
+                                                        bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBB_BBBB_BB_BBBBBB)));
 
-                                                        GTSPlugin.instance().storage().appendOldClaimStatus(
-                                                                auction.getID(),
-                                                                response.hasListerClaimed(),
-                                                                response.hasWinnerClaimed(),
-                                                                response.getAllOtherClaimers()
+                                                        BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbBbbBbbbbBbbbbb(
+                                                                bbbbbbb.bbbBB(),
+                                                                bbbbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                bbbbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                bbbbbbbb.bbbBbbBbbbbBbbbbbbb()
                                                         );
                                                     }
-                                                } else {
-                                                    double bid = auction.getCurrentBid(this.viewer.uuid()).get().getAmount();
-                                                    MonetaryPrice price = new MonetaryPrice(bid);
-                                                    if (price.reward(this.viewer.uuid())) {
-                                                        this.player().sendMessage(service.parse(
-                                                                Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
-                                                                sources
+                                                } bbbb {
+                                                    bbbbbb bbb = bbbbbbb.bbbBbbbbbbBbb(bbbb.bbbbbb.bbbb()).bbb().bbbBbbbbb();
+                                                    BbbbbbbbBbbbb bbbbb = bbb BbbbbbbbBbbbb(bbb);
+                                                    bb (bbbbb.bbbbbb(bbbb.bbbbbb.bbbb())) {
+                                                        bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                                                Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBB_BBBBBBB),
+                                                                bbbbbbb
                                                         ));
-                                                    } else {
-                                                        this.player().sendMessage(Utilities.PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_LISTING_FAIL_TO_RETURN)));
+                                                    } bbbb {
+                                                        bbbb.bbbbbb().bbbbBbbbbbb(Bbbbbbbbb.BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBB_BBBB_BB_BBBBBB)));
 
-                                                        GTSPlugin.instance().storage().appendOldClaimStatus(
-                                                                auction.getID(),
-                                                                response.hasListerClaimed(),
-                                                                response.hasWinnerClaimed(),
-                                                                response.getAllOtherClaimers()
+                                                        BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbBbbBbbbbBbbbbb(
+                                                                bbbbbbb.bbbBB(),
+                                                                bbbbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                bbbbbbbb.bbbBbbbbbBbbbbbb(),
+                                                                bbbbbbbb.bbbBbbBbbbbBbbbbbbb()
                                                         );
                                                     }
                                                 }
                                             });
-                                        } else {
-                                            this.player().sendMessage(service.parse(
-                                                    Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-                                                    sources.append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
+                                        } bbbb {
+                                            bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                                    Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBB),
+                                                    bbbbbbb.bbbbbb(BbbbbBbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbBbbb().bbBbbb(BbbbbBbbbb.BBBBBBB))
                                             ));
                                         }
                                     });
-                        } else {
-                            GTSPlugin.instance().messagingService()
-                                    .requestClaim(this.listing.getID(), this.viewer.uuid(), null, false)
-                                    .thenAccept(r -> {
-                                        if(r.wasSuccessful()) {
-                                            BuyItNow bin = (BuyItNow) this.listing;
-                                            if (bin.stashedForPurchaser()) {
-                                                Impactor.getInstance().getScheduler().executeSync(() -> {
-                                                    if (!this.listing.getEntry().give(this.viewer.uuid())) {
-                                                        // Re-append data as our claim request will have deleted it
-                                                        GTSPlugin.instance().storage().publishListing(BuyItNow.builder()
-                                                                .from(bin)
-                                                                .build()
+                        } bbbb {
+                            BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb()
+                                    .bbbbbbbBbbbb(bbbb.bbbbbbb.bbbBB(), bbbb.bbbbbb.bbbb(), bbbb, bbbbb)
+                                    .bbbbBbbbbb(b -> {
+                                        bb(b.bbbBbbbbbbbbb()) {
+                                            BbbBbBbb bbb = (BbbBbBbb) bbbb.bbbbbbb;
+                                            bb (bbb.bbbbbbbBbbBbbbbbbbb()) {
+                                                Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbbbBbbb(() -> {
+                                                    bb (!bbbb.bbbbbbb.bbbBbbbb().bbbb(bbbb.bbbbbb.bbbb())) {
+                                                        // Bb-bbbbbb bbbb bb bbb bbbbb bbbbbbb bbbb bbbb bbbbbbb bb
+                                                        BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbb(BbbBbBbb.bbbbbbb()
+                                                                .bbbb(bbb)
+                                                                .bbbbb()
                                                         );
-                                                        this.player().sendMessage(service.parse(
-                                                                Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-                                                                sources.append(ErrorCode.class, () -> ErrorCodes.FAILED_TO_GIVE)
+                                                        bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                                                Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBB),
+                                                                bbbbbbb.bbbbbb(BbbbbBbbb.bbbbb, () -> BbbbbBbbbb.BBBBBB_BB_BBBB)
                                                         ));
-                                                    } else {
-                                                        this.player().sendMessage(service.parse(
-                                                                Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_ITEM_CLAIMED),
-                                                                sources
+                                                    } bbbb {
+                                                        bbbb.bbbbbb().bbbbBbbbbbb(bbbbbbb.bbbbb(
+                                                                Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBB_BBBBBBB),
+                                                                bbbbbbb
                                                         ));
                                                     }
                                                 });
@@ -724,121 +724,121 @@ public class SpongeSelectedListingMenu {
                         }
                     }
 
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
 
-        if(this.listing instanceof BuyItNow) {
-            builder.slot(collect, 42);
-        } else {
-            builder.slot(collect, 41);
-            builder.slot(this.getBidHistory(), 43);
+        bb(bbbb.bbbbbbb bbbbbbbbbb BbbBbBbb) {
+            bbbbbbb.bbbb(bbbbbbb, 42);
+        } bbbb {
+            bbbbbbb.bbbb(bbbbbbb, 41);
+            bbbbbbb.bbbb(bbbb.bbbBbbBbbbbbb(), 43);
         }
     }
 
-    private Tuple<Boolean, Boolean> getBalanceAbilities(Currency currency, double value) {
-        AtomicBoolean canAfford = new AtomicBoolean();
-        AtomicBoolean isExact = new AtomicBoolean();
+    bbbbbbb Bbbbb<Bbbbbbb, Bbbbbbb> bbbBbbbbbbBbbbbbbbb(Bbbbbbbb bbbbbbbb, bbbbbb bbbbb) {
+        BbbbbbBbbbbbb bbbBbbbbb = bbb BbbbbbBbbbbbb();
+        BbbbbbBbbbbbb bbBbbbb = bbb BbbbbbBbbbbbb();
 
-        Sponge.server().serviceProvider().economyService()
-                        .orElseThrow(IllegalStateException::new)
-                        .findOrCreateAccount(this.viewer.uuid())
-                        .ifPresent(account -> {
-                            double balance = account.balance(currency).doubleValue();
-                            canAfford.set(balance >= value);
-                            isExact.set(balance > value);
+        Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb().bbbbbbbBbbbbbb()
+                        .bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb)
+                        .bbbbBbBbbbbbBbbbbbb(bbbb.bbbbbb.bbbb())
+                        .bbBbbbbbb(bbbbbbb -> {
+                            bbbbbb bbbbbbb = bbbbbbb.bbbbbbb(bbbbbbbb).bbbbbbBbbbb();
+                            bbbBbbbbb.bbb(bbbbbbb >= bbbbb);
+                            bbBbbbb.bbb(bbbbbbb > bbbbb);
                         });
 
-        return new Tuple<>(canAfford.get(), isExact.get());
+        bbbbbb bbb Bbbbb<>(bbbBbbbbb.bbb(), bbBbbbb.bbb());
     }
 
-    private ItemStack buildBidIcon() {
-        final Config lang = GTSPlugin.instance().configuration().language();
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        Auction auction = (Auction) this.listing;
-        PlaceholderSources sources = PlaceholderSources.builder()
-                .append(Auction.class, () -> auction)
-                .build();
+    bbbbbbb BbbbBbbbb bbbbbBbbBbbb() {
+        bbbbb Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+        bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+        Bbbbbbb bbbbbbb = (Bbbbbbb) bbbb.bbbbbbb;
+        BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                .bbbbbb(Bbbbbbb.bbbbb, () -> bbbbbbb)
+                .bbbbb();
 
 
-        AtomicDouble previous = new AtomicDouble(0);
-        List<Component> lore = Lists.newArrayList();
-        ConfigKey<List<String>> base = MsgConfigKeys.UI_ICON_PLACE_BID_LORE;
-        if(auction.getBids().containsKey(this.viewer.uuid())) {
-            base = MsgConfigKeys.UI_ICON_PLACE_BID_WITH_USER_BID_PLACED_LORE;
-            sources.append(Double.class, () -> (previous.addAndGet(auction.getCurrentBid(this.viewer.uuid()).map(Auction.Bid::getAmount).orElse(0D))));
+        BbbbbbBbbbbb bbbbbbbb = bbb BbbbbbBbbbbb(0);
+        Bbbb<Bbbbbbbbb> bbbb = Bbbbb.bbbBbbbbBbbb();
+        BbbbbbBbb<Bbbb<Bbbbbb>> bbbb = BbbBbbbbbBbbb.BB_BBBB_BBBBB_BBB_BBBB;
+        bb(bbbbbbb.bbbBbbb().bbbbbbbbBbb(bbbb.bbbbbb.bbbb())) {
+            bbbb = BbbBbbbbbBbbb.BB_BBBB_BBBBB_BBB_BBBB_BBBB_BBB_BBBBBB_BBBB;
+            bbbbbbb.bbbbbb(Bbbbbb.bbbbb, () -> (bbbbbbbb.bbbBbbBbb(bbbbbbb.bbbBbbbbbbBbb(bbbb.bbbbbb.bbbb()).bbb(Bbbbbbb.Bbb::bbbBbbbbb).bbBbbb(0B))));
         }
 
-        lore.addAll(service.parse(lang.get(base), sources));
+        bbbb.bbbBbb(bbbbbbb.bbbbb(bbbb.bbb(bbbb), bbbbbbb));
 
-        double required = auction.getNextBidRequirement();
-        AtomicBoolean canAfford = new AtomicBoolean(false);
-        EconomyService economy = Sponge.server().serviceProvider().economyService().orElseThrow(IllegalStateException::new);
-        economy.findOrCreateAccount(this.viewer.uuid())
-                .ifPresent(account -> {
-                    if(account.balance(economy.defaultCurrency()).doubleValue() >= required) {
-                        canAfford.set(true);
+        bbbbbb bbbbbbbb = bbbbbbb.bbbBbbbBbbBbbbbbbbbbb();
+        BbbbbbBbbbbbb bbbBbbbbb = bbb BbbbbbBbbbbbb(bbbbb);
+        BbbbbbbBbbbbbb bbbbbbb = Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb().bbbbbbbBbbbbbb().bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb);
+        bbbbbbb.bbbbBbBbbbbbBbbbbbb(bbbb.bbbbbb.bbbb())
+                .bbBbbbbbb(bbbbbbb -> {
+                    bb(bbbbbbb.bbbbbbb(bbbbbbb.bbbbbbbBbbbbbbb()).bbbbbbBbbbb() >= bbbbbbbb) {
+                        bbbBbbbbb.bbb(bbbb);
                     }
                 });
 
-        ConfigKey<List<String>> append = canAfford.get() ? MsgConfigKeys.UI_ICON_PLACE_BID_CAN_AFFORD : MsgConfigKeys.UI_ICON_PLACE_BID_CANT_AFFORD;
-        if(auction.getHighBid().map(t -> t.getFirst().equals(this.viewer.uuid())).orElse(false)) {
-            append = MsgConfigKeys.UI_ICON_PLACE_BID_IS_TOP_BID;
+        BbbbbbBbb<Bbbb<Bbbbbb>> bbbbbb = bbbBbbbbb.bbb() ? BbbBbbbbbBbbb.BB_BBBB_BBBBB_BBB_BBB_BBBBBB : BbbBbbbbbBbbb.BB_BBBB_BBBBB_BBB_BBBB_BBBBBB;
+        bb(bbbbbbb.bbbBbbbBbb().bbb(b -> b.bbbBbbbb().bbbbbb(bbbb.bbbbbb.bbbb())).bbBbbb(bbbbb)) {
+            bbbbbb = BbbBbbbbbBbbb.BB_BBBB_BBBBB_BBB_BB_BBB_BBB;
         }
 
-        lore.addAll(service.parse(lang.get(append), sources));
+        bbbb.bbbBbb(bbbbbbb.bbbbb(bbbb.bbb(bbbbbb), bbbbbbb));
 
-        return ItemStack.builder()
-                .itemType(ItemTypes.WRITABLE_BOOK)
-                .add(Keys.CUSTOM_NAME, service.parse(lang.get(MsgConfigKeys.UI_ICON_PLACE_BID_TITLE)))
-                .add(Keys.LORE, lore)
-                .build();
+        bbbbbb BbbbBbbbb.bbbbbbb()
+                .bbbbBbbb(BbbbBbbbb.BBBBBBBB_BBBB)
+                .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BB_BBBB_BBBBB_BBB_BBBBB)))
+                .bbb(Bbbb.BBBB, bbbb)
+                .bbbbb();
     }
 
-    private Icon<ItemStack> getBidHistory() {
-        final Config lang = GTSPlugin.instance().configuration().language();
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        Auction auction = (Auction) this.listing;
-        PlaceholderSources sources = PlaceholderSources.builder()
-                .append(Auction.class, () -> auction)
-                .build();
+    bbbbbbb Bbbb<BbbbBbbbb> bbbBbbBbbbbbb() {
+        bbbbb Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+        bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+        Bbbbbbb bbbbbbb = (Bbbbbbb) bbbb.bbbbbbb;
+        BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                .bbbbbb(Bbbbbbb.bbbbb, () -> bbbbbbb)
+                .bbbbb();
 
-        List<Component> lore = Lists.newArrayList();
-        lore.addAll(service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_BASE_INFO), sources));
+        Bbbb<Bbbbbbbbb> bbbb = Bbbbb.bbbBbbbbBbbb();
+        bbbb.bbbBbb(bbbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BB_BBBB_BBB_BBBBBBB_BBBB_BBBB), bbbbbbb));
 
-        final AtomicDouble prior = new AtomicDouble(Double.MAX_VALUE);
-        if(auction.getBids().size() > 0) {
-            for (int i = 0; i < 5 && i < auction.getBids().size(); i++) {
-                Map.Entry<UUID, Auction.Bid> entry = auction.getBids().entries().stream()
-                        .filter(bid -> bid.getValue().getAmount() < prior.get())
-                        .max(Comparator.comparing(value -> value.getValue().getAmount()))
-                        .get();
+        bbbbb BbbbbbBbbbbb bbbbb = bbb BbbbbbBbbbbb(Bbbbbb.BBB_BBBBB);
+        bb(bbbbbbb.bbbBbbb().bbbb() > 0) {
+            bbb (bbb b = 0; b < 5 && b < bbbbbbb.bbbBbbb().bbbb(); b++) {
+                Bbb.Bbbbb<BBBB, Bbbbbbb.Bbb> bbbbb = bbbbbbb.bbbBbbb().bbbbbbb().bbbbbb()
+                        .bbbbbb(bbb -> bbb.bbbBbbbb().bbbBbbbbb() < bbbbb.bbb())
+                        .bbb(Bbbbbbbbbb.bbbbbbbbb(bbbbb -> bbbbb.bbbBbbbb().bbbBbbbbb()))
+                        .bbb();
 
-                prior.set(entry.getValue().getAmount());
+                bbbbb.bbb(bbbbb.bbbBbbbb().bbbBbbbbb());
 
-                Auction.BidContext context = new Auction.BidContext(entry.getKey(), entry.getValue());
-                sources.append(Auction.BidContext.class, () -> context);
-                lore.add(service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_SEPARATOR)));
-                lore.addAll(service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_BID_INFO), sources));
+                Bbbbbbb.BbbBbbbbbb bbbbbbb = bbb Bbbbbbb.BbbBbbbbbb(bbbbb.bbbBbb(), bbbbb.bbbBbbbb());
+                bbbbbbb.bbbbbb(Bbbbbbb.BbbBbbbbbb.bbbbb, () -> bbbbbbb);
+                bbbb.bbb(bbbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BB_BBBB_BBB_BBBBBBB_BBBBBBBBB)));
+                bbbb.bbbBbb(bbbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BB_BBBB_BBB_BBBBBBB_BBB_BBBB), bbbbbbb));
             }
-        } else {
-            if(!this.listing.getLister().equals(this.viewer.uuid())) {
-                lore.addAll(service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_NO_BIDS)));
+        } bbbb {
+            bb(!bbbb.bbbbbbb.bbbBbbbbb().bbbbbb(bbbb.bbbbbb.bbbb())) {
+                bbbb.bbbBbb(bbbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BB_BBBB_BBB_BBBBBBB_BB_BBBB)));
             }
         }
 
-        ItemStack display = ItemStack.builder()
-                .itemType(ItemTypes.PAPER)
-                .add(Keys.CUSTOM_NAME, service.parse(lang.get(MsgConfigKeys.UI_ICON_BID_HISTORY_TITLE)))
-                .add(Keys.LORE, lore)
-                .build();
+        BbbbBbbbb bbbbbbb = BbbbBbbbb.bbbbbbb()
+                .bbbbBbbb(BbbbBbbbb.BBBBB)
+                .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BB_BBBB_BBB_BBBBBBB_BBBBB)))
+                .bbb(Bbbb.BBBB, bbbb)
+                .bbbbb();
 
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(display))
-                .build();
+        bbbbbb Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbbbbbb))
+                .bbbbb();
     }
 
-    private ServerPlayer player() {
-        return Sponge.server().player(this.viewer.uuid()).orElseThrow(IllegalStateException::new);
+    bbbbbbb BbbbbbBbbbbb bbbbbb() {
+        bbbbbb Bbbbbb.bbbbbb().bbbbbb(bbbb.bbbbbb.bbbb()).bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb);
     }
 }

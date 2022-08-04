@@ -1,166 +1,166 @@
-package net.impactdev.gts.api.util;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb;
 
-import com.google.common.base.Preconditions;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.Bbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import javax.annotation.Nonnull;
-import java.util.StringJoiner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+bbbbbb bbbbb.bbbbbbbbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.BbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.bbbbb.Bbbbbbb;
 
-public class Version implements Comparable<Version> {
+bbbbbb bbbbb Bbbbbbb bbbbbbbbbb Bbbbbbbbbb<Bbbbbbb> {
 
-    private static final Pattern VERSION_PATTERN = Pattern.compile("(?<major>[0-9]+).(?<minor>[0-9]+).(?<patch>[0-9]+)(?<snapshot>-SNAPSHOT)?");
+    bbbbbbb bbbbbb bbbbb Bbbbbbb BBBBBBB_BBBBBBB = Bbbbbbb.bbbbbbb("(?<bbbbb>[0-9]+).(?<bbbbb>[0-9]+).(?<bbbbb>[0-9]+)(?<bbbbbbbb>-BBBBBBBB)?");
 
-    @Nullable
-    private final String source;
+    @Bbbbbbbb
+    bbbbbbb bbbbb Bbbbbb bbbbbb;
 
-    private final short major;
-    private final short minor;
-    private final short patch;
+    bbbbbbb bbbbb bbbbb bbbbb;
+    bbbbbbb bbbbb bbbbb bbbbb;
+    bbbbbbb bbbbb bbbbb bbbbb;
 
-    private final boolean snapshot;
-    private final boolean valid;
+    bbbbbbb bbbbb bbbbbbb bbbbbbbb;
+    bbbbbbb bbbbb bbbbbbb bbbbb;
 
-    public static Version of(@Nonnull @org.intellij.lang.annotations.Pattern("(?<major>[0-9]+).(?<minor>[0-9]+).(?<patch>[0-9]+)(?<snapshot>-SNAPSHOT)?") String input) {
-        return new Version(input);
+    bbbbbb bbbbbb Bbbbbbb bb(@Bbbbbbb @bbb.bbbbbbbb.bbbb.bbbbbbbbbbb.Bbbbbbb("(?<bbbbb>[0-9]+).(?<bbbbb>[0-9]+).(?<bbbbb>[0-9]+)(?<bbbbbbbb>-BBBBBBBB)?") Bbbbbb bbbbb) {
+        bbbbbb bbb Bbbbbbb(bbbbb);
     }
 
-    public Version(@Nonnull String input) {
-        this.source = input;
+    bbbbbb Bbbbbbb(@Bbbbbbb Bbbbbb bbbbb) {
+        bbbb.bbbbbb = bbbbb;
 
-        Matcher matcher = VERSION_PATTERN.matcher(input);
-        if(matcher.find()) {
-            this.major = Short.parseShort(matcher.group("major"));
-            this.minor = Short.parseShort(matcher.group("minor"));
-            this.patch = Short.parseShort(matcher.group("patch"));
-            this.snapshot = matcher.group("snapshot") != null;
-            this.valid = true;
-        } else {
-            this.major = 0;
-            this.minor = 0;
-            this.patch = 0;
-            this.snapshot = false;
-            this.valid = false;
+        Bbbbbbb bbbbbbb = BBBBBBB_BBBBBBB.bbbbbbb(bbbbb);
+        bb(bbbbbbb.bbbb()) {
+            bbbb.bbbbb = Bbbbb.bbbbbBbbbb(bbbbbbb.bbbbb("bbbbb"));
+            bbbb.bbbbb = Bbbbb.bbbbbBbbbb(bbbbbbb.bbbbb("bbbbb"));
+            bbbb.bbbbb = Bbbbb.bbbbbBbbbb(bbbbbbb.bbbbb("bbbbb"));
+            bbbb.bbbbbbbb = bbbbbbb.bbbbb("bbbbbbbb") != bbbb;
+            bbbb.bbbbb = bbbb;
+        } bbbb {
+            bbbb.bbbbb = 0;
+            bbbb.bbbbb = 0;
+            bbbb.bbbbb = 0;
+            bbbb.bbbbbbbb = bbbbb;
+            bbbb.bbbbb = bbbbb;
         }
     }
 
-    public Version(short major, short minor, short patch) {
-        this.major = major;
-        this.minor = minor;
-        this.patch = patch;
-        this.snapshot = false;
-        this.valid = true;
+    bbbbbb Bbbbbbb(bbbbb bbbbb, bbbbb bbbbb, bbbbb bbbbb) {
+        bbbb.bbbbb = bbbbb;
+        bbbb.bbbbb = bbbbb;
+        bbbb.bbbbb = bbbbb;
+        bbbb.bbbbbbbb = bbbbb;
+        bbbb.bbbbb = bbbb;
 
-        this.source = null;
+        bbbb.bbbbbb = bbbb;
     }
 
-    public Version(short major, short minor, short patch, boolean snapshot) {
-        this.major = major;
-        this.minor = minor;
-        this.patch = patch;
-        this.snapshot = snapshot;
-        this.valid = true;
+    bbbbbb Bbbbbbb(bbbbb bbbbb, bbbbb bbbbb, bbbbb bbbbb, bbbbbbb bbbbbbbb) {
+        bbbb.bbbbb = bbbbb;
+        bbbb.bbbbb = bbbbb;
+        bbbb.bbbbb = bbbbb;
+        bbbb.bbbbbbbb = bbbbbbbb;
+        bbbb.bbbbb = bbbb;
 
-        this.source = null;
+        bbbb.bbbbbb = bbbb;
     }
 
-    public short getMajor() {
-        return this.major;
+    bbbbbb bbbbb bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    public short getMinor() {
-        return this.minor;
+    bbbbbb bbbbb bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    public short getPatch() {
-        return this.patch;
+    bbbbbb bbbbb bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    public boolean isSnapshot() {
-        return this.snapshot;
+    bbbbbb bbbbbbb bbBbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbb;
     }
 
-    public boolean isValid() {
-        return this.valid;
+    bbbbbb bbbbbbb bbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public int compareTo(Version other) {
-        if(this.valid && other.valid) {
-            if(this.major != other.major) {
-                if(this.major > other.major) {
-                    return 1;
-                } else {
-                    return -1;
+    @Bbbbbbbb
+    bbbbbb bbb bbbbbbbBb(Bbbbbbb bbbbb) {
+        bb(bbbb.bbbbb && bbbbb.bbbbb) {
+            bb(bbbb.bbbbb != bbbbb.bbbbb) {
+                bb(bbbb.bbbbb > bbbbb.bbbbb) {
+                    bbbbbb 1;
+                } bbbb {
+                    bbbbbb -1;
                 }
-            } else if(this.minor != other.minor) {
-                if(this.minor > other.minor) {
-                    return 1;
-                } else {
-                    return -1;
+            } bbbb bb(bbbb.bbbbb != bbbbb.bbbbb) {
+                bb(bbbb.bbbbb > bbbbb.bbbbb) {
+                    bbbbbb 1;
+                } bbbb {
+                    bbbbbb -1;
                 }
-            } else if(this.patch != other.patch) {
-                if(this.patch > other.patch) {
-                    return 1;
-                } else {
-                    return -1;
+            } bbbb bb(bbbb.bbbbb != bbbbb.bbbbb) {
+                bb(bbbb.bbbbb > bbbbb.bbbbb) {
+                    bbbbbb 1;
+                } bbbb {
+                    bbbbbb -1;
                 }
-            } else {
-                if(!this.snapshot && other.snapshot) {
-                    return 1;
-                } else if(this.snapshot && !other.snapshot) {
-                    return -1;
+            } bbbb {
+                bb(!bbbb.bbbbbbbb && bbbbb.bbbbbbbb) {
+                    bbbbbb 1;
+                } bbbb bb(bbbb.bbbbbbbb && !bbbbb.bbbbbbbb) {
+                    bbbbbb -1;
                 }
             }
-        } else {
-            if(other.valid) {
-                return -1;
-            } else {
-                return 1;
+        } bbbb {
+            bb(bbbbb.bbbbb) {
+                bbbbbb -1;
+            } bbbb {
+                bbbbbb 1;
             }
         }
 
-        return 0;
+        bbbbbb 0;
     }
 
-    @Override
-    public String toString() {
-        if(this.source != null) {
-            return this.source;
+    @Bbbbbbbb
+    bbbbbb Bbbbbb bbBbbbbb() {
+        bb(bbbb.bbbbbb != bbbb) {
+            bbbbbb bbbb.bbbbbb;
         }
 
-        StringJoiner joiner = new StringJoiner(".");
+        BbbbbbBbbbbb bbbbbb = bbb BbbbbbBbbbbb(".");
 
-        joiner.add(this.asString(this.getMajor()));
-        joiner.add(this.asString(this.getMinor()));
-        joiner.add(this.asString(this.getPatch()));
+        bbbbbb.bbb(bbbb.bbBbbbbb(bbbb.bbbBbbbb()));
+        bbbbbb.bbb(bbbb.bbBbbbbb(bbbb.bbbBbbbb()));
+        bbbbbb.bbb(bbbb.bbBbbbbb(bbbb.bbbBbbbb()));
 
-        String result = joiner.toString();
-        if(this.isSnapshot()) {
-            result += "-SNAPSHOT";
+        Bbbbbb bbbbbb = bbbbbb.bbBbbbbb();
+        bb(bbbb.bbBbbbbbbb()) {
+            bbbbbb += "-BBBBBBBB";
         }
 
-        return result;
+        bbbbbb bbbbbb;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if(obj instanceof Version) {
-            return this.compareTo((Version) obj) == 0;
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbbb(Bbbbbb bbb) {
+        bb(bbb bbbbbbbbbb Bbbbbbb) {
+            bbbbbb bbbb.bbbbbbbBb((Bbbbbbb) bbb) == 0;
         }
 
-        return false;
+        bbbbbb bbbbb;
     }
 
-    private String asString(short x) {
-        return "" + x;
+    bbbbbbb Bbbbbb bbBbbbbb(bbbbb b) {
+        bbbbbb "" + b;
     }
 
-    public static class Minecraft {
+    bbbbbb bbbbbb bbbbb Bbbbbbbbb {
 
-        public static final Version v1_12_2 = Version.of("1.12.2");
-        public static final Version v1_16_5 = Version.of("1.16.5");
+        bbbbbb bbbbbb bbbbb Bbbbbbb b1_12_2 = Bbbbbbb.bb("1.12.2");
+        bbbbbb bbbbbb bbbbb Bbbbbbb b1_16_5 = Bbbbbbb.bb("1.16.5");
 
     }
 

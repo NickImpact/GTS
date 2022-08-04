@@ -1,47 +1,47 @@
-package net.impactdev.gts.commands.elements;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb;
 
-import com.google.common.collect.Maps;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.listings.entries.EntryManager;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.command.CommandCompletion;
-import org.spongepowered.api.command.exception.ArgumentParseException;
-import org.spongepowered.api.command.parameter.ArgumentReader;
-import org.spongepowered.api.command.parameter.CommandContext;
-import org.spongepowered.api.command.parameter.Parameter;
-import org.spongepowered.api.command.parameter.managed.ValueParameter;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbbBbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.bbbbbbb.BbbbbBbbbbbbbb;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-public class EntryManagerElement implements ValueParameter<EntryManager<?>> {
+bbbbbb bbbbb BbbbbBbbbbbbBbbbbbb bbbbbbbbbb BbbbbBbbbbbbbb<BbbbbBbbbbbb<?>> {
 
-    private final Map<String, EntryManager<?>> entries = Maps.newHashMap();
+    bbbbbbb bbbbb Bbb<Bbbbbb, BbbbbBbbbbbb<?>> bbbbbbb = Bbbb.bbbBbbbBbb();
 
-    public EntryManagerElement() {
-        GTSService.getInstance().getGTSComponentManager().getAllEntryManagers().values().forEach(em -> {
-            for(String alias : em.getEntryCommandCreator().getAliases()) {
-                this.entries.put(alias.toLowerCase(), em);
+    bbbbbb BbbbbBbbbbbbBbbbbbb() {
+        BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb().bbbBbbBbbbbBbbbbbbb().bbbbbb().bbbBbbb(bb -> {
+            bbb(Bbbbbb bbbbb : bb.bbbBbbbbBbbbbbbBbbbbbb().bbbBbbbbbb()) {
+                bbbb.bbbbbbb.bbb(bbbbb.bbBbbbbBbbb(), bb);
             }
         });
     }
 
-    @Override
-    public List<CommandCompletion> complete(CommandContext context, String currentInput) {
-        //return ImmutableList.copyOf(this.entries.keySet());
-        return Collections.emptyList();
+    @Bbbbbbbb
+    bbbbbb Bbbb<BbbbbbbBbbbbbbbbb> bbbbbbbb(BbbbbbbBbbbbbb bbbbbbb, Bbbbbb bbbbbbbBbbbb) {
+        //bbbbbb BbbbbbbbbBbbb.bbbbBb(bbbb.bbbbbbb.bbbBbb());
+        bbbbbb Bbbbbbbbbbb.bbbbbBbbb();
     }
 
-    @Override
-    public Optional<? extends EntryManager<?>> parseValue(Parameter.Key<? super EntryManager<?>> parameterKey, ArgumentReader.Mutable reader, CommandContext.Builder context) throws ArgumentParseException {
-        String key = reader.parseString();
-        EntryManager<?> match = this.entries.get(key);
-        if(match == null) {
-            throw new ArgumentParseException(Component.text("No matching element"), key, key.length() - 1);
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<? bbbbbbb BbbbbBbbbbbb<?>> bbbbbBbbbb(Bbbbbbbbb.Bbb<? bbbbb BbbbbBbbbbbb<?>> bbbbbbbbbBbb, BbbbbbbbBbbbbb.Bbbbbbb bbbbbb, BbbbbbbBbbbbbb.Bbbbbbb bbbbbbb) bbbbbb BbbbbbbbBbbbbBbbbbbbbb {
+        Bbbbbb bbb = bbbbbb.bbbbbBbbbbb();
+        BbbbbBbbbbbb<?> bbbbb = bbbb.bbbbbbb.bbb(bbb);
+        bb(bbbbb == bbbb) {
+            bbbbb bbb BbbbbbbbBbbbbBbbbbbbbb(Bbbbbbbbb.bbbb("Bb bbbbbbbb bbbbbbb"), bbb, bbb.bbbbbb() - 1);
         }
 
-        return Optional.of(match);
+        bbbbbb Bbbbbbbb.bb(bbbbb);
     }
 }

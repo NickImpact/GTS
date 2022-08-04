@@ -1,15 +1,15 @@
-package net.impactdev.gts.api.util;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb;
 
-@FunctionalInterface
-public interface TriFunction<T, U, V, R> {
+@BbbbbbbbbbBbbbbbbbb
+bbbbbb bbbbbbbbb BbbBbbbbbbb<B, B, B, B> {
 
 	/**
-	 * Applies this function to the given arguments.
+	 * Bbbbbbb bbbb bbbbbbbb bb bbb bbbbb bbbbbbbbb.
 	 *
-	 * @param t the first function argument
-	 * @param u the second function argument
-	 * @return the function result
+	 * @bbbbb b bbb bbbbb bbbbbbbb bbbbbbbb
+	 * @bbbbb b bbb bbbbbb bbbbbbbb bbbbbbbb
+	 * @bbbbbb bbb bbbbbbbb bbbbbb
 	 */
-	R apply(T t, U u, V v);
+	B bbbbb(B b, B b, B b);
 
 }

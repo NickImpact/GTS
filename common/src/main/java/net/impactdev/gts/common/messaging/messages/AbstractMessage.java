@@ -1,22 +1,22 @@
-package net.impactdev.gts.common.messaging.messages;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb;
 
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.UpdateMessage;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
-public abstract class AbstractMessage implements UpdateMessage, OutgoingMessage {
+bbbbbb bbbbbbbb bbbbb BbbbbbbbBbbbbbb bbbbbbbbbb BbbbbbBbbbbbb, BbbbbbbbBbbbbbb {
 
-	private final UUID id;
+	bbbbbbb bbbbb BBBB bb;
 
-	public AbstractMessage(UUID id) {
-		this.id = id;
+	bbbbbb BbbbbbbbBbbbbbb(BBBB bb) {
+		bbbb.bb = bb;
 	}
 
-	@Override
-	public @NonNull UUID getID() {
-		return this.id;
+	@Bbbbbbbb
+	bbbbbb @BbbBbbb BBBB bbbBB() {
+		bbbbbb bbbb.bb;
 	}
 
 }

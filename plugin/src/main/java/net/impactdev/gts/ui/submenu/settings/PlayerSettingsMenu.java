@@ -1,217 +1,217 @@
-package net.impactdev.gts.ui.submenu.settings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbbbb.bbbbbbbb;
 
-import net.impactdev.gts.SpongeGTSPlugin;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.player.NotificationSetting;
-import net.impactdev.gts.api.player.PlayerSettings;
-import net.impactdev.gts.api.util.TriState;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
-import net.impactdev.gts.ui.SpongeMainMenu;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.scheduler.Task;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbbBBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.BbbbbbBbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.BbbbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.BbbbbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbb.Bbbb;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
+bbbbbb bbbb.bbbb.Bbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbb;
 
 
-public class PlayerSettingsMenu {
+bbbbbb bbbbb BbbbbbBbbbbbbbBbbb {
 
-    private final ImpactorUI display;
+    bbbbbbb bbbbb BbbbbbbbBB bbbbbbb;
 
-    private PlayerSettings original;
-    private PlayerSettings working;
+    bbbbbbb BbbbbbBbbbbbbb bbbbbbbb;
+    bbbbbbb BbbbbbBbbbbbbb bbbbbbb;
 
-    /** Ensures loading of settings was valid, set via {@link #queue(ServerPlayer)} */
-    private final AtomicBoolean valid = new AtomicBoolean(false);
+    /** Bbbbbbb bbbbbbb bb bbbbbbbb bbb bbbbb, bbb bbb {@bbbb #bbbbb(BbbbbbBbbbbb)} */
+    bbbbbbb bbbbb BbbbbbBbbbbbb bbbbb = bbb BbbbbbBbbbbbb(bbbbb);
 
-    public PlayerSettingsMenu(PlatformPlayer viewer) {
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        AtomicBoolean ran = new AtomicBoolean(false);
+    bbbbbb BbbbbbBbbbbbbbBbbb(BbbbbbbbBbbbbb bbbbbb) {
+        bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+        BbbbbbBbbbbbb bbb = bbb BbbbbbBbbbbbb(bbbbb);
 
-        this.display = ImpactorUI.builder()
-                .title(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PLAYER_SETTINGS_TITLE)))
-                .layout(this.layout(viewer))
-                .onClose(context -> {
-                    if(!ran.get()) {
-                        ran.set(true);
-                        if (!this.original.matches(this.working)) {
-                            GTSService.getInstance().getPlayerSettingsManager().cache(viewer.uuid(), this.working);
+        bbbb.bbbbbbb = BbbbbbbbBB.bbbbbbb()
+                .bbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBB_BBBBBBBB_BBBBB)))
+                .bbbbbb(bbbb.bbbbbb(bbbbbb))
+                .bbBbbbb(bbbbbbb -> {
+                    bb(!bbb.bbb()) {
+                        bbb.bbb(bbbb);
+                        bb (!bbbb.bbbbbbbb.bbbbbbb(bbbb.bbbbbbb)) {
+                            BBBBbbbbbb.bbbBbbbbbbb().bbbBbbbbbBbbbbbbbBbbbbbb().bbbbb(bbbbbb.bbbb(), bbbb.bbbbbbb);
                         }
                     }
-                    return true;
+                    bbbbbb bbbb;
                 })
-                .build();
+                .bbbbb();
 
-        this.set(NotificationSetting.Publish, 19, TriState.UNDEFINED);
-        this.set(NotificationSetting.Sold, 21, TriState.UNDEFINED);
-        this.set(NotificationSetting.Bid, 23, TriState.UNDEFINED);
-        this.set(NotificationSetting.Outbid, 25, TriState.UNDEFINED);
-        this.queue(viewer);
+        bbbb.bbb(BbbbbbbbbbbbBbbbbbb.Bbbbbbb, 19, BbbBbbbb.BBBBBBBBB);
+        bbbb.bbb(BbbbbbbbbbbbBbbbbbb.Bbbb, 21, BbbBbbbb.BBBBBBBBB);
+        bbbb.bbb(BbbbbbbbbbbbBbbbbbb.Bbb, 23, BbbBbbbb.BBBBBBBBB);
+        bbbb.bbb(BbbbbbbbbbbbBbbbbbb.Bbbbbb, 25, BbbBbbbb.BBBBBBBBB);
+        bbbb.bbbbb(bbbbbb);
     }
 
-    public void open(PlatformPlayer viewer) {
-        this.display.open(viewer);
+    bbbbbb bbbb bbbb(BbbbbbbbBbbbbb bbbbbb) {
+        bbbb.bbbbbbb.bbbb(bbbbbb);
     }
 
-    private Layout layout(PlatformPlayer viewer) {
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+    bbbbbbb Bbbbbb bbbbbb(BbbbbbbbBbbbbb bbbbbb) {
+        bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
 
-        Layout.LayoutBuilder layout = Layout.builder()
-                .size(4)
-                .border(ProvidedIcons.BORDER)
-                .size(5)
-                .slots(ProvidedIcons.BORDER, 36, 44);
+        Bbbbbb.BbbbbbBbbbbbb bbbbbb = Bbbbbb.bbbbbbb()
+                .bbbb(4)
+                .bbbbbb(BbbbbbbbBbbbb.BBBBBB)
+                .bbbb(5)
+                .bbbbb(BbbbbbbbBbbbb.BBBBBB, 36, 44);
 
-        layout.slot(this.initialize(NotificationSetting.Publish), 10);
-        layout.slot(this.initialize(NotificationSetting.Sold), 12);
-        layout.slot(this.initialize(NotificationSetting.Bid), 14);
-        layout.slot(this.initialize(NotificationSetting.Outbid), 16);
+        bbbbbb.bbbb(bbbb.bbbbbbbbbb(BbbbbbbbbbbbBbbbbbb.Bbbbbbb), 10);
+        bbbbbb.bbbb(bbbb.bbbbbbbbbb(BbbbbbbbbbbbBbbbbbb.Bbbb), 12);
+        bbbbbb.bbbb(bbbb.bbbbbbbbbb(BbbbbbbbbbbbBbbbbbb.Bbb), 14);
+        bbbbbb.bbbb(bbbb.bbbbbbbbbb(BbbbbbbbbbbbBbbbbbb.Bbbbbb), 16);
 
-        ItemStack b = ItemStack.builder()
-                .itemType(ItemTypes.BARRIER)
-                .add(Keys.CUSTOM_NAME, service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK)))
-                .build();
+        BbbbBbbbb b = BbbbBbbbb.bbbbbbb()
+                .bbbbBbbb(BbbbBbbbb.BBBBBBB)
+                .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBB)))
+                .bbbbb();
 
-        Icon<ItemStack> back = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(b))
-                .listener(context -> {
-                    SpongeMainMenu menu = new SpongeMainMenu(viewer);
-                    menu.open();
-                    return false;
+        Bbbb<BbbbBbbbb> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(b))
+                .bbbbbbbb(bbbbbbb -> {
+                    BbbbbbBbbbBbbb bbbb = bbb BbbbbbBbbbBbbb(bbbbbb);
+                    bbbb.bbbb();
+                    bbbbbb bbbbb;
                 })
-                .build();
-        layout.slot(back, 40);
-        return layout.build();
+                .bbbbb();
+        bbbbbb.bbbb(bbbb, 40);
+        bbbbbb bbbbbb.bbbbb();
     }
 
     /**
-     * Load user settings asynchronously and apply to the UI when ready
+     * Bbbb bbbb bbbbbbbb bbbbbbbbbbbbbb bbb bbbbb bb bbb BB bbbb bbbbb
      */
-    private void queue(PlatformPlayer viewer) {
-        GTSService.getInstance().getPlayerSettingsManager()
-                .retrieve(viewer.uuid())
-                .applyToEither(this.timeoutAfter(5, TimeUnit.SECONDS), settings -> settings)
-                .thenAccept(settings -> {
-                    this.original = settings;
-                    this.working = this.original;
-                    this.valid.set(true);
+    bbbbbbb bbbb bbbbb(BbbbbbbbBbbbbb bbbbbb) {
+        BBBBbbbbbb.bbbBbbbbbbb().bbbBbbbbbBbbbbbbbBbbbbbb()
+                .bbbbbbbb(bbbbbb.bbbb())
+                .bbbbbBbBbbbbb(bbbb.bbbbbbbBbbbb(5, BbbbBbbb.BBBBBBB), bbbbbbbb -> bbbbbbbb)
+                .bbbbBbbbbb(bbbbbbbb -> {
+                    bbbb.bbbbbbbb = bbbbbbbb;
+                    bbbb.bbbbbbb = bbbb.bbbbbbbb;
+                    bbbb.bbbbb.bbb(bbbb);
 
-                    Sponge.server().scheduler().submit(Task.builder()
-                            .execute(() -> {
-                                this.set(NotificationSetting.Publish, 19, TriState.fromBoolean(settings.getPublishListenState()));
-                                this.set(NotificationSetting.Sold, 21, TriState.fromBoolean(settings.getSoldListenState()));
-                                this.set(NotificationSetting.Bid, 23, TriState.fromBoolean(settings.getBidListenState()));
-                                this.set(NotificationSetting.Outbid, 25, TriState.fromBoolean(settings.getOutbidListenState()));
+                    Bbbbbb.bbbbbb().bbbbbbbbb().bbbbbb(Bbbb.bbbbbbb()
+                            .bbbbbbb(() -> {
+                                bbbb.bbb(BbbbbbbbbbbbBbbbbbb.Bbbbbbb, 19, BbbBbbbb.bbbbBbbbbbb(bbbbbbbb.bbbBbbbbbbBbbbbbBbbbb()));
+                                bbbb.bbb(BbbbbbbbbbbbBbbbbbb.Bbbb, 21, BbbBbbbb.bbbbBbbbbbb(bbbbbbbb.bbbBbbbBbbbbbBbbbb()));
+                                bbbb.bbb(BbbbbbbbbbbbBbbbbbb.Bbb, 23, BbbBbbbb.bbbbBbbbbbb(bbbbbbbb.bbbBbbBbbbbbBbbbb()));
+                                bbbb.bbb(BbbbbbbbbbbbBbbbbbb.Bbbbbb, 25, BbbBbbbb.bbbbBbbbbbb(bbbbbbbb.bbbBbbbbbBbbbbbBbbbb()));
                             })
-                            .plugin(GTSPlugin.instance().as(SpongeGTSPlugin.class).container())
-                            .build());
+                            .bbbbbb(BBBBbbbbb.bbbbbbbb().bb(BbbbbbBBBBbbbbb.bbbbb).bbbbbbbbb())
+                            .bbbbb());
                 });
     }
 
-    private Icon<ItemStack> initialize(NotificationSetting setting) {
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-        Settings settings = Settings.locate(setting);
+    bbbbbbb Bbbb<BbbbBbbbb> bbbbbbbbbb(BbbbbbbbbbbbBbbbbbb bbbbbbb) {
+        bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+        Bbbbbbbb bbbbbbbb = Bbbbbbbb.bbbbbb(bbbbbbb);
 
-        String name = Utilities.readMessageConfigOption(MsgConfigKeys.UI_PLAYER_SETTINGS_SETTING_TITLE);
-        name = name.replace("{{setting}}", setting.name());
+        Bbbbbb bbbb = Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBB);
+        bbbb = bbbb.bbbbbbb("{{bbbbbbb}}", bbbbbbb.bbbb());
 
-        ItemStack display = ItemStack.builder()
-                .itemType(settings.getItem())
-                .add(Keys.CUSTOM_NAME, service.parse(name))
-                .add(Keys.LORE, service.parse(Utilities.readMessageConfigOption(settings.getDescription())))
-                .build();
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(display))
-                .build();
+        BbbbBbbbb bbbbbbb = BbbbBbbbb.bbbbbbb()
+                .bbbbBbbb(bbbbbbbb.bbbBbbb())
+                .bbb(Bbbb.BBBBBB_BBBB, bbbbbbb.bbbbb(bbbb))
+                .bbb(Bbbb.BBBB, bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(bbbbbbbb.bbbBbbbbbbbbbb())))
+                .bbbbb();
+        bbbbbb Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbbbbbb))
+                .bbbbb();
     }
 
-    private void set(NotificationSetting setting, int slot, TriState state) {
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+    bbbbbbb bbbb bbb(BbbbbbbbbbbbBbbbbbb bbbbbbb, bbb bbbb, BbbBbbbb bbbbb) {
+        bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
 
-        ItemType color = state == TriState.TRUE ? ItemTypes.LIME_DYE.get() : state == TriState.FALSE ? ItemTypes.GRAY_DYE.get() : ItemTypes.ORANGE_DYE.get();
-        Component title = service.parse(Utilities.readMessageConfigOption(state == TriState.TRUE ? MsgConfigKeys.UI_PLAYER_SETTINGS_SETTING_ENABLED :
-                state == TriState.FALSE ? MsgConfigKeys.UI_PLAYER_SETTINGS_SETTING_DISABLED : MsgConfigKeys.UI_PLAYER_SETTINGS_SETTING_LOADING));
-        List<Component> lore = state == TriState.UNDEFINED ? Collections.emptyList() :
-                service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_PLAYER_SETTINGS_SETTING_TOGGLE_LORE));
+        BbbbBbbb bbbbb = bbbbb == BbbBbbbb.BBBB ? BbbbBbbbb.BBBB_BBB.bbb() : bbbbb == BbbBbbbb.BBBBB ? BbbbBbbbb.BBBB_BBB.bbb() : BbbbBbbbb.BBBBBB_BBB.bbb();
+        Bbbbbbbbb bbbbb = bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(bbbbb == BbbBbbbb.BBBB ? BbbBbbbbbBbbb.BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBBBB :
+                bbbbb == BbbBbbbb.BBBBB ? BbbBbbbbbBbbb.BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBBBBB : BbbBbbbbbBbbb.BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBBBB));
+        Bbbb<Bbbbbbbbb> bbbb = bbbbb == BbbBbbbb.BBBBBBBBB ? Bbbbbbbbbbb.bbbbbBbbb() :
+                bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBBB_BBBB));
 
-        ItemStack display = ItemStack.builder()
-                .itemType(color)
-                .add(Keys.CUSTOM_NAME, title)
-                .add(Keys.LORE, lore)
-                .build();
-        Icon<ItemStack> icon = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(display))
-                .listener(context -> {
-                    this.working = this.working.set(setting, state.invert().asBoolean());
-                    this.set(setting, slot, state.invert());
+        BbbbBbbbb bbbbbbb = BbbbBbbbb.bbbbbbb()
+                .bbbbBbbb(bbbbb)
+                .bbb(Bbbb.BBBBBB_BBBB, bbbbb)
+                .bbb(Bbbb.BBBB, bbbb)
+                .bbbbb();
+        Bbbb<BbbbBbbbb> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbbbbbb))
+                .bbbbbbbb(bbbbbbb -> {
+                    bbbb.bbbbbbb = bbbb.bbbbbbb.bbb(bbbbbbb, bbbbb.bbbbbb().bbBbbbbbb());
+                    bbbb.bbb(bbbbbbb, bbbb, bbbbb.bbbbbb());
 
-                    return false;
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
 
-        this.display.set(icon, slot);
+        bbbb.bbbbbbb.bbb(bbbb, bbbb);
     }
 
-    private <W> CompletableFuture<W> timeoutAfter(long timeout, TimeUnit unit) {
-        CompletableFuture<W> result = new CompletableFuture<>();
-        Impactor.getInstance().getScheduler().asyncLater(() -> result.completeExceptionally(new TimeoutException()), timeout, unit);
-        return result;
+    bbbbbbb <B> BbbbbbbbbbbBbbbbb<B> bbbbbbbBbbbb(bbbb bbbbbbb, BbbbBbbb bbbb) {
+        BbbbbbbbbbbBbbbbb<B> bbbbbb = bbb BbbbbbbbbbbBbbbbb<>();
+        Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbbBbbbb(() -> bbbbbb.bbbbbbbbBbbbbbbbbbbbb(bbb BbbbbbbBbbbbbbbb()), bbbbbbb, bbbb);
+        bbbbbb bbbbbb;
     }
 
-    private enum Settings {
-        P(NotificationSetting.Publish, ItemTypes.GOLD_INGOT.get(), MsgConfigKeys.UI_PLAYER_SETTINGS_PUBLISH_SETTING_LORE),
-        S(NotificationSetting.Sold, ItemTypes.EMERALD.get(), MsgConfigKeys.UI_PLAYER_SETTINGS_SOLD_SETTING_LORE),
-        B(NotificationSetting.Bid, ItemTypes.WRITABLE_BOOK.get(), MsgConfigKeys.UI_PLAYER_SETTINGS_BID_SETTING_LORE),
-        O(NotificationSetting.Outbid, ItemTypes.BOOK.get(), MsgConfigKeys.UI_PLAYER_SETTINGS_OUTBID_SETTING_LORE),;
+    bbbbbbb bbbb Bbbbbbbb {
+        B(BbbbbbbbbbbbBbbbbbb.Bbbbbbb, BbbbBbbbb.BBBB_BBBBB.bbb(), BbbBbbbbbBbbb.BB_BBBBBB_BBBBBBBB_BBBBBBB_BBBBBBB_BBBB),
+        B(BbbbbbbbbbbbBbbbbbb.Bbbb, BbbbBbbbb.BBBBBBB.bbb(), BbbBbbbbbBbbb.BB_BBBBBB_BBBBBBBB_BBBB_BBBBBBB_BBBB),
+        B(BbbbbbbbbbbbBbbbbbb.Bbb, BbbbBbbbb.BBBBBBBB_BBBB.bbb(), BbbBbbbbbBbbb.BB_BBBBBB_BBBBBBBB_BBB_BBBBBBB_BBBB),
+        B(BbbbbbbbbbbbBbbbbbb.Bbbbbb, BbbbBbbbb.BBBB.bbb(), BbbBbbbbbBbbb.BB_BBBBBB_BBBBBBBB_BBBBBB_BBBBBBB_BBBB),;
 
-        private final NotificationSetting setting;
-        private final ItemType item;
-        private final ConfigKey<List<String>> description;
+        bbbbbbb bbbbb BbbbbbbbbbbbBbbbbbb bbbbbbb;
+        bbbbbbb bbbbb BbbbBbbb bbbb;
+        bbbbbbb bbbbb BbbbbbBbb<Bbbb<Bbbbbb>> bbbbbbbbbbb;
 
-        Settings(NotificationSetting setting, ItemType item, ConfigKey<List<String>> description) {
-            this.setting = setting;
-            this.item = item;
-            this.description = description;
+        Bbbbbbbb(BbbbbbbbbbbbBbbbbbb bbbbbbb, BbbbBbbb bbbb, BbbbbbBbb<Bbbb<Bbbbbb>> bbbbbbbbbbb) {
+            bbbb.bbbbbbb = bbbbbbb;
+            bbbb.bbbb = bbbb;
+            bbbb.bbbbbbbbbbb = bbbbbbbbbbb;
         }
 
-        public NotificationSetting getSetting() {
-            return this.setting;
+        bbbbbb BbbbbbbbbbbbBbbbbbb bbbBbbbbbb() {
+            bbbbbb bbbb.bbbbbbb;
         }
 
-        public ItemType getItem() {
-            return this.item;
+        bbbbbb BbbbBbbb bbbBbbb() {
+            bbbbbb bbbb.bbbb;
         }
 
-        public ConfigKey<List<String>> getDescription() {
-            return this.description;
+        bbbbbb BbbbbbBbb<Bbbb<Bbbbbb>> bbbBbbbbbbbbbb() {
+            bbbbbb bbbb.bbbbbbbbbbb;
         }
 
-        public static Settings locate(NotificationSetting setting) {
-            return Arrays.stream(values()).filter(x -> x.getSetting() == setting)
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException("Invalid setting supplied"));
+        bbbbbb bbbbbb Bbbbbbbb bbbbbb(BbbbbbbbbbbbBbbbbbb bbbbbbb) {
+            bbbbbb Bbbbbb.bbbbbb(bbbbbb()).bbbbbb(b -> b.bbbBbbbbbb() == bbbbbbb)
+                    .bbbbBbb()
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbbbbBbbbbbbbb("Bbbbbbb bbbbbbb bbbbbbbb"));
         }
     }
 

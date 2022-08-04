@@ -1,98 +1,98 @@
-package net.impactdev.gts.common.messaging;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb;
 
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.MessengerProvider;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.messaging.redis.RedisMessenger;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.storage.StorageType;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbb.BbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+bbbbbb bbbb.bbbb.BbbbbbBbbbBbb;
+bbbbbb bbbb.bbbb.Bbb;
 
-public abstract class MessagingFactory<P extends GTSPlugin> {
+bbbbbb bbbbbbbb bbbbb BbbbbbbbbBbbbbbb<B bbbbbbb BBBBbbbbb> {
 
-	private final P plugin;
-	private static final Set<StorageType> multiServerCompatible = new LinkedHashSet<>();
-	static {
-		multiServerCompatible.add(StorageType.MYSQL);
-		multiServerCompatible.add(StorageType.MARIADB);
-		multiServerCompatible.add(StorageType.POSTGRESQL);
-		multiServerCompatible.add(StorageType.MONGODB);
+	bbbbbbb bbbbb B bbbbbb;
+	bbbbbbb bbbbbb bbbbb Bbb<BbbbbbbBbbb> bbbbbBbbbbbBbbbbbbbbb = bbb BbbbbbBbbbBbb<>();
+	bbbbbb {
+		bbbbbBbbbbbBbbbbbbbbb.bbb(BbbbbbbBbbb.BBBBB);
+		bbbbbBbbbbbBbbbbbbbbb.bbb(BbbbbbbBbbb.BBBBBBB);
+		bbbbbBbbbbbBbbbbbbbbb.bbb(BbbbbbbBbbb.BBBBBBBBBB);
+		bbbbbBbbbbbBbbbbbbbbb.bbb(BbbbbbbBbbb.BBBBBBB);
 	}
 
-	public MessagingFactory(P plugin) {
-		this.plugin = plugin;
+	bbbbbb BbbbbbbbbBbbbbbb(B bbbbbb) {
+		bbbb.bbbbbb = bbbbbb;
 	}
 
-	protected final P getPlugin() {
-		return this.plugin;
+	bbbbbbbbb bbbbb B bbbBbbbbb() {
+		bbbbbb bbbb.bbbbbb;
 	}
 
-	public final InternalMessagingService getInstance() {
-		String messageType = this.plugin.configuration().main().get(ConfigKeys.MESSAGE_SERVICE);
+	bbbbbb bbbbb BbbbbbbbBbbbbbbbbBbbbbbb bbbBbbbbbbb() {
+		Bbbbbb bbbbbbbBbbb = bbbb.bbbbbb.bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBB_BBBBBBB);
 
-		boolean fallback = false;
-		if(messageType.equalsIgnoreCase("none")) {
-			if(this.plugin.configuration().main().get(ConfigKeys.USE_MULTI_SERVER)) {
-				this.plugin.logger().warn("Multi Server Mode requires a messaging service other than none!");
-				this.plugin.logger().warn("Defaulting to Single Server Mode...");
+		bbbbbbb bbbbbbbb = bbbbb;
+		bb(bbbbbbbBbbb.bbbbbbBbbbbbBbbb("bbbb")) {
+			bb(bbbb.bbbbbb.bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBB_BBBBB_BBBBBB)) {
+				bbbb.bbbbbb.bbbbbb().bbbb("Bbbbb Bbbbbb Bbbb bbbbbbbb b bbbbbbbbb bbbbbbb bbbbb bbbb bbbb!");
+				bbbb.bbbbbb.bbbbbb().bbbb("Bbbbbbbbbb bb Bbbbbb Bbbbbb Bbbb...");
 			}
-			fallback = true;
+			bbbbbbbb = bbbb;
 		}
 
-		if(!fallback && this.plugin.configuration().main().get(ConfigKeys.USE_MULTI_SERVER)) {
-			this.plugin.logger().info("Loading messaging service... [" + messageType.toUpperCase() + "]");
+		bb(!bbbbbbbb && bbbb.bbbbbb.bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBB_BBBBB_BBBBBB)) {
+			bbbb.bbbbbb.bbbbbb().bbbb("Bbbbbbb bbbbbbbbb bbbbbbb... [" + bbbbbbbBbbb.bbBbbbbBbbb() + "]");
 
-			if(!multiServerCompatible.contains(this.plugin.configuration().main().get(ConfigKeys.STORAGE_METHOD))) {
-				new PrettyPrinter(80)
-						.add("Invalid Storage Type/Messaging Service Combination").center()
-						.hr('-')
-						.add("It seems you're trying to load GTS in multi-server mode, but you are")
-						.add("attempting to also use a local specific storage system. This will not")
-						.add("work as intended, and some actions of GTS will fail entirely...")
-						.hr('-')
-						.add("To resolve this, you should switch your storage system to one of the following:")
-						.add("  - MySQL")
-						.add("  - MariaDB")
-						.add("  - MongoDB")
-						.add("  - PostgreSQL")
-						.hr('-')
-						.add("Alternatively, you can switch your server back to Single Server Mode.")
-						.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.ERROR);
-				throw new IllegalStateException("Invalid messaging/storage configuration");
+			bb(!bbbbbBbbbbbBbbbbbbbbb.bbbbbbbb(bbbb.bbbbbb.bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBB_BBBBBB))) {
+				bbb BbbbbbBbbbbbb(80)
+						.bbb("Bbbbbbb Bbbbbbb Bbbb/Bbbbbbbbb Bbbbbbb Bbbbbbbbbbb").bbbbbb()
+						.bb('-')
+						.bbb("Bb bbbbb bbb'bb bbbbbb bb bbbb BBB bb bbbbb-bbbbbb bbbb, bbb bbb bbb")
+						.bbb("bbbbbbbbbb bb bbbb bbb b bbbbb bbbbbbbb bbbbbbb bbbbbb. Bbbb bbbb bbb")
+						.bbb("bbbb bb bbbbbbbb, bbb bbbb bbbbbbb bb BBB bbbb bbbb bbbbbbbb...")
+						.bb('-')
+						.bbb("Bb bbbbbbb bbbb, bbb bbbbbb bbbbbb bbbb bbbbbbb bbbbbb bb bbb bb bbb bbbbbbbbb:")
+						.bbb("  - BbBBB")
+						.bbb("  - BbbbbBB")
+						.bbb("  - BbbbbBB")
+						.bbb("  - BbbbbbbBBB")
+						.bb('-')
+						.bbb("Bbbbbbbbbbbbb, bbb bbb bbbbbb bbbb bbbbbb bbbb bb Bbbbbb Bbbbbb Bbbb.")
+						.bbb(BBBBbbbbb.bbbbbbbb().bbbbbb(), BbbbbbBbbbbbb.Bbbbb.BBBBB);
+				bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbbb bbbbbbbbb/bbbbbbb bbbbbbbbbbbbb");
 			}
-		} else {
-			this.plugin.logger().info("Loading messaging service... [Single Server Mode]");
+		} bbbb {
+			bbbb.bbbbbb.bbbbbb().bbbb("Bbbbbbb bbbbbbbbb bbbbbbb... [Bbbbbb Bbbbbb Bbbb]");
 		}
 
-		InternalMessagingService service = this.getServiceFor(messageType);
-		if(service != null) {
-			return service;
+		BbbbbbbbBbbbbbbbbBbbbbbb bbbbbbb = bbbb.bbbBbbbbbbBbb(bbbbbbbBbbb);
+		bb(bbbbbbb != bbbb) {
+			bbbbbb bbbbbbb;
 		}
 
-		this.plugin.logger().error("Messaging service '" + messageType + "' not recognised");
-		this.plugin.logger().error("The messaging service will be disabled");
-		return null;
+		bbbb.bbbbbb.bbbbbb().bbbbb("Bbbbbbbbb bbbbbbb '" + bbbbbbbBbbb + "' bbb bbbbbbbbbb");
+		bbbb.bbbbbb.bbbbbb().bbbbb("Bbb bbbbbbbbb bbbbbbb bbbb bb bbbbbbbb");
+		bbbbbb bbbb;
 	}
 
-	protected abstract InternalMessagingService getServiceFor(String messageType);
+	bbbbbbbbb bbbbbbbb BbbbbbbbBbbbbbbbbBbbbbbb bbbBbbbbbbBbb(Bbbbbb bbbbbbbBbbb);
 
-	public class RedisMessengerProvider implements MessengerProvider {
+	bbbbbb bbbbb BbbbbBbbbbbbbbBbbbbbbb bbbbbbbbbb BbbbbbbbbBbbbbbbb {
 
-		@Override
-		public @NonNull String getName() {
-			return "Redis";
+		@Bbbbbbbb
+		bbbbbb @BbbBbbb Bbbbbb bbbBbbb() {
+			bbbbbb "Bbbbb";
 		}
 
-		@Override
-		public @NonNull Messenger obtain(@NonNull IncomingMessageConsumer incomingMessageConsumer) {
-			RedisMessenger redis = new RedisMessenger(incomingMessageConsumer);
-			redis.init(MessagingFactory.this.getPlugin().configuration().main().get(ConfigKeys.REDIS_ADDRESS), MessagingFactory.this.getPlugin().configuration().main().get(ConfigKeys.REDIS_PASSWORD));
-			return redis;
+		@Bbbbbbbb
+		bbbbbb @BbbBbbb Bbbbbbbbb bbbbbb(@BbbBbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbbBbbbbbbBbbbbbbb) {
+			BbbbbBbbbbbbbb bbbbb = bbb BbbbbBbbbbbbbb(bbbbbbbbBbbbbbbBbbbbbbb);
+			bbbbb.bbbb(BbbbbbbbbBbbbbbb.bbbb.bbbBbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBB_BBBBBBB), BbbbbbbbbBbbbbbb.bbbb.bbbBbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBB_BBBBBBBB));
+			bbbbbb bbbbb;
 		}
 
 	}

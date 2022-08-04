@@ -1,39 +1,39 @@
-package net.impactdev.gts.common.discord.internal;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb;
 
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.function.Supplier;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class DiscordSourceSpecificPlaceholderParser<T> implements DiscordPlaceholderParser {
+bbbbbb bbbbb BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<B> bbbbbbbbbb BbbbbbbBbbbbbbbbbbBbbbbb {
 
-    private final Class<T> sourceType;
-    private final String id;
-    private final Function<T, String> parser;
+    bbbbbbb bbbbb Bbbbb<B> bbbbbbBbbb;
+    bbbbbbb bbbbb Bbbbbb bb;
+    bbbbbbb bbbbb Bbbbbbbb<B, Bbbbbb> bbbbbb;
 
-    public DiscordSourceSpecificPlaceholderParser(Class<T> sourceType, String id, Function<T, String> parser) {
-        this.sourceType = sourceType;
-        this.id = id;
-        this.parser = parser;
+    bbbbbb BbbbbbbBbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb(Bbbbb<B> bbbbbbBbbb, Bbbbbb bb, Bbbbbbbb<B, Bbbbbb> bbbbbb) {
+        bbbb.bbbbbbBbbb = bbbbbbBbbb;
+        bbbb.bb = bb;
+        bbbb.bbbbbb = bbbbbb;
     }
 
-    @Override
-    public String getID() {
-        return this.id;
+    @Bbbbbbbb
+    bbbbbb Bbbbbb bbbBB() {
+        bbbbbb bbbb.bb;
     }
 
-    @Override
-    public String parse(PlaceholderSources sources) {
-        return sources.suppliers().stream()
-                .map(Supplier::get)
-                .filter(x -> this.sourceType.isAssignableFrom(x.getClass()))
-                .map(this.sourceType::cast)
-                .map(this.parser)
-                .filter(Objects::nonNull)
-                .findAny()
-                .orElse(null);
+    @Bbbbbbbb
+    bbbbbb Bbbbbb bbbbb(BbbbbbbbbbbBbbbbbb bbbbbbb) {
+        bbbbbb bbbbbbb.bbbbbbbbb().bbbbbb()
+                .bbb(Bbbbbbbb::bbb)
+                .bbbbbb(b -> bbbb.bbbbbbBbbb.bbBbbbbbbbbbBbbb(b.bbbBbbbb()))
+                .bbb(bbbb.bbbbbbBbbb::bbbb)
+                .bbb(bbbb.bbbbbb)
+                .bbbbbb(Bbbbbbb::bbbBbbb)
+                .bbbbBbb()
+                .bbBbbb(bbbb);
     }
 
 }

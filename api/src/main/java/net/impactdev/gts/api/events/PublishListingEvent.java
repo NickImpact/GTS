@@ -1,29 +1,29 @@
-package net.impactdev.gts.api.events;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb;
 
-import net.impactdev.impactor.api.event.ImpactorEvent;
-import net.impactdev.impactor.api.event.type.Cancellable;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbBbbbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * Represents when a user publishes a listing to the GTS.
+ * Bbbbbbbbbb bbbb b bbbb bbbbbbbbb b bbbbbbb bb bbb BBB.
  *
- * @author NickImpact
+ * @bbbbbb BbbbBbbbbb
  */
-@GenerateFactoryMethod
-public interface PublishListingEvent extends ImpactorEvent, Cancellable {
+@BbbbbbbbBbbbbbbBbbbbb
+bbbbbb bbbbbbbbb BbbbbbbBbbbbbbBbbbb bbbbbbb BbbbbbbbBbbbb, Bbbbbbbbbbb {
 
-	@NonNull UUID getLister();
+	@BbbBbbb BBBB bbbBbbbbb();
 
-	@NonNull
-	Listing getListing();
+	@BbbBbbb
+	Bbbbbbb bbbBbbbbbb();
 
-	default boolean isAuction() {
-		return this.getListing() instanceof Auction;
+	bbbbbbb bbbbbbb bbBbbbbbb() {
+		bbbbbb bbbb.bbbBbbbbbb() bbbbbbbbbb Bbbbbbb;
 	}
 
 }

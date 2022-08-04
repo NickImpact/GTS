@@ -1,10 +1,10 @@
-package net.impactdev.gts.common.utils;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb;
 
-import net.kyori.adventure.text.Component;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
 
-@FunctionalInterface
-public interface EconomicFormatter {
+@BbbbbbbbbbBbbbbbbbb
+bbbbbb bbbbbbbbb BbbbbbbbBbbbbbbbb {
 
-    Component format(double amount);
+    Bbbbbbbbb bbbbbb(bbbbbb bbbbbb);
 
 }

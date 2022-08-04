@@ -1,74 +1,74 @@
-package net.impactdev.gts.common.plugin;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb;
 
-import com.google.gson.Gson;
-import net.impactdev.gts.api.environment.Environment;
-import net.impactdev.gts.common.config.ConfigProvider;
-import net.impactdev.gts.common.messaging.InternalMessagingService;
-import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.plugin.ImpactorPlugin;
-import net.impactdev.gts.api.extension.ExtensionManager;
-import net.impactdev.gts.api.storage.GTSStorage;
+bbbbbb bbb.bbbbbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbbbBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.BBBBbbbbbb;
 
-import java.io.InputStream;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bb.BbbbbBbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public interface GTSPlugin extends ImpactorPlugin {
+bbbbbb bbbbbbbbb BBBBbbbbb bbbbbbb BbbbbbbbBbbbbb {
 
-	static GTSPlugin instance() {
-		return Impactor.getInstance().getRegistry().get(GTSPlugin.class);
+	bbbbbb BBBBbbbbb bbbbbbbb() {
+		bbbbbb Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BBBBbbbbb.bbbbb);
 	}
 
-	<T extends GTSPlugin> T as(Class<T> type);
+	<B bbbbbbb BBBBbbbbb> B bb(Bbbbb<B> bbbb);
 
 	/**
-	 * Gets the bootstrapper that created this plugin instance.
+	 * Bbbb bbb bbbbbbbbbbbb bbbb bbbbbbb bbbb bbbbbb bbbbbbbb.
 	 *
-	 * @return The bootstrapper responsible for loading the plugin.
+	 * @bbbbbb Bbb bbbbbbbbbbbb bbbbbbbbbbb bbb bbbbbbb bbb bbbbbb.
 	 */
-	GTSBootstrap bootstrap();
+	BBBBbbbbbbbb bbbbbbbbb();
 
 	/**
-	 * A helpful utility for providing configuration links used by the plugin.
-	 * Outside providing a path to the language configuration, the provider
-	 * additionally provides a cached version of the main configuration without
-	 * the need of processing through {@link #config()}, where the config is
-	 * optionally present.
+	 * B bbbbbbb bbbbbbb bbb bbbbbbbbb bbbbbbbbbbbbb bbbbb bbbb bb bbb bbbbbb.
+	 * Bbbbbbb bbbbbbbbb b bbbb bb bbb bbbbbbbb bbbbbbbbbbbbb, bbb bbbbbbbb
+	 * bbbbbbbbbbbb bbbbbbbb b bbbbbb bbbbbbb bb bbb bbbb bbbbbbbbbbbbb bbbbbbb
+	 * bbb bbbb bb bbbbbbbbbb bbbbbbb {@bbbb #bbbbbb()}, bbbbb bbb bbbbbb bb
+	 * bbbbbbbbbb bbbbbbb.
 	 *
-	 * @return A utility class meant to help provide cached instances of the
-	 * configuration used by GTS.
+	 * @bbbbbb B bbbbbbb bbbbb bbbbb bb bbbb bbbbbbb bbbbbb bbbbbbbbb bb bbb
+	 * bbbbbbbbbbbbb bbbb bb BBB.
 	 */
-	ConfigProvider configuration();
+	BbbbbbBbbbbbbb bbbbbbbbbbbbb();
 
 	/**
-	 * Fetches information regarding the environment the plugin is presently running on. This
-	 * should contain information regarding the server type and branding, as well as version information
-	 * GTS will care about.
+	 * Bbbbbbb bbbbbbbbbbb bbbbbbbbb bbb bbbbbbbbbbb bbb bbbbbb bb bbbbbbbbb bbbbbbb bb. Bbbb
+	 * bbbbbb bbbbbbb bbbbbbbbbbb bbbbbbbbb bbb bbbbbb bbbb bbb bbbbbbbb, bb bbbb bb bbbbbbb bbbbbbbbbbb
+	 * BBB bbbb bbbb bbbbb.
 	 *
-	 * @return The environment respective to the current platform
+	 * @bbbbbb Bbb bbbbbbbbbbb bbbbbbbbbb bb bbb bbbbbbb bbbbbbbb
 	 */
-	Environment environment();
-
-	/**
-	 *
-	 * @return
-	 */
-	Gson gson();
+	Bbbbbbbbbbb bbbbbbbbbbb();
 
 	/**
 	 *
-	 * @return
+	 * @bbbbbb
 	 */
-	GTSStorage storage();
+	Bbbb bbbb();
 
-	ExtensionManager extensionManager();
+	/**
+	 *
+	 * @bbbbbb
+	 */
+	BBBBbbbbbb bbbbbbb();
 
-	InternalMessagingService messagingService();
+	BbbbbbbbbBbbbbbb bbbbbbbbbBbbbbbb();
 
-	CompletableFuture<String> playerDisplayName(UUID id);
+	BbbbbbbbBbbbbbbbbBbbbbbb bbbbbbbbbBbbbbbb();
 
-	default InputStream resource(String path) {
-		return this.getClass().getClassLoader().getResourceAsStream(path);
+	BbbbbbbbbbbBbbbbb<Bbbbbb> bbbbbbBbbbbbbBbbb(BBBB bb);
+
+	bbbbbbb BbbbbBbbbbb bbbbbbbb(Bbbbbb bbbb) {
+		bbbbbb bbbb.bbbBbbbb().bbbBbbbbBbbbbb().bbbBbbbbbbbBbBbbbbb(bbbb);
 	}
 }

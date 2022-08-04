@@ -1,42 +1,42 @@
-package net.impactdev.gts.common.plugin.bootstrap;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbbb;
 
-import net.impactdev.impactor.api.logging.PluginLogger;
-import net.impactdev.impactor.launcher.LauncherBootstrap;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbbb;
 
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.Optional;
+bbbbbb bbbb.bb.BbbbbBbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
 /**
- * Represents the bootstrap plugin interface.
+ * Bbbbbbbbbb bbb bbbbbbbbb bbbbbb bbbbbbbbb.
  *
- * <p>Instances of this interface are responsible for loading the GTS plugin on their respective platforms,
- * and provide the plugin with its essential information for it to perform as intended.</p>
+ * <b>Bbbbbbbbb bb bbbb bbbbbbbbb bbb bbbbbbbbbbb bbb bbbbbbb bbb BBB bbbbbb bb bbbbb bbbbbbbbbb bbbbbbbbb,
+ * bbb bbbbbbb bbb bbbbbb bbbb bbb bbbbbbbbb bbbbbbbbbbb bbb bb bb bbbbbbb bb bbbbbbbb.</b>
  */
-public interface GTSBootstrap extends LauncherBootstrap {
+bbbbbb bbbbbbbbb BBBBbbbbbbbb bbbbbbb BbbbbbbbBbbbbbbbb {
 
-	PluginLogger logger();
+	BbbbbbBbbbbb bbbbbb();
 
-	Path configDirectory();
+	Bbbb bbbbbbBbbbbbbbb();
 
-	Path dataDirectory();
-
-	/**
-	 * Attempts to locate a resource within the internal jar, and if it exists, creates an
-	 * InputStream for said resource.
-	 *
-	 * @param path The path to the resource
-	 * @return An optionally filled InputStream if the file was found and loaded, empty otherwise.
-	 */
-	Optional<InputStream> resource(Path path);
+	Bbbb bbbbBbbbbbbbb();
 
 	/**
-	 * States whether or not GTS encountered an error during startup that prevented the plugin from initializing
-	 * properly. This will be checked during the server started phase or some equivalent, and if an error was present
-	 * during the rest of startup, then this will announce such.
+	 * Bbbbbbbb bb bbbbbb b bbbbbbbb bbbbbb bbb bbbbbbbb bbb, bbb bb bb bbbbbb, bbbbbbb bb
+	 * BbbbbBbbbbb bbb bbbb bbbbbbbb.
 	 *
-	 * @return Any error that occurred during startup, or empty if no error was encountered
+	 * @bbbbb bbbb Bbb bbbb bb bbb bbbbbbbb
+	 * @bbbbbb Bb bbbbbbbbbb bbbbbb BbbbbBbbbbb bb bbb bbbb bbb bbbbb bbb bbbbbb, bbbbb bbbbbbbbb.
 	 */
-	Optional<Throwable> launchError();
+	Bbbbbbbb<BbbbbBbbbbb> bbbbbbbb(Bbbb bbbb);
+
+	/**
+	 * Bbbbbb bbbbbbb bb bbb BBB bbbbbbbbbbb bb bbbbb bbbbbb bbbbbbb bbbb bbbbbbbbb bbb bbbbbb bbbb bbbbbbbbbbbb
+	 * bbbbbbbb. Bbbb bbbb bb bbbbbbb bbbbbb bbb bbbbbb bbbbbbb bbbbb bb bbbb bbbbbbbbbb, bbb bb bb bbbbb bbb bbbbbbb
+	 * bbbbbb bbb bbbb bb bbbbbbb, bbbb bbbb bbbb bbbbbbbb bbbb.
+	 *
+	 * @bbbbbb Bbb bbbbb bbbb bbbbbbbb bbbbbb bbbbbbb, bb bbbbb bb bb bbbbb bbb bbbbbbbbbbb
+	 */
+	Bbbbbbbb<Bbbbbbbbb> bbbbbbBbbbb();
 
 }

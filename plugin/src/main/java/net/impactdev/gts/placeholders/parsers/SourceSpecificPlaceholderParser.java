@@ -1,49 +1,49 @@
-package net.impactdev.gts.placeholders.parsers;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbbbbb.bbbbbbb;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.Style;
-import org.spongepowered.api.placeholder.PlaceholderContext;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
 
-import java.util.function.Function;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class SourceSpecificPlaceholderParser<T> implements IdentifiableParser {
+bbbbbb bbbbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<B> bbbbbbbbbb BbbbbbbbbbbbBbbbbb {
 
-    private final Class<T> sourceType;
-    private final String id;
-    private final Function<T, Component> parser;
+    bbbbbbb bbbbb Bbbbb<B> bbbbbbBbbb;
+    bbbbbbb bbbbb Bbbbbb bb;
+    bbbbbbb bbbbb Bbbbbbbb<B, Bbbbbbbbb> bbbbbb;
 
-    public SourceSpecificPlaceholderParser(Class<T> sourceType, String id, Function<T, Component> parser) {
-        this.sourceType = sourceType;
-        this.id = id;
-        this.parser = parser;
+    bbbbbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb(Bbbbb<B> bbbbbbBbbb, Bbbbbb bb, Bbbbbbbb<B, Bbbbbbbbb> bbbbbb) {
+        bbbb.bbbbbbBbbb = bbbbbbBbbb;
+        bbbb.bb = bb;
+        bbbb.bbbbbb = bbbbbb;
     }
 
-    @Override
-    public Component parse(PlaceholderContext context) {
-        return context.associatedObject()
-                .filter(x -> this.sourceType.isAssignableFrom(x.getClass()))
-                .map(this.sourceType::cast)
-                .map(this.parser)
-                .orElse(Component.empty());
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbbb bbbbb(BbbbbbbbbbbBbbbbbb bbbbbbb) {
+        bbbbbb bbbbbbb.bbbbbbbbbbBbbbbb()
+                .bbbbbb(b -> bbbb.bbbbbbBbbb.bbBbbbbbbbbbBbbb(b.bbbBbbbb()))
+                .bbb(bbbb.bbbbbbBbbb::bbbb)
+                .bbb(bbbb.bbbbbb)
+                .bbBbbb(Bbbbbbbbb.bbbbb());
     }
 
-    public Class<T> getSourceType() {
-        return this.sourceType;
+    bbbbbb Bbbbb<B> bbbBbbbbbBbbb() {
+        bbbbbb bbbb.bbbbbbBbbb;
     }
 
-    public Function<T, Component> getParser() {
-        return this.parser;
+    bbbbbb Bbbbbbbb<B, Bbbbbbbbb> bbbBbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
-    @Override
-    public String key() {
-        return this.id;
+    @Bbbbbbbb
+    bbbbbb Bbbbbb bbb() {
+        bbbbbb bbbb.bb;
     }
 
-    public static class Decorative<T> extends SourceSpecificPlaceholderParser<T> {
+    bbbbbb bbbbbb bbbbb Bbbbbbbbbb<B> bbbbbbb BbbbbbBbbbbbbbBbbbbbbbbbbBbbbbb<B> {
 
-        public Decorative(Class<T> sourceType, String id, Function<T, Component> parser) {
-            super(sourceType, id, parser.andThen(component -> component.append(Component.text().style(Style.empty()))));
+        bbbbbb Bbbbbbbbbb(Bbbbb<B> bbbbbbBbbb, Bbbbbb bb, Bbbbbbbb<B, Bbbbbbbbb> bbbbbb) {
+            bbbbb(bbbbbbBbbb, bb, bbbbbb.bbbBbbb(bbbbbbbbb -> bbbbbbbbb.bbbbbb(Bbbbbbbbb.bbbb().bbbbb(Bbbbb.bbbbb()))));
         }
 
     }

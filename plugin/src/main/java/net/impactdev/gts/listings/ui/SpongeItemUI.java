@@ -1,197 +1,197 @@
-package net.impactdev.gts.listings.ui;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bb;
 
-import net.impactdev.gts.api.blacklist.Blacklist;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.listings.data.ChosenItemEntry;
-import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.platform.players.PlatformPlayerManager;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.gts.api.listings.ui.EntrySelection;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.ui.Historical;
-import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
-import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
-import net.impactdev.gts.ui.SpongeMainMenu;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import net.kyori.adventure.sound.Sound;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.effect.sound.SoundTypes;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.item.inventory.ItemStackSnapshot;
-import org.spongepowered.api.item.inventory.Slot;
-import org.spongepowered.api.registry.RegistryTypes;
-import org.spongepowered.math.vector.Vector2i;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.BbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb.BbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.BbbbbbbbBbbbbbBbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.BbbbbbBbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.BbbbbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbbb.Bbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.BbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbb.bbbbbb.Bbbbbb2b;
 
-import java.util.Optional;
-import java.util.function.Supplier;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class SpongeItemUI extends AbstractSpongeEntryUI<ChosenItemEntry> implements Historical<SpongeMainMenu> {
+bbbbbb bbbbb BbbbbbBbbbBB bbbbbbb BbbbbbbbBbbbbbBbbbbBB<BbbbbbBbbbBbbbb> bbbbbbbbbb Bbbbbbbbbb<BbbbbbBbbbBbbb> {
 
-    public SpongeItemUI(PlatformPlayer viewer) {
-        super(viewer);
+    bbbbbb BbbbbbBbbbBB(BbbbbbbbBbbbbb bbbbbb) {
+        bbbbb(bbbbbb);
     }
 
-    @Override
-    protected ImpactorUI.UIBuilder modifyDisplayBuilder(ImpactorUI.UIBuilder builder) {
-        return builder.onClick(context -> {
-            final int index = context.require(Integer.class);
-            if(index >= 45) {
-                Slot slot = context.require(Slot.class);
-                if(!slot.contains(ItemStack.empty())) {
-                    ItemStackSnapshot snapshot = slot.peek().createSnapshot();
-                    if(this.chosen != null) {
-                        this.viewer.sendMessage(Component.text("You've already selected an item...").color(NamedTextColor.RED));
-                        return false;
+    @Bbbbbbbb
+    bbbbbbbbb BbbbbbbbBB.BBBbbbbbb bbbbbbBbbbbbbBbbbbbb(BbbbbbbbBB.BBBbbbbbb bbbbbbb) {
+        bbbbbb bbbbbbb.bbBbbbb(bbbbbbb -> {
+            bbbbb bbb bbbbb = bbbbbbb.bbbbbbb(Bbbbbbb.bbbbb);
+            bb(bbbbb >= 45) {
+                Bbbb bbbb = bbbbbbb.bbbbbbb(Bbbb.bbbbb);
+                bb(!bbbb.bbbbbbbb(BbbbBbbbb.bbbbb())) {
+                    BbbbBbbbbBbbbbbbb bbbbbbbb = bbbb.bbbb().bbbbbbBbbbbbbb();
+                    bb(bbbb.bbbbbb != bbbb) {
+                        bbbb.bbbbbb.bbbbBbbbbbb(Bbbbbbbbb.bbbb("Bbb'bb bbbbbbb bbbbbbbb bb bbbb...").bbbbb(BbbbbBbbbBbbbb.BBB));
+                        bbbbbb bbbbb;
                     }
 
-                    MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-                    Blacklist blacklist = Impactor.getInstance().getRegistry().get(Blacklist.class);
-                    if(blacklist.isBlacklisted(ItemType.class, snapshot.type().key(RegistryTypes.ITEM_TYPE).formatted())) {
-                        this.viewer.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_BLACKLISTED)));
-                        this.viewer.playSound(Sound.sound(SoundTypes.BLOCK_ANVIL_LAND.get(), Sound.Source.MASTER, 1, 1));
-                        return false;
+                    BbbbbbbBbbbbbb bbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+                    Bbbbbbbbb bbbbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(Bbbbbbbbb.bbbbb);
+                    bb(bbbbbbbbb.bbBbbbbbbbbbb(BbbbBbbb.bbbbb, bbbbbbbb.bbbb().bbb(BbbbbbbbBbbbb.BBBB_BBBB).bbbbbbbbb())) {
+                        bbbb.bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBBBBB)));
+                        bbbb.bbbbbb.bbbbBbbbb(Bbbbb.bbbbb(BbbbbBbbbb.BBBBB_BBBBB_BBBB.bbb(), Bbbbb.Bbbbbb.BBBBBB, 1, 1));
+                        bbbbbb bbbbb;
                     }
 
-                    this.chosen = new ChosenItemEntry(snapshot, this.getTargetSlotIndex(index - 45));
-                    this.getDisplay().set(this.createChosenIcon(), 13);
-                    this.getDisplay().set(this.generateConfirmIcon(), 44);
-                    this.style(true);
+                    bbbb.bbbbbb = bbb BbbbbbBbbbBbbbb(bbbbbbbb, bbbb.bbbBbbbbbBbbbBbbbb(bbbbb - 45));
+                    bbbb.bbbBbbbbbb().bbb(bbbb.bbbbbbBbbbbbBbbb(), 13);
+                    bbbb.bbbBbbbbbb().bbb(bbbb.bbbbbbbbBbbbbbbBbbb(), 44);
+                    bbbb.bbbbb(bbbb);
                 }
             }
 
-            return false;
+            bbbbbb bbbbb;
         });
     }
 
-    @Override
-    protected Component getTitle() {
-        return Component.text("Listing Creator - Items");
+    @Bbbbbbbb
+    bbbbbbbbb Bbbbbbbbb bbbBbbbb() {
+        bbbbbb Bbbbbbbbb.bbbb("Bbbbbbb Bbbbbbb - Bbbbb");
     }
 
-    @Override
-    protected Vector2i getDimensions() {
-        return Vector2i.from(9, 5);
+    @Bbbbbbbb
+    bbbbbbbbb Bbbbbb2b bbbBbbbbbbbbb() {
+        bbbbbb Bbbbbb2b.bbbb(9, 5);
     }
 
-    @Override
-    protected EntrySelection<? extends SpongeEntry<?>> getSelection() {
-        return this.chosen;
+    @Bbbbbbbb
+    bbbbbbbbb BbbbbBbbbbbbbb<? bbbbbbb BbbbbbBbbbb<?>> bbbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
-    @Override
-    protected int getChosenSlot() {
-        return 13;
+    @Bbbbbbbb
+    bbbbbbbbb bbb bbbBbbbbbBbbb() {
+        bbbbbb 13;
     }
 
-    @Override
-    protected int getPriceSlot() {
-        return 38;
+    @Bbbbbbbb
+    bbbbbbbbb bbb bbbBbbbbBbbb() {
+        bbbbbb 38;
     }
 
-    @Override
-    protected int getSelectionTypeSlot() {
-        return 40;
+    @Bbbbbbbb
+    bbbbbbbbb bbb bbbBbbbbbbbbBbbbBbbb() {
+        bbbbbb 40;
     }
 
-    @Override
-    protected int getTimeSlot() {
-        return 42;
+    @Bbbbbbbb
+    bbbbbbbbb bbb bbbBbbbBbbb() {
+        bbbbbb 42;
     }
 
-    @Override
-    protected int getConfirmSlot() {
-        return 44;
+    @Bbbbbbbb
+    bbbbbbbbb bbb bbbBbbbbbbBbbb() {
+        bbbbbb 44;
     }
 
-    @Override
-    protected double getMinimumMonetaryPrice(ChosenItemEntry chosen) {
-        return 1;
+    @Bbbbbbbb
+    bbbbbbbbb bbbbbb bbbBbbbbbbBbbbbbbbBbbbb(BbbbbbBbbbBbbbb bbbbbb) {
+        bbbbbb 1;
     }
 
-    @Override
-    public Optional<ChosenItemEntry> getChosenOption() {
-        return Optional.ofNullable(this.chosen);
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<BbbbbbBbbbBbbbb> bbbBbbbbbBbbbbb() {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbb);
     }
 
-    @Override
-    public void open(PlatformPlayer user) {
-        this.getDisplay().open(user);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbb(BbbbbbbbBbbbbb bbbb) {
+        bbbb.bbbBbbbbbb().bbbb(bbbb);
     }
 
-    @Override
-    public Layout getDesign() {
-        final MessageService PARSER = Utilities.PARSER;
+    @Bbbbbbbb
+    bbbbbb Bbbbbb bbbBbbbbb() {
+        bbbbb BbbbbbbBbbbbbb BBBBBB = Bbbbbbbbb.BBBBBB;
 
-        Layout.LayoutBuilder slb = Layout.builder();
-        slb.size(4).border(ProvidedIcons.BORDER).size(5);
-        slb.slots(this.border(ItemTypes.RED_STAINED_GLASS_PANE.get()), 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
-        slb.slots(ProvidedIcons.BORDER, 19, 20, 24, 25, 37, 43);
+        Bbbbbb.BbbbbbBbbbbbb bbb = Bbbbbb.bbbbbbb();
+        bbb.bbbb(4).bbbbbb(BbbbbbbbBbbbb.BBBBBB).bbbb(5);
+        bbb.bbbbb(bbbb.bbbbbb(BbbbBbbbb.BBB_BBBBBBB_BBBBB_BBBB.bbb()), 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
+        bbb.bbbbb(BbbbbbbbBbbbb.BBBBBB, 19, 20, 24, 25, 37, 43);
 
-        slb.slot(this.createNoneChosenIcon(), 13);
+        bbb.bbbb(bbbb.bbbbbbBbbbBbbbbbBbbb(), 13);
 
-        PlaceholderSources sources = PlaceholderSources.builder()
-                .append(PlatformPlayer.class, () -> this.viewer)
-                .build();
-        Icon<ItemStack> back = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.BARRIER)
-                        .add(Keys.CUSTOM_NAME, PARSER.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK), sources))
-                        .build()
+        BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+                .bbbbbb(BbbbbbbbBbbbbb.bbbbb, () -> bbbb.bbbbbb)
+                .bbbbb();
+        Bbbb<BbbbBbbbb> bbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                        .bbbbBbbb(BbbbBbbbb.BBBBBBB)
+                        .bbb(Bbbb.BBBBBB_BBBB, BBBBBB.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BB_BBBBBBB_BBBB), bbbbbbb))
+                        .bbbbb()
                 ))
-                .listener(context -> {
-                    this.getParent().ifPresent(parent -> parent.get().open());
-                    return false;
+                .bbbbbbbb(bbbbbbb -> {
+                    bbbb.bbbBbbbbb().bbBbbbbbb(bbbbbb -> bbbbbb.bbb().bbbb());
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
 
-        slb.slot(back, 36);
-        slb.slot(this.createPriceIcon(), 38);
-        slb.slot(GTSPlugin.instance().configuration().main().get(ConfigKeys.BINS_ENABLED) ? this.createBINIcon() : this.createAuctionIcon(), 40);
-        slb.slot(this.createTimeIcon(), 42);
-        slb.slot(this.generateWaitingIcon(false), 44);
+        bbb.bbbb(bbbb, 36);
+        bbb.bbbb(bbbb.bbbbbbBbbbbBbbb(), 38);
+        bbb.bbbb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBB_BBBBBBB) ? bbbb.bbbbbbBBBBbbb() : bbbb.bbbbbbBbbbbbbBbbb(), 40);
+        bbb.bbbb(bbbb.bbbbbbBbbbBbbb(), 42);
+        bbb.bbbb(bbbb.bbbbbbbbBbbbbbbBbbb(bbbbb), 44);
 
-        return slb.build();
+        bbbbbb bbb.bbbbb();
     }
 
-    @Override
-    public Optional<Supplier<SpongeMainMenu>> getParent() {
-        return Optional.of(() -> new SpongeMainMenu(this.viewer));
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<Bbbbbbbb<BbbbbbBbbbBbbb>> bbbBbbbbb() {
+        bbbbbb Bbbbbbbb.bb(() -> bbb BbbbbbBbbbBbbb(bbbb.bbbbbb));
     }
 
-    @Override
-    public Icon<ItemStack> createChosenIcon() {
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(this.chosen.getSelection().createStack()))
-                .listener(context -> {
-                    this.getDisplay().set(this.createNoneChosenIcon(), 13);
-                    this.getDisplay().set(this.generateWaitingIcon(false), 44);
-                    this.style(false);
+    @Bbbbbbbb
+    bbbbbb Bbbb<BbbbBbbbb> bbbbbbBbbbbbBbbb() {
+        bbbbbb Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(bbbb.bbbbbb.bbbBbbbbbbbb().bbbbbbBbbbb()))
+                .bbbbbbbb(bbbbbbb -> {
+                    bbbb.bbbBbbbbbb().bbb(bbbb.bbbbbbBbbbBbbbbbBbbb(), 13);
+                    bbbb.bbbBbbbbbb().bbb(bbbb.bbbbbbbbBbbbbbbBbbb(bbbbb), 44);
+                    bbbb.bbbbb(bbbbb);
 
-                    this.chosen = null;
-                    return false;
+                    bbbb.bbbbbb = bbbb;
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
     }
 
-    private int getTargetSlotIndex(int input) {
-        if(input >= 27) {
-            return input - 27;
+    bbbbbbb bbb bbbBbbbbbBbbbBbbbb(bbb bbbbb) {
+        bb(bbbbb >= 27) {
+            bbbbbb bbbbb - 27;
         }
 
-        return input + 9;
+        bbbbbb bbbbb + 9;
     }
 
 }

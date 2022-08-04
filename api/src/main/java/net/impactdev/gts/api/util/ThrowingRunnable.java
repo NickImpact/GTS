@@ -1,6 +1,6 @@
-package net.impactdev.gts.api.util;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb;
 
-@FunctionalInterface
-public interface ThrowingRunnable {
-    void run() throws Exception;
+@BbbbbbbbbbBbbbbbbbb
+bbbbbb bbbbbbbbb BbbbbbbbBbbbbbbb {
+    bbbb bbb() bbbbbb Bbbbbbbbb;
 }

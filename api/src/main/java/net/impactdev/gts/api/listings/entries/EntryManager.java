@@ -1,58 +1,58 @@
-package net.impactdev.gts.api.listings.entries;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb;
 
-import net.impactdev.gts.api.commands.CommandGenerator;
-import net.impactdev.gts.api.data.ResourceManager;
-import net.impactdev.gts.api.listings.ui.EntrySelection;
-import net.impactdev.gts.api.listings.ui.EntryUI;
-import net.impactdev.gts.api.util.Version;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.BbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.BbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
 
-import java.util.function.Supplier;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public interface EntryManager<T> extends ResourceManager<T> {
+bbbbbb bbbbbbbbb BbbbbBbbbbbb<B> bbbbbbb BbbbbbbbBbbbbbb<B> {
 
-    Class<T> supported();
+    Bbbbb<B> bbbbbbbbb();
 
     /**
-     * For use in configuration, determines how the blacklist should represent blacklisted options
-     * for this entry typing.
+     * Bbb bbb bb bbbbbbbbbbbbb, bbbbbbbbbb bbb bbb bbbbbbbbb bbbbbb bbbbbbbbb bbbbbbbbbbb bbbbbbb
+     * bbb bbbb bbbbb bbbbbb.
      *
-     * @return The type of class this entry validates against
+     * @bbbbbb Bbb bbbb bb bbbbb bbbb bbbbb bbbbbbbbb bbbbbbb
      */
-    Class<?> getBlacklistType();
+    Bbbbb<?> bbbBbbbbbbbbBbbb();
 
     /**
-     * The UI that a user will use to create a listing specific to the particular Entry type. These
-     * allow for customization of the selling menu, but it is advised you keep the components of the UI
-     * similar so a player is not easily confused.
+     * Bbb BB bbbb b bbbb bbbb bbb bb bbbbbb b bbbbbbb bbbbbbbb bb bbb bbbbbbbbbb Bbbbb bbbb. Bbbbb
+     * bbbbb bbb bbbbbbbbbbbbb bb bbb bbbbbbb bbbb, bbb bb bb bbbbbbb bbb bbbb bbb bbbbbbbbbb bb bbb BB
+     * bbbbbbb bb b bbbbbb bb bbb bbbbbb bbbbbbbb.
      *
-     * @return The UI responsible for creating a new listing based on the type managed by this Entry Manager
+     * @bbbbbb Bbb BB bbbbbbbbbbb bbb bbbbbbbb b bbb bbbbbbb bbbbb bb bbb bbbb bbbbbbb bb bbbb Bbbbb Bbbbbbb
      */
-    Supplier<EntryUI<?>> getSellingUI(PlatformPlayer player);
+    Bbbbbbbb<BbbbbBB<?>> bbbBbbbbbbBB(BbbbbbbbBbbbbb bbbbbb);
 
     /**
-     * Supplies a set of deserializer options for the given entry type. This is where you can allow for multiple
-     * versions of deserialization based on the data being read through JSON.
+     * Bbbbbbbb b bbb bb bbbbbbbbbbbb bbbbbbb bbb bbb bbbbb bbbbb bbbb. Bbbb bb bbbbb bbb bbb bbbbb bbb bbbbbbbb
+     * bbbbbbbb bb bbbbbbbbbbbbbbb bbbbb bb bbb bbbb bbbbb bbbb bbbbbbb BBBB.
      */
-    void supplyDeserializers();
+    bbbb bbbbbbBbbbbbbbbbbbb();
 
     /**
-     * Represents the executor that will handle processing of creating an entry from a command context.
-     * This will be queried and attached as a child to the sell command at time of construction for the sell command.
-     * To ensure readiness, this should be available before enable/initialization.
+     * Bbbbbbbbbb bbb bbbbbbbb bbbb bbbb bbbbbb bbbbbbbbbb bb bbbbbbbb bb bbbbb bbbb b bbbbbbb bbbbbbb.
+     * Bbbb bbbb bb bbbbbbb bbb bbbbbbbb bb b bbbbb bb bbb bbbb bbbbbbb bb bbbb bb bbbbbbbbbbbb bbb bbb bbbb bbbbbbb.
+     * Bb bbbbbb bbbbbbbbb, bbbb bbbbbb bb bbbbbbbbb bbbbbb bbbbbb/bbbbbbbbbbbbbb.
      *
-     * @return The executor for the entry type when combined with /gts sell
-     * @since 6.1.8
+     * @bbbbbb Bbb bbbbbbbb bbb bbb bbbbb bbbb bbbb bbbbbbbb bbbb /bbb bbbb
+     * @bbbbb 6.1.8
      */
-    CommandGenerator.EntryGenerator<? extends EntrySelection<? extends Entry<?, ?>>> getEntryCommandCreator();
+    BbbbbbbBbbbbbbbb.BbbbbBbbbbbbbb<? bbbbbbb BbbbbBbbbbbbbb<? bbbbbbb Bbbbb<?, ?>>> bbbBbbbbBbbbbbbBbbbbbb();
 
     /**
-     * Checks to see if the incoming data is supported on the current game platform.
+     * Bbbbbb bb bbb bb bbb bbbbbbbb bbbb bb bbbbbbbbb bb bbb bbbbbbb bbbb bbbbbbbb.
      *
-     * @param game
-     * @param content
-     * @return
+     * @bbbbb bbbb
+     * @bbbbb bbbbbbb
+     * @bbbbbb
      */
-    boolean supports(Version game, int content);
+    bbbbbbb bbbbbbbb(Bbbbbbb bbbb, bbb bbbbbbb);
 
 }

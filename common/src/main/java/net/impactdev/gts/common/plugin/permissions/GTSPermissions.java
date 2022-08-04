@@ -1,13 +1,13 @@
-package net.impactdev.gts.common.plugin.permissions;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbbbbb;
 
-public final class GTSPermissions {
+bbbbbb bbbbb bbbbb BBBBbbbbbbbbbb {
 
-    public static final String DEFAULT = "gts.base";
+    bbbbbb bbbbbb bbbbb Bbbbbb BBBBBBB = "bbb.bbbb";
 
-    // Admin specific permissions
-    public static final String ADMIN_BASE = "gts.admin.base";
-    public static final String ADMIN_INFO = "gts.admin.commands.info";
-    public static final String ADMIN_PING = "gts.admin.commands.ping";
-    public static final String ADMIN_ITEM_CHECK = "gts.admin.commands.item-check";
-    public static final String ADMIN_USER_QUERY = "gts.admin.commands.user-query";
+    // Bbbbb bbbbbbbb bbbbbbbbbbb
+    bbbbbb bbbbbb bbbbb Bbbbbb BBBBB_BBBB = "bbb.bbbbb.bbbb";
+    bbbbbb bbbbbb bbbbb Bbbbbb BBBBB_BBBB = "bbb.bbbbb.bbbbbbbb.bbbb";
+    bbbbbb bbbbbb bbbbb Bbbbbb BBBBB_BBBB = "bbb.bbbbb.bbbbbbbb.bbbb";
+    bbbbbb bbbbbb bbbbb Bbbbbb BBBBB_BBBB_BBBBB = "bbb.bbbbb.bbbbbbbb.bbbb-bbbbb";
+    bbbbbb bbbbbb bbbbb Bbbbbb BBBBB_BBBB_BBBBB = "bbb.bbbbb.bbbbbbbb.bbbb-bbbbb";
 }

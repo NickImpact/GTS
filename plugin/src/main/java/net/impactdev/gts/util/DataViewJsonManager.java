@@ -1,153 +1,153 @@
-package net.impactdev.gts.util;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbb;
 
-import com.google.gson.JsonObject;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import org.spongepowered.api.data.persistence.DataFormats;
-import org.spongepowered.api.data.persistence.DataQuery;
-import org.spongepowered.api.data.persistence.DataSerializable;
-import org.spongepowered.api.data.persistence.DataView;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbb;
 
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.IntStream;
+bbbbbb bbbb.bb.BBBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbb.Bbbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.BbbBbbbbb;
 
-public class DataViewJsonManager {
+bbbbbb bbbbb BbbbBbbbBbbbBbbbbbb {
 
-    private static final String DEBUG_OUT = "%s: %s";
+    bbbbbbb bbbbbb bbbbb Bbbbbb BBBBB_BBB = "%b: %b";
 
-    public static void writeDataViewToJSON(JObject writer, DataView container) {
-        PrettyPrinter printer = new PrettyPrinter(80);
-        printer.add("JSON Deserialization Attempt").center();
-        printer.hr();
+    bbbbbb bbbbbb bbbb bbbbbBbbbBbbbBbBBBB(BBbbbbb bbbbbb, BbbbBbbb bbbbbbbbb) {
+        BbbbbbBbbbbbb bbbbbbb = bbb BbbbbbBbbbbbb(80);
+        bbbbbbb.bbb("BBBB Bbbbbbbbbbbbbbb Bbbbbbb").bbbbbb();
+        bbbbbbb.bb();
 
-        writeDataViewToJSON(writer, container, printer, 0);
+        bbbbbBbbbBbbbBbBBBB(bbbbbb, bbbbbbbbb, bbbbbbb, 0);
     }
 
-    private static void writeDataViewToJSON(JObject writer, DataView container, PrettyPrinter printer, int indent) {
-        for(Map.Entry<DataQuery, Object> entry : container.values(false).entrySet()) {
-            DataQuery query = entry.getKey();
-            Object value = entry.getValue();
+    bbbbbbb bbbbbb bbbb bbbbbBbbbBbbbBbBBBB(BBbbbbb bbbbbb, BbbbBbbb bbbbbbbbb, BbbbbbBbbbbbb bbbbbbb, bbb bbbbbb) {
+        bbb(Bbb.Bbbbb<BbbbBbbbb, Bbbbbb> bbbbb : bbbbbbbbb.bbbbbb(bbbbb).bbbbbBbb()) {
+            BbbbBbbbb bbbbb = bbbbb.bbbBbb();
+            Bbbbbb bbbbb = bbbbb.bbbBbbbb();
 
-            write(writer, query.asString('.'), value, printer, indent);
+            bbbbb(bbbbbb, bbbbb.bbBbbbbb('.'), bbbbb, bbbbbbb, bbbbbb);
         }
     }
 
-    public static DataView readDataViewFromJSON(JsonObject input) {
-        try {
-            return DataFormats.JSON.get().read(input.toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    bbbbbb bbbbbb BbbbBbbb bbbbBbbbBbbbBbbbBBBB(BbbbBbbbbb bbbbb) {
+        bbb {
+            bbbbbb BbbbBbbbbbb.BBBB.bbb().bbbb(bbbbb.bbBbbbbb());
+        } bbbbb (BBBbbbbbbbb b) {
+            bbbbb bbb BbbbbbbBbbbbbbbb(b);
         }
     }
 
-    private static void writeDataViewToJSON(JArray writer, DataView container, PrettyPrinter printer, int indent) {
-        JObject result = new JObject();
+    bbbbbbb bbbbbb bbbb bbbbbBbbbBbbbBbBBBB(BBbbbb bbbbbb, BbbbBbbb bbbbbbbbb, BbbbbbBbbbbbb bbbbbbb, bbb bbbbbb) {
+        BBbbbbb bbbbbb = bbb BBbbbbb();
 
-        for(Map.Entry<DataQuery, Object> entry : container.values(false).entrySet()) {
-            DataQuery query = entry.getKey();
-            Object value = entry.getValue();
+        bbb(Bbb.Bbbbb<BbbbBbbbb, Bbbbbb> bbbbb : bbbbbbbbb.bbbbbb(bbbbb).bbbbbBbb()) {
+            BbbbBbbbb bbbbb = bbbbb.bbbBbb();
+            Bbbbbb bbbbb = bbbbb.bbbBbbbb();
 
-            write(result, query.asString('.'), value, printer, indent);
+            bbbbb(bbbbbb, bbbbb.bbBbbbbb('.'), bbbbb, bbbbbbb, bbbbbb);
         }
 
-        writer.add(result);
+        bbbbbb.bbb(bbbbbb);
     }
 
-    private static void write(JObject writer, String key, Object value, PrettyPrinter printer, int indent) {
-        printer.add(translate(key, value), indent);
+    bbbbbbb bbbbbb bbbb bbbbb(BBbbbbb bbbbbb, Bbbbbb bbb, Bbbbbb bbbbb, BbbbbbBbbbbbb bbbbbbb, bbb bbbbbb) {
+        bbbbbbb.bbb(bbbbbbbbb(bbb, bbbbb), bbbbbb);
 
-        if(value instanceof String) {
-            writer.add(key, (String) value);
-        } else if(value instanceof Number) {
-            writer.add(key, (Number) value);
-        } else if(value instanceof Boolean) {
-            writer.add(key, (Boolean) value);
-        } else if(value instanceof Iterable) {
-            writer.add(key, writeArray((Iterable<?>) value, printer, indent + 2));
-        } else if(value instanceof Map) {
-            writer.add(key, writeMap((Map<?, ?>) value, printer, indent + 2));
-        } else if(value instanceof DataSerializable) {
-            writeDataViewToJSON(writer, ((DataSerializable) value).toContainer(), printer, indent + 2);
-        } else if(value instanceof DataView) {
-            writeDataViewToJSON(writer, (DataView) value, printer, indent + 2);
-        } else {
-            IllegalArgumentException exception = new IllegalArgumentException("Unable to translate object to JSON: " + value);
-            printer.hr();
-            printer.add("Exception During Write").center();
-            printer.hr();
-            printer.add("Failed Data");
-            printer.add("Class: " + value.getClass().getName());
-            printer.add("Value: " + (value.getClass().isArray() ? printArray(value) : value.toString()));
-            printer.hr();
+        bb(bbbbb bbbbbbbbbb Bbbbbb) {
+            bbbbbb.bbb(bbb, (Bbbbbb) bbbbb);
+        } bbbb bb(bbbbb bbbbbbbbbb Bbbbbb) {
+            bbbbbb.bbb(bbb, (Bbbbbb) bbbbb);
+        } bbbb bb(bbbbb bbbbbbbbbb Bbbbbbb) {
+            bbbbbb.bbb(bbb, (Bbbbbbb) bbbbb);
+        } bbbb bb(bbbbb bbbbbbbbbb Bbbbbbbb) {
+            bbbbbb.bbb(bbb, bbbbbBbbbb((Bbbbbbbb<?>) bbbbb, bbbbbbb, bbbbbb + 2));
+        } bbbb bb(bbbbb bbbbbbbbbb Bbb) {
+            bbbbbb.bbb(bbb, bbbbbBbb((Bbb<?, ?>) bbbbb, bbbbbbb, bbbbbb + 2));
+        } bbbb bb(bbbbb bbbbbbbbbb BbbbBbbbbbbbbbbb) {
+            bbbbbBbbbBbbbBbBBBB(bbbbbb, ((BbbbBbbbbbbbbbbb) bbbbb).bbBbbbbbbbb(), bbbbbbb, bbbbbb + 2);
+        } bbbb bb(bbbbb bbbbbbbbbb BbbbBbbb) {
+            bbbbbBbbbBbbbBbBBBB(bbbbbb, (BbbbBbbb) bbbbb, bbbbbbb, bbbbbb + 2);
+        } bbbb {
+            BbbbbbbBbbbbbbbBbbbbbbbb bbbbbbbbb = bbb BbbbbbbBbbbbbbbBbbbbbbbb("Bbbbbb bb bbbbbbbbb bbbbbb bb BBBB: " + bbbbb);
+            bbbbbbb.bb();
+            bbbbbbb.bbb("Bbbbbbbbb Bbbbbb Bbbbb").bbbbbb();
+            bbbbbbb.bb();
+            bbbbbbb.bbb("Bbbbbb Bbbb");
+            bbbbbbb.bbb("Bbbbb: " + bbbbb.bbbBbbbb().bbbBbbb());
+            bbbbbbb.bbb("Bbbbb: " + (bbbbb.bbbBbbbb().bbBbbbb() ? bbbbbBbbbb(bbbbb) : bbbbb.bbBbbbbb()));
+            bbbbbbb.bb();
 
-            printer.add(exception);
+            bbbbbbb.bbb(bbbbbbbbb);
 
-            printer.log(GTSPlugin.instance().logger(), PrettyPrinter.Level.DEBUG);
-            throw exception;
-        }
-    }
-
-    private static void write(JArray writer, Object value, PrettyPrinter printer, int indent) {
-        if(value instanceof String) {
-            writer.add((String) value);
-        } else if(value instanceof Number) {
-            writer.add((Number) value);
-        } else if(value instanceof Boolean) {
-            //writer.add((Boolean) value);
-        } else if(value instanceof Iterable) {
-            writer.add(writeArray((Iterable<?>) value, printer, indent + 2));
-        } else if(value instanceof Map) {
-            writer.add(writeMap((Map<?, ?>) value, printer, indent + 2));
-        } else if(value instanceof DataSerializable) {
-            writeDataViewToJSON(writer, ((DataSerializable) value).toContainer(), printer, indent + 2);
-        } else if(value instanceof DataView) {
-            writeDataViewToJSON(writer, (DataView) value, printer, indent + 2);
-        } else {
-            throw new IllegalArgumentException("Unable to translate object to JSON: " + value);
+            bbbbbbb.bbb(BBBBbbbbb.bbbbbbbb().bbbbbb(), BbbbbbBbbbbbb.Bbbbb.BBBBB);
+            bbbbb bbbbbbbbb;
         }
     }
 
-    private static JArray writeArray(Iterable<?> iterable, PrettyPrinter printer, int indent) {
-        JArray array = new JArray();
-        for(Object value : iterable) {
-            write(array, value, printer, indent);
+    bbbbbbb bbbbbb bbbb bbbbb(BBbbbb bbbbbb, Bbbbbb bbbbb, BbbbbbBbbbbbb bbbbbbb, bbb bbbbbb) {
+        bb(bbbbb bbbbbbbbbb Bbbbbb) {
+            bbbbbb.bbb((Bbbbbb) bbbbb);
+        } bbbb bb(bbbbb bbbbbbbbbb Bbbbbb) {
+            bbbbbb.bbb((Bbbbbb) bbbbb);
+        } bbbb bb(bbbbb bbbbbbbbbb Bbbbbbb) {
+            //bbbbbb.bbb((Bbbbbbb) bbbbb);
+        } bbbb bb(bbbbb bbbbbbbbbb Bbbbbbbb) {
+            bbbbbb.bbb(bbbbbBbbbb((Bbbbbbbb<?>) bbbbb, bbbbbbb, bbbbbb + 2));
+        } bbbb bb(bbbbb bbbbbbbbbb Bbb) {
+            bbbbbb.bbb(bbbbbBbb((Bbb<?, ?>) bbbbb, bbbbbbb, bbbbbb + 2));
+        } bbbb bb(bbbbb bbbbbbbbbb BbbbBbbbbbbbbbbb) {
+            bbbbbBbbbBbbbBbBBBB(bbbbbb, ((BbbbBbbbbbbbbbbb) bbbbb).bbBbbbbbbbb(), bbbbbbb, bbbbbb + 2);
+        } bbbb bb(bbbbb bbbbbbbbbb BbbbBbbb) {
+            bbbbbBbbbBbbbBbBBBB(bbbbbb, (BbbbBbbb) bbbbb, bbbbbbb, bbbbbb + 2);
+        } bbbb {
+            bbbbb bbb BbbbbbbBbbbbbbbBbbbbbbbb("Bbbbbb bb bbbbbbbbb bbbbbb bb BBBB: " + bbbbb);
         }
-
-        return array;
     }
 
-    private static JObject writeMap(Map<?, ?> map, PrettyPrinter printer, int indent) {
-        JObject mapped = new JObject();
-        for(Map.Entry<?, ?> entry : map.entrySet()) {
-            Object key = entry.getKey();
-            if(key instanceof DataQuery) {
-                key = ((DataQuery) key).asString('.');
+    bbbbbbb bbbbbb BBbbbb bbbbbBbbbb(Bbbbbbbb<?> bbbbbbbb, BbbbbbBbbbbbb bbbbbbb, bbb bbbbbb) {
+        BBbbbb bbbbb = bbb BBbbbb();
+        bbb(Bbbbbb bbbbb : bbbbbbbb) {
+            bbbbb(bbbbb, bbbbb, bbbbbbb, bbbbbb);
+        }
+
+        bbbbbb bbbbb;
+    }
+
+    bbbbbbb bbbbbb BBbbbbb bbbbbBbb(Bbb<?, ?> bbb, BbbbbbBbbbbbb bbbbbbb, bbb bbbbbb) {
+        BBbbbbb bbbbbb = bbb BBbbbbb();
+        bbb(Bbb.Bbbbb<?, ?> bbbbb : bbb.bbbbbBbb()) {
+            Bbbbbb bbb = bbbbb.bbbBbb();
+            bb(bbb bbbbbbbbbb BbbbBbbbb) {
+                bbb = ((BbbbBbbbb) bbb).bbBbbbbb('.');
             }
 
-            write(mapped, key.toString(), entry.getValue(), printer, indent + 2);
+            bbbbb(bbbbbb, bbb.bbBbbbbb(), bbbbb.bbbBbbbb(), bbbbbbb, bbbbbb + 2);
         }
 
-        return mapped;
+        bbbbbb bbbbbb;
     }
 
-    private static String translate(String key, Object value) {
-        return String.format(DEBUG_OUT, key, value);
+    bbbbbbb bbbbbb Bbbbbb bbbbbbbbb(Bbbbbb bbb, Bbbbbb bbbbb) {
+        bbbbbb Bbbbbb.bbbbbb(BBBBB_BBB, bbb, bbbbb);
     }
 
-    private static String printArray(Object array) {
-        if(!array.getClass().isArray()) {
-            return "Not an Array";
+    bbbbbbb bbbbbb Bbbbbb bbbbbBbbbb(Bbbbbb bbbbb) {
+        bb(!bbbbb.bbbBbbbb().bbBbbbb()) {
+            bbbbbb "Bbb bb Bbbbb";
         }
 
-        return "[" + IntStream.range(0, Array.getLength(array))
-                .mapToObj(i -> Objects.toString(Array.get(array, i)))
-                .reduce("", (l, r) -> l + ", " + r)
-                .substring(2)
+        bbbbbb "[" + BbbBbbbbb.bbbbb(0, Bbbbb.bbbBbbbbb(bbbbb))
+                .bbbBbBbb(b -> Bbbbbbb.bbBbbbbb(Bbbbb.bbb(bbbbb, b)))
+                .bbbbbb("", (b, b) -> b + ", " + b)
+                .bbbbbbbbb(2)
                 + "]";
     }
 }

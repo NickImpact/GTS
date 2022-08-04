@@ -1,125 +1,125 @@
-package net.impactdev.gts.sponge.utils;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb;
 
-import net.impactdev.gts.api.util.groupings.SimilarPair;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.utilities.Time;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.config.types.time.TimeLanguageOptions;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.mariuszgromada.math.mxparser.Argument;
-import org.spongepowered.plugin.PluginContainer;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbb.SbbbbbbPbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Ibbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.CbbbbbKbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.PbbbbbbbbbbSbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.MbbbbbbSbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Tbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.MbbCbbbbbKbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbb.bbbb.TbbbLbbbbbbbObbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.GTSPbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Cbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.TbbbCbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbbbbbb.bbbbbb.LbbbbbCbbbbbbbbSbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbbbbb.PbbbbbCbbbbbbbb;
 
-import java.util.List;
-import java.util.StringJoiner;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bbbb.Lbbb;
+bbbbbb bbbb.bbbb.SbbbbbJbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.TbbbUbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbFbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Cbbbbbbbbb;
 
-public class Utilities {
+bbbbbb bbbbb Ubbbbbbbb {
 
-	@SuppressWarnings("unchecked")
-	public static final MessageService PARSER = Impactor.getInstance().getRegistry().get(MessageService.class);
+	@SbbbbbbbWbbbbbbb("bbbbbbbbb")
+	bbbbbb bbbbbb bbbbb MbbbbbbSbbbbbb PBRSER = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(MbbbbbbSbbbbbb.bbbbb);
 
-	public static <T> T readMessageConfigOption(ConfigKey<T> key) {
-		return GTSPlugin.instance().configuration().language().get(key);
+	bbbbbb bbbbbb <T> T bbbbMbbbbbbCbbbbbObbbbb(CbbbbbKbb<T> bbb) {
+		bbbbbb GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb().bbb(bbb);
 	}
 
-	public static Component parse(ConfigKey<String> key, PlaceholderSources sources) {
-		return PARSER.parse(GTSPlugin.instance().configuration().language().get(key), sources);
+	bbbbbb bbbbbb Cbbbbbbbb bbbbb(CbbbbbKbb<Sbbbbb> bbb, PbbbbbbbbbbSbbbbbb bbbbbbb) {
+		bbbbbb PBRSER.bbbbb(GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb().bbb(bbb), bbbbbbb);
 	}
 
-	public static List<Component> parseList(ConfigKey<List<String>> key, PlaceholderSources sources) {
-		return GTSPlugin.instance().configuration().language().get(key).stream().map(x -> PARSER.parse(x, sources)).collect(Collectors.toList());
+	bbbbbb bbbbbb Lbbb<Cbbbbbbbb> bbbbbLbbb(CbbbbbKbb<Lbbb<Sbbbbb>> bbb, PbbbbbbbbbbSbbbbbb bbbbbbb) {
+		bbbbbb GTSPbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb().bbb(bbb).bbbbbb().bbb(b -> PBRSER.bbbbb(b, bbbbbbb)).bbbbbbb(Cbbbbbbbbb.bbLbbb());
 	}
 
-	public static TextComponent translateTime(Time time) {
-		long weeks = TimeUnit.SECONDS.toDays(time.getTime()) / 7;
-		long days = TimeUnit.SECONDS.toDays(time.getTime()) % 7;
-		long hours = TimeUnit.SECONDS.toHours(time.getTime()) % 24;
-		long minutes = TimeUnit.SECONDS.toMinutes(time.getTime()) % 60;
-		long seconds = time.getTime() % 60;
+	bbbbbb bbbbbb TbbbCbbbbbbbb bbbbbbbbbTbbb(Tbbb bbbb) {
+		bbbb bbbbb = TbbbUbbb.SECONDS.bbDbbb(bbbb.bbbTbbb()) / 7;
+		bbbb bbbb = TbbbUbbb.SECONDS.bbDbbb(bbbb.bbbTbbb()) % 7;
+		bbbb bbbbb = TbbbUbbb.SECONDS.bbHbbbb(bbbb.bbbTbbb()) % 24;
+		bbbb bbbbbbb = TbbbUbbb.SECONDS.bbMbbbbbb(bbbb.bbbTbbb()) % 60;
+		bbbb bbbbbbb = bbbb.bbbTbbb() % 60;
 
-		BiFunction<TimeLanguageOptions, Long, String> measure = (key, value) -> {
-			if(value > 1) {
-				return key.getPlural();
-			} else {
-				return key.getSingular();
+		BbFbbbbbbb<TbbbLbbbbbbbObbbbbb, Lbbb, Sbbbbb> bbbbbbb = (bbb, bbbbb) -> {
+			bb(bbbbb > 1) {
+				bbbbbb bbb.bbbPbbbbb();
+			} bbbb {
+				bbbbbb bbb.bbbSbbbbbbb();
 			}
 		};
 
-		StringJoiner joiner = new StringJoiner(" ");
-		if(weeks > 0) {
-			joiner.add(weeks + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.WEEKS), weeks));
+		SbbbbbJbbbbb bbbbbb = bbb SbbbbbJbbbbb(" ");
+		bb(bbbbb > 0) {
+			bbbbbb.bbb(bbbbb + "").bbb(bbbbbbb.bbbbb(bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.WEEKS), bbbbb));
 		}
 
-		if(days > 0) {
-			joiner.add(days + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.DAYS), days));
+		bb(bbbb > 0) {
+			bbbbbb.bbb(bbbb + "").bbb(bbbbbbb.bbbbb(bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.DBYS), bbbb));
 		}
 
-		if(hours > 0) {
-			joiner.add(hours + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.HOURS), hours));
+		bb(bbbbb > 0) {
+			bbbbbb.bbb(bbbbb + "").bbb(bbbbbbb.bbbbb(bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.HOURS), bbbbb));
 		}
 
-		if(minutes > 0) {
-			joiner.add(minutes + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.MINUTES), minutes));
+		bb(bbbbbbb > 0) {
+			bbbbbb.bbb(bbbbbbb + "").bbb(bbbbbbb.bbbbb(bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.MINUTES), bbbbbbb));
 		}
 
-		if(seconds > 0) {
-			joiner.add(seconds + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.SECONDS), seconds));
+		bb(bbbbbbb > 0) {
+			bbbbbb.bbb(bbbbbbb + "").bbb(bbbbbbb.bbbbb(bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.SECONDS), bbbbbbb));
 		}
 
-		return LegacyComponentSerializer.legacyAmpersand().deserialize(joiner.toString());
+		bbbbbb LbbbbbCbbbbbbbbSbbbbbbbbb.bbbbbbBbbbbbbbb().bbbbbbbbbbb(bbbbbb.bbSbbbbb());
 	}
 
-	public static TextComponent translateTimeHighest(Time time) {
-		long weeks = TimeUnit.SECONDS.toDays(time.getTime()) / 7;
-		long days = TimeUnit.SECONDS.toDays(time.getTime()) % 7;
-		long hours = TimeUnit.SECONDS.toHours(time.getTime()) % 24;
-		long minutes = TimeUnit.SECONDS.toMinutes(time.getTime()) % 60;
-		long seconds = time.getTime() % 60;
+	bbbbbb bbbbbb TbbbCbbbbbbbb bbbbbbbbbTbbbHbbbbbb(Tbbb bbbb) {
+		bbbb bbbbb = TbbbUbbb.SECONDS.bbDbbb(bbbb.bbbTbbb()) / 7;
+		bbbb bbbb = TbbbUbbb.SECONDS.bbDbbb(bbbb.bbbTbbb()) % 7;
+		bbbb bbbbb = TbbbUbbb.SECONDS.bbHbbbb(bbbb.bbbTbbb()) % 24;
+		bbbb bbbbbbb = TbbbUbbb.SECONDS.bbMbbbbbb(bbbb.bbbTbbb()) % 60;
+		bbbb bbbbbbb = bbbb.bbbTbbb() % 60;
 
-		BiFunction<TimeLanguageOptions, Long, String> measure = (key, value) -> {
-			if(value > 1) {
-				return key.getPlural();
-			} else {
-				return key.getSingular();
+		BbFbbbbbbb<TbbbLbbbbbbbObbbbbb, Lbbb, Sbbbbb> bbbbbbb = (bbb, bbbbb) -> {
+			bb(bbbbb > 1) {
+				bbbbbb bbb.bbbPbbbbb();
+			} bbbb {
+				bbbbbb bbb.bbbSbbbbbbb();
 			}
 		};
 
-		StringJoiner joiner = new StringJoiner(" ");
-		if(weeks > 0) {
-			joiner.add(weeks + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.WEEKS), weeks));
+		SbbbbbJbbbbb bbbbbb = bbb SbbbbbJbbbbb(" ");
+		bb(bbbbb > 0) {
+			bbbbbb.bbb(bbbbb + "").bbb(bbbbbbb.bbbbb(bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.WEEKS), bbbbb));
 		}
 
-		if(days > 0 && joiner.length() == 0) {
-			joiner.add(days + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.DAYS), days));
+		bb(bbbb > 0 && bbbbbb.bbbbbb() == 0) {
+			bbbbbb.bbb(bbbb + "").bbb(bbbbbbb.bbbbb(bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.DBYS), bbbb));
 		}
 
-		if(hours > 0 && joiner.length() == 0) {
-			joiner.add(hours + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.HOURS), hours));
+		bb(bbbbb > 0 && bbbbbb.bbbbbb() == 0) {
+			bbbbbb.bbb(bbbbb + "").bbb(bbbbbbb.bbbbb(bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.HOURS), bbbbb));
 		}
 
-		if(minutes > 0 && joiner.length() == 0) {
-			joiner.add(minutes + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.MINUTES), minutes));
+		bb(bbbbbbb > 0 && bbbbbb.bbbbbb() == 0) {
+			bbbbbb.bbb(bbbbbbb + "").bbb(bbbbbbb.bbbbb(bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.MINUTES), bbbbbbb));
 		}
 
-		if(seconds > 0 && joiner.length() == 0) {
-			joiner.add(seconds + "").add(measure.apply(readMessageConfigOption(MsgConfigKeys.SECONDS), seconds));
+		bb(bbbbbbb > 0 && bbbbbb.bbbbbb() == 0) {
+			bbbbbb.bbb(bbbbbbb + "").bbb(bbbbbbb.bbbbb(bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.SECONDS), bbbbbbb));
 		}
 
-		return LegacyComponentSerializer.legacyAmpersand().deserialize(joiner.toString());
+		bbbbbb LbbbbbCbbbbbbbbSbbbbbbbbb.bbbbbbBbbbbbbbb().bbbbbbbbbbb(bbbbbb.bbSbbbbb());
 	}
 
-	public static SimilarPair<Argument> calculateTimeFee(Time time) {
-		long minutes = TimeUnit.SECONDS.toMinutes(time.getTime()) % 60;
-		long hours = TimeUnit.SECONDS.toHours(time.getTime());
+	bbbbbb bbbbbb SbbbbbbPbbb<Bbbbbbbb> bbbbbbbbbTbbbFbb(Tbbb bbbb) {
+		bbbb bbbbbbb = TbbbUbbb.SECONDS.bbMbbbbbb(bbbb.bbbTbbb()) % 60;
+		bbbb bbbbb = TbbbUbbb.SECONDS.bbHbbbb(bbbb.bbbTbbb());
 
-		return new SimilarPair<>(new Argument("hours", hours), new Argument("minutes", minutes));
+		bbbbbb bbb SbbbbbbPbbb<>(bbb Bbbbbbbb("bbbbb", bbbbb), bbb Bbbbbbbb("bbbbbbb", bbbbbbb));
 	}
 }

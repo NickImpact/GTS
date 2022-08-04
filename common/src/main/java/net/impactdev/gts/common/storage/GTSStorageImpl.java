@@ -1,287 +1,287 @@
 /*
- * This file is part of LuckPerms, licensed under the MIT License.
+ * Bbbb bbbb bb bbbb bb BbbbBbbbb, bbbbbbbb bbbbb bbb BBB Bbbbbbb.
  *
- *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Bbbbbbbbb (b) bbbbb (Bbbb) <bbbb@bbbbb.bb>
+ *  Bbbbbbbbb (b) bbbbbbbbbbbb
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Bbbbbbbbbb bb bbbbbb bbbbbbb, bbbb bb bbbbbb, bb bbb bbbbbb bbbbbbbbb b bbbb
+ *  bb bbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbbbbbbb bbbbb (bbb "Bbbbbbbb"), bb bbbb
+ *  bb bbb Bbbbbbbb bbbbbbb bbbbbbbbbbb, bbbbbbbbb bbbbbbb bbbbbbbbbb bbb bbbbbb
+ *  bb bbb, bbbb, bbbbbb, bbbbb, bbbbbbb, bbbbbbbbbb, bbbbbbbbbb, bbb/bb bbbb
+ *  bbbbbb bb bbb Bbbbbbbb, bbb bb bbbbbb bbbbbbb bb bbbb bbb Bbbbbbbb bb
+ *  bbbbbbbbb bb bb bb, bbbbbbb bb bbb bbbbbbbbb bbbbbbbbbb:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  Bbb bbbbb bbbbbbbbb bbbbbb bbb bbbb bbbbbbbbbb bbbbbb bbbbb bb bbbbbbbb bb bbb
+ *  bbbbbb bb bbbbbbbbbbb bbbbbbbb bb bbb Bbbbbbbb.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
+ *  BBB BBBBBBBB BB BBBBBBBB "BB BB", BBBBBBB BBBBBBBB BB BBB BBBB, BBBBBBB BB
+ *  BBBBBBB, BBBBBBBBB BBB BBB BBBBBBB BB BBB BBBBBBBBBB BB BBBBBBBBBBBBBBB,
+ *  BBBBBBB BBB B BBBBBBBBBB BBBBBBB BBB BBBBBBBBBBBBBBB. BB BB BBBBB BBBBB BBB
+ *  BBBBBBB BB BBBBBBBBB BBBBBBB BB BBBBBB BBB BBB BBBBB, BBBBBBB BB BBBBB
+ *  BBBBBBBBB, BBBBBBB BB BB BBBBBB BB BBBBBBBB, BBBB BB BBBBBBBBB, BBBBBBB BBBB,
+ *  BBB BB BB BB BBBBBBBBBB BBBB BBB BBBBBBBB BB BBB BBB BB BBBBB BBBBBBBB BB BBB
+ *  BBBBBBBB.
  */
 
-package net.impactdev.gts.common.storage;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb;
 
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.github.benmanes.caffeine.cache.LoadingCache;
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
-import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.storage.PurgeType;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import net.impactdev.gts.api.player.PlayerSettings;
-import net.impactdev.gts.api.stashes.Stash;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.api.storage.GTSStorage;
-import net.impactdev.gts.common.storage.implementation.StorageImplementation;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.impactor.api.configuration.Config;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.BbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb.BbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbbbb.BbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbBbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbbbbbbbb.BbbbbbbBbbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbb.BbbbbbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+bbbbbb bbbb.bbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbb.BbbbbbbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbb;
 
-public class GTSStorageImpl implements GTSStorage {
+bbbbbb bbbbb BBBBbbbbbbBbbb bbbbbbbbbb BBBBbbbbbb {
 
-    private final StorageImplementation implementation;
+    bbbbbbb bbbbb BbbbbbbBbbbbbbbbbbbbb bbbbbbbbbbbbbb;
 
-    private final LoadingCache<UUID, ReentrantLock> locks = Caffeine.newBuilder()
-            .expireAfterAccess(5, TimeUnit.MINUTES)
-            .build(key -> new ReentrantLock());
+    bbbbbbb bbbbb BbbbbbbBbbbb<BBBB, BbbbbbbbbBbbb> bbbbb = Bbbbbbbb.bbbBbbbbbb()
+            .bbbbbbBbbbbBbbbbb(5, BbbbBbbb.BBBBBBB)
+            .bbbbb(bbb -> bbb BbbbbbbbbBbbb());
 
-    public GTSStorageImpl(GTSPlugin plugin, StorageImplementation implementation) {
-        this.implementation = implementation;
+    bbbbbb BBBBbbbbbbBbbb(BBBBbbbbb bbbbbb, BbbbbbbBbbbbbbbbbbbbb bbbbbbbbbbbbbb) {
+        bbbb.bbbbbbbbbbbbbb = bbbbbbbbbbbbbb;
     }
 
     /**
-     * Attempts to initialize the storage implementation
+     * Bbbbbbbb bb bbbbbbbbbb bbb bbbbbbb bbbbbbbbbbbbbb
      */
-    public void init() {
-        try {
-            this.implementation.init();
-        } catch (Exception e) {
-            // Log the failure
-            throw new RuntimeException(e);
+    bbbbbb bbbb bbbb() {
+        bbb {
+            bbbb.bbbbbbbbbbbbbb.bbbb();
+        } bbbbb (Bbbbbbbbb b) {
+            // Bbb bbb bbbbbbb
+            bbbbb bbb BbbbbbbBbbbbbbbb(b);
         }
     }
 
     /**
-     * Attempts to shutdown the storage implementation
+     * Bbbbbbbb bb bbbbbbbb bbb bbbbbbb bbbbbbbbbbbbbb
      */
-    public void shutdown() {
-        try {
-            this.implementation.shutdown();
-        } catch (Exception e) {
-            // Log the failure
-            throw new RuntimeException(e);
+    bbbbbb bbbb bbbbbbbb() {
+        bbb {
+            bbbb.bbbbbbbbbbbbbb.bbbbbbbb();
+        } bbbbb (Bbbbbbbbb b) {
+            // Bbb bbb bbbbbbb
+            bbbbb bbb BbbbbbbBbbbbbbbb(b);
         }
     }
 
     /**
-     * Represents any properties which might be set against a storage
-     * implementation.
+     * Bbbbbbbbbb bbb bbbbbbbbbb bbbbb bbbbb bb bbb bbbbbbb b bbbbbbb
+     * bbbbbbbbbbbbbb.
      *
-     * @return A mapping of flags to values representing storage implementation
-     * properties
+     * @bbbbbb B bbbbbbb bb bbbbb bb bbbbbb bbbbbbbbbbbb bbbbbbb bbbbbbbbbbbbbb
+     * bbbbbbbbbb
      */
-    public CompletableFuture<Map<String, String>> getMeta() {
-        return this.schedule(this.implementation::getMeta);
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbb<Bbbbbb, Bbbbbb>> bbbBbbb() {
+        bbbbbb bbbb.bbbbbbbb(bbbb.bbbbbbbbbbbbbb::bbbBbbb);
     }
 
-    @Override
-    public CompletableFuture<Boolean> publishListing(Listing listing) {
-        return this.schedule(() -> this.implementation.addListing(listing));
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbbbbBbbbbbb(Bbbbbbb bbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> bbbb.bbbbbbbbbbbbbb.bbbBbbbbbb(bbbbbbb));
     }
 
-    @Override
-    public CompletableFuture<Optional<Listing>> getListing(UUID listing) {
-        return this.schedule(() -> this.implementation.getListing(listing));
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbbb<Bbbbbbb>> bbbBbbbbbb(BBBB bbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> bbbb.bbbbbbbbbbbbbb.bbbBbbbbbb(bbbbbbb));
     }
 
-    @Override
-    public CompletableFuture<Boolean> purge(PurgeType type) {
-        return this.schedule(() -> this.implementation.purge(type));
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbb(BbbbbBbbb bbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> bbbb.bbbbbbbbbbbbbb.bbbbb(bbbb));
     }
 
-    @Override
-    public CompletableFuture<Boolean> clean() {
-        return this.schedule(this.implementation::clean);
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbb() {
+        bbbbbb bbbb.bbbbbbbb(bbbb.bbbbbbbbbbbbbb::bbbbb);
     }
 
-    @Override
-    public CompletableFuture<Optional<PlayerSettings>> getPlayerSettings(UUID uuid) {
-        return this.schedule(() -> this.implementation.getPlayerSettings(uuid));
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbbb<BbbbbbBbbbbbbb>> bbbBbbbbbBbbbbbbb(BBBB bbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> bbbb.bbbbbbbbbbbbbb.bbbBbbbbbBbbbbbbb(bbbb));
     }
 
-    @Override
-    public CompletableFuture<Boolean> applyPlayerSettings(UUID uuid, PlayerSettings settings) {
-        return this.schedule(() -> this.implementation.applyPlayerSettings(uuid, settings));
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbbBbbbbbBbbbbbbb(BBBB bbbb, BbbbbbBbbbbbbb bbbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> bbbb.bbbbbbbbbbbbbb.bbbbbBbbbbbBbbbbbbb(bbbb, bbbbbbbb));
     }
 
-    @Override
-    public CompletableFuture<Boolean> hasMaxListings(UUID user) {
-        return this.schedule(() -> this.implementation.hasMaxListings(user));
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbBbbBbbbbbbb(BBBB bbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> bbbb.bbbbbbbbbbbbbb.bbbBbbBbbbbbbb(bbbb));
     }
 
-    @Override
-    public CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request) {
-        return this.schedule(() -> {
-            ReentrantLock lock = this.locks.get(request.getAuctionID());
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbbbbBbbbbbb.Bbb.Bbbbbbbb> bbbbbbbBbb(BbbbbbbBbbbbbb.Bbb.Bbbbbbb bbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> {
+            BbbbbbbbbBbbb bbbb = bbbb.bbbbb.bbb(bbbbbbb.bbbBbbbbbbBB());
 
-            try {
-                lock.lock();
-                return this.implementation.processBid(request);
-            } finally {
-                lock.unlock();
+            bbb {
+                bbbb.bbbb();
+                bbbbbb bbbb.bbbbbbbbbbbbbb.bbbbbbbBbb(bbbbbbb);
+            } bbbbbbb {
+                bbbb.bbbbbb();
             }
         });
     }
 
-    @Override
-    public CompletableFuture<ClaimMessage.Response> processClaimRequest(ClaimMessage.Request request) {
-        return this.schedule(() -> {
-            ReentrantLock lock = this.locks.get(request.getListingID());
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbbBbbbbbb.Bbbbbbbb> bbbbbbbBbbbbBbbbbbb(BbbbbBbbbbbb.Bbbbbbb bbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> {
+            BbbbbbbbbBbbb bbbb = bbbb.bbbbb.bbb(bbbbbbb.bbbBbbbbbbBB());
 
-            try {
-                lock.lock();
-                return this.implementation.processClaimRequest(request);
-            } finally {
-                lock.unlock();
+            bbb {
+                bbbb.bbbb();
+                bbbbbb bbbb.bbbbbbbbbbbbbb.bbbbbbbBbbbbBbbbbbb(bbbbbbb);
+            } bbbbbbb {
+                bbbb.bbbbbb();
             }
         });
     }
 
-    @Override
-    public CompletableFuture<Boolean> appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others) {
-        return this.schedule(() -> {
-            ReentrantLock lock = this.locks.get(auction);
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbbbBbbBbbbbBbbbbb(BBBB bbbbbbb, bbbbbbb bbbbbb, bbbbbbb bbbbbb, Bbbb<BBBB> bbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> {
+            BbbbbbbbbBbbb bbbb = bbbb.bbbbb.bbb(bbbbbbb);
 
-            try {
-                lock.lock();
-                return this.implementation.appendOldClaimStatus(auction, lister, winner, others);
-            } finally {
-                lock.unlock();
+            bbb {
+                bbbb.bbbb();
+                bbbbbb bbbb.bbbbbbbbbbbbbb.bbbbbbBbbBbbbbBbbbbb(bbbbbbb, bbbbbb, bbbbbb, bbbbbb);
+            } bbbbbbb {
+                bbbb.bbbbbb();
             }
         });
     }
 
-    @Override
-    public CompletableFuture<AuctionMessage.Cancel.Response> processAuctionCancelRequest(AuctionMessage.Cancel.Request request) {
-        return this.schedule(() -> {
-            ReentrantLock lock = this.locks.get(request.getAuctionID());
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbbb> bbbbbbbBbbbbbbBbbbbbBbbbbbb(BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> {
+            BbbbbbbbbBbbb bbbb = bbbb.bbbbb.bbb(bbbbbbb.bbbBbbbbbbBB());
 
-            try {
-                lock.lock();
-                return this.implementation.processAuctionCancelRequest(request);
-            } finally {
-                lock.unlock();
+            bbb {
+                bbbb.bbbb();
+                bbbbbb bbbb.bbbbbbbbbbbbbb.bbbbbbbBbbbbbbBbbbbbBbbbbbb(bbbbbbb);
+            } bbbbbbb {
+                bbbb.bbbbbb();
             }
         });
     }
 
-    @Override
-    public CompletableFuture<BuyItNowMessage.Remove.Response> processListingRemoveRequest(BuyItNowMessage.Remove.Request request) {
-        return this.schedule(() -> {
-            ReentrantLock lock = this.locks.get(request.getListingID());
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbbb> bbbbbbbBbbbbbbBbbbbbBbbbbbb(BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> {
+            BbbbbbbbbBbbb bbbb = bbbb.bbbbb.bbb(bbbbbbb.bbbBbbbbbbBB());
 
-            try {
-                lock.lock();
-                return this.implementation.processListingRemoveRequest(request);
-            } finally {
-                lock.unlock();
+            bbb {
+                bbbb.bbbb();
+                bbbbbb bbbb.bbbbbbbbbbbbbb.bbbbbbbBbbbbbbBbbbbbBbbbbbb(bbbbbbb);
+            } bbbbbbb {
+                bbbb.bbbbbb();
             }
         });
     }
 
-    @Override
-    public CompletableFuture<BuyItNowMessage.Purchase.Response> processPurchase(BuyItNowMessage.Purchase.Request request) {
-        return this.schedule(() -> {
-            ReentrantLock lock = this.locks.get(request.getListingID());
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbbb> bbbbbbbBbbbbbbb(BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbb bbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> {
+            BbbbbbbbbBbbb bbbb = bbbb.bbbbb.bbb(bbbbbbb.bbbBbbbbbbBB());
 
-            try {
-                lock.lock();
-                return this.implementation.processPurchase(request);
-            } finally {
-                lock.unlock();
+            bbb {
+                bbbb.bbbb();
+                bbbbbb bbbb.bbbbbbbbbbbbbb.bbbbbbbBbbbbbbb(bbbbbbb);
+            } bbbbbbb {
+                bbbb.bbbbbb();
             }
         });
     }
 
-    @Override
-    public CompletableFuture<ClaimDelivery.Response> claimDelivery(ClaimDelivery.Request request) {
-        return this.schedule(() -> {
-            ReentrantLock lock = this.locks.get(request.getDeliveryID());
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbbBbbbbbbb.Bbbbbbbb> bbbbbBbbbbbbb(BbbbbBbbbbbbb.Bbbbbbb bbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> {
+            BbbbbbbbbBbbb bbbb = bbbb.bbbbb.bbb(bbbbbbb.bbbBbbbbbbbBB());
 
-            try {
-                lock.lock();
-                return this.implementation.claimDelivery(request);
-            } finally {
-                lock.unlock();
+            bbb {
+                bbbb.bbbb();
+                bbbbbb bbbb.bbbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbbbbb);
+            } bbbbbbb {
+                bbbb.bbbbbb();
             }
         });
     }
 
-    @Override
-    public CompletableFuture<ForceDeleteMessage.Response> processForcedDeletion(ForceDeleteMessage.Request request) {
-        return this.schedule(() -> {
-            ReentrantLock lock = this.locks.get(request.getListingID());
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<BbbbbBbbbbbBbbbbbb.Bbbbbbbb> bbbbbbbBbbbbbBbbbbbbb(BbbbbBbbbbbBbbbbbb.Bbbbbbb bbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> {
+            BbbbbbbbbBbbb bbbb = bbbb.bbbbb.bbb(bbbbbbb.bbbBbbbbbbBB());
 
-            try {
-                lock.lock();
-                return this.implementation.processForcedDeletion(request);
-            } finally {
-                lock.unlock();
+            bbb {
+                bbbb.bbbb();
+                bbbbbb bbbb.bbbbbbbbbbbbbb.bbbbbbbBbbbbbBbbbbbbb(bbbbbbb);
+            } bbbbbbb {
+                bbbb.bbbbbb();
             }
         });
     }
 
-    public CompletableFuture<Boolean> sendListingUpdate(Listing listing) {
-        return this.schedule(() -> this.implementation.sendListingUpdate(listing));
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbBbbbbbbBbbbbb(Bbbbbbb bbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> bbbb.bbbbbbbbbbbbbb.bbbbBbbbbbbBbbbbb(bbbbbbb));
     }
 
-    @Override
-    public CompletableFuture<List<Listing>> fetchListings(Collection<Predicate<Listing>> filters) {
-        return this.schedule(() -> {
-            Stream<Listing> results = this.implementation.getListings().stream();
-            for(Predicate<Listing> predicate : filters) {
-                results = results.filter(predicate);
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbb<Bbbbbbb>> bbbbbBbbbbbbb(Bbbbbbbbbb<Bbbbbbbbb<Bbbbbbb>> bbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> {
+            Bbbbbb<Bbbbbbb> bbbbbbb = bbbb.bbbbbbbbbbbbbb.bbbBbbbbbbb().bbbbbb();
+            bbb(Bbbbbbbbb<Bbbbbbb> bbbbbbbbb : bbbbbbb) {
+                bbbbbbb = bbbbbbb.bbbbbb(bbbbbbbbb);
             }
 
-            return results.collect(Collectors.toList());
+            bbbbbb bbbbbbb.bbbbbbb(Bbbbbbbbbb.bbBbbb());
         });
     }
 
-    @Override
-    public CompletableFuture<Boolean> sendDelivery(Delivery delivery) {
-        return this.schedule(() -> this.implementation.sendDelivery(delivery));
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbBbbbbbbb(Bbbbbbbb bbbbbbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> bbbb.bbbbbbbbbbbbbb.bbbbBbbbbbbb(bbbbbbbb));
     }
 
-    @Override
-    public CompletableFuture<Stash> getStash(UUID user) {
-        return this.schedule(() -> this.implementation.getStash(user));
+    @Bbbbbbbb
+    bbbbbb BbbbbbbbbbbBbbbbb<Bbbbb> bbbBbbbb(BBBB bbbb) {
+        bbbbbb bbbb.bbbbbbbb(() -> bbbb.bbbbbbbbbbbbbb.bbbBbbbb(bbbb));
     }
 
-    private <T> CompletableFuture<T> schedule(Callable<T> callable) {
-        return CompletableFutureManager.makeFuture(callable, Impactor.getInstance().getScheduler().async());
+    bbbbbbb <B> BbbbbbbbbbbBbbbbb<B> bbbbbbbb(Bbbbbbbb<B> bbbbbbbb) {
+        bbbbbb BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(bbbbbbbb, Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbbb());
     }
 }

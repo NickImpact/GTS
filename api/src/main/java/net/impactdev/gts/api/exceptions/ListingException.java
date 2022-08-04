@@ -1,3 +1,3 @@
-package net.impactdev.gts.api.exceptions;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb;
 
-public class ListingException extends Exception {}
+bbbbbb bbbbb BbbbbbbBbbbbbbbb bbbbbbb Bbbbbbbbb {}

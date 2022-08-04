@@ -1,19 +1,19 @@
-package net.impactdev.gts.common.utils.debug;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb;
 
 
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
 
 /**
- * This is simply a utility class meant to setup a PrettyPrinter instance initialized with a
- * debugger title
+ * Bbbb bb bbbbbb b bbbbbbb bbbbb bbbbb bb bbbbb b BbbbbbBbbbbbb bbbbbbbb bbbbbbbbbbb bbbb b
+ * bbbbbbbb bbbbb
  */
-public class Debugger {
+bbbbbb bbbbb Bbbbbbbb {
 
-    public static PrettyPrinter create() {
-        return new PrettyPrinter(80)
-                .add("Debug Information").center()
-                .add("   Response ID : 59e3094e-c323-4aaf-afb3-663257442a48")
-                .hr();
+    bbbbbb bbbbbb BbbbbbBbbbbbb bbbbbb() {
+        bbbbbb bbb BbbbbbBbbbbbb(80)
+                .bbb("Bbbbb Bbbbbbbbbbb").bbbbbb()
+                .bbb("   Bbbbbbbb BB : 59b3094b-b323-4bbb-bbb3-663257442b48")
+                .bb();
     }
 
 }

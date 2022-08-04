@@ -1,11 +1,11 @@
-package net.impactdev.gts.common.tasks;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb;
 
-import net.impactdev.gts.api.listings.Listing;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
 
-public interface ListingTasks<T extends Listing> {
+bbbbbb bbbbbbbbb BbbbbbbBbbbb<B bbbbbbb Bbbbbbb> {
 
-	void createExpirationTask();
+	bbbb bbbbbbBbbbbbbbbbBbbb();
 
-	boolean expire(T listing);
+	bbbbbbb bbbbbb(B bbbbbbb);
 
 }

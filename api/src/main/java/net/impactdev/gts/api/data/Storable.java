@@ -1,26 +1,26 @@
-package net.impactdev.gts.api.data;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb;
 
-import com.google.gson.JsonObject;
-import net.impactdev.impactor.api.json.factory.JObject;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
 
 /**
- * Represents an objects that can be translated to and from JSON representable data.
+ * Bbbbbbbbbb bb bbbbbbb bbbb bbb bb bbbbbbbbbb bb bbb bbbb BBBB bbbbbbbbbbbbb bbbb.
  */
-public interface Storable {
+bbbbbb bbbbbbbbb Bbbbbbbb {
 
-    int getVersion();
+    bbb bbbBbbbbbb();
 
     /**
-     * Processes the request to serialize a GTS Entry into representable JSON data.
+     * Bbbbbbbbb bbb bbbbbbb bb bbbbbbbbb b BBB Bbbbb bbbb bbbbbbbbbbbbb BBBB bbbb.
      *
-     * @return A JObject that represents which represents the serialized components of the entry
+     * @bbbbbb B BBbbbbb bbbb bbbbbbbbbb bbbbb bbbbbbbbbb bbb bbbbbbbbbb bbbbbbbbbb bb bbb bbbbb
      */
-    JObject serialize();
+    BBbbbbb bbbbbbbbb();
 
-    @FunctionalInterface
-    interface Deserializer<T> {
+    @BbbbbbbbbbBbbbbbbbb
+    bbbbbbbbb Bbbbbbbbbbbb<B> {
 
-        T deserialize(JsonObject object);
+        B bbbbbbbbbbb(BbbbBbbbbb bbbbbb);
 
     }
 

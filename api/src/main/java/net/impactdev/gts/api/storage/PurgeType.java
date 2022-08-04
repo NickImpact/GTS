@@ -1,9 +1,9 @@
-package net.impactdev.gts.api.storage;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb;
 
-public enum PurgeType {
+bbbbbb bbbb BbbbbBbbb {
 
-    LISTINGS,
-    SETTINGS,
-    ALL,
+    BBBBBBBB,
+    BBBBBBBB,
+    BBB,
 
 }

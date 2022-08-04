@@ -1,30 +1,30 @@
-package net.impactdev.gts.listings.data;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbb;
 
-import net.impactdev.gts.api.listings.ui.EntrySelection;
-import net.impactdev.gts.listings.SpongeItemEntry;
-import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.BbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.BbbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbbBbbbbbbb;
 
-public class ChosenItemEntry implements EntrySelection<SpongeItemEntry> {
+bbbbbb bbbbb BbbbbbBbbbBbbbb bbbbbbbbbb BbbbbBbbbbbbbb<BbbbbbBbbbBbbbb> {
 
-    private final ItemStackSnapshot selection;
-    private final int slot;
+    bbbbbbb bbbbb BbbbBbbbbBbbbbbbb bbbbbbbbb;
+    bbbbbbb bbbbb bbb bbbb;
 
-    public ChosenItemEntry(ItemStackSnapshot selection, int slot) {
-        this.selection = selection;
-        this.slot = slot;
+    bbbbbb BbbbbbBbbbBbbbb(BbbbBbbbbBbbbbbbb bbbbbbbbb, bbb bbbb) {
+        bbbb.bbbbbbbbb = bbbbbbbbb;
+        bbbb.bbbb = bbbb;
     }
 
-    public ItemStackSnapshot getSelection() {
-        return this.selection;
+    bbbbbb BbbbBbbbbBbbbbbbb bbbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb;
     }
 
-    public int getSlot() {
-        return this.slot;
+    bbbbbb bbb bbbBbbb() {
+        bbbbbb bbbb.bbbb;
     }
 
-    @Override
-    public SpongeItemEntry createFromSelection() {
-        return new SpongeItemEntry(this.selection, this.slot);
+    @Bbbbbbbb
+    bbbbbb BbbbbbBbbbBbbbb bbbbbbBbbbBbbbbbbbb() {
+        bbbbbb bbb BbbbbbBbbbBbbbb(bbbb.bbbbbbbbb, bbbb.bbbb);
     }
 
 }

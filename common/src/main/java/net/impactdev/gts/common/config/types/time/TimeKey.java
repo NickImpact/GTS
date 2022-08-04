@@ -1,22 +1,22 @@
-package net.impactdev.gts.common.config.types.time;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbb.bbbb;
 
-import net.impactdev.impactor.api.configuration.ConfigurationAdapter;
-import net.impactdev.impactor.api.configuration.keys.BaseConfigKey;
-import net.impactdev.impactor.api.utilities.Time;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.BbbbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.bbbb.BbbbBbbbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Bbbb;
 
-public class TimeKey extends BaseConfigKey<Time> {
+bbbbbb bbbbb BbbbBbb bbbbbbb BbbbBbbbbbBbb<Bbbb> {
 
-    private final String key;
-    private final String def;
+    bbbbbbb bbbbb Bbbbbb bbb;
+    bbbbbbb bbbbb Bbbbbb bbb;
 
-    public TimeKey(String key, String def) {
-        this.key = key;
-        this.def = def;
+    bbbbbb BbbbBbb(Bbbbbb bbb, Bbbbbb bbb) {
+        bbbb.bbb = bbb;
+        bbbb.bbb = bbb;
     }
 
-    @Override
-    public Time get(ConfigurationAdapter adapter) {
-        return new Time(adapter.getString(this.key, this.def));
+    @Bbbbbbbb
+    bbbbbb Bbbb bbb(BbbbbbbbbbbbbBbbbbbb bbbbbbb) {
+        bbbbbb bbb Bbbb(bbbbbbb.bbbBbbbbb(bbbb.bbb, bbbb.bbb));
     }
 
 }

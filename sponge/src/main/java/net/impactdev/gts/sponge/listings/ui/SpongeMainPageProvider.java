@@ -1,23 +1,23 @@
-package net.impactdev.gts.sponge.listings.ui;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb;
 
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.builders.Builder;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Ibbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.PbbbbbbbPbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.SbbbbbPbbbbb;
 
-public interface SpongeMainPageProvider {
+bbbbbb bbbbbbbbb SbbbbbMbbbPbbbPbbbbbbb {
 
-    PlatformPlayer getViewer();
+    PbbbbbbbPbbbbb bbbVbbbbb();
 
-    void open();
+    bbbb bbbb();
 
-    static Creator creator() {
-        return Impactor.getInstance().getRegistry().createBuilder(Creator.class);
+    bbbbbb Cbbbbbb bbbbbbb() {
+        bbbbbb Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbbbbbBbbbbbb(Cbbbbbb.bbbbb);
     }
 
-    interface Creator extends Builder<SpongeMainPageProvider> {
+    bbbbbbbbb Cbbbbbb bbbbbbb Bbbbbbb<SbbbbbMbbbPbbbPbbbbbbb> {
 
-        Creator viewer(PlatformPlayer viewer);
+        Cbbbbbb bbbbbb(PbbbbbbbPbbbbb bbbbbb);
 
     }
 

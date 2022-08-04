@@ -1,65 +1,65 @@
-package net.impactdev.gts.common.config.wrappers;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbb;
 
-public class SortConfigurationOptions {
+bbbbbb bbbbb BbbbBbbbbbbbbbbbbBbbbbbb {
 
-	private String title;
+	bbbbbbb Bbbbbb bbbbb;
 
-	private String selectedColor;
-	private String nonSelectedColor;
+	bbbbbbb Bbbbbb bbbbbbbbBbbbb;
+	bbbbbbb Bbbbbb bbbBbbbbbbbBbbbb;
 
-	private String qpMostRecent;
-	private String qpEndingSoon;
+	bbbbbbb Bbbbbb bbBbbbBbbbbb;
+	bbbbbbb Bbbbbb bbBbbbbbBbbb;
 
-	private String aHighest;
-	private String aLowest;
-	private String aEndingSoon;
-	private String aMostBids;
+	bbbbbbb Bbbbbb bBbbbbbb;
+	bbbbbbb Bbbbbb bBbbbbb;
+	bbbbbbb Bbbbbb bBbbbbbBbbb;
+	bbbbbbb Bbbbbb bBbbbBbbb;
 
-	public SortConfigurationOptions(String title, String selectedColor, String nonSelectedColor, String qpMostRecent, String qpEndingSoon, String aHighest, String aLowest, String aEndingSoon, String aMostBids) {
-		this.title = title;
-		this.selectedColor = selectedColor;
-		this.nonSelectedColor = nonSelectedColor;
-		this.qpMostRecent = qpMostRecent;
-		this.qpEndingSoon = qpEndingSoon;
-		this.aHighest = aHighest;
-		this.aLowest = aLowest;
-		this.aEndingSoon = aEndingSoon;
-		this.aMostBids = aMostBids;
+	bbbbbb BbbbBbbbbbbbbbbbbBbbbbbb(Bbbbbb bbbbb, Bbbbbb bbbbbbbbBbbbb, Bbbbbb bbbBbbbbbbbBbbbb, Bbbbbb bbBbbbBbbbbb, Bbbbbb bbBbbbbbBbbb, Bbbbbb bBbbbbbb, Bbbbbb bBbbbbb, Bbbbbb bBbbbbbBbbb, Bbbbbb bBbbbBbbb) {
+		bbbb.bbbbb = bbbbb;
+		bbbb.bbbbbbbbBbbbb = bbbbbbbbBbbbb;
+		bbbb.bbbBbbbbbbbBbbbb = bbbBbbbbbbbBbbbb;
+		bbbb.bbBbbbBbbbbb = bbBbbbBbbbbb;
+		bbbb.bbBbbbbbBbbb = bbBbbbbbBbbb;
+		bbbb.bBbbbbbb = bBbbbbbb;
+		bbbb.bBbbbbb = bBbbbbb;
+		bbbb.bBbbbbbBbbb = bBbbbbbBbbb;
+		bbbb.bBbbbBbbb = bBbbbBbbb;
 	}
 
-	public String getTitle() {
-		return this.title;
+	bbbbbb Bbbbbb bbbBbbbb() {
+		bbbbbb bbbb.bbbbb;
 	}
 
-	public String getSelectedColor() {
-		return this.selectedColor;
+	bbbbbb Bbbbbb bbbBbbbbbbbBbbbb() {
+		bbbbbb bbbb.bbbbbbbbBbbbb;
 	}
 
-	public String getNonSelectedColor() {
-		return this.nonSelectedColor;
+	bbbbbb Bbbbbb bbbBbbBbbbbbbbBbbbb() {
+		bbbbbb bbbb.bbbBbbbbbbbBbbbb;
 	}
 
-	public String getQpMostRecent() {
-		return this.qpMostRecent;
+	bbbbbb Bbbbbb bbbBbBbbbBbbbbb() {
+		bbbbbb bbbb.bbBbbbBbbbbb;
 	}
 
-	public String getQpEndingSoon() {
-		return this.qpEndingSoon;
+	bbbbbb Bbbbbb bbbBbBbbbbbBbbb() {
+		bbbbbb bbbb.bbBbbbbbBbbb;
 	}
 
-	public String getAHighest() {
-		return this.aHighest;
+	bbbbbb Bbbbbb bbbBBbbbbbb() {
+		bbbbbb bbbb.bBbbbbbb;
 	}
 
-	public String getALowest() {
-		return this.aLowest;
+	bbbbbb Bbbbbb bbbBBbbbbb() {
+		bbbbbb bbbb.bBbbbbb;
 	}
 
-	public String getAEndingSoon() {
-		return this.aEndingSoon;
+	bbbbbb Bbbbbb bbbBBbbbbbBbbb() {
+		bbbbbb bbbb.bBbbbbbBbbb;
 	}
 
-	public String getAMostBids() {
-		return this.aMostBids;
+	bbbbbb Bbbbbb bbbBBbbbBbbb() {
+		bbbbbb bbbb.bBbbbBbbb;
 	}
 }

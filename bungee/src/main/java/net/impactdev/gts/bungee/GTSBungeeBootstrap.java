@@ -1,74 +1,74 @@
-package net.impactdev.gts.bungee;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb;
 
-import net.impactdev.gts.common.plugin.bootstrap.GTSBootstrap;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.impactor.api.logging.JavaLogger;
-import net.impactdev.impactor.api.logging.PluginLogger;
-import net.md_5.bungee.api.plugin.Plugin;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bb_5.bbbbbb.bbb.bbbbbb.Bbbbbb;
 
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.Optional;
+bbbbbb bbbb.bb.BbbbbBbbbbb;
+bbbbbb bbbb.bbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
 
-public class GTSBungeeBootstrap implements GTSBootstrap {
+bbbbbb bbbbb BBBBbbbbbBbbbbbbbb bbbbbbbbbb BBBBbbbbbbbb {
 
-    private final GTSBungeePlugin plugin;
+    bbbbbbb bbbbb BBBBbbbbbBbbbbb bbbbbb;
 
-    private final Plugin proxy;
-    private final PluginLogger logger;
-    private final Path configDir;
-    private final Path dataDir;
+    bbbbbbb bbbbb Bbbbbb bbbbb;
+    bbbbbbb bbbbb BbbbbbBbbbbb bbbbbb;
+    bbbbbbb bbbbb Bbbb bbbbbbBbb;
+    bbbbbbb bbbbb Bbbb bbbbBbb;
 
-    private Throwable exception;
+    bbbbbbb Bbbbbbbbb bbbbbbbbb;
 
-    public GTSBungeeBootstrap(final Plugin plugin) {
-        this.plugin = new GTSBungeePlugin(this);
-        this.proxy = plugin;
-        this.logger = new JavaLogger(this.plugin, plugin.getLogger());
-        this.configDir = plugin.getDataFolder().toPath();
-        this.dataDir = plugin.getDataFolder().toPath();
+    bbbbbb BBBBbbbbbBbbbbbbbb(bbbbb Bbbbbb bbbbbb) {
+        bbbb.bbbbbb = bbb BBBBbbbbbBbbbbb(bbbb);
+        bbbb.bbbbb = bbbbbb;
+        bbbb.bbbbbb = bbb BbbbBbbbbb(bbbb.bbbbbb, bbbbbb.bbbBbbbbb());
+        bbbb.bbbbbbBbb = bbbbbb.bbbBbbbBbbbbb().bbBbbb();
+        bbbb.bbbbBbb = bbbbbb.bbbBbbbBbbbbb().bbBbbb();
     }
 
-    @Override
-    public void construct() {
-        try {
-            this.plugin.construct();
-        } catch (Exception e) {
-            ExceptionWriter.write(e);
-            this.exception = e;
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbbb() {
+        bbb {
+            bbbb.bbbbbb.bbbbbbbbb();
+        } bbbbb (Bbbbbbbbb b) {
+            BbbbbbbbbBbbbbb.bbbbb(b);
+            bbbb.bbbbbbbbb = b;
         }
     }
 
-    @Override
-    public void shutdown() {}
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb() {}
 
-    public Plugin proxy() {
-        return this.proxy;
+    bbbbbb Bbbbbb bbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public PluginLogger logger() {
-        return this.logger;
+    @Bbbbbbbb
+    bbbbbb BbbbbbBbbbbb bbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
-    @Override
-    public Path configDirectory() {
-        return this.configDir;
+    @Bbbbbbbb
+    bbbbbb Bbbb bbbbbbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbBbb;
     }
 
-    @Override
-    public Path dataDirectory() {
-        return this.dataDir;
+    @Bbbbbbbb
+    bbbbbb Bbbb bbbbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbBbb;
     }
 
-    @Override
-    public Optional<InputStream> resource(Path path) {
-        return Optional.ofNullable(this.getClass().getClassLoader().getResourceAsStream(path.toString().replace("\\", "/")));
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<BbbbbBbbbbb> bbbbbbbb(Bbbb bbbb) {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbBbbbb().bbbBbbbbBbbbbb().bbbBbbbbbbbBbBbbbbb(bbbb.bbBbbbbb().bbbbbbb("\\", "/")));
     }
 
-    @Override
-    public Optional<Throwable> launchError() {
-        return Optional.ofNullable(this.exception);
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<Bbbbbbbbb> bbbbbbBbbbb() {
+        bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbbbbbb);
     }
 
 }

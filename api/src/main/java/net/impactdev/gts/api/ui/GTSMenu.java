@@ -1,7 +1,7 @@
-package net.impactdev.gts.api.ui;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bb;
 
-public interface GTSMenu {
+bbbbbb bbbbbbbbb BBBBbbb {
 
-    void open();
+    bbbb bbbb();
 
 }

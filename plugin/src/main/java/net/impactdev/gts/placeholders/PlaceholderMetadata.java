@@ -1,28 +1,28 @@
-package net.impactdev.gts.placeholders;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbbbbbb;
 
-import org.spongepowered.api.ResourceKey;
-import org.spongepowered.api.placeholder.PlaceholderParser;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.BbbbbbbbBbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public class PlaceholderMetadata {
+bbbbbb bbbbb BbbbbbbbbbbBbbbbbbb {
 
-    private final ResourceKey key;
-    private final PlaceholderParser parser;
+    bbbbbbb bbbbb BbbbbbbbBbb bbb;
+    bbbbbbb bbbbb BbbbbbbbbbbBbbbbb bbbbbb;
 
-    public static PlaceholderMetadata of(ResourceKey key, PlaceholderParser parser) {
-        return new PlaceholderMetadata(key, parser);
+    bbbbbb bbbbbb BbbbbbbbbbbBbbbbbbb bb(BbbbbbbbBbb bbb, BbbbbbbbbbbBbbbbb bbbbbb) {
+        bbbbbb bbb BbbbbbbbbbbBbbbbbbb(bbb, bbbbbb);
     }
 
-    public PlaceholderMetadata(ResourceKey key, PlaceholderParser parser) {
-        this.key = key;
-        this.parser = parser;
+    bbbbbb BbbbbbbbbbbBbbbbbbb(BbbbbbbbBbb bbb, BbbbbbbbbbbBbbbbb bbbbbb) {
+        bbbb.bbb = bbb;
+        bbbb.bbbbbb = bbbbbb;
     }
 
-    public ResourceKey getKey() {
-        return this.key;
+    bbbbbb BbbbbbbbBbb bbbBbb() {
+        bbbbbb bbbb.bbb;
     }
 
-    public PlaceholderParser getParser() {
-        return this.parser;
+    bbbbbb BbbbbbbbbbbBbbbbb bbbBbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
 }

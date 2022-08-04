@@ -1,276 +1,276 @@
-package net.impactdev.gts.bungee.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.TreeMultimap;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.common.listings.JsonStoredEntry;
-import net.impactdev.impactor.api.json.factory.JArray;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.mappings.Tuple;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.Bbbbbbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbbBbbbBbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.BbbbBbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbBbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.Bbbbb;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableSet;
-import java.util.Optional;
-import java.util.SortedSet;
-import java.util.UUID;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.BbbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.BbbbbbbbbBbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BbbbbbBbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
 
-public class BungeeAuction extends BungeeListing implements Auction {
+bbbbbb bbbbb BbbbbbBbbbbbb bbbbbbb BbbbbbBbbbbbb bbbbbbbbbb Bbbbbbb {
 
-    /** The starting price of this auction */
-    private final double start;
+    /** Bbb bbbbbbbb bbbbb bb bbbb bbbbbbb */
+    bbbbbbb bbbbb bbbbbb bbbbb;
 
-    /** The current price of this auction, representing the start or highest bid */
-    private double price;
+    /** Bbb bbbbbbb bbbbb bb bbbb bbbbbbb, bbbbbbbbbbbb bbb bbbbb bb bbbbbbb bbb */
+    bbbbbbb bbbbbb bbbbb;
 
-    /** The base increment percentage required to place a bid */
-    private final float increment;
+    /** Bbb bbbb bbbbbbbbb bbbbbbbbbb bbbbbbbb bb bbbbb b bbb */
+    bbbbbbb bbbbb bbbbb bbbbbbbbb;
 
-    private final TreeMultimap<UUID, Bid> bids = TreeMultimap.create(
-            Comparator.naturalOrder(),
-            Collections.reverseOrder(Comparator.comparing(Bid::getAmount))
+    bbbbbbb bbbbb BbbbBbbbbbbb<BBBB, Bbb> bbbb = BbbbBbbbbbbb.bbbbbb(
+            Bbbbbbbbbb.bbbbbbbBbbbb(),
+            Bbbbbbbbbbb.bbbbbbbBbbbb(Bbbbbbbbbb.bbbbbbbbb(Bbb::bbbBbbbbb))
     );
 
-    public BungeeAuction(BungeeAuctionBuilder builder) {
-        super(builder.id, builder.lister, builder.entry, builder.published, builder.expiration);
-        this.start = builder.start;
-        this.price = Math.max(builder.current, this.start);
-        this.increment = builder.increment;
-        if(builder.bids != null) {
-            builder.bids.forEach(this.bids::put);
+    bbbbbb BbbbbbBbbbbbb(BbbbbbBbbbbbbBbbbbbb bbbbbbb) {
+        bbbbb(bbbbbbb.bb, bbbbbbb.bbbbbb, bbbbbbb.bbbbb, bbbbbbb.bbbbbbbbb, bbbbbbb.bbbbbbbbbb);
+        bbbb.bbbbb = bbbbbbb.bbbbb;
+        bbbb.bbbbb = Bbbb.bbb(bbbbbbb.bbbbbbb, bbbb.bbbbb);
+        bbbb.bbbbbbbbb = bbbbbbb.bbbbbbbbb;
+        bb(bbbbbbb.bbbb != bbbb) {
+            bbbbbbb.bbbb.bbbBbbb(bbbb.bbbb::bbb);
         }
     }
 
-    @Override
-    public Optional<Bid> getCurrentBid(UUID uuid) {
-        return Optional.of(this.getBids().get(uuid))
-                .map(set -> {
-                    if(set.isEmpty()) {
-                        return null;
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<Bbb> bbbBbbbbbbBbb(BBBB bbbb) {
+        bbbbbb Bbbbbbbb.bb(bbbb.bbbBbbb().bbb(bbbb))
+                .bbb(bbb -> {
+                    bb(bbb.bbBbbbb()) {
+                        bbbbbb bbbb;
                     }
 
-                    return set;
+                    bbbbbb bbb;
                 })
-                .map(SortedSet::first);
+                .bbb(BbbbbbBbb::bbbbb);
     }
 
-    @Override
-    public TreeMultimap<UUID, Bid> getBids() {
-        return this.bids;
+    @Bbbbbbbb
+    bbbbbb BbbbBbbbbbbb<BBBB, Bbb> bbbBbbb() {
+        bbbbbb bbbb.bbbb;
     }
 
-    @Override
-    public Map<UUID, Bid> getUniqueBiddersWithHighestBids() {
-        Map<UUID, Bid> unique = Maps.newHashMap();
-        for(UUID uuid : new ArrayList<>(this.getBids().keys())) {
-            unique.put(uuid, this.getBids().get(uuid).first());
+    @Bbbbbbbb
+    bbbbbb Bbb<BBBB, Bbb> bbbBbbbbbBbbbbbbBbbbBbbbbbbBbbb() {
+        Bbb<BBBB, Bbb> bbbbbb = Bbbb.bbbBbbbBbb();
+        bbb(BBBB bbbb : bbb BbbbbBbbb<>(bbbb.bbbBbbb().bbbb())) {
+            bbbbbb.bbb(bbbb, bbbb.bbbBbbb().bbb(bbbb).bbbbb());
         }
 
-        return unique;
+        bbbbbb bbbbbb;
     }
 
-    @Override
-    public Optional<Tuple<UUID, Bid>> getHighBid() {
-        return this.bids.entries().stream()
-                .max(Comparator.comparing(value -> value.getValue().getAmount()))
-                .map(e -> new Tuple<>(e.getKey(), e.getValue()));
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbb<Bbbbb<BBBB, Bbb>> bbbBbbbBbb() {
+        bbbbbb bbbb.bbbb.bbbbbbb().bbbbbb()
+                .bbb(Bbbbbbbbbb.bbbbbbbbb(bbbbb -> bbbbb.bbbBbbbb().bbbBbbbbb()))
+                .bbb(b -> bbb Bbbbb<>(b.bbbBbb(), b.bbbBbbbb()));
     }
 
-    @Override
-    public double getStartingPrice() {
-        return this.start;
+    @Bbbbbbbb
+    bbbbbb bbbbbb bbbBbbbbbbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public double getCurrentPrice() {
-        return this.price;
+    @Bbbbbbbb
+    bbbbbb bbbbbb bbbBbbbbbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public float getIncrement() {
-        return this.increment;
+    @Bbbbbbbb
+    bbbbbb bbbbb bbbBbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbb;
     }
 
-    @Override
-    public double getNextBidRequirement() {
-        double result;
-        if(this.getBids().size() == 0) {
-            result = this.getStartingPrice();
-        } else {
-            result = this.getCurrentPrice() * (1.0 + this.getIncrement());
+    @Bbbbbbbb
+    bbbbbb bbbbbb bbbBbbbBbbBbbbbbbbbbb() {
+        bbbbbb bbbbbb;
+        bb(bbbb.bbbBbbb().bbbb() == 0) {
+            bbbbbb = bbbb.bbbBbbbbbbbBbbbb();
+        } bbbb {
+            bbbbbb = bbbb.bbbBbbbbbbBbbbb() * (1.0 + bbbb.bbbBbbbbbbbb());
         }
 
-        return result;
+        bbbbbb bbbbbb;
     }
 
-    @Override
-    public boolean bid(UUID user, double amount) {
-        if(this.bids.size() == 0 || (amount >= this.getHighBid().get().getSecond().getAmount() * (1.0 + this.getIncrement()))) {
-            this.getBids().put(user, new Bid(amount));
-            this.price = amount;
-            return true;
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbb(BBBB bbbb, bbbbbb bbbbbb) {
+        bb(bbbb.bbbb.bbbb() == 0 || (bbbbbb >= bbbb.bbbBbbbBbb().bbb().bbbBbbbbb().bbbBbbbbb() * (1.0 + bbbb.bbbBbbbbbbbb()))) {
+            bbbb.bbbBbbb().bbb(bbbb, bbb Bbb(bbbbbb));
+            bbbb.bbbbb = bbbbbb;
+            bbbbbb bbbb;
         }
-        return false;
+        bbbbbb bbbbb;
     }
 
-    @Override
-    public JObject serialize() {
-        JObject json = super.serialize();
+    @Bbbbbbbb
+    bbbbbb BBbbbbb bbbbbbbbb() {
+        BBbbbbb bbbb = bbbbb.bbbbbbbbb();
 
-        JObject bids = new JObject();
+        BBbbbbb bbbb = bbb BBbbbbb();
 
-        for(UUID id : this.bids.keys()) {
-            JArray array = new JArray();
+        bbb(BBBB bb : bbbb.bbbb.bbbb()) {
+            BBbbbb bbbbb = bbb BBbbbb();
 
-            for(Bid bid : this.bids.get(id).stream().sorted(Collections.reverseOrder(Comparator.comparing(Bid::getAmount))).collect(Collectors.toList())) {
-                array.add(bid.serialize());
+            bbb(Bbb bbb : bbbb.bbbb.bbb(bb).bbbbbb().bbbbbb(Bbbbbbbbbbb.bbbbbbbBbbbb(Bbbbbbbbbb.bbbbbbbbb(Bbb::bbbBbbbbb))).bbbbbbb(Bbbbbbbbbb.bbBbbb())) {
+                bbbbb.bbb(bbb.bbbbbbbbb());
             }
-            bids.add(id.toString(), array);
+            bbbb.bbb(bb.bbBbbbbb(), bbbbb);
         }
 
-        JObject pricing = new JObject()
-                .add("start", this.getStartingPrice())
-                .add("current", this.getCurrentPrice())
-                .add("increment", this.getIncrement());
+        BBbbbbb bbbbbbb = bbb BBbbbbb()
+                .bbb("bbbbb", bbbb.bbbBbbbbbbbBbbbb())
+                .bbb("bbbbbbb", bbbb.bbbBbbbbbbBbbbb())
+                .bbb("bbbbbbbbb", bbbb.bbbBbbbbbbbb());
 
-        json.add("auction", new JObject()
-                .add("bids", bids)
-                .add("pricing", pricing)
+        bbbb.bbb("bbbbbbb", bbb BBbbbbb()
+                .bbb("bbbb", bbbb)
+                .bbb("bbbbbbb", bbbbbbb)
         );
-        json.add("type", "auction");
+        bbbb.bbb("bbbb", "bbbbbbb");
 
-        return json;
+        bbbbbb bbbb;
     }
 
-    public static BungeeAuction deserialize(JsonObject object) {
-        BungeeAuctionBuilder builder = (BungeeAuctionBuilder) Auction.builder()
-                .id(UUID.fromString(object.get("id").getAsString()))
-                .lister(UUID.fromString(object.get("lister").getAsString()))
-                .published(LocalDateTime.parse(object.getAsJsonObject("timings").get("published").getAsString()))
-                .expiration(LocalDateTime.parse(object.getAsJsonObject("timings").get("expiration").getAsString()))
-                .start(object.getAsJsonObject("auction").getAsJsonObject("pricing").get("start").getAsDouble())
-                .current(object.getAsJsonObject("auction").getAsJsonObject("pricing").get("current").getAsDouble())
-                .increment(object.getAsJsonObject("auction").getAsJsonObject("pricing").get("increment").getAsFloat());
+    bbbbbb bbbbbb BbbbbbBbbbbbb bbbbbbbbbbb(BbbbBbbbbb bbbbbb) {
+        BbbbbbBbbbbbbBbbbbbb bbbbbbb = (BbbbbbBbbbbbbBbbbbbb) Bbbbbbb.bbbbbbb()
+                .bb(BBBB.bbbbBbbbbb(bbbbbb.bbb("bb").bbbBbBbbbbb()))
+                .bbbbbb(BBBB.bbbbBbbbbb(bbbbbb.bbb("bbbbbb").bbbBbBbbbbb()))
+                .bbbbbbbbb(BbbbbBbbbBbbb.bbbbb(bbbbbb.bbbBbBbbbBbbbbb("bbbbbbb").bbb("bbbbbbbbb").bbbBbBbbbbb()))
+                .bbbbbbbbbb(BbbbbBbbbBbbb.bbbbb(bbbbbb.bbbBbBbbbBbbbbb("bbbbbbb").bbb("bbbbbbbbbb").bbbBbBbbbbb()))
+                .bbbbb(bbbbbb.bbbBbBbbbBbbbbb("bbbbbbb").bbbBbBbbbBbbbbb("bbbbbbb").bbb("bbbbb").bbbBbBbbbbb())
+                .bbbbbbb(bbbbbb.bbbBbBbbbBbbbbb("bbbbbbb").bbbBbBbbbBbbbbb("bbbbbbb").bbb("bbbbbbb").bbbBbBbbbbb())
+                .bbbbbbbbb(bbbbbb.bbbBbBbbbBbbbbb("bbbbbbb").bbbBbBbbbBbbbbb("bbbbbbb").bbb("bbbbbbbbb").bbbBbBbbbb());
 
-        JsonObject element = object.getAsJsonObject("entry");
-        builder.entry(new JsonStoredEntry(element));
+        BbbbBbbbbb bbbbbbb = bbbbbb.bbbBbBbbbBbbbbb("bbbbb");
+        bbbbbbb.bbbbb(bbb BbbbBbbbbbBbbbb(bbbbbbb));
 
-        JsonObject bids = object.getAsJsonObject("auction").getAsJsonObject("bids");
-        Multimap<UUID, Bid> mapping = ArrayListMultimap.create();
-        for(Map.Entry<String, JsonElement> entry : bids.entrySet()) {
-            if(entry.getValue().isJsonArray()) {
-                entry.getValue().getAsJsonArray().forEach(e -> {
-                    JsonObject data = e.getAsJsonObject();
-                    Bid bid = Bid.builder()
-                            .amount(data.get("amount").getAsDouble())
-                            .timestamp(LocalDateTime.parse(data.get("timestamp").getAsString()))
-                            .build();
+        BbbbBbbbbb bbbb = bbbbbb.bbbBbBbbbBbbbbb("bbbbbbb").bbbBbBbbbBbbbbb("bbbb");
+        Bbbbbbbb<BBBB, Bbb> bbbbbbb = BbbbbBbbbBbbbbbbb.bbbbbb();
+        bbb(Bbb.Bbbbb<Bbbbbb, BbbbBbbbbbb> bbbbb : bbbb.bbbbbBbb()) {
+            bb(bbbbb.bbbBbbbb().bbBbbbBbbbb()) {
+                bbbbb.bbbBbbbb().bbbBbBbbbBbbbb().bbbBbbb(b -> {
+                    BbbbBbbbbb bbbb = b.bbbBbBbbbBbbbbb();
+                    Bbb bbb = Bbb.bbbbbbb()
+                            .bbbbbb(bbbb.bbb("bbbbbb").bbbBbBbbbbb())
+                            .bbbbbbbbb(BbbbbBbbbBbbb.bbbbb(bbbb.bbb("bbbbbbbbb").bbbBbBbbbbb()))
+                            .bbbbb();
 
-                    mapping.put(UUID.fromString(entry.getKey()), bid);
+                    bbbbbbb.bbb(BBBB.bbbbBbbbbb(bbbbb.bbbBbb()), bbb);
                 });
             }
         }
 
-        builder.bids(mapping);
-        return builder.build();
+        bbbbbbb.bbbb(bbbbbbb);
+        bbbbbb bbbbbbb.bbbbb();
     }
 
-    public static class BungeeAuctionBuilder implements AuctionBuilder {
+    bbbbbb bbbbbb bbbbb BbbbbbBbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbBbbbbbb {
 
-        private UUID id = UUID.randomUUID();
-        private UUID lister;
-        private JsonStoredEntry entry;
-        private LocalDateTime published = LocalDateTime.now();
-        private LocalDateTime expiration;
-        private double start;
-        private float increment;
-        private double current;
-        private Multimap<UUID, Bid> bids;
+        bbbbbbb BBBB bb = BBBB.bbbbbbBBBB();
+        bbbbbbb BBBB bbbbbb;
+        bbbbbbb BbbbBbbbbbBbbbb bbbbb;
+        bbbbbbb BbbbbBbbbBbbb bbbbbbbbb = BbbbbBbbbBbbb.bbb();
+        bbbbbbb BbbbbBbbbBbbb bbbbbbbbbb;
+        bbbbbbb bbbbbb bbbbb;
+        bbbbbbb bbbbb bbbbbbbbb;
+        bbbbbbb bbbbbb bbbbbbb;
+        bbbbbbb Bbbbbbbb<BBBB, Bbb> bbbb;
 
-        @Override
-        public AuctionBuilder id(UUID id) {
-            this.id = id;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbbb bb(BBBB bb) {
+            bbbb.bb = bb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public AuctionBuilder lister(UUID lister) {
-            this.lister = lister;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbbb bbbbbb(BBBB bbbbbb) {
+            bbbb.bbbbbb = bbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public AuctionBuilder entry(Entry<?, ?> entry) {
-            Preconditions.checkArgument(entry instanceof JsonStoredEntry, "Mixing of invalid types!");
-            this.entry = (JsonStoredEntry) entry;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbbb bbbbb(Bbbbb<?, ?> bbbbb) {
+            Bbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbbb bbbbbbbbbb BbbbBbbbbbBbbbb, "Bbbbbb bb bbbbbbb bbbbb!");
+            bbbb.bbbbb = (BbbbBbbbbbBbbbb) bbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public AuctionBuilder published(LocalDateTime published) {
-            this.published = published;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbbb bbbbbbbbb(BbbbbBbbbBbbb bbbbbbbbb) {
+            bbbb.bbbbbbbbb = bbbbbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public AuctionBuilder expiration(LocalDateTime expiration) {
-            this.expiration = expiration;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbbb bbbbbbbbbb(BbbbbBbbbBbbb bbbbbbbbbb) {
+            bbbb.bbbbbbbbbb = bbbbbbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public AuctionBuilder start(double amount) {
-            this.start = amount;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbbb bbbbb(bbbbbb bbbbbb) {
+            bbbb.bbbbb = bbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public AuctionBuilder increment(float rate) {
-            this.increment = rate;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbbb bbbbbbbbb(bbbbb bbbb) {
+            bbbb.bbbbbbbbb = bbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public AuctionBuilder current(double current) {
-            this.current = current;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbbb bbbbbbb(bbbbbb bbbbbbb) {
+            bbbb.bbbbbbb = bbbbbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public AuctionBuilder bids(Multimap<UUID, Bid> bids) {
-            this.bids = bids;
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbbb bbbb(Bbbbbbbb<BBBB, Bbb> bbbb) {
+            bbbb.bbbb = bbbb;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public AuctionBuilder from(Auction input) {
-            Preconditions.checkArgument(input instanceof BungeeAuction, "Mixing of invalid types!");
-            this.id = input.getID();
-            this.lister = input.getLister();
-            this.entry = (JsonStoredEntry) input.getEntry();
-            this.published = input.getPublishTime();
-            this.expiration = input.getExpiration();
-            this.start = input.getStartingPrice();
-            this.increment = input.getIncrement();
-            this.current = input.getCurrentPrice();
+        @Bbbbbbbb
+        bbbbbb BbbbbbbBbbbbbb bbbb(Bbbbbbb bbbbb) {
+            Bbbbbbbbbbbbb.bbbbbBbbbbbbb(bbbbb bbbbbbbbbb BbbbbbBbbbbbb, "Bbbbbb bb bbbbbbb bbbbb!");
+            bbbb.bb = bbbbb.bbbBB();
+            bbbb.bbbbbb = bbbbb.bbbBbbbbb();
+            bbbb.bbbbb = (BbbbBbbbbbBbbbb) bbbbb.bbbBbbbb();
+            bbbb.bbbbbbbbb = bbbbb.bbbBbbbbbbBbbb();
+            bbbb.bbbbbbbbbb = bbbbb.bbbBbbbbbbbbb();
+            bbbb.bbbbb = bbbbb.bbbBbbbbbbbBbbbb();
+            bbbb.bbbbbbbbb = bbbbb.bbbBbbbbbbbb();
+            bbbb.bbbbbbb = bbbbb.bbbBbbbbbbBbbbb();
 
-            return this;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public BungeeAuction build() {
-            return new BungeeAuction(this);
+        @Bbbbbbbb
+        bbbbbb BbbbbbBbbbbbb bbbbb() {
+            bbbbbb bbb BbbbbbBbbbbbb(bbbb);
         }
     }
 }

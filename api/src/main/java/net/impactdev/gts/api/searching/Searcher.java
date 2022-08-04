@@ -1,9 +1,9 @@
-package net.impactdev.gts.api.searching;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb;
 
-import net.impactdev.gts.api.listings.Listing;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
 
-public interface Searcher {
+bbbbbb bbbbbbbbb Bbbbbbbb {
 
-	boolean parse(Listing listing, String input);
+	bbbbbbb bbbbb(Bbbbbbb bbbbbbb, Bbbbbb bbbbb);
 
 }

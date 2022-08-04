@@ -1,36 +1,36 @@
-package net.impactdev.gts.velocity.messaging.interpreters;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbbbbbbbbbb;
 
-import net.impactdev.gts.common.messaging.interpreters.Interpreter;
-import net.impactdev.gts.common.messaging.messages.utility.PingPongMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbbbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbbbb.BbbbBbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
 
-public class VelocityPingPongInterpreter implements Interpreter {
-    @Override
-    public void register(GTSPlugin plugin) {
-        this.getDecoders(plugin);
-        this.getInterpreters(plugin);
+bbbbbb bbbbb BbbbbbbbBbbbBbbbBbbbbbbbbbb bbbbbbbbbb Bbbbbbbbbbb {
+    @Bbbbbbbb
+    bbbbbb bbbb bbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbb.bbbBbbbbbbb(bbbbbb);
+        bbbb.bbbBbbbbbbbbbbb(bbbbbb);
     }
 
-    @Override
-    public void getDecoders(GTSPlugin plugin) {
-        plugin.messagingService().registerDecoder(PingPongMessage.Ping.TYPE, PingPongMessage.Ping::decode);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbbbbbbBbbbbbb(BbbbBbbbBbbbbbb.Bbbb.BBBB, BbbbBbbbBbbbbbb.Bbbb::bbbbbb);
     }
 
-    @Override
-    public void getInterpreters(GTSPlugin plugin) {
-        plugin.messagingService().getMessenger().getMessageConsumer().registerInternalConsumer(
-                PingPongMessage.Ping.class, ping -> {
-                    try {
-                        ping.respond()
-                                .thenAccept(pong -> {
-                                    GTSPlugin.instance().messagingService().getMessenger().sendOutgoingMessage(pong);
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbbb.bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbBbbbbbbBbbbbbbb().bbbbbbbbBbbbbbbbBbbbbbbb(
+                BbbbBbbbBbbbbbb.Bbbb.bbbbb, bbbb -> {
+                    bbb {
+                        bbbb.bbbbbbb()
+                                .bbbbBbbbbb(bbbb -> {
+                                    BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbBbbbbbbbb().bbbbBbbbbbbbBbbbbbb(bbbb);
                                 })
-                                .exceptionally(error -> {
-                                    error.printStackTrace();
-                                    return null;
+                                .bbbbbbbbbbbbb(bbbbb -> {
+                                    bbbbb.bbbbbBbbbbBbbbb();
+                                    bbbbbb bbbb;
                                 });
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    } bbbbb (Bbbbbbbbb b) {
+                        b.bbbbbBbbbbBbbbb();
                     }
                 }
         );

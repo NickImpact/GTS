@@ -1,7 +1,7 @@
-package net.impactdev.gts.api.commands;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb;
 
-public interface CommandRegistrar<C, E extends GTSCommandExecutor<?, ?, C>> {
+bbbbbb bbbbbbbbb BbbbbbbBbbbbbbbb<B, B bbbbbbb BBBBbbbbbbBbbbbbbb<?, ?, B>> {
 
-    void register(E executor);
+    bbbb bbbbbbbb(B bbbbbbbb);
 
 }

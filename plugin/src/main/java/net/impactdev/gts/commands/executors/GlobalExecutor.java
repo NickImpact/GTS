@@ -1,69 +1,69 @@
-package net.impactdev.gts.commands.executors;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb;
 
-import com.google.common.collect.Lists;
-import net.impactdev.gts.api.commands.annotations.Alias;
-import net.impactdev.gts.api.commands.annotations.Permission;
-import net.impactdev.gts.commands.executors.subs.AdminExecutor;
-import net.impactdev.gts.commands.executors.subs.AuctionCommand;
-import net.impactdev.gts.commands.executors.subs.SellCommand;
-import net.impactdev.gts.commands.executors.utility.PlayerRequiredExecutor;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.plugin.permissions.GTSPermissions;
-import net.impactdev.gts.sponge.commands.SpongeGTSCmdExecutor;
-import net.impactdev.gts.ui.SpongeMainMenu;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import org.spongepowered.api.command.CommandResult;
-import org.spongepowered.api.command.exception.CommandException;
-import org.spongepowered.api.command.parameter.CommandContext;
-import org.spongepowered.api.command.parameter.Parameter;
-import org.spongepowered.api.command.parameter.managed.Flag;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbb.BbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbbb.bbbbbbb.BbbbbbBbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbbbbb.BBBBbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBBBBbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bb.BbbbbbBbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
 
-import java.util.List;
+bbbbbb bbbb.bbbb.Bbbb;
 
-@Alias("gts")
-@Permission(GTSPermissions.DEFAULT)
-public class GlobalExecutor extends PlayerRequiredExecutor {
+@Bbbbb("bbb")
+@Bbbbbbbbbb(BBBBbbbbbbbbbb.BBBBBBB)
+bbbbbb bbbbb BbbbbbBbbbbbbb bbbbbbb BbbbbbBbbbbbbbBbbbbbbb {
 
-    public GlobalExecutor(GTSPlugin plugin) {
-        super(plugin);
+    bbbbbb BbbbbbBbbbbbbb(BBBBbbbbb bbbbbb) {
+        bbbbb(bbbbbb);
     }
 
-    @Override
-    public Parameter[] arguments() {
-        return new Parameter[0];
+    @Bbbbbbbb
+    bbbbbb Bbbbbbbbb[] bbbbbbbbb() {
+        bbbbbb bbb Bbbbbbbbb[0];
     }
 
-    @Override
-    public Flag[] flags() {
-        return new Flag[0];
+    @Bbbbbbbb
+    bbbbbb Bbbb[] bbbbb() {
+        bbbbbb bbb Bbbb[0];
     }
 
-    @Override
-    public SpongeGTSCmdExecutor[] children() {
-        List<SpongeGTSCmdExecutor> children = Lists.newArrayList();
-        children.add(new AdminExecutor());
+    @Bbbbbbbb
+    bbbbbb BbbbbbBBBBbbBbbbbbbb[] bbbbbbbb() {
+        Bbbb<BbbbbbBBBBbbBbbbbbbb> bbbbbbbb = Bbbbb.bbbBbbbbBbbb();
+        bbbbbbbb.bbb(bbb BbbbbBbbbbbbb());
 
-        Config config = GTSPlugin.instance().configuration().main();
-        if(config.get(ConfigKeys.BINS_ENABLED)) {
-            children.add(new SellCommand());
-            if(config.get(ConfigKeys.AUCTIONS_ENABLED)) {
-                children.add(new AuctionCommand());
+        Bbbbbb bbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb();
+        bb(bbbbbb.bbb(BbbbbbBbbb.BBBB_BBBBBBB)) {
+            bbbbbbbb.bbb(bbb BbbbBbbbbbb());
+            bb(bbbbbb.bbb(BbbbbbBbbb.BBBBBBBB_BBBBBBB)) {
+                bbbbbbbb.bbb(bbb BbbbbbbBbbbbbb());
             }
-        } else if(config.get(ConfigKeys.AUCTIONS_ENABLED)) {
-            children.add(new AuctionCommand());
-        } else {
-            children.add(new SellCommand());
+        } bbbb bb(bbbbbb.bbb(BbbbbbBbbb.BBBBBBBB_BBBBBBB)) {
+            bbbbbbbb.bbb(bbb BbbbbbbBbbbbbb());
+        } bbbb {
+            bbbbbbbb.bbb(bbb BbbbBbbbbbb());
         }
 
-        return children.toArray(new SpongeGTSCmdExecutor[0]);
+        bbbbbb bbbbbbbb.bbBbbbb(bbb BbbbbbBBBBbbBbbbbbbb[0]);
     }
 
-    @Override
-    public CommandResult process(ServerPlayer source, CommandContext context) throws CommandException {
-        new SpongeMainMenu(PlatformPlayer.from(source)).open();
-        return CommandResult.success();
+    @Bbbbbbbb
+    bbbbbb BbbbbbbBbbbbb bbbbbbb(BbbbbbBbbbbb bbbbbb, BbbbbbbBbbbbbb bbbbbbb) bbbbbb BbbbbbbBbbbbbbbb {
+        bbb BbbbbbBbbbBbbb(BbbbbbbbBbbbbb.bbbb(bbbbbb)).bbbb();
+        bbbbbb BbbbbbbBbbbbb.bbbbbbb();
     }
 }

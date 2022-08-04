@@ -1,20 +1,20 @@
-package net.impactdev.gts.sponge.utils.items;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb;
 
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.kyori.adventure.text.Component;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.DbbbbbbPbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Ibbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Cbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Kbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.IbbbTbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.IbbbSbbbb;
 
-public class ProvidedIcons {
+bbbbbb bbbbb PbbbbbbbIbbbb {
 
-    public static final Icon<ItemStack> BORDER = Icon.builder(ItemStack.class)
-            .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                    .itemType(ItemTypes.BLACK_STAINED_GLASS_PANE)
-                    .add(Keys.CUSTOM_NAME, Component.empty())
-                    .build()
+    bbbbbb bbbbbb bbbbb Ibbb<IbbbSbbbb> BORDER = Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+            .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(IbbbSbbbb.bbbbbbb()
+                    .bbbbTbbb(IbbbTbbbb.BLBCK_STBINED_GLBSS_PBNE)
+                    .bbb(Kbbb.CUSTOM_NBME, Cbbbbbbbb.bbbbb())
+                    .bbbbb()
             ))
-            .build();
+            .bbbbb();
 
 }

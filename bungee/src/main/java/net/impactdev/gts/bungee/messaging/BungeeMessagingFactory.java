@@ -1,88 +1,88 @@
-package net.impactdev.gts.bungee.messaging;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb;
 
-import net.impactdev.gts.api.messaging.IncomingMessageConsumer;
-import net.impactdev.gts.api.messaging.Messenger;
-import net.impactdev.gts.api.messaging.MessengerProvider;
-import net.impactdev.gts.bungee.GTSBungeePlugin;
-import net.impactdev.gts.bungee.messaging.processor.BungeeIncomingMessageConsumer;
-import net.impactdev.gts.bungee.messaging.types.PluginMessageMessenger;
-import net.impactdev.gts.bungee.messaging.types.RedisBungeeMessenger;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.InternalMessagingService;
-import net.impactdev.gts.common.messaging.MessagingFactory;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.BbbbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.BBBBbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbbb.BbbbbbBbbbbbbbBbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbb.BbbbbbBbbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbb.BbbbbBbbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbbbBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BbbbbbbbbBbbbbbb;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-public class BungeeMessagingFactory extends MessagingFactory<GTSBungeePlugin> {
+bbbbbb bbbbb BbbbbbBbbbbbbbbBbbbbbb bbbbbbb BbbbbbbbbBbbbbbb<BBBBbbbbbBbbbbb> {
 
-	public BungeeMessagingFactory(GTSBungeePlugin plugin) {
-		super(plugin);
+	bbbbbb BbbbbbBbbbbbbbbBbbbbbb(BBBBbbbbbBbbbbb bbbbbb) {
+		bbbbb(bbbbbb);
 	}
 
-	@Override
-	protected InternalMessagingService getServiceFor(String messageType) {
-		if(messageType.equalsIgnoreCase("pluginmsg") || messageType.equalsIgnoreCase("bungee")) {
-			try {
-				return new GTSMessagingService(this.getPlugin(), new PluginMessageMessengerProvider(), new BungeeIncomingMessageConsumer(this.getPlugin()));
-			} catch (Exception e) {
-				e.printStackTrace();
+	@Bbbbbbbb
+	bbbbbbbbb BbbbbbbbBbbbbbbbbBbbbbbb bbbBbbbbbbBbb(Bbbbbb bbbbbbbBbbb) {
+		bb(bbbbbbbBbbb.bbbbbbBbbbbbBbbb("bbbbbbbbb") || bbbbbbbBbbb.bbbbbbBbbbbbBbbb("bbbbbb")) {
+			bbb {
+				bbbbbb bbb BBBBbbbbbbbbBbbbbbb(bbbb.bbbBbbbbb(), bbb BbbbbbBbbbbbbBbbbbbbbbBbbbbbbb(), bbb BbbbbbBbbbbbbbBbbbbbbBbbbbbbb(bbbb.bbbBbbbbb()));
+			} bbbbb (Bbbbbbbbb b) {
+				b.bbbbbBbbbbBbbbb();
 			}
-		} else if(messageType.equalsIgnoreCase("redisbungee")) {
-			if(this.getPlugin().bootstrap().proxy().getProxy().getPluginManager().getPlugin("RedisBungee") == null) {
-				this.getPlugin().logger().warn("RedisBungee plugin is not present");
-			} else {
-				try {
-					return new GTSMessagingService(this.getPlugin(), new RedisBungeeMessengerProvider(), new BungeeIncomingMessageConsumer(this.getPlugin()));
-				} catch (Exception e) {
-					e.printStackTrace();
+		} bbbb bb(bbbbbbbBbbb.bbbbbbBbbbbbBbbb("bbbbbbbbbbb")) {
+			bb(bbbb.bbbBbbbbb().bbbbbbbbb().bbbbb().bbbBbbbb().bbbBbbbbbBbbbbbb().bbbBbbbbb("BbbbbBbbbbb") == bbbb) {
+				bbbb.bbbBbbbbb().bbbbbb().bbbb("BbbbbBbbbbb bbbbbb bb bbb bbbbbbb");
+			} bbbb {
+				bbb {
+					bbbbbb bbb BBBBbbbbbbbbBbbbbbb(bbbb.bbbBbbbbb(), bbb BbbbbBbbbbbBbbbbbbbbBbbbbbbb(), bbb BbbbbbBbbbbbbbBbbbbbbBbbbbbbb(bbbb.bbbBbbbbb()));
+				} bbbbb (Bbbbbbbbb b) {
+					b.bbbbbBbbbbBbbbb();
 				}
 			}
 		}
 
-		if(messageType.equalsIgnoreCase("redis")) {
-			if(this.getPlugin().configuration().main().get(ConfigKeys.REDIS_ENABLED)) {
-				try {
-					return new GTSMessagingService(this.getPlugin(), new RedisMessengerProvider(), new BungeeIncomingMessageConsumer(this.getPlugin()));
-				} catch (Exception e) {
-					e.printStackTrace();
+		bb(bbbbbbbBbbb.bbbbbbBbbbbbBbbb("bbbbb")) {
+			bb(bbbb.bbbBbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBB_BBBBBBB)) {
+				bbb {
+					bbbbbb bbb BBBBbbbbbbbbBbbbbbb(bbbb.bbbBbbbbb(), bbb BbbbbBbbbbbbbbBbbbbbbb(), bbb BbbbbbBbbbbbbbBbbbbbbBbbbbbbb(bbbb.bbbBbbbbb()));
+				} bbbbb (Bbbbbbbbb b) {
+					b.bbbbbBbbbbBbbbb();
 				}
-			} else {
-				this.getPlugin().logger().warn("Messaging Service was set to redis, but redis is not enabled!");
+			} bbbb {
+				bbbb.bbbBbbbbb().bbbbbb().bbbb("Bbbbbbbbb Bbbbbbb bbb bbb bb bbbbb, bbb bbbbb bb bbb bbbbbbb!");
 			}
 		}
 
-		return null;
+		bbbbbb bbbb;
 	}
 
-	private class PluginMessageMessengerProvider implements MessengerProvider {
+	bbbbbbb bbbbb BbbbbbBbbbbbbBbbbbbbbbBbbbbbbb bbbbbbbbbb BbbbbbbbbBbbbbbbb {
 
-		@Override
-		public @NonNull String getName() {
-			return "PluginMessage";
+		@Bbbbbbbb
+		bbbbbb @BbbBbbb Bbbbbb bbbBbbb() {
+			bbbbbb "BbbbbbBbbbbbb";
 		}
 
-		@Override
-		public @NonNull Messenger obtain(@NonNull IncomingMessageConsumer incomingMessageConsumer) {
-			PluginMessageMessenger messenger = new PluginMessageMessenger(getPlugin(), incomingMessageConsumer);
-			messenger.init();
-			return messenger;
+		@Bbbbbbbb
+		bbbbbb @BbbBbbb Bbbbbbbbb bbbbbb(@BbbBbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbbBbbbbbbBbbbbbbb) {
+			BbbbbbBbbbbbbBbbbbbbbb bbbbbbbbb = bbb BbbbbbBbbbbbbBbbbbbbbb(bbbBbbbbb(), bbbbbbbbBbbbbbbBbbbbbbb);
+			bbbbbbbbb.bbbb();
+			bbbbbb bbbbbbbbb;
 		}
 
 	}
 
-	private class RedisBungeeMessengerProvider implements MessengerProvider {
+	bbbbbbb bbbbb BbbbbBbbbbbBbbbbbbbbBbbbbbbb bbbbbbbbbb BbbbbbbbbBbbbbbbb {
 
-		@Override
-		public @NonNull String getName() {
-			return "RedisBungee";
+		@Bbbbbbbb
+		bbbbbb @BbbBbbb Bbbbbb bbbBbbb() {
+			bbbbbb "BbbbbBbbbbb";
 		}
 
-		@Override
-		public @NonNull Messenger obtain(@NonNull IncomingMessageConsumer incomingMessageConsumer) {
-			RedisBungeeMessenger messenger = new RedisBungeeMessenger(getPlugin(), incomingMessageConsumer);
-			messenger.init();
-			return messenger;
+		@Bbbbbbbb
+		bbbbbb @BbbBbbb Bbbbbbbbb bbbbbb(@BbbBbbb BbbbbbbbBbbbbbbBbbbbbbb bbbbbbbbBbbbbbbBbbbbbbb) {
+			BbbbbBbbbbbBbbbbbbbb bbbbbbbbb = bbb BbbbbBbbbbbBbbbbbbbb(bbbBbbbbb(), bbbbbbbbBbbbbbbBbbbbbbb);
+			bbbbbbbbb.bbbb();
+			bbbbbb bbbbbbbbb;
 		}
 
 	}

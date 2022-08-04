@@ -1,131 +1,131 @@
-package net.impactdev.gts.api.storage;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb;
 
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
-import net.impactdev.gts.api.messaging.message.type.auctions.AuctionMessage;
-import net.impactdev.gts.api.messaging.message.type.deliveries.ClaimDelivery;
-import net.impactdev.gts.api.messaging.message.type.listings.BuyItNowMessage;
-import net.impactdev.gts.api.messaging.message.type.listings.ClaimMessage;
-import net.impactdev.gts.api.player.PlayerSettings;
-import net.impactdev.gts.api.stashes.Stash;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb.BbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbbbb.BbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbBbBbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb.Bbbbb;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
+bbbbbb bbbb.bbbb.Bbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbbb;
 
-public interface GTSStorage {
+bbbbbb bbbbbbbbb BBBBbbbbbb {
 
-	void init();
+	bbbb bbbb();
 
-	void shutdown();
+	bbbb bbbbbbbb();
 
-	CompletableFuture<Map<String, String>> getMeta();
+	BbbbbbbbbbbBbbbbb<Bbb<Bbbbbb, Bbbbbb>> bbbBbbb();
 
-	CompletableFuture<Boolean> publishListing(Listing listing);
+	BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbbbbBbbbbbb(Bbbbbbb bbbbbbb);
 
-	CompletableFuture<Optional<Listing>> getListing(UUID listing);
+	BbbbbbbbbbbBbbbbb<Bbbbbbbb<Bbbbbbb>> bbbBbbbbbb(BBBB bbbbbbb);
 
 	/**
-	 * Fetches all listings, with no filters applied. This is to allow all listings to be processed and accessible,
-	 * despite expiration of a listing or another filter that would be typically applied against it.
+	 * Bbbbbbb bbb bbbbbbbb, bbbb bb bbbbbbb bbbbbbb. Bbbb bb bb bbbbb bbb bbbbbbbb bb bb bbbbbbbbb bbb bbbbbbbbbb,
+	 * bbbbbbb bbbbbbbbbb bb b bbbbbbb bb bbbbbbb bbbbbb bbbb bbbbb bb bbbbbbbbb bbbbbbb bbbbbbb bb.
 	 *
-	 * @return Every listing currently stored in the database
+	 * @bbbbbb Bbbbb bbbbbbb bbbbbbbbb bbbbbb bb bbb bbbbbbbb
 	 */
-	default CompletableFuture<List<Listing>> fetchListings() {
-		return this.fetchListings(Collections.emptyList());
+	bbbbbbb BbbbbbbbbbbBbbbbb<Bbbb<Bbbbbbb>> bbbbbBbbbbbbb() {
+		bbbbbb bbbb.bbbbbBbbbbbbb(Bbbbbbbbbbb.bbbbbBbbb());
 	}
 
 	/**
-	 * Retrieves all listings, and applies any filters against the returned set. These filters can be situations
-	 * like retrieving only listings that have not yet expired.
+	 * Bbbbbbbbb bbb bbbbbbbb, bbb bbbbbbb bbb bbbbbbb bbbbbbb bbb bbbbbbbb bbb. Bbbbb bbbbbbb bbb bb bbbbbbbbbb
+	 * bbbb bbbbbbbbbb bbbb bbbbbbbb bbbb bbbb bbb bbb bbbbbbb.
 	 *
-	 * @param filters Any filters to apply against the received set of listings.
-	 * @return Every listing meeting the conditions specified by the passed in filters
+	 * @bbbbb bbbbbbb Bbb bbbbbbb bb bbbbb bbbbbbb bbb bbbbbbbb bbb bb bbbbbbbb.
+	 * @bbbbbb Bbbbb bbbbbbb bbbbbbb bbb bbbbbbbbbb bbbbbbbbb bb bbb bbbbbb bb bbbbbbb
 	 */
-	CompletableFuture<List<Listing>> fetchListings(Collection<Predicate<Listing>> filters);
+	BbbbbbbbbbbBbbbbb<Bbbb<Bbbbbbb>> bbbbbBbbbbbbb(Bbbbbbbbbb<Bbbbbbbbb<Bbbbbbb>> bbbbbbb);
 
 	/**
-	 * Sends the delivery out to its intended recipient, storing it within their stash for them
-	 * to claim when they wish to.
+	 * Bbbbb bbb bbbbbbbb bbb bb bbb bbbbbbbb bbbbbbbbb, bbbbbbb bb bbbbbb bbbbb bbbbb bbb bbbb
+	 * bb bbbbb bbbb bbbb bbbb bb.
 	 *
-	 * @param delivery The delivery to send
-	 * @return A completable future, which has no distinct return value
+	 * @bbbbb bbbbbbbb Bbb bbbbbbbb bb bbbb
+	 * @bbbbbb B bbbbbbbbbbb bbbbbb, bbbbb bbb bb bbbbbbbb bbbbbb bbbbb
 	 */
-	CompletableFuture<Boolean> sendDelivery(Delivery delivery);
+	BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbBbbbbbbb(Bbbbbbbb bbbbbbbb);
 
 	/**
-	 * Retrieves the stash of the user who holds it. The stash of a user contains items purchased
-	 * that they couldn't receive at the time, or listings of theirs that have expired over time.
+	 * Bbbbbbbbb bbb bbbbb bb bbb bbbb bbb bbbbb bb. Bbb bbbbb bb b bbbb bbbbbbbb bbbbb bbbbbbbbb
+	 * bbbb bbbb bbbbbb'b bbbbbbb bb bbb bbbb, bb bbbbbbbb bb bbbbbb bbbb bbbb bbbbbbb bbbb bbbb.
 	 *
-	 * @param user The user representing the holder of the stash
-	 * @return The stash as it is currently
+	 * @bbbbb bbbb Bbb bbbb bbbbbbbbbbbb bbb bbbbbb bb bbb bbbbb
+	 * @bbbbbb Bbb bbbbb bb bb bb bbbbbbbbb
 	 */
-	CompletableFuture<Stash> getStash(UUID user);
+	BbbbbbbbbbbBbbbbb<Bbbbb> bbbBbbbb(BBBB bbbb);
 
-	CompletableFuture<Optional<PlayerSettings>> getPlayerSettings(UUID uuid);
+	BbbbbbbbbbbBbbbbb<Bbbbbbbb<BbbbbbBbbbbbbb>> bbbBbbbbbBbbbbbbb(BBBB bbbb);
 
-	CompletableFuture<Boolean> applyPlayerSettings(UUID uuid, PlayerSettings settings);
+	BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbbBbbbbbBbbbbbbb(BBBB bbbb, BbbbbbBbbbbbbb bbbbbbbb);
 
-	CompletableFuture<Boolean> hasMaxListings(UUID user);
+	BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbBbbBbbbbbbb(BBBB bbbb);
 
-	CompletableFuture<Boolean> purge(PurgeType type);
+	BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbb(BbbbbBbbb bbbb);
 
 	/**
-	 * Purges remaining data from the legacy database if it persists.
+	 * Bbbbbb bbbbbbbbb bbbb bbbb bbb bbbbbb bbbbbbbb bb bb bbbbbbbb.
 	 *
-	 * @return True if the table existed and was deleted, false otherwise
-	 * @deprecated This is a temporary function, and is scheduled to be removed at earliest convenience
+	 * @bbbbbb Bbbb bb bbb bbbbb bbbbbbb bbb bbb bbbbbbb, bbbbb bbbbbbbbb
+	 * @bbbbbbbbbb Bbbb bb b bbbbbbbbb bbbbbbbb, bbb bb bbbbbbbbb bb bb bbbbbbb bb bbbbbbbb bbbbbbbbbbb
 	 */
-	@Deprecated
-	CompletableFuture<Boolean> clean();
+	@Bbbbbbbbbb
+	BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbb();
 
 	//------------------------------------------------------------------------------------------------------------------
 	//
-	//  Any and all actions that might require a message to transmit the request to the storage provider
+	//  Bbb bbb bbb bbbbbbb bbbb bbbbb bbbbbbb b bbbbbbb bb bbbbbbbb bbb bbbbbbb bb bbb bbbbbbb bbbbbbbb
 	//
 	//------------------------------------------------------------------------------------------------------------------
 
 	/**
-	 * Attempts to send a request to the database to process a bid on an auction. Given that the request and response
-	 * should feature raw json data, the return type of a message response allows for the data to be passed along
-	 * to the requesting server.
+	 * Bbbbbbbb bb bbbb b bbbbbbb bb bbb bbbbbbbb bb bbbbbbb b bbb bb bb bbbbbbb. Bbbbb bbbb bbb bbbbbbb bbb bbbbbbbb
+	 * bbbbbb bbbbbbb bbb bbbb bbbb, bbb bbbbbb bbbb bb b bbbbbbb bbbbbbbb bbbbbb bbb bbb bbbb bb bb bbbbbb bbbbb
+	 * bb bbb bbbbbbbbbb bbbbbb.
 	 *
-	 * @param request The bid request being made by a connected server
-	 * @return A response indicating the success or failure of the bid request, fit with all necessary information
+	 * @bbbbb bbbbbbb Bbb bbb bbbbbbb bbbbb bbbb bb b bbbbbbbbb bbbbbb
+	 * @bbbbbb B bbbbbbbb bbbbbbbbbb bbb bbbbbbb bb bbbbbbb bb bbb bbb bbbbbbb, bbb bbbb bbb bbbbbbbbb bbbbbbbbbbb
 	 */
-	CompletableFuture<AuctionMessage.Bid.Response> processBid(AuctionMessage.Bid.Request request);
+	BbbbbbbbbbbBbbbbb<BbbbbbbBbbbbbb.Bbb.Bbbbbbbb> bbbbbbbBbb(BbbbbbbBbbbbbb.Bbb.Bbbbbbb bbbbbbb);
 
 	/**
-	 * Indicates a user is attempting to claim something from a listing within their stash. This message
-	 * is common to both auctions and BIN listings, with auctions receiving an extended response, via
-	 * {@link ClaimMessage.Response.AuctionResponse}.
+	 * Bbbbbbbbb b bbbb bb bbbbbbbbbb bb bbbbb bbbbbbbbb bbbb b bbbbbbb bbbbbb bbbbb bbbbb. Bbbb bbbbbbb
+	 * bb bbbbbb bb bbbb bbbbbbbb bbb BBB bbbbbbbb, bbbb bbbbbbbb bbbbbbbbb bb bbbbbbbb bbbbbbbb, bbb
+	 * {@bbbb BbbbbBbbbbbb.Bbbbbbbb.BbbbbbbBbbbbbbb}.
 	 *
-	 * @param request
-	 * @return
+	 * @bbbbb bbbbbbb
+	 * @bbbbbb
 	 */
-	CompletableFuture<ClaimMessage.Response> processClaimRequest(ClaimMessage.Request request);
+	BbbbbbbbbbbBbbbbb<BbbbbBbbbbbb.Bbbbbbbb> bbbbbbbBbbbbBbbbbbb(BbbbbBbbbbbb.Bbbbbbb bbbbbbb);
 
-	CompletableFuture<Boolean> appendOldClaimStatus(UUID auction, boolean lister, boolean winner, List<UUID> others);
+	BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbbbBbbBbbbbBbbbbb(BBBB bbbbbbb, bbbbbbb bbbbbb, bbbbbbb bbbbbb, Bbbb<BBBB> bbbbbb);
 
-	CompletableFuture<AuctionMessage.Cancel.Response> processAuctionCancelRequest(AuctionMessage.Cancel.Request request);
+	BbbbbbbbbbbBbbbbb<BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbbb> bbbbbbbBbbbbbbBbbbbbBbbbbbb(BbbbbbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb);
 
-	CompletableFuture<BuyItNowMessage.Remove.Response> processListingRemoveRequest(BuyItNowMessage.Remove.Request request);
+	BbbbbbbbbbbBbbbbb<BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbbb> bbbbbbbBbbbbbbBbbbbbBbbbbbb(BbbBbBbbBbbbbbb.Bbbbbb.Bbbbbbb bbbbbbb);
 
-	CompletableFuture<BuyItNowMessage.Purchase.Response> processPurchase(BuyItNowMessage.Purchase.Request request);
+	BbbbbbbbbbbBbbbbb<BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbbb> bbbbbbbBbbbbbbb(BbbBbBbbBbbbbbb.Bbbbbbbb.Bbbbbbb bbbbbbb);
 
-	CompletableFuture<ClaimDelivery.Response> claimDelivery(ClaimDelivery.Request request);
+	BbbbbbbbbbbBbbbbb<BbbbbBbbbbbbb.Bbbbbbbb> bbbbbBbbbbbbb(BbbbbBbbbbbbb.Bbbbbbb bbbbbbb);
 
 	//------------------------------------------------------------------------------------------------------------------
 	//
-	//  Admin based message processing
+	//  Bbbbb bbbbb bbbbbbb bbbbbbbbbb
 	//
 	//------------------------------------------------------------------------------------------------------------------
-	CompletableFuture<ForceDeleteMessage.Response> processForcedDeletion(ForceDeleteMessage.Request request);
+	BbbbbbbbbbbBbbbbb<BbbbbBbbbbbBbbbbbb.Bbbbbbbb> bbbbbbbBbbbbbBbbbbbbb(BbbbbBbbbbbBbbbbbb.Bbbbbbb bbbbbbb);
 }

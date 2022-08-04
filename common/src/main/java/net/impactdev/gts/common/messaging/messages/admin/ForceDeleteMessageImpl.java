@@ -1,296 +1,296 @@
-package net.impactdev.gts.common.messaging.messages.admin;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.bbbbb;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.messaging.message.type.admin.ForceDeleteMessage;
-import net.impactdev.gts.common.messaging.GTSMessagingService;
-import net.impactdev.gts.common.messaging.messages.AbstractMessage;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.impactor.api.json.factory.JObject;
-import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.bbbbb.BbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.BBBBbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.Bbbbbbbb;
 
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-public abstract class ForceDeleteMessageImpl extends AbstractMessage implements ForceDeleteMessage {
+bbbbbb bbbbbbbb bbbbb BbbbbBbbbbbBbbbbbbBbbb bbbbbbb BbbbbbbbBbbbbbb bbbbbbbbbb BbbbbBbbbbbBbbbbbb {
 
-    protected final UUID listing;
-    protected final UUID actor;
-    protected final boolean give;
+    bbbbbbbbb bbbbb BBBB bbbbbbb;
+    bbbbbbbbb bbbbb BBBB bbbbb;
+    bbbbbbbbb bbbbb bbbbbbb bbbb;
 
-    public ForceDeleteMessageImpl(UUID id, UUID listing, UUID actor, boolean give) {
-        super(id);
-        this.listing = listing;
-        this.actor = actor;
-        this.give = give;
+    bbbbbb BbbbbBbbbbbBbbbbbbBbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbb, bbbbbbb bbbb) {
+        bbbbb(bb);
+        bbbb.bbbbbbb = bbbbbbb;
+        bbbb.bbbbb = bbbbb;
+        bbbb.bbbb = bbbb;
     }
 
-    @Override
-    public @NonNull UUID getListingID() {
-        return this.listing;
+    @Bbbbbbbb
+    bbbbbb @BbbBbbb BBBB bbbBbbbbbbBB() {
+        bbbbbb bbbb.bbbbbbb;
     }
 
-    @Override
-    public @NonNull UUID getActor() {
-        return this.actor;
+    @Bbbbbbbb
+    bbbbbb @BbbBbbb BBBB bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public boolean shouldGive() {
-        return this.give;
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbbbbBbbb() {
+        bbbbbb bbbb.bbbb;
     }
 
-    public static class ForceDeleteRequest extends ForceDeleteMessageImpl implements Request {
+    bbbbbb bbbbbb bbbbb BbbbbBbbbbbBbbbbbb bbbbbbb BbbbbBbbbbbBbbbbbbBbbb bbbbbbbbbb Bbbbbbb {
 
-        public static final String TYPE = "Admin/Delete/Request";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "Bbbbb/Bbbbbb/Bbbbbbb";
 
-        public static ForceDeleteRequest decode(@Nullable JsonElement content, UUID id) {
-            if(content == null) {
-                throw new IllegalStateException("Raw JSON data was null");
+        bbbbbb bbbbbb BbbbbBbbbbbBbbbbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            bb(bbbbbbb == bbbb) {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBBB bbbb bbb bbbb");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            BbbbBbbbbb bbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-            UUID listing = Optional.ofNullable(raw.get("listing"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            boolean give = Optional.ofNullable(raw.get("give"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Failed to locate give parameter"));
+            BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb BB"));
+            BBBB bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbb BB"));
+            bbbbbbb bbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbb"))
+                    .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbb bbbbbbbbb"));
 
-            return new ForceDeleteRequest(id, listing, actor, give);
+            bbbbbb bbb BbbbbBbbbbbBbbbbbb(bb, bbbbbbb, bbbbb, bbbb);
         }
 
-        public ForceDeleteRequest(UUID id, UUID listing, UUID actor, boolean give) {
-            super(id, listing, actor, give);
+        bbbbbb BbbbbBbbbbbBbbbbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbb, bbbbbbb bbbb) {
+            bbbbb(bb, bbbbbbb, bbbbb, bbbb);
         }
 
-        @Override
-        public CompletableFuture<ForceDeleteMessage.Response> respond() {
-            return GTSPlugin.instance().storage().processForcedDeletion(this);
+        @Bbbbbbbb
+        bbbbbb BbbbbbbbbbbBbbbbb<BbbbbBbbbbbBbbbbbb.Bbbbbbbb> bbbbbbb() {
+            bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbBbbbbbbb(bbbb);
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject()
-                            .add("listing", this.listing.toString())
-                            .add("actor", this.actor.toString())
-                            .add("give", this.give)
-                            .toJson()
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb()
+                            .bbb("bbbbbbb", bbbb.bbbbbbb.bbBbbbbb())
+                            .bbb("bbbbb", bbbb.bbbbb.bbBbbbbb())
+                            .bbb("bbbb", bbbb.bbbb)
+                            .bbBbbb()
             );
         }
 
-        @Override
-        public void print(PrettyPrinter printer) {
-            printer.kv("Message ID", this.getID())
-                    .kv("Listing ID", this.listing)
-                    .kv("Actor", this.actor);
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+            bbbbbbb.bb("Bbbbbbb BB", bbbb.bbbBB())
+                    .bb("Bbbbbbb BB", bbbb.bbbbbbb)
+                    .bb("Bbbbb", bbbb.bbbbb);
         }
     }
 
-    public static class ForceDeleteResponse extends ForceDeleteMessageImpl implements Response {
+    bbbbbb bbbbbb bbbbb BbbbbBbbbbbBbbbbbbb bbbbbbb BbbbbBbbbbbBbbbbbbBbbb bbbbbbbbbb Bbbbbbbb {
 
-        public static final String TYPE = "Admin/Delete/Response";
+        bbbbbb bbbbbb bbbbb Bbbbbb BBBB = "Bbbbb/Bbbbbb/Bbbbbbbb";
 
-        public static ForceDeleteResponse decode(@Nullable JsonElement content, UUID id) {
-            if(content == null) {
-                throw new IllegalStateException("Raw JSON data was null");
+        bbbbbb bbbbbb BbbbbBbbbbbBbbbbbbb bbbbbb(@Bbbbbbbb BbbbBbbbbbb bbbbbbb, BBBB bb) {
+            bb(bbbbbbb == bbbb) {
+                bbbbb bbb BbbbbbbBbbbbBbbbbbbbb("Bbb BBBB bbbb bbb bbbb");
             }
 
-            JsonObject raw = content.getAsJsonObject();
+            BbbbBbbbbb bbb = bbbbbbb.bbbBbBbbbBbbbbb();
 
-            UUID request = Optional.ofNullable(raw.get("request"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate or parse request ID"));
-            UUID listing = Optional.ofNullable(raw.get("listing"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate listing ID"));
-            UUID actor = Optional.ofNullable(raw.get("actor"))
-                    .map(x -> UUID.fromString(x.getAsString()))
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate actor ID"));
-            Listing data = Optional.ofNullable(raw.get("data"))
-                    .map(x -> {
-                        JsonObject json = (JsonObject) x;
-                        String type = json.get("type").getAsString();
-                        if(type.equals("bin")) {
-                            return GTSService.getInstance().getGTSComponentManager()
-                                    .getListingResourceManager(BuyItNow.class)
-                                    .get()
-                                    .getDeserializer()
-                                    .deserialize(json);
-                        } else {
-                            return GTSService.getInstance().getGTSComponentManager()
-                                    .getListingResourceManager(Auction.class)
-                                    .get()
-                                    .getDeserializer()
-                                    .deserialize(json);
+            BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bb bbbbb bbbbbbb BB"));
+            BBBB bbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb BB"));
+            BBBB bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BBBB.bbbbBbbbbb(b.bbbBbBbbbbb()))
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbb BB"));
+            Bbbbbbb bbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbb"))
+                    .bbb(b -> {
+                        BbbbBbbbbb bbbb = (BbbbBbbbbb) b;
+                        Bbbbbb bbbb = bbbb.bbb("bbbb").bbbBbBbbbbb();
+                        bb(bbbb.bbbbbb("bbb")) {
+                            bbbbbb BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+                                    .bbbBbbbbbbBbbbbbbbBbbbbbb(BbbBbBbb.bbbbb)
+                                    .bbb()
+                                    .bbbBbbbbbbbbbbb()
+                                    .bbbbbbbbbbb(bbbb);
+                        } bbbb {
+                            bbbbbb BBBBbbbbbb.bbbBbbbbbbb().bbbBBBBbbbbbbbbBbbbbbb()
+                                    .bbbBbbbbbbBbbbbbbbBbbbbbb(Bbbbbbb.bbbbb)
+                                    .bbb()
+                                    .bbbBbbbbbbbbbbb()
+                                    .bbbbbbbbbbb(bbbb);
                         }
                     })
-                    .orElseThrow(() -> new IllegalStateException("Unable to locate or parse listing data"));
-            boolean give = Optional.ofNullable(raw.get("give"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Failed to locate give parameter"));
-            boolean successful = Optional.ofNullable(raw.get("successful"))
-                    .map(JsonElement::getAsBoolean)
-                    .orElseThrow(() -> new IllegalStateException("Failed to locate success parameter"));
-            ErrorCode error = Optional.ofNullable(raw.get("error"))
-                    .map(x -> ErrorCodes.get(x.getAsInt()))
-                    .orElse(null);
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bb bbbbb bbbbbbb bbbb"));
+            bbbbbbb bbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbb"))
+                    .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbb bbbbbbbbb"));
+            bbbbbbb bbbbbbbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbbbbbbb"))
+                    .bbb(BbbbBbbbbbb::bbbBbBbbbbbb)
+                    .bbBbbbBbbbb(() -> bbb BbbbbbbBbbbbBbbbbbbbb("Bbbbbb bb bbbbbb bbbbbbb bbbbbbbbb"));
+            BbbbbBbbb bbbbb = Bbbbbbbb.bbBbbbbbbb(bbb.bbb("bbbbb"))
+                    .bbb(b -> BbbbbBbbbb.bbb(b.bbbBbBbb()))
+                    .bbBbbb(bbbb);
 
-            return new ForceDeleteResponse(id, request, listing, actor, data, give, successful, error);
+            bbbbbb bbb BbbbbBbbbbbBbbbbbbb(bb, bbbbbbb, bbbbbbb, bbbbb, bbbb, bbbb, bbbbbbbbbb, bbbbb);
         }
 
-        private final UUID request;
+        bbbbbbb bbbbb BBBB bbbbbbb;
 
-        private final Listing data;
+        bbbbbbb bbbbb Bbbbbbb bbbb;
 
-        private final boolean successful;
-        private final ErrorCode error;
+        bbbbbbb bbbbb bbbbbbb bbbbbbbbbb;
+        bbbbbbb bbbbb BbbbbBbbb bbbbb;
 
-        private long responseTime;
+        bbbbbbb bbbb bbbbbbbbBbbb;
 
-        public ForceDeleteResponse(UUID id, UUID request, UUID listing, UUID actor, Listing data, boolean give, boolean successful, @Nullable ErrorCode error) {
-            super(id, listing, actor, give);
-            this.request = request;
-            this.data = data;
-            this.successful = successful;
-            this.error = error;
+        bbbbbb BbbbbBbbbbbBbbbbbbb(BBBB bb, BBBB bbbbbbb, BBBB bbbbbbb, BBBB bbbbb, Bbbbbbb bbbb, bbbbbbb bbbb, bbbbbbb bbbbbbbbbb, @Bbbbbbbb BbbbbBbbb bbbbb) {
+            bbbbb(bb, bbbbbbb, bbbbb, bbbb);
+            bbbb.bbbbbbb = bbbbbbb;
+            bbbb.bbbb = bbbb;
+            bbbb.bbbbbbbbbb = bbbbbbbbbb;
+            bbbb.bbbbb = bbbbb;
         }
 
-        @Override
-        public UUID getRequestID() {
-            return this.request;
+        @Bbbbbbbb
+        bbbbbb BBBB bbbBbbbbbbBB() {
+            bbbbbb bbbb.bbbbbbb;
         }
 
-        @Override
-        public long getResponseTime() {
-            return this.responseTime;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb() {
+            bbbbbb bbbb.bbbbbbbbBbbb;
         }
 
-        @Override
-        public void setResponseTime(long millis) {
-            this.responseTime = millis;
+        @Bbbbbbbb
+        bbbbbb bbbb bbbBbbbbbbbBbbb(bbbb bbbbbb) {
+            bbbb.bbbbbbbbBbbb = bbbbbb;
         }
 
-        @Override
-        public boolean wasSuccessful() {
-            return this.successful;
+        @Bbbbbbbb
+        bbbbbb bbbbbbb bbbBbbbbbbbbb() {
+            bbbbbb bbbb.bbbbbbbbbb;
         }
 
-        @Override
-        public Optional<ErrorCode> getErrorCode() {
-            return Optional.ofNullable(this.error);
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbb<BbbbbBbbb> bbbBbbbbBbbb() {
+            bbbbbb Bbbbbbbb.bbBbbbbbbb(bbbb.bbbbb);
         }
 
-        @Override
-        public @NonNull String asEncodedString() {
-            return GTSMessagingService.encodeMessageAsString(
-                    TYPE,
-                    this.getID(),
-                    new JObject()
-                            .add("request", this.getRequestID().toString())
-                            .add("listing", this.listing.toString())
-                            .add("actor", this.actor.toString())
-                            .add("data", this.data.serialize())
-                            .add("give", this.give)
-                            .add("successful", this.successful)
-                            .consume(o -> this.getErrorCode().ifPresent(e -> o.add("error", e.ordinal())))
-                            .toJson()
+        @Bbbbbbbb
+        bbbbbb @BbbBbbb Bbbbbb bbBbbbbbbBbbbbb() {
+            bbbbbb BBBBbbbbbbbbBbbbbbb.bbbbbbBbbbbbbBbBbbbbb(
+                    BBBB,
+                    bbbb.bbbBB(),
+                    bbb BBbbbbb()
+                            .bbb("bbbbbbb", bbbb.bbbBbbbbbbBB().bbBbbbbb())
+                            .bbb("bbbbbbb", bbbb.bbbbbbb.bbBbbbbb())
+                            .bbb("bbbbb", bbbb.bbbbb.bbBbbbbb())
+                            .bbb("bbbb", bbbb.bbbb.bbbbbbbbb())
+                            .bbb("bbbb", bbbb.bbbb)
+                            .bbb("bbbbbbbbbb", bbbb.bbbbbbbbbb)
+                            .bbbbbbb(b -> bbbb.bbbBbbbbBbbb().bbBbbbbbb(b -> b.bbb("bbbbb", b.bbbbbbb())))
+                            .bbBbbb()
             );
         }
 
-        @Override
-        public void print(PrettyPrinter printer) {
-            printer.kv("Message ID", this.getID())
-                    .kv("Request ID", this.getRequestID())
-                    .kv("Listing ID", this.listing)
-                    .kv("Actor", this.actor)
-                    .kv("Should Return", this.give);
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbb(BbbbbbBbbbbbb bbbbbbb) {
+            bbbbbbb.bb("Bbbbbbb BB", bbbb.bbbBB())
+                    .bb("Bbbbbbb BB", bbbb.bbbBbbbbbbBB())
+                    .bb("Bbbbbbb BB", bbbb.bbbbbbb)
+                    .bb("Bbbbb", bbbb.bbbbb)
+                    .bb("Bbbbbb Bbbbbb", bbbb.bbbb);
         }
 
-        @Override
-        public Optional<Listing> getDeletedListing() {
-            return Optional.of(this.data);
+        @Bbbbbbbb
+        bbbbbb Bbbbbbbb<Bbbbbbb> bbbBbbbbbbBbbbbbb() {
+            bbbbbb Bbbbbbbb.bb(bbbb.bbbb);
         }
 
-        public static class ForcedDeleteResponseBuilder implements ForceDeleteMessage.Response.ResponseBuilder {
+        bbbbbb bbbbbb bbbbb BbbbbbBbbbbbBbbbbbbbBbbbbbb bbbbbbbbbb BbbbbBbbbbbBbbbbbb.Bbbbbbbb.BbbbbbbbBbbbbbb {
 
-            private UUID request;
-            private UUID listing;
-            private UUID actor;
-            private Listing data;
-            private boolean give;
-            private boolean successful;
-            private ErrorCode error;
+            bbbbbbb BBBB bbbbbbb;
+            bbbbbbb BBBB bbbbbbb;
+            bbbbbbb BBBB bbbbb;
+            bbbbbbb Bbbbbbb bbbb;
+            bbbbbbb bbbbbbb bbbb;
+            bbbbbbb bbbbbbb bbbbbbbbbb;
+            bbbbbbb BbbbbBbbb bbbbb;
 
-            @Override
-            public ResponseBuilder request(UUID request) {
-                this.request = request;
-                return this;
+            @Bbbbbbbb
+            bbbbbb BbbbbbbbBbbbbbb bbbbbbb(BBBB bbbbbbb) {
+                bbbb.bbbbbbb = bbbbbbb;
+                bbbbbb bbbb;
             }
 
-            @Override
-            public ResponseBuilder listing(UUID listing) {
-                this.listing = listing;
-                return this;
+            @Bbbbbbbb
+            bbbbbb BbbbbbbbBbbbbbb bbbbbbb(BBBB bbbbbbb) {
+                bbbb.bbbbbbb = bbbbbbb;
+                bbbbbb bbbb;
             }
 
-            @Override
-            public ResponseBuilder actor(UUID actor) {
-                this.actor = actor;
-                return this;
+            @Bbbbbbbb
+            bbbbbb BbbbbbbbBbbbbbb bbbbb(BBBB bbbbb) {
+                bbbb.bbbbb = bbbbb;
+                bbbbbb bbbb;
             }
 
-            @Override
-            public ResponseBuilder data(Listing data) {
-                this.data = data;
-                return this;
+            @Bbbbbbbb
+            bbbbbb BbbbbbbbBbbbbbb bbbb(Bbbbbbb bbbb) {
+                bbbb.bbbb = bbbb;
+                bbbbbb bbbb;
             }
 
-            @Override
-            public ResponseBuilder give(boolean give) {
-                this.give = give;
-                return this;
+            @Bbbbbbbb
+            bbbbbb BbbbbbbbBbbbbbb bbbb(bbbbbbb bbbb) {
+                bbbb.bbbb = bbbb;
+                bbbbbb bbbb;
             }
 
-            @Override
-            public ResponseBuilder successful(boolean successful) {
-                this.successful = successful;
-                return this;
+            @Bbbbbbbb
+            bbbbbb BbbbbbbbBbbbbbb bbbbbbbbbb(bbbbbbb bbbbbbbbbb) {
+                bbbb.bbbbbbbbbb = bbbbbbbbbb;
+                bbbbbb bbbb;
             }
 
-            @Override
-            public ResponseBuilder error(ErrorCode error) {
-                this.error = error;
-                return this;
+            @Bbbbbbbb
+            bbbbbb BbbbbbbbBbbbbbb bbbbb(BbbbbBbbb bbbbb) {
+                bbbb.bbbbb = bbbbb;
+                bbbbbb bbbb;
             }
 
-            @Override
-            public ForceDeleteMessage.Response build() {
-                return new ForceDeleteResponse(
-                        GTSPlugin.instance().messagingService().generatePingID(),
-                        this.request,
-                        this.listing,
-                        this.actor,
-                        this.data,
-                        this.give,
-                        this.successful,
-                        this.error
+            @Bbbbbbbb
+            bbbbbb BbbbbBbbbbbBbbbbbb.Bbbbbbbb bbbbb() {
+                bbbbbb bbb BbbbbBbbbbbBbbbbbbb(
+                        BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbbBbbbBB(),
+                        bbbb.bbbbbbb,
+                        bbbb.bbbbbbb,
+                        bbbb.bbbbb,
+                        bbbb.bbbb,
+                        bbbb.bbbb,
+                        bbbb.bbbbbbbbbb,
+                        bbbb.bbbbb
                 );
             }
         }

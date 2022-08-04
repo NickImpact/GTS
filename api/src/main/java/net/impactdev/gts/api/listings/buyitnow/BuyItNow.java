@@ -1,92 +1,92 @@
-package net.impactdev.gts.api.listings.buyitnow;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb;
 
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.gts.api.listings.Listing;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * A QuickPurchase listing is the typical listing GTS provides. In general, this listing provides a one-time
- * purchase for users who wish to simply avoid participating in auctions. Therefore, the price set for
- * this listing option will be final and unmodifiable.
+ * B BbbbbBbbbbbbb bbbbbbb bb bbb bbbbbbb bbbbbbb BBB bbbbbbbb. Bb bbbbbbb, bbbb bbbbbbb bbbbbbbb b bbb-bbbb
+ * bbbbbbbb bbb bbbbb bbb bbbb bb bbbbbb bbbbb bbbbbbbbbbbbb bb bbbbbbbb. Bbbbbbbbb, bbb bbbbb bbb bbb
+ * bbbb bbbbbbb bbbbbb bbbb bb bbbbb bbb bbbbbbbbbbbb.
  */
-public interface BuyItNow extends Listing {
+bbbbbb bbbbbbbbb BbbBbBbb bbbbbbb Bbbbbbb {
 
 	/**
-	 * Represents the price of this listing. This will be what a purchasing player must pay in order to buy this
-	 * listing off the GTS.
+	 * Bbbbbbbbbb bbb bbbbb bb bbbb bbbbbbb. Bbbb bbbb bb bbbb b bbbbbbbbbb bbbbbb bbbb bbb bb bbbbb bb bbb bbbb
+	 * bbbbbbb bbb bbb BBB.
 	 *
-	 * @return The price of the listing
+	 * @bbbbbb Bbb bbbbb bb bbb bbbbbbb
 	 */
-	Price<?, ?, ?> getPrice();
+	Bbbbb<?, ?, ?> bbbBbbbb();
 
 	/**
-	 * Represents the user who purchased a BIN listing
+	 * Bbbbbbbbbb bbb bbbb bbb bbbbbbbbb b BBB bbbbbbb
 	 *
-	 * @return The UUID of the user who purchased this BIN listing.
+	 * @bbbbbb Bbb BBBB bb bbb bbbb bbb bbbbbbbbb bbbb BBB bbbbbbb.
 	 */
-	UUID purchaser();
+	BBBB bbbbbbbbb();
 
 	/**
-	 * Represents that this BIN listing exists only due to a failed attempt to redeem a listing
-	 * directly after a purchase. This listing should only attempt to return the entry, rather than
-	 * the price to the listing owner, who in this case will now be the seller.
+	 * Bbbbbbbbbb bbbb bbbb BBB bbbbbbb bbbbbb bbbb bbb bb b bbbbbb bbbbbbb bb bbbbbb b bbbbbbb
+	 * bbbbbbbb bbbbb b bbbbbbbb. Bbbb bbbbbbb bbbbbb bbbb bbbbbbb bb bbbbbb bbb bbbbb, bbbbbb bbbb
+	 * bbb bbbbb bb bbb bbbbbbb bbbbb, bbb bb bbbb bbbb bbbb bbb bb bbb bbbbbb.
 	 *
-	 * @return True if stashed for the purchaser, false otherwise
+	 * @bbbbbb Bbbb bb bbbbbbb bbb bbb bbbbbbbbb, bbbbb bbbbbbbbb
 	 */
-	boolean stashedForPurchaser();
+	bbbbbbb bbbbbbbBbbBbbbbbbbb();
 
 	/**
-	 * Specifies whether or not this listing has been purchased
+	 * Bbbbbbbbb bbbbbbb bb bbb bbbb bbbbbbb bbb bbbb bbbbbbbbb
 	 *
-	 * @return True if purchased, false otherwise
+	 * @bbbbbb Bbbb bb bbbbbbbbb, bbbbb bbbbbbbbb
 	 */
-	boolean isPurchased();
+	bbbbbbb bbBbbbbbbbb();
 
 	/**
-	 * Marks a listing as purchased
+	 * Bbbbb b bbbbbbb bb bbbbbbbbb
 	 */
-	void markPurchased();
+	bbbb bbbbBbbbbbbbb();
 
-	static BuyItNowBuilder builder() {
-		return Impactor.getInstance().getRegistry().createBuilder(BuyItNowBuilder.class);
+	bbbbbb BbbBbBbbBbbbbbb bbbbbbb() {
+		bbbbbb Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbBbbbbbb(BbbBbBbbBbbbbbb.bbbbb);
 	}
 
-	interface BuyItNowBuilder extends ListingBuilder<BuyItNow, BuyItNowBuilder> {
+	bbbbbbbbb BbbBbBbbBbbbbbb bbbbbbb BbbbbbbBbbbbbb<BbbBbBbb, BbbBbBbbBbbbbbb> {
 
 		/**
-		 * Sets the price of this BIN listing
+		 * Bbbb bbb bbbbb bb bbbb BBB bbbbbbb
 		 *
-		 * @param price The price for the listing
-		 * @return The updated builder
+		 * @bbbbb bbbbb Bbb bbbbb bbb bbb bbbbbbb
+		 * @bbbbbb Bbb bbbbbbb bbbbbbb
 		 */
-		BuyItNowBuilder price(Price<?, ?, ?> price);
+		BbbBbBbbBbbbbbb bbbbb(Bbbbb<?, ?, ?> bbbbb);
 
 		/**
-		 * Indicates that the built listing has been purchased
+		 * Bbbbbbbbb bbbb bbb bbbbb bbbbbbb bbb bbbb bbbbbbbbb
 		 *
-		 * @return The updated builder
+		 * @bbbbbb Bbb bbbbbbb bbbbbbb
 		 */
-		BuyItNowBuilder purchased();
+		BbbBbBbbBbbbbbb bbbbbbbbb();
 
 		/**
-		 * Sets the user who purchased this listing
+		 * Bbbb bbb bbbb bbb bbbbbbbbb bbbb bbbbbbb
 		 *
-		 * @param purchaser The ID of the purchaser
-		 * @return The updated builder
+		 * @bbbbb bbbbbbbbb Bbb BB bb bbb bbbbbbbbb
+		 * @bbbbbb Bbb bbbbbbb bbbbbbb
 		 */
-		BuyItNowBuilder purchaser(UUID purchaser);
+		BbbBbBbbBbbbbbb bbbbbbbbb(BBBB bbbbbbbbb);
 
 		/**
-		 * Sets this BIN listing as a listing specifically set to be returned to the purchaser,
-		 * likely due to a failure to reward the purchaser with what they purchased.
+		 * Bbbb bbbb BBB bbbbbbb bb b bbbbbbb bbbbbbbbbbbb bbb bb bb bbbbbbbb bb bbb bbbbbbbbb,
+		 * bbbbbb bbb bb b bbbbbbb bb bbbbbb bbb bbbbbbbbb bbbb bbbb bbbb bbbbbbbbb.
 		 *
-		 * @return The updated builder
+		 * @bbbbbb Bbb bbbbbbb bbbbbbb
 		 */
-		BuyItNowBuilder stashedForPurchaser();
+		BbbBbBbbBbbbbbb bbbbbbbBbbBbbbbbbbb();
 
-		BuyItNowBuilder from(BuyItNow parent);
+		BbbBbBbbBbbbbbb bbbb(BbbBbBbb bbbbbb);
 
 	}
 

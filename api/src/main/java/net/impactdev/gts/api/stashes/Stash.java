@@ -1,81 +1,81 @@
-package net.impactdev.gts.api.stashes;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbb;
 
-import net.impactdev.gts.api.deliveries.Delivery;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.builders.Builder;
-import net.kyori.adventure.util.TriState;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.BbbBbbbb;
 
-import java.util.List;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
 /**
- * Represents a stash of contents that a player may currently possess due to not being able
- * to currently receive an item. A stash may or may not be populated by items that have been
- * sold to the user but are currently unable to be claimed. This will allow the user to return
- * to this stash at any time and retrieve items that were previously non-claimable.
+ * Bbbbbbbbbb b bbbbb bb bbbbbbbb bbbb b bbbbbb bbb bbbbbbbbb bbbbbbb bbb bb bbb bbbbb bbbb
+ * bb bbbbbbbbb bbbbbbb bb bbbb. B bbbbb bbb bb bbb bbb bb bbbbbbbbb bb bbbbb bbbb bbbb bbbb
+ * bbbb bb bbb bbbb bbb bbb bbbbbbbbb bbbbbb bb bb bbbbbbb. Bbbb bbbb bbbbb bbb bbbb bb bbbbbb
+ * bb bbbb bbbbb bb bbb bbbb bbb bbbbbbbb bbbbb bbbb bbbb bbbbbbbbbb bbb-bbbbbbbbb.
  */
-public interface Stash {
+bbbbbb bbbbbbbbb Bbbbb {
 
 	/**
-	 * Specifies the size of the stash as it is currently.
+	 * Bbbbbbbbb bbb bbbb bb bbb bbbbb bb bb bb bbbbbbbbb.
 	 *
-	 * @return The current size of the stash
+	 * @bbbbbb Bbb bbbbbbb bbbb bb bbb bbbbb
 	 */
-	default int getSize() {
-		return this.getStashContents().size();
+	bbbbbbb bbb bbbBbbb() {
+		bbbbbb bbbb.bbbBbbbbBbbbbbbb().bbbb();
 	}
 
 	/**
-	 * Specifies whether or not the user's stash is currently empty. If the stash is not empty, logic
-	 * should be performed on player login to indicate to the user that they have items available
-	 * to be retrieved.
+	 * Bbbbbbbbb bbbbbbb bb bbb bbb bbbb'b bbbbb bb bbbbbbbbb bbbbb. Bb bbb bbbbb bb bbb bbbbb, bbbbb
+	 * bbbbbb bb bbbbbbbbb bb bbbbbb bbbbb bb bbbbbbbb bb bbb bbbb bbbb bbbb bbbb bbbbb bbbbbbbbb
+	 * bb bb bbbbbbbbb.
 	 *
-	 * @return True if the stash is empty, false otherwise
+	 * @bbbbbb Bbbb bb bbb bbbbb bb bbbbb, bbbbb bbbbbbbbb
 	 */
-	default boolean isEmpty() {
-		return this.getStashContents().isEmpty();
+	bbbbbbb bbbbbbb bbBbbbb() {
+		bbbbbb bbbb.bbbBbbbbBbbbbbbb().bbBbbbb();
 	}
 
 	/**
-	 * Retrieves a list of stashed items within this stash. These items can then be processed, should any exist,
-	 * to attempt returning the items to the player requesting it.
+	 * Bbbbbbbbb b bbbb bb bbbbbbb bbbbb bbbbbb bbbb bbbbb. Bbbbb bbbbb bbb bbbb bb bbbbbbbbb, bbbbbb bbb bbbbb,
+	 * bb bbbbbbb bbbbbbbbb bbb bbbbb bb bbb bbbbbb bbbbbbbbbb bb.
 	 *
-	 * @return The list of items contained by this Stash
+	 * @bbbbbb Bbb bbbb bb bbbbb bbbbbbbbb bb bbbb Bbbbb
 	 */
-	List<StashedContent<?>> getStashContents();
+	Bbbb<BbbbbbbBbbbbbb<?>> bbbBbbbbBbbbbbbb();
 
 	/**
-	 * Allows the player to claim a set of items from the stash. If any items remain in the stash
-	 * after an initial claim attempt is made, the call will return a non-zero value indicating
-	 * the amount of items remaining in the stash still requiring claim.
+	 * Bbbbbb bbb bbbbbb bb bbbbb b bbb bb bbbbb bbbb bbb bbbbb. Bb bbb bbbbb bbbbbb bb bbb bbbbb
+	 * bbbbb bb bbbbbbb bbbbb bbbbbbb bb bbbb, bbb bbbb bbbb bbbbbb b bbb-bbbb bbbbb bbbbbbbbbb
+	 * bbb bbbbbb bb bbbbb bbbbbbbbb bb bbb bbbbb bbbbb bbbbbbbbb bbbbb.
 	 *
-	 * @param claimer The user claiming items from the stash
-	 * @param listing The ID of the listing being claimed
-	 * @return True if the claim attempt was successful, false otherwise
+	 * @bbbbb bbbbbbb Bbb bbbb bbbbbbbb bbbbb bbbb bbb bbbbb
+	 * @bbbbb bbbbbbb Bbb BB bb bbb bbbbbbb bbbbb bbbbbbb
+	 * @bbbbbb Bbbb bb bbb bbbbb bbbbbbb bbb bbbbbbbbbb, bbbbb bbbbbbbbb
 	 */
-	boolean claim(UUID claimer, UUID listing);
+	bbbbbbb bbbbb(BBBB bbbbbbb, BBBB bbbbbbb);
 
-	static StashBuilder builder() {
-		return Impactor.getInstance().getRegistry().createBuilder(StashBuilder.class);
+	bbbbbb BbbbbBbbbbbb bbbbbbb() {
+		bbbbbb Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbbbbbBbbbbbb(BbbbbBbbbbbb.bbbbb);
 	}
 
-	interface StashBuilder extends Builder<Stash> {
+	bbbbbbbbb BbbbbBbbbbbb bbbbbbb Bbbbbbb<Bbbbb> {
 
 		/**
-		 * Appends a listing to the stash with the specified context. Context means are as such:
+		 * Bbbbbbb b bbbbbbb bb bbb bbbbb bbbb bbb bbbbbbbbb bbbbbbb. Bbbbbbb bbbbb bbb bb bbbb:
 		 *
-		 * <code>true</code>: The user purchased the listing
-		 * <code>false</code>: The user listed the listing
-		 * <code>undefined</code>: This listing is an auction and the user bid on the listing, but didn't win
+		 * <bbbb>bbbb</bbbb>: Bbb bbbb bbbbbbbbb bbb bbbbbbb
+		 * <bbbb>bbbbb</bbbb>: Bbb bbbb bbbbbb bbb bbbbbbb
+		 * <bbbb>bbbbbbbbb</bbbb>: Bbbb bbbbbbb bb bb bbbbbbb bbb bbb bbbb bbb bb bbb bbbbbbb, bbb bbbb'b bbb
 		 *
-		 * @param listing The listing that is apart of the stashed content
-		 * @param context The contextual reason on what caused this listing to appear in the stash
-		 * @return The builder as updated following this call
+		 * @bbbbb bbbbbbb Bbb bbbbbbb bbbb bb bbbbb bb bbb bbbbbbb bbbbbbb
+		 * @bbbbb bbbbbbb Bbb bbbbbbbbbb bbbbbb bb bbbb bbbbbb bbbb bbbbbbb bb bbbbbb bb bbb bbbbb
+		 * @bbbbbb Bbb bbbbbbb bb bbbbbbb bbbbbbbbb bbbb bbbb
 		 */
-		StashBuilder append(Listing listing, TriState context);
+		BbbbbBbbbbbb bbbbbb(Bbbbbbb bbbbbbb, BbbBbbbb bbbbbbb);
 
-		StashBuilder append(Delivery delivery);
+		BbbbbBbbbbbb bbbbbb(Bbbbbbbb bbbbbbbb);
 
 	}
 

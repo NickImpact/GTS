@@ -1,19 +1,19 @@
-package net.impactdev.gts.api.events.auctions;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.bbbbbbbb;
 
-import net.impactdev.impactor.api.event.ImpactorEvent;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.impactor.api.event.type.Cancellable;
-import org.spongepowered.api.util.annotation.eventgen.GenerateFactoryMethod;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbb.bbbb.Bbbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbb.bbbbbbbb.BbbbbbbbBbbbbbbBbbbbb;
 
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BBBB;
 
-@GenerateFactoryMethod
-public interface BidEvent extends ImpactorEvent, Cancellable {
+@BbbbbbbbBbbbbbbBbbbbb
+bbbbbb bbbbbbbbb BbbBbbbb bbbbbbb BbbbbbbbBbbbb, Bbbbbbbbbbb {
 
-    UUID getBidder();
+    BBBB bbbBbbbbb();
 
-    Listing getListing();
+    Bbbbbbb bbbBbbbbbb();
 
-    double getAmountBid();
+    bbbbbb bbbBbbbbbBbb();
 
 }

@@ -1,19 +1,19 @@
-package net.impactdev.gts.common.config.wrappers;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbbbb;
 
-import net.impactdev.gts.api.blacklist.Blacklist;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.Bbbbbbbbb;
 
-import java.util.function.Supplier;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
-public class LazyBlacklist {
+bbbbbb bbbbb BbbbBbbbbbbbb {
 
-    private final Supplier<Blacklist> supplier;
+    bbbbbbb bbbbb Bbbbbbbb<Bbbbbbbbb> bbbbbbbb;
 
-    public LazyBlacklist(Supplier<Blacklist> supplier) {
-        this.supplier = supplier;
+    bbbbbb BbbbBbbbbbbbb(Bbbbbbbb<Bbbbbbbbb> bbbbbbbb) {
+        bbbb.bbbbbbbb = bbbbbbbb;
     }
 
-    public Blacklist read() {
-        return this.supplier.get();
+    bbbbbb Bbbbbbbbb bbbb() {
+        bbbbbb bbbb.bbbbbbbb.bbb();
     }
 
 }

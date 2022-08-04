@@ -1,101 +1,101 @@
 /*
- * This file is part of LuckPerms, licensed under the MIT License.
+ * Bbbb bbbb bb bbbb bb BbbbBbbbb, bbbbbbbb bbbbb bbb BBB Bbbbbbb.
  *
- *  Copyright (c) lucko (Luck) <luck@lucko.me>
- *  Copyright (c) contributors
+ *  Bbbbbbbbb (b) bbbbb (Bbbb) <bbbb@bbbbb.bb>
+ *  Bbbbbbbbb (b) bbbbbbbbbbbb
  *
- *  Permission is hereby granted, free of charge, to any person obtaining a copy
- *  of this software and associated documentation files (the "Software"), to deal
- *  in the Software without restriction, including without limitation the rights
- *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- *  copies of the Software, and to permit persons to whom the Software is
- *  furnished to do so, subject to the following conditions:
+ *  Bbbbbbbbbb bb bbbbbb bbbbbbb, bbbb bb bbbbbb, bb bbb bbbbbb bbbbbbbbb b bbbb
+ *  bb bbbb bbbbbbbb bbb bbbbbbbbbb bbbbbbbbbbbbb bbbbb (bbb "Bbbbbbbb"), bb bbbb
+ *  bb bbb Bbbbbbbb bbbbbbb bbbbbbbbbbb, bbbbbbbbb bbbbbbb bbbbbbbbbb bbb bbbbbb
+ *  bb bbb, bbbb, bbbbbb, bbbbb, bbbbbbb, bbbbbbbbbb, bbbbbbbbbb, bbb/bb bbbb
+ *  bbbbbb bb bbb Bbbbbbbb, bbb bb bbbbbb bbbbbbb bb bbbb bbb Bbbbbbbb bb
+ *  bbbbbbbbb bb bb bb, bbbbbbb bb bbb bbbbbbbbb bbbbbbbbbb:
  *
- *  The above copyright notice and this permission notice shall be included in all
- *  copies or substantial portions of the Software.
+ *  Bbb bbbbb bbbbbbbbb bbbbbb bbb bbbb bbbbbbbbbb bbbbbb bbbbb bb bbbbbbbb bb bbb
+ *  bbbbbb bb bbbbbbbbbbb bbbbbbbb bb bbb Bbbbbbbb.
  *
- *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- *  SOFTWARE.
+ *  BBB BBBBBBBB BB BBBBBBBB "BB BB", BBBBBBB BBBBBBBB BB BBB BBBB, BBBBBBB BB
+ *  BBBBBBB, BBBBBBBBB BBB BBB BBBBBBB BB BBB BBBBBBBBBB BB BBBBBBBBBBBBBBB,
+ *  BBBBBBB BBB B BBBBBBBBBB BBBBBBB BBB BBBBBBBBBBBBBBB. BB BB BBBBB BBBBB BBB
+ *  BBBBBBB BB BBBBBBBBB BBBBBBB BB BBBBBB BBB BBB BBBBB, BBBBBBB BB BBBBB
+ *  BBBBBBBBB, BBBBBBB BB BB BBBBBB BB BBBBBBBB, BBBB BB BBBBBBBBB, BBBBBBB BBBB,
+ *  BBB BB BB BB BBBBBBBBBB BBBB BBB BBBBBBBB BB BBB BBB BB BBBBB BBBBBBBB BB BBB
+ *  BBBBBBBB.
  */
 
-package net.impactdev.gts.api.messaging;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb;
 
-import net.impactdev.gts.api.messaging.message.Message;
-import net.impactdev.gts.api.messaging.message.MessageConsumer;
-import net.impactdev.gts.api.messaging.message.OutgoingMessage;
-import net.impactdev.gts.api.messaging.message.type.MessageType;
-import org.checkerframework.checker.nullness.qual.NonNull;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.BbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbbbbb.bbbbbbb.bbbbbbbb.bbbb.BbbBbbb;
 
-import java.util.UUID;
-import java.util.function.Consumer;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbb.Bbbbbbbb;
 
 /**
- * Encapsulates the LuckPerms system which accepts incoming {@link Message}s
- * from implementations of {@link Messenger}.
+ * Bbbbbbbbbbbb bbb BbbbBbbbb bbbbbb bbbbb bbbbbbb bbbbbbbb {@bbbb Bbbbbbb}b
+ * bbbb bbbbbbbbbbbbbbb bb {@bbbb Bbbbbbbbb}.
  */
-public interface IncomingMessageConsumer {
+bbbbbb bbbbbbbbb BbbbbbbbBbbbbbbBbbbbbbb {
 
     /**
-     * Registers a message that is being requested by the calling plugin. This is to allow a server
-     * to ensure a requested message eventually receives a response intended for itself.
+     * Bbbbbbbbb b bbbbbbb bbbb bb bbbbb bbbbbbbbb bb bbb bbbbbbb bbbbbb. Bbbb bb bb bbbbb b bbbbbb
+     * bb bbbbbb b bbbbbbbbb bbbbbbb bbbbbbbbbb bbbbbbbb b bbbbbbbb bbbbbbbb bbb bbbbbb.
      *
-     * @param request The message working as the request message
+     * @bbbbb bbbbbbb Bbb bbbbbbb bbbbbbb bb bbb bbbbbbb bbbbbbb
      */
-    <T extends MessageType.Response> void registerRequest(UUID request, Consumer<T> response);
+    <B bbbbbbb BbbbbbbBbbb.Bbbbbbbb> bbbb bbbbbbbbBbbbbbb(BBBB bbbbbbb, Bbbbbbbb<B> bbbbbbbb);
 
-    <T extends MessageType.Response> void processRequest(UUID request, T response);
+    <B bbbbbbb BbbbbbbBbbb.Bbbbbbbb> bbbb bbbbbbbBbbbbbb(BBBB bbbbbbb, B bbbbbbbb);
 
     /**
-     * Caches the ID into the registry of read messages on this instance. This cache will purge out
-     * received message IDs once a set amount of time has elapsed.
+     * Bbbbbb bbb BB bbbb bbb bbbbbbbb bb bbbb bbbbbbbb bb bbbb bbbbbbbb. Bbbb bbbbb bbbb bbbbb bbb
+     * bbbbbbbb bbbbbbb BBb bbbb b bbb bbbbbb bb bbbb bbb bbbbbbb.
      *
-     * @param id The ID of the message that has been received
+     * @bbbbb bb Bbb BB bb bbb bbbbbbb bbbb bbb bbbb bbbbbbbb
      */
-    void cacheReceivedID(UUID id);
+    bbbb bbbbbBbbbbbbbBB(BBBB bb);
 
     /**
-     * Consumes a message instance.
+     * Bbbbbbbb b bbbbbbb bbbbbbbb.
      *
-     * <p>The boolean returned from this method indicates whether or not the
-     * platform accepted the message. Some implementations which have multiple
-     * distribution channels may wish to use this result to dispatch the same
-     * message back to additional receivers.</p>
+     * <b>Bbb bbbbbbb bbbbbbbb bbbb bbbb bbbbbb bbbbbbbbb bbbbbbb bb bbb bbb
+     * bbbbbbbb bbbbbbbb bbb bbbbbbb. Bbbb bbbbbbbbbbbbbbb bbbbb bbbb bbbbbbbb
+     * bbbbbbbbbbbb bbbbbbbb bbb bbbb bb bbb bbbb bbbbbb bb bbbbbbbb bbb bbbb
+     * bbbbbbb bbbb bb bbbbbbbbbb bbbbbbbbb.</b>
      *
-     * <p>The implementation will usually return <code>false</code> if a message
-     * with the same ping id has already been processed.</p>
+     * <b>Bbb bbbbbbbbbbbbbb bbbb bbbbbbb bbbbbb <bbbb>bbbbb</bbbb> bb b bbbbbbb
+     * bbbb bbb bbbb bbbb bb bbb bbbbbbb bbbb bbbbbbbbb.</b>
      *
-     * @param message the message
-     * @return true if the message was accepted by the plugin
+     * @bbbbb bbbbbbb bbb bbbbbbb
+     * @bbbbbb bbbb bb bbb bbbbbbb bbb bbbbbbbb bb bbb bbbbbb
      */
-    boolean consumeIncomingMessage(@NonNull Message message);
+    bbbbbbb bbbbbbbBbbbbbbbBbbbbbb(@BbbBbbb Bbbbbbb bbbbbbb);
 
     /**
-     * Consumes a message in an encoded string format.
+     * Bbbbbbbb b bbbbbbb bb bb bbbbbbb bbbbbb bbbbbb.
      *
-     * <p>This method will decode strings obtained by calling
-     * {@link OutgoingMessage#asEncodedString()}. This means that basic
-     * implementations can successfully implement {@link Messenger} without
-     * providing their own serialisation.</p>
+     * <b>Bbbb bbbbbb bbbb bbbbbb bbbbbbb bbbbbbbb bb bbbbbbb
+     * {@bbbb BbbbbbbbBbbbbbb#bbBbbbbbbBbbbbb()}. Bbbb bbbbb bbbb bbbbb
+     * bbbbbbbbbbbbbbb bbb bbbbbbbbbbbb bbbbbbbbb {@bbbb Bbbbbbbbb} bbbbbbb
+     * bbbbbbbbb bbbbb bbb bbbbbbbbbbbbb.</b>
      *
-     * <p>The boolean returned from this method indicates whether or not the
-     * platform accepted the message. Some implementations which have multiple
-     * distribution channels may wish to use this result to dispatch the same
-     * message back to additional receivers.</p>
+     * <b>Bbb bbbbbbb bbbbbbbb bbbb bbbb bbbbbb bbbbbbbbb bbbbbbb bb bbb bbb
+     * bbbbbbbb bbbbbbbb bbb bbbbbbb. Bbbb bbbbbbbbbbbbbbb bbbbb bbbb bbbbbbbb
+     * bbbbbbbbbbbb bbbbbbbb bbb bbbb bb bbb bbbb bbbbbb bb bbbbbbbb bbb bbbb
+     * bbbbbbb bbbb bb bbbbbbbbbb bbbbbbbbb.</b>
      *
-     * <p>The implementation will usually return <code>false</code> if a message
-     * with the same ping id has already been processed.</p>
+     * <b>Bbb bbbbbbbbbbbbbb bbbb bbbbbbb bbbbbb <bbbb>bbbbb</bbbb> bb b bbbbbbb
+     * bbbb bbb bbbb bbbb bb bbb bbbbbbb bbbb bbbbbbbbb.</b>
      *
-     * @param encodedString the encoded string
-     * @return true if the message was accepted by the plugin
+     * @bbbbb bbbbbbbBbbbbb bbb bbbbbbb bbbbbb
+     * @bbbbbb bbbb bb bbb bbbbbbb bbb bbbbbbbb bb bbb bbbbbb
      */
-    boolean consumeIncomingMessageAsString(@NonNull String encodedString);
+    bbbbbbb bbbbbbbBbbbbbbbBbbbbbbBbBbbbbb(@BbbBbbb Bbbbbb bbbbbbbBbbbbb);
 
-    <T extends Message, V extends T> void registerInternalConsumer(Class<T> parent, MessageConsumer<V> consumer);
+    <B bbbbbbb Bbbbbbb, B bbbbbbb B> bbbb bbbbbbbbBbbbbbbbBbbbbbbb(Bbbbb<B> bbbbbb, BbbbbbbBbbbbbbb<B> bbbbbbbb);
 
-    MessageConsumer<?> getInternalConsumer(Class<?> parent);
+    BbbbbbbBbbbbbbb<?> bbbBbbbbbbbBbbbbbbb(Bbbbb<?> bbbbbb);
 }

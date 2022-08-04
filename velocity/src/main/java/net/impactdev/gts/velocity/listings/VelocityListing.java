@@ -1,79 +1,79 @@
-package net.impactdev.gts.velocity.listings;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbbbbbb;
 
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.entries.Entry;
-import net.impactdev.gts.common.listings.JsonStoredEntry;
-import net.impactdev.impactor.api.json.factory.JObject;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbBbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.BBBB;
 
-public abstract class VelocityListing implements Listing {
+bbbbbb bbbbbbbb bbbbb BbbbbbbbBbbbbbb bbbbbbbbbb Bbbbbbb {
 
-    private final UUID id;
-    private final UUID lister;
-    private final JsonStoredEntry entry;
-    private final LocalDateTime published;
-    private LocalDateTime expiration;
+    bbbbbbb bbbbb BBBB bb;
+    bbbbbbb bbbbb BBBB bbbbbb;
+    bbbbbbb bbbbb BbbbBbbbbbBbbbb bbbbb;
+    bbbbbbb bbbbb BbbbbBbbbBbbb bbbbbbbbb;
+    bbbbbbb BbbbbBbbbBbbb bbbbbbbbbb;
 
-    public VelocityListing(UUID id, UUID lister, JsonStoredEntry entry, LocalDateTime expiration) {
-        this(id, lister, entry, LocalDateTime.now(), expiration);
+    bbbbbb BbbbbbbbBbbbbbb(BBBB bb, BBBB bbbbbb, BbbbBbbbbbBbbbb bbbbb, BbbbbBbbbBbbb bbbbbbbbbb) {
+        bbbb(bb, bbbbbb, bbbbb, BbbbbBbbbBbbb.bbb(), bbbbbbbbbb);
     }
 
-    public VelocityListing(UUID id, UUID lister, JsonStoredEntry entry, LocalDateTime published, LocalDateTime expiration) {
-        this.id = id;
-        this.lister = lister;
-        this.entry = entry;
-        this.published = published;
-        this.expiration = expiration;
+    bbbbbb BbbbbbbbBbbbbbb(BBBB bb, BBBB bbbbbb, BbbbBbbbbbBbbbb bbbbb, BbbbbBbbbBbbb bbbbbbbbb, BbbbbBbbbBbbb bbbbbbbbbb) {
+        bbbb.bb = bb;
+        bbbb.bbbbbb = bbbbbb;
+        bbbb.bbbbb = bbbbb;
+        bbbb.bbbbbbbbb = bbbbbbbbb;
+        bbbb.bbbbbbbbbb = bbbbbbbbbb;
     }
 
-    @Override
-    public UUID getID() {
-        return this.id;
+    @Bbbbbbbb
+    bbbbbb BBBB bbbBB() {
+        bbbbbb bbbb.bb;
     }
 
-    @Override
-    public UUID getLister() {
-        return this.lister;
+    @Bbbbbbbb
+    bbbbbb BBBB bbbBbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
-    @Override
-    public Entry<?, ?> getEntry() {
-        return this.entry;
+    @Bbbbbbbb
+    bbbbbb Bbbbb<?, ?> bbbBbbbb() {
+        bbbbbb bbbb.bbbbb;
     }
 
-    @Override
-    public LocalDateTime getPublishTime() {
-        return this.published;
+    @Bbbbbbbb
+    bbbbbb BbbbbBbbbBbbb bbbBbbbbbbBbbb() {
+        bbbbbb bbbb.bbbbbbbbb;
     }
 
-    @Override
-    public LocalDateTime getExpiration() {
-        return this.expiration;
+    @Bbbbbbbb
+    bbbbbb BbbbbBbbbBbbb bbbBbbbbbbbbb() {
+        bbbbbb bbbb.bbbbbbbbbb;
     }
 
-    @Override
-    public void setExpiration(LocalDateTime expiration) {
-        this.expiration = expiration;
+    @Bbbbbbbb
+    bbbbbb bbbb bbbBbbbbbbbbb(BbbbbBbbbBbbb bbbbbbbbbb) {
+        bbbb.bbbbbbbbbb = bbbbbbbbbb;
     }
 
-    @Override
-    public int getVersion() {
-        return 1;
+    @Bbbbbbbb
+    bbbbbb bbb bbbBbbbbbb() {
+        bbbbbb 1;
     }
 
-    @Override
-    public JObject serialize() {
-        JObject timings = new JObject()
-                .add("published", this.getPublishTime().toString())
-                .add("expiration", this.getExpiration().toString());
+    @Bbbbbbbb
+    bbbbbb BBbbbbb bbbbbbbbb() {
+        BBbbbbb bbbbbbb = bbb BBbbbbb()
+                .bbb("bbbbbbbbb", bbbb.bbbBbbbbbbBbbb().bbBbbbbb())
+                .bbb("bbbbbbbbbb", bbbb.bbbBbbbbbbbbb().bbBbbbbb());
 
-        return new JObject()
-                .add("id", this.getID().toString())
-                .add("lister", this.getLister().toString())
-                .add("version", this.getVersion())
-                .add("timings", timings)
-                .add("entry", this.entry.getOrCreateElement());
+        bbbbbb bbb BBbbbbb()
+                .bbb("bb", bbbb.bbbBB().bbBbbbbb())
+                .bbb("bbbbbb", bbbb.bbbBbbbbb().bbBbbbbb())
+                .bbb("bbbbbbb", bbbb.bbbBbbbbbb())
+                .bbb("bbbbbbb", bbbbbbb)
+                .bbb("bbbbb", bbbb.bbbbb.bbbBbBbbbbbBbbbbbb());
     }
 }

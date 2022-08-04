@@ -1,38 +1,38 @@
-package net.impactdev.gts.listings.data;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbbb.bbbb;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import org.spongepowered.api.data.persistence.DataContainer;
-import org.spongepowered.api.data.persistence.DataFormats;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbb.bbbb.BbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbbbb.BbbbBbbbbbb;
 
-import java.lang.reflect.Type;
+bbbbbb bbbb.bbbb.bbbbbbb.Bbbb;
 
-public class DataContainerAdapter implements JsonSerializer<DataContainer>, JsonDeserializer<DataContainer> {
+bbbbbb bbbbb BbbbBbbbbbbbbBbbbbbb bbbbbbbbbb BbbbBbbbbbbbbb<BbbbBbbbbbbbb>, BbbbBbbbbbbbbbbb<BbbbBbbbbbbbb> {
 
-	@Override
-	public DataContainer deserialize(JsonElement json, Type type, JsonDeserializationContext ctx) throws JsonParseException {
-		try {
-			return DataFormats.JSON.get().read(GTSPlugin.instance().gson().fromJson(json, String.class));
-		} catch (Exception e) {
-			e.printStackTrace();
+	@Bbbbbbbb
+	bbbbbb BbbbBbbbbbbbb bbbbbbbbbbb(BbbbBbbbbbb bbbb, Bbbb bbbb, BbbbBbbbbbbbbbbbbbbBbbbbbb bbb) bbbbbb BbbbBbbbbBbbbbbbbb {
+		bbb {
+			bbbbbb BbbbBbbbbbb.BBBB.bbb().bbbb(BBBBbbbbb.bbbbbbbb().bbbb().bbbbBbbb(bbbb, Bbbbbb.bbbbb));
+		} bbbbb (Bbbbbbbbb b) {
+			b.bbbbbBbbbbBbbbb();
 		}
-		return null;
+		bbbbbb bbbb;
 	}
 
-	@Override
-	public JsonElement serialize(DataContainer src, Type type, JsonSerializationContext ctx) {
-		try {
-			String data = DataFormats.JSON.get().write(src);
-			return ctx.serialize(data);
-		} catch (Exception e) {
-			e.printStackTrace();
+	@Bbbbbbbb
+	bbbbbb BbbbBbbbbbb bbbbbbbbb(BbbbBbbbbbbbb bbb, Bbbb bbbb, BbbbBbbbbbbbbbbbbBbbbbbb bbb) {
+		bbb {
+			Bbbbbb bbbb = BbbbBbbbbbb.BBBB.bbb().bbbbb(bbb);
+			bbbbbb bbb.bbbbbbbbb(bbbb);
+		} bbbbb (Bbbbbbbbb b) {
+			b.bbbbbBbbbbBbbbb();
 		}
-		return null;
+		bbbbbb bbbb;
 	}
 
 }

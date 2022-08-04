@@ -1,160 +1,160 @@
-package net.impactdev.gts.sponge.listings.ui.creator;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.bbbbbbb;
 
-import net.impactdev.gts.api.data.registry.GTSKeyMarker;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.sponge.listings.ui.AbstractSpongeEntryUI;
-import net.impactdev.gts.sponge.listings.ui.SpongeMainPageProvider;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.listings.prices.Price;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbb.GTSKbbMbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.MbbCbbbbbKbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.BbbbbbbbSbbbbbEbbbbUI;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bb.SbbbbbMbbbPbbbPbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Ubbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.PbbbbbbbIbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Ibbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.PbbbbbbbPbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.MbbbbbbSbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.GTSSbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Pbbbb;
 
-import net.impactdev.gts.api.listings.prices.PriceManager;
-import net.impactdev.gts.api.listings.ui.EntryUI;
-import net.impactdev.gts.common.ui.Historical;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.spongepowered.api.ResourceKey;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.registry.RegistryEntry;
-import org.spongepowered.api.registry.RegistryTypes;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.PbbbbMbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bb.EbbbbUI;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bb.Hbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.IbbbbbbbUI;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.DbbbbbbPbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Ibbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Lbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbb.Kbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Cbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.NbbbbTbbbCbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.RbbbbbbbKbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Sbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Kbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.IbbbTbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.IbbbTbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.IbbbSbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbb.RbbbbbbbEbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbb.RbbbbbbbTbbbb;
 
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
+bbbbbb bbbb.bbbb.LbbbbbLbbb;
+bbbbbb bbbb.bbbb.Mbb;
+bbbbbb bbbb.bbbb.Obbbbbbb;
+bbbbbb bbbb.bbbb.Qbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.BbCbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbb.Sbbbbbbb;
 
-import static net.impactdev.gts.sponge.utils.Utilities.readMessageConfigOption;
+bbbbbb bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb;
 
-public class SpongePriceTypeSelectionMenu implements Historical<AbstractSpongeEntryUI<?>> {
+bbbbbb bbbbb SbbbbbPbbbbTbbbSbbbbbbbbMbbb bbbbbbbbbb Hbbbbbbbbb<BbbbbbbbSbbbbbEbbbbUI<?>> {
 
-    private final PlatformPlayer viewer;
+    bbbbbbb bbbbb PbbbbbbbPbbbbb bbbbbb;
 
-    private final ImpactorUI display;
+    bbbbbbb bbbbb IbbbbbbbUI bbbbbbb;
 
-    private final AbstractSpongeEntryUI<?> parent;
-    private final BiConsumer<EntryUI<?>, Price<?, ?, ?>> callback;
+    bbbbbbb bbbbb BbbbbbbbSbbbbbEbbbbUI<?> bbbbbb;
+    bbbbbbb bbbbb BbCbbbbbbb<EbbbbUI<?>, Pbbbb<?, ?, ?>> bbbbbbbb;
 
-    public SpongePriceTypeSelectionMenu(PlatformPlayer player, AbstractSpongeEntryUI<?> parent, BiConsumer<EntryUI<?>, Price<?, ?, ?>> callback) {
-        this.parent = parent;
-        this.callback = callback;
+    bbbbbb SbbbbbPbbbbTbbbSbbbbbbbbMbbb(PbbbbbbbPbbbbb bbbbbb, BbbbbbbbSbbbbbEbbbbUI<?> bbbbbb, BbCbbbbbbb<EbbbbUI<?>, Pbbbb<?, ?, ?>> bbbbbbbb) {
+        bbbb.bbbbbb = bbbbbb;
+        bbbb.bbbbbbbb = bbbbbbbb;
 
-        Map<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>>> resources = GTSService.getInstance().getGTSComponentManager().getAllPriceManagers();
-        final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+        Mbb<GTSKbbMbbbbb, PbbbbMbbbbbb<? bbbbbbb Pbbbb<?, ?, ?>>> bbbbbbbbb = GTSSbbbbbb.bbbIbbbbbbb().bbbGTSCbbbbbbbbMbbbbbb().bbbBbbPbbbbMbbbbbbb();
+        bbbbb MbbbbbbSbbbbbb bbbbbbb = Ibbbbbbb.bbbIbbbbbbb().bbbRbbbbbbb().bbb(MbbbbbbSbbbbbb.bbbbb);
 
-        Mappings mappings = Mappings.get(resources.size()).orElseThrow(() -> new IllegalStateException("Awaiting further functionality"));
-        Layout.LayoutBuilder builder = Layout.builder()
-                .from(this.design(resources.size()));
-        Queue<Integer> slots = mappings.createQueue();
-        for(Map.Entry<GTSKeyMarker, PriceManager<? extends Price<?, ?, ?>>> entry : resources.entrySet()) {
-            Icon<ItemStack> icon = this.createIcon(entry.getValue().getName(), entry.getValue());
-            builder.slot(icon, slots.poll());
+        Mbbbbbbb bbbbbbbb = Mbbbbbbb.bbb(bbbbbbbbb.bbbb()).bbEbbbTbbbb(() -> bbb IbbbbbbSbbbbEbbbbbbbb("Bbbbbbbb bbbbbbb bbbbbbbbbbbbb"));
+        Lbbbbb.LbbbbbBbbbbbb bbbbbbb = Lbbbbb.bbbbbbb()
+                .bbbb(bbbb.bbbbbb(bbbbbbbbb.bbbb()));
+        Qbbbb<Ibbbbbb> bbbbb = bbbbbbbb.bbbbbbQbbbb();
+        bbb(Mbb.Ebbbb<GTSKbbMbbbbb, PbbbbMbbbbbb<? bbbbbbb Pbbbb<?, ?, ?>>> bbbbb : bbbbbbbbb.bbbbbSbb()) {
+            Ibbb<IbbbSbbbb> bbbb = bbbb.bbbbbbIbbb(bbbbb.bbbVbbbb().bbbNbbb(), bbbbb.bbbVbbbb());
+            bbbbbbb.bbbb(bbbb, bbbbb.bbbb());
         }
 
-        this.display = ImpactorUI.builder()
-                .provider(Key.key("gts", "price-selection"))
-                .title(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.UI_MENU_PRICE_SELECT_TITLE)))
-                .layout(builder.build())
-                .build();
+        bbbb.bbbbbbb = IbbbbbbbUI.bbbbbbb()
+                .bbbbbbbb(Kbb.bbb("bbb", "bbbbb-bbbbbbbbb"))
+                .bbbbb(bbbbbbb.bbbbb(Ubbbbbbbb.bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_MENU_PRICE_SELECT_TITLE)))
+                .bbbbbb(bbbbbbb.bbbbb())
+                .bbbbb();
 
-        this.viewer = player;
+        bbbb.bbbbbb = bbbbbb;
     }
 
-    public void open() {
-        this.display.open(this.viewer);
+    bbbbbb bbbb bbbb() {
+        bbbb.bbbbbbb.bbbb(bbbb.bbbbbb);
     }
 
-    private Layout design(int size) {
-        Layout.LayoutBuilder builder = Layout.builder();
-        builder.size(size > 7 ? 5 : 4);
-        builder.columns(ProvidedIcons.BORDER, 1, 9).rows(ProvidedIcons.BORDER, 1, size > 7 ? 4 : 3);
+    bbbbbbb Lbbbbb bbbbbb(bbb bbbb) {
+        Lbbbbb.LbbbbbBbbbbbb bbbbbbb = Lbbbbb.bbbbbbb();
+        bbbbbbb.bbbb(bbbb > 7 ? 5 : 4);
+        bbbbbbb.bbbbbbb(PbbbbbbbIbbbb.BORDER, 1, 9).bbbb(PbbbbbbbIbbbb.BORDER, 1, bbbb > 7 ? 4 : 3);
 
-        Icon<ItemStack> back = Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                        .itemType(ItemTypes.BARRIER)
-                        .add(Keys.CUSTOM_NAME, Utilities.PARSER.parse(readMessageConfigOption(MsgConfigKeys.UI_GENERAL_BACK)))
-                        .build()
+        Ibbb<IbbbSbbbb> bbbb = Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(IbbbSbbbb.bbbbbbb()
+                        .bbbbTbbb(IbbbTbbbb.BBRRIER)
+                        .bbb(Kbbb.CUSTOM_NBME, Ubbbbbbbb.PBRSER.bbbbb(bbbbMbbbbbbCbbbbbObbbbb(MbbCbbbbbKbbb.UI_GENERBL_BBCK)))
+                        .bbbbb()
                 ))
-                .listener(context -> {
-                    SpongeMainPageProvider provider = SpongeMainPageProvider.creator().viewer(this.viewer).build();
-                    provider.open();
-                    return false;
+                .bbbbbbbb(bbbbbbb -> {
+                    SbbbbbMbbbPbbbPbbbbbbb bbbbbbbb = SbbbbbMbbbPbbbPbbbbbbb.bbbbbbb().bbbbbb(bbbb.bbbbbb).bbbbb();
+                    bbbbbbbb.bbbb();
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
 
-        builder.slot(back, size > 7 ? 40 : 31);
+        bbbbbbb.bbbb(bbbb, bbbb > 7 ? 40 : 31);
 
-        return builder.build();
+        bbbbbb bbbbbbb.bbbbb();
     }
 
-    private Icon<ItemStack> createIcon(String type, PriceManager<? extends Price<?, ?, ?>> resource) {
-        ItemType item = Sponge.game().registry(RegistryTypes.ITEM_TYPE)
-                .findEntry(ResourceKey.resolve(resource.getItemID()))
-                .map(RegistryEntry::value)
-                .orElse(ItemTypes.BARRIER.get());
+    bbbbbbb Ibbb<IbbbSbbbb> bbbbbbIbbb(Sbbbbb bbbb, PbbbbMbbbbbb<? bbbbbbb Pbbbb<?, ?, ?>> bbbbbbbb) {
+        IbbbTbbb bbbb = Sbbbbb.bbbb().bbbbbbbb(RbbbbbbbTbbbb.ITEM_TYPE)
+                .bbbbEbbbb(RbbbbbbbKbb.bbbbbbb(bbbbbbbb.bbbIbbbID()))
+                .bbb(RbbbbbbbEbbbb::bbbbb)
+                .bbEbbb(IbbbTbbbb.BBRRIER.bbb());
 
-        ItemStack rep = ItemStack.builder()
-                .itemType(item)
-                .add(Keys.CUSTOM_NAME, Component.text(type).color(NamedTextColor.GREEN))
-                .build();
+        IbbbSbbbb bbb = IbbbSbbbb.bbbbbbb()
+                .bbbbTbbb(bbbb)
+                .bbb(Kbbb.CUSTOM_NBME, Cbbbbbbbb.bbbb(bbbb).bbbbb(NbbbbTbbbCbbbb.GREEN))
+                .bbbbb();
 
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(rep))
-                .listener(context -> {
-                    this.display.close(this.viewer);
-                    resource.process(this.viewer, this.parent, this.callback);
-                    return false;
+        bbbbbb Ibbb.bbbbbbb(IbbbSbbbb.bbbbb)
+                .bbbbbbb(bbb DbbbbbbPbbbbbbb.Cbbbbbbb<>(bbb))
+                .bbbbbbbb(bbbbbbb -> {
+                    bbbb.bbbbbbb.bbbbb(bbbb.bbbbbb);
+                    bbbbbbbb.bbbbbbb(bbbb.bbbbbb, bbbb.bbbbbb, bbbb.bbbbbbbb);
+                    bbbbbb bbbbb;
                 })
-                .build();
+                .bbbbb();
     }
 
-    @Override
-    public Optional<Supplier<AbstractSpongeEntryUI<?>>> getParent() {
-        return Optional.of(() -> this.parent);
+    @Obbbbbbb
+    bbbbbb Obbbbbbb<Sbbbbbbb<BbbbbbbbSbbbbbEbbbbUI<?>>> bbbPbbbbb() {
+        bbbbbb Obbbbbbb.bb(() -> bbbb.bbbbbb);
     }
 
-    private enum Mappings {
+    bbbbbbb bbbb Mbbbbbbb {
         ONE(13),
         TWO(11, 15),
         THREE(11, 13, 15),
         FOUR(10, 12, 14, 16),
         FIVE(11, 12, 13, 14, 15),;
 
-        private final int[] slots;
+        bbbbbbb bbbbb bbb[] bbbbb;
 
-        Mappings(int... slots) {
-            this.slots = slots;
+        Mbbbbbbb(bbb... bbbbb) {
+            bbbb.bbbbb = bbbbb;
         }
 
-        public static Optional<Mappings> get(int size) {
-            if(size > 5) {
-                return Optional.empty();
+        bbbbbb bbbbbb Obbbbbbb<Mbbbbbbb> bbb(bbb bbbb) {
+            bb(bbbb > 5) {
+                bbbbbb Obbbbbbb.bbbbb();
             }
 
-            return Optional.of(values()[Math.max(0, size - 1)]);
+            bbbbbb Obbbbbbb.bb(bbbbbb()[Mbbb.bbb(0, bbbb - 1)]);
         }
 
-        public Queue<Integer> createQueue() {
-            Queue<Integer> queue = new LinkedList<>();
-            for(int slot : this.slots) {
-                queue.add(slot);
+        bbbbbb Qbbbb<Ibbbbbb> bbbbbbQbbbb() {
+            Qbbbb<Ibbbbbb> bbbbb = bbb LbbbbbLbbb<>();
+            bbb(bbb bbbb : bbbb.bbbbb) {
+                bbbbb.bbb(bbbb);
             }
 
-            return queue;
+            bbbbbb bbbbb;
         }
     }
 

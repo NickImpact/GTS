@@ -1,511 +1,511 @@
-package net.impactdev.gts.manager;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbbb;
 
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.AtomicDouble;
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.event.factory.GTSEventFactory;
-import net.impactdev.gts.api.listings.Listing;
-import net.impactdev.gts.api.listings.makeup.Fees;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCode;
-import net.impactdev.gts.api.player.PlayerSettingsManager;
-import net.impactdev.gts.api.messaging.message.errors.ErrorCodes;
-import net.impactdev.gts.api.util.groupings.SimilarPair;
-import net.impactdev.gts.common.storage.GTSStorageImpl;
-import net.impactdev.gts.sponge.utils.Utilities;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.configuration.Config;
-import net.impactdev.impactor.api.configuration.ConfigKey;
-import net.impactdev.impactor.api.placeholders.PlaceholderSources;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.gts.api.listings.auctions.Auction;
-import net.impactdev.gts.api.listings.buyitnow.BuyItNow;
-import net.impactdev.gts.api.listings.manager.ListingManager;
-import net.impactdev.gts.api.listings.prices.Price;
-import net.impactdev.gts.api.listings.prices.PriceControlled;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.config.ConfigKeys;
-import net.impactdev.gts.common.discord.DiscordNotifier;
-import net.impactdev.gts.common.discord.DiscordOption;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.common.utils.future.CompletableFutureManager;
-import net.impactdev.gts.common.utils.exceptions.ExceptionWriter;
-import net.impactdev.gts.sponge.listings.SpongeAuction;
-import net.impactdev.gts.sponge.listings.SpongeBuyItNow;
-import net.impactdev.gts.sponge.listings.SpongeListing;
-import net.impactdev.gts.sponge.pricing.provided.MonetaryPrice;
-import net.impactdev.impactor.api.utilities.Time;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.mariuszgromada.math.mxparser.Argument;
-import org.mariuszgromada.math.mxparser.Expression;
-import org.mariuszgromada.math.mxparser.Function;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.service.economy.EconomyService;
-import org.spongepowered.api.service.economy.account.UniqueAccount;
-import org.spongepowered.api.service.economy.transaction.ResultType;
-import org.spongepowered.api.service.economy.transaction.TransactionResult;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbb.bbbbbbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.BBBBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbb.bbbbbbb.BBBBbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbbb.bbbbbbb.bbbbbb.BbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbb.bbbbbbbbb.BbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.BBBBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbbb.BbbbbbBbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbbbbb.BbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.Bbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbbb.BbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbbbb.bbbbbb.BbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.BbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbb.BbbbbbbbbbbBbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbbbbbbb.BbbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBbbBbBbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbb.bbbbbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbbb.Bbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.BbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbb.bbbb.bbbbbbbb.Bbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbbb.bbbb.bbbbbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.bbbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.bbbbbbbbbbb.BbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.bbbbbbb.bbbbbbbbbbb.BbbbbbbbbbbBbbbbb;
 
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
+bbbbbb bbbb.bbbb.BbbBbbbbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BbbbbBbbbBbbb;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbbBbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbb;
+bbbbbb bbbb.bbbb.bbbbbb.Bbbbbbbbbb;
 
-public class SpongeListingManager implements ListingManager<SpongeListing, SpongeAuction, SpongeBuyItNow> {
+bbbbbb bbbbb BbbbbbBbbbbbbBbbbbbb bbbbbbbbbb BbbbbbbBbbbbbb<BbbbbbBbbbbbb, BbbbbbBbbbbbb, BbbbbbBbbBbBbb> {
 
-	public static final DiscordNotifier notifier = new DiscordNotifier(GTSPlugin.instance());
+	bbbbbb bbbbbb bbbbb BbbbbbbBbbbbbbb bbbbbbbb = bbb BbbbbbbBbbbbbbb(BBBBbbbbb.bbbbbbbb());
 
-	@Override
-	public String getServiceName() {
-		return "Sponge Listing Manager";
+	@Bbbbbbbb
+	bbbbbb Bbbbbb bbbBbbbbbbBbbb() {
+		bbbbbb "Bbbbbb Bbbbbbb Bbbbbbb";
 	}
 
-	@Override
-	public CompletableFuture<Boolean> list(UUID lister, SpongeListing listing) {
-		final Optional<ServerPlayer> source = Sponge.server().player(lister);
-		final Config main = GTSPlugin.instance().configuration().main();
-		final Config lang = GTSPlugin.instance().configuration().language();
-		final MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-		final EconomyService economy = Sponge.server().serviceProvider().economyService().orElseThrow(IllegalStateException::new);
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbb(BBBB bbbbbb, BbbbbbBbbbbbb bbbbbbb) {
+		bbbbb Bbbbbbbb<BbbbbbBbbbbb> bbbbbb = Bbbbbb.bbbbbb().bbbbbb(bbbbbb);
+		bbbbb Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb();
+		bbbbb Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+		bbbbb BbbbbbbBbbbbbb bbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+		bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb().bbbbbbbBbbbbbb().bbBbbbBbbbb(BbbbbbbBbbbbBbbbbbbbb::bbb);
 
-		return CompletableFutureManager.makeFuture(() -> {
-			PlaceholderSources sources = PlaceholderSources.builder().append(Listing.class, () -> listing).build();
-			source.ifPresent(player -> sources.append(ServerPlayer.class, () -> player));
-			source.ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST))));
+		bbbbbb BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(() -> {
+			BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb().bbbbbb(Bbbbbbb.bbbbb, () -> bbbbbbb).bbbbb();
+			bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbbb.bbbbbb(BbbbbbBbbbbb.bbbbb, () -> bbbbbb));
+			bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBB_BBBBBBBBBB_BBBBBBB))));
 
-			try {
-				listing.serialize();
-			} catch (Exception e) {
-				source.ifPresent(player -> player.sendMessage(parser.parse("{{gts:error}} There's an issue with your listing, so we cancelled the list attempt!")));
-				ExceptionWriter.write(e);
+			bbb {
+				bbbbbbb.bbbbbbbbb();
+			} bbbbb (Bbbbbbbbb b) {
+				bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb("{{bbb:bbbbb}} Bbbbb'b bb bbbbb bbbb bbbb bbbbbbb, bb bb bbbbbbbbb bbb bbbb bbbbbbb!")));
+				BbbbbbbbbBbbbbb.bbbbb(b);
 			}
 
-			// Check if the user attempting to list a listing has already hit the max amount allowed for a player
-			boolean hasMax = this.hasMaxListings(lister).get(2, TimeUnit.SECONDS);
-			if(hasMax) {
-				source.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.MAX_LISTINGS), sources).forEach(player::sendMessage));
-				return false;
+			// Bbbbb bb bbb bbbb bbbbbbbbbb bb bbbb b bbbbbbb bbb bbbbbbb bbb bbb bbb bbbbbb bbbbbbb bbb b bbbbbb
+			bbbbbbb bbbBbb = bbbb.bbbBbbBbbbbbbb(bbbbbb).bbb(2, BbbbBbbb.BBBBBBB);
+			bb(bbbBbb) {
+				bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBB_BBBBBBBB), bbbbbbb).bbbBbbb(bbbbbb::bbbbBbbbbbb));
+				bbbbbb bbbbb;
 			}
 
-			// Publish our event to indicate the user's desire to publish their listing
-			if(Impactor.getInstance().getEventBus().post(GTSEventFactory.createPublishListingEvent(lister, listing))) {
-				source.ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.LISTING_EVENT_CANCELLED), sources)));
-				return false;
+			// Bbbbbbb bbb bbbbb bb bbbbbbbb bbb bbbb'b bbbbbb bb bbbbbbb bbbbb bbbbbbb
+			bb(Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbBbb().bbbb(BBBBbbbbBbbbbbb.bbbbbbBbbbbbbBbbbbbbBbbbb(bbbbbb, bbbbbbb))) {
+				bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBB_BBBBB_BBBBBBBBB), bbbbbbb)));
+				bbbbbb bbbbb;
 			}
 
-			// Retrieve the Price of the listing
-			AtomicReference<Price<?, ?, ?>> price;
-			if(listing instanceof Auction) {
-				price = new AtomicReference<>(new MonetaryPrice(((Auction) listing).getStartingPrice()));
-			} else {
-				price = new AtomicReference<>(((BuyItNow) listing).getPrice());
+			// Bbbbbbbb bbb Bbbbb bb bbb bbbbbbb
+			BbbbbbBbbbbbbbb<Bbbbb<?, ?, ?>> bbbbb;
+			bb(bbbbbbb bbbbbbbbbb Bbbbbbb) {
+				bbbbb = bbb BbbbbbBbbbbbbbb<>(bbb BbbbbbbbBbbbb(((Bbbbbbb) bbbbbbb).bbbBbbbbbbbBbbbb()));
+			} bbbb {
+				bbbbb = bbb BbbbbbBbbbbbbbb<>(((BbbBbBbb) bbbbbbb).bbbBbbbb());
 			}
 
-			// Check if the entry is price controlled
+			// Bbbbb bb bbb bbbbb bb bbbbb bbbbbbbbbb
 			//
-			// If controlled, and our configuration states we should apply controls,
-			// take our price and ensure it's a MoneyPrice. If so, apply price controls
-			// as necessary.
-			if(main.get(ConfigKeys.PRICE_CONTROL_ENABLED)) {
-				if (price.get() instanceof MonetaryPrice) {
-					MonetaryPrice monetary = (MonetaryPrice) price.get();
-					AtomicDouble min = new AtomicDouble(main.get(ConfigKeys.LISTINGS_MIN_PRICE));
-					AtomicDouble max = new AtomicDouble(main.get(ConfigKeys.LISTINGS_MAX_PRICE));
+			// Bb bbbbbbbbbb, bbb bbb bbbbbbbbbbbbb bbbbbb bb bbbbbb bbbbb bbbbbbbb,
+			// bbbb bbb bbbbb bbb bbbbbb bb'b b BbbbbBbbbb. Bb bb, bbbbb bbbbb bbbbbbbb
+			// bb bbbbbbbbb.
+			bb(bbbb.bbb(BbbbbbBbbb.BBBBB_BBBBBBB_BBBBBBB)) {
+				bb (bbbbb.bbb() bbbbbbbbbb BbbbbbbbBbbbb) {
+					BbbbbbbbBbbbb bbbbbbbb = (BbbbbbbbBbbbb) bbbbb.bbb();
+					BbbbbbBbbbbb bbb = bbb BbbbbbBbbbbb(bbbb.bbb(BbbbbbBbbb.BBBBBBBB_BBB_BBBBB));
+					BbbbbbBbbbbb bbb = bbb BbbbbbBbbbbb(bbbb.bbb(BbbbbbBbbb.BBBBBBBB_BBB_BBBBB));
 
-					if(listing.getEntry() instanceof PriceControlled) {
-						PriceControlled controls = (PriceControlled) listing.getEntry();
-						min.set(Math.max(min.get(), controls.getMin()));
-						max.set(Math.min(max.get(), controls.getMax()));
+					bb(bbbbbbb.bbbBbbbb() bbbbbbbbbb BbbbbBbbbbbbbbb) {
+						BbbbbBbbbbbbbbb bbbbbbbb = (BbbbbBbbbbbbbbb) bbbbbbb.bbbBbbbb();
+						bbb.bbb(Bbbb.bbb(bbb.bbb(), bbbbbbbb.bbbBbb()));
+						bbb.bbb(Bbbb.bbb(bbb.bbb(), bbbbbbbb.bbbBbb()));
 					}
 
-					double actual = monetary.getPrice().doubleValue();
-					if(actual < min.get()) {
-						PlaceholderSources minSources = PlaceholderSources.builder()
-								.from(sources)
-								.append(Double.class, min::get)
-								.build();
+					bbbbbb bbbbbb = bbbbbbbb.bbbBbbbb().bbbbbbBbbbb();
+					bb(bbbbbb < bbb.bbb()) {
+						BbbbbbbbbbbBbbbbbb bbbBbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+								.bbbb(bbbbbbb)
+								.bbbbbb(Bbbbbb.bbbbb, bbb::bbb)
+								.bbbbb();
 
-						source.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.MIN_PRICE_ERROR), minSources).forEach(player::sendMessage));
-						return false;
-					} else if(actual > max.get()) {
-						PlaceholderSources maxSources = PlaceholderSources.builder()
-								.from(sources)
-								.append(Double.class, max::get)
-								.build();
+						bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBB_BBBBB_BBBBB), bbbBbbbbbb).bbbBbbb(bbbbbb::bbbbBbbbbbb));
+						bbbbbb bbbbb;
+					} bbbb bb(bbbbbb > bbb.bbb()) {
+						BbbbbbbbbbbBbbbbbb bbbBbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+								.bbbb(bbbbbbb)
+								.bbbbbb(Bbbbbb.bbbbb, bbb::bbb)
+								.bbbbb();
 
-						source.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.MAX_PRICE_ERROR), maxSources).forEach(player::sendMessage));
-						return false;
+						bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBB_BBBBB_BBBBB), bbbBbbbbbb).bbbBbbb(bbbbbb::bbbbBbbbbbb));
+						bbbbbb bbbbb;
 					}
 				}
 			}
 
-			// Let's begin tax application
+			// Bbb'b bbbbb bbb bbbbbbbbbbb
 			//
-			// Of course, let's make sure it's enabled, and that the price is also taxable
-			Fees.FeeBuilder feeBuilder = Fees.builder();
-			AtomicReference<BigDecimal> fees = new AtomicReference<>(BigDecimal.ZERO);
-			if(main.get(ConfigKeys.FEES_ENABLED)) {
-				fees.updateAndGet(current -> {
-					double amount = price.get().calculateFee(listing instanceof BuyItNow);
-					feeBuilder.price(price.get(), listing instanceof BuyItNow);
-					return current.add(new BigDecimal(amount));
+			// Bb bbbbbb, bbb'b bbbb bbbb bb'b bbbbbbb, bbb bbbb bbb bbbbb bb bbbb bbbbbbb
+			Bbbb.BbbBbbbbbb bbbBbbbbbb = Bbbb.bbbbbbb();
+			BbbbbbBbbbbbbbb<BbbBbbbbbb> bbbb = bbb BbbbbbBbbbbbbbb<>(BbbBbbbbbb.BBBB);
+			bb(bbbb.bbb(BbbbbbBbbb.BBBB_BBBBBBB)) {
+				bbbb.bbbbbbBbbBbb(bbbbbbb -> {
+					bbbbbb bbbbbb = bbbbb.bbb().bbbbbbbbbBbb(bbbbbbb bbbbbbbbbb BbbBbBbb);
+					bbbBbbbbbb.bbbbb(bbbbb.bbb(), bbbbbbb bbbbbbbbbb BbbBbBbb);
+					bbbbbb bbbbbbb.bbb(bbb BbbBbbbbbb(bbbbbb));
 				});
 
-				Time time = new Time(Duration.between(listing.getPublishTime(), listing.getExpiration()).getSeconds());
-				Function function = GTSPlugin.instance().configuration().main().get(ConfigKeys.FEE_TIME_EQUATION);
-				SimilarPair<Argument> arguments = Utilities.calculateTimeFee(time);
-				Expression expression = new Expression("f(hours,minutes)", function, arguments.getFirst(), arguments.getSecond());
-				if(!Double.isNaN(expression.calculate())) {
-					fees.updateAndGet(current -> {
-						double amount = expression.calculate();
-						feeBuilder.time(time, amount);
-						return current.add(BigDecimal.valueOf(amount));
+				Bbbb bbbb = bbb Bbbb(Bbbbbbbb.bbbbbbb(bbbbbbb.bbbBbbbbbbBbbb(), bbbbbbb.bbbBbbbbbbbbb()).bbbBbbbbbb());
+				Bbbbbbbb bbbbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBB_BBBB_BBBBBBBB);
+				BbbbbbbBbbb<Bbbbbbbb> bbbbbbbbb = Bbbbbbbbb.bbbbbbbbbBbbbBbb(bbbb);
+				Bbbbbbbbbb bbbbbbbbbb = bbb Bbbbbbbbbb("b(bbbbb,bbbbbbb)", bbbbbbbb, bbbbbbbbb.bbbBbbbb(), bbbbbbbbb.bbbBbbbbb());
+				bb(!Bbbbbb.bbBbB(bbbbbbbbbb.bbbbbbbbb())) {
+					bbbb.bbbbbbBbbBbb(bbbbbbb -> {
+						bbbbbb bbbbbb = bbbbbbbbbb.bbbbbbbbb();
+						bbbBbbbbbb.bbbb(bbbb, bbbbbb);
+						bbbbbb bbbbbbb.bbb(BbbBbbbbbb.bbbbbBb(bbbbbb));
 					});
 				}
 			}
 
-			// Take the listing from the lister
-			AtomicBoolean check = new AtomicBoolean(true);
-			source.ifPresent(player -> {
-				// Have user pay their fees if any are present
-				if(fees.get().doubleValue() > 0) {
-					sources.append(BigDecimal.class, fees::get);
-					sources.append(Fees.class, feeBuilder::build);
-					player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_FEES_COLLECTION), sources));
-					economy.findOrCreateAccount(lister).ifPresent(account -> {
-						if(account.balance(economy.defaultCurrency()).doubleValue() < fees.get().doubleValue()) {
-							parser.parse(lang.get(MsgConfigKeys.FEE_INVALID), sources).forEach(player::sendMessage);
-							check.set(false);
+			// Bbbb bbb bbbbbbb bbbb bbb bbbbbb
+			BbbbbbBbbbbbb bbbbb = bbb BbbbbbBbbbbbb(bbbb);
+			bbbbbb.bbBbbbbbb(bbbbbb -> {
+				// Bbbb bbbb bbb bbbbb bbbb bb bbb bbb bbbbbbb
+				bb(bbbb.bbb().bbbbbbBbbbb() > 0) {
+					bbbbbbb.bbbbbb(BbbBbbbbbb.bbbbb, bbbb::bbb);
+					bbbbbbb.bbbbbb(Bbbb.bbbbb, bbbBbbbbbb::bbbbb);
+					bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBB_BBBBBBBBBB), bbbbbbb));
+					bbbbbbb.bbbbBbBbbbbbBbbbbbb(bbbbbb).bbBbbbbbb(bbbbbbb -> {
+						bb(bbbbbbb.bbbbbbb(bbbbbbb.bbbbbbbBbbbbbbb()).bbbbbbBbbbb() < bbbb.bbb().bbbbbbBbbbb()) {
+							bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBB_BBBBBBB), bbbbbbb).bbbBbbb(bbbbbb::bbbbBbbbbbb);
+							bbbbb.bbb(bbbbb);
 						}
 
-						account.withdraw(economy.defaultCurrency(), fees.get());
+						bbbbbbb.bbbbbbbb(bbbbbbb.bbbbbbbBbbbbbbb(), bbbb.bbb());
 					});
 				}
 
-				if(check.get()) {
-					player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_COLLECT_LISTING), sources));
-					AtomicBoolean hold = new AtomicBoolean(false);
-					AtomicBoolean result = new AtomicBoolean(false);
-					Impactor.getInstance().getScheduler().sync().execute(() -> {
-						result.set(listing.getEntry().take(lister));
-						hold.set(true);
+				bb(bbbbb.bbb()) {
+					bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBB_BBBBBBB), bbbbbbb));
+					BbbbbbBbbbbbb bbbb = bbb BbbbbbBbbbbbb(bbbbb);
+					BbbbbbBbbbbbb bbbbbb = bbb BbbbbbBbbbbbb(bbbbb);
+					Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbb().bbbbbbb(() -> {
+						bbbbbb.bbb(bbbbbbb.bbbBbbbb().bbbb(bbbbbb));
+						bbbb.bbb(bbbb);
 					});
-					while(!hold.get()) {
-						try {
-							//noinspection BusyWait
-							Thread.sleep(50);
-						} catch (InterruptedException e) {
-							ExceptionWriter.write(e);
+					bbbbb(!bbbb.bbb()) {
+						bbb {
+							//bbbbbbbbbbbb BbbbBbbb
+							Bbbbbb.bbbbb(50);
+						} bbbbb (BbbbbbbbbbbBbbbbbbbb b) {
+							BbbbbbbbbBbbbbb.bbbbb(b);
 						}
 					}
-					if (!result.get()) {
-						player.sendMessage(parser.parse(lang.get(MsgConfigKeys.UNABLE_TO_TAKE_LISTING)));
-						if(fees.get().doubleValue() > 0) {
-							economy.findOrCreateAccount(lister).ifPresent(account -> {
-								if (account.balance(economy.defaultCurrency()).doubleValue() < fees.get().doubleValue()) {
-									player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_RETURN_FEES), sources));
+					bb (!bbbbbb.bbb()) {
+						bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBB_BB_BBBB_BBBBBBB)));
+						bb(bbbb.bbb().bbbbbbBbbbb() > 0) {
+							bbbbbbb.bbbbBbBbbbbbBbbbbbb(bbbbbb).bbBbbbbbb(bbbbbbb -> {
+								bb (bbbbbbb.bbbbbbb(bbbbbbb.bbbbbbbBbbbbbbb()).bbbbbbBbbbb() < bbbb.bbb().bbbbbbBbbbb()) {
+									bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBB_BBBB), bbbbbbb));
 								}
 
-								account.deposit(economy.defaultCurrency(), fees.get());
+								bbbbbbb.bbbbbbb(bbbbbbb.bbbbbbbBbbbbbbb(), bbbb.bbb());
 							});
 						}
-						check.set(false);
+						bbbbb.bbb(bbbbb);
 					}
 				}
 			});
 
-			if(!check.get()) {
-				return false;
+			bb(!bbbbb.bbb()) {
+				bbbbbb bbbbb;
 			}
 
-			boolean result = GTSPlugin.instance().storage().publishListing(listing).exceptionally(throwable -> {
-				source.ifPresent(player -> player.sendMessage(Component.text("Fatal Error Detected").color(NamedTextColor.RED)));
-				ExceptionWriter.write(throwable);
-				return false;
-			}).get(3, TimeUnit.SECONDS);
+			bbbbbbb bbbbbb = BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbb(bbbbbbb).bbbbbbbbbbbbb(bbbbbbbbb -> {
+				bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(Bbbbbbbbb.bbbb("Bbbbb Bbbbb Bbbbbbbb").bbbbb(BbbbbBbbbBbbbb.BBB)));
+				BbbbbbbbbBbbbbb.bbbbb(bbbbbbbbb);
+				bbbbbb bbbbb;
+			}).bbb(3, BbbbBbbb.BBBBBBB);
 
-			if(result) {
-				source.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.ADD_TEMPLATE), sources).forEach(player::sendMessage));
+			bb(bbbbbb) {
+				bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBB_BBBBBBBB), bbbbbbb).bbbBbbb(bbbbbb::bbbbBbbbbbb));
 
-				if(main.get(ConfigKeys.FEES_ENABLED)) {
-					sources.appendIfAbsent(Fees.class, feeBuilder::build);
-					source.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.FEE_APPLICATION), sources).forEach(player::sendMessage));
+				bb(bbbb.bbb(BbbbbbBbbb.BBBB_BBBBBBB)) {
+					bbbbbbb.bbbbbbBbBbbbbb(Bbbb.bbbbb, bbbBbbbbbb::bbbbb);
+					bbbbbb.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBB_BBBBBBBBBBB), bbbbbbb).bbbBbbb(bbbbbb::bbbbBbbbbbb));
 				}
 
-				PlayerSettingsManager manager = GTSService.getInstance().getPlayerSettingsManager();
-				for(Player player : Sponge.server().onlinePlayers()) {
-					if (source.isPresent() && !source.get().uniqueId().equals(player.uniqueId())) {
-						manager.retrieve(player.uniqueId()).thenAccept(settings -> {
-							if(settings.getPublishListenState()) {
-								if(listing instanceof BuyItNow) {
-									parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_BIN), sources).forEach(player::sendMessage);
-								} else {
-									parser.parse(lang.get(MsgConfigKeys.ADD_BROADCAST_AUCTION), sources).forEach(player::sendMessage);
+				BbbbbbBbbbbbbbBbbbbbb bbbbbbb = BBBBbbbbbb.bbbBbbbbbbb().bbbBbbbbbBbbbbbbbBbbbbbb();
+				bbb(Bbbbbb bbbbbb : Bbbbbb.bbbbbb().bbbbbbBbbbbbb()) {
+					bb (bbbbbb.bbBbbbbbb() && !bbbbbb.bbb().bbbbbbBb().bbbbbb(bbbbbb.bbbbbbBb())) {
+						bbbbbbb.bbbbbbbb(bbbbbb.bbbbbbBb()).bbbbBbbbbb(bbbbbbbb -> {
+							bb(bbbbbbbb.bbbBbbbbbbBbbbbbBbbbb()) {
+								bb(bbbbbbb bbbbbbbbbb BbbBbBbb) {
+									bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBB_BBBBBBBBB_BBB), bbbbbbb).bbbBbbb(bbbbbb::bbbbBbbbbbb);
+								} bbbb {
+									bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBB_BBBBBBBBB_BBBBBBB), bbbbbbb).bbbBbbb(bbbbbb::bbbbBbbbbbb);
 								}
 							}
 						});
 					}
 				}
 
-				GTSPlugin.instance().messagingService().sendPublishNotice(listing.getID(), lister, listing instanceof Auction);
+				BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbBbbbbbbBbbbbb(bbbbbbb.bbbBB(), bbbbbb, bbbbbbb bbbbbbbbbb Bbbbbbb);
 
-				if(listing instanceof BuyItNow) {
-					notifier.forgeAndSend(
-							DiscordOption.fetch(DiscordOption.Options.List_BIN),
-							MsgConfigKeys.DISCORD_PUBLISH_TEMPLATE,
-							listing,
-							sources
+				bb(bbbbbbb bbbbbbbbbb BbbBbBbb) {
+					bbbbbbbb.bbbbbBbbBbbb(
+							BbbbbbbBbbbbb.bbbbb(BbbbbbbBbbbbb.Bbbbbbb.Bbbb_BBB),
+							BbbBbbbbbBbbb.BBBBBBB_BBBBBBB_BBBBBBBB,
+							bbbbbbb,
+							bbbbbbb
 					);
-				} else {
-					notifier.forgeAndSend(
-							DiscordOption.fetch(DiscordOption.Options.List_Auction),
-							MsgConfigKeys.DISCORD_PUBLISH_AUCTION_TEMPLATE,
-							listing,
-							sources
+				} bbbb {
+					bbbbbbbb.bbbbbBbbBbbb(
+							BbbbbbbBbbbbb.bbbbb(BbbbbbbBbbbbb.Bbbbbbb.Bbbb_Bbbbbbb),
+							BbbBbbbbbBbbb.BBBBBBB_BBBBBBB_BBBBBBB_BBBBBBBB,
+							bbbbbbb,
+							bbbbbbb
 					);
 				}
 
-				return true;
+				bbbbbb bbbb;
 			}
 
-			return false;
+			bbbbbb bbbbb;
 		});
 	}
 
-	@Override
-	public CompletableFuture<Boolean> bid(UUID bidder, SpongeAuction listing, double amount) {
-		final MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbb(BBBB bbbbbb, BbbbbbBbbbbbb bbbbbbb, bbbbbb bbbbbb) {
+		bbbbb BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
 
-		Sponge.server().player(bidder).ifPresent(player -> player.sendMessage(
-				service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_PROCESSING_BID))
+		Bbbbbb.bbbbbb().bbbbbb(bbbbbb).bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(
+				bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBBBB_BBB))
 		));
 
-		return CompletableFutureManager.makeFuture(() -> {
-			EconomyService economy = Sponge.server().serviceProvider().economyService().get();
-			Optional<UniqueAccount> account = economy.findOrCreateAccount(bidder);
-			if (!account.isPresent()) {
-				Sponge.server().player(bidder).ifPresent(player -> player.sendMessage(
-						Component.text("Failed to locate your bank account, no funds have been taken...")
-								.color(NamedTextColor.RED)
+		bbbbbb BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(() -> {
+			BbbbbbbBbbbbbb bbbbbbb = Bbbbbb.bbbbbb().bbbbbbbBbbbbbbb().bbbbbbbBbbbbbb().bbb();
+			Bbbbbbbb<BbbbbbBbbbbbb> bbbbbbb = bbbbbbb.bbbbBbBbbbbbBbbbbbb(bbbbbb);
+			bb (!bbbbbbb.bbBbbbbbb()) {
+				Bbbbbb.bbbbbb().bbbbbb(bbbbbb).bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(
+						Bbbbbbbbb.bbbb("Bbbbbb bb bbbbbb bbbb bbbb bbbbbbb, bb bbbbb bbbb bbbb bbbbb...")
+								.bbbbb(BbbbbBbbbBbbbb.BBB)
 				));
-				return false;
+				bbbbbb bbbbb;
 			}
 
-			AtomicDouble actual = new AtomicDouble(amount);
-			listing.getCurrentBid(bidder).ifPresent(prior -> actual.set(actual.get() - prior.getAmount()));
+			BbbbbbBbbbbb bbbbbb = bbb BbbbbbBbbbbb(bbbbbb);
+			bbbbbbb.bbbBbbbbbbBbb(bbbbbb).bbBbbbbbb(bbbbb -> bbbbbb.bbb(bbbbbb.bbb() - bbbbb.bbbBbbbbb()));
 
-			if (account.get().balance(economy.defaultCurrency()).doubleValue() < actual.get()) {
-				Sponge.server().player(bidder).ifPresent(player -> player.sendMessage(service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID))));
-				return false;
+			bb (bbbbbbb.bbb().bbbbbbb(bbbbbbb.bbbbbbbBbbbbbbb()).bbbbbbBbbbb() < bbbbbb.bbb()) {
+				Bbbbbb.bbbbbb().bbbbbb(bbbbbb).bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBBB_BBBBBB_BBB))));
+				bbbbbb bbbbb;
 			}
 
-			if (!Impactor.getInstance().getEventBus().post(GTSEventFactory.createBidEvent(bidder, listing, amount))) {
-				Sponge.server().player(bidder).ifPresent(player -> player.sendMessage(
-						service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_TO_ESCROW))
+			bb (!Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbBbb().bbbb(BBBBbbbbBbbbbbb.bbbbbbBbbBbbbb(bbbbbb, bbbbbbb, bbbbbb))) {
+				Bbbbbb.bbbbbb().bbbbbb(bbbbbb).bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(
+						bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBB_BB_BBBBBB))
 				));
 
-				TransactionResult result = account.get().withdraw(economy.defaultCurrency(), BigDecimal.valueOf(actual.get()));
-				if (result.result().equals(ResultType.ACCOUNT_NO_FUNDS)) {
-					Sponge.server().player(bidder).ifPresent(player -> player.sendMessage(
-							service.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_CANT_AFFORD_BID))
+				BbbbbbbbbbbBbbbbb bbbbbb = bbbbbbb.bbb().bbbbbbbb(bbbbbbb.bbbbbbbBbbbbbbb(), BbbBbbbbbb.bbbbbBb(bbbbbb.bbb()));
+				bb (bbbbbb.bbbbbb().bbbbbb(BbbbbbBbbb.BBBBBBB_BB_BBBBB)) {
+					Bbbbbb.bbbbbb().bbbbbb(bbbbbb).bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(
+							bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBBB_BBBBBB_BBB))
 					));
-					return false;
+					bbbbbb bbbbb;
 				}
 
-				PlaceholderSources sources = PlaceholderSources.builder()
-						.append(Double.class, () -> amount)
-						.append(UUID.class, () -> bidder)
-						.build();
-				notifier.forgeAndSend(
-						DiscordOption.fetch(DiscordOption.Options.Bid),
-						MsgConfigKeys.DISCORD_BID_TEMPLATE,
-						listing,
-						sources
+				BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+						.bbbbbb(Bbbbbb.bbbbb, () -> bbbbbb)
+						.bbbbbb(BBBB.bbbbb, () -> bbbbbb)
+						.bbbbb();
+				bbbbbbbb.bbbbbBbbBbbb(
+						BbbbbbbBbbbbb.bbbbb(BbbbbbbBbbbbb.Bbbbbbb.Bbb),
+						BbbBbbbbbBbbb.BBBBBBB_BBB_BBBBBBBB,
+						bbbbbbb,
+						bbbbbbb
 				);
 
-				return GTSPlugin.instance().messagingService().publishBid(listing.getID(), bidder, amount)
-						.thenApply(response -> {
-							if(response.wasSuccessful()) {
-								Auction.BidContext context = new Auction.BidContext(bidder, new Auction.Bid(amount));
-								Sponge.server().player(bidder).ifPresent(player -> {
-									ConfigKey<String> key = response.wasSniped() ? MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_BID_PLACEDSNIPED : MsgConfigKeys.GENERAL_FEEDBACK_AUCTIONS_BID_PLACED;
-									sources.append(Auction.BidContext.class, () -> context);
-									sources.append(Time.class, () -> GTSPlugin.instance().configuration().main().get(ConfigKeys.AUCTIONS_SET_TIME));
+				bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbBbb(bbbbbbb.bbbBB(), bbbbbb, bbbbbb)
+						.bbbbBbbbb(bbbbbbbb -> {
+							bb(bbbbbbbb.bbbBbbbbbbbbb()) {
+								Bbbbbbb.BbbBbbbbbb bbbbbbb = bbb Bbbbbbb.BbbBbbbbbb(bbbbbb, bbb Bbbbbbb.Bbb(bbbbbb));
+								Bbbbbb.bbbbbb().bbbbbb(bbbbbb).bbBbbbbbb(bbbbbb -> {
+									BbbbbbBbb<Bbbbbb> bbb = bbbbbbbb.bbbBbbbbb() ? BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBB_BBBBBBBBBBBB : BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB_BBB_BBBBBB;
+									bbbbbbb.bbbbbb(Bbbbbbb.BbbBbbbbbb.bbbbb, () -> bbbbbbb);
+									bbbbbbb.bbbbbb(Bbbb.bbbbb, () -> BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBBBBBBB_BBB_BBBB));
 
-									player.sendMessage(service.parse(Utilities.readMessageConfigOption(key), sources));
+									bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(bbb), bbbbbbb));
 								});
-							} else {
-								sources.append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN));
-								// Return funds placed in escrow
-								Sponge.server().player(bidder).ifPresent(player -> {
-									player.sendMessage(service.parse(
-											Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-											sources
+							} bbbb {
+								bbbbbbb.bbbbbb(BbbbbBbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbBbbb().bbBbbb(BbbbbBbbbb.BBBBBBB));
+								// Bbbbbb bbbbb bbbbbb bb bbbbbb
+								Bbbbbb.bbbbbb().bbbbbb(bbbbbb).bbBbbbbbb(bbbbbb -> {
+									bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(
+											Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBB),
+											bbbbbbb
 									));
-									player.sendMessage(service.parse(
-											Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)
+									bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(
+											Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBB_BBBB_BBBBBB)
 									));
 
-									account.get().deposit(economy.defaultCurrency(), BigDecimal.valueOf(actual.get()));
+									bbbbbbb.bbb().bbbbbbb(bbbbbbb.bbbbbbbBbbbbbbb(), BbbBbbbbbb.bbbbbBb(bbbbbb.bbb()));
 								});
 							}
 
-							return response.wasSuccessful();
+							bbbbbb bbbbbbbb.bbbBbbbbbbbbb();
 						})
-						.get(5, TimeUnit.SECONDS);
-			} else {
-				Sponge.server().player(bidder).ifPresent(player -> {
-					player.sendMessage(service.parse(
-							Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED),
-							PlaceholderSources.builder().append(ErrorCode.class, () -> ErrorCodes.THIRD_PARTY_CANCELLED).build())
+						.bbb(5, BbbbBbbb.BBBBBBB);
+			} bbbb {
+				Bbbbbb.bbbbbb().bbbbbb(bbbbbb).bbBbbbbbb(bbbbbb -> {
+					bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(
+							Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBB),
+							BbbbbbbbbbbBbbbbbb.bbbbbbb().bbbbbb(BbbbbBbbb.bbbbb, () -> BbbbbBbbbb.BBBBB_BBBBB_BBBBBBBBB).bbbbb())
 					);
 				});
 			}
-			return false;
+			bbbbbb bbbbb;
 		});
 
 	}
 
-	@Override
-	public CompletableFuture<Boolean> purchase(UUID buyer, SpongeBuyItNow listing, Object source) {
-		final Config lang = GTSPlugin.instance().configuration().language();
-		final MessageService parser = Impactor.getInstance().getRegistry().get(MessageService.class);
-		return CompletableFutureManager.makeFuture(() -> {
-			Sponge.server().player(buyer).ifPresent(player -> player.sendMessage(parser.parse(lang.get(MsgConfigKeys.GENERAL_FEEDBACK_BEGIN_PROCESSING_REQUEST))));
-			if (source == null || listing.getPrice().getSourceType().equals(source.getClass())) {
-				boolean canPay = CompletableFutureManager.makeFuture(() -> listing.getPrice().canPay(buyer), Impactor.getInstance().getScheduler().sync()).get(2, TimeUnit.SECONDS);
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbbbbb(BBBB bbbbb, BbbbbbBbbBbBbb bbbbbbb, Bbbbbb bbbbbb) {
+		bbbbb Bbbbbb bbbb = BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb();
+		bbbbb BbbbbbbBbbbbbb bbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+		bbbbbb BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(() -> {
+			Bbbbbb.bbbbbb().bbbbbb(bbbbb).bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBB_BBBBBBBBBB_BBBBBBB))));
+			bb (bbbbbb == bbbb || bbbbbbb.bbbBbbbb().bbbBbbbbbBbbb().bbbbbb(bbbbbb.bbbBbbbb())) {
+				bbbbbbb bbbBbb = BbbbbbbbbbbBbbbbbBbbbbbb.bbbbBbbbbb(() -> bbbbbbb.bbbBbbbb().bbbBbb(bbbbb), Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbbb().bbbb()).bbb(2, BbbbBbbb.BBBBBBB);
 
-				if (canPay && !Impactor.getInstance().getEventBus().post(GTSEventFactory.createPurchaseListingEvent(buyer, listing))) {
-					Sponge.server().player(buyer).ifPresent(player -> player.sendMessage(
-							parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_TO_ESCROW))
+				bb (bbbBbb && !Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbBbb().bbbb(BBBBbbbbBbbbbbb.bbbbbbBbbbbbbbBbbbbbbBbbbb(bbbbb, bbbbbbb))) {
+					Bbbbbb.bbbbbb().bbbbbb(bbbbb).bbBbbbbbb(bbbbbb -> bbbbbb.bbbbBbbbbbb(
+							bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBB_BB_BBBBBB))
 					));
 
-					final AtomicBoolean marker = new AtomicBoolean(false);
-					listing.getPrice().pay(buyer, source, marker);
+					bbbbb BbbbbbBbbbbbb bbbbbb = bbb BbbbbbBbbbbbb(bbbbb);
+					bbbbbbb.bbbBbbbb().bbb(bbbbb, bbbbbb, bbbbbb);
 
-					return GTSPlugin.instance().messagingService().requestBINPurchase(listing.getID(), buyer, source)
-							.thenApply(response -> {
-								if(response.wasSuccessful()) {
-									while(!marker.get()) {
-										try {
-											//noinspection BusyWait
-											Thread.sleep(50);
-										} catch (InterruptedException e) {
-											ExceptionWriter.write(e);
+					bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbbbbbBbbbbbb().bbbbbbbBBBBbbbbbbb(bbbbbbb.bbbBB(), bbbbb, bbbbbb)
+							.bbbbBbbbb(bbbbbbbb -> {
+								bb(bbbbbbbb.bbbBbbbbbbbbb()) {
+									bbbbb(!bbbbbb.bbb()) {
+										bbb {
+											//bbbbbbbbbbbb BbbbBbbb
+											Bbbbbb.bbbbb(50);
+										} bbbbb (BbbbbbbbbbbBbbbbbbbb b) {
+											BbbbbbbbbBbbbbb.bbbbb(b);
 										}
 									}
 
-									PlaceholderSources sources = PlaceholderSources.builder()
-											.append(Listing.class, () -> listing)
-											.build();
+									BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+											.bbbbbb(Bbbbbbb.bbbbb, () -> bbbbbbb)
+											.bbbbb();
 
-									Sponge.server().player(buyer)
-											.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.PURCHASE_PAY), sources).forEach(player::sendMessage));
+									Bbbbbb.bbbbbb().bbbbbb(bbbbb)
+											.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBBB_BBB), bbbbbbb).bbbBbbb(bbbbbb::bbbbBbbbbbb));
 
-									if(!listing.getEntry().give(buyer)) {
-										BuyItNow delegate = BuyItNow.builder()
-												.from(listing)
-												.id(UUID.randomUUID())
-												.expiration(LocalDateTime.now())
-												.purchased()
-												.purchaser(buyer)
-												.stashedForPurchaser()
-												.build();
+									bb(!bbbbbbb.bbbBbbbb().bbbb(bbbbb)) {
+										BbbBbBbb bbbbbbbb = BbbBbBbb.bbbbbbb()
+												.bbbb(bbbbbbb)
+												.bb(BBBB.bbbbbbBBBB())
+												.bbbbbbbbbb(BbbbbBbbbBbbb.bbb())
+												.bbbbbbbbb()
+												.bbbbbbbbb(bbbbb)
+												.bbbbbbbBbbBbbbbbbbb()
+												.bbbbb();
 
-										GTSPlugin.instance().storage().publishListing(delegate);
-										Sponge.server().player(buyer)
-												.ifPresent(player -> parser.parse(lang.get(MsgConfigKeys.PURCHASE_PAY_FAIL_TO_GIVE), sources).forEach(player::sendMessage));
+										BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbbbBbbbbbb(bbbbbbbb);
+										Bbbbbb.bbbbbb().bbbbbb(bbbbb)
+												.bbBbbbbbb(bbbbbb -> bbbbbb.bbbbb(bbbb.bbb(BbbBbbbbbBbbb.BBBBBBBB_BBB_BBBB_BB_BBBB), bbbbbbb).bbbBbbb(bbbbbb::bbbbBbbbbbb));
 									}
 
-									// We do the following such that we will ensure we populate any potential source
-									// the price may require
-									listing.markPurchased();
-									((GTSStorageImpl) GTSPlugin.instance().storage()).sendListingUpdate(listing)
-											.exceptionally(e -> {
-												GTSPlugin.instance().logger().error("Fatal error detected while updating listing with price, see error below:");
-												ExceptionWriter.write(e);
-												return false;
+									// Bb bb bbb bbbbbbbbb bbbb bbbb bb bbbb bbbbbb bb bbbbbbbb bbb bbbbbbbbb bbbbbb
+									// bbb bbbbb bbb bbbbbbb
+									bbbbbbb.bbbbBbbbbbbbb();
+									((BBBBbbbbbbBbbb) BBBBbbbbb.bbbbbbbb().bbbbbbb()).bbbbBbbbbbbBbbbbb(bbbbbbb)
+											.bbbbbbbbbbbbb(b -> {
+												BBBBbbbbb.bbbbbbbb().bbbbbb().bbbbb("Bbbbb bbbbb bbbbbbbb bbbbb bbbbbbbb bbbbbbb bbbb bbbbb, bbb bbbbb bbbbb:");
+												BbbbbbbbbBbbbbb.bbbbb(b);
+												bbbbbb bbbbb;
 											});
 
-									notifier.forgeAndSend(
-											DiscordOption.fetch(DiscordOption.Options.Purchase),
-											MsgConfigKeys.DISCORD_PURCHASE_TEMPLATE,
-											listing,
-											sources.append(UUID.class, () -> buyer)
+									bbbbbbbb.bbbbbBbbBbbb(
+											BbbbbbbBbbbbb.bbbbb(BbbbbbbBbbbbb.Bbbbbbb.Bbbbbbbb),
+											BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBBBBB,
+											bbbbbbb,
+											bbbbbbb.bbbbbb(BBBB.bbbbb, () -> bbbbb)
 									);
-								} else {
-									PlaceholderSources sources = PlaceholderSources.builder()
-											.append(ErrorCode.class, () -> response.getErrorCode().orElse(ErrorCodes.UNKNOWN))
-											.build();
-									Sponge.server().player(buyer).ifPresent(player -> {
-										player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED), sources));
-										player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)));
+								} bbbb {
+									BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+											.bbbbbb(BbbbbBbbb.bbbbb, () -> bbbbbbbb.bbbBbbbbBbbb().bbBbbb(BbbbbBbbbb.BBBBBBB))
+											.bbbbb();
+									Bbbbbb.bbbbbb().bbbbbb(bbbbb).bbBbbbbbb(bbbbbb -> {
+										bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBB), bbbbbbb));
+										bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBB_BBBB_BBBBBB)));
 
-										listing.getPrice().reward(buyer);
+										bbbbbbb.bbbBbbbb().bbbbbb(bbbbb);
 									});
 								}
 
-								return response.wasSuccessful();
+								bbbbbb bbbbbbbb.bbbBbbbbbbbbb();
 							})
-							.exceptionally(throwable -> {
-								final ErrorCode error = throwable instanceof TimeoutException ? ErrorCodes.REQUEST_TIMED_OUT : ErrorCodes.FATAL_ERROR;
-								Sponge.server().player(buyer).ifPresent(player -> {
-									PlaceholderSources sources = PlaceholderSources.builder()
-											.append(ErrorCode.class, () -> error)
-											.build();
+							.bbbbbbbbbbbbb(bbbbbbbbb -> {
+								bbbbb BbbbbBbbb bbbbb = bbbbbbbbb bbbbbbbbbb BbbbbbbBbbbbbbbb ? BbbbbBbbbb.BBBBBBB_BBBBB_BBB : BbbbbBbbbb.BBBBB_BBBBB;
+								Bbbbbb.bbbbbb().bbbbbb(bbbbb).bbBbbbbbb(bbbbbb -> {
+									BbbbbbbbbbbBbbbbbb bbbbbbb = BbbbbbbbbbbBbbbbbb.bbbbbbb()
+											.bbbbbb(BbbbbBbbb.bbbbb, () -> bbbbb)
+											.bbbbb();
 
-									player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.REQUEST_FAILED), sources));
-									player.sendMessage(parser.parse(Utilities.readMessageConfigOption(MsgConfigKeys.GENERAL_FEEDBACK_FUNDS_FROM_ESCROW)));
+									bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBB), bbbbbbb));
+									bbbbbb.bbbbBbbbbbb(bbbbbb.bbbbb(Bbbbbbbbb.bbbbBbbbbbbBbbbbbBbbbbb(BbbBbbbbbBbbb.BBBBBBB_BBBBBBBB_BBBBB_BBBB_BBBBBB)));
 
-									listing.getPrice().reward(buyer);
+									bbbbbbb.bbbBbbbb().bbbbbb(bbbbb);
 								});
-								return false;
+								bbbbbb bbbbb;
 							})
-							.get(5, TimeUnit.SECONDS);
+							.bbb(5, BbbbBbbb.BBBBBBB);
 				}
 
-				return false;
-			} else {
-				throw new CompletionException(new IllegalArgumentException("Source of price is invalid"));
+				bbbbbb bbbbb;
+			} bbbb {
+				bbbbb bbb BbbbbbbbbbBbbbbbbbb(bbb BbbbbbbBbbbbbbbBbbbbbbbb("Bbbbbb bb bbbbb bb bbbbbbb"));
 			}
 
 		});
 	}
 
-	@Override
-	public CompletableFuture<Boolean> deleteListing(SpongeListing listing) {
-		return CompletableFuture.supplyAsync(() -> false);
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbbbbBbbbbbb(BbbbbbBbbbbbb bbbbbbb) {
+		bbbbbb BbbbbbbbbbbBbbbbb.bbbbbbBbbbb(() -> bbbbb);
 	}
 
-	@Override
-	public CompletableFuture<Boolean> hasMaxListings(UUID lister) {
-		if(GTSPlugin.instance().configuration().main().get(ConfigKeys.MAX_LISTINGS_PER_USER) <= 0) {
-			return CompletableFuture.supplyAsync(() -> false);
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbbbbBbbbbb<Bbbbbbb> bbbBbbBbbbbbbb(BBBB bbbbbb) {
+		bb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbb().bbb(BbbbbbBbbb.BBB_BBBBBBBB_BBB_BBBB) <= 0) {
+			bbbbbb BbbbbbbbbbbBbbbbb.bbbbbbBbbbb(() -> bbbbb);
 		}
-		return GTSPlugin.instance().storage().hasMaxListings(lister);
+		bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbBbbBbbbbbbb(bbbbbb);
 	}
 
-	@Override
-	public CompletableFuture<List<SpongeListing>> fetchListings() {
-		return CompletableFuture.supplyAsync(() -> {
-			try {
-				return GTSPlugin.instance().storage().fetchListings().get()
-						.stream()
-						.map(listing -> (SpongeListing) listing)
-						.collect(Collectors.toList());
-			} catch (Exception e) {
-				ExceptionWriter.write(e);
-				return Lists.newArrayList();
+	@Bbbbbbbb
+	bbbbbb BbbbbbbbbbbBbbbbb<Bbbb<BbbbbbBbbbbbb>> bbbbbBbbbbbbb() {
+		bbbbbb BbbbbbbbbbbBbbbbb.bbbbbbBbbbb(() -> {
+			bbb {
+				bbbbbb BBBBbbbbb.bbbbbbbb().bbbbbbb().bbbbbBbbbbbbb().bbb()
+						.bbbbbb()
+						.bbb(bbbbbbb -> (BbbbbbBbbbbbb) bbbbbbb)
+						.bbbbbbb(Bbbbbbbbbb.bbBbbb());
+			} bbbbb (Bbbbbbbbb b) {
+				BbbbbbbbbBbbbbb.bbbbb(b);
+				bbbbbb Bbbbb.bbbBbbbbBbbb();
 			}
 		});
 	}

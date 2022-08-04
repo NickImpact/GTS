@@ -1,216 +1,216 @@
-package net.impactdev.gts.ui.admin;
+bbbbbbb bbb.bbbbbbbbb.bbb.bb.bbbbb;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import com.google.common.collect.Lists;
-import net.impactdev.gts.SpongeGTSPlugin;
-import net.impactdev.gts.common.config.MsgConfigKeys;
-import net.impactdev.gts.common.plugin.GTSPlugin;
-import net.impactdev.gts.sponge.listings.makeup.SpongeEntry;
-import net.impactdev.gts.sponge.utils.items.ProvidedIcons;
-import net.impactdev.gts.sponge.utils.items.SkullCreator;
-import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
-import net.impactdev.impactor.api.services.text.MessageService;
-import net.impactdev.impactor.api.ui.containers.ImpactorUI;
-import net.impactdev.impactor.api.ui.containers.icons.DisplayProvider;
-import net.impactdev.impactor.api.ui.containers.icons.Icon;
-import net.impactdev.impactor.api.ui.containers.layouts.Layout;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.spongepowered.api.Sponge;
-import org.spongepowered.api.data.Keys;
-import org.spongepowered.api.data.type.DyeColors;
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.entity.living.player.server.ServerPlayer;
-import org.spongepowered.api.event.EventContextKeys;
-import org.spongepowered.api.event.Listener;
-import org.spongepowered.api.event.message.MessageEvent;
-import org.spongepowered.api.event.message.PlayerChatEvent;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.profile.GameProfile;
-import org.spongepowered.api.scheduler.Task;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.Bbbbb;
+bbbbbb bbb.bbbbbb.bbbbbbbb.bbbbbbbb.bbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.BbbbbbBBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BbbBbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb.BBBBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbbbb.bbbbbb.BbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.BbbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbb.bbbbb.BbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbbbbb.BbbbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbbbbbb.bbbb.BbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.BbbbbbbbBB;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.BbbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bb.bbbbbbbbbb.bbbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbb.Bbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.Bbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbb.BbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbbbbbb.bbbb.BbbbBbbbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbb.bbbbbbbbb.bbbb.bbbbbbbbbb.bbbbbb.BbbbbbBbbbbbbbbBbbbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbb.BbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.Bbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbb.bbbbbb.bbbbbb.bbbbbb.BbbbbbBbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.BbbbbBbbbbbbBbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.Bbbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbbbbb.BbbbbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbb.bbbbbbb.BbbbbbBbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbb.bbbbbbbbb.BbbbBbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbb.BbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbbbbbb.bbb.bbbbbbbbb.Bbbb;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
+bbbbbb bbbb.bbbb.Bbbb;
+bbbbbb bbbb.bbbb.Bbbbbbbb;
+bbbbbb bbbb.bbbb.BBBB;
+bbbbbb bbbb.bbbb.bbbbbbbbbb.BbbbBbbb;
 
-public class SpongeAdminDeliveryMenu {
+bbbbbb bbbbb BbbbbbBbbbbBbbbbbbbBbbb {
 
-    private static final ChatProcessor processor = new ChatProcessor();
+    bbbbbbb bbbbbb bbbbb BbbbBbbbbbbbb bbbbbbbbb = bbb BbbbBbbbbbbbb();
 
-    private final PlatformPlayer viewer;
-    private final ImpactorUI view;
+    bbbbbbb bbbbb BbbbbbbbBbbbbb bbbbbb;
+    bbbbbbb bbbbb BbbbbbbbBB bbbb;
 
-    private final GameProfile target;
-    private final List<SpongeEntry<?>> entries = Lists.newArrayList();
+    bbbbbbb bbbbb BbbbBbbbbbb bbbbbb;
+    bbbbbbb bbbbb Bbbb<BbbbbbBbbbb<?>> bbbbbbb = Bbbbb.bbbBbbbbBbbb();
 
-    public SpongeAdminDeliveryMenu(ServerPlayer viewer) {
-        this(viewer, null);
+    bbbbbb BbbbbbBbbbbBbbbbbbbBbbb(BbbbbbBbbbbb bbbbbb) {
+        bbbb(bbbbbb, bbbb);
     }
 
-    public SpongeAdminDeliveryMenu(ServerPlayer viewer, GameProfile target) {
-        this.viewer = PlatformPlayer.from(viewer);
-        this.target = target;
+    bbbbbb BbbbbbBbbbbBbbbbbbbBbbb(BbbbbbBbbbbb bbbbbb, BbbbBbbbbbb bbbbbb) {
+        bbbb.bbbbbb = BbbbbbbbBbbbbb.bbbb(bbbbbb);
+        bbbb.bbbbbb = bbbbbb;
 
-        this.view = ImpactorUI.builder()
-                .provider(Key.key("gts", "admin-deliveries"))
-                .title(Component.text("GTS").color(NamedTextColor.RED)
-                        .append(Component.text(" \u00bb ").color(NamedTextColor.GRAY))
-                        .append(Component.text("Delivery Management").color(NamedTextColor.DARK_AQUA))
+        bbbb.bbbb = BbbbbbbbBB.bbbbbbb()
+                .bbbbbbbb(Bbb.bbb("bbb", "bbbbb-bbbbbbbbbb"))
+                .bbbbb(Bbbbbbbbb.bbbb("BBB").bbbbb(BbbbbBbbbBbbbb.BBB)
+                        .bbbbbb(Bbbbbbbbb.bbbb(" \b00bb ").bbbbb(BbbbbBbbbBbbbb.BBBB))
+                        .bbbbbb(Bbbbbbbbb.bbbb("Bbbbbbbb Bbbbbbbbbb").bbbbb(BbbbbBbbbBbbbb.BBBB_BBBB))
                 )
-                .layout(this.design())
-                .build();
+                .bbbbbb(bbbb.bbbbbb())
+                .bbbbb();
     }
 
-    public void open() {
-        this.view.open(this.viewer);
+    bbbbbb bbbb bbbb() {
+        bbbb.bbbb.bbbb(bbbb.bbbbbb);
     }
 
-    private Layout design() {
-        Layout.LayoutBuilder builder = Layout.builder();
-        builder.border(ProvidedIcons.BORDER).rows(ProvidedIcons.BORDER, 2, 3);
+    bbbbbbb Bbbbbb bbbbbb() {
+        Bbbbbb.BbbbbbBbbbbbb bbbbbbb = Bbbbbb.bbbbbbb();
+        bbbbbbb.bbbbbb(BbbbbbbbBbbbb.BBBBBB).bbbb(BbbbbbbbBbbbb.BBBBBB, 2, 3);
 
-        builder.slot(this.target(), 13);
-        builder.slots(this.surround(), 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
+        bbbbbbb.bbbb(bbbb.bbbbbb(), 13);
+        bbbbbbb.bbbbb(bbbb.bbbbbbbb(), 3, 4, 5, 10, 11, 12, 14, 15, 16, 21, 22, 23);
 
-        return builder.build();
+        bbbbbb bbbbbbb.bbbbb();
     }
 
-    private Icon<ItemStack> surround() {
-        return Icon.builder(ItemStack.class)
-                .display(new DisplayProvider.Constant<>(ItemStack.builder()
-                    .itemType(this.target == null ? ItemTypes.RED_STAINED_GLASS_PANE : ItemTypes.LIME_STAINED_GLASS_PANE)
-                    .add(Keys.CUSTOM_NAME, Component.empty())
-                    .build()
+    bbbbbbb Bbbb<BbbbBbbbb> bbbbbbbb() {
+        bbbbbb Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                    .bbbbBbbb(bbbb.bbbbbb == bbbb ? BbbbBbbbb.BBB_BBBBBBB_BBBBB_BBBB : BbbbBbbbb.BBBB_BBBBBBB_BBBBB_BBBB)
+                    .bbb(Bbbb.BBBBBB_BBBB, Bbbbbbbbb.bbbbb())
+                    .bbbbb()
                 ))
-                .build();
+                .bbbbb();
     }
 
-    private Icon<ItemStack> target() {
-        Icon.IconBuilder<ItemStack> builder = Icon.builder(ItemStack.class)
-                .listener(context -> {
-                    ServerPlayer player = context.require(ServerPlayer.class);
-                    PlatformPlayer platform = PlatformPlayer.from(player);
+    bbbbbbb Bbbb<BbbbBbbbb> bbbbbb() {
+        Bbbb.BbbbBbbbbbb<BbbbBbbbb> bbbbbbb = Bbbb.bbbbbbb(BbbbBbbbb.bbbbb)
+                .bbbbbbbb(bbbbbbb -> {
+                    BbbbbbBbbbbb bbbbbb = bbbbbbb.bbbbbbb(BbbbbbBbbbbb.bbbbb);
+                    BbbbbbbbBbbbbb bbbbbbbb = BbbbbbbbBbbbbb.bbbb(bbbbbb);
 
-                    this.view.close(platform);
-                    processor.add(platform.uuid());
+                    bbbb.bbbb.bbbbb(bbbbbbbb);
+                    bbbbbbbbb.bbb(bbbbbbbb.bbbb());
 
-                    MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-                    player.sendMessage(service.parse(GTSPlugin.instance().configuration().language().get(MsgConfigKeys.ADMIN_USERNAME_QUERY)));
+                    BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+                    bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb().bbb(BbbBbbbbbBbbb.BBBBB_BBBBBBBB_BBBBB)));
 
-                    return false;
+                    bbbbbb bbbbb;
                 });
 
-        if(this.target == null) {
-            builder.display(new DisplayProvider.Constant<>(ItemStack.builder()
-                    .itemType(ItemTypes.STONE_BUTTON)
-                    .add(Keys.CUSTOM_NAME, Component.text("Awaiting Player Selection").color(NamedTextColor.RED))
-                    .add(Keys.LORE, Lists.newArrayList(
-                            Component.text("Click to select a player that will").color(NamedTextColor.GRAY),
-                            Component.text("be the target of the options below.").color(NamedTextColor.GRAY),
-                            Component.empty(),
-                            Component.text("Current Delivery Contents:").color(NamedTextColor.GRAY),
-                            Component.text("* Empty").color(NamedTextColor.RED)
+        bb(bbbb.bbbbbb == bbbb) {
+            bbbbbbb.bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                    .bbbbBbbb(BbbbBbbbb.BBBBB_BBBBBB)
+                    .bbb(Bbbb.BBBBBB_BBBB, Bbbbbbbbb.bbbb("Bbbbbbbb Bbbbbb Bbbbbbbbb").bbbbb(BbbbbBbbbBbbbb.BBB))
+                    .bbb(Bbbb.BBBB, Bbbbb.bbbBbbbbBbbb(
+                            Bbbbbbbbb.bbbb("Bbbbb bb bbbbbb b bbbbbb bbbb bbbb").bbbbb(BbbbbBbbbBbbbb.BBBB),
+                            Bbbbbbbbb.bbbb("bb bbb bbbbbb bb bbb bbbbbbb bbbbb.").bbbbb(BbbbbBbbbBbbbb.BBBB),
+                            Bbbbbbbbb.bbbbb(),
+                            Bbbbbbbbb.bbbb("Bbbbbbb Bbbbbbbb Bbbbbbbb:").bbbbb(BbbbbBbbbBbbbb.BBBB),
+                            Bbbbbbbbb.bbbb("* Bbbbb").bbbbb(BbbbbBbbbBbbbb.BBB)
                     ))
-                    .build()
+                    .bbbbb()
             ));
-        } else {
-            List<Component> lore = Lists.newArrayList(
-                    Component.text("Click to select a player that will").color(NamedTextColor.GRAY),
-                    Component.text("be the target of the options below.").color(NamedTextColor.GRAY),
-                    Component.empty(),
-                    Component.text("Current Target: ").color(NamedTextColor.GRAY)
-                                    .append(Component.text(this.target.name().get()).color(NamedTextColor.GREEN)),
-                    Component.empty(),
-                    Component.text("Current Delivery Contents:").color(NamedTextColor.GRAY)
+        } bbbb {
+            Bbbb<Bbbbbbbbb> bbbb = Bbbbb.bbbBbbbbBbbb(
+                    Bbbbbbbbb.bbbb("Bbbbb bb bbbbbb b bbbbbb bbbb bbbb").bbbbb(BbbbbBbbbBbbbb.BBBB),
+                    Bbbbbbbbb.bbbb("bb bbb bbbbbb bb bbb bbbbbbb bbbbb.").bbbbb(BbbbbBbbbBbbbb.BBBB),
+                    Bbbbbbbbb.bbbbb(),
+                    Bbbbbbbbb.bbbb("Bbbbbbb Bbbbbb: ").bbbbb(BbbbbBbbbBbbbb.BBBB)
+                                    .bbbbbb(Bbbbbbbbb.bbbb(bbbb.bbbbbb.bbbb().bbb()).bbbbb(BbbbbBbbbBbbbb.BBBBB)),
+                    Bbbbbbbbb.bbbbb(),
+                    Bbbbbbbbb.bbbb("Bbbbbbb Bbbbbbbb Bbbbbbbb:").bbbbb(BbbbbBbbbBbbbb.BBBB)
             );
-            for(SpongeEntry<?> entry : this.entries) {
-                lore.add(Component.text("* ").color(NamedTextColor.GRAY).append(entry.getName()));
+            bbb(BbbbbbBbbbb<?> bbbbb : bbbb.bbbbbbb) {
+                bbbb.bbb(Bbbbbbbbb.bbbb("* ").bbbbb(BbbbbBbbbBbbbb.BBBB).bbbbbb(bbbbb.bbbBbbb()));
             }
 
-            builder.display(new DisplayProvider.Constant<>(ItemStack.builder()
-                    .from(SkullCreator.fromProfile(this.target))
-                    .add(Keys.CUSTOM_NAME, Component.text("Target Selected").color(NamedTextColor.GREEN))
-                    .add(Keys.LORE, lore)
-                    .build()
+            bbbbbbb.bbbbbbb(bbb BbbbbbbBbbbbbbb.Bbbbbbbb<>(BbbbBbbbb.bbbbbbb()
+                    .bbbb(BbbbbBbbbbbb.bbbbBbbbbbb(bbbb.bbbbbb))
+                    .bbb(Bbbb.BBBBBB_BBBB, Bbbbbbbbb.bbbb("Bbbbbb Bbbbbbbb").bbbbb(BbbbbBbbbBbbbb.BBBBB))
+                    .bbb(Bbbb.BBBB, bbbb)
+                    .bbbbb()
             ));
         }
 
-        return builder.build();
+        bbbbbb bbbbbbb.bbbbb();
     }
 
-//    private Consumer<Clickable<Player, ClickInventoryEvent>> process(Consumer<Clickable<Player, ClickInventoryEvent>> action) {
-//        return clickable -> {
-//            if(this.target != null) {
-//                action.accept(clickable);
+//    bbbbbbb Bbbbbbbb<Bbbbbbbbb<Bbbbbb, BbbbbBbbbbbbbbBbbbb>> bbbbbbb(Bbbbbbbb<Bbbbbbbbb<Bbbbbb, BbbbbBbbbbbbbbBbbbb>> bbbbbb) {
+//        bbbbbb bbbbbbbbb -> {
+//            bb(bbbb.bbbbbb != bbbb) {
+//                bbbbbb.bbbbbb(bbbbbbbbb);
 //            }
 //        };
 //    }
 
-    public static class ChatProcessor {
+    bbbbbb bbbbbb bbbbb BbbbBbbbbbbbb {
 
-        private final Cache<UUID, Boolean> processing = Caffeine.newBuilder()
-                .expireAfterWrite(1, TimeUnit.MINUTES)
-                .removalListener((key, ignore, cause) -> {
-                    if(key instanceof UUID) {
-                        Sponge.server().player((UUID) key).ifPresent(player -> {
-                            MessageService service = Impactor.getInstance().getRegistry().get(MessageService.class);
-                            player.sendMessage(service.parse(GTSPlugin.instance().configuration().language().get(MsgConfigKeys.ADMIN_TIMEOUT)));
+        bbbbbbb bbbbb Bbbbb<BBBB, Bbbbbbb> bbbbbbbbbb = Bbbbbbbb.bbbBbbbbbb()
+                .bbbbbbBbbbbBbbbb(1, BbbbBbbb.BBBBBBB)
+                .bbbbbbbBbbbbbbb((bbb, bbbbbb, bbbbb) -> {
+                    bb(bbb bbbbbbbbbb BBBB) {
+                        Bbbbbb.bbbbbb().bbbbbb((BBBB) bbb).bbBbbbbbb(bbbbbb -> {
+                            BbbbbbbBbbbbbb bbbbbbb = Bbbbbbbb.bbbBbbbbbbb().bbbBbbbbbbb().bbb(BbbbbbbBbbbbbb.bbbbb);
+                            bbbbbb.bbbbBbbbbbb(bbbbbbb.bbbbb(BBBBbbbbb.bbbbbbbb().bbbbbbbbbbbbb().bbbbbbbb().bbb(BbbBbbbbbBbbb.BBBBB_BBBBBBB)));
                         });
                     }
                 })
-                .build();
+                .bbbbb();
 
-        ChatProcessor() {
-            Sponge.eventManager().registerListeners(
-                    GTSPlugin.instance().as(SpongeGTSPlugin.class).container(),
-                    this
+        BbbbBbbbbbbbb() {
+            Bbbbbb.bbbbbBbbbbbb().bbbbbbbbBbbbbbbbb(
+                    BBBBbbbbb.bbbbbbbb().bb(BbbbbbBBBBbbbbb.bbbbb).bbbbbbbbb(),
+                    bbbb
             );
         }
 
-        public void add(UUID uuid) {
-            this.processing.put(uuid, false);
+        bbbbbb bbbb bbb(BBBB bbbb) {
+            bbbb.bbbbbbbbbb.bbb(bbbb, bbbbb);
         }
 
-        @Listener
-        public void handleMessage(PlayerChatEvent event) {
-            this.cause(event).ifPresent(source -> {
-                if(this.processing.asMap().containsKey(source.uniqueId())) {
-                    event.setCancelled(true);
-                    this.processing.invalidate(source.uniqueId());
+        @Bbbbbbbb
+        bbbbbb bbbb bbbbbbBbbbbbb(BbbbbbBbbbBbbbb bbbbb) {
+            bbbb.bbbbb(bbbbb).bbBbbbbbb(bbbbbb -> {
+                bb(bbbb.bbbbbbbbbb.bbBbb().bbbbbbbbBbb(bbbbbb.bbbbbbBb())) {
+                    bbbbb.bbbBbbbbbbbb(bbbb);
+                    bbbb.bbbbbbbbbb.bbbbbbbbbb(bbbbbb.bbbbbbBb());
 
-                    Component result = event.message();
-                    String content = LegacyComponentSerializer.legacyAmpersand().serialize(result).replaceAll("[<>]", "");
+                    Bbbbbbbbb bbbbbb = bbbbb.bbbbbbb();
+                    Bbbbbb bbbbbbb = BbbbbbBbbbbbbbbBbbbbbbbbb.bbbbbbBbbbbbbbb().bbbbbbbbb(bbbbbb).bbbbbbbBbb("[<>]", "");
 
-                    source.sendMessage(Component.text("Locating user profile, one moment...").color(NamedTextColor.GRAY));
-                    Sponge.server().userManager()
-                            .load(content)
-                            .thenAccept(user -> user.ifPresent(u -> {
-                                Sponge.server().scheduler().submit(Task.builder()
-                                                .execute(() -> {
-                                                    SpongeAdminDeliveryMenu menu = new SpongeAdminDeliveryMenu(source, u.profile());
-                                                    menu.open();
+                    bbbbbb.bbbbBbbbbbb(Bbbbbbbbb.bbbb("Bbbbbbbb bbbb bbbbbbb, bbb bbbbbb...").bbbbb(BbbbbBbbbBbbbb.BBBB));
+                    Bbbbbb.bbbbbb().bbbbBbbbbbb()
+                            .bbbb(bbbbbbb)
+                            .bbbbBbbbbb(bbbb -> bbbb.bbBbbbbbb(b -> {
+                                Bbbbbb.bbbbbb().bbbbbbbbb().bbbbbb(Bbbb.bbbbbbb()
+                                                .bbbbbbb(() -> {
+                                                    BbbbbbBbbbbBbbbbbbbBbbb bbbb = bbb BbbbbbBbbbbBbbbbbbbBbbb(bbbbbb, b.bbbbbbb());
+                                                    bbbb.bbbb();
                                                 })
-                                                .plugin(GTSPlugin.instance().as(SpongeGTSPlugin.class).container())
-                                        .build()
+                                                .bbbbbb(BBBBbbbbb.bbbbbbbb().bb(BbbbbbBBBBbbbbb.bbbbb).bbbbbbbbb())
+                                        .bbbbb()
                                 );
                             }));
                 }
             });
         }
 
-        private Optional<ServerPlayer> cause(PlayerChatEvent event) {
-            return event.context().get(EventContextKeys.PLAYER)
-                    .map(x -> Sponge.server().player(x.uniqueId()))
-                    .orElseGet(() -> Optional.of(event.cause().root())
-                            .filter(x -> x instanceof ServerPlayer)
-                            .map(x -> (ServerPlayer) x)
+        bbbbbbb Bbbbbbbb<BbbbbbBbbbbb> bbbbb(BbbbbbBbbbBbbbb bbbbb) {
+            bbbbbb bbbbb.bbbbbbb().bbb(BbbbbBbbbbbbBbbb.BBBBBB)
+                    .bbb(b -> Bbbbbb.bbbbbb().bbbbbb(b.bbbbbbBb()))
+                    .bbBbbbBbb(() -> Bbbbbbbb.bb(bbbbb.bbbbb().bbbb())
+                            .bbbbbb(b -> b bbbbbbbbbb BbbbbbBbbbbb)
+                            .bbb(b -> (BbbbbbBbbbbb) b)
                     );
         }
     }

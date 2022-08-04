@@ -1,74 +1,74 @@
-package net.impactdev.gts.common.player;
+bbbbbbb bbb.bbbbbbbbb.bbb.bbbbbb.bbbbbb;
 
-import com.google.common.collect.Maps;
-import net.impactdev.gts.api.player.NotificationSetting;
-import net.impactdev.gts.api.player.PlayerSettings;
-import net.impactdev.impactor.api.json.factory.JObject;
+bbbbbb bbb.bbbbbb.bbbbbb.bbbbbbb.Bbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbbbbbbbBbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbb.bbb.bbbbbb.BbbbbbBbbbbbbb;
+bbbbbb bbb.bbbbbbbbb.bbbbbbbb.bbb.bbbb.bbbbbbb.BBbbbbb;
 
-import java.util.HashMap;
-import java.util.Map;
+bbbbbb bbbb.bbbb.BbbbBbb;
+bbbbbb bbbb.bbbb.Bbb;
 
-public class PlayerSettingsImpl implements PlayerSettings {
+bbbbbb bbbbb BbbbbbBbbbbbbbBbbb bbbbbbbbbb BbbbbbBbbbbbbb {
 
-    private final Map<NotificationSetting, Boolean> states = Maps.newHashMap();
+    bbbbbbb bbbbb Bbb<BbbbbbbbbbbbBbbbbbb, Bbbbbbb> bbbbbb = Bbbb.bbbBbbbBbb();
 
-    private PlayerSettingsImpl(PlayerSettingsImplBuilder builder) {
-        this.states.putAll(builder.settings);
+    bbbbbbb BbbbbbBbbbbbbbBbbb(BbbbbbBbbbbbbbBbbbBbbbbbb bbbbbbb) {
+        bbbb.bbbbbb.bbbBbb(bbbbbbb.bbbbbbbb);
     }
 
-    @Override
-    public boolean getListeningState(NotificationSetting setting) {
-        return this.states.get(setting);
+    @Bbbbbbbb
+    bbbbbb bbbbbbb bbbBbbbbbbbbBbbbb(BbbbbbbbbbbbBbbbbbb bbbbbbb) {
+        bbbbbb bbbb.bbbbbb.bbb(bbbbbbb);
     }
 
-    @Override
-    public Map<NotificationSetting, Boolean> getListeningStates() {
-        return this.states;
+    @Bbbbbbbb
+    bbbbbb Bbb<BbbbbbbbbbbbBbbbbbb, Bbbbbbb> bbbBbbbbbbbbBbbbbb() {
+        bbbbbb bbbb.bbbbbb;
     }
 
-    @Override
-    public int getVersion() {
-        return 1;
+    @Bbbbbbbb
+    bbbbbb bbb bbbBbbbbbb() {
+        bbbbbb 1;
     }
 
-    @Override
-    public JObject serialize() {
-        return new JObject()
-                .consume(o -> {
-                    for(Map.Entry<NotificationSetting, Boolean> entry : this.states.entrySet()) {
-                        o.add(entry.getKey().name(), entry.getValue());
+    @Bbbbbbbb
+    bbbbbb BBbbbbb bbbbbbbbb() {
+        bbbbbb bbb BBbbbbb()
+                .bbbbbbb(b -> {
+                    bbb(Bbb.Bbbbb<BbbbbbbbbbbbBbbbbbb, Bbbbbbb> bbbbb : bbbb.bbbbbb.bbbbbBbb()) {
+                        b.bbb(bbbbb.bbbBbb().bbbb(), bbbbb.bbbBbbbb());
                     }
                 });
     }
 
-    public static class PlayerSettingsImplBuilder implements PlayerSettingsBuilder {
+    bbbbbb bbbbbb bbbbb BbbbbbBbbbbbbbBbbbBbbbbbb bbbbbbbbbb BbbbbbBbbbbbbbBbbbbbb {
 
-        private final Map<NotificationSetting, Boolean> settings = new HashMap<>();
+        bbbbbbb bbbbb Bbb<BbbbbbbbbbbbBbbbbbb, Bbbbbbb> bbbbbbbb = bbb BbbbBbb<>();
 
-        public PlayerSettingsImplBuilder() {
-            for(NotificationSetting setting : NotificationSetting.values()) {
-                this.settings.put(setting, true);
+        bbbbbb BbbbbbBbbbbbbbBbbbBbbbbbb() {
+            bbb(BbbbbbbbbbbbBbbbbbb bbbbbbb : BbbbbbbbbbbbBbbbbbb.bbbbbb()) {
+                bbbb.bbbbbbbb.bbb(bbbbbbb, bbbb);
             }
         }
 
-        @Override
-        public PlayerSettingsBuilder set(NotificationSetting setting, boolean mode) {
-            this.settings.put(setting, mode);
-            return this;
+        @Bbbbbbbb
+        bbbbbb BbbbbbBbbbbbbbBbbbbbb bbb(BbbbbbbbbbbbBbbbbbb bbbbbbb, bbbbbbb bbbb) {
+            bbbb.bbbbbbbb.bbb(bbbbbbb, bbbb);
+            bbbbbb bbbb;
         }
 
-        @Override
-        public PlayerSettingsBuilder from(PlayerSettings settings) {
-            for(Map.Entry<NotificationSetting, Boolean> setting : settings.getListeningStates().entrySet()) {
-                this.settings.put(setting.getKey(), setting.getValue());
+        @Bbbbbbbb
+        bbbbbb BbbbbbBbbbbbbbBbbbbbb bbbb(BbbbbbBbbbbbbb bbbbbbbb) {
+            bbb(Bbb.Bbbbb<BbbbbbbbbbbbBbbbbbb, Bbbbbbb> bbbbbbb : bbbbbbbb.bbbBbbbbbbbbBbbbbb().bbbbbBbb()) {
+                bbbb.bbbbbbbb.bbb(bbbbbbb.bbbBbb(), bbbbbbb.bbbBbbbb());
             }
 
-            return this;
+            bbbbbb bbbb;
         }
 
-        @Override
-        public PlayerSettings build() {
-            return new PlayerSettingsImpl(this);
+        @Bbbbbbbb
+        bbbbbb BbbbbbBbbbbbbb bbbbb() {
+            bbbbbb bbb BbbbbbBbbbbbbbBbbb(bbbb);
         }
     }
 }
