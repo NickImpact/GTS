@@ -1,0 +1,27 @@
+repositories {
+    mavenCentral()
+    ivy {
+        url "https://download.nodecdn.net/containers"
+        patternLayout {
+            artifact "/[organisation]/[module]/release/[revision]/[ext]"
+        }
+        metadataSources {
+            artifact()
+        }
+    }
+}
+
+dependencies {
+    implementation(project(':api'))
+    implementation('reforged:server:9.0.6@Pixelmon-1.16.5-9.0.6-server.jar')
+    implementation('net.impactdev.reforged.mixins:api:1.2.1')
+    implementation('net.impactdev:pixelmonbridge:1.1.1-SNAPSHOT')
+    implementation('net.impactdev.pixelmonbridge:reforged:1.1.1-SNAPSHOT')
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+}
+
+test {
+    useJUnitPlatform()
+}

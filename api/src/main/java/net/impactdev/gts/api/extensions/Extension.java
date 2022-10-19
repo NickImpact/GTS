@@ -25,64 +25,47 @@
 
 package net.impactdev.gts.api.extensions;
 
-import net.impactdev.gts.api.GTSService;
-import net.impactdev.gts.api.commands.GTSCommandExecutor;
-import net.impactdev.gts.api.environment.Environment;
-import net.impactdev.impactor.api.dependencies.Dependency;
-import net.impactdev.impactor.api.plugin.ImpactorPlugin;
-import net.impactdev.impactor.api.plugin.components.Configurable;
-
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Set;
-
 /**
- * Represents an extension that is meant to hook into GTS
+ * Represents an extension that is meant to hook into GTS.
  *
  * An extension is not a plugin, but rather a component capable of providing extra functionality for GTS.
  *
  * An extension must contain a resource titled "extension.json",
  */
-public interface Extension extends ImpactorPlugin, Configurable {
+public interface Extension {
 
     /**
-     * Loads the extension. Fired during server startup
-     *
-     * @param service A direct reference to the API Service provided to remove one additional call for
-     *                those lazy people
+     * Responsible for constructing the extension.
      */
-    void load(GTSService service, Path dataDir);
+    void construct();
 
     /**
      * Enables the extension, and is fired after load.
-     *
-     * @param service A direct reference to the API Service provided to remove one additional call for
-     *                those lazy people
      */
-    void enable(GTSService service);
+    void enable();
 
     /**
      * Unloads the extension. Fired during server shutdown
      */
-    void unload();
+    void shutdown();
 
-    /**
-     * Specifies an additional list of dependencies that this extension will require to function
-     *
-     * @return The list of dependencies required for normal operations of the extension
-     */
-    List<Dependency> getRequiredDependencies();
+//    /**
+//     * Specifies an additional list of dependencies that this extension will require to function
+//     *
+//     * @return The list of dependencies required for normal operations of the extension
+//     */
+//    List<Dependency> getRequiredDependencies();
 
-    /**
-     * Returns a set of command executors that this extension would like to supply
-     *
-     * @return A set of executors for the extension, if any
-     */
-    Set<GTSCommandExecutor<?, ?, ?>> getExecutors();
-
-    /**
-     * Supplies a set of extended information regarding the environment that this extension might make use of
-     */
-    void getExtendedEnvironmentInformation(Environment environment);
+//    /**
+//     * Returns a set of command executors that this extension would like to supply
+//     *
+//     * @return A set of executors for the extension, if any
+//     */
+//    Set<GTSCommandExecutor<?, ?, ?>> getExecutors();
+//
+//    /**
+//     * Supplies a set of extended information regarding the environment that this extension might make use of
+//     */
+//    void getExtendedEnvironmentInformation(Environment environment);
 
 }

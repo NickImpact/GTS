@@ -1,6 +1,6 @@
 package net.impactdev.gts.api.events.lifecycle;
 
-import net.impactdev.impactor.api.event.ImpactorEvent;
+import net.impactdev.impactor.api.events.ImpactorEvent;
 
 public interface RegisterComponentEvent extends ImpactorEvent {
 

@@ -43,7 +43,7 @@ jobs:
           path: |
             ${{ github.workspace }}/build/allJars/*.jar
         # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-        # the publishing section of your build.gradle
+        # the publishing section of your build.gradle.kts.kts.kts
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

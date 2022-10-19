@@ -33,14 +33,14 @@ import java.util.Collection;
 
 public interface ExtensionManager {
 
-    void loadExtension(Extension extension);
+    void construct(Extension extension);
 
-    @NonNull Extension loadExtension(Path path) throws IOException;
+    void construct(Path path) throws Exception;
 
-    void loadExtensions(Path path) throws Exception;
+    void enable();
 
-    void enableExtensions();
+    void shutdown();
 
-    @NonNull Collection<Extension> getLoadedExtensions();
+    @NonNull Collection<Extension> extensions();
 
 }

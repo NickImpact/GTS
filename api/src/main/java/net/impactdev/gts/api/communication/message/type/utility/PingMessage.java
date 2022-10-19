@@ -2,13 +2,12 @@ package net.impactdev.gts.api.communication.message.type.utility;
 
 import net.impactdev.gts.api.communication.message.OutgoingMessage;
 import net.impactdev.gts.api.communication.message.type.MessageType;
-import net.impactdev.gts.api.communication.message.type.UpdateMessage;
 
 /**
  * Represents a message that GTS can use as a means to ping the proxy and vice versa. These messages are namely
  * useful in determining the messaging service is properly connected.
  */
-public interface PingMessage extends UpdateMessage, OutgoingMessage {
+public interface PingMessage extends OutgoingMessage {
 
 	/**
 	 * This message type simply asks the proxy server if it can see this ping. If it does, it'll respond

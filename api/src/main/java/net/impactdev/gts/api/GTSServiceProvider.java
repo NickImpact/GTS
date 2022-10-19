@@ -15,6 +15,10 @@ public final class GTSServiceProvider {
 	}
 
 	static void register(GTSService service) {
+		if(instance != null) {
+			throw new IllegalStateException("API has already been set!");
+		}
+
 		instance = service;
 	}
 

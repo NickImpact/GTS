@@ -1,12 +1,15 @@
 package net.impactdev.gts.api.players;
 
+import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
-import net.impactdev.gts.api.storage.DataWritable;
-import net.impactdev.impactor.api.json.factory.JObject;
+import net.impactdev.gts.api.storage.serialization.StorableContent;
+import net.impactdev.json.JObject;
 
 import java.util.Map;
 
-public record PlayerPreferences(Map<NotificationType, Boolean> settings) implements DataWritable {
+public class PlayerPreferences implements StorableContent {
+
+    private final Map<NotificationType, Boolean> settings = Maps.newHashMap();
 
     public boolean notification(NotificationType type) {
         return this.settings.get(type);

@@ -48,7 +48,7 @@ public interface ForceDeleteMessage extends OutgoingMessage {
          * Represents the UUID of the user who had their listing deleted. Since the listing will have been
          * deleted before the response is made available to the requesting server, we will need to supply
          * information back to the server about the listing.
-         *
+         * <p>
          * Note that if the request was marked unsuccessful, this value will not be populated.
          *
          * @return The ID of the user who made the listing
@@ -56,7 +56,7 @@ public interface ForceDeleteMessage extends OutgoingMessage {
         Optional<Listing> getDeletedListing();
 
         static ResponseBuilder builder() {
-            return Impactor.getInstance().getRegistry().createBuilder(ResponseBuilder.class);
+            return Impactor.instance().builders().provide(ResponseBuilder.class);
         }
 
         interface ResponseBuilder extends Builder<ForceDeleteMessage.Response> {

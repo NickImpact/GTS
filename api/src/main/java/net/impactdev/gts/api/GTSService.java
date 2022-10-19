@@ -1,6 +1,7 @@
 package net.impactdev.gts.api;
 
 import com.google.common.collect.ImmutableList;
+import net.impactdev.gts.api.components.listings.ListingManager;
 import net.impactdev.gts.api.extensions.Extension;
 
 public interface GTSService {
@@ -8,6 +9,8 @@ public interface GTSService {
 	static GTSService instance() {
 		return GTSServiceProvider.get();
 	}
+
+	ListingManager manager();
 
 	/**
 	 * Returns an unmodifiable list of extensions currently hooked and running with GTS

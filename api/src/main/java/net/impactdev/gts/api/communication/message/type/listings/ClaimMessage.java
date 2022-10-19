@@ -2,7 +2,7 @@ package net.impactdev.gts.api.communication.message.type.listings;
 
 import net.impactdev.gts.api.communication.message.OutgoingMessage;
 import net.impactdev.gts.api.communication.message.type.MessageType;
-import net.impactdev.gts.api.util.TriState;
+import net.kyori.adventure.util.TriState;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.List;
@@ -20,14 +20,14 @@ public interface ClaimMessage extends OutgoingMessage {
      *
      * @return The ID of the auction
      */
-    @NonNull UUID getListingID();
+    @NonNull UUID listing();
 
     /**
      * Represents the UUID of a player or another source that is applying the action to this auction.
      *
      * @return The UUID of the source applying the action
      */
-    @NonNull UUID getActor();
+    @NonNull UUID actor();
 
     /**
      * Represents the ID of the user that will be receiving this listing. This is primarily for
@@ -35,10 +35,10 @@ public interface ClaimMessage extends OutgoingMessage {
      *
      * @return The UUID of the intended receiver, if one is set
      */
-    Optional<UUID> getReceiver();
+    Optional<UUID> recipient();
 
     /**
-     * Specifies whether or not this claim request was based on an auction.
+     * Specifies whether this claim request was based on an auction.
      *
      * @return True if the claim request was for an auction, false for BIN
      */
@@ -46,8 +46,8 @@ public interface ClaimMessage extends OutgoingMessage {
 
     /**
      * This represents the actual request made to the messaging service, in which we expect a response indicating
-     * whether or not the action can go through.
-     *
+     * whether the action can go through.
+     * <p>
      * If our claim is based around an auction, this request should return an {@link ClaimMessage.Response.AuctionResponse}
      * that includes the extended information.
      */
@@ -61,7 +61,7 @@ public interface ClaimMessage extends OutgoingMessage {
 
         /**
          * A child of a response, specific to an attempt to claim from an auction. This carries
-         * more information in regards to the auction such that we can ensure successful
+         * more information in regard to the auction such that we can ensure successful
          * retrieval of goods per each user.
          */
         interface AuctionResponse extends ClaimMessage.Response {
@@ -81,7 +81,7 @@ public interface ClaimMessage extends OutgoingMessage {
             boolean hasWinnerClaimed();
 
             /**
-             * Specifies whether or not a particular user has claimed their bid they placed on an auction
+             * Specifies whether a particular user has claimed their bid they placed on an auction
              * that they did not win.
              *
              * @param uuid The ID of the user

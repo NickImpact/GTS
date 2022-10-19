@@ -1,9 +1,9 @@
 package net.impactdev.gts.api.communication.message.type.auctions;
 
 import com.google.common.collect.TreeMultimap;
-import net.impactdev.gts.api.listings.auctions.Auction;
 import net.impactdev.gts.api.communication.message.OutgoingMessage;
 import net.impactdev.gts.api.communication.message.type.MessageType;
+import net.impactdev.gts.api.components.listings.models.Auction;
 import org.checkerframework.checker.index.qual.Positive;
 import org.checkerframework.checker.nullness.qual.NonNull;
 

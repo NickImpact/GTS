@@ -6,6 +6,7 @@ bin
 .classpath
 .project
 .gradle/*
+.gradle
 buildSrc/.gradle/*
 
 # idea

@@ -30,7 +30,7 @@ public interface ListingManager {
      * attached to the argument itself. So, if you wish to look for only auctions and
      * have a publishing year of 2022, you could run the following code:
      * <pre>
-     *     Predicate&ltListing&gt filter = listing -> listing instanceof Auction;
+     *     Predicate&lt;Listing&gt; filter = listing -> listing instanceof Auction;
      *     filter.and(listing -> listing.published().getYear() > 2021;
      *     ListingManager#listings(filter)...</pre>
      *
