@@ -5,16 +5,25 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 import net.impactdev.gts.api.GTSService;
+import net.impactdev.gts.api.events.lifecycle.DeserializerRegistrationEvent;
 import net.impactdev.gts.api.extensions.ExtensionManager;
 import net.impactdev.gts.api.storage.StorageProvider;
+import net.impactdev.gts.commands.GTSCommands;
+import net.impactdev.gts.commands.admin.TranslationCommands;
+import net.impactdev.gts.components.provided.content.ItemStackContent;
 import net.impactdev.gts.configuration.GTSConfigKeys;
+import net.impactdev.gts.extensions.GTSExtensionManager;
 import net.impactdev.gts.injections.GTSInjectionModule;
+import net.impactdev.gts.locale.TranslationManager;
 import net.impactdev.gts.plugin.bootstrapper.GTSBootstrapper;
+import net.impactdev.gts.registries.RegistryAccessors;
 import net.impactdev.gts.service.APIRegistrar;
-import net.impactdev.gts.util.Environment;
+import net.impactdev.impactor.api.Impactor;
+import net.impactdev.impactor.api.commands.events.CommandRegistrationEvent;
 import net.impactdev.impactor.api.configuration.Config;
 import net.impactdev.impactor.api.logging.PluginLogger;
 import net.impactdev.impactor.api.plugin.PluginMetadata;
+import net.impactdev.impactor.api.utilities.ExceptionPrinter;
 
 import java.nio.file.Path;
 import java.util.Optional;
@@ -23,17 +32,19 @@ public abstract class AbstractGTSPlugin implements GTSPlugin {
 
     private static GTSPlugin instance;
 
-    private final GTSService service;
-    private final GTSBootstrapper bootstrapper;
-    private final Injector injector;
-    private final ExtensionManager extensions = null; // TODO - Extension Manager Implementation
     private final PluginMetadata metadata = PluginMetadata.builder()
             .id("gts")
             .name("GTS (Global Trading Station)")
             .version("@version@")
             .build();
 
+    private final GTSService service;
+    private final GTSBootstrapper bootstrapper;
+    private final Injector injector;
+    private final ExtensionManager extensions = new GTSExtensionManager();
+
     private Config config;
+    private TranslationManager translations;
     private StorageProvider storage;
 
     public AbstractGTSPlugin(final GTSBootstrapper bootstrapper) {
@@ -54,16 +65,42 @@ public abstract class AbstractGTSPlugin implements GTSPlugin {
 
     @Override
     public void construct() {
-        Path confDir = this.bootstrapper.configDirectory();
-        this.config = Config.builder()
-                .path(confDir.resolve("gts.conf"))
-                .providers(GTSConfigKeys.class)
-                .build();
+        try {
+            Path confDir = this.bootstrapper.configDir();
+            this.config = Config.builder()
+                    .path(confDir.resolve("gts.conf"))
+                    .providers(GTSConfigKeys.class)
+                    .build();
 
-        // TODO - Initialize translations
+            this.translations = new TranslationManager();
+            //this.translations.reload();
 
-        // TODO - Create storage factory
-        //this.storage =
+            // TODO - Create storage factory
+            //this.storage =
+
+            this.registration();
+            this.commands();
+
+            this.extensions.construct(this.configDirectory()
+                    .orElseThrow(() -> new IllegalStateException("No config directory was specified"))
+                    .resolve("extensions")
+            );
+        } catch (Exception e) {
+            throw new RuntimeException("Encountered an exception during plugin launch", e);
+        }
+    }
+
+    /**
+     * Used to initialize registries for the plugin
+     */
+    public void load() {
+        try {
+            RegistryAccessors.DESERIALIZERS.init();
+
+            this.extensions.enable();
+        } catch (Exception e) {
+            ExceptionPrinter.print(this, e);
+        }
     }
 
     @Override
@@ -94,17 +131,12 @@ public abstract class AbstractGTSPlugin implements GTSPlugin {
 
     @Override
     public ExtensionManager extensions() {
-        return null;
+        return this.extensions;
     }
-//
-//    @Override
-//    public TranslationRepository translations() {
-//        return null;
-//    }
 
     @Override
-    public Environment environment() {
-        return null;
+    public TranslationManager translations() {
+        return this.translations;
     }
 
     @Override
@@ -114,7 +146,7 @@ public abstract class AbstractGTSPlugin implements GTSPlugin {
 
     @Override
     public Optional<Path> configDirectory() {
-        return Optional.ofNullable(this.bootstrapper.configDirectory());
+        return Optional.ofNullable(this.bootstrapper.configDir());
     }
 
     @Override
@@ -124,5 +156,18 @@ public abstract class AbstractGTSPlugin implements GTSPlugin {
 
     protected Iterable<Module> modules() {
         return Lists.newArrayList(new GTSInjectionModule());
+    }
+
+    private void commands() {
+        Impactor.instance().events().subscribe(CommandRegistrationEvent.class, event -> {
+            event.register(GTSCommands.class)
+                    .register(TranslationCommands.class);
+        });
+    }
+
+    private void registration() {
+        Impactor.instance().events().subscribe(DeserializerRegistrationEvent.class, event -> {
+            event.register(ItemStackContent.class, ItemStackContent::deserialize);
+        });
     }
 }

@@ -1,10 +1,10 @@
 package net.impactdev.gts.components.listings.models;
 
-import com.google.gson.JsonObject;
 import net.impactdev.gts.api.components.content.Price;
 import net.impactdev.gts.api.components.listings.models.BuyItNow;
-import net.impactdev.gts.api.components.listings.models.Listing;
+import net.impactdev.gts.api.components.listings.Listing;
 import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
+import net.impactdev.json.JObject;
 import org.jetbrains.annotations.NotNull;
 
 public class GTSBuyItNow extends GTSListing implements BuyItNow {
@@ -27,13 +27,13 @@ public class GTSBuyItNow extends GTSListing implements BuyItNow {
     }
 
     @Override
-    public JsonObject serialize() {
-        return null;
+    protected void serialize$child(JObject json) {
+        json.add("price", this.price.serialize());
     }
 
     @Override
     public void print(PrettyPrinter printer) {
-
+        super.print(printer);
     }
 
     public static class GTSBuyItNowBuilder extends GTSListingBuilder<GTSBuyItNowBuilder> {

@@ -39,8 +39,8 @@ import java.util.stream.Stream;
 
 public final class TranslationRepository {
 
-    private static final String TRANSLATIONS_INFO_ENDPOINT = "https://metadata.luckperms.net/data/translations";
-    private static final String TRANSLATIONS_DOWNLOAD_ENDPOINT = "https://metadata.luckperms.net/translation/";
+    private static final String TRANSLATIONS_ENDPOINT = "https://metadata.impactdev.net/translations/gts";
+
     private static final long MAX_BUNDLE_SIZE = 1048576L; // 1mb
     private static final long CACHE_MAX_AGE = TimeUnit.HOURS.toMillis(23);
 
@@ -111,7 +111,7 @@ public final class TranslationRepository {
 
             Request request = new Request.Builder()
                     .header("User-Agent", Client.USER_AGENT)
-                    .url(TRANSLATIONS_DOWNLOAD_ENDPOINT + language.id)
+                    .url(TRANSLATIONS_ENDPOINT + "/" + language.id)
                     .build();
             try (Response response = this.client.makeRequest(request)) {
                 try (ResponseBody body = response.body()) {
@@ -169,7 +169,7 @@ public final class TranslationRepository {
     private MetadataResponse getTranslationsMetadata() throws Exception {
         Request request = new Request.Builder()
                 .header("User-Agent", Client.USER_AGENT)
-                .url(TRANSLATIONS_INFO_ENDPOINT)
+                .url(TRANSLATIONS_ENDPOINT)
                 .build();
 
         JsonObject jsonResponse;

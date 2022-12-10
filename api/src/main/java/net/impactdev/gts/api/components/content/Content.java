@@ -2,7 +2,7 @@ package net.impactdev.gts.api.components.content;
 
 import net.impactdev.gts.api.storage.serialization.StorableContent;
 import net.impactdev.impactor.api.items.ImpactorItemStack;
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
+import net.impactdev.impactor.api.platform.sources.PlatformPlayer;
 import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
 import net.kyori.adventure.text.ComponentLike;
 

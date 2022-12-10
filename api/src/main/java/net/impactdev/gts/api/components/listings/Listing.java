@@ -1,4 +1,4 @@
-package net.impactdev.gts.api.components.listings.models;
+package net.impactdev.gts.api.components.listings;
 
 import net.impactdev.gts.api.components.content.Content;
 import net.impactdev.gts.api.storage.serialization.StorableContent;

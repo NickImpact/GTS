@@ -12,3 +12,4 @@ rootProject.name = "GTS"
 
 include("api")
 include("gts")
+include("forge")

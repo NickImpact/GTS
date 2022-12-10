@@ -1,12 +1,14 @@
-package net.impactdev.gts.components;
+package net.impactdev.gts.components.listings.models;
 
 import com.google.common.collect.TreeMultimap;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.components.content.Content;
 import net.impactdev.gts.api.components.content.Price;
 import net.impactdev.gts.api.components.listings.models.Auction;
-import net.impactdev.gts.api.components.listings.models.Listing;
+import net.impactdev.gts.api.components.listings.Listing;
 import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
+import net.impactdev.json.JArray;
+import net.impactdev.json.JObject;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.mariuszgromada.math.mxparser.Argument;
@@ -14,40 +16,15 @@ import org.mariuszgromada.math.mxparser.Expression;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-public class GTSAuction implements Auction {
+public class GTSAuction extends GTSListing implements Auction {
 
-    @Override
-    public UUID id() {
-        return null;
-    }
-
-    @Override
-    public @NotNull Component asComponent() {
-        return null;
-    }
-
-    @Override
-    public Optional<UUID> lister() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Content<?> content() {
-        return null;
-    }
-
-    @Override
-    public LocalDateTime published() {
-        return null;
-    }
-
-    @Override
-    public Optional<LocalDateTime> expiration() {
-        return Optional.empty();
+    protected GTSAuction(GTSListingBuilder<?> builder) {
+        super(builder);
     }
 
     @Override
@@ -81,13 +58,24 @@ public class GTSAuction implements Auction {
     }
 
     @Override
-    public JsonObject serialize() {
-        return null;
+    public int version() {
+        return 2;
     }
 
     @Override
-    public int version() {
-        return 0;
+    protected void serialize$child(JObject json) {
+        JObject auction = new JObject();
+        auction.add("start", this.starting().asNumber());
+        auction.add("current", this.current().asNumber());
+        auction.add("bids", new JArray().consume(array -> {
+            for(Map.Entry<UUID, Bid> bid : this.bids().entries()) {
+                JObject metadata = new JObject();
+                metadata.add("amount", bid.getValue().amount().asNumber());
+                metadata.add("timestamp", bid.getValue().timestamp().toString());
+
+                array.add(new JObject().add(bid.getKey().toString(), metadata));
+            }
+        }));
     }
 
     @Override

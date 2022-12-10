@@ -1,6 +1,6 @@
 package net.impactdev.gts.ui;
 
-import net.impactdev.impactor.api.platform.players.PlatformPlayer;
+import net.impactdev.impactor.api.platform.sources.PlatformPlayer;
 
 public interface Viewable {
 

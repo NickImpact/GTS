@@ -6,18 +6,31 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
 
-public interface GTSBootstrapper {
+public abstract class GTSBootstrapper {
 
-    /**
-     * Represents the logger the plugin will use, provided by the platform.
-     *
-     * @return
-     */
-    PluginLogger logger();
+    private final PluginLogger logger;
+    private final Path configDir;
+    private final Path dataDir;
 
-    Path configDirectory();
+    private Throwable exception;
 
-    Path dataDirectory();
+    public GTSBootstrapper(PluginLogger logger, Path configDir, Path dataDir) {
+        this.logger = logger;
+        this.configDir = configDir;
+        this.dataDir = dataDir;
+    }
+
+    public PluginLogger logger() {
+        return this.logger;
+    }
+
+    public Path configDir() {
+        return this.configDir;
+    }
+
+    public Path dataDir() {
+        return this.dataDir;
+    }
 
     /**
      * Attempts to locate a resource within the internal jar, and if it exists, creates an
@@ -26,7 +39,13 @@ public interface GTSBootstrapper {
      * @param path The path to the resource
      * @return An optionally filled InputStream if the file was found and loaded, empty otherwise.
      */
-    Optional<InputStream> resource(Path path);
+    protected Optional<InputStream> resource(Path path) {
+        return Optional.ofNullable(this.getClass().getResourceAsStream(path.toString()));
+    }
+
+    protected void logLaunchFailure(Throwable exception) {
+        this.exception = exception;
+    }
 
     /**
      * States whether GTS encountered an error during startup that prevented the plugin from initializing
@@ -35,6 +54,8 @@ public interface GTSBootstrapper {
      *
      * @return Any error that occurred during startup, or empty if no error was encountered
      */
-    Optional<Throwable> launchError();
+    protected Optional<Throwable> launchError() {
+        return Optional.ofNullable(this.exception);
+    }
 
 }

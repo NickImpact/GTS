@@ -2,8 +2,9 @@ package net.impactdev.gts.components.listings.models;
 
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.components.content.Content;
-import net.impactdev.gts.api.components.listings.models.Listing;
+import net.impactdev.gts.api.components.listings.Listing;
 import net.impactdev.impactor.api.utilities.printing.PrettyPrinter;
+import net.impactdev.json.JObject;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -65,11 +66,19 @@ public abstract class GTSListing implements Listing {
 
     @Override
     public JsonObject serialize() {
-        // TODO - Create a JSON module for Impactor that Impactor itself inherits, so other projects can also use it
-        JsonObject json = new JsonObject();
+        JObject json = new JObject()
+                .add("version", this.version())
+                .add("uuid", this.id.toString())
+                .consume(o -> Optional.ofNullable(this.lister).ifPresent(id -> o.add("lister", id.toString())))
+                .add("published", this.published.toString())
+                .consume(o -> Optional.ofNullable(this.expiration).ifPresent(id -> o.add("expiration", id.toString())))
+                .add("content", this.content.serialize());
 
-        return null;
+        this.serialize$child(json);
+        return json.toJson();
     }
+
+    protected abstract void serialize$child(JObject json);
 
     @Override
     public void print(PrettyPrinter printer) {

@@ -1,6 +1,6 @@
 package net.impactdev.gts.api.communication.message.type.admin;
 
-import net.impactdev.gts.api.components.listings.models.Listing;
+import net.impactdev.gts.api.components.listings.Listing;
 import net.impactdev.gts.api.communication.message.OutgoingMessage;
 import net.impactdev.gts.api.communication.message.errors.ErrorCode;
 import net.impactdev.gts.api.communication.message.type.MessageType;

@@ -3,9 +3,11 @@ package net.impactdev.gts.locale;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.Maps;
+import net.impactdev.gts.configuration.GTSConfigKeys;
 import net.impactdev.gts.locale.configs.GeneralKeys;
 import net.impactdev.gts.locale.configs.UIConfigKeys;
 import net.impactdev.gts.plugin.GTSPlugin;
+import net.impactdev.impactor.api.adventure.TextProcessor;
 import net.impactdev.impactor.api.configuration.Config;
 import net.kyori.adventure.translation.Translator;
 
@@ -26,12 +28,14 @@ public final class TranslationManager {
     private static final Locale DEFAULT_LOCALE = Locale.US;
 
     private final Path directory;
+    private final TextProcessor processor;
     private final Set<Locale> installed = ConcurrentHashMap.newKeySet();
     private final Cache<Locale, Config> translations = Caffeine.newBuilder().build();
 
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     public TranslationManager() {
         this.directory = GTSPlugin.instance().configDirectory().get().resolve("translations");
+        this.processor = GTSPlugin.instance().config().get().get(GTSConfigKeys.TEXT_PROCESSOR);
     }
 
     public void reload() {
@@ -49,6 +53,10 @@ public final class TranslationManager {
                 key -> Optional.ofNullable(this.translations.getIfPresent(DEFAULT_LOCALE))
                         .orElseThrow(() -> new IllegalStateException("Fallback locale could not be located"))
         );
+    }
+
+    public TextProcessor processor() {
+        return this.processor;
     }
 
     public Path getRepositoryDirectory() {

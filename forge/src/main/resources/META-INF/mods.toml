@@ -1,0 +1,33 @@
+modLoader = "javafml"
+loaderVersion = "[36,)"
+license = "MIT"
+
+[[mods]]
+modId = "gts"
+version = "${version}"
+displayName = "GTS"
+description = '''
+
+'''
+
+[[dependencies.gts]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.16.5]"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.gts]]
+modId = "forge"
+mandatory = true
+versionRange = "[36,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.gts]]
+modId = "impactor"
+mandatory = true
+versionRange = "[5.0.0-SNAPSHOT,)"
+ordering = "NONE"
+side = "BOTH"
+

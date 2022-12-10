@@ -2,7 +2,7 @@ package net.impactdev.gts.api.components.listings.models;
 
 import com.google.common.collect.TreeMultimap;
 import net.impactdev.gts.api.components.content.Price;
-import org.mariuszgromada.math.mxparser.Expression;
+import net.impactdev.gts.api.components.listings.Listing;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

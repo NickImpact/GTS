@@ -20,6 +20,8 @@ plugins {
     id("org.cadixdev.licenser") version "0.6.1"
     id("net.kyori.blossom") version "1.3.0" apply false
     id("com.github.johnrengelman.shadow") version "7.1.2" apply false
+    id("architectury-plugin") version "3.4-SNAPSHOT" apply false
+    id("dev.architectury.loom") version "0.12.0-SNAPSHOT" apply false
 }
 
 group = "net.impactdev.gts"
@@ -62,9 +64,15 @@ subprojects {
         implementation("com.github.ben-manes.caffeine:caffeine:2.9.3")
 
         // Testing
-        testImplementation(group = "junit", name = "junit", version = "4.13.1")
+        testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
+        testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+
         testImplementation("com.google.guava:guava:31.1-jre")
         testImplementation(group = "org.mariuszgromada.math", name = "MathParser.org-mXparser", version = "5.0.6")
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
     }
 
 }
@@ -77,4 +85,8 @@ val writeChangelog by tasks.registering {
     }
 
     Files.write(path, generateChangelog(project, ReleaseLevel.get(project.version.toString())).toByteArray(StandardCharsets.UTF_8))
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

@@ -1,8 +1,8 @@
-package net.impactdev.gts.api.components.listings;
+package net.impactdev.gts.api.modules.markets;
 
 import net.impactdev.gts.api.components.listings.models.Auction;
 import net.impactdev.gts.api.components.listings.models.BuyItNow;
-import net.impactdev.gts.api.components.listings.models.Listing;
+import net.impactdev.gts.api.components.listings.Listing;
 import net.kyori.adventure.util.TriState;
 import org.jetbrains.annotations.Nullable;
 
