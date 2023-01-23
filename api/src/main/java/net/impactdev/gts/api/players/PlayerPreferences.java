@@ -2,7 +2,7 @@ package net.impactdev.gts.api.players;
 
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
-import net.impactdev.gts.api.storage.serialization.StorableContent;
+import net.impactdev.gts.api.storage.StorableContent;
 import net.impactdev.json.JObject;
 
 import java.util.Map;

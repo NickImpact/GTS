@@ -16,7 +16,7 @@ dependencies {
 
 tasks {
     withType<JavaCompile> {
-        options.compilerArgs.add("-AeventGenFactory=net.impactdev.gts.api.event.factory.GTSEventFactory")
+        options.compilerArgs.add("-AeventGenFactory=net.impactdev.gts.api.events.factory.GTSEventFactory")
     }
 }
 

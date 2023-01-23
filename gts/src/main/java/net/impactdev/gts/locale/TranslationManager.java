@@ -3,14 +3,19 @@ package net.impactdev.gts.locale;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import net.impactdev.gts.configuration.GTSConfigKeys;
-import net.impactdev.gts.locale.configs.GeneralKeys;
-import net.impactdev.gts.locale.configs.UIConfigKeys;
+import net.impactdev.gts.locale.translations.Translation;
+import net.impactdev.gts.locale.translations.TranslationSet;
 import net.impactdev.gts.plugin.GTSPlugin;
-import net.impactdev.impactor.api.adventure.TextProcessor;
-import net.impactdev.impactor.api.configuration.Config;
+import net.impactdev.impactor.api.text.TextProcessor;
+import net.impactdev.impactor.api.utility.ExceptionPrinter;
+import net.impactdev.impactor.api.utility.printing.PrettyPrinter;
 import net.kyori.adventure.translation.Translator;
 
+import java.io.FileReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -30,12 +35,21 @@ public final class TranslationManager {
     private final Path directory;
     private final TextProcessor processor;
     private final Set<Locale> installed = ConcurrentHashMap.newKeySet();
-    private final Cache<Locale, Config> translations = Caffeine.newBuilder().build();
+    private final Cache<Locale, TranslationSet> translations = Caffeine.newBuilder().build();
 
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     public TranslationManager() {
-        this.directory = GTSPlugin.instance().configDirectory().get().resolve("translations");
-        this.processor = GTSPlugin.instance().config().get().get(GTSConfigKeys.TEXT_PROCESSOR);
+        this.directory = GTSPlugin.instance().configurationDirectory().resolve("translations");
+        this.processor = GTSPlugin.instance().configuration().get(GTSConfigKeys.TEXT_PROCESSOR);
+
+        try {
+            if(Files.notExists(this.getRepositoryDirectory())) {
+                Files.createDirectories(this.getRepositoryDirectory());
+            }
+
+            if(Files.notExists(this.getCustomDirectory())) {
+                Files.createDirectories(this.getCustomDirectory());
+            }
+        } catch (Exception ignored) {}
     }
 
     public void reload() {
@@ -47,7 +61,7 @@ public final class TranslationManager {
         this.loadFromFileSystem(this.getCustomDirectory());
     }
 
-    public Config fetchFromLocaleOrDefault(Locale locale) {
+    public TranslationSet fetchFromLocaleOrDefault(Locale locale) {
         return this.translations.get(
                 locale,
                 key -> Optional.ofNullable(this.translations.getIfPresent(DEFAULT_LOCALE))
@@ -80,16 +94,15 @@ public final class TranslationManager {
             List<Path> translations = stream.filter(TranslationManager::isConfigurationFile).collect(Collectors.toList());
             for(Path translation : translations) {
                 try {
-                    Map.Entry<Locale, Config> result = this.loadTranslationFile(translation);
+                    Map.Entry<Locale, TranslationSet> result = this.loadTranslationFile(translation);
                     this.translations.put(result.getKey(), result.getValue());
                 } catch (Exception e) {
                     GTSPlugin.instance().logger().warn("Error loading locale file: " + translation.getFileName());
-
                 }
             }
         } catch (Exception e) {
             GTSPlugin.instance().logger().severe("Exception occurred loading translations...");
-
+            ExceptionPrinter.print(GTSPlugin.instance().logger(), e);
         }
 
         this.translations.asMap().forEach((locale, config) -> {
@@ -104,7 +117,7 @@ public final class TranslationManager {
         return path.getFileName().toString().endsWith(".conf");
     }
 
-    private Map.Entry<Locale, Config> loadTranslationFile(Path target) {
+    private Map.Entry<Locale, TranslationSet> loadTranslationFile(Path target) throws Exception {
         String name = target.getFileName().toString();
         String localeString = name.substring(0, name.length() - ".conf".length());
         Locale locale = parseLocale(localeString);
@@ -112,14 +125,11 @@ public final class TranslationManager {
             throw new IllegalStateException("Unknown locale '" + localeString + "' - skipping registration");
         }
 
-        Config config = Config.builder()
-                .supply(true)
-                .path(target)
-                .providers(GeneralKeys.class, UIConfigKeys.class)
-                .build();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        JsonObject json = gson.fromJson(new FileReader(target.toFile()), JsonObject.class);
 
         this.installed.add(locale);
-        return Maps.immutableEntry(locale, config);
+        return Maps.immutableEntry(locale, TranslationSet.fromJson(json));
     }
 
     static Locale parseLocale(String input) {

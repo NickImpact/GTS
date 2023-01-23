@@ -3,7 +3,7 @@ package net.impactdev.gts.registries;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.registries.components.ComponentDeserializerRegistry;
-import net.impactdev.gts.api.storage.serialization.StorableContent;
+import net.impactdev.gts.api.storage.StorableContent;
 import net.impactdev.gts.events.GTSDeserializerRegistrationEvent;
 import net.impactdev.gts.plugin.GTSPlugin;
 import net.impactdev.impactor.api.Impactor;

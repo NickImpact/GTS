@@ -1,6 +1,6 @@
 package net.impactdev.gts.registries;
 
-import net.impactdev.gts.api.exceptions.RegistryLockedException;
+import net.impactdev.gts.api.registries.exceptions.RegistryLockedException;
 import net.impactdev.gts.api.registries.Registry;
 
 public abstract class LockableRegistry<K, V> implements Registry.Lockable<K, V> {

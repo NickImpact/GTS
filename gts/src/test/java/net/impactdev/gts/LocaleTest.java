@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class LocaleTest {
 
     @BeforeAll
-    public void init() {
+    public static void init() {
 
     }
 

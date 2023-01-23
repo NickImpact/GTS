@@ -1,6 +1,5 @@
 package net.impactdev.gts.locale;
 
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -8,8 +7,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import net.impactdev.gts.configuration.GTSConfigKeys;
 import net.impactdev.gts.plugin.GTSPlugin;
+import net.impactdev.gts.util.JsonUtilities;
 import net.impactdev.impactor.api.Impactor;
-import net.impactdev.impactor.api.utilities.ExceptionPrinter;
+import net.impactdev.impactor.api.utility.Context;
+import net.impactdev.impactor.api.utility.ExceptionPrinter;
 import net.kyori.adventure.audience.Audience;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -39,36 +40,37 @@ import java.util.stream.Stream;
 
 public final class TranslationRepository {
 
-    private static final String TRANSLATIONS_ENDPOINT = "https://metadata.impactdev.net/translations/gts";
+    private static final String TRANSLATIONS_ENDPOINT = "https://metadata.impactdev.net/gts/translations";
+    private static final String DOWNLOAD_ENDPOINT_FORMAT = "https://metadata.impactdev.net/gts/translation/%s";
 
     private static final long MAX_BUNDLE_SIZE = 1048576L; // 1mb
     private static final long CACHE_MAX_AGE = TimeUnit.HOURS.toMillis(23);
 
     private final Client client = new Client();
-    private final Gson normal = new GsonBuilder().create();
-    private final Gson pretty = new GsonBuilder().setPrettyPrinting().create();
 
     public List<LanguageInfo> available() throws Exception {
         return this.getTranslationsMetadata().languages;
     }
 
     public void scheduleRefresh() {
-        if(!GTSConfigKeys.AUTO_INSTALL_TRANSLATIONS.parse()) {
+        GTSPlugin plugin = GTSPlugin.instance();
+        if(!plugin.configuration().get(GTSConfigKeys.AUTO_INSTALL_TRANSLATIONS)) {
             return;
         }
 
         Impactor.instance().scheduler().executeAsync(() -> {
+            this.clear(GTSPlugin.instance().translations().getRepositoryDirectory(), Files::isRegularFile);
 
             try {
                 this.refresh();
             } catch (Exception e) {
-
+                ExceptionPrinter.print(GTSPlugin.instance().logger(), e);
             }
         });
     }
 
     private void refresh() throws Exception {
-        long last = 0;
+        long last = this.readLastRefreshTime();
         long since = System.currentTimeMillis() - last;
 
         if(since <= CACHE_MAX_AGE) {
@@ -80,7 +82,7 @@ public final class TranslationRepository {
             return;
         }
 
-        this.downloadAndInstall(this.available(), null);
+        this.downloadAndInstall(this.available(), null, true);
     }
 
     private void clear(Path directory, Predicate<Path> filter) {
@@ -99,11 +101,17 @@ public final class TranslationRepository {
      * @param languages The languages we should download and install
      * @param audience The audience that should be informed of the status of the installation
      */
-    private void downloadAndInstall(List<LanguageInfo> languages, @Nullable Audience audience) {
+    private void downloadAndInstall(List<LanguageInfo> languages, @Nullable Audience audience, boolean update) {
         TranslationManager parent = GTSPlugin.instance().translations();
         Path target = parent.getRepositoryDirectory();
 
         this.clear(target, TranslationManager::isConfigurationFile);
+        try {
+            Files.createDirectories(target);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         for(LanguageInfo language : languages) {
             if(audience != null) {
                 // TODO - Send message to audience
@@ -111,12 +119,13 @@ public final class TranslationRepository {
 
             Request request = new Request.Builder()
                     .header("User-Agent", Client.USER_AGENT)
-                    .url(TRANSLATIONS_ENDPOINT + "/" + language.id)
+                    .url(String.format(DOWNLOAD_ENDPOINT_FORMAT, language.id))
                     .build();
+
             try (Response response = this.client.makeRequest(request)) {
                 try (ResponseBody body = response.body()) {
                     if(body == null) {
-                        throw new IOException("Could not locate response");
+                        throw new IOException("No response from translations server");
                     }
 
                     Path file = target.resolve(language.locale + ".conf");
@@ -126,14 +135,17 @@ public final class TranslationRepository {
                 }
             } catch (Exception e) {
                 if(audience != null) {
-                    // TODO - Send message to audience about failure
+                    Translatables.TRANSLATIONS_DOWNLOAD_FAILED.send(audience, Context.empty().append(Locale.class, language.locale));
                 }
 
                 GTSPlugin.instance().logger().warn("Failed to download translations");
-                ExceptionPrinter.print(GTSPlugin.instance(), e);
+                ExceptionPrinter.print(GTSPlugin.instance().logger(), e);
             }
         }
 
+        if(update) {
+            writeLastRefreshTime();
+        }
         parent.reload();
     }
 
@@ -143,7 +155,7 @@ public final class TranslationRepository {
         try (BufferedWriter writer = Files.newBufferedWriter(statusFile, StandardCharsets.UTF_8)) {
             JsonObject status = new JsonObject();
             status.add("lastRefresh", new JsonPrimitive(System.currentTimeMillis()));
-            this.pretty.toJson(status, writer);
+            JsonUtilities.PRETTY.toJson(status, writer);
         } catch (IOException e) {
             // ignore
         }
@@ -154,7 +166,7 @@ public final class TranslationRepository {
 
         if (Files.exists(statusFile)) {
             try (BufferedReader reader = Files.newBufferedReader(statusFile, StandardCharsets.UTF_8)) {
-                JsonObject status = this.normal.fromJson(reader, JsonObject.class);
+                JsonObject status = JsonUtilities.SIMPLE.fromJson(reader, JsonObject.class);
                 if (status.has("lastRefresh")) {
                     return status.get("lastRefresh").getAsLong();
                 }
@@ -181,7 +193,7 @@ public final class TranslationRepository {
 
                 try (InputStream inputStream = new LimitedInputStream(responseBody.byteStream(), MAX_BUNDLE_SIZE)) {
                     try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-                        jsonResponse = this.normal.fromJson(reader, JsonObject.class);
+                        jsonResponse = JsonUtilities.SIMPLE.fromJson(reader, JsonObject.class);
                     }
                 }
             }
@@ -199,8 +211,7 @@ public final class TranslationRepository {
             throw new IOException("More than 100 languages - cancelling download");
         }
 
-        long cacheMaxAge = jsonResponse.get("cacheMaxAge").getAsLong();
-
+        long cacheMaxAge = jsonResponse.get("timestamp").getAsLong();
         return new MetadataResponse(cacheMaxAge, languages);
     }
 
@@ -224,7 +235,7 @@ public final class TranslationRepository {
         LanguageInfo(String id, JsonObject data) {
             this.id = id;
             this.name = data.get("name").getAsString();
-            this.locale = Objects.requireNonNull(TranslationManager.parseLocale(data.get("localeTag").getAsString()));
+            this.locale = Objects.requireNonNull(TranslationManager.parseLocale(data.get("id").getAsString()));
             this.progress = data.get("progress").getAsInt();
             this.contributors = new ArrayList<>();
             for (JsonElement contributor : data.get("contributors").getAsJsonArray()) {

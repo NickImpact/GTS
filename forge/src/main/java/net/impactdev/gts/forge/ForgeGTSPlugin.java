@@ -1,6 +1,6 @@
 package net.impactdev.gts.forge;
 
-import net.impactdev.gts.locale.TranslationManager;
+import net.impactdev.gts.communication.implementation.CommunicationFactory;
 import net.impactdev.gts.plugin.AbstractGTSPlugin;
 import net.impactdev.gts.plugin.bootstrapper.GTSBootstrapper;
 
@@ -11,13 +11,8 @@ public class ForgeGTSPlugin extends AbstractGTSPlugin {
     }
 
     @Override
-    public TranslationManager translations() {
-        return null;
-    }
-
-    @Override
-    public boolean inSafeMode() {
-        return false;
+    protected CommunicationFactory communicationFactory() {
+        return new CommunicationFactory();
     }
 
 }

@@ -1,9 +1,8 @@
 package net.impactdev.gts.api.modules.markets;
 
-import net.impactdev.gts.api.components.listings.models.Auction;
-import net.impactdev.gts.api.components.listings.models.BuyItNow;
-import net.impactdev.gts.api.components.listings.Listing;
-import net.kyori.adventure.util.TriState;
+import net.impactdev.gts.api.elements.listings.models.Auction;
+import net.impactdev.gts.api.elements.listings.models.BuyItNow;
+import net.impactdev.gts.api.elements.listings.Listing;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
@@ -31,7 +30,7 @@ public interface ListingManager {
      * have a publishing year of 2022, you could run the following code:
      * <pre>
      *     Predicate&lt;Listing&gt; filter = listing -> listing instanceof Auction;
-     *     filter.and(listing -> listing.published().getYear() > 2021;
+     *     filter.and(listing -> listing.published().getYear() > 2021);
      *     ListingManager#listings(filter)...</pre>
      *
      * The given result features an ordered set, following the rules of the comparable
@@ -40,7 +39,7 @@ public interface ListingManager {
      *
      * @return An ordered set of all known listings
      */
-    CompletableFuture<Set<Listing>> listings(Predicate<Listing> filter);
+    Set<Listing> fetch(Predicate<Listing> filter);
 
     /**
      * Appends the listing to the market, should the actor meet the necessary conditions
@@ -50,7 +49,7 @@ public interface ListingManager {
      * @param listing The actual listing data that should be written to memory
      * @return A completable future indicating the success result of the action
      */
-    CompletableFuture<TriState> list(UUID actor, Listing listing);
+    CompletableFuture<Boolean> list(UUID actor, Listing listing);
 
     /**
      * Attempts to process a purchase request by the given actor for the specified listing. In some
@@ -67,12 +66,12 @@ public interface ListingManager {
      */
     // TODO - Rather than the selection object, consider some context method or rethink the method
     // TODO - of running a purchase
-    CompletableFuture<TriState> purchase(UUID actor, BuyItNow listing, @Nullable Object selection);
+    CompletableFuture<Boolean> purchase(UUID actor, BuyItNow listing, @Nullable Object selection);
 
-    CompletableFuture<TriState> bid(UUID actor, Auction auction, BigDecimal amount);
+    CompletableFuture<Boolean> bid(UUID actor, Auction auction, BigDecimal amount);
 
-    CompletableFuture<TriState> remove(UUID actor, UUID listing);
+    CompletableFuture<Boolean> remove(UUID actor, UUID listing);
 
-    CompletableFuture<TriState> hasMax(UUID target);
+    CompletableFuture<Boolean> hasMax(UUID target);
 
 }

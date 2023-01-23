@@ -27,6 +27,12 @@ plugins {
 group = "net.impactdev.gts"
 version = "7.0.0-SNAPSHOT"
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(8))
+    }
+}
+
 if(System.getenv().containsKey("BUILD_NUMBER")) {
     project.setProperty("run", System.getenv("BUILD_NUMBER"))
 }
@@ -47,14 +53,22 @@ subprojects {
 
     repositories {
         mavenCentral()
-        maven("https://jitpack.io")
         maven("https://maven.impactdev.net/repository/development/")
         maven("https://oss.sonatype.org/content/repositories/snapshots/")
+        maven("https://libraries.minecraft.net")
     }
 
     dependencies {
         // Impactor
-        api("net.impactdev.impactor:api:5.0.0-SNAPSHOT")
+        api("net.impactdev.impactor.api:core:5.0.0-SNAPSHOT")
+        api("net.impactdev.impactor.api:config:5.0.0-SNAPSHOT")
+        api("net.impactdev.impactor.api:commands:5.0.0-SNAPSHOT")
+        api("net.impactdev.impactor.api:economy:5.0.0-SNAPSHOT")
+        api("net.impactdev.impactor.api:items:5.0.0-SNAPSHOT")
+        api("net.impactdev.impactor.api:players:5.0.0-SNAPSHOT")
+        api("net.impactdev.impactor.api:storage:5.0.0-SNAPSHOT")
+        api("net.impactdev.impactor.api:text:5.0.0-SNAPSHOT")
+        api("net.impactdev.impactor.api:ui:5.0.0-SNAPSHOT")
 
         // Google
         api("com.google.inject:guice:5.1.0")

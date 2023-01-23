@@ -2,7 +2,7 @@ package net.impactdev.gts.events;
 
 import net.impactdev.gts.api.events.lifecycle.DeserializerRegistrationEvent;
 import net.impactdev.gts.api.registries.components.ComponentDeserializerRegistry;
-import net.impactdev.gts.api.storage.serialization.StorableContent;
+import net.impactdev.gts.api.storage.StorableContent;
 import org.jetbrains.annotations.NotNull;
 
 public class GTSDeserializerRegistrationEvent implements DeserializerRegistrationEvent {

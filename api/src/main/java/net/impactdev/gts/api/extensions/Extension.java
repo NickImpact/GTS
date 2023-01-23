@@ -27,9 +27,9 @@ package net.impactdev.gts.api.extensions;
 
 /**
  * Represents an extension that is meant to hook into GTS.
- *
+ * <p>
  * An extension is not a plugin, but rather a component capable of providing extra functionality for GTS.
- *
+ * <p>
  * An extension must contain a resource titled "extension.json",
  */
 public interface Extension {
@@ -48,24 +48,5 @@ public interface Extension {
      * Unloads the extension. Fired during server shutdown
      */
     void shutdown();
-
-//    /**
-//     * Specifies an additional list of dependencies that this extension will require to function
-//     *
-//     * @return The list of dependencies required for normal operations of the extension
-//     */
-//    List<Dependency> getRequiredDependencies();
-
-//    /**
-//     * Returns a set of command executors that this extension would like to supply
-//     *
-//     * @return A set of executors for the extension, if any
-//     */
-//    Set<GTSCommandExecutor<?, ?, ?>> getExecutors();
-//
-//    /**
-//     * Supplies a set of extended information regarding the environment that this extension might make use of
-//     */
-//    void getExtendedEnvironmentInformation(Environment environment);
 
 }

@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import net.impactdev.gts.api.GTSService;
 import net.impactdev.gts.api.modules.markets.ListingManager;
 import net.impactdev.gts.api.extensions.Extension;
+import net.impactdev.gts.plugin.GTSPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,17 +14,11 @@ import java.util.List;
 @Singleton
 public class GTSServiceImplementation implements GTSService {
 
-    private final ListingManager manager;
     private final List<Extension> extensions = new ArrayList<>();
-
-    @Inject
-    public GTSServiceImplementation(final ListingManager manager) {
-        this.manager = manager;
-    }
 
     @Override
     public ListingManager manager() {
-        return this.manager;
+        return GTSPlugin.instance().listings();
     }
 
     @Override
