@@ -92,6 +92,7 @@ public abstract class AbstractGTSPlugin implements GTSPlugin {
             //this.translations.reload();
 
             this.communications = this.communicationFactory().instance();
+            this.logger().info("Loading communication method... [" + this.communications.name() + "]");
             communications.communicator().publish(new PingMessage(UUID.randomUUID()));
             this.storage = GTSStorageFactory.create(StorageType.JSON);
             //this.listings = new GTSListingManager();
