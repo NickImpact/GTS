@@ -1,5 +1,6 @@
 package net.impactdev.gts.extensions;
 
+import com.google.common.collect.Lists;
 import net.impactdev.gts.api.extensions.Extension;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -25,7 +26,7 @@ public class ExtensionManager {
     }
 
     public @NonNull Collection<Extension> extensions() {
-        return null;
+        return Lists.newArrayList();
     }
 
 }

@@ -1,4 +1,4 @@
-package net.impactdev.gts;
+package net.impactdev.gts.tests;
 
 import net.kyori.adventure.nbt.CompoundBinaryTag;
 import net.kyori.adventure.nbt.StringBinaryTag;
@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public class JsonTesting {
+public class JsonTest {
 
     @Test
     public void nbt() {

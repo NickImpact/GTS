@@ -3,8 +3,14 @@ package net.impactdev.gts.elements.listings.models;
 import com.google.gson.JsonObject;
 import net.impactdev.gts.api.elements.content.Content;
 import net.impactdev.gts.api.elements.listings.Listing;
+import net.impactdev.gts.api.elements.listings.deserialization.DeserializationContext;
+import net.impactdev.gts.api.elements.listings.deserialization.DeserializationKeys;
+import net.impactdev.gts.api.elements.listings.models.BuyItNow;
+import net.impactdev.gts.elements.listings.deserialization.ListingDeserializer;
+import net.impactdev.gts.registries.RegistryAccessors;
 import net.impactdev.impactor.api.utility.printing.PrettyPrinter;
 import net.impactdev.json.JObject;
+import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +27,7 @@ public abstract class GTSListing implements Listing {
     private final LocalDateTime published;
     private final @Nullable LocalDateTime expiration;
 
-    protected GTSListing(GTSListingBuilder<?> builder) {
+    protected GTSListing(GTSListingBuilder<?, ?> builder) {
         this.id = builder.id;
         this.lister = builder.lister;
         this.content = builder.content;
@@ -64,6 +70,7 @@ public abstract class GTSListing implements Listing {
         JObject json = new JObject()
                 .add("version", this.version())
                 .add("uuid", this.id.toString())
+                .add("key", this.serialize$key().asString())
                 .consume(o -> Optional.ofNullable(this.lister).ifPresent(id -> o.add("lister", id.toString())))
                 .add("published", this.published.toString())
                 .consume(o -> Optional.ofNullable(this.expiration).ifPresent(id -> o.add("expiration", id.toString())))
@@ -73,7 +80,26 @@ public abstract class GTSListing implements Listing {
         return json.toJson();
     }
 
+    protected abstract Key serialize$key();
     protected abstract void serialize$child(JObject json);
+
+    @SuppressWarnings("PatternValidation")
+    protected static DeserializationContext contextualize(JsonObject json) {
+        ListingDeserializer deserializer = new ListingDeserializer();
+        deserializer.register(DeserializationKeys.UUID, UUID.fromString(json.get("uuid").getAsString()));
+        deserializer.register(DeserializationKeys.LISTER, UUID.fromString(json.get("lister").getAsString()));
+        deserializer.register(DeserializationKeys.VERSION, json.get("version").getAsInt());
+        deserializer.register(DeserializationKeys.PUBLISHED_TIME, LocalDateTime.parse(json.get("published").getAsString()));
+        deserializer.register(DeserializationKeys.EXPIRATION_TIME, LocalDateTime.parse(json.get("expiration").getAsString()));
+
+        JsonObject child = json.getAsJsonObject("content");
+        Content<?> content = RegistryAccessors.DESERIALIZERS.deserialize(
+                Key.key(child.get("key").getAsString()),
+                child
+        );
+        deserializer.register(DeserializationKeys.CONTENT, content);
+        return deserializer;
+    }
 
     @Override
     public void print(PrettyPrinter printer) {
@@ -87,7 +113,7 @@ public abstract class GTSListing implements Listing {
         printer.add(this.content);
     }
 
-    public abstract static class GTSListingBuilder<B extends ListingBuilder<B>> implements ListingBuilder<B> {
+    public abstract static class GTSListingBuilder<E extends Listing, B extends ListingBuilder<E, B>> implements ListingBuilder<E, B> {
 
         private UUID id;
         private UUID lister;

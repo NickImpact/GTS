@@ -31,7 +31,7 @@ public final class GTSStorageFactory {
                 return new ConfigurateStorage(
                         plugin,
                         new JsonLoader(),
-                        Paths.get("gts").resolve("storage").resolve("json")
+                        GTSPlugin.instance().bootstrapper().dataDir().resolve("storage").resolve("json")
                 );
         }
 

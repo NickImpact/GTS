@@ -32,16 +32,16 @@ public final class GTSStorage implements Storage {
 
     @Override
     public void init() throws Exception {
-
+        this.implementation.init();
     }
 
     @Override
     public void shutdown() throws Exception {
-
+        this.implementation.shutdown();
     }
 
-    public CompletableFuture<PrettyPrinter.IPrettyPrintable> meta() {
-        return Futures.timed(this.implementation::meta, 5, TimeUnit.SECONDS);
+    public CompletableFuture<Void> meta(PrettyPrinter printer) {
+        return Futures.timed(() -> this.implementation.meta(printer), 5, TimeUnit.SECONDS);
     }
 
     public CompletableFuture<List<Listing>> listings() {

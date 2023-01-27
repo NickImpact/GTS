@@ -1,4 +1,4 @@
-package net.impactdev.gts;
+package net.impactdev.gts.tests;
 
 import net.impactdev.gts.communication.implementation.CommunicationService;
 import net.impactdev.gts.communication.implementation.messages.MessageDecoder;
@@ -7,7 +7,7 @@ import net.impactdev.gts.communication.implementation.providers.SingleServerProv
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public final class MessageTesting {
+public final class CommunicationTest {
 
     private static CommunicationService service;
 

@@ -9,7 +9,11 @@ import java.util.function.Predicate;
 
 public interface GTSStorageImplementation {
 
-    PrettyPrinter.IPrettyPrintable meta();
+    void init() throws Exception;
+
+    void shutdown() throws Exception;
+
+    void meta(PrettyPrinter printer);
 
     List<Listing> listings() throws Exception;
 

@@ -1,6 +1,7 @@
 package net.impactdev.gts.plugin;
 
 import net.impactdev.gts.api.GTSService;
+import net.impactdev.gts.api.elements.listings.models.BuyItNow;
 import net.impactdev.gts.api.events.lifecycle.DeserializerRegistrationEvent;
 import net.impactdev.gts.api.modules.markets.ListingManager;
 import net.impactdev.gts.commands.GTSCommands;
@@ -8,7 +9,8 @@ import net.impactdev.gts.commands.admin.TranslationCommands;
 import net.impactdev.gts.communication.implementation.CommunicationFactory;
 import net.impactdev.gts.communication.implementation.CommunicationService;
 import net.impactdev.gts.communication.implementation.messages.types.utility.PingMessage;
-import net.impactdev.gts.elements.provided.content.ItemStackContent;
+import net.impactdev.gts.elements.listings.models.GTSBuyItNow;
+import net.impactdev.gts.elements.content.ItemStackContent;
 import net.impactdev.gts.configuration.GTSConfigKeys;
 import net.impactdev.gts.extensions.ExtensionManager;
 import net.impactdev.gts.locale.TranslationManager;
@@ -20,6 +22,7 @@ import net.impactdev.gts.service.APIRegistrar;
 import net.impactdev.gts.service.GTSServiceImplementation;
 import net.impactdev.gts.storage.GTSStorage;
 import net.impactdev.gts.storage.GTSStorageFactory;
+import net.impactdev.gts.util.GTSKeys;
 import net.impactdev.impactor.api.Impactor;
 import net.impactdev.impactor.api.commands.events.CommandRegistrationEvent;
 import net.impactdev.impactor.api.configuration.Config;
@@ -159,6 +162,11 @@ public abstract class AbstractGTSPlugin implements GTSPlugin {
     }
 
     @Override
+    public GTSBootstrapper bootstrapper() {
+        return this.bootstrapper;
+    }
+
+    @Override
     public GTSStorage storage() {
         return this.storage;
     }
@@ -218,8 +226,11 @@ public abstract class AbstractGTSPlugin implements GTSPlugin {
 
     private void registration() {
         Impactor.instance().events().subscribe(DeserializerRegistrationEvent.class, event -> {
-            event.register(ItemStackContent.class, ItemStackContent::deserialize);
+            event.register(GTSKeys.gts("item"), ItemStackContent::deserialize);
+            event.register(GTSBuyItNow.KEY, GTSBuyItNow::deserialize);
         });
+
+        Impactor.instance().builders().register(BuyItNow.BuyItNowBuilder.class, GTSBuyItNow.GTSBuyItNowBuilder::new);
     }
 
     @Override

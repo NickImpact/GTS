@@ -1,4 +1,4 @@
-package net.impactdev.gts;
+package net.impactdev.gts.tests;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

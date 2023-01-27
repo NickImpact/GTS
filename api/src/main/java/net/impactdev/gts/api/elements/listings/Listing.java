@@ -57,7 +57,7 @@ public interface Listing extends Element {
 
     Icon asIcon();
 
-    interface ListingBuilder<B extends ListingBuilder<B>> extends Builder<Listing> {
+    interface ListingBuilder<E extends Listing, B extends ListingBuilder<E, B>> extends Builder<E> {
 
         B id(UUID uuid);
 

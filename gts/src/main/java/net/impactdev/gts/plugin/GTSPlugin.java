@@ -5,6 +5,7 @@ import net.impactdev.gts.api.modules.markets.ListingManager;
 import net.impactdev.gts.communication.implementation.CommunicationService;
 import net.impactdev.gts.extensions.ExtensionManager;
 import net.impactdev.gts.locale.TranslationManager;
+import net.impactdev.gts.plugin.bootstrapper.GTSBootstrapper;
 import net.impactdev.gts.storage.GTSStorage;
 import net.impactdev.impactor.api.plugin.ImpactorPlugin;
 import net.impactdev.impactor.api.plugin.components.Configurable;
@@ -20,6 +21,8 @@ public interface GTSPlugin extends ImpactorPlugin, Configurable {
     }
 
     GTSService api();
+
+    GTSBootstrapper bootstrapper();
 
     ListingManager listings();
 

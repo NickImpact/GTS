@@ -7,15 +7,16 @@ import net.impactdev.gts.api.storage.StorableContent;
 import net.impactdev.gts.events.GTSDeserializerRegistrationEvent;
 import net.impactdev.gts.plugin.GTSPlugin;
 import net.impactdev.impactor.api.Impactor;
+import net.kyori.adventure.key.Key;
 
 import java.util.Map;
 import java.util.Optional;
 
 public class GTSComponentDeserializerRegistry
-        extends LockableRegistry<Class<?>, StorableContent.Deserializer<?>>
+        extends LockableRegistry<Key, StorableContent.Deserializer<?>>
         implements ComponentDeserializerRegistry {
 
-    private final Map<Class<?>, StorableContent.Deserializer<?>> registrations = Maps.newHashMap();
+    private final Map<Key, StorableContent.Deserializer<?>> registrations = Maps.newHashMap();
 
     @Override
     public void init() throws Exception {
@@ -24,7 +25,7 @@ public class GTSComponentDeserializerRegistry
     }
 
     @Override
-    public boolean register$child(Class<?> key, StorableContent.Deserializer<?> value) {
+    protected boolean register$child(Key key, StorableContent.Deserializer<?> value) {
         if(this.registrations.containsKey(key)) {
             GTSPlugin.instance().logger().warn("Attempted to register a deserializer for a key which has already been registered, this registration has been ignored!");
             return false;
@@ -35,9 +36,9 @@ public class GTSComponentDeserializerRegistry
     }
 
     @Override
-    public <T> T deserialize(Class<T> key, JsonObject json) {
+    public <T> T deserialize(Key key, JsonObject json) {
         return Optional.ofNullable(this.registrations.get(key))
                 .map(deserializer -> (T) deserializer.deserialize(json))
-                .orElseThrow(() -> new IllegalArgumentException("Could not locate a deserializer for the following key: " + key.getSimpleName()));
+                .orElseThrow(() -> new IllegalArgumentException("Could not locate a deserializer for the following key: " + key.asString()));
     }
 }

@@ -3,10 +3,12 @@ package net.impactdev.gts.elements.listings.models;
 import com.google.common.collect.TreeMultimap;
 import net.impactdev.gts.api.elements.content.Price;
 import net.impactdev.gts.api.elements.listings.models.Auction;
+import net.impactdev.gts.util.GTSKeys;
 import net.impactdev.impactor.api.ui.containers.Icon;
 import net.impactdev.impactor.api.utility.printing.PrettyPrinter;
 import net.impactdev.json.JArray;
 import net.impactdev.json.JObject;
+import net.kyori.adventure.key.Key;
 import org.mariuszgromada.math.mxparser.Argument;
 import org.mariuszgromada.math.mxparser.Expression;
 
@@ -17,7 +19,9 @@ import java.util.concurrent.CompletableFuture;
 
 public class GTSAuction extends GTSListing implements Auction {
 
-    protected GTSAuction(GTSListingBuilder<?> builder) {
+    private static final Key KEY = GTSKeys.gts("auction");
+
+    protected GTSAuction(GTSListingBuilder<?, ?> builder) {
         super(builder);
     }
 
@@ -49,6 +53,11 @@ public class GTSAuction extends GTSListing implements Auction {
     @Override
     public int version() {
         return 2;
+    }
+
+    @Override
+    protected Key serialize$key() {
+        return KEY;
     }
 
     @Override
